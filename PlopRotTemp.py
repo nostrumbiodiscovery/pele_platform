@@ -133,7 +133,6 @@ dummy_atom3 = [0.1, 0.2, 0.3]
 def find_tors_in_log(filename):
     f = open(filename, 'r')
     out_tors = []
-    string = 'Found Tors for atoms'
     read_next = 0
     while f:
         line = f.readline()
@@ -176,17 +175,13 @@ def find_tors_in_rings(tors, maefile):
     for ring in st1.ring:
         ring_atoms = ring.getAtomList()
         include_ring = 0
-        # print "NEW RING"
-        #    for atom in ring_atoms:
-        #       print "ATOM ",st1.atom[atom].property['s_m_pdb_atom_name']
         for t in tors:
             for atom1 in ring_atoms:
                 if (t[0] + 1 == atom1):
                     for atom2 in ring_atoms:
                         if (t[1] + 1 == atom2):
                             include_ring = 1
-                        #             print "INC ",st1.atom[atom1].property['s_m_pdb_atom_name'],st1.atom[atom2].property['s_m_pdb_atom_name']
-                        #    print "INCLUDE_RING ",include_ring
+
         if (include_ring == 1):
             cur_ring_num = cur_ring_num + 1
             for atom1 in ring_atoms:
@@ -196,34 +191,6 @@ def find_tors_in_rings(tors, maefile):
                         out_tors.append([atom1 - 1, atom2 - 1])
                         out_ring.append(cur_ring_num)
 
-                    #  f = open(filename,'r')
-                    #  out_tors=[]; #torsions contained in rings
-                    #  out_ring=[]; #Ring corresponding to that torsion
-                    #  read_next=0
-                    #  ring_number=1; # For Closure
-                    #  while f:
-                    #    line=f.readline()
-                    #    if line=="":
-                    #      break
-                    #    a = re.search(r'INFO For ring #\s+(\d+)\s+making tors: between atoms\s+(\d+)\s+and\s+(\d+)',line)
-                    #    if (a):
-                    #      b=[ int(a.group(2))-1, int(a.group(3))-1]
-                    #      b.sort()
-                    #      out_tors.append(b)
-                    #      out_ring.append(int(a.group(1))+1)
-                    #    if(read_next==1):
-                    #      a=re.search(r'(\d+)\s+(\d+)',line)
-                    #      read_next=0
-                    #      if(a):
-                    #         b.append(int(a.group(1))-1)
-                    #         out_tors.append(b )
-                    #         # Ring closures go in ring order (every ring needs a closure)
-                    #         out_ring.append(ring_number);ring_number=ring_number+1
-                    #    a = re.search(r'adding a ring closure using atoms:\s+(\d+)\s+(\d+)',line)
-                    #    if(a):
-                    #      b = [ int(a.group(2))-1];
-                    #      read_next=1;
-                    #  f.close()
     # Merge together rings which share atoms
     for i in range(len(out_tors)):
         for j in range(i + 1, len(out_tors)):
@@ -253,13 +220,13 @@ def find_tors_in_rings(tors, maefile):
 def remove_tors(tors1, tors2):
     # return the tors2 from tors 1
     out_tors = []
-    for i in range(len(tors1)):
+    for torsion1 in tors1:
         found = 0
-        for j in range(len(tors2)):
-            if tors1[i][:] == tors2[j][:]:
+        for torsion2 in tors2:
+            if torsion1 == torsion2:
                 found = 1
         if found == 0:
-            out_tors.append(tors1[i][:])
+            out_tors.append(torsion1)
     return out_tors
 
 
@@ -267,13 +234,13 @@ def remove_tors(tors1, tors2):
 def add_tors(tors1, tors2):
     # adds tors2 to tors 1
     out_tors = tors1
-    for i in range(len(tors2)):
+    for torsion_i in tors2:
         found = 0
-        for j in range(len(out_tors)):
-            if tors2[i][:] == out_tors[j][:]:
+        for torsion_j in out_tors:
+            if torsion_i == torsion_j:
                 found = 1
         if found == 0:
-            out_tors.append(tors2[i][:])
+            out_tors.append(torsion_i)
     return out_tors
 
 
@@ -281,13 +248,13 @@ def add_tors(tors1, tors2):
 def intersect_tors(tors1, tors2):
     # return the intersection of tors1 and tors2
     out_tors = []
-    for i in range(len(tors1)):
+    for torsion_i in tors1:
         found = 0
-        for j in range(len(tors2)):
-            if tors1[i][:] == tors2[j][:]:
+        for torsion_j in tors2:
+            if torsion_i == torsion_j:
                 found = 1
         if found == 1:
-            out_tors.append(tors1[i][:])
+            out_tors.append(torsion_i)
     return out_tors
 
 
@@ -315,31 +282,55 @@ def mass_of_element(element):
 
 ####################################
 def find_names_in_mae(filename):
+
+    """
+    :param: a .mae file
+    :rtype: list with atom names
+    J.M.I.F
+    """
     f = open(filename, "r")
     names = []
+    keywords = []
     while f:  # Find Bond Section
         line = f.readline()
-        if line == "":
+        if line == "" or re.search(r'm_atom\[\d+\]', line):
             break
-        if (re.search(r'm_atom\[\d+\]', line)):
-            break
-    while f:  # Find Bond Section
+    while f:
+        # This
         line = f.readline()
-        if line == "":
+        if line == "" or re.search(':::', line):
             break
-        if (re.search(':::', line)):
-            break
-    while f:  # Read in Atomname 
+        else:
+            if "index" in line:
+                keyword = "index"
+            else:
+                keyword = line.strip()
+            keywords.append(keyword)
+    while f:
+        # Read in Atomnames using a list with the keywords to use the right index.
         line = f.readline()
         if line == "" or re.search(':::', line):
             break
         mae_atom_values = parse_mae_line(line)
-        if (len(mae_atom_values) >= 13):
-            ace = re.search('ACE', mae_atom_values[
-                12])  #added by mcclendon:a ligand or modified residue can't have reserved name for protein capping group ACE or NMA
-            nma = re.search('NMA', mae_atom_values[12])  #added by mcclendon
+        residue_names_index = None
+        atom_names_index = None
+        for index, key in enumerate(keywords):
+            # This block looks for the right indexes in the keywords using regular expressions,
+            # if it stops working modify the expressions to match the newer and older formats. J.M.I.F
+            if re.search(r'.*pdb_*res[idue_]*name.*', key, re.IGNORECASE):
+                residue_names_index = index
+            elif re.search (r'.*pdb_*atom_*name', key, re.IGNORECASE):
+                atom_names_index = index
+        if residue_names_index is None or atom_names_index is None:
+            error_message = "The keywords in the atom section form the .mae file don't match the regular " \
+                            "expressions currently implemented."
+            raise Exception (error_message)
+        if len(mae_atom_values) >= 13:
+            ace = re.search('ACE', mae_atom_values[residue_names_index])  #added by mcclendon:a ligand or modified
+            # residue can't have reserved name for protein capping group ACE or NMA
+            nma = re.search('NMA', mae_atom_values[residue_names_index])  #added by mcclendon
             if ((not ace) and (not nma)):
-                names.append(mae_atom_values[13])
+                names.append(mae_atom_values[atom_names_index])
     f.close()
     return names
 
@@ -383,18 +374,23 @@ def find_mass_names(names):
 def find_bonds_in_mae(filename):
     f = open(filename, "r")
     out_bond = []
+    keywords = []
     while f:  # Find Bond Section
         line = f.readline()
-        if line == "":
-            break
-        if (re.search('m_bond', line)):
+        if line == "" or re.search('m_bond', line):
             break
     while f:  # Advance to numbers
         line = f.readline()
-        if line == "":
+        if line == "" or (re.search(':::', line)):
+            print 'a2'
             break
-        if (re.search(':::', line)):
-            break
+        else:
+            if "index" in line:
+                keyword = "index"
+            else:
+                keyword = line.strip()
+            keywords.append(keyword)
+    # print keywords
     while f:  # Read in Bonds
         line = f.readline()
         if line == "" or re.search(':::', line):
@@ -404,8 +400,8 @@ def find_bonds_in_mae(filename):
             b = [int(a.group(1)) - 1, int(a.group(2)) - 1]
             b.sort()
             out_bond.append(b)
-    return out_bond
     f.close()
+    return out_bond
 
 
 ####################################
@@ -2952,7 +2948,7 @@ if (run_conf == 1 ):  #We are actually going to run a csearch
         mcu_conf.DEMX[6] = Ecut * 5  #cutoffs in kJ/mole
         com_file = mcu_conf.cgen(mae_min_file, conf_root + '.com')
     else:
-        raise Exception("Algorithm ", algortithm, " not recognized\n");
+        raise Exception("Algorithm ", algorithm, " not recognized\n");
     if (user_tors == []):
         if (run_conf == 1):
             print 'Running Conformational Search: ', mae_min_file, ' -> ', conf_file
@@ -3019,7 +3015,7 @@ if (back_tors != [] and back_algorithm != "none"):
             mcu_conf.DEMX[6] = Ecut * 5  #cutoffs in kJ/mole
             com_file = mcu_conf.cgen(mae_min_file, conf_root + '.com')
         else:
-            raise Exception("Algorithm ", back_algortithm, " not recognized\n");
+            raise Exception("Algorithm ", back_algorithm, " not recognized\n");
         if (not debug):
             cmd = mcu_conf.getLaunchCommand(com_file)
             job = jc.launch_job(cmd)
