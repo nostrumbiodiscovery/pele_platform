@@ -284,8 +284,26 @@ def mass_of_element(element):
 def find_names_in_mae(filename):
 
     """
-    :param: a .mae file
+    :param: the file name to parse.
     :rtype: list with atom names
+    This function parses a .mae file to extract the atom names from the bond section.
+    This section follows the pattern:
+      bond[(0-9)*]{
+      keywords
+      :::
+      values
+      }
+      The first line specifies the section followed by the number of atoms enclosed with [].
+      The following lines specify which value is stored in each column in the values section,
+      there's one keyword (column name) by line.
+      The values section has as many lines as atoms in the molecule, the number specified next
+      to "bonds". Each line should have as many fields (separated by blank spaces) as keywords
+      were present, and these fields should be in the same order as the keywords.
+    the function ignores all the lines but the ones in the bond section.
+    It reads the keywords in the bond section into a list and then looks in the list for the
+    fields containing the atom_pdb_name and the pdb_residue_name, using the regular expressions:
+    '.*pdb_*atom_*name' and '.*pdb_*res[idue_]*name.*', respectively, it's case insensitive, and
+    they should be easy to modify
     J.M.I.F
     """
     f = open(filename, "r")
@@ -325,6 +343,7 @@ def find_names_in_mae(filename):
             error_message = "The keywords in the atom section form the .mae file don't match the regular " \
                             "expressions currently implemented."
             raise Exception (error_message)
+        # This if comes from the old version and I don't know why it's used...
         if len(mae_atom_values) >= 13:
             ace = re.search('ACE', mae_atom_values[residue_names_index])  #added by mcclendon:a ligand or modified
             # residue can't have reserved name for protein capping group ACE or NMA
