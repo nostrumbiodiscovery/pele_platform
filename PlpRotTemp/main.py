@@ -16,32 +16,19 @@ Outputs: 1) a re-ordered template file (old one is backed up in FILENMAE.hetgrp_
          2) a PLOP nonstandard residue specification for pasting into a PLOP control file, both to stdout and to <maefile>_torsions.txt
 
 
-Options
-   -core=<an1>      Give one atom of the core section
-   -f=<an1>,<an2>   Fix this bond number in the mae file.  
-                    CANNOT USE MACORMODEL SAMPLING WITH THIS OPTION 
-   -tor=<an1>,<an2>      
+Options:
 
-   -c=<FILENAME>    Use the following pdb/mae file as an exhaustive list of
-                    all confomers.  This must be one file with multiple
-                    models/entries.  Still uses macromodel to find rotatable
-                    bonds. 
-   -n=<number>      Maximum Number of Entries in Rotamer File
-   -a=<CGEN,MCMM...> Type of Search to Run for Sidechains, if none is specified 
-                    it will use PLOP sampling
-   -ba=<CGEN,MCMM...>Type of Search to Run for Backbones, if none is specified it 
-                    will not be sampled and a backbone library and no backbone
-                    library will be created
-   -s=<number>      Maximum Conformers to Sample
-   -e=<number>      Energy Cutoff (in kJ/mole)
-   -md=<number>     Maximum distance between atoms in equivalent struct(A)
-Options for Unnatural Amino Acids
-   -chain=<chain>   For output of PLOP-style nonstandard residue specification,
-                    set the chain name equal to what it would be in the whole
-                    macromolecule
-   -res=<num>       For output of PLOP-style nonstandard residue specification,
-                    set the residue number equal to what it would be in the whole
-                    macromolecule
+   --core <an1>      Give one atom of the core section
+
+   --n <number>      Maximum Number of Entries in Rotamer File
+
+   --mtor <number>   Gives the maximum number of torsions allowed in each
+                     group.  Will freeze bonds to extend the core if 
+                     necessary
+
+   --clean           Clean Intermiadiate files
+
+
 
 Mae file should be properly atomtyped
 
@@ -155,7 +142,7 @@ if args.core:
 if args.mtor:
   max_tors = args.mtor
   if max_tors>5:
-    raise Exception('mTor m')
+    raise Exception('Maximum mTor number 5')
   print('\nUsing {} as a maximum number of Rotamers\n'.format(max_tors))
 if args.n:
   nrot = args.n
