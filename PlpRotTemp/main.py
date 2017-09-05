@@ -85,7 +85,12 @@ HELP: $SCHRODINGER/utilities/python main.py --help
 import argparse
 import sys
 import os
-from PlopRotTemp import get_opts
+import re
+import PlopRotTemp as pl
+import schrodinger.application.macromodel.utils as mu
+import schrodinger.application.macromodel.tools as mt
+import schrodinger.job.jobcontrol as jc
+import schrodinger.infra.mm as mm
 
 
 #Defaults
@@ -143,7 +148,6 @@ args = parser.parse_args()
 if args.mae_file:
   if(args.mae_file.endswith('.mae')):
     mae_file = args.mae_file
-    print('input file: {}'.format(mae_file))
   else:
     raise Exception('A .mae file is needed')
 if args.core:
@@ -210,7 +214,6 @@ if (a):
 else:
     root = mae_file_no_dir
 
-print('n = {}'.format(nrot))
 print "INPUT"
 print "mae_file", mae_file
 print "root", root
@@ -223,7 +226,7 @@ print "\n"
 
 #Build a template file 
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
-    build_template(mae_file, root, OPLS, hetgrp_opt, template_file, \
+    pl.build_template(mae_file, root, OPLS, hetgrp_opt, template_file, \
                    output_template_file)
 for f in files:
     files2clean.append(f)
@@ -285,28 +288,28 @@ if (not debug):
 print 'Dummy search done', unnat_res
 if (unnat_res == 1):
     [mae_num, parent, rank, tors, use_rings, group, tors_ring_num] = \
-        FindCoreAA(mae_min_file, user_fixed_bonds, log_file, use_rings, use_mult_lib, user_core_atom, user_tors)
+        pl.FindCoreAA(mae_min_file, user_fixed_bonds, log_file, use_rings, use_mult_lib, user_core_atom, user_tors)
     tors_ring_num = []
     for t in tors: tors_ring_num.append(0);
 else:
     print 'Finding core'
     if (grow == 1 and user_core_atom == -1): user_core_atom = -2
     [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num] = \
-        FindCore(mae_min_file, user_fixed_bonds, log_file, use_rings, \
+        pl.FindCore(mae_min_file, user_fixed_bonds, log_file, use_rings, \
                  use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name)
     print 'Core found'
 if (use_rings == 1): print "Found flexible rings"
 
 newtors = []
 if (unnat_res == 1 or grow == 1 ):
-    newtors = ReorderTorsionsAA(tors, mae_num)
+    newtors = pl.ReorderTorsionsAA(tors, mae_num)
 
 
 
 #Coordinate mae files and template file atoms
 #Convert Torsions to new atom numbering
 #Ring numbers don't have to be changed
-[mae2temp, temp2mae] = MatchTempMaeAtoms(mae_min_file, template_file)
+[mae2temp, temp2mae] = pl.MatchTempMaeAtoms(mae_min_file, template_file)
 old_atom_num = [];
 new_tors = [];
 new_back_tors = [];
@@ -331,15 +334,15 @@ for i in range(len(new_back_tors)):
 
 #Make (or read) original tempalte file
 print 'Making Rotamer-Enabled Template File: ', output_template_file
-names = ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file,
+names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file,
                         R_group_root_atom_name=R_group_root_atom_name)
 
-[tors, tors_ring_num, zmat_atoms] = FindTorsAtom(tors, tors_ring_num, parent)
+[tors, tors_ring_num, zmat_atoms] = pl.FindTorsAtom(tors, tors_ring_num, parent)
 #Eliminate Torsions in the backbone (included when entire rings are included in the torsions)
-[tors, tors_ring_num, zmat_atoms] = EliminateBackboneTors(tors, tors_ring_num, zmat_atoms, rank)
+[tors, tors_ring_num, zmat_atoms] = pl.EliminateBackboneTors(tors, tors_ring_num, zmat_atoms, rank)
 
 if (unnat_res == 1 or grow == 1):
-    mynonstandard = TetherRotBonds(mae_file, chain, resno, log_file, newtors)
+    mynonstandard = pl.TetherRotBonds(mae_file, chain, resno, log_file, newtors)
     mynonstandard.output_rotbonds(R_group_root_atom_name=R_group_root_atom_name)
 else:
     #Order by rank
@@ -368,7 +371,7 @@ else:
                 tors_ring_num[i] = tors_ring_num[j];
                 tors_ring_num[j] = temp
 
-    [tors, tors_ring_num, zmat_atoms] = FindTorsAtom(tors, tors_ring_num, parent)
+    [tors, tors_ring_num, zmat_atoms] = pl.FindTorsAtom(tors, tors_ring_num, parent)
     line = "Zmat atoms:";
     for i in range(len(zmat_atoms)):
         line = line + " " + names[zmat_atoms[i]]
@@ -486,7 +489,7 @@ if (back_tors != [] and back_algorithm != "none"):
     if (unnat_res != 1):
         if (back_conf_file != '' and back_conf_file != 'none'):
             back_lib = resname.upper() + "__B"
-            make_lib_from_mae(back_lib, "back", back_conf_file, back_tors, names, \
+            pl.make_lib_from_mae(back_lib, "back", back_conf_file, back_tors, names, \
                               parent, old_atom_num, mae2temp, temp2mae, gridres, gridres)
 
 #if(grow == 1):
@@ -506,17 +509,17 @@ if (unnat_res != 1):
     print "Converting mae file to pdb format -> ", pdb_root
     os.system(line)
     if (conf_file != 'none'):
-        make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings, use_mult_lib,
+        pl.make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings, use_mult_lib,
                        output_template_file, gridres, debug)
     else:
         if (len(zmat_atoms) > 0):
-            ring_libs = build_ring_libs(mae_min_file, root, resname, tors, \
+            ring_libs = pl.build_ring_libs(mae_min_file, root, resname, tors, \
                                         tors_ring_num, names, rank, parent, old_atom_num, mae2temp, gridres,
                                         files2clean, debug)
         else:
             ring_libs = []
             print "No rotatable sidechains found"
-        file = find_build_lib(resname, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
+        file = pl.find_build_lib(resname, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
                               tors_ring_num, ring_libs, debug)
         if file:
           files2clean.append(file)
