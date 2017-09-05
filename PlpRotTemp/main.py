@@ -125,10 +125,10 @@ R_group_root_atom_name = 'None'  # which atom do you want to start sampling at?
 parser = argparse.ArgumentParser()
 parser.add_argument("mae_file", type=str, help="ligand maestro mae file")
 parser.add_argument("--core", help="Give one atom of the core section")
-parser.add_argument("--mtor", help="Gives the maximum number of torsions allowed in each \
+parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each \
                               group.  Will freeze bonds to extend the core if \
                               necessary.")
-parser.add_argument("--n", help="Maximum Number of Entries in Rotamer File")
+parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File")
 parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
 args = parser.parse_args()
 
