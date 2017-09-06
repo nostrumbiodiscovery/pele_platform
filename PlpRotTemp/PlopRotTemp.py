@@ -113,6 +113,7 @@ import os
 import shutil
 from schrodinger import structure
 from schrodinger import structureutil
+import schrodinger.infra.mm as mm
 
 hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 
@@ -543,9 +544,12 @@ def assign_rank(bonds, assign, atom_num):
         rank.append(-1)
     rank = assign_rank_group(atom_num, assign, rank, 0)  # assigns atom_num a rank of zero
     while (min_value(rank) < 0):  # do until all are assigned
+        print(rank)
         cur_rank = max_value(rank)  #the loop is over ranks
         changed = 1
+        print('a')
         while (changed == 1):  #while we haven't assigned any atoms
+            print('b')
             changed = 0
             for i in range(len(bonds)):  #bonds is a list of pairs of atoms that are bonded
                 if ( rank[bonds[i][0]] == cur_rank and rank[bonds[i][1]] < 0):
@@ -1027,13 +1031,22 @@ def FindCoreAA(mae_file, user_fixed_bonds, logfile, use_rings, use_mult_lib, use
     # adapted from FindCore for unnatural amino acids by Chris McClendon, Jacobson Group
     if (user_tors == []):
         tors = find_tors_in_log(logfile)
+        ########CHANGE     SCHRODINGER######
         [ring_tors, ring_num] = find_tors_in_rings(tors, mae_file)
+        ########CHANGE     SCHRODINGER######
+
         tors = remove_tors(tors, user_fixed_bonds)
+
+        #########CHANGE     SCHRODINGER######
         ring_tors = remove_tors(ring_tors, user_fixed_bonds)
-        if (len(ring_tors) < 1 ): use_rings = 0
-        if (use_rings == 0): tors = remove_tors(tors, ring_tors)
+        if (len(ring_tors) < 1 ): 
+          use_rings = 0
+        if (use_rings == 0):
+          tors = remove_tors(tors, ring_tors)
     else:
         tors = user_tors
+        ##########CHANGE     SCHRODINGER######
+
     bonds = find_bonds_in_mae(mae_file)
     atom_names = find_names_in_mae(mae_file)
     if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE";
@@ -1089,7 +1102,8 @@ def FindCoreAA(mae_file, user_fixed_bonds, logfile, use_rings, use_mult_lib, use
 
     # Assign ring numbers to torsions (0 for none) (backbone ring torsions not assigned)
     tors_ring_num = []
-    for t in tors: tors_ring_num.append(0)
+    for t in tors: 
+        tors_ring_num.append(0)
     if (use_rings == 1):
         for i in range(len(tors)):
             for j in range(len(ring_tors)):
@@ -1145,6 +1159,8 @@ def ReorderTorsionsAA(tors, ordering):  # by Chris McClendon, Jacobson Group
 ####################################################
 def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
              use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name):
+
+    ########CHANGE     SCHRODINGER######
     if (user_tors == []):
         tors = find_tors_in_log(logfile)
         print " - torsions found."
@@ -1158,6 +1174,7 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
             tors = remove_tors(tors, ring_tors)
         else:
             tors = add_tors(tors, ring_tors)
+         ########CHANGE     SCHRODINGER######
     else:
         tors = user_tors
     if (max_tors != -1 and use_rings == 1):
@@ -1778,7 +1795,8 @@ def FindTorsAtom(tors, tors_ring_num, parent):
                     if (len(tors_ring_num) > 0):
                         out_tors_ring_num.append(tors_ring_num[i])
                 else:
-                    if (iatom < zmat_atoms[-1]): zmat_atoms[-1] = iatom
+                    if (iatom < zmat_atoms[-1]): 
+                      zmat_atoms[-1] = iatom
         if (found == 0): pass  # No dependents, it must be the dependent in a ring
     return [out_tors, out_tors_ring_num, zmat_atoms]
 
@@ -2058,6 +2076,7 @@ def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, orderi
         ordering_to_mae.append(temp2mae[ordering[i]])
 
     # Read in File
+    ###############################CHANGE SCHRODINGER########################
     st1 = structure.StructureReader(conf_file).next()
     tors_values = []
     for st in structure.StructureReader(conf_file):
@@ -2080,6 +2099,7 @@ def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, orderi
         for atom in zmat_atoms:
             this_tors.append(zmat[atom][2])
         tors_values.append(this_tors)
+     ###############################CHANGE SCHRODINGER########################
 
         # Write To Library File
     # for atom in zmat_atoms:
@@ -2198,11 +2218,15 @@ def make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings
     #    fp=open(assign_filename,"w")
     #    fp.write(line);fp.close();
     #  else:
+
+    ######################CHANGE SCHRODINGER#########################
     if use_rings:
         lib_gridres = -1.0  # If there are flexible rings present we set the library to be at res 1 and
     # Disalow down sampling
     else:
         lib_gridres = gridres
+    ######################CHANGE SCHRODINGER#########################
+
     for grp in range(max(group) + 1):
         grp_tors = []
         if (grp + 1 < 10):
@@ -2358,6 +2382,16 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
 
 
 #################################################
+
+def get_root_path(mae_file):
+  #File Must By Copied to Local Directory First
+
+  if(os.path.dirname(mae_file)):
+    file_name = os.path.basename(mae_file)
+    root = os.path.splitext(file_name)[0]
+  else:
+    root = os.path.splitext(mae_file)[0]
+  return root
 
 #TetherRotBonds Class: Chris McClendon, Jacobson Group
 #originally, the unnatural amino acid stuff was going to be a separate class that used functions and subroutines from PlopRotTemp.py. It turned out to make more sense to add in many extra functions alongside the rest of the functions and make special cases in the main code for unnatural amino acids, easily retaining backwards-compatibility. Perhaps this should be converted stylisticly to parallel the existing code.

@@ -106,7 +106,7 @@ files2clean = []
 use_mult_lib = 1
 run_conf = 0
 algorithm = "MCMM"
-clean = 0
+clean = False
 gridres_oh = ""
 unnat_res = 0  # for old-style PLOP nonstandard side chain
 resno = 1  #for old-style PLOP nonstandard side chain
@@ -152,15 +152,22 @@ if args.clean:
 
 
 
-#########################BRUT#################################
+#########################COMENT#################################
 
 # Process options
-if (gridres_oh == ""): gridres_oh = gridres
+if (gridres_oh == ""): 
+    gridres_oh = gridres
 if (use_mae_charges == 1):
     hetgrp_opt = hetgrp_opt + '-use_mae_charges'
-if (run_conf == 0): conf_file = 'none'
+if (run_conf == 0): 
+    conf_file = 'none'
+#######################COMENT################################33
+
+####################CHANGE MACROMODEL###########################
 if ((user_tors != [] or user_fixed_bonds != []) and conf_file == ''):
     raise Exception("Cannot call Macromodel to perform sampling with user defined torsions")
+####################CHANGE MACROMODEL###########################
+
 if (unnat_res == 1):
     init_min = 0  #the input mae file is for a peptide and will not have a suitable Lewis structure
     if (template_file == ""):
@@ -170,20 +177,20 @@ if (unnat_res == 1):
     use_rings = 0  #for now; I'm not sure that ring torsions will follow the tree pattern appropriately, this would need testing
     #For now, just try low energy ring conformations
 
+###############POT COMENTAR#################
 if (R_group_root_atom_name != 'None'):
     use_mult_lib = 1  # so a dummy conformational search is performed just to see which bonds are rotatble
     use_rings = 0  #for now; I'm not sure that ring torsions will follow the tree pattern appropriately, this would need testing
     #For now, just try low energy ring conformations
+###############POT COMENTAR#################
 
-
-#printGlobalVariables()
-#sys.exit(0)
-
+####################REMOVE MACROMODEL###########################
 # Create ComUtil instance , define potential energy surface: solution phase, OPLSAA
 # Serial mode enabled so each structure is used to seed a unique search
 mcu_conf = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
 mcu_dummy = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
 mxu = mu.CluUtil()
+
 
 # There are two debug switch associated with AUTO
 # Debug output appears in jobname.log
@@ -191,47 +198,31 @@ mcu_conf.SOLV[2] = 1  # water
 mcu_dummy.DEBG[1] = 520  # Debugging output is read to determine zmatrix
 mcu_dummy.DEBG[2] = 521
 
-#File Must By Copied to Local Directory First
-mae_file_no_dir = mae_file
-a = re.match(r'.*/(.*)$', mae_file)  # Eliminate directory info
-if (a): mae_file_no_dir = a.group(1)
-a = re.match(r'(.*)\.mae', mae_file_no_dir)  # Get rid of mae extension    
-if (a):
-    root = a.group(1)
-else:
-    root = mae_file_no_dir
+####################REMOVE MACROMODEL###########################
 
-print "INPUT"
-print "mae_file", mae_file
-print "root", root
-print OPLS
-print hetgrp_opt
-print template_file
-print output_template_file
+root = pl.get_root_path(mae_file)
 
-print "\n"
 
+print("INPUT")
+print("mae_file {}".format(mae_file))
+print("root {}".format(root))
+print("OPLS {}".format(OPLS))
+print("hetgrp options '{}'".format(hetgrp_opt))
+print("template file '{}'".format(template_file))
+print("output template file '{}'".format(output_template_file))
+print("\n")
+
+
+#########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
 #Build a template file 
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
     pl.build_template(mae_file, root, OPLS, hetgrp_opt, template_file, \
                    output_template_file)
 for f in files:
     files2clean.append(f)
+#########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
 
-
-
-#Minimize the maefile
-
-#File Must By Copied to Local Directory First
-#mae_file_no_dir=mae_file
-#a=re.match(r'.*/(.*)$',mae_file) # Eliminate directory info
-#if(a): 
-# mae_file_no_dir=a.group(1)
-#  shutil.copy2(mae_file,mae_file_no_dir)  
-#  print "Copying File: ",mae_file,' -> ',mae_file_no_dir
-#  files2clean.append(mae_file_no_dir)
-
-
+####################CHANGE MACROMODEL MINIMIZATION OF LIGAND###########################
 if (do_init_min == 1):
     mcu_mini = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
     mcu_mini.SOLV[2] = 1  # water
@@ -268,11 +259,14 @@ if (not debug):
     files2clean.append(log_file)
     files2clean.append(root + '_IDbonds-out.mae')
     files2clean.append(root + '_IDbonds-out.ouL')
+####################CHANGE MACROMODEL MINIMIZATION OF LIGAND###########################
 
 
 
 #Identify the Core Atoms and split into groups
 print 'Dummy search done', unnat_res
+
+####################SCHRODINGER###########################
 if (unnat_res == 1):
     [mae_num, parent, rank, tors, use_rings, group, tors_ring_num] = \
         pl.FindCoreAA(mae_min_file, user_fixed_bonds, log_file, use_rings, use_mult_lib, user_core_atom, user_tors)
@@ -281,6 +275,7 @@ if (unnat_res == 1):
 else:
     print 'Finding core'
     if (grow == 1 and user_core_atom == -1): user_core_atom = -2
+    #######Assign_rank--> Extremely slow!
     [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num] = \
         pl.FindCore(mae_min_file, user_fixed_bonds, log_file, use_rings, \
                  use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name)
@@ -290,6 +285,8 @@ if (use_rings == 1): print "Found flexible rings"
 newtors = []
 if (unnat_res == 1 or grow == 1 ):
     newtors = pl.ReorderTorsionsAA(tors, mae_num)
+
+####################SCHRODINGER###########################
 
 
 
@@ -364,6 +361,8 @@ else:
         line = line + " " + names[zmat_atoms[i]]
     print line;
 
+
+################################CHANGE MACROMODEL CONFORMATIONAL SEARCH######################
 #Run the conformational Search
 conf_root = root + "_conf"
 if (conf_file == conf_root + '-out.mae'):
@@ -373,6 +372,7 @@ if (conf_file == ''):
     run_conf = 1
 else:
     run_conf = 0
+
 if (run_conf == 1 ):  #We are actually going to run a csearch
     print 'Taking ', nsamp, ' steps and storing ', nrot, ' conformtations'
     print 'Algorithm to be used is ', algorithm
@@ -410,6 +410,8 @@ if (run_conf == 1 ):  #We are actually going to run a csearch
     else:
         raise Exception("Cannot combine user defined torsions and MM search");
 
+################################CHANGE CONFORMATIONAL SEARCH######################
+
 #Cluster the output
 #if(run_conf==1):
 #  clust_name=root+'_clust.mae'
@@ -428,6 +430,7 @@ if (run_conf == 1 ):  #We are actually going to run a csearch
 #   clust_name=conf_file
 
 
+################################CHANGE MACROMODEL CONFORMATIONAL SEARCH######################
 #Run the conformational Search for the backbone
 back_lib = "";
 if (back_tors != [] and back_algorithm != "none"):
@@ -486,23 +489,32 @@ if (back_tors != [] and back_algorithm != "none"):
 #  file2clean=[]
 #  print "Converting mae file to pdb format -> ",pdb_root
 #  os.system(line)
+################################CHANGE MACROMODEL CONFORMATIONAL SEARCH######################
 
 
 if (unnat_res != 1):
     #Convert conf file to pdbs if necessary
     pdb_root = root + ".PlopRotTemp.pdb"
     file2clean = []
+
+    #######################CHANGE SCHORDINGER#############################
     line = "$SCHRODINGER/utilities/pdbconvert -imae " + mae_file + " -opdb " + pdb_root + " -num_models 1"
     print "Converting mae file to pdb format -> ", pdb_root
     os.system(line)
+    #######################CHANGE SCHORDINGER#############################
+    
     if (conf_file != 'none'):
         pl.make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings, use_mult_lib,
                        output_template_file, gridres, debug)
+
+
+    ############################CHANGE MACROMODEL#########################
     else:
         if (len(zmat_atoms) > 0):
             ring_libs = pl.build_ring_libs(mae_min_file, root, resname, tors, \
                                         tors_ring_num, names, rank, parent, old_atom_num, mae2temp, gridres,
                                         files2clean, debug)
+    ############################CHANGE MACROMODEL#########################
         else:
             ring_libs = []
             print "No rotatable sidechains found"
