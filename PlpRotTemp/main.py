@@ -228,7 +228,7 @@ if (do_init_min == 1):
     mcu_mini.SOLV[2] = 1  # water
     mini_root = root + "_mini"
     com_file = mcu_mini.mini(mae_file_hetgrp_ffgen, mini_root + '.com')
-    print 'Running minimization: ', mae_file_hetgrp_ffgen, ' -> ', mini_root + '-out.mae'
+    print('Running minimization: {0} -> {1} -out.mae'.format(mae_file_hetgrp_ffgen, mini_root))
     if (not debug):
         cmd = mcu_mini.getLaunchCommand(com_file)
         job = jc.launch_job(cmd)
@@ -239,7 +239,7 @@ if (do_init_min == 1):
 #        files2clean.append(mini_root + '.com')
     mae_min_file = mini_root + "-out.mae"
 else:
-    print 'Skipping Minimization '
+    print('Skipping Minimization ')
     mae_min_file = mae_file_hetgrp_ffgen
 
 #Run the Dummy Conformation Search to Find Bonds
@@ -248,7 +248,7 @@ mcu_dummy.MCMM[2] = 1  # Store up to 1000 values
 mcu_dummy.MINI[3] = 0  # Don't minimize
 mcu_dummy.DEMX[5] = 100
 mcu_dummy.DEMX[6] = 500
-print 'Running dummy conformation search to find bonds'
+print('Running dummy conformation search to find bonds')
 com_file = mcu_dummy.mcmm(mae_min_file, root + '_IDbonds.com')
 log_file = root + '_IDbonds.log'
 if (not debug):
@@ -264,7 +264,7 @@ if (not debug):
 
 
 #Identify the Core Atoms and split into groups
-print 'Dummy search done', unnat_res
+print('Dummy search done {}'.format(unnat_res))
 
 ####################SCHRODINGER###########################
 if (unnat_res == 1):
@@ -273,14 +273,15 @@ if (unnat_res == 1):
     tors_ring_num = []
     for t in tors: tors_ring_num.append(0);
 else:
-    print 'Finding core'
+    print('Finding core')
     if (grow == 1 and user_core_atom == -1): user_core_atom = -2
     #######Assign_rank--> Extremely slow!
     [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num] = \
         pl.FindCore(mae_min_file, user_fixed_bonds, log_file, use_rings, \
                  use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name)
-    print 'Core found'
-if (use_rings == 1): print "Found flexible rings"
+    print('Core found')
+if (use_rings == 1):
+    print("Found flexible rings")
 
 newtors = []
 if (unnat_res == 1 or grow == 1 ):
@@ -317,7 +318,7 @@ for i in range(len(new_back_tors)):
     back_tors.append(temp)
 
 #Make (or read) original tempalte file
-print 'Making Rotamer-Enabled Template File: ', output_template_file
+print('Making Rotamer-Enabled Template File: {}'.format(output_template_file))
 names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file,
                         R_group_root_atom_name=R_group_root_atom_name)
 
@@ -359,7 +360,7 @@ else:
     line = "Zmat atoms:";
     for i in range(len(zmat_atoms)):
         line = line + " " + names[zmat_atoms[i]]
-    print line;
+    print(line)
 
 
 ################################CHANGE MACROMODEL CONFORMATIONAL SEARCH######################
@@ -374,9 +375,9 @@ else:
     run_conf = 0
 
 if (run_conf == 1 ):  #We are actually going to run a csearch
-    print 'Taking ', nsamp, ' steps and storing ', nrot, ' conformtations'
-    print 'Algorithm to be used is ', algorithm
-    print 'Energy cutoff is ', Ecut, ' kcals/mole'
+    print('Taking {0} steps and storin {1} conformations'.format(nsamp, nrot))
+    print('Algorithm to be used is {}'.format(algorithm))
+    print('Energy cutoff is {} kcals/mole'.format(Ecut))
     conf_file = conf_root + '-out.mae'
     if (algorithm == "MCMM" or algorithm == "mcmm"):
         mcu_conf.MCMM[1] = nsamp  # Take X steps
@@ -398,7 +399,7 @@ if (run_conf == 1 ):  #We are actually going to run a csearch
         raise Exception("Algorithm ", algorithm, " not recognized\n");
     if (user_tors == []):
         if (run_conf == 1):
-            print 'Running Conformational Search: ', mae_min_file, ' -> ', conf_file
+            print('Running Conformational Search: {0} -> {1}'.format(mae_min_file, conf_file))
         if (not debug):
             cmd = mcu_conf.getLaunchCommand(com_file)
             job = jc.launch_job(cmd)
@@ -444,10 +445,10 @@ if (back_tors != [] and back_algorithm != "none"):
         run_conf = 0
     if (run_conf == 1):  #We are actually going to run a csearch
         back_conf_file = conf_root + '-out.mae'
-        print 'Running Backbone Conformational Search: ', mae_min_file, ' -> ', back_conf_file
-        print 'Taking ', nsamp, ' steps and storing ', nrot, ' conformtations'
-        print 'Algorithm to be used is ', back_algorithm
-        print 'Energy cutoff is ', Ecut, ' kcals/mole'
+        print('Running Backbone Conformational Search: ' + mae_min_file + ' -> ' + back_conf_file)
+        print('Taking '+ nsamp+ ' steps and storing '+ nrot+ ' conformtations')
+        print('Algorithm to be used is {}'.format(back_algorithm))
+        print('Energy cutoff is {} kcals/mole'.format(Ecut))
         if (back_algorithm == "MCMM" or back_algorithm == "mcmm"):
             mcu_conf.MCMM[1] = nsamp  # Take X steps
             mcu_conf.MCMM[2] = nrot  # Store up to Y values
@@ -499,7 +500,7 @@ if (unnat_res != 1):
 
     #######################CHANGE SCHORDINGER#############################
     line = "$SCHRODINGER/utilities/pdbconvert -imae " + mae_file + " -opdb " + pdb_root + " -num_models 1"
-    print "Converting mae file to pdb format -> ", pdb_root
+    print("Converting mae file to pdb format -> {}".format(pdb_root))
     os.system(line)
     #######################CHANGE SCHORDINGER#############################
     
@@ -517,14 +518,14 @@ if (unnat_res != 1):
     ############################CHANGE MACROMODEL#########################
         else:
             ring_libs = []
-            print "No rotatable sidechains found"
+            print("No rotatable sidechains found")
         file = pl.find_build_lib(resname, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
                               tors_ring_num, ring_libs, debug)
         if file:
           files2clean.append(file)
 
 if (clean):
-    print files2clean
+    print(files2clean)
     for file in files2clean:
-        print 'Removing Intermediate File: ',file
+        print('Removing Intermediate File: {}'.format(file))
         os.remove(file)
