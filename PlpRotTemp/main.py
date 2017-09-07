@@ -202,7 +202,7 @@ mcu_dummy.DEBG[2] = 521
 
 root = pl.get_root_path(mae_file)
 
-
+print("\n")
 print("INPUT")
 print("mae_file {}".format(mae_file))
 print("root {}".format(root))
@@ -210,25 +210,29 @@ print("OPLS {}".format(OPLS))
 print("hetgrp options '{}'".format(hetgrp_opt))
 print("User template file '{}'".format(template_file))
 print("User output template file '{}'".format(output_template_file))
-print("\n")
+
 
 
 #########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
-#Build a template file 
+#Build a template file
+print("\n")
+print("TEMPLATE GENERATION")
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
     pl.build_template(mae_file, root, OPLS, hetgrp_opt, template_file, \
                    output_template_file)
 for f in files:
     files2clean.append(f)
+
 #########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
 
 ####################CHANGE MACROMODEL MINIMIZATION OF LIGAND###########################
+print("\n")
 if (do_init_min == 1):
     mcu_mini = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
     mcu_mini.SOLV[2] = 1  # water
     mini_root = root + "_mini"
     com_file = mcu_mini.mini(mae_file_hetgrp_ffgen, mini_root + '.com')
-    print('\nRunning minimization: {0} -> {1} -out.mae'.format(mae_file_hetgrp_ffgen, mini_root))
+    print('\nMINIMIZATION\nRunning minimization: {0} -> {1} -out.mae\n'.format(mae_file_hetgrp_ffgen, mini_root))
     if (not debug):
         cmd = mcu_mini.getLaunchCommand(com_file)
         job = jc.launch_job(cmd)
@@ -239,7 +243,7 @@ if (do_init_min == 1):
 #        files2clean.append(mini_root + '.com')
     mae_min_file = mini_root + "-out.mae"
 else:
-    print('\nSkipping Minimization ')
+    print('\nSkipping Minimization\n ')
     mae_min_file = mae_file_hetgrp_ffgen
 
 #Run the Dummy Conformation Search to Find Bonds
@@ -248,7 +252,7 @@ mcu_dummy.MCMM[2] = 1  # Store up to 1000 values
 mcu_dummy.MINI[3] = 0  # Don't minimize
 mcu_dummy.DEMX[5] = 100
 mcu_dummy.DEMX[6] = 500
-print('Running dummy conformation search to find bonds')
+print('\nCONFORMATIONAL SEARCH\nRunning dummy conformation search to find bonds\n')
 com_file = mcu_dummy.mcmm(mae_min_file, root + '_IDbonds.com')
 log_file = root + '_IDbonds.log'
 if (not debug):
@@ -259,25 +263,24 @@ if (not debug):
     files2clean.append(log_file)
     files2clean.append(root + '_IDbonds-out.mae')
     files2clean.append(root + '_IDbonds-out.ouL')
+
 #################CHANGE MACROMODEL MINIMIZATION OF LIGAND + CONFORMATIONAL SEARCH###########################
 
-#Identify the Core Atoms and split into groups
-print('Dummy search done {}'.format(unnat_res))
 
 ####################SCHRODINGER###########################
+print("\n")
 if (unnat_res == 1):
     [mae_num, parent, rank, tors, use_rings, group, tors_ring_num] = \
         pl.FindCoreAA(mae_min_file, user_fixed_bonds, log_file, use_rings, use_mult_lib, user_core_atom, user_tors)
     tors_ring_num = []
     for t in tors: tors_ring_num.append(0);
 else:
-    print('Finding core')
+    print('FINDING CORE')
     if (grow == 1 and user_core_atom == -1): user_core_atom = -2
     #######Assign_rank--> Extremely slow!
     [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num] = \
         pl.FindCore(mae_min_file, user_fixed_bonds, log_file, use_rings, \
                  use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name)
-    print('Core found')
 if (use_rings == 1):
     print("Found flexible rings")
 
@@ -289,8 +292,8 @@ if (unnat_res == 1 or grow == 1 ):
 
 
 
-#Coordinate mae files and template file atoms
-#Convert Torsions to new atom numbering
+#Change from mae files atom numbering to the template file ones
+#Convert Torsions to match the template file atom numbering
 #Ring numbers don't have to be changed
 [mae2temp, temp2mae] = pl.MatchTempMaeAtoms(mae_min_file, template_file)
 old_atom_num = [];
@@ -327,6 +330,8 @@ names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_tem
 if (unnat_res == 1 or grow == 1):
     mynonstandard = pl.TetherRotBonds(mae_file, chain, resno, log_file, newtors)
     mynonstandard.output_rotbonds(R_group_root_atom_name=R_group_root_atom_name)
+
+#AQUIIII
 else:
     #Order by rank
     rank_zmat = [];
