@@ -124,7 +124,7 @@ R_group_root_atom_name = 'None'  # which atom do you want to start sampling at?
 
 parser = argparse.ArgumentParser()
 parser.add_argument("mae_file", type=str, help="ligand maestro mae file")
-parser.add_argument("--core", help="Give one atom of the core section")
+parser.add_argument("--core", type=int, help="Give one atom of the core section")
 parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each \
                               group.  Will freeze bonds to extend the core if \
                               necessary.")
@@ -208,8 +208,8 @@ print("mae_file {}".format(mae_file))
 print("root {}".format(root))
 print("OPLS {}".format(OPLS))
 print("hetgrp options '{}'".format(hetgrp_opt))
-print("template file '{}'".format(template_file))
-print("output template file '{}'".format(output_template_file))
+print("User template file '{}'".format(template_file))
+print("User output template file '{}'".format(output_template_file))
 print("\n")
 
 
@@ -228,7 +228,7 @@ if (do_init_min == 1):
     mcu_mini.SOLV[2] = 1  # water
     mini_root = root + "_mini"
     com_file = mcu_mini.mini(mae_file_hetgrp_ffgen, mini_root + '.com')
-    print('Running minimization: {0} -> {1} -out.mae'.format(mae_file_hetgrp_ffgen, mini_root))
+    print('\nRunning minimization: {0} -> {1} -out.mae'.format(mae_file_hetgrp_ffgen, mini_root))
     if (not debug):
         cmd = mcu_mini.getLaunchCommand(com_file)
         job = jc.launch_job(cmd)
@@ -239,7 +239,7 @@ if (do_init_min == 1):
 #        files2clean.append(mini_root + '.com')
     mae_min_file = mini_root + "-out.mae"
 else:
-    print('Skipping Minimization ')
+    print('\nSkipping Minimization ')
     mae_min_file = mae_file_hetgrp_ffgen
 
 #Run the Dummy Conformation Search to Find Bonds
@@ -259,9 +259,7 @@ if (not debug):
     files2clean.append(log_file)
     files2clean.append(root + '_IDbonds-out.mae')
     files2clean.append(root + '_IDbonds-out.ouL')
-####################CHANGE MACROMODEL MINIMIZATION OF LIGAND###########################
-
-
+#################CHANGE MACROMODEL MINIMIZATION OF LIGAND + CONFORMATIONAL SEARCH###########################
 
 #Identify the Core Atoms and split into groups
 print('Dummy search done {}'.format(unnat_res))

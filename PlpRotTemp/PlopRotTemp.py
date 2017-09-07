@@ -127,6 +127,17 @@ dummy_atom3 = [0.1, 0.2, 0.3]
 
 
 def find_tors_in_log(filename):
+    """
+    Return the atom with torsions from a log file
+
+    Input:
+      filename: logfile
+
+    Output:
+      torsions: list of atoms with torsions 
+      example--> [[1,2],[4,6],[9.10]]
+      (Atom 1 and 2, 4 and 6, 9 and 10 are respectevly from the same functional group)
+    """
     f = open(filename, 'r')
     out_tors = []
     read_next = 0
@@ -214,7 +225,9 @@ def find_tors_in_rings(tors, maefile):
 
 ####################################
 def remove_tors(tors1, tors2):
-    # return the tors2 from tors 1
+    """
+    return the tors2 from tors 1
+    """
     out_tors = []
     for torsion1 in tors1:
         found = 0
@@ -228,7 +241,9 @@ def remove_tors(tors1, tors2):
 
 ####################################
 def add_tors(tors1, tors2):
-    # adds tors2 to tors 1
+    """
+    adds tors2 to tors 1
+    """
     out_tors = tors1
     for torsion_i in tors2:
         found = 0
@@ -346,8 +361,6 @@ def find_names_in_mae(filename):
             if ((not ace) and (not nma)):
                 names.append(mae_atom_values[atom_names_index])
     f.close()
-    print(names)
-    print("aaa")
     return names
 
 
@@ -388,6 +401,17 @@ def find_mass_names(names):
 
 ####################################
 def find_bonds_in_mae(filename):
+    """
+    Search for bonds in MAE
+
+    Input:
+      filename: MAEfile
+
+    Output:
+      Bonds: Bonds in MAEfile
+      ex--> [[0, 1], [0, 5], [0, 6]]
+            (Bond between atom 0 and 1, etc...)
+    """
     f = open(filename, "r")
     out_bond = []
     keywords = []
@@ -398,7 +422,6 @@ def find_bonds_in_mae(filename):
     while f:  # Advance to numbers
         line = f.readline()
         if line == "" or (re.search(':::', line)):
-            print 'a2'
             break
         else:
             if "index" in line:
@@ -422,10 +445,18 @@ def find_bonds_in_mae(filename):
 
 ####################################
 def find_connected(atom, bonds, assign):
+    """
+    Find and assign the same "group (number)" to all the atoms connected to atom
+
+    Input:
+      atom: atom to look connections from
+      bonds: list of all bonds
+      assign: list of atoms with numbers assigned in order to cluster them
+      ex: -->[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]
+      Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...
+
+    """
     for i in range(len(bonds)):
-        # print "bond pair "+str(i)+"\n"
-        #print bonds[i][0]
-        #print bonds[i][1]
         if (bonds[i][0] == atom and assign[bonds[i][1]] == 0 ):
             assign[bonds[i][1]] = assign[atom]
             find_connected(bonds[i][1], bonds, assign)
@@ -436,6 +467,20 @@ def find_connected(atom, bonds, assign):
 
 ####################################
 def assign_ligand_groups(tors, all_bonds, n_atoms):
+    """
+    Cluster atoms in groups depending whether or not they are connected
+
+    Input:
+      tors: all torsions of the ligand
+      all_bonds: all ligand bonds
+      n_atoms: number of atoms of the ligand
+
+    Output:
+      assign= List of Cluster of atoms depending whether or not they are connected
+      ex: -->[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]
+      Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...
+    """
+
     bonds = remove_tors(all_bonds, tors)  # fixed bonds
     n_assign = 0
     c_group = 0
@@ -495,6 +540,15 @@ def convert_name_to_num(mynames, names):
 
 ####################################
 def assign_rank_group(atom_num, assign, rank, rank_num):
+    """
+    Input:
+      atom_num: Atom respectively which we are producing the rank from
+      assign: Group of molecules grouped on clusters dependiong on the ligand connectivity
+      rank: list of numbers for each atom which will show 
+            which atoms are closer to the atom we are making the rank from.
+      rank_number: 0
+    """
+
     # Add assignments for all atom in the same group as atom_num
     for i in range(len(assign)):
         if (assign[i] == assign[atom_num]):
@@ -528,18 +582,35 @@ def max_value(array):
 
 ####################################
 def assign_rank(bonds, assign, atom_num):
+    """
+    Define a list of ranks for each grup of atoms or cluster in assign
+    which will show which atoms are closer to the group.
+    As small is the number of the rank as close to the atom we are making the rank from it will be.
+
+    Ex:
+    Rank From number 1:
+      Start: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+      Middle: [0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1] (look for the closest atoms)
+      Final: [0, 0, 0, 1, 2, 3, 4, 3, 2, 3, 4, 5, 5, 3, 4, 5, 4, 6, 6, 6] As small is the number as close to atom number 2 is positioned on the ligand.
+    
+    Input:
+      bonds: Ligand connectivity
+      assign: List of atoms with numbers assigned in order to cluster them
+      atom_num: number of the atom to calculate the rank respect to.
+    Output:
+      Rank: list of numbers for each grup of atoms or cluster in assign
+            which will show which atoms are closer to the group.
+    """
+
     rank = []
     num_assign = 1;
     for i in range(len(assign)):
         rank.append(-1)
     rank = assign_rank_group(atom_num, assign, rank, 0)  # assigns atom_num a rank of zero
     while (min_value(rank) < 0):  # do until all are assigned
-        #print(rank)
         cur_rank = max_value(rank)  #the loop is over ranks
         changed = 1
-        #print('a')
         while (changed == 1):  #while we haven't assigned any atoms
-            #print('b')
             changed = 0
             for i in range(len(bonds)):  #bonds is a list of pairs of atoms that are bonded
                 if ( rank[bonds[i][0]] == cur_rank and rank[bonds[i][1]] < 0):
@@ -663,6 +734,26 @@ def order_atoms(bonds, tors, back_tors, assign, rank, group):
 
 ####################################
 def get_start_atom(tors, rank):
+    """
+    Get the number of atoms inside the core
+    and the start atom of the core,
+    which is the first atom of the cluster with no torsions.
+
+    Input:
+      tors: all atom with torsions
+      rank: Rank: list of numbers for each grup of atoms or cluster in assign
+            which will show which atoms are closer to the group.
+
+    Output:
+      start_atom: First atom of the cluster (group of atoms bonded together) 
+                  that doesn not have torsions.
+      num_core: number of atoms inside the cluster.
+
+    Ex--> tors: [[1, 3], [8, 9]]
+          rank: [0, 0, 0, 2, 3]
+          The core has 3 atoms and the strating atom
+          is the number 2 because it does not have torsions.
+    """
     num_core = 0
     start_atom = -100
     for i in range(len(rank)):
@@ -694,7 +785,28 @@ def EliminateBackboneTors(in_tors, in_tors_ring_num, in_zmat_atoms, rank):
 
 
 ####################################
-def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, debug=False):
+def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, use_mult_lib,debug=False):
+    """
+    Search for the core atom wich maximes the torsions
+    and it's in the center of the ligand??
+
+    Input:
+      tors: Atoms with torsions
+      bonds: connectivity
+      natoms: number of atoms of the ligand
+      user_core_atom: predefined user core atom
+      back_tors: user backbone atoms with torsion
+      use_mult_lib: User decision to use or not multiples libraries.
+
+    Ouput:
+      core_atom: atom which will be the center of the core
+      assign: List of atoms with numbers assigned in order to cluster them
+      rank:  list of numbers for each atom which will show 
+            which atoms are closer to the atom we are making the rank from.
+      group: List that classifies the atoms in groups depending on connectivity
+              to later on make different multiple libraries.
+    """
+
     # Split into sections not seperated by rotatable bonds
     assign = assign_ligand_groups(tors, bonds, natoms)
     if debug:
@@ -706,7 +818,6 @@ def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, debug=F
         # print ' -- here3'
         min_rank = 10000
         core_atom = -1
-        print(natoms)
         for atom_num in range(natoms):
             # print bonds, assign, atom_num
             rank = assign_rank(bonds, assign, atom_num)
@@ -734,7 +845,7 @@ def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, debug=F
 
 
 ####################################
-def FindCore_GetFurthestAtom(tors, bonds, natoms, user_core_atom, back_tors):
+def FindCore_GetFurthestAtom(tors, bonds, natoms, user_core_atom, back_tors, use_mult_lib):
     # Split into sections not seperated by rotatable bonds
     assign = assign_ligand_groups(tors, bonds, natoms)
     if (user_core_atom > 0):
@@ -1032,7 +1143,6 @@ def FindCoreAA(mae_file, user_fixed_bonds, logfile, use_rings, use_mult_lib, use
         ########CHANGE     SCHRODINGER######
         [ring_tors, ring_num] = find_tors_in_rings(tors, mae_file)
         ########CHANGE     SCHRODINGER######
-
         tors = remove_tors(tors, user_fixed_bonds)
 
         #########CHANGE     SCHRODINGER######
@@ -1158,13 +1268,17 @@ def ReorderTorsionsAA(tors, ordering):  # by Chris McClendon, Jacobson Group
 ####################################################
 def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
              use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name):
+    print('{}, {}, {}, {}, {},{},{},{},{},{},').format(mae_file, user_fixed_bonds, logfile, use_rings,
+             use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name)
 
-    ########CHANGE     SCHRODINGER######
     if (user_tors == []):
         tors = find_tors_in_log(logfile)
         print(" - torsions found.")
+
+    ########CHANGE     SCHRODINGER######
         [ring_tors, ring_num] = find_tors_in_rings(tors, mae_file)
         print(" - ring torsions found.")
+    ########CHANGE     SCHRODINGER######
         tors = remove_tors(tors, user_fixed_bonds)
         tors = remove_tors(tors, back_tors)
         ring_tors = remove_tors(ring_tors, user_fixed_bonds)
@@ -1173,7 +1287,7 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
             tors = remove_tors(tors, ring_tors)
         else:
             tors = add_tors(tors, ring_tors)
-         ########CHANGE     SCHRODINGER######
+
     else:
         tors = user_tors
     if (max_tors != -1 and use_rings == 1):
@@ -1193,14 +1307,15 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
       print("NO ATOMS FOUND IN MAE FILE")
 
     if (user_core_atom == -2):  #then find the atom furthest from the R group
-        print('here0')
         R_group_root_atom_num = convert_name_to_num([R_group_root_atom_name], atom_names)
         [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), R_group_root_atom_num[0],
-                                                                back_tors)
+                                                                back_tors, use_mult_lib)
         user_core_atom = rank.index(max(rank))
     print(' -get core atoms')
-    [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), user_core_atom, back_tors)
+ 
+    [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), user_core_atom, back_tors, use_mult_lib)
     print(' - core atoms found')
+    ##############AQUI#######
     [group_tors, big_group, nbig_group] = assign_bonds_to_groups(tors, group)
     print(' -bonds')
     while ( nbig_group > max_tors and max_tors >= 0 ):
@@ -1221,7 +1336,7 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
          #   t[0]], "-", atom_names[t[1]]
         tors = remove_tors(tors, [t])
         back_tors.append(t)
-        [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), user_core_atom, back_tors)
+        [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), user_core_atom, back_tors, use_mult_lib)
         [group_tors, big_group, nbig_group] = assign_bonds_to_groups(tors, group)
 
 
@@ -2065,6 +2180,7 @@ def build_template(mae_file, root, OPLS, hetgrp_opt, old_name, new_name):
         output = old_name
     files2clean.append(mae_out_file)
 
+    print("TEMPLATE GENERATION")
     print("Template output {}".format(output)) #The template created. Has the residue name if has been generated automatically. If not, has the user-defined name
     print("Residue name on template {}".format(new_name)) #Actually, the name of the residue, will be the name of the generated template
     print("Output hetgrp_ffgen {}".format(mae_out_file)) #File created by hetgrp_ffgen, if the used didn't indicate a template. The mae indicated by the user otherwise
