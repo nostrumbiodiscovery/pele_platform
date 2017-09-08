@@ -51,7 +51,7 @@ def test_FindCore(mae_min_file, user_fixed_bonds, log_file, use_rings, \
                          (os.path.join(TEST_PATH, 'ain.mae'), 'ain.hetgrp_ffgen' , MAE_CONVERSION, TEMPLATE_CONVERSION),
                          ])
 def test_MatchTempMaeAtoms(mae_file, template_file, mae_expected, template_expected):
-    [mae2temp, temp2mae] = pl.make_libraries(mae_file, template_file)
+    [mae2temp, temp2mae] = pl.MatchTempMaeAtoms(mae_file, template_file)
     assert mae2temp == template_expected
     assert temp2mae == mae_expected
 
