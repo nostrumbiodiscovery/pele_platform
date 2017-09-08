@@ -83,7 +83,7 @@ import schrodinger.infra.mm as mm
 #Defaults
 template_file = ""
 debug = 0  # 1 means don't run exteral commands (assumes output is already there)
-conf_file = '';
+conf_file = 'none';
 output_template_file = ""
 gridres = "10.0"
 nsamp = 10000
@@ -107,7 +107,8 @@ use_mult_lib = 1
 run_conf = 0
 algorithm = "MCMM"
 clean = False
-gridres_oh = ""
+#gridres_oh = ""
+gridres_oh = gridres
 unnat_res = 0  # for old-style PLOP nonstandard side chain
 resno = 1  #for old-style PLOP nonstandard side chain
 chain = 'A'  #for old-style PLOP nonstandard side chain
@@ -155,12 +156,15 @@ if args.clean:
 #########################COMENT#################################
 
 # Process options
+"""
 if (gridres_oh == ""): 
     gridres_oh = gridres
 if (use_mae_charges == 1):
     hetgrp_opt = hetgrp_opt + '-use_mae_charges'
+
 if (run_conf == 0): 
     conf_file = 'none'
+"""
 #######################COMENT################################33
 
 ####################CHANGE MACROMODEL###########################
