@@ -1550,7 +1550,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
                     rank_str = ' M'
             else:
                 rank_str = ' S'
-        outline = str(i + 1).rjust(5) + str(parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
+        outline = str(i + 1).rjust(5) + str(old_parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
         name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
             2] + '\n'
         fout.write(outline)
@@ -1996,6 +1996,20 @@ def MatchTempMaeAtoms(mae_file, template_file):
 
 #################################################
 def FindTorsAtom(tors, tors_ring_num, parent):
+    '''
+        Find atoms with torsion and append them on the zmatrix
+
+        Input:
+            tors: atoms with torsion
+            tors_ring_num: ring atoms with torsion
+            parent: atom connectivity of ordering
+
+        Output:
+            out_tors: torsions
+            out_tors_ring_num: ring atom torsions
+            zmat_atoms: atoms to rotate
+    '''
+
     zmat_atoms = []
     out_tors = []
     out_tors_ring_num = []
@@ -2484,17 +2498,14 @@ def make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings
                     torsion_atom >= R_group_root_atom_order_num[0])): still_mainchain = 0
             if ( group[t[0]] == grp or group[t[1]] == grp and still_mainchain == 0):
                 grp_tors.append(t)
-        print('Building Rotamer Library: {}'.format(libname))
         if (grp != 0 ): line += "  newgrp &\n";
         line += "  sidelib " + libname + " default &\n"
         make_lib_from_mae(libname, "side", conf_file, grp_tors, names, parent, old_atom_num, mae2temp, temp2mae,
                           gridres, lib_gridres)
-    print("Use the following line to load these libraries\n" + line + "\n")
     fp = open(assign_filename, "w")
     fp.write(line);
     fp.close();
-    print("\nAssignment filename for use in PLOP: ", assign_filename)
-    print("Use by adding \"rot assign all\" to control file after loading PDB\n")
+    return assign_filename
 
 
 ################################################################################
@@ -2579,16 +2590,14 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
     lib_name_oh = convert_gridres(gridres_oh)
     is_oh = check_oh_tors(mae_file, tors, names)
 
-    print("Combined libraries for use in PLOP (add to control file)\n")
+
     #  if(use_rings):
     #    print "Libraries must be corrected for rings"
     written_ring = []
     if (tors_ring_num != []):
         for i in range(max(tors_ring_num) + 1): written_ring.append(0)
-    print("rot assign res {} &".format(resname.upper()))
     f.write("rot assign res " + resname.upper() + ' &\n')
     if (back_lib != ""):
-        print(" backlib {} &".format(back_lib))
         f.write(" backlib " + back_lib + " &\n");
     for grp in range(max(group) + 1):
         for i in range(len(tors)):
@@ -2598,22 +2607,17 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
                         lib_name = lib_name_oh
                     else:
                         lib_name = lib_name_nom
-                    print("   sidelib {0} {1} {2} &".format(lib_name, names[tors[i][0]],+ names[tors[i][1]]))
                     f.write("   sidelib " + lib_name + " " + names[tors[i][0]] + ' ' + names[tors[i][1]] + " &\n")
                 else:
                     ring_num = tors_ring_num[i]
                     if (written_ring[ring_num] == 0):
-                        print("   sidelib {}  default &\n".format(ring_libs[ring_num - 1]))
                         f.write("   sidelib " + ring_libs[ring_num - 1] + "  default &\n")
                         written_ring[ring_num] = 1
         if (grp != max(group)):
-            print("     newgrp &")
             f.write("     newgrp &\n")
     f.close();
-    print("\nAssignment filename for use in PLOP: {}".format(assign_filename))
-    print("Use by adding \"rot assign all\" to control file after loading PDB\n")
-    return file2clean
-    print("\n\n")
+    return assign_filename
+    
 
 
 #################################################

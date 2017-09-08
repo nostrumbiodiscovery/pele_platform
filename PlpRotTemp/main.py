@@ -100,7 +100,7 @@ back_conf_file = ""
 hetgrp_opt = ""
 use_mae_charges = 0
 OPLS = "2005"
-max_tors = -1
+max_tors = 5
 user_fixed_bonds = []
 files2clean = []
 use_mult_lib = 1
@@ -319,7 +319,8 @@ for i in range(len(new_back_tors)):
     back_tors.append(temp)
 
 #Make (or read) original tempalte file
-print('Making Rotamer-Enabled Template File: {}'.format(output_template_file))
+print('\n')
+print('CREATE ROTAMER TEMPLATE FILE: {}'.format(output_template_file))
 names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file,
                         R_group_root_atom_name=R_group_root_atom_name)
 
@@ -331,20 +332,8 @@ if (unnat_res == 1 or grow == 1):
     mynonstandard = pl.TetherRotBonds(mae_file, chain, resno, log_file, newtors)
     mynonstandard.output_rotbonds(R_group_root_atom_name=R_group_root_atom_name)
 
-#AQUIIII
-else:
-    #Order by rank
-    rank_zmat = [];
-    order_rank = [];
-    ordered_zmat = [];
-    for i in zmat_atoms:
-        rank_zmat.append(rank[i])
-        order_rank.append(rank[i])
-    order_rank.sort();
 
-    for i in range(len(zmat_atoms)):
-        a = rank_zmat.index(order_rank[i])
-        rank_zmat[a] = -100
+else:
 
     # Reorder the torsions
     for i in range(len(tors)):
@@ -360,10 +349,6 @@ else:
                 tors_ring_num[j] = temp
 
     [tors, tors_ring_num, zmat_atoms] = pl.FindTorsAtom(tors, tors_ring_num, parent)
-    line = "Zmat atoms:";
-    for i in range(len(zmat_atoms)):
-        line = line + " " + names[zmat_atoms[i]]
-    print(line)
 
 
 ################################CHANGE MACROMODEL CONFORMATIONAL SEARCH######################
@@ -376,7 +361,7 @@ if (conf_file == ''):
     run_conf = 1
 else:
     run_conf = 0
-
+"""
 if (run_conf == 1 ):  #We are actually going to run a csearch
     print('Taking {0} steps and storin {1} conformations'.format(nsamp, nrot))
     print('Algorithm to be used is {}'.format(algorithm))
@@ -436,7 +421,9 @@ if (run_conf == 1 ):  #We are actually going to run a csearch
 
 ################################CHANGE MACROMODEL CONFORMATIONAL SEARCH######################
 #Run the conformational Search for the backbone
-back_lib = "";
+
+
+
 if (back_tors != [] and back_algorithm != "none"):
     conf_root = root + "_backconf"
     if (back_conf_file == conf_root + '-out.mae'):
@@ -480,6 +467,7 @@ if (back_tors != [] and back_algorithm != "none"):
             if (back_algorithm == "CGEN"):
                 files2clean.append(conf_root + '-out.mmo')
 
+
     if (unnat_res != 1):
         if (back_conf_file != '' and back_conf_file != 'none'):
             back_lib = resname.upper() + "__B"
@@ -496,20 +484,28 @@ if (back_tors != [] and back_algorithm != "none"):
 ################################CHANGE MACROMODEL CONFORMATIONAL SEARCH######################
 
 
-if (unnat_res != 1):
+
+
+    #######################CHANGE SCHORDINGER#############################
+
     #Convert conf file to pdbs if necessary
     pdb_root = root + ".PlopRotTemp.pdb"
     file2clean = []
-
-    #######################CHANGE SCHORDINGER#############################
     line = "$SCHRODINGER/utilities/pdbconvert -imae " + mae_file + " -opdb " + pdb_root + " -num_models 1"
     print("Converting mae file to pdb format -> {}".format(pdb_root))
     os.system(line)
+
     #######################CHANGE SCHORDINGER#############################
-    
+"""
+back_lib = "";
+if (unnat_res != 1):  
     if (conf_file != 'none'):
-        pl.make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings, use_mult_lib,
+        rotamers_file = pl.make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings, use_mult_lib,
                        output_template_file, gridres, debug)
+        print("\n")
+        print("CREATE ROTAMER LIBRARY")
+        print(rotamers_file)
+        print("\n")
 
 
     ############################CHANGE MACROMODEL#########################
@@ -522,10 +518,13 @@ if (unnat_res != 1):
         else:
             ring_libs = []
             print("No rotatable sidechains found")
-        file = pl.find_build_lib(resname, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
+        
+        rotamers_file = pl.find_build_lib(resname, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
                               tors_ring_num, ring_libs, debug)
-        if file:
-          files2clean.append(file)
+        print("\n")
+        print("CREATE ROTAMER LIBRARY")
+        print(rotamers_file)
+        print("\n")
 
 if (clean):
     print(files2clean)
