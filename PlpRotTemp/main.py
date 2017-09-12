@@ -80,6 +80,8 @@ import schrodinger.job.jobcontrol as jc
 import schrodinger.infra.mm as mm
 
 
+
+
 #Defaults
 template_file = ""
 debug = 0  # 1 means don't run exteral commands (assumes output is already there)
@@ -229,7 +231,10 @@ for f in files:
 
 #########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
 
-####################CHANGE MACROMODEL MINIMIZATION OF LIGAND###########################
+####################CHANGE MACROMODEL MINIMIZATION OF LIGAND-->PymoChimera, OPenMM###########################
+#(.mae)-->pdb (pymol)
+#OpenMM (minimize)
+#(pymol)-->(.mae)
 print("\n")
 if (do_init_min == 1):
     mcu_mini = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
@@ -271,7 +276,7 @@ if (not debug):
 #################CHANGE MACROMODEL MINIMIZATION OF LIGAND + CONFORMATIONAL SEARCH###########################
 
 
-####################SCHRODINGER###########################
+####################SCHRODINGER-->get atoms from rings & see whether or not they are bonded###########################
 print("\n")
 if (unnat_res == 1):
     [mae_num, parent, rank, tors, use_rings, group, tors_ring_num] = \
@@ -365,6 +370,7 @@ if (conf_file == ''):
     run_conf = 1
 else:
     run_conf = 0
+#Can I comment that?
 """
 if (run_conf == 1 ):  #We are actually going to run a csearch
     print('Taking {0} steps and storin {1} conformations'.format(nsamp, nrot))
@@ -489,17 +495,6 @@ if (back_tors != [] and back_algorithm != "none"):
 
 
 
-
-    #######################CHANGE SCHORDINGER#############################
-
-    #Convert conf file to pdbs if necessary
-    pdb_root = root + ".PlopRotTemp.pdb"
-    file2clean = []
-    line = "$SCHRODINGER/utilities/pdbconvert -imae " + mae_file + " -opdb " + pdb_root + " -num_models 1"
-    print("Converting mae file to pdb format -> {}".format(pdb_root))
-    os.system(line)
-
-    #######################CHANGE SCHORDINGER#############################
 """
 back_lib = "";
 if (unnat_res != 1):  
@@ -512,7 +507,7 @@ if (unnat_res != 1):
         print("\n")
 
 
-    ############################CHANGE MACROMODEL#########################
+    ############################CHANGE MACROMODEL--> ring database#########################
     else:
         if (len(zmat_atoms) > 0):
             ring_libs = pl.build_ring_libs(mae_min_file, root, resname, tors, \
