@@ -55,6 +55,21 @@ def test_MatchTempMaeAtoms(mae_file, template_file, mae_expected, template_expec
     assert mae2temp == template_expected
     assert temp2mae == mae_expected
 
+@pytest.mark.parametrize("mae_file, expected", [
+                         (os.path.join(TEST_PATH, 'ain.mae'), ''),
+                         (os.path.join(TEST_PATH, 'ain_repited.mae'), Exception),
+                         ])
+def test_check_repite_names(mae_file, expected):
+    atomnames = pl.find_names_in_mae(mae_file)
+    if(expected == Exception):
+        with pytest.raises(expected):
+            pl.check_repite_names(atomnames)
+    else:
+        pass
+    
+
+
+
 """###############testttt
 @pytest.mark.parametrize("mae_file, template_file, mae_expected, template_expected", [
                          (os.path.join(TEST_PATH, 'ain.mae'), 'ain.hetgrp_ffgen' , MAE_CONVERSION, TEMPLATE_CONVERSION),
