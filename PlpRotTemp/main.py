@@ -79,8 +79,6 @@ import schrodinger.application.macromodel.tools as mt
 import schrodinger.job.jobcontrol as jc
 import schrodinger.infra.mm as mm
 
-ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
-
 
 #Defaults
 template_file = ""
@@ -535,7 +533,6 @@ if (unnat_res != 1):
         print("\n")
 
 if (clean):
-    print(files2clean)
     for file in files2clean:
         print('Removing Intermediate File: {}'.format(file))
         os.remove(file)
