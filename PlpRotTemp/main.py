@@ -79,7 +79,7 @@ import schrodinger.application.macromodel.tools as mt
 import schrodinger.job.jobcontrol as jc
 import schrodinger.infra.mm as mm
 
-
+ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
 
 
 #Defaults
@@ -92,7 +92,7 @@ nsamp = 10000
 nrot = 1000
 Ecut = 100
 use_rings = 0
-do_init_min = 1
+do_init_min = 0
 user_core_atom = -1
 max_dist_eq = 0.25
 user_tors = []
@@ -190,6 +190,12 @@ if (R_group_root_atom_name != 'None'):
     #For now, just try low energy ring conformations
 ###############POT COMENTAR#################
 
+
+atomnames = pl.find_names_in_mae(mae_file)
+pl.check_repite_names(atomnames)
+
+
+
 ####################REMOVE MACROMODEL###########################
 # Create ComUtil instance , define potential energy surface: solution phase, OPLSAA
 # Serial mode enabled so each structure is used to seed a unique search
@@ -235,6 +241,7 @@ for f in files:
 #(.mae)-->pdb (pymol)
 #OpenMM (minimize)
 #(pymol)-->(.mae)
+
 print("\n")
 if (do_init_min == 1):
     mcu_mini = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
@@ -265,6 +272,7 @@ print('\nCONFORMATIONAL SEARCH\nRunning dummy conformation search to find bonds\
 com_file = mcu_dummy.mcmm(mae_min_file, root + '_IDbonds.com')
 log_file = root + '_IDbonds.log'
 if (not debug):
+    #crea el .log
     cmd = mcu_dummy.getLaunchCommand(com_file)
     job = jc.launch_job(cmd)
     job.wait()
@@ -272,6 +280,7 @@ if (not debug):
     files2clean.append(log_file)
     files2clean.append(root + '_IDbonds-out.mae')
     files2clean.append(root + '_IDbonds-out.ouL')
+
 
 #################CHANGE MACROMODEL MINIMIZATION OF LIGAND + CONFORMATIONAL SEARCH###########################
 
