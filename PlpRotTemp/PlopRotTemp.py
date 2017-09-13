@@ -121,6 +121,7 @@ hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 # Definitions 
 ################################################################################
 
+ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
 dummy_atom3 = [0.1, 0.2, 0.3]
@@ -359,9 +360,33 @@ def find_names_in_mae(filename):
             # residue can't have reserved name for protein capping group ACE or NMA
             nma = re.search('NMA', mae_atom_values[residue_names_index])  #added by mcclendon
             if ((not ace) and (not nma)):
-                names.append(mae_atom_values[atom_names_index])
+                atomname = mae_atom_values[atom_names_index]
+                names.append(atomname)
     f.close()
     return names
+
+def check_repite_names(atomnames):
+  atoms_repited = []
+  for i, atomname_target in enumerate(atomnames):
+    while(i!=0):
+      i-=1
+      if atomname_target == atomnames[i]:
+        atoms_repited.append(atomname_target)
+        break   
+  if(atoms_repited):
+    raise Exception(ERROR_ATOMTYPES)
+  #   if atomname :
+  #   if atomname not in names:
+  #     pass
+  #   else:
+  #     problematic_atoms.append(atomname)
+  # return atoms_repited
+
+# def change_atomname_repited(atomname_repited, names):
+
+
+
+
 
 
 ####################################
@@ -387,7 +412,8 @@ def parse_mae_line(line):
                 output.append(a.group(1))
                 line = a.group(2)
         a = re.search(r'^\s*$', line)
-        if (a): break;
+        if (a): 
+          break;
     return output
 
 
@@ -624,6 +650,17 @@ def assign_rank(bonds, assign, atom_num):
 
 ####################################
 def assign_group(bonds, rank):
+    """
+      With the core atom and its rank defined
+      grouped the atoms in cluster or rotatable chains.
+
+      Input:
+        bonds: all bonds
+        rank: core atom rank
+
+      Output:
+        group: groups of rotatable chains
+    """
     group = []
     cur_group = -1
     for i in range(len(rank)):
@@ -666,7 +703,7 @@ def assign_group(bonds, rank):
 ####################################
 def order_atoms(bonds, tors, back_tors, assign, rank, group):
     """
-      Order atoms by connectivity and group proximity. (distance)
+      Order the core atomss by connectivity. (distance)
       Update rank & group information with them.
 
       Example:
@@ -899,9 +936,8 @@ def FindCore_GetFurthestAtom(tors, bonds, natoms, user_core_atom, back_tors, use
 ####################################
 def assign_bonds_to_groups(tors, group):
     """
-    From the group list assign the maximium value
-    of the two atom with torsion and keep track of 
-    how many group members in each group.
+    Make a group for each torsion bond
+    and keep track of how many members
 
     Finally it returns the biggest group.
 
@@ -919,6 +955,7 @@ def assign_bonds_to_groups(tors, group):
     nbig_group = 0
     ngroup = max(group)
     ngroup_members = []
+    ##Hauria danar un mes??
     for i in range(ngroup + 1):
         ngroup_members.append(0)
     for t in tors:
@@ -1389,7 +1426,8 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
     print(' - core atoms found')
     [group_tors, big_group, nbig_group] = assign_bonds_to_groups(tors, group)
     print(' -bonds')
-    ##############WHILE EXTREMELY INEFFICIENT##########################
+    ##############Canvir aqui torsions##########################
+    print(nbig_group)
     while ( nbig_group > max_tors and max_tors >= 0 ):
         # Find Lowest Rank Torsion in Biggest Group
         chosen = -1
@@ -1443,7 +1481,8 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
 
     # Assign ring numbers to torsions (0 for none) (backbone ring torsions not assigned)
     tors_ring_num = []
-    for t in tors: tors_ring_num.append(0)
+    for t in tors: 
+      tors_ring_num.append(0)
     if (use_rings == 1):
         for i in range(len(tors)):
             for j in range(len(ring_tors)):
