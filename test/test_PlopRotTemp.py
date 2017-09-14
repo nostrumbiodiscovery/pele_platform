@@ -73,7 +73,7 @@ def test_check_repite_names(mae_file, expected):
                          (os.path.join(TEST_PATH, 'ain_vdw'), True),
                          ])
 def test_check_repite_names(rotamer_library, rvdw_change):
-    pl.find_vdwr_from_library(rotamer_library)
+    pl.replace_vdwr_from_library(rotamer_library)
  
 
 """###############testttt
