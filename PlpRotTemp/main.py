@@ -344,6 +344,8 @@ names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_tem
 #Eliminate Torsions in the backbone (included when entire rings are included in the torsions)
 [tors, tors_ring_num, zmat_atoms] = pl.EliminateBackboneTors(tors, tors_ring_num, zmat_atoms, rank)
 
+pl.replace_vdwr_from_library(output_template_file)
+
 if (unnat_res == 1 or grow == 1):
     mynonstandard = pl.TetherRotBonds(mae_file, chain, resno, log_file, newtors)
     mynonstandard.output_rotbonds(R_group_root_atom_name=R_group_root_atom_name)
@@ -531,6 +533,9 @@ if (unnat_res != 1):
         print("CREATE ROTAMER LIBRARY")
         print(rotamers_file)
         print("\n")
+
+
+
 
 if (clean):
     for file in files2clean:

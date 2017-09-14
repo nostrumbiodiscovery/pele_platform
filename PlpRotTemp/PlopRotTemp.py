@@ -110,6 +110,7 @@ import re
 import math
 import array
 import os
+import warnings
 import shutil
 from schrodinger import structure
 from schrodinger import structureutil
@@ -121,7 +122,9 @@ hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 # Definitions 
 ################################################################################
 
-ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
+ERROR_ATOMTYPES = 'ERROR: ATOM NAMES REPITED IN MAE FILE'
+ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
+DEFAULT_RADIUS_VDW = '0.5000'
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
 dummy_atom3 = [0.1, 0.2, 0.3]
@@ -364,8 +367,14 @@ def find_names_in_mae(filename):
                 names.append(atomname)
     f.close()
     return names
+##################################################
 
 def check_repite_names(atomnames):
+  """
+  Check if the mae_file contains any
+  repited name. If it's like this
+  raise and error.
+  """
   atoms_repited = []
   for i, atomname_target in enumerate(atomnames):
     while(i!=0):
@@ -375,16 +384,66 @@ def check_repite_names(atomnames):
         break   
   if(atoms_repited):
     raise Exception(ERROR_ATOMTYPES)
-  #   if atomname :
-  #   if atomname not in names:
-  #     pass
-  #   else:
-  #     problematic_atoms.append(atomname)
-  # return atoms_repited
 
-# def change_atomname_repited(atomname_repited, names):
+#################################################333
+
+def replace_vdwr_from_library(rotamer_library):
+  """
+    Check if the rotamer library 
+    contains any vdw radius= 0
+    and replace them by 0.5000
+  """
+  found = False
+  lines = []
+  radius_vdw_info, start_index, end_index = parse_nonbonded(rotamer_library)
+  for i, rdw_line in enumerate(radius_vdw_info):
+    NBOND_info = rdw_line.split()
+    rdw = float(NBOND_info[1])/2.0
+    
+    if(rdw == 0):
+      warnings.warn("Van der Waals of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
+      NBOND_info[1] = DEFAULT_RADIUS_VDW
+      found = True
+    lines.append('   '.join(NBOND_info))
+
+  if found:
+    rvdw_change(rotamer_library, lines, start_index, end_index)
 
 
+
+def parse_nonbonded(rotamer_library):
+  """
+    Find Non bonded parameters inside
+    the rotamer's library
+  """
+  NBN_lines = []
+  with open(rotamer_library, 'r') as f:
+    lines = f.readlines() 
+    for i, line in enumerate(lines):
+      line = line.strip('\n')
+      if(line == 'NBON'):
+        start_index = i+1
+      elif(line == 'BOND'):
+        end_index = i
+    try:
+      for i in range(start_index, end_index):
+        NBN_lines.append(lines[i])
+      return NBN_lines, start_index, end_index
+    except NameError:
+      print(ERROR_ROTAMER_LIB)
+    
+def rvdw_change(rotamer_library, radius_vdw_info, start_index, end_index):
+  """
+    Change all radius vanderwals 0 to 0.5
+    from the rotamer's library file
+  """
+  with open(rotamer_library, 'r') as f:
+    lines = f.readlines()
+    for i, new_line in enumerate(radius_vdw_info):
+      lines[start_index + i] = new_line + '\n'
+
+  with open(rotamer_library, 'w') as f:
+    f.write(''.join(lines))
 
 
 
@@ -1409,7 +1468,7 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
     #  print "ring tors"
     #  for t in ring_tors:
     #    print t
-    bonds = find_bonds_in_mae(mae_file)
+    bonds = find_bonds_in_mae(mae_file) 
     print(' -bonds found in mae file')
     atom_names = find_names_in_mae(mae_file)
     print(' -names found in mae file')
@@ -1427,7 +1486,6 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
     [group_tors, big_group, nbig_group] = assign_bonds_to_groups(tors, group)
     print(' -bonds')
     ##############Canvir aqui torsions##########################
-    print(nbig_group)
     while ( nbig_group > max_tors and max_tors >= 0 ):
         # Find Lowest Rank Torsion in Biggest Group
         chosen = -1
