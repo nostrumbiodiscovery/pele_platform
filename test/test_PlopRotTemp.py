@@ -69,11 +69,17 @@ def test_check_repite_names(mae_file, expected):
 
 
 
-@pytest.mark.parametrize("rotamer_library, rvdw_change", [
-                         (os.path.join(TEST_PATH, 'ain_vdw'), True),
+@pytest.mark.parametrize("rotamer_library", [
+                         (os.path.join(TEST_PATH,'ain_vdw')),
                          ])
-def test_check_repite_names(rotamer_library, rvdw_change):
+def test_check_repite_names(rotamer_library):
     pl.replace_vdwr_from_library(rotamer_library)
+    radius_vdw_info, start_index, end_index = pl.parse_nonbonded(rotamer_library)
+    for i, rdw_line in enumerate(radius_vdw_info):
+        NBOND_info = rdw_line.split()
+        rdw = float(NBOND_info[1])/2.0
+        if(rdw== 0):
+            assert 0
  
 
 """###############testttt
