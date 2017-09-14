@@ -66,9 +66,15 @@ def test_check_repite_names(mae_file, expected):
             pl.check_repite_names(atomnames)
     else:
         pass
-    
 
 
+
+@pytest.mark.parametrize("rotamer_library, rvdw_change", [
+                         (os.path.join(TEST_PATH, 'ain_vdw'), True),
+                         ])
+def test_check_repite_names(rotamer_library, rvdw_change):
+    pl.find_vdwr_from_library(rotamer_library)
+ 
 
 """###############testttt
 @pytest.mark.parametrize("mae_file, template_file, mae_expected, template_expected", [
