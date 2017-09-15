@@ -404,7 +404,7 @@ def replace_vdwr_from_library(rotamer_library):
       warnings.warn("Van der Waals of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
       NBOND_info[1] = DEFAULT_RADIUS_VDW
       found = True
-    lines.append('   '.join(NBOND_info))
+    lines.append(NBOND_info)
 
   if found:
     rvdw_change(rotamer_library, lines, start_index, end_index)
@@ -437,10 +437,11 @@ def rvdw_change(rotamer_library, radius_vdw_info, start_index, end_index):
     Change all radius vanderwals 0 to 0.5
     from the rotamer's library file
   """
+  print(radius_vdw_info)
   with open(rotamer_library, 'r') as f:
     lines = f.readlines()
     for i, new_line in enumerate(radius_vdw_info):
-      lines[start_index + i] = new_line + '\n'
+      lines[start_index + i] = '{0:>5} {1:>8} {2:>8} {3:>10} {4:>8} {5:>8} {6:>13} {7:>13}\n'.format(*new_line)
 
   with open(rotamer_library, 'w') as f:
     f.write(''.join(lines))
