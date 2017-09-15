@@ -112,6 +112,7 @@ import array
 import os
 import warnings
 import shutil
+import __main__
 from schrodinger import structure
 from schrodinger import structureutil
 import schrodinger.infra.mm as mm
@@ -125,6 +126,8 @@ hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 ERROR_ATOMTYPES = 'ERROR: ATOM NAMES REPITED IN MAE FILE'
 ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
 DEFAULT_RADIUS_VDW = '0.5000'
+DEFAULT_SPRING_K = '268.0'
+DEFAULT_EQ_DIST = '1.529'
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
 dummy_atom3 = [0.1, 0.2, 0.3]
@@ -2340,29 +2343,123 @@ def build_template(mae_file):
   number_atoms = len(atom_names)
   res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue
   bonds = find_bonds_in_mae(mae_file)
-  parent = search_parent_atom(bonds)
+  parents = search_parent_atom(bonds, number_atoms)
   number_bonds = len(bonds)
   ##############FALTA##############
   number_torsions = 0
   number_teth = 0
   number_improper = 0
-  atom_type = [0]
+  atom_types = ['O', 'C2', 'O', 'CA', 'CA', 'HA', 'CA', 'HA', 'CA',
+                'HA', 'CA', 'HA', 'CA', 'OS', 'C2', 'O', 'CT', 'HC', 'HC', 'HC'] 
   unk_int = 1
   zmatrix = [0,0,0]
 
-  header = ['{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
-                                                      number_torsions, number_teth, number_improper)]
+  header = '{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
+                                                      number_torsions, number_teth, number_improper)
+
   connectivity = []
-  for i, atom_name in enumerate(atom_names):
-    connectivity_line = [' {0:>5} {1:>5} {2:>1} {3:>3} _{4:>3}_ {5:>4} {6:>9} {7:>9} {8:>9} '.format(
+  for i, (atom_name, atom_type, parent) in enumerate(zip(atom_names, atom_types, parents)):
+    connectivity_line = '{0:>5} {1:>4} {2:>0} {3:>3} _{4:>3}_ {5:>4} {6:>9} {7:>9} {8:>9} '.format(
                                                                   i, parent, 'S', atom_type, atom_name,
-                                                                  unk_int, zmatrix[0], zmatrix[1], zmatrix[2])]
+                                                                  unk_int, zmatrix[0], zmatrix[1], zmatrix[2])
+    connectivity.append(connectivity_line)
+
+  NBOND_section = []
+  NBOND = read_info_from_param(nb=True)
+  charges = read_charge_from_mae(mae_file)
+  for i, (atom_type, charge) in enumerate(zip(atom_types, charges), start=1):
+    for NBOND_line in NBOND:
+      if(atom_type == NBOND_line[0]):
+        #Calculate sigma = radiVanderwaals*2
+        radius_vdw = NBOND_line[3] 
+        sigma = float(radius_vdw) * 2
+        #Truncating floats
+        SGB_gamma = NBOND_line[7] 
+        SGB_gamma = float(SGB_gamma)
+        SGB_type = NBOND_line[8]  
+        SGB_type = float(SGB_type)
+
+        NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,
+                                                                                           SGB_gamma, SGB_type, *NBOND_line))
 
 
+  BOND_section = []
+  BOND = read_info_from_param(cv=True)
+  for bond_pair in bonds:
+    index_atom1 = bond_pair[0]
+    index_atom2 = bond_pair[1]
+    atomtype1 = atom_types[index_atom1]
+    atomtype2 = atom_types[index_atom2]
+    found = False
+    for bonded_param in BOND:
+      if(bonded_param[0]=='THET'):
+        break 
+      elif('{0}-{1}'.format(atomtype1, atomtype2)==bonded_param[0] or '{1}-{0}'.format(atomtype1, atomtype2)==bonded_param[0]):
+        found= True
+        BOND_section.append('{0:>5} {1:>6} {2:>9.3f}  {3:>6.3f}'.format(index_atom1, index_atom2, float(bonded_param[1]), float(bonded_param[2])))
+        print(bonded_param)
+    if not found:
+      warnings.warn("Bond {0}-{1} not Found. Using default spring constant and equilibrium distance".format(atomtype1, atomtype2))
+      BOND_section.append('{0:>5} {1:>6} {2:>9.3f}  {3:>6.3f}'.format(index_atom1, index_atom2, float(DEFAULT_SPRING_K), float(DEFAULT_EQ_DIST)))
+  
+
+
+
+  
+      
+
+
+  print(header)
+  print('\n'.join(connectivity))
+  print('NBON')
+  print('\n'.join(NBOND_section))
+  print('BOND')
+  print('\n'.join(BOND_section))
+
+def read_info_from_param(nb=False, cv=False):
+  """
+    Parse NBON/BON paramaters data
+    and return alist with all of them
+  """
+  directory_path = os.path.dirname(os.path.realpath(__main__.__file__))
+  if nb:
+    paramfile_partial_path = 'param/params.nb'
+  if cv:
+    paramfile_partial_path = 'param/params.cov'
+  paramfile_path = os.path.join(directory_path, paramfile_partial_path)
+  with open(paramfile_path) as f:
+    lines = f.readlines()
+    for i, line in enumerate(lines):
+      line = re.sub(' +',' ',line)
+      line = line.strip('\n')
+      lines[i] = line.split()
+  return(lines)
+    
+
+
+
+
+  
 def search_parent_atom(bonds, number_atoms):
-  #create dictionary
-  print(bonds)
-  print(number_atoms)
+  """
+    Iterate over all bonds searching for
+    the smallest parent (smallest atom number)
+    of each atom returning a list with them.
+
+    Input:
+      Bonds: All bonds
+      number_atom: number of atoms
+
+    Ouput:
+      parents: smallest parents of each atom
+
+    Ex--> [0,1,1,3,3,4]
+    Atom number 1 has a 0 which means that doesnt have parent
+    Atom number 2 has atom number 1 as a parent
+    Atom 3 has atom 1
+    Atom 4 has atom 3
+    etc...
+  """
   parents_template = []
   parent_initialize = [None] * number_atoms
   atoms = [i for i in range(number_atoms)] 
@@ -2381,17 +2478,36 @@ def search_parent_atom(bonds, number_atoms):
   return parents_template
     
 
+def read_charge_from_mae(mae_file):
+    charges = []
+    with open(mae_file, "r") as f:
+
+      atom_sec_found = False
+      while not atom_sec_found:  # Find Atom Section
+          line = f.readline()
+          if line == "" or re.search(r'm_atom\[\d+\]', line):
+            atom_sec_found = True   
+
+      end_atom_section_found = False #Find :::        
+      while not end_atom_section_found:
+          line = f.readline()
+          if line == "" or re.search(':::', line):
+              end_atom_section_found = True
+
+      #Read Charges
+      end_keywords_found = False   
+      while not end_keywords_found:
+          line = f.readline()
+          if line == "" or re.search(':::', line):
+              end_keywords_found = True
+              break
+          mae_atom_values = parse_mae_line(line)
+          charges.append(mae_atom_values[8])
+      return charges
 
 
 
-  #   if(bond_pair and bond_pair[0]<parent):
-  #     print( bond_pair[0])
-  #     parent = bond_pair[0]
-  #   if parent == i:
-  #     parents.append(0)
-  #   else:
-  #     parents.append(parent+1)
-  # return parents
+
 
 
 
