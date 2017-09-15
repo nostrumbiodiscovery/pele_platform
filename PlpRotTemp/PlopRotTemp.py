@@ -2329,78 +2329,144 @@ class MaeFileBuilder:
             atom[propertyNames[i - 1]] = values[i]
 
         return atom
+############################################################################
 
-
-def build_template(mae_file, root, OPLS, hetgrp_opt, old_name, new_name):
-    """
+def build_template(mae_file):
+  """
     Build the Ligand ($RES_NAME).hetgrp_ffgen template.
 
-    Input:
-      mae_file: ligand mae file
-      root: name of the ame_file without extensio
-      OPLS: Type of OPLS to use 2001/2005
-      hetgrp_opt: Option to include -mae charges in the command line input
-      old_name: Name of all user given template_files
-      new_name: User choosen outputfile
+  """
+  atom_names = find_names_in_mae(mae_file)
+  number_atoms = len(atom_names)
+  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue
+  bonds = find_bonds_in_mae(mae_file)
+  parent = search_parent_atom(bonds)
+  number_bonds = len(bonds)
+  ##############FALTA##############
+  number_torsions = 0
+  number_teth = 0
+  number_improper = 0
+  atom_type = [0]
+  unk_int = 1
+  zmatrix = [0,0,0]
 
-    Output:
-       template_file: ($RES_NAME).hetgrp_ffgen template
-       output_template_file:   name of the ligand template file
-       mae_file_hetgrp_ffgen: ($RES_NAME).hetgrp_ffgen.mae
-       files: files to clean
-       resname: residue name on template
+  header = ['{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
+                                                      number_torsions, number_teth, number_improper)]
+  connectivity = []
+  for i, atom_name in enumerate(atom_names):
+    connectivity_line = [' {0:>5} {1:>5} {2:>1} {3:>3} _{4:>3}_ {5:>4} {6:>9} {7:>9} {8:>9} '.format(
+                                                                  i, parent, 'S', atom_type, atom_name,
+                                                                  unk_int, zmatrix[0], zmatrix[1], zmatrix[2])]
 
-    """
-    files2clean = []
-    #Find the first residue name in the mae file
-    hetgrp_output = root + ".hetgrp_ffgen.out"
-    res_names = find_resnames_in_mae(mae_file)
-    mae_out_file = root + ".hetgrp_ffgen.mae"
-    if (OPLS != "2001" and OPLS != "2005"):
-        raise Exception('OPLS version must be either 2001 or 2005');
-    #  if(len(res_names)>1): raise Exception ("ERROR mae file must contain only one residue",res_names[0],res_names[1])
-    res_names[0] = res_names[0].lower()
-    a = re.search('^\s*(\S+)\s*$', res_names[0]);
-    if (a):
-        res_names[0] = a.group(1)
+
+def search_parent_atom(bonds, number_atoms):
+  #create dictionary
+  print(bonds)
+  print(number_atoms)
+  parents_template = []
+  parent_initialize = [None] * number_atoms
+  atoms = [i for i in range(number_atoms)] 
+  parents = {atom : parent_init for atom, parent_init in zip(atoms, parent_initialize)}
+
+  for bond_pair in bonds:
+    atom = bond_pair[1] 
+    parent = bond_pair[0]
+    if(parent<parents[atom] or parents[atom] is None):
+      parents[atom] = parent
+  for atom, parent in parents.items():
+    if parent is None:
+      parents_template.append(0)
     else:
-        raise Exception('Input file must have a residue name')
-    if (old_name == res_names[0]):
-        raise Exception('Input Template file must have a different name')
-    if (new_name == ""): new_name = res_names[0];
-    if (old_name == ""):
-        # this isn't the right way to do it, but I'm removing the default template
-        # file if it exists and forcing hetgrp_ffgen to write a new one
-        f = open(res_names[0], 'w');
-        f.close();
-        if (f): 
-          os.remove(res_names[0]);
-        line = hetgrp_ffgen + ' ' + OPLS + ' ' + mae_file + ' ' + hetgrp_opt + ' -out ' + mae_out_file + ' > ' + hetgrp_output
-        os.system(line);
-        #print("Atom Typing (", OPLS, "): ", mae_file, " -> ", mae_out_file
-        files2clean.append(hetgrp_output)
-        output = res_names[0] + ".hetgrp_ffgen";
-        try:
-            shutil.copy2(res_names[0], output)
-        except:
-            f1 = open(hetgrp_output, "r");
-            lines = f1.read();
-            f1.close();
-            raise Exception('Error assigning atom types \n' + lines)
-        files2clean.append(output)
-    else:
-        print("Reading in template file: {}".format(old_name))
-        print("Copying Mae File: {0}  -> {1}".format(mae_file, mae_out_file))
-        shutil.copy2(mae_file, mae_out_file)
-        output = old_name
-    files2clean.append(mae_out_file)
+      parents_template.append(parent+1) #Shift of one between mae and bonds
+  return parents_template
+    
 
 
-    print("Template output {}".format(output)) #The template created. Has the residue name if has been generated automatically. If not, has the user-defined name
-    print("Residue name on template {}".format(new_name)) #Actually, the name of the residue, will be the name of the generated template
-    print("Output hetgrp_ffgen {}".format(mae_out_file)) #File created by hetgrp_ffgen, if the used didn't indicate a template. The mae indicated by the user otherwise
 
-    return [output, new_name, mae_out_file, files2clean, res_names[0]]
+
+  #   if(bond_pair and bond_pair[0]<parent):
+  #     print( bond_pair[0])
+  #     parent = bond_pair[0]
+  #   if parent == i:
+  #     parents.append(0)
+  #   else:
+  #     parents.append(parent+1)
+  # return parents
+
+
+
+
+# def build_template(mae_file, root, OPLS, hetgrp_opt, old_name, new_name):
+#     """
+#     Build the Ligand ($RES_NAME).hetgrp_ffgen template.
+
+#     Input:
+#       mae_file: ligand mae file
+#       root: name of the ame_file without extensio
+#       OPLS: Type of OPLS to use 2001/2005
+#       hetgrp_opt: Option to include -mae charges in the command line input
+#       old_name: Name of all user given template_files
+#       new_name: User choosen outputfile
+
+#     Output:
+#        template_file: ($RES_NAME).hetgrp_ffgen template
+#        output_template_file:   name of the ligand template file
+#        mae_file_hetgrp_ffgen: ($RES_NAME).hetgrp_ffgen.mae
+#        files: files to clean
+#        resname: residue name on template
+
+#     """
+#     files2clean = []
+#     #Find the first residue name in the mae file
+#     hetgrp_output = root + ".hetgrp_ffgen.out"
+#     res_names = find_resnames_in_mae(mae_file)
+#     mae_out_file = root + ".hetgrp_ffgen.mae"
+#     if (OPLS != "2001" and OPLS != "2005"):
+#         raise Exception('OPLS version must be either 2001 or 2005');
+#     #  if(len(res_names)>1): raise Exception ("ERROR mae file must contain only one residue",res_names[0],res_names[1])
+#     res_names[0] = res_names[0].lower()
+#     a = re.search('^\s*(\S+)\s*$', res_names[0]);
+#     if (a):
+#         res_names[0] = a.group(1)
+#     else:
+#         raise Exception('Input file must have a residue name')
+#     if (old_name == res_names[0]):
+#         raise Exception('Input Template file must have a different name')
+#     if (new_name == ""): new_name = res_names[0];
+#     if (old_name == ""):
+#         # this isn't the right way to do it, but I'm removing the default template
+#         # file if it exists and forcing hetgrp_ffgen to write a new one
+#         f = open(res_names[0], 'w');
+#         f.close();
+#         if (f): 
+#           os.remove(res_names[0]);
+#         line = hetgrp_ffgen + ' ' + OPLS + ' ' + mae_file + ' ' + hetgrp_opt + ' -out ' + mae_out_file + ' > ' + hetgrp_output
+#         os.system(line);
+#         #print("Atom Typing (", OPLS, "): ", mae_file, " -> ", mae_out_file
+#         files2clean.append(hetgrp_output)
+#         output = res_names[0] + ".hetgrp_ffgen";
+#         try:
+#             shutil.copy2(res_names[0], output)
+#         except:
+#             f1 = open(hetgrp_output, "r");
+#             lines = f1.read();
+#             f1.close();
+#             raise Exception('Error assigning atom types \n' + lines)
+#         files2clean.append(output)
+#     else:
+#         print("Reading in template file: {}".format(old_name))
+#         print("Copying Mae File: {0}  -> {1}".format(mae_file, mae_out_file))
+#         shutil.copy2(mae_file, mae_out_file)
+#         output = old_name
+#     files2clean.append(mae_out_file)
+
+
+#     print("Template output {}".format(output)) #The template created. Has the residue name if has been generated automatically. If not, has the user-defined name
+#     print("Residue name on template {}".format(new_name)) #Actually, the name of the residue, will be the name of the generated template
+#     print("Output hetgrp_ffgen {}".format(mae_out_file)) #File created by hetgrp_ffgen, if the used didn't indicate a template. The mae indicated by the user otherwise
+
+#     print([output, new_name, mae_out_file, files2clean, res_names[0]])
+#     return [output, new_name, mae_out_file, files2clean, res_names[0]]
 
 
 ##################################################
