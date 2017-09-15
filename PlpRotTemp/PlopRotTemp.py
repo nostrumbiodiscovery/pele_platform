@@ -110,10 +110,12 @@ import re
 import math
 import array
 import os
+import warnings
 import shutil
+import __main__
 from schrodinger import structure
 from schrodinger import structureutil
-
+import schrodinger.infra.mm as mm
 hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 
 
@@ -121,12 +123,28 @@ hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 # Definitions 
 ################################################################################
 
+ERROR_ATOMTYPES = 'ERROR: ATOM NAMES REPITED IN MAE FILE'
+ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
+DEFAULT_RADIUS_VDW = '0.5000'
+DEFAULT_SPRING_K = '268.0'
+DEFAULT_EQ_DIST = '1.529'
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
 dummy_atom3 = [0.1, 0.2, 0.3]
 
 
 def find_tors_in_log(filename):
+    """
+    Return the atom with torsions from a log file
+
+    Input:
+      filename: logfile
+
+    Output:
+      torsions: list of atoms with torsions 
+      example--> [[1,2],[4,6],[9.10]]
+      (Atom 1 and 2, 4 and 6, 9 and 10 are respectevly from the same functional group)
+    """
     f = open(filename, 'r')
     out_tors = []
     read_next = 0
@@ -214,7 +232,9 @@ def find_tors_in_rings(tors, maefile):
 
 ####################################
 def remove_tors(tors1, tors2):
-    # return the tors2 from tors 1
+    """
+    return the tors2 from tors 1
+    """
     out_tors = []
     for torsion1 in tors1:
         found = 0
@@ -228,7 +248,9 @@ def remove_tors(tors1, tors2):
 
 ####################################
 def add_tors(tors1, tors2):
-    # adds tors2 to tors 1
+    """
+    adds tors2 to tors 1
+    """
     out_tors = tors1
     for torsion_i in tors2:
         found = 0
@@ -339,15 +361,95 @@ def find_names_in_mae(filename):
             error_message = "The keywords in the atom section form the .mae file don't match the regular " \
                             "expressions currently implemented."
             raise Exception (error_message)
-        # This if comes from the old version and I don't know why it's used...
         if len(mae_atom_values) >= 13:
             ace = re.search('ACE', mae_atom_values[residue_names_index])  #added by mcclendon:a ligand or modified
             # residue can't have reserved name for protein capping group ACE or NMA
             nma = re.search('NMA', mae_atom_values[residue_names_index])  #added by mcclendon
             if ((not ace) and (not nma)):
-                names.append(mae_atom_values[atom_names_index])
+                atomname = mae_atom_values[atom_names_index]
+                names.append(atomname)
     f.close()
     return names
+##################################################
+
+def check_repite_names(atomnames):
+  """
+  Check if the mae_file contains any
+  repited name. If it's like this
+  raise and error.
+  """
+  atoms_repited = []
+  for i, atomname_target in enumerate(atomnames):
+    while(i!=0):
+      i-=1
+      if atomname_target == atomnames[i]:
+        atoms_repited.append(atomname_target)
+        break   
+  if(atoms_repited):
+    raise Exception(ERROR_ATOMTYPES)
+
+#################################################333
+
+def replace_vdwr_from_library(rotamer_library):
+  """
+    Check if the rotamer library 
+    contains any vdw radius= 0
+    and replace them by 0.5000
+  """
+  found = False
+  lines = []
+  radius_vdw_info, start_index, end_index = parse_nonbonded(rotamer_library)
+  for i, rdw_line in enumerate(radius_vdw_info):
+    NBOND_info = rdw_line.split()
+    rdw = float(NBOND_info[1])/2.0
+    
+    if(rdw == 0):
+      warnings.warn("Van der Waals of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
+      NBOND_info[1] = DEFAULT_RADIUS_VDW
+      found = True
+    lines.append(NBOND_info)
+
+  if found:
+    rvdw_change(rotamer_library, lines, start_index, end_index)
+
+
+
+def parse_nonbonded(rotamer_library):
+  """
+    Find Non bonded parameters inside
+    the rotamer's library
+  """
+  NBN_lines = []
+  with open(rotamer_library, 'r') as f:
+    lines = f.readlines() 
+    for i, line in enumerate(lines):
+      line = line.strip('\n')
+      if(line == 'NBON'):
+        start_index = i+1
+      elif(line == 'BOND'):
+        end_index = i
+    try:
+      for i in range(start_index, end_index):
+        NBN_lines.append(lines[i])
+      return NBN_lines, start_index, end_index
+    except NameError:
+      print(ERROR_ROTAMER_LIB)
+    
+def rvdw_change(rotamer_library, radius_vdw_info, start_index, end_index):
+  """
+    Change all radius vanderwals 0 to 0.5
+    from the rotamer's library file
+  """
+  print(radius_vdw_info)
+  with open(rotamer_library, 'r') as f:
+    lines = f.readlines()
+    for i, new_line in enumerate(radius_vdw_info):
+      lines[start_index + i] = '{0:>5} {1:>8} {2:>8} {3:>10} {4:>8} {5:>8} {6:>13} {7:>13}\n'.format(*new_line)
+
+  with open(rotamer_library, 'w') as f:
+    f.write(''.join(lines))
+
+
 
 
 ####################################
@@ -367,13 +469,14 @@ def parse_mae_line(line):
                     output.append(a.group(1))
                     line = a.group(2)
                 else:
-                    print "Error in mae formating\n", line;
+                    print("Error in mae formating\n")
                     return -1;
             else:
                 output.append(a.group(1))
                 line = a.group(2)
         a = re.search(r'^\s*$', line)
-        if (a): break;
+        if (a): 
+          break;
     return output
 
 
@@ -387,54 +490,62 @@ def find_mass_names(names):
 
 ####################################
 def find_bonds_in_mae(filename):
-    bond_section = False
-    read_keywords = False
-    read_bond_data = False
-    keywords = []
-    bond_data = []
-    with open(filename) as infile:
-        for l in infile:
-            if re.search('m_bond\[', l):
-                print l
-                bond_section = True
-                read_keywords = True
-                continue
-            if bond_section:
-                if '#' in l:
-                    keywords.append('index')
-                elif read_keywords:
-                    if l.strip() == ":::":
-                        read_keywords = False
-                        read_bond_data = True
-                    else:
-                        keywords.append(l.strip())
-                elif read_bond_data:
-                    if l.strip() == ":::":
-                        read_bond_data = False
-                    else:
-                        bond_data.append(l.strip().split())
-                elif l.strip() == '\}':
-                    bond_section = False
-    from_to_indexes = []
-    for i, k in enumerate(keywords):
-        if '_from' in k:
-            from_to_indexes.insert(0, i)
-        elif '_to' in k:
-            from_to_indexes.append(i)
+    """
+    Search for bonds in MAE
+
+    Input:
+      filename: MAEfile
+
+    Output:
+      Bonds: Bonds in MAEfile
+      ex--> [[0, 1], [0, 5], [0, 6]]
+            (Bond between atom 0 and 1, etc...)
+    """
+    f = open(filename, "r")
     out_bond = []
-    for bond in bond_data:
-        b = [int(bond[from_to_indexes[0]]) - 1, int(bond[from_to_indexes[1]]) - 1]
-        b.sort()
-        out_bond.append(b)
+    keywords = []
+    while f:  # Find Bond Section
+        line = f.readline()
+        if line == "" or re.search('m_bond', line):
+            break
+    while f:  # Advance to numbers
+        line = f.readline()
+        if line == "" or (re.search(':::', line)):
+            break
+        else:
+            if "index" in line:
+                keyword = "index"
+            else:
+                keyword = line.strip()
+            keywords.append(keyword)
+    # print keywords
+    while f:  # Read in Bonds
+        line = f.readline()
+        if line == "" or re.search(':::', line):
+            break
+        a = re.match(r'\s+\d+\s+(\d+)\s+(\d+)\s+(\d+)', line)
+        if (a and int(a.group(3)) > 0 ):
+            b = [int(a.group(1)) - 1, int(a.group(2)) - 1]
+            b.sort()
+            out_bond.append(b)
+    f.close()
     return out_bond
 
 
 ####################################
 def find_connected(atom, bonds, assign):
+    """
+    Find and assign the same "group (number)" to all the atoms connected to atom
+
+    Input:
+      atom: atom to look connections from
+      bonds: list of all bonds
+      assign: list of atoms with numbers assigned in order to cluster them
+      ex: -->[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]
+      Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...
+
+    """
     for i in range(len(bonds)):
-        # print "bond pair "+str(i)+"\n"
-        #print bonds[i][0]
-        #print bonds[i][1]
         if (bonds[i][0] == atom and assign[bonds[i][1]] == 0 ):
             assign[bonds[i][1]] = assign[atom]
             find_connected(bonds[i][1], bonds, assign)
@@ -445,6 +556,20 @@ def find_connected(atom, bonds, assign):
 
 ####################################
 def assign_ligand_groups(tors, all_bonds, n_atoms):
+    """
+    Cluster atoms in groups depending whether or not they are connected
+
+    Input:
+      tors: all torsions of the ligand
+      all_bonds: all ligand bonds
+      n_atoms: number of atoms of the ligand
+
+    Output:
+      assign= List of Cluster of atoms depending whether or not they are connected
+      ex: -->[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]
+      Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...
+    """
+
     bonds = remove_tors(all_bonds, tors)  # fixed bonds
     n_assign = 0
     c_group = 0
@@ -504,6 +629,15 @@ def convert_name_to_num(mynames, names):
 
 ####################################
 def assign_rank_group(atom_num, assign, rank, rank_num):
+    """
+    Input:
+      atom_num: Atom respectively which we are producing the rank from
+      assign: Group of molecules grouped on clusters dependiong on the ligand connectivity
+      rank: list of numbers for each atom which will show 
+            which atoms are closer to the atom we are making the rank from.
+      rank_number: 0
+    """
+
     # Add assignments for all atom in the same group as atom_num
     for i in range(len(assign)):
         if (assign[i] == assign[atom_num]):
@@ -537,6 +671,26 @@ def max_value(array):
 
 ####################################
 def assign_rank(bonds, assign, atom_num):
+    """
+    Define a list of ranks for each grup of atoms or cluster in assign
+    which will show which atoms are closer to the group.
+    As small is the number of the rank as close to the atom we are making the rank from it will be.
+
+    Ex:
+    Rank From number 1:
+      Start: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+      Middle: [0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1] (look for the closest atoms)
+      Final: [0, 0, 0, 1, 2, 3, 4, 3, 2, 3, 4, 5, 5, 3, 4, 5, 4, 6, 6, 6] As small is the number as close to atom number 2 is positioned on the ligand.
+    
+    Input:
+      bonds: Ligand connectivity
+      assign: List of atoms with numbers assigned in order to cluster them
+      atom_num: number of the atom to calculate the rank respect to.
+    Output:
+      Rank: list of numbers for each grup of atoms or cluster in assign
+            which will show which atoms are closer to the group.
+    """
+
     rank = []
     num_assign = 1;
     for i in range(len(assign)):
@@ -559,6 +713,17 @@ def assign_rank(bonds, assign, atom_num):
 
 ####################################
 def assign_group(bonds, rank):
+    """
+      With the core atom and its rank defined
+      grouped the atoms in cluster or rotatable chains.
+
+      Input:
+        bonds: all bonds
+        rank: core atom rank
+
+      Output:
+        group: groups of rotatable chains
+    """
     group = []
     cur_group = -1
     for i in range(len(rank)):
@@ -576,7 +741,8 @@ def assign_group(bonds, rank):
                 group[i] = cur_group;
                 break;
         atoms_in_group = 1
-        if (cur_atom == -1): print "ERROR 2042!!";
+        if (cur_atom == -1):
+          print("ERROR 2042!!")
         edit_any = 1;
         # Find all connected atoms of rank >= 1
         while (edit_any == 1):
@@ -599,6 +765,30 @@ def assign_group(bonds, rank):
 
 ####################################
 def order_atoms(bonds, tors, back_tors, assign, rank, group):
+    """
+      Order the core atomss by connectivity. (distance)
+      Update rank & group information with them.
+
+      Example:
+      order: [1,3,5,7,8,9] (starting from the core atom we ordem they by connectivity.)
+      parent: [-1,1,3,1,3,5,7] (We keep track of the parents so we know the atom 3 
+                                is connected to the 1, the 5 to 1, the 7 to the 3rd.)
+
+    Input: 
+      bonds: Connectivity
+      tors: Atom with torsions
+      back_tors: Backbone_torsions
+      assign: list of numbers representing proximity.
+      rank: list of numbers representing atom clustering depending on connecitvity
+
+    Output:
+      ordering: Order of atoms starting from the core by connectivity.
+      out_parents: atom parent of the one at the same position inside the ordering list
+      out_rank: rank of the ordering atoms
+      out_group: Group of the ordering atoms
+
+
+    """
     ordering = []
     parent = []
     # once an atom is added its assign value is set to -1
@@ -623,8 +813,8 @@ def order_atoms(bonds, tors, back_tors, assign, rank, group):
                 parent.append(bonds[i][1])
                 assign[bonds[i][0]] = -1
                 break
-            # Loop through the groups one at a time
-            # Assign sidechain parent must be of rank exactly one above
+    # Loop through the groups one at a time
+    # Assign sidechain parent must be of rank exactly one above
     for grp in range(-1, max_value(group) + 1):
         cur_rank = 0
         while (len(ordering) < len(assign)):
@@ -647,7 +837,7 @@ def order_atoms(bonds, tors, back_tors, assign, rank, group):
             if (edit_any == 0): cur_rank = cur_rank + 1
             if (cur_rank > max_value(rank)): break
 
-            # Adjust parent list so it matches 
+    # Adjust parent list so it matches 
     out_parent = []
     out_rank = []
     out_group = []
@@ -668,6 +858,26 @@ def order_atoms(bonds, tors, back_tors, assign, rank, group):
 
 ####################################
 def get_start_atom(tors, rank):
+    """
+    Get the number of atoms inside the core
+    and the start atom of the core,
+    which is the first atom of the cluster with no torsions.
+
+    Input:
+      tors: all atom with torsions
+      rank: Rank: list of numbers for each grup of atoms or cluster in assign
+            which will show which atoms are closer to the group.
+
+    Output:
+      start_atom: First atom of the cluster (group of atoms bonded together) 
+                  that doesn not have torsions.
+      num_core: number of atoms inside the cluster.
+
+    Ex--> tors: [[1, 3], [8, 9]]
+          rank: [0, 0, 0, 2, 3]
+          The core has 3 atoms and the strating atom
+          is the number 2 because it does not have torsions.
+    """
     num_core = 0
     start_atom = -100
     for i in range(len(rank)):
@@ -699,24 +909,44 @@ def EliminateBackboneTors(in_tors, in_tors_ring_num, in_zmat_atoms, rank):
 
 
 ####################################
-def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, debug=False):
+def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, use_mult_lib,debug=False):
+    """
+    Search for the core atom wich maximes the torsions
+    and it's in the center of the ligand??
+
+    Input:
+      tors: Atoms with torsions
+      bonds: connectivity
+      natoms: number of atoms of the ligand
+      user_core_atom: predefined user core atom
+      back_tors: user backbone atoms with torsion
+      use_mult_lib: User decision to use or not multiples libraries.
+
+    Ouput:
+      core_atom: atom which will be the center of the core
+      assign: List of atoms with numbers assigned in order to cluster them
+      rank:  list of numbers for each atom which will show 
+            which atoms are closer to the atom we are making the rank from.
+      group: List that classifies the atoms in groups depending on connectivity
+              to later on make different multiple libraries.
+    """
+
     # Split into sections not seperated by rotatable bonds
     assign = assign_ligand_groups(tors, bonds, natoms)
     if debug:
-        print ' -- ligand groups assigned.'
+        print(' -- ligand groups assigned.')
     if (user_core_atom > 0):
-        print ' -- r'
+        print(' -- r')
         core_atom = user_core_atom - 1
     else:
         # print ' -- here3'
         min_rank = 10000
         core_atom = -1
-        print natoms
         for atom_num in range(natoms):
             # print bonds, assign, atom_num
             rank = assign_rank(bonds, assign, atom_num)
             if debug:
-                print ' -- rank assigned'
+                print(' -- rank assigned')
             [start_atom, num_core] = get_start_atom(tors + back_tors, rank)
             if (max_value(rank) < min_rank and start_atom >= 0):
                 core_atom = atom_num
@@ -725,10 +955,10 @@ def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, debug=F
             #    group = find_largest_ligand_group(assign,mass) 
             #    out_names = convert_num_to_name(group,atom_names)
     if debug:
-        print ' -- else finished'
+        print(' -- else finished')
     rank = assign_rank(bonds, assign, core_atom)
     if debug:
-        print ' -- ranks assigned'
+        print(' -- ranks assigned')
     if (use_mult_lib):
         group = assign_group(bonds, rank)
     else:
@@ -739,7 +969,7 @@ def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, debug=F
 
 
 ####################################
-def FindCore_GetFurthestAtom(tors, bonds, natoms, user_core_atom, back_tors):
+def FindCore_GetFurthestAtom(tors, bonds, natoms, user_core_atom, back_tors, use_mult_lib):
     # Split into sections not seperated by rotatable bonds
     assign = assign_ligand_groups(tors, bonds, natoms)
     if (user_core_atom > 0):
@@ -768,11 +998,27 @@ def FindCore_GetFurthestAtom(tors, bonds, natoms, user_core_atom, back_tors):
 
 ####################################
 def assign_bonds_to_groups(tors, group):
+    """
+    Make a group for each torsion bond
+    and keep track of how many members
+
+    Finally it returns the biggest group.
+
+    Input:
+      Tors: atoms with torsions
+      Group: Atoms grouped by proximity
+
+    Output:
+      output: lit of group_numbers
+      big_grup: biggest group
+      nbig_group: members on the biggest group
+    """
     output = []
     big_group = -1
     nbig_group = 0
     ngroup = max(group)
     ngroup_members = []
+    ##Hauria danar un mes??
     for i in range(ngroup + 1):
         ngroup_members.append(0)
     for t in tors:
@@ -795,7 +1041,8 @@ def assign_bonds_to_groups(tors, group):
 ###################################
 def FindAmideNitrogen(mae_file):
     atom_names = find_names_in_mae(mae_file)
-    if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE";
+    if (len(atom_names) <= 0):
+      print("NO ATOMS FOUND IN MAE FILE")
     core_atom = -1
     for atom_num in range(len(atom_names)):
         if (atom_names[atom_num] == ' N  '):
@@ -809,7 +1056,8 @@ def FindAmideNitrogen(mae_file):
 ###################################
 def FindAmideHydrogen(mae_file):
     atom_names = find_names_in_mae(mae_file)
-    if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE"
+    if (len(atom_names) <= 0): 
+      print("NO ATOMS FOUND IN MAE FILE")
     nh_atom = -1
     for atom_num in range(len(atom_names)):
         if (atom_names[atom_num] == ' H  '): nh_atom = atom_num
@@ -821,7 +1069,8 @@ def FindAmideHydrogen(mae_file):
 ###################################
 def FindHCAlpha(mae_file, raise_exception=True):
     atom_names = find_names_in_mae(mae_file)
-    if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE"
+    if (len(atom_names) <= 0):
+      print("NO ATOMS FOUND IN MAE FILE")
     ha_atom = -1
     for atom_num in range(len(atom_names)):
         if (atom_names[atom_num] == ' HA '): ha_atom = atom_num
@@ -834,7 +1083,8 @@ def FindHCAlpha(mae_file, raise_exception=True):
 ###################################
 def FindCAlpha(mae_file, raise_exception=True):
     atom_names = find_names_in_mae(mae_file)
-    if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE"
+    if (len(atom_names) <= 0): 
+      print("NO ATOMS FOUND IN MAE FILE")
     bb_atom = -1
     for atom_num in range(len(atom_names)):
         if (atom_names[atom_num] == ' CA '): bb_atom = atom_num
@@ -847,12 +1097,14 @@ def FindCAlpha(mae_file, raise_exception=True):
 ###################################
 def FindC(mae_file, raise_exception=True):
     atom_names = find_names_in_mae(mae_file)
-    if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE"
+    if (len(atom_names) <= 0):
+      print("NO ATOMS FOUND IN MAE FILE")
     bb_atom = -1
     for atom_num in range(len(atom_names)):
         if (atom_names[atom_num] == ' C  '): bb_atom = atom_num
     if (bb_atom == -1):
-        if (raise_exception == True): raise Exception("cannot find _C__  in maefile\n")
+        if (raise_exception == True): 
+          raise Exception("cannot find _C__  in maefile\n")
     # print "_C__ atom:"+str(bb_atom)
     return bb_atom
 
@@ -860,7 +1112,8 @@ def FindC(mae_file, raise_exception=True):
 ###################################
 def FindO(mae_file):
     atom_names = find_names_in_mae(mae_file)
-    if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE"
+    if (len(atom_names) <= 0):
+      print("NO ATOMS FOUND IN MAE FILE")
     bb_atom = -1
     for atom_num in range(len(atom_names)):
         if (atom_names[atom_num] == ' O  '): bb_atom = atom_num
@@ -996,7 +1249,7 @@ def Reorder_Amide_Nitrogen_Hydrogen(ordering, parent, rank, group, nitrogen_atom
         if (i > 1): new_ordering[i] = ordering[i]
         if (i == 0):
             if (ordering[0] == hydrogen_atom and ordering[1] == nitrogen_atom):
-                print "Swapping Nitrogen and Hydrogen in Ordering"
+                print("Swapping Nitrogen and Hydrogen in Ordering")
                 new_ordering[0] = nitrogen_atom
                 new_ordering[1] = hydrogen_atom
                 #parent[nitrogen_atom]=-1; parent[hydrogen_atom]=nitrogen_atom
@@ -1027,20 +1280,29 @@ def FindCoreAA(mae_file, user_fixed_bonds, logfile, use_rings, use_mult_lib, use
     # adapted from FindCore for unnatural amino acids by Chris McClendon, Jacobson Group
     if (user_tors == []):
         tors = find_tors_in_log(logfile)
+        ########CHANGE     SCHRODINGER######
         [ring_tors, ring_num] = find_tors_in_rings(tors, mae_file)
+        ########CHANGE     SCHRODINGER######
         tors = remove_tors(tors, user_fixed_bonds)
+
+        #########CHANGE     SCHRODINGER######
         ring_tors = remove_tors(ring_tors, user_fixed_bonds)
-        if (len(ring_tors) < 1 ): use_rings = 0
-        if (use_rings == 0): tors = remove_tors(tors, ring_tors)
+        if (len(ring_tors) < 1 ): 
+          use_rings = 0
+        if (use_rings == 0):
+          tors = remove_tors(tors, ring_tors)
     else:
         tors = user_tors
+        ##########CHANGE     SCHRODINGER######
+
     bonds = find_bonds_in_mae(mae_file)
     atom_names = find_names_in_mae(mae_file)
-    if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE";
-    print "bonds\n"
-    print bonds
-    print "tors\n"
-    print tors
+    if (len(atom_names) <= 0): 
+      print("NO ATOMS FOUND IN MAE FILE")
+    print("bonds\n")
+    print(bonds)
+    print("tors\n")
+    print(tors)
     assign = assign_ligand_groups(tors, bonds, len(atom_names))
     if (user_core_atom > 0):
         core_atom = user_core_atom - 1
@@ -1068,19 +1330,21 @@ def FindCoreAA(mae_file, user_fixed_bonds, logfile, use_rings, use_mult_lib, use
     for i in range(len(atom_names)):
         if (rank[i] == 0):
             line = line + atom_names[i].rjust(5)
-    print line;
+    print('\n')
+    print(line)
     #  for i in range(len(atom_names)):
     #    print atom_names[i].rjust(5),group[i],rank[i]
 
     #  print "Core atom",core_atom,rank
     if (use_mult_lib == 1):
-        print 'Number of groups ', max_value(group) + 1
+        print('\n')
+        print('Number of groups {}'.format(max_value(group) + 1))
         for grp in range(max_value(group) + 1):
             line = 'Group %2d' % grp
             for i in range(len(atom_names)):
                 if (group[i] == grp):
                     line = line + atom_names[i].rjust(5)
-            print line;
+            print(line)
 
     [old_num, parent, rank, group] = Order_Atoms_AA(bonds, tors, assign, rank, group, mae_file)
     #  for i in range(len(atom_names)):
@@ -1089,7 +1353,8 @@ def FindCoreAA(mae_file, user_fixed_bonds, logfile, use_rings, use_mult_lib, use
 
     # Assign ring numbers to torsions (0 for none) (backbone ring torsions not assigned)
     tors_ring_num = []
-    for t in tors: tors_ring_num.append(0)
+    for t in tors: 
+        tors_ring_num.append(0)
     if (use_rings == 1):
         for i in range(len(tors)):
             for j in range(len(ring_tors)):
@@ -1136,7 +1401,7 @@ def ReorderTorsionsAA(tors, ordering):  # by Chris McClendon, Jacobson Group
                         oldtors = remove_tors(oldtors, [mytors])
                         foundtors == 1
                         break
-    print 'Found the core'
+    print('Found the core')
     return newtors
 
 
@@ -1145,11 +1410,49 @@ def ReorderTorsionsAA(tors, ordering):  # by Chris McClendon, Jacobson Group
 ####################################################
 def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
              use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name):
+    """
+
+    Find a core group of atoms and cluster the others.
+    
+    Input:
+      mae_file: ligand topology
+      user_fixed_bonds: self-explanatory
+      logfile: file with the connectivity and torsions
+      use_rings: option to search for ring torsions
+      use_mult_lib: use mult library for each cluster
+      user_core_atom: create a cluster starting on these atom
+      user_tors: torsions specified by the user
+      back_torsions: backbone torsions specified By the user
+      max_tors: maximum number of torsions in each group
+      R_group_root_atom_name: ???
+
+    Output:
+      old_num: Order of atoms by connectivuity starting from the centreal atom of the core
+      parent: atom connected with the one on the same position inside the old_num list
+      rank: atoms in old_num ranked by proximity
+      tors: Atoms with torsions (backbone excluded)
+      use_rings: option to search for ring torsions
+      back_tors: Atoms of the backbone with torsions
+      tors_ring_num: Atoms coming from rings with torsions. (0 for none)
+
+    example--> 
+    old_num: [4, 3, 8, 5, 13, 6, 14, 7, 15, 16, 1, 0, 2, 9, 10, 11, 12, 17, 18, 19]
+    parent: [-1, 0, 1, 0, 0, 3, 3, 5, 5, 7, 1, 10, 10, 2, 13, 14, 14, 16, 16, 16]
+    rank: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 2, 3, 3, 4, 4, 4]
+
+    - Atom 4 is close to 3 close to 8 to 5, etc...
+    - Atom 3 is connected to 0, 8 to 1, 5 to 0, 13 to 0, etc...
+    - Atom 4,3,8,5,13,6,14,7,15 are from the rank 0 definides as core. All other ranks are sidechains.
+
+    """
     if (user_tors == []):
         tors = find_tors_in_log(logfile)
-        print " - torsions found."
+        print(" - torsions found.")
+
+    ########CHANGE     SCHRODINGER######
         [ring_tors, ring_num] = find_tors_in_rings(tors, mae_file)
-        print " - ring torsions found."
+        print(" - ring torsions found.")
+    ########CHANGE     SCHRODINGER######
         tors = remove_tors(tors, user_fixed_bonds)
         tors = remove_tors(tors, back_tors)
         ring_tors = remove_tors(ring_tors, user_fixed_bonds)
@@ -1158,34 +1461,35 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
             tors = remove_tors(tors, ring_tors)
         else:
             tors = add_tors(tors, ring_tors)
+
     else:
         tors = user_tors
     if (max_tors != -1 and use_rings == 1):
-        print "WARNING: May freeze some torsions in rings with unpredictable results";
+        print("WARNING: May freeze some torsions in rings with unpredictable results")
     #  print "tors"
     #  for t in tors:
     #    print t
     #  print "ring tors"
     #  for t in ring_tors:
     #    print t
-    print ' -find bonds in file:', mae_file
-    bonds = find_bonds_in_mae(mae_file)
-    print ' -bonds in mae file found'
+    bonds = find_bonds_in_mae(mae_file) 
+    print(' -bonds found in mae file')
     atom_names = find_names_in_mae(mae_file)
-    print ' -names found in mae file'
-    if (len(atom_names) <= 0): print "NO ATOMS FOUND IN MAE FILE";
+    print(' -names found in mae file')
+    if (len(atom_names) <= 0):
+      print("NO ATOMS FOUND IN MAE FILE")
 
     if (user_core_atom == -2):  #then find the atom furthest from the R group
-        print 'here0'
         R_group_root_atom_num = convert_name_to_num([R_group_root_atom_name], atom_names)
         [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), R_group_root_atom_num[0],
-                                                                back_tors)
+                                                                back_tors, use_mult_lib)
         user_core_atom = rank.index(max(rank))
-    print ' -get core atoms'
-    [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), user_core_atom, back_tors)
-    print ' - core atoms found'
+ 
+    [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), user_core_atom, back_tors, use_mult_lib)
+    print(' - core atoms found')
     [group_tors, big_group, nbig_group] = assign_bonds_to_groups(tors, group)
-    print ' -bonds'
+    print(' -bonds')
+    ##############Canvir aqui torsions##########################
     while ( nbig_group > max_tors and max_tors >= 0 ):
         # Find Lowest Rank Torsion in Biggest Group
         chosen = -1
@@ -1200,11 +1504,11 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
         if (chosen < 0):
             raise Exception("ERROR Removing Torsion")
         t = tors[chosen]
-        print "Max Torsions in a sidechain group is ", nbig_group, ", Assigning Torsion to Backbone: ", atom_names[
-            t[0]], "-", atom_names[t[1]]
+        #print("Max Torsions in a sidechain group is ", nbig_group, ", Assigning Torsion to Backbone: ", atom_names[
+         #   t[0]], "-", atom_names[t[1]]
         tors = remove_tors(tors, [t])
         back_tors.append(t)
-        [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), user_core_atom, back_tors)
+        [core_atom, assign, rank, group] = FindCore_GetCoreAtom(tors, bonds, len(atom_names), user_core_atom, back_tors, use_mult_lib)
         [group_tors, big_group, nbig_group] = assign_bonds_to_groups(tors, group)
 
 
@@ -1213,30 +1517,34 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
     #     t = tors[i]
     #     print atom_names[t[0]],"-",atom_names[t[1]],group_tors[i]   
 
-    line = 'Core Atoms (including backbone): '
+    line = ' -Core Atoms (including backbone):'
     for i in range(len(atom_names)):
         if (rank[i] == 0):
-            line = line + atom_names[i].rjust(5)
-    print line;
+            line = line + atom_names[i]
+    print(line)
     #  for i in range(len(atom_names)):
     #    print atom_names[i].rjust(5),group[i],rank[i]
 
     #  print "Core atom",core_atom,rank
     if (use_mult_lib == 1):
-        print 'Number of groups ', max_value(group) + 1
+        print(' -Number of groups {}:'.format(max_value(group) + 1))
         for grp in range(max_value(group) + 1):
-            line = 'Group %2d' % (grp + 1)
+            line = '  -Group %2d' % (grp + 1)
             for i in range(len(atom_names)):
                 if (group[i] == grp):
-                    line = line + atom_names[i].rjust(5)
-            print line;
+                    line = line + atom_names[i]
+            print(line)
 
     [old_num, parent, rank, group] = order_atoms(bonds, tors, back_tors, assign, rank, group)
-    if (use_rings == 2): tors = intersect_tors(tors, ring_tors); use_rings = 1
+
+    if (use_rings == 2): 
+      tors = intersect_tors(tors, ring_tors)
+      use_rings = 1
 
     # Assign ring numbers to torsions (0 for none) (backbone ring torsions not assigned)
     tors_ring_num = []
-    for t in tors: tors_ring_num.append(0)
+    for t in tors: 
+      tors_ring_num.append(0)
     if (use_rings == 1):
         for i in range(len(tors)):
             for j in range(len(ring_tors)):
@@ -1249,6 +1557,16 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
 
 ####################################
 def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_atom_name='None'):
+    """
+    Create the ain template by parsing the ain.hetgrp_ffgen
+    calculating the zmatrix, ordering the connectivity,
+    the bonded, non bonded & Improper rotations.
+
+    Output: 
+        names: atom names from the template file
+        mae file: template file of the ligand & input for PELE.
+    """
+
     [old_parent, zmat, temp_names] = read_zmat_template(in_file)
     #  Set up dummy values for cart add adjust parent list,ordering to match
     #  cart=[[0.8, 0.7, 0.9]]
@@ -1333,7 +1651,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
                     rank_str = ' M'
             else:
                 rank_str = ' S'
-        outline = str(i + 1).rjust(5) + str(parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
+        outline = str(i + 1).rjust(5) + str(old_parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
         name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
             2] + '\n'
         fout.write(outline)
@@ -1722,6 +2040,24 @@ def read_zmat_template(filename):
 
 #################################################
 def MatchTempMaeAtoms(mae_file, template_file):
+    """
+
+      Say which number of atom of th mae_file corresponds to the one on the template_file
+
+      Input:
+        mae_file: topology of the ligand
+        template_file: topology of the ligand template
+
+      Output:
+        mae2temp: Which number of atom of the template file correspond to the same atom on the mae file
+        Example-->[0, 1, 2, 3, 4, 6, 8, 10, 12, 13, 14, 15, 16, 5, 7, 9, 11, 17, 18, 19]
+        Explanation--> Atom number 5 from the mae correspond the 6th of the template.
+
+        temp2mae: Which number of atom of the mae file correspond to the same atom on the template file
+        Example--> [0, 1, 2, 3, 4, 13, 5, 14, 6, 15, 7, 16, 8, 9, 10, 11, 12, 17, 18, 19]
+        Explanation--> Atom number 5 of the template file corresponds to atom number 13 of the mae file.
+
+    """
     [parent, zmat, temp_names] = read_zmat_template(template_file)
     mae_names = find_names_in_mae(mae_file)
     if ( len(temp_names) != len(mae_names)):
@@ -1761,6 +2097,20 @@ def MatchTempMaeAtoms(mae_file, template_file):
 
 #################################################
 def FindTorsAtom(tors, tors_ring_num, parent):
+    '''
+        Find atoms with torsion and append them on the zmatrix
+
+        Input:
+            tors: atoms with torsion
+            tors_ring_num: ring atoms with torsion
+            parent: atom connectivity of ordering
+
+        Output:
+            out_tors: torsions
+            out_tors_ring_num: ring atom torsions
+            zmat_atoms: atoms to rotate
+    '''
+
     zmat_atoms = []
     out_tors = []
     out_tors_ring_num = []
@@ -1778,7 +2128,8 @@ def FindTorsAtom(tors, tors_ring_num, parent):
                     if (len(tors_ring_num) > 0):
                         out_tors_ring_num.append(tors_ring_num[i])
                 else:
-                    if (iatom < zmat_atoms[-1]): zmat_atoms[-1] = iatom
+                    if (iatom < zmat_atoms[-1]): 
+                      zmat_atoms[-1] = iatom
         if (found == 0): pass  # No dependents, it must be the dependent in a ring
     return [out_tors, out_tors_ring_num, zmat_atoms]
 
@@ -1944,7 +2295,7 @@ class MaeFileBuilder:
             ret.append(self.__tokenizeLine(line))
 
         if not ':::' in file.readline():
-            print 'WARNING: Actual number of atoms is greater than the indicated in m_atoms header '
+            print('WARNING: Actual number of atoms is greater than the indicated in m_atoms header ')
 
         return ret
 
@@ -1960,7 +2311,7 @@ class MaeFileBuilder:
                         output.append(a.group(1))
                         line = a.group(2)
                     else:
-                        print "Error in mae formating\n", line;
+                        print("Error in mae formating {}\n".format(line))
                         return -1;
                 else:
                     output.append(a.group(1))
@@ -1981,59 +2332,257 @@ class MaeFileBuilder:
             atom[propertyNames[i - 1]] = values[i]
 
         return atom
+############################################################################
+
+def build_template(mae_file):
+  """
+    Build the Ligand ($RES_NAME).hetgrp_ffgen template.
+
+  """
+  atom_names = find_names_in_mae(mae_file)
+  number_atoms = len(atom_names)
+  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue
+  bonds = find_bonds_in_mae(mae_file)
+  parents = search_parent_atom(bonds, number_atoms)
+  number_bonds = len(bonds)
+  ##############FALTA##############
+  number_torsions = 0
+  number_teth = 0
+  number_improper = 0
+  atom_types = ['O', 'C2', 'O', 'CA', 'CA', 'HA', 'CA', 'HA', 'CA',
+                'HA', 'CA', 'HA', 'CA', 'OS', 'C2', 'O', 'CT', 'HC', 'HC', 'HC'] 
+  unk_int = 1
+  zmatrix = [0,0,0]
+
+  header = '{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
+                                                      number_torsions, number_teth, number_improper)
+
+  connectivity = []
+  for i, (atom_name, atom_type, parent) in enumerate(zip(atom_names, atom_types, parents)):
+    connectivity_line = '{0:>5} {1:>4} {2:>0} {3:>3} _{4:>3}_ {5:>4} {6:>9} {7:>9} {8:>9} '.format(
+                                                                  i, parent, 'S', atom_type, atom_name,
+                                                                  unk_int, zmatrix[0], zmatrix[1], zmatrix[2])
+    connectivity.append(connectivity_line)
+
+  NBOND_section = []
+  NBOND = read_info_from_param(nb=True)
+  charges = read_charge_from_mae(mae_file)
+  for i, (atom_type, charge) in enumerate(zip(atom_types, charges), start=1):
+    for NBOND_line in NBOND:
+      if(atom_type == NBOND_line[0]):
+        #Calculate sigma = radiVanderwaals*2
+        radius_vdw = NBOND_line[3] 
+        sigma = float(radius_vdw) * 2
+        #Truncating floats
+        SGB_gamma = NBOND_line[7] 
+        SGB_gamma = float(SGB_gamma)
+        SGB_type = NBOND_line[8]  
+        SGB_type = float(SGB_type)
+
+        NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,
+                                                                                           SGB_gamma, SGB_type, *NBOND_line))
 
 
-def build_template(mae_file, root, OPLS, hetgrp_opt, old_name, new_name):
-    files2clean = []
-    #Find the first residue name in the mae file
-    hetgrp_output = root + ".hetgrp_ffgen.out"
-    res_names = find_resnames_in_mae(mae_file)
-    mae_out_file = root + ".hetgrp_ffgen.mae"
-    if (OPLS != "2001" and OPLS != "2005"):
-        raise Exception('OPLS version must be either 2001 or 2005');
-    #  if(len(res_names)>1): raise Exception ("ERROR mae file must contain only one residue",res_names[0],res_names[1])
-    res_names[0] = res_names[0].lower()
-    a = re.search('^\s*(\S+)\s*$', res_names[0]);
-    if (a):
-        res_names[0] = a.group(1)
+  BOND_section = []
+  BOND = read_info_from_param(cv=True)
+  for bond_pair in bonds:
+    index_atom1 = bond_pair[0]
+    index_atom2 = bond_pair[1]
+    atomtype1 = atom_types[index_atom1]
+    atomtype2 = atom_types[index_atom2]
+    found = False
+    for bonded_param in BOND:
+      if(bonded_param[0]=='THET'):
+        break 
+      elif('{0}-{1}'.format(atomtype1, atomtype2)==bonded_param[0] or '{1}-{0}'.format(atomtype1, atomtype2)==bonded_param[0]):
+        found= True
+        BOND_section.append('{0:>5} {1:>6} {2:>9.3f}  {3:>6.3f}'.format(index_atom1, index_atom2, float(bonded_param[1]), float(bonded_param[2])))
+        print(bonded_param)
+    if not found:
+      warnings.warn("Bond {0}-{1} not Found. Using default spring constant and equilibrium distance".format(atomtype1, atomtype2))
+      BOND_section.append('{0:>5} {1:>6} {2:>9.3f}  {3:>6.3f}'.format(index_atom1, index_atom2, float(DEFAULT_SPRING_K), float(DEFAULT_EQ_DIST)))
+  
+
+
+
+  
+      
+
+
+  print(header)
+  print('\n'.join(connectivity))
+  print('NBON')
+  print('\n'.join(NBOND_section))
+  print('BOND')
+  print('\n'.join(BOND_section))
+
+def read_info_from_param(nb=False, cv=False):
+  """
+    Parse NBON/BON paramaters data
+    and return alist with all of them
+  """
+  directory_path = os.path.dirname(os.path.realpath(__main__.__file__))
+  if nb:
+    paramfile_partial_path = 'param/params.nb'
+  if cv:
+    paramfile_partial_path = 'param/params.cov'
+  paramfile_path = os.path.join(directory_path, paramfile_partial_path)
+  with open(paramfile_path) as f:
+    lines = f.readlines()
+    for i, line in enumerate(lines):
+      line = re.sub(' +',' ',line)
+      line = line.strip('\n')
+      lines[i] = line.split()
+  return(lines)
+    
+
+
+
+
+  
+def search_parent_atom(bonds, number_atoms):
+  """
+    Iterate over all bonds searching for
+    the smallest parent (smallest atom number)
+    of each atom returning a list with them.
+
+    Input:
+      Bonds: All bonds
+      number_atom: number of atoms
+
+    Ouput:
+      parents: smallest parents of each atom
+
+    Ex--> [0,1,1,3,3,4]
+    Atom number 1 has a 0 which means that doesnt have parent
+    Atom number 2 has atom number 1 as a parent
+    Atom 3 has atom 1
+    Atom 4 has atom 3
+    etc...
+  """
+  parents_template = []
+  parent_initialize = [None] * number_atoms
+  atoms = [i for i in range(number_atoms)] 
+  parents = {atom : parent_init for atom, parent_init in zip(atoms, parent_initialize)}
+
+  for bond_pair in bonds:
+    atom = bond_pair[1] 
+    parent = bond_pair[0]
+    if(parent<parents[atom] or parents[atom] is None):
+      parents[atom] = parent
+  for atom, parent in parents.items():
+    if parent is None:
+      parents_template.append(0)
     else:
-        raise Exception('Input file must have a residue name')
-    if (old_name == res_names[0]):
-        raise Exception('Input Template file must have a different name')
-    if (new_name == ""): new_name = res_names[0];
-    if (old_name == ""):
-        # this isn't the right way to do it, but I'm removing the default template
-        # file if it exists and forcing hetgrp_ffgen to write a new one
-        f = open(res_names[0], 'w');
-        f.close();
-        if (f): os.remove(res_names[0]);
-        line = hetgrp_ffgen + ' ' + OPLS + ' ' + mae_file + ' ' + hetgrp_opt + ' -out ' + mae_out_file + ' > ' + hetgrp_output
-        os.system(line);
-        print "Atom Typing (", OPLS, "): ", mae_file, " -> ", mae_out_file
-        files2clean.append(hetgrp_output)
-        output = res_names[0] + ".hetgrp_ffgen";
-        try:
-            shutil.copy2(res_names[0], output)
-        except:
-            f1 = open(hetgrp_output, "r");
-            lines = f1.read();
-            f1.close();
-            raise Exception('Error assigning atom types \n' + lines)
-        files2clean.append(output)
-    else:
-        print "Reading in template file: ", old_name
-        print "Copying Mae File: ", mae_file, " -> ", mae_out_file
-        shutil.copy2(mae_file, mae_out_file)
-        output = old_name
-    files2clean.append(mae_out_file)
+      parents_template.append(parent+1) #Shift of one between mae and bonds
+  return parents_template
+    
 
-    print output #The template created. Has the residue name if has been generated automatically. If not, has the user-defined name
-    print new_name #Actually, the name of the residue, will be the name of the generated template
-    print mae_out_file #File created by hetgrp_ffgen, if the used didn't indicate a template. The mae indicated by the user otherwise
-    print files2clean
-    print res_names[0]
+def read_charge_from_mae(mae_file):
+    charges = []
+    with open(mae_file, "r") as f:
 
-    return [output, new_name, mae_out_file, files2clean, res_names[0]]
+      atom_sec_found = False
+      while not atom_sec_found:  # Find Atom Section
+          line = f.readline()
+          if line == "" or re.search(r'm_atom\[\d+\]', line):
+            atom_sec_found = True   
+
+      end_atom_section_found = False #Find :::        
+      while not end_atom_section_found:
+          line = f.readline()
+          if line == "" or re.search(':::', line):
+              end_atom_section_found = True
+
+      #Read Charges
+      end_keywords_found = False   
+      while not end_keywords_found:
+          line = f.readline()
+          if line == "" or re.search(':::', line):
+              end_keywords_found = True
+              break
+          mae_atom_values = parse_mae_line(line)
+          charges.append(mae_atom_values[8])
+      return charges
+
+
+
+
+
+
+
+
+# def build_template(mae_file, root, OPLS, hetgrp_opt, old_name, new_name):
+#     """
+#     Build the Ligand ($RES_NAME).hetgrp_ffgen template.
+
+#     Input:
+#       mae_file: ligand mae file
+#       root: name of the ame_file without extensio
+#       OPLS: Type of OPLS to use 2001/2005
+#       hetgrp_opt: Option to include -mae charges in the command line input
+#       old_name: Name of all user given template_files
+#       new_name: User choosen outputfile
+
+#     Output:
+#        template_file: ($RES_NAME).hetgrp_ffgen template
+#        output_template_file:   name of the ligand template file
+#        mae_file_hetgrp_ffgen: ($RES_NAME).hetgrp_ffgen.mae
+#        files: files to clean
+#        resname: residue name on template
+
+#     """
+#     files2clean = []
+#     #Find the first residue name in the mae file
+#     hetgrp_output = root + ".hetgrp_ffgen.out"
+#     res_names = find_resnames_in_mae(mae_file)
+#     mae_out_file = root + ".hetgrp_ffgen.mae"
+#     if (OPLS != "2001" and OPLS != "2005"):
+#         raise Exception('OPLS version must be either 2001 or 2005');
+#     #  if(len(res_names)>1): raise Exception ("ERROR mae file must contain only one residue",res_names[0],res_names[1])
+#     res_names[0] = res_names[0].lower()
+#     a = re.search('^\s*(\S+)\s*$', res_names[0]);
+#     if (a):
+#         res_names[0] = a.group(1)
+#     else:
+#         raise Exception('Input file must have a residue name')
+#     if (old_name == res_names[0]):
+#         raise Exception('Input Template file must have a different name')
+#     if (new_name == ""): new_name = res_names[0];
+#     if (old_name == ""):
+#         # this isn't the right way to do it, but I'm removing the default template
+#         # file if it exists and forcing hetgrp_ffgen to write a new one
+#         f = open(res_names[0], 'w');
+#         f.close();
+#         if (f): 
+#           os.remove(res_names[0]);
+#         line = hetgrp_ffgen + ' ' + OPLS + ' ' + mae_file + ' ' + hetgrp_opt + ' -out ' + mae_out_file + ' > ' + hetgrp_output
+#         os.system(line);
+#         #print("Atom Typing (", OPLS, "): ", mae_file, " -> ", mae_out_file
+#         files2clean.append(hetgrp_output)
+#         output = res_names[0] + ".hetgrp_ffgen";
+#         try:
+#             shutil.copy2(res_names[0], output)
+#         except:
+#             f1 = open(hetgrp_output, "r");
+#             lines = f1.read();
+#             f1.close();
+#             raise Exception('Error assigning atom types \n' + lines)
+#         files2clean.append(output)
+#     else:
+#         print("Reading in template file: {}".format(old_name))
+#         print("Copying Mae File: {0}  -> {1}".format(mae_file, mae_out_file))
+#         shutil.copy2(mae_file, mae_out_file)
+#         output = old_name
+#     files2clean.append(mae_out_file)
+
+
+#     print("Template output {}".format(output)) #The template created. Has the residue name if has been generated automatically. If not, has the user-defined name
+#     print("Residue name on template {}".format(new_name)) #Actually, the name of the residue, will be the name of the generated template
+#     print("Output hetgrp_ffgen {}".format(mae_out_file)) #File created by hetgrp_ffgen, if the used didn't indicate a template. The mae indicated by the user otherwise
+
+#     print([output, new_name, mae_out_file, files2clean, res_names[0]])
+#     return [output, new_name, mae_out_file, files2clean, res_names[0]]
 
 
 ##################################################
@@ -2058,6 +2607,7 @@ def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, orderi
         ordering_to_mae.append(temp2mae[ordering[i]])
 
     # Read in File
+    ###############################CHANGE SCHRODINGER########################
     st1 = structure.StructureReader(conf_file).next()
     tors_values = []
     for st in structure.StructureReader(conf_file):
@@ -2080,14 +2630,14 @@ def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, orderi
         for atom in zmat_atoms:
             this_tors.append(zmat[atom][2])
         tors_values.append(this_tors)
-
-        # Write To Library File
+    ###############################CHANGE SCHRODINGER########################
+    # Write To Library File
     # for atom in zmat_atoms:
     #    print "%d %s\n"%(atom,names[atom]); 
     # for tv in tors_values:
     #    print tv,"\n";
     # Change to Grid Resolution
-    grid_entries = [];
+    grid_entries = []
     #print "GRIDRES %f"%float(gridres)
     if (float(gridres) != float(lib_gridres)):
         unique_tors_values = []
@@ -2102,8 +2652,7 @@ def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, orderi
                     if (min(temp) > diff): diff = min(temp)
                 if (diff < min_diff): min_diff = diff
             if (min_diff > float(gridres)): unique_tors_values.append(tors_values[i])
-        print "Reduced number of conformers from ", len(tors_values), " to ", len(
-            unique_tors_values), " at resolution ", str(gridres)
+        print("Reduced number of conformers from {0} to {1} at resolution  {2}".format(len(tors_values),len(unique_tors_values),str(gridres)))
         tors_values = unique_tors_values
 
     for tv in tors_values:
@@ -2165,7 +2714,7 @@ def find_yesno(input):
     if (a): return 0
     a = re.search('[Oo]', input);
     if (a): return 2
-    print "ERROR PROCESSING ", input, " as yes/no";
+    print("ERROR PROCESSING {} as yes/no".format(input))
     return -1
 
 
@@ -2176,7 +2725,7 @@ def make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings
     is_pdb = re.search(r'^(.*)\.[PpEe][DdNn][BbTt]', conf_file)
     is_mae = re.search(r'^(.*)\.[Mm][Aa][Ee]', conf_file)
     if (not is_mae):
-        print "Conformation file must be an mae file\n"
+        print("Conformation file must be an mae file\n")
         sys.exit(-1)
 
     assign_filename = resname.upper() + ".rot.assign"
@@ -2198,11 +2747,15 @@ def make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings
     #    fp=open(assign_filename,"w")
     #    fp.write(line);fp.close();
     #  else:
+
+    ######################CHANGE SCHRODINGER#########################
     if use_rings:
         lib_gridres = -1.0  # If there are flexible rings present we set the library to be at res 1 and
     # Disalow down sampling
     else:
         lib_gridres = gridres
+    ######################CHANGE SCHRODINGER#########################
+
     for grp in range(max(group) + 1):
         grp_tors = []
         if (grp + 1 < 10):
@@ -2225,17 +2778,14 @@ def make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings
                     torsion_atom >= R_group_root_atom_order_num[0])): still_mainchain = 0
             if ( group[t[0]] == grp or group[t[1]] == grp and still_mainchain == 0):
                 grp_tors.append(t)
-        print 'Building Rotamer Library: ', libname
         if (grp != 0 ): line += "  newgrp &\n";
         line += "  sidelib " + libname + " default &\n"
         make_lib_from_mae(libname, "side", conf_file, grp_tors, names, parent, old_atom_num, mae2temp, temp2mae,
                           gridres, lib_gridres)
-    print "Use the following line to load these libraries\n" + line + "\n";
     fp = open(assign_filename, "w")
     fp.write(line);
     fp.close();
-    print "\nAssignment filename for use in PLOP: ", assign_filename;
-    print "Use by adding \"rot assign all\" to control file after loading PDB\n";
+    return assign_filename
 
 
 ################################################################################
@@ -2320,16 +2870,14 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
     lib_name_oh = convert_gridres(gridres_oh)
     is_oh = check_oh_tors(mae_file, tors, names)
 
-    print "Combined libraries for use in PLOP (add to control file)\n"
+
     #  if(use_rings):
     #    print "Libraries must be corrected for rings"
     written_ring = []
     if (tors_ring_num != []):
         for i in range(max(tors_ring_num) + 1): written_ring.append(0)
-    print "rot assign res ", resname.upper(), ' &'
     f.write("rot assign res " + resname.upper() + ' &\n')
     if (back_lib != ""):
-        print " backlib " + back_lib + " &";
         f.write(" backlib " + back_lib + " &\n");
     for grp in range(max(group) + 1):
         for i in range(len(tors)):
@@ -2339,25 +2887,30 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
                         lib_name = lib_name_oh
                     else:
                         lib_name = lib_name_nom
-                    print "   sidelib ", lib_name, " ", names[tors[i][0]] + ' ' + names[tors[i][1]], " &"
                     f.write("   sidelib " + lib_name + " " + names[tors[i][0]] + ' ' + names[tors[i][1]] + " &\n")
                 else:
                     ring_num = tors_ring_num[i]
                     if (written_ring[ring_num] == 0):
-                        print "   sidelib ", ring_libs[ring_num - 1], "  default &"
                         f.write("   sidelib " + ring_libs[ring_num - 1] + "  default &\n")
                         written_ring[ring_num] = 1
         if (grp != max(group)):
-            print "     newgrp &"
             f.write("     newgrp &\n")
     f.close();
-    print "\nAssignment filename for use in PLOP: ", assign_filename;
-    print "Use by adding \"rot assign all\" to control file after loading PDB\n";
-    return file2clean
-    print "\n\n"
+    return assign_filename
+    
 
 
 #################################################
+
+def get_root_path(mae_file):
+  #File Must By Copied to Local Directory First
+
+  if(os.path.dirname(mae_file)):
+    file_name = os.path.basename(mae_file)
+    root = os.path.splitext(file_name)[0]
+  else:
+    root = os.path.splitext(mae_file)[0]
+  return root
 
 #TetherRotBonds Class: Chris McClendon, Jacobson Group
 #originally, the unnatural amino acid stuff was going to be a separate class that used functions and subroutines from PlopRotTemp.py. It turned out to make more sense to add in many extra functions alongside the rest of the functions and make special cases in the main code for unnatural amino acids, easily retaining backwards-compatibility. Perhaps this should be converted stylisticly to parallel the existing code.
@@ -2504,7 +3057,7 @@ class TetherRotBonds:
         print("\n")
         fout.write("&")
         fout.close()
-        print "Use the previous syntax under tether pred, use the following syntax for other modules."
+        print("Use the previous syntax under tether pred, use the following syntax for other modules.")
         return
 
 
@@ -2525,9 +3078,10 @@ def build_ring_libs(mae_min_file, root, resname, tors, tors_ring_num, \
             # Remove All Torsions that are in frozen core areas 
             if (tors_ring_num[i] == ring_num and (rank[tors[i][0]] > 0 or rank[tors[i][1]] > 0)):
                 ring_tors.append(tors[i])
-        print "Sampling ring ", ring_num, " using macromodel CGEN";
-        print "Torsions in ring ", ring_num
-        for t in ring_tors: print "%s  -  %s" % (names[t[0]], names[t[1]])
+        print("Sampling ring ", ring_num, " using macromodel CGEN")
+        print("Torsions in ring {}".format(ring_num))
+        for t in ring_tors: 
+          print ("%s  -  %s" % (names[t[0]], names[t[1]]))
         mcu_conf = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
         mcu_conf.SOLV[2] = 1  # water
         #     mcu_conf.MCMM[1] = nsamp # Take X steps
@@ -2627,4 +3181,4 @@ def printGlobalVariables():
     d["tree"] = tree
     d["R_group_root_atom_name"] = R_group_root_atom_name
 
-    print d
+    print(d)
