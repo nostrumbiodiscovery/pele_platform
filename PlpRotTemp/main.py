@@ -100,7 +100,7 @@ back_conf_file = ""
 hetgrp_opt = ""
 use_mae_charges = 0
 OPLS = "2005"
-max_tors = 5
+max_tors = -1
 user_fixed_bonds = []
 files2clean = []
 use_mult_lib = 1
@@ -228,17 +228,12 @@ print("User output template file '{}'".format(output_template_file))
 print("\n")
 print("TEMPLATE GENERATION")
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
-    pl.build_template(mae_file, root, OPLS, hetgrp_opt, template_file, \
-                   output_template_file)
-for f in files:
-    files2clean.append(f)
+    pl.build_template(mae_file, root)
+
 
 #########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
 
 ####################CHANGE MACROMODEL MINIMIZATION OF LIGAND-->PymoChimera, OPenMM###########################
-#(.mae)-->pdb (pymol)
-#OpenMM (minimize)
-#(pymol)-->(.mae)
 
 print("\n")
 if (do_init_min == 1):
@@ -260,6 +255,9 @@ else:
     print('\nSkipping Minimization\n ')
     mae_min_file = mae_file_hetgrp_ffgen
 
+
+
+#####################################FINDTORS#####################################
 #Run the Dummy Conformation Search to Find Bonds
 mcu_dummy.MCMM[1] = 1  # Take 1,000 steps
 mcu_dummy.MCMM[2] = 1  # Store up to 1000 values
