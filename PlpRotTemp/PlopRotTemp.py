@@ -115,6 +115,7 @@ import shutil
 import __main__
 import subprocess
 from schrodinger import structure
+from schrodinger.application.matsci import zmutils
 # from schrodinger import structureutil
 import schrodinger.infra.mm as mm
 hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
@@ -130,10 +131,15 @@ ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGA
 DEFAULT_RADIUS_VDW = '0.5000'
 DEFAULT_SPRING_K = '268.0'
 DEFAULT_EQ_DIST = '1.529'
-PARAM_PATH = os.path.join(os.environ['SCHRODINGER'], 'mmshare-v3.6/data/f14/')
+FILE_DIR_PATH = os.path.dirname(__main__.__file__)
+PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/sgbnp.param') ##impact??
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
 dummy_atom3 = [0.1, 0.2, 0.3]
+UNK_INT = 6
+DUMMY_COORD = 17.21606
+DUMMY_ANGLE = 45.73961
+DUMMY_DIHEDRAL = 13.21566
 OPLS_CONVERSION_FILE = 'param.dat'
 OPLS_VERSION = '14'
 
@@ -374,7 +380,7 @@ def find_names_in_mae(filename):
             nma = re.search('NMA', mae_atom_values[residue_names_index])  #added by mcclendon
             if ((not ace) and (not nma)):
                 atomname = mae_atom_values[atom_names_index]
-                names.append(atomname)
+                names.append(atomname.strip())
     f.close()
     return names
 ##################################################
@@ -1527,7 +1533,7 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
     line = ' -Core Atoms (including backbone):'
     for i in range(len(atom_names)):
         if (rank[i] == 0):
-            line = line + atom_names[i]
+            line = line + ' ' + atom_names[i]
     print(line)
     #  for i in range(len(atom_names)):
     #    print atom_names[i].rjust(5),group[i],rank[i]
@@ -1539,7 +1545,7 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
             line = '  -Group %2d' % (grp + 1)
             for i in range(len(atom_names)):
                 if (group[i] == grp):
-                    line = line + atom_names[i]
+                    line = line + ' ' + atom_names[i]
             print(line)
 
     [old_num, parent, rank, group] = order_atoms(bonds, tors, back_tors, assign, rank, group)
@@ -2067,17 +2073,11 @@ def MatchTempMaeAtoms(mae_file, template_file):
 
     """
     [parent, zmat, temp_names] = read_zmat_template(template_file)
-    print(temp_names)
     mae_names = find_names_in_mae(mae_file)
     if ( len(temp_names) != len(mae_names)):
         raise Exception(
             "MAE and template of different length %d!=%d (check if the input file has more then one residue)\n" % (
             len(mae_names), len(temp_names)));
-    mae2temp = []
-    for i in range(len(mae_names)):
-        for j in range(len(mae_names)):
-            if (i != j and mae_names[i] == mae_names[j]):
-                raise Exception("mae file has a duplicated atom name %s" % mae_names[i])
     mae2temp = []
     temp2mae = []
     num_found = 0
@@ -2348,74 +2348,82 @@ def build_template(mae_file, output_template_file):
   # Build the Ligand ($RES_NAME).hetgrp_ffgen template.
   #Get opls2005
   st1 = structure.StructureReader(mae_file).next()
-  atoms = st1.atom
-  vdws = [atom.vdw_radius for atom in atoms]
+  # coordinates = [atom._getXYZ() for atom in atoms]
 
+  vdws = [atom.vdw_radius for atom in st1.atom]
   res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue 
 
   ffld_server_command = os.path.join(os.environ['SCHRODINGER'], 'utilities/ffld_server')
   subprocess.call([ffld_server_command, "-imae", mae_file, "-version",
     OPLS_VERSION, "-print_parameters", "-out_file", OPLS_CONVERSION_FILE])
 
-  atom_names = retrieve_atom_names(OPLS_CONVERSION_FILE)
-  atom_names = ['_{}_'.format(atomname) for atomname in atom_names]
-  search_and_replace(OPLS_CONVERSION_FILE, atom_names)
-  atom_types, bonds, parents, charges, sigmas, epsilons, stretchings, tors, phis, impropers = parse_param(OPLS_CONVERSION_FILE)
+  atom_names = find_names_in_mae(mae_file)
+  atom_names = ['_{}_'.format(atomname.strip()) for atomname in atom_names]
 
+  atom_names_param = retrieve_atom_names(OPLS_CONVERSION_FILE)
+  search_and_replace(OPLS_CONVERSION_FILE, atom_names_param)
+  atom_types, bonds, charges, sigmas, epsilons, stretchings, tors, phis, impropers = parse_param(OPLS_CONVERSION_FILE)
   number_bonds = len(bonds)
-  number_torsions = len(tors) #Comparison
+  number_torsions = len(tors)
   number_atoms = len(atom_names)
-  number_phis = len(phis) #comparison
-  number_improper = len(impropers) #comparison
-  unk_int = 1
-  zmatrix = [0,0,0]
+  number_phis = len(phis)
+  number_improper = len(impropers)
+  sgb_radius, gammas, alphas = SGB_paramaters(atom_types)
+  
+  parents = search_parent_atom(bonds, int(number_atoms))
+  zmat = create_zmatrix(st1, parents)
+  distances = zmat[0]
+  angles = zmat[1]
+  dihedrals = zmat[2]
+
 
 
   header = ['{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
-                                                      number_torsions, number_phis, number_improper)]
+                                                      number_torsions, (number_phis + number_improper), 0)]
 
   connectivity = []
-  for i, (atom_name, atom_type, parent) in enumerate(zip(atom_names, atom_types, parents), 1):
-    connectivity_line = '{0:>5} {1:>4} {2:>0} {3:>4} {4:>5} {5:>4} {6:>9} {7:>9} {8:>9} '.format(
+  for i, (atom_name, atom_type, parent, distance, angle, dihedral) in enumerate(
+    zip(atom_names, atom_types, parents, distances, angles, dihedrals), 1):
+    connectivity_line = '{0:>5} {1:>5} {2:>0} {3:>5} {4:>5} {5:>5} {6:>11.5f} {7:>11.5f} {8:>11.5f} '.format(
                                                                   i, parent, 'S', atom_type, atom_name,
-                                                                  unk_int, zmatrix[0], zmatrix[1], zmatrix[2])
+                                                                  UNK_INT, distance, angle, dihedral)
     connectivity.append(connectivity_line)
 
   NBOND_section = []
-  for i, (atom_type, charge, sigma, epsilon, vdw) in enumerate(zip(atom_types, charges, sigmas, epsilons,vdws), 1):
-        NBOND_section.append(
-          '{0:>5} {1:>8.4f} {2:>6.4f} {3:>9.6f} {4:>6.4f}'.format(
-          i, float(sigma), float(epsilon), float(charge), float(vdw)))
+  for i, (atom_type, charge, sigma, epsilon, radius, vdw, gamma, alpha) in enumerate(
+    zip(atom_types, charges, sigmas, epsilons, sgb_radius, vdws, gammas, alphas), 1):
+        NBOND_section.append('{0:>5} {1:>8.4f} {2:>8.4f} {3:>10.6f} {4:>8.4f} {5:>8.4f} {5:>13.9f} {6:>13.9f}'.format(
+          i, float(sigma), float(epsilon), float(charge), float(radius), float(vdw), float(gamma), float(alpha)))
         #  NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,epsilon, vdw))
  
 
 
   strech_section = []
   for (bond_pair, stretching) in zip(bonds, stretchings):
-        strech_section.append('{0:>5} {1:>6} {2:>9.3f}  {3:>6.3f}'.format(
+        strech_section.append('{0:>5} {1:>5} {2:>9.3f}  {3:>5.3f}'.format(
           bond_pair[0], bond_pair[1], float(stretching[0]), float(stretching[1])))
    
   
 
   tors_section = []
   for tor in tors:
-    tors_section.append('{0:>5} {1:>6} {2:>6} {3:>10.5f} {4:>10.5f}'.format(
+    tors_section.append('{0:>5} {1:>5} {2:>5} {3:>11.5f} {4:>10.5f}'.format(
       tor[0], tor[1], tor[2], float(tor[3]), float(tor[4])))
 
   phi_section = []
   for phi in phis:
-    phi_section.append('{0:>5} {1:>6} {2:>6} {3:>6} {4:>9.5f} {5:>3.1f} {6:>4.1f}'.format(
-      phi[0], phi[1], phi[2], phi[3], (float(phi[4])+float(phi[5])/2.0), -1, float(phi[6])))
+    phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
+      phi[0], phi[1], phi[2], phi[3], (float(phi[4])+float(phi[5])/2.0), -1, abs(float(phi[6]))))
 
   iphi_section = []
   for improper in impropers:
-    iphi_section.append('{0:>5} {1:>6} {2:>6} {3:>6} {4:>9.5f} {5:>3.1f} {6:>4.1f}'.format(
+    iphi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
       improper[0], improper[1], improper[2], improper[3], float(improper[4]), -1, 3))
 
   file_content = []
   file_content.extend(header +
                        connectivity +
-                       ['NBOND'] +
+                       ['NBON'] +
                        NBOND_section +
                        ['BOND'] +
                        strech_section +
@@ -2428,10 +2436,81 @@ def build_template(mae_file, output_template_file):
                        ['END'])
 
   output_file = output_template_file + '.hetgrp_ffgen'
-  print(output_file)
   with open(output_file, 'w') as f:
     f.write('\n'.join(file_content))
   return output_file, res_name, mae_file, output_file, res_name
+
+def SGB_paramaters(atom_types):
+  radius = []
+  gammas = []
+  alphas = [] 
+  lines = preproces_file_lines(PARAM_PATH)
+  for atom_type in atom_types:
+    found = False
+    for line in lines:
+      line = line.split()
+      atom_type_file = line[1]
+      if(atom_type == atom_type_file):
+        radius.append(line[4])
+        gammas.append(line[6])
+        alphas.append(line[7])
+        found = True
+    if not found:
+      raise Exception('Atomtype parameters {} not found in \
+                      param/sgbnp.param include him and run \
+                       the program againd'.format(atom_type))
+  return(radius, gammas, alphas)
+
+
+
+
+
+
+def create_zmatrix(str1, parents):
+  """
+    Retrieve the internal coordinates (zmatrix)
+    from the complex cooridnates & topology:
+
+    Input:
+      str1: structure.structure class object
+      parents: atom's parent list
+
+    Ouput:
+      zmatrix: structure internal coord
+  """
+
+  #atom starts at 1 therefore to get the parent of the atom 
+  #1 I have to go to parent position 0 --> parents.index(parent)-1
+
+  interatom_distance = []
+  angles = []
+  dihedrals = []
+
+  for atom, parent in enumerate(parents, 1):
+    if(parent == 0):
+      interatom_distance.append(DUMMY_COORD)
+    else:
+      distance = str1.measure(atom, parent)
+      interatom_distance.append(distance)
+
+    second_parent = parents[parents.index(parent)-1]
+    if 0 in [parent, second_parent]:
+      angles.append(DUMMY_ANGLE)
+    else:
+      angle = str1.measure(atom, parent, second_parent)
+      angles.append(angle)
+
+    second_parent = parents[parents.index(parent)-1]
+    third_parent = parents[second_parent-1]
+    if 0 in [parent, second_parent, third_parent]:
+      dihedrals.append(DUMMY_DIHEDRAL)
+    else:
+      dihedral = str1.measure(atom, parent, second_parent, third_parent)
+      dihedrals.append(dihedral)
+  return [interatom_distance, angles, dihedrals]
+
+
+
 
   
 def retrieve_atom_names(OPLS_CONVERSION_FILE):
@@ -2455,7 +2534,7 @@ def retrieve_atom_names(OPLS_CONVERSION_FILE):
 
 
 def preproces_file_lines(file):
-  with open(file) as f:
+  with open(file, "r") as f:
     lines = f.readlines()
     for i, line in enumerate(lines):
       line = re.sub(' +',' ',line)
@@ -2511,7 +2590,6 @@ def parse_param(param_file):
        3.when all sections are parsed return all values
   """
   bonds = []
-  parents = []
   atom_types = []
   charges = []
   sigmas = []
@@ -2545,7 +2623,6 @@ def parse_param(param_file):
           try:
             line = line.split()
             bonds.append([line[0], line[1]])
-            parents.append(line[1])
           except IndexError:
             end_connectivity_found = True
 
@@ -2576,58 +2653,50 @@ def parse_param(param_file):
                 values = [line[index] for index in indexes]
                 List.append(values)
                 line, i = move_line_forward(lines, i)
-        return atom_types, bonds, parents, charges, sigmas, epsilons, stretchings, bendings, proper_tors, improper_tors
+        return atom_types, bonds, charges, sigmas, epsilons, stretchings, bendings, proper_tors, improper_tors
 
 def move_line_forward(lines, i):
   i+=1
   line = lines[i].strip()
   return line, i
 
-
-              
-
-
-
-
-
-
   
-# def search_parent_atom(bonds, number_atoms):
-#   """
-#     Iterate over all bonds searching for
-#     the smallest parent (smallest atom number)
-#     of each atom returning a list with them.
+def search_parent_atom(bonds, number_atoms):
+  """
+    Iterate over all bonds searching for
+    the smallest parent (smallest atom number)
+    of each atom returning a list with them.
 
-#     Input:
-#       Bonds: All bonds
-#       number_atom: number of atoms
+    Input:
+      Bonds: All bonds
+      number_atom: number of atoms
 
-#     Ouput:
-#       parents: smallest parents of each atom
+    Ouput:
+      parents: smallest parents of each atom
 
-#     Ex--> [0,1,1,3,3,4]
-#     Atom number 1 has a 0 which means that doesnt have parent
-#     Atom number 2 has atom number 1 as a parent
-#     Atom 3 has atom 1
-#     Atom 4 has atom 3
-#     etc...
-#   """
-#   parents_template = []
-#   parent_initialize = [None] * number_atoms
-#   atoms = [i for i in range(number_atoms)] 
-#   parents = {atom : parent_init for atom, parent_init in zip(atoms, parent_initialize)}
+    Ex--> [0,1,1,3,3,4]
+    Atom number 1 has a 0 which means that doesnt have parent
+    Atom number 2 has atom number 1 as a parent
+    Atom 3 has atom 1
+    Atom 4 has atom 3
+    etc...
+  """
+  parents_template = []
+  parent_initialize = [None] * number_atoms
+  atoms = [i for i in range(number_atoms)] 
+  parents = {atom : parent_init for atom, parent_init in zip(atoms, parent_initialize)}
 
-#   for bond_pair in bonds:
-#     atom = bond_pair[1] 
-#     parent = bond_pair[0]
-#     if(parent<parents[atom] or parents[atom] is None):
-#       parents[atom] = parent
-#   for atom, parent in parents.items():
-#     if parent is None:
-#       parents_template.append(0)
-#     else:
-#       parents_template.append(parent+1) #Shift of one between mae and bonds
-#   return parents_template
+  for bond_pair in bonds:
+    atom = int(bond_pair[1])-1
+    parent = int(bond_pair[0])-1
+    if(parents[atom] is None or parent<parents[atom]):
+      parents[atom] = parent
+  for atom, parent in parents.items():
+    if parent is None:
+      parents_template.append(0)
+    else:
+      parents_template.append(parent+1) #Shift of one between mae and bonds
+  return parents_template
     
 
 # def read_charge_from_mae(mae_file):
