@@ -1620,7 +1620,6 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
     fin = open(in_file, "r")
     fout = open(out_file, "w")
     line = fin.readline()
-    fout.write(line)
     while fin:  #Get past coments
         if (not re.search('^\*', line)): break
         line = fin.readline()
@@ -1642,7 +1641,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         a = re.search('^\s*(\d+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\d+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\-\.]+)',
                       line)
         at.append(a.group(4));
-        name.append(a.group(5));
+        name.append((a.group(5)).strip('_'));
         mat.append(a.group(6));
 
     #Keep as mainchain the z-matrix atoms until R_group_root_atom_name,
@@ -1668,6 +1667,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
             2] + '\n'
         fout.write(outline)
+    """
     # Move to exclude table
     exclude = []
     counts = []
@@ -1675,18 +1675,26 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         line = fin.readline();
         a = re.search('\s*(.*)', line);
         line = a.group(1)
+        print(lines)
         p = re.compile(r'\W+');
         temp = p.split(line);
         counts = counts + temp
+        print(counts)
     for i in range(len(ordering)):
         exclude.append([])
     for i in range(len(ordering)):
-        line = fin.readline();
+        print('ordering')
+        print(len(ordering))
+        line = fin.readline()
+        print(line)
         a = re.search('\s*(.*)', line);
         line = a.group(1)
+        print(line)
         p = re.compile(r'[\W$\s]+');
         temp = p.split(line);
+        print(temp)
         iatom = conv_at(ordering, i + 1)
+        print(iatom)
         for atom in temp:
             if (atom == ''): break;
             if (int(atom) == 0 ):
@@ -1716,7 +1724,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
             line = line + str(atom).rjust(6)
         line = line + '\n';
         fout.write(line)
-
+    """
     #NONBON Region
     line = fin.readline()
     if (not re.search('NBON', line)):
@@ -2214,7 +2222,7 @@ def find_resnames_in_mae(filename):
     mae = builder.build(filename)
 
     #Get residue names list, remove duplicates building a set, and return a list with unique values
-    return list(set([atom['s_m_pdb_residue_name'] for atom in mae.atoms()]))
+    return list(set([atom['s_m_pdb_residue_name'].strip() for atom in mae.atoms()]))
 
 
 ###################################
@@ -3048,9 +3056,10 @@ def check_oh_tors(mae_file, tors, names):
     for tor in tors:
         atom_name0 = names[tor[0]].replace("_", " ");
         atom_name1 = names[tor[1]].replace("_", " ");
+        print(atom_name1)
         mae_atom1 = -1
         for iatom in range(mm.mmct_ct_get_atom_total(st1)):
-            if (atom_name1 == st1.atom[iatom + 1].property['s_m_pdb_atom_name']):
+            if (atom_name1.strip() == (st1.atom[iatom + 1].property['s_m_pdb_atom_name']).strip()):
                 mae_atom1 = iatom + 1
         if (mae_atom1 < 0):
             raise Exception('Error in check OH Tors')
