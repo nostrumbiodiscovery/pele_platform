@@ -312,7 +312,7 @@ def mass_of_element(element):
 
 
 ####################################
-def find_names_in_mae(filename):
+def find_names_in_mae(filename, undersc=False):
 
     """
     :param: the file name to parse.
@@ -382,6 +382,10 @@ def find_names_in_mae(filename):
                 atomname = mae_atom_values[atom_names_index]
                 names.append(atomname.strip())
     f.close()
+
+    if(undersc):
+      names = ['_{}_'.format(name.strip()) for name in names]
+
     return names
 ##################################################
 
@@ -453,7 +457,6 @@ def rvdw_change(rotamer_library, radius_vdw_info, start_index, end_index):
     Change all radius vanderwals 0 to 0.5
     from the rotamer's library file
   """
-  print(radius_vdw_info)
   with open(rotamer_library, 'r') as f:
     lines = f.readlines()
     for i, new_line in enumerate(radius_vdw_info):
@@ -2352,73 +2355,93 @@ class MaeFileBuilder:
 ############################################################################
 
 def build_template(mae_file, output_template_file):
+  """
+    Build ligand template from mae file
+
+    Input:
+      mae_file: input .mae
+      outpt_template_file = output path
+
+    Output:
+      output: ligand template
+      resname: residue name
+
+    Explanation:
+
+    Preparation of param:
+      1- Use the flld_server schrodinger command line server
+         to create the 2005OPLS paramaters for the ligand
+      2- Parse the previous parameters extracting 
+         atomtypes, bond info, non bonded info, torsions,
+         dihedrals and imporpers rotations.
+      3- From this parameters create the internal coordinates
+         and get some extra parameters as the nonbonded
+         sgb_radius, gammas, alphas from our proper database
+         which is in PARAM_PATH in case it needs to be extended
+         by the user.
+      4- With the previous parsed parameters create the several
+         sections of the template
+      5- Write everything to a RESIDUENAME.hetgrp file
+  """
   
-  # Build the Ligand ($RES_NAME).hetgrp_ffgen template.
-  #Get opls2005
-  st1 = structure.StructureReader(mae_file).next()
-  # coordinates = [atom._getXYZ() for atom in atoms]
-
-  vdws = [atom.vdw_radius for atom in st1.atom]
-  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue 
-
+  #Create ligand params with ffld_sever from schrodinger
   ffld_server_command = os.path.join(os.environ['SCHRODINGER'], 'utilities/ffld_server')
   subprocess.call([ffld_server_command, "-imae", mae_file, "-version",
     OPLS_VERSION, "-print_parameters", "-out_file", OPLS_CONVERSION_FILE])
 
-  atom_names = find_names_in_mae(mae_file)
-  atom_names = ['_{}_'.format(atomname.strip()) for atomname in atom_names]
-
+  #Retrieve all the useful information from that params
   atom_names_param = retrieve_atom_names(OPLS_CONVERSION_FILE)
   search_and_replace(OPLS_CONVERSION_FILE, atom_names_param)
-  atom_types, bonds, charges, sigmas, epsilons, stretchings, tors, phis, impropers = parse_param(OPLS_CONVERSION_FILE)
+  atom_types, parents, charges, sigmas, epsilons, stretchings, tors, phis, impropers = parse_param(OPLS_CONVERSION_FILE, len(atom_names_param))
+
+  #Connectivity information from Mae
+  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue 
+  atom_names = find_names_in_mae(mae_file, undersc=True)
+  bonds = [[stretching[0], stretching[1]] for stretching in stretchings]
+  zmat = create_zmatrix(mae_file, parents)
   number_bonds = len(bonds)
   number_torsions = len(tors)
   number_atoms = len(atom_names)
   number_phis = len(phis)
   number_improper = len(impropers)
+
+  #Missing NBND information in param
   sgb_radius, gammas, alphas = SGB_paramaters(atom_types)
-  
-  parents = search_parent_atom(bonds, int(number_atoms))
-  zmat = create_zmatrix(st1, parents)
-  distances = zmat[0]
-  angles = zmat[1]
-  dihedrals = zmat[2]
 
-
+  #Output file
+  output_file = output_template_file + '.hetgrp_ffgen'  
+  ################################Template Creation########################33
 
   header = ['{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
                                                       number_torsions, (number_phis + number_improper), 0)]
 
-  connectivity = []
-  for i, (atom_name, atom_type, parent, distance, angle, dihedral) in enumerate(
-    zip(atom_names, atom_types, parents, distances, angles, dihedrals), 1):
+  connectivity_section = []
+  for i, (atom_name, atom_type, parent, zmat_row) in enumerate(
+    zip(atom_names, atom_types, parents, zmat), 1):
     connectivity_line = '{0:>5} {1:>5} {2:>0} {3:>5} {4:>5} {5:>5} {6:>11.5f} {7:>11.5f} {8:>11.5f} '.format(
-                                                                  i, parent, 'S', atom_type, atom_name,
-                                                                  UNK_INT, distance, angle, dihedral)
-    connectivity.append(connectivity_line)
+      i, parent, 'S', atom_type, atom_name,
+      UNK_INT, zmat_row[0], zmat_row[1], zmat_row[2])
+    connectivity_section.append(connectivity_line)
 
   NBOND_section = []
-  for i, (atom_type, charge, sigma, epsilon, radius, vdw, gamma, alpha) in enumerate(
-    zip(atom_types, charges, sigmas, epsilons, sgb_radius, vdws, gammas, alphas), 1):
+  for i, (atom_type, charge, sigma, epsilon, radius, gamma, alpha) in enumerate(
+    zip(atom_types, charges, sigmas, epsilons, sgb_radius, gammas, alphas), 1):
         NBOND_section.append('{0:>5} {1:>8.4f} {2:>8.4f} {3:>10.6f} {4:>8.4f} {5:>8.4f} {5:>13.9f} {6:>13.9f}'.format(
-          i, float(sigma), float(epsilon), float(charge), float(radius), float(vdw), float(gamma), float(alpha)))
+          i, float(sigma), float(epsilon), float(charge), float(radius), float(sigma)/2.0, float(gamma), float(alpha)))
         #  NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,epsilon, vdw))
  
-
-
   strech_section = []
   for (bond_pair, stretching) in zip(bonds, stretchings):
         strech_section.append('{0:>5} {1:>5} {2:>9.3f}  {3:>5.3f}'.format(
           bond_pair[0], bond_pair[1], float(stretching[0]), float(stretching[1])))
    
-  
-
   tors_section = []
   for tor in tors:
     tors_section.append('{0:>5} {1:>5} {2:>5} {3:>11.5f} {4:>10.5f}'.format(
       tor[0], tor[1], tor[2], float(tor[3]), float(tor[4])))
 
   phi_section = []
+  phis = descompose_dihedrals(phis)
   for phi in phis:
     phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
       phi[0], phi[1], phi[2], phi[3], (float(phi[4])+float(phi[5])/2.0), -1, abs(float(phi[6]))))
@@ -2426,11 +2449,11 @@ def build_template(mae_file, output_template_file):
   iphi_section = []
   for improper in impropers:
     iphi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
-      improper[0], improper[1], improper[2], improper[3], float(improper[4]), -1, 3))
+      improper[0], improper[1], improper[2], improper[3], float(improper[4])/2.0, -1, 3))
 
   file_content = []
   file_content.extend(header +
-                       connectivity +
+                       connectivity_section +
                        ['NBON'] +
                        NBOND_section +
                        ['BOND'] +
@@ -2443,7 +2466,6 @@ def build_template(mae_file, output_template_file):
                        iphi_section +
                        ['END'])
 
-  output_file = output_template_file + '.hetgrp_ffgen'
   with open(output_file, 'w') as f:
     f.write('\n'.join(file_content))
   return output_file, res_name, mae_file, output_file, res_name
@@ -2470,11 +2492,7 @@ def SGB_paramaters(atom_types):
   return(radius, gammas, alphas)
 
 
-
-
-
-
-def create_zmatrix(str1, parents):
+def create_zmatrix(mae_file, parents):
   """
     Retrieve the internal coordinates (zmatrix)
     from the complex cooridnates & topology:
@@ -2486,38 +2504,13 @@ def create_zmatrix(str1, parents):
     Ouput:
       zmatrix: structure internal coord
   """
-
-  #atom starts at 1 therefore to get the parent of the atom 
-  #1 I have to go to parent position 0 --> parents.index(parent)-1
-
-  interatom_distance = []
-  angles = []
-  dihedrals = []
-
-  for atom, parent in enumerate(parents, 1):
-    if(parent == 0):
-      interatom_distance.append(DUMMY_COORD)
-    else:
-      distance = str1.measure(atom, parent)
-      interatom_distance.append(distance)
-
-    second_parent = parents[parents.index(parent)-1]
-    if 0 in [parent, second_parent]:
-      angles.append(DUMMY_ANGLE)
-    else:
-      angle = str1.measure(atom, parent, second_parent)
-      angles.append(angle)
-
-    second_parent = parents[parents.index(parent)-1]
-    third_parent = parents[second_parent-1]
-    if 0 in [parent, second_parent, third_parent]:
-      dihedrals.append(DUMMY_DIHEDRAL)
-    else:
-      dihedral = str1.measure(atom, parent, second_parent, third_parent)
-      dihedrals.append(dihedral)
-  return [interatom_distance, angles, dihedrals]
-
-
+  str1 = structure.StructureReader(mae_file).next()
+  order = [i for i in range(len(parents))]
+  #Gap of 1 between parents list and the one needed for creating zmat
+  parents = [int(parent) - 1 for parent in parents] 
+  coordinates = [atom._getXYZ() for atom in str1.atom]
+  zmat = xyz2int(coordinates, order, parents)
+  return zmat
 
 
   
@@ -2569,7 +2562,7 @@ def search_and_replace(file, to_search):
   f.write(filedata)
   f.close()
 
-def parse_param(param_file):
+def parse_param(param_file, natoms):
   """
     Parse the OPLS conversion param file
     and get the atomtypes.
@@ -2597,8 +2590,9 @@ def parse_param(param_file):
        2. Then parse the section obtaining the values from the columns indicated in columns to take
        3.when all sections are parsed return all values
   """
-  bonds = []
+
   atom_types = []
+  parents = [0] * natoms
   charges = []
   sigmas = []
   epsilons = []
@@ -2609,7 +2603,7 @@ def parse_param(param_file):
   improper_tors = []
   lists = [stretchings, bendings, proper_tors, improper_tors]
   keywords = ["Stretch", "Bending", "proper Torsion", "improper Torsion"]
-  columns_to_take = [[2, 3], [0, 1, 2, 3,4], [0, 1 ,2 , 3, 4, 5, 6, 7], [0, 1, 2, 3, 4]]
+  columns_to_take = [[0,1, 2, 3], [0, 1, 2, 3,4], [0, 1 ,2 , 3, 4, 5, 6, 7], [0, 1, 2, 3, 4]]
   start_connectivity_found = False
   end_connectivity_found = False
   start_found_NBND = False
@@ -2630,7 +2624,8 @@ def parse_param(param_file):
         elif(start_connectivity_found):
           try:
             line = line.split()
-            bonds.append([line[0], line[1]])
+            #parents[int(line[1])-1]-->Atom names start at 1 but list at 0
+            parents[int(line[1])-1] = int(line[0]) 
           except IndexError:
             end_connectivity_found = True
 
@@ -2661,158 +2656,33 @@ def parse_param(param_file):
                 values = [line[index] for index in indexes]
                 List.append(values)
                 line, i = move_line_forward(lines, i)
-        return atom_types, bonds, charges, sigmas, epsilons, stretchings, bendings, proper_tors, improper_tors
+        return atom_types, parents, charges, sigmas, epsilons, stretchings, bendings, proper_tors, improper_tors
 
 def move_line_forward(lines, i):
   i+=1
   line = lines[i].strip()
   return line, i
 
-  
-def search_parent_atom(bonds, number_atoms):
+def descompose_dihedrals(phis):
   """
-    Iterate over all bonds searching for
-    the smallest parent (smallest atom number)
-    of each atom returning a list with them.
+    For each dihedral line as:
+    atom1 atom2 atom3 atom4   V1    V2   V3    V4
+      1     2     3      4   0.00 1.000 5.000 3.000
 
-    Input:
-      Bonds: All bonds
-      number_atom: number of atoms
-
-    Ouput:
-      parents: smallest parents of each atom
-
-    Ex--> [0,1,1,3,3,4]
-    Atom number 1 has a 0 which means that doesnt have parent
-    Atom number 2 has atom number 1 as a parent
-    Atom 3 has atom 1
-    Atom 4 has atom 3
-    etc...
+    Separate all components as next:
+    atom1 atom2 atom3 atom4   value  which VX???
+     1     2     3      4     1.000      2
+     1     2     3      4     5.000      3
   """
-  parents_template = []
-  parent_initialize = [None] * number_atoms
-  atoms = [i for i in range(number_atoms)] 
-  parents = {atom : parent_init for atom, parent_init in zip(atoms, parent_initialize)}
-
-  for bond_pair in bonds:
-    atom = int(bond_pair[1])-1
-    parent = int(bond_pair[0])-1
-    if(parents[atom] is None or parent<parents[atom]):
-      parents[atom] = parent
-  for atom, parent in parents.items():
-    if parent is None:
-      parents_template.append(0)
-    else:
-      parents_template.append(parent+1) #Shift of one between mae and bonds
-  return parents_template
-    
-
-# def read_charge_from_mae(mae_file):
-#     charges = []
-#     with open(mae_file, "r") as f:
-
-#       atom_sec_found = False
-#       while not atom_sec_found:  # Find Atom Section
-#           line = f.readline()
-#           if line == "" or re.search(r'm_atom\[\d+\]', line):
-#             atom_sec_found = True   
-
-#       end_atom_section_found = False #Find :::        
-#       while not end_atom_section_found:
-#           line = f.readline()
-#           if line == "" or re.search(':::', line):
-#               end_atom_section_found = True
-
-#       #Read Charges
-#       end_keywords_found = False   
-#       while not end_keywords_found:
-#           line = f.readline()
-#           if line == "" or re.search(':::', line):
-#               end_keywords_found = True
-#               break
-#           mae_atom_values = parse_mae_line(line)
-#           charges.append(mae_atom_values[8])
-#       return charges
-
-
-
-
-
-
-
-
-# def build_template(mae_file, root, OPLS, hetgrp_opt, old_name, new_name):
-#     """
-#     Build the Ligand ($RES_NAME).hetgrp_ffgen template.
-
-#     Input:
-#       mae_file: ligand mae file
-#       root: name of the ame_file without extensio
-#       OPLS: Type of OPLS to use 2001/2005
-#       hetgrp_opt: Option to include -mae charges in the command line input
-#       old_name: Name of all user given template_files
-#       new_name: User choosen outputfile
-
-#     Output:
-#        template_file: ($RES_NAME).hetgrp_ffgen template
-#        output_template_file:   name of the ligand template file
-#        mae_file_hetgrp_ffgen: ($RES_NAME).hetgrp_ffgen.mae
-#        files: files to clean
-#        resname: residue name on template
-
-#     """
-#     files2clean = []
-#     #Find the first residue name in the mae file
-#     hetgrp_output = root + ".hetgrp_ffgen.out"
-#     res_names = find_resnames_in_mae(mae_file)
-#     mae_out_file = root + ".hetgrp_ffgen.mae"
-#     if (OPLS != "2001" and OPLS != "2005"):
-#         raise Exception('OPLS version must be either 2001 or 2005');
-#     #  if(len(res_names)>1): raise Exception ("ERROR mae file must contain only one residue",res_names[0],res_names[1])
-#     res_names[0] = res_names[0].lower()
-#     a = re.search('^\s*(\S+)\s*$', res_names[0]);
-#     if (a):
-#         res_names[0] = a.group(1)
-#     else:
-#         raise Exception('Input file must have a residue name')
-#     if (old_name == res_names[0]):
-#         raise Exception('Input Template file must have a different name')
-#     if (new_name == ""): new_name = res_names[0];
-#     if (old_name == ""):
-#         # this isn't the right way to do it, but I'm removing the default template
-#         # file if it exists and forcing hetgrp_ffgen to write a new one
-#         f = open(res_names[0], 'w');
-#         f.close();
-#         if (f): 
-#           os.remove(res_names[0]);
-#         line = hetgrp_ffgen + ' ' + OPLS + ' ' + mae_file + ' ' + hetgrp_opt + ' -out ' + mae_out_file + ' > ' + hetgrp_output
-#         os.system(line);
-#         #print("Atom Typing (", OPLS, "): ", mae_file, " -> ", mae_out_file
-#         files2clean.append(hetgrp_output)
-#         output = res_names[0] + ".hetgrp_ffgen";
-#         try:
-#             shutil.copy2(res_names[0], output)
-#         except:
-#             f1 = open(hetgrp_output, "r");
-#             lines = f1.read();
-#             f1.close();
-#             raise Exception('Error assigning atom types \n' + lines)
-#         files2clean.append(output)
-#     else:
-#         print("Reading in template file: {}".format(old_name))
-#         print("Copying Mae File: {0}  -> {1}".format(mae_file, mae_out_file))
-#         shutil.copy2(mae_file, mae_out_file)
-#         output = old_name
-#     files2clean.append(mae_out_file)
-
-
-#     print("Template output {}".format(output)) #The template created. Has the residue name if has been generated automatically. If not, has the user-defined name
-#     print("Residue name on template {}".format(new_name)) #Actually, the name of the residue, will be the name of the generated template
-#     print("Output hetgrp_ffgen {}".format(mae_out_file)) #File created by hetgrp_ffgen, if the used didn't indicate a template. The mae indicated by the user otherwise
-
-#     print([output, new_name, mae_out_file, files2clean, res_names[0]])
-#     return [output, new_name, mae_out_file, files2clean, res_names[0]]
-
+  new_phis = []
+  new_phi = []
+  for phi in phis:
+    atoms = phi[0:4]
+    for index, component in enumerate(phi[4:8], 1):
+      if(component != '0.000'):
+        new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], component, 1, index])
+  return new_phis
+      
 
 ##################################################
 def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, ordering, mae2temp, temp2mae, gridres,
@@ -3056,7 +2926,6 @@ def check_oh_tors(mae_file, tors, names):
     for tor in tors:
         atom_name0 = names[tor[0]].replace("_", " ");
         atom_name1 = names[tor[1]].replace("_", " ");
-        print(atom_name1)
         mae_atom1 = -1
         for iatom in range(mm.mmct_ct_get_atom_total(st1)):
             if (atom_name1.strip() == (st1.atom[iatom + 1].property['s_m_pdb_atom_name']).strip()):
