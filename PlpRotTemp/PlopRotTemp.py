@@ -2425,9 +2425,12 @@ def build_template(mae_file, output_template_file):
   #Output file
   output_file = output_template_file + '.hetgrp_ffgen'  
   ################################Template Creation########################33
-
-  header = ['{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
-                                                      number_torsions, (number_phis + number_improper), 0)]
+  
+  header = ["* LIGAND DATABASE FILE (OPLS2005)",
+            "*",
+            '{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
+                                                      number_torsions, (number_phis + number_improper), 0)
+            ]
 
   connectivity_section = []
   for i, (atom_name, atom_type, parent, zmat_row) in enumerate(
@@ -2458,7 +2461,7 @@ def build_template(mae_file, output_template_file):
   phis = descompose_dihedrals(phis)
   for phi in phis:
     phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
-      phi[0], phi[1], phi[2], phi[3], (float(phi[4])+float(phi[5])/2.0), -1, abs(float(phi[6]))))
+      phi[0], phi[1], phi[2], phi[3], (float(phi[4])/2.0), -1, abs(float(phi[6]))))
 
   iphi_section = []
   for improper in impropers:
@@ -2466,7 +2469,7 @@ def build_template(mae_file, output_template_file):
       improper[0], improper[1], improper[2], improper[3], float(improper[4])/2.0, -1, 3))
 
   file_content = []
-  file_content.extend(header +
+  file_content.extend( header +
                        connectivity_section +
                        ['NBON'] +
                        NBOND_section +
