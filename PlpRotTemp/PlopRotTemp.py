@@ -2485,9 +2485,19 @@ def build_template(mae_file, output_template_file):
                        iphi_section +
                        ['END'])
 
+  #Write to file
   with open(output_file, 'w') as f:
     f.write('\n'.join(file_content))
+  
+  #Remove param.dat file
+  try:
+    os.remove(OPLS_CONVERSION_FILE)
+  except OSError:
+    print("Error, param.dat not created. Make sure $SCHRODINGER/utilities/ffld_server is up and running in your computer.")
+
+  print("Template {} generated successfully".format(output_file))
   return output_file, res_name, mae_file, output_file, res_name
+
 
 def SGB_paramaters(atom_types):
   radius = []
