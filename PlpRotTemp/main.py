@@ -226,9 +226,11 @@ print("User output template file '{}'".format(output_template_file))
 #########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
 #Build a template file
 print("\n")
+print(mae_file)
 print("TEMPLATE GENERATION")
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
     pl.build_template(mae_file, root)
+
 
 
 #########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
@@ -258,6 +260,7 @@ else:
 
 
 #####################################FINDTORS#####################################
+"""
 #Run the Dummy Conformation Search to Find Bonds
 mcu_dummy.MCMM[1] = 1  # Take 1,000 steps
 mcu_dummy.MCMM[2] = 1  # Store up to 1000 values
@@ -276,6 +279,8 @@ if (not debug):
     files2clean.append(log_file)
     files2clean.append(root + '_IDbonds-out.mae')
     files2clean.append(root + '_IDbonds-out.ouL')
+"""
+
 
 
 #################CHANGE MACROMODEL MINIMIZATION OF LIGAND + CONFORMATIONAL SEARCH###########################
@@ -284,17 +289,18 @@ if (not debug):
 ####################SCHRODINGER-->get atoms from rings & see whether or not they are bonded###########################
 print("\n")
 if (unnat_res == 1):
-    [mae_num, parent, rank, tors, use_rings, group, tors_ring_num] = \
-        pl.FindCoreAA(mae_min_file, user_fixed_bonds, log_file, use_rings, use_mult_lib, user_core_atom, user_tors)
+    [mae_num, parent, rank, tors, use_rings, group, tors_ring_num, residue_file] = \
+        pl.FindCoreAA(mae_min_file, user_fixed_bonds, use_rings, resname, use_mult_lib, user_core_atom, user_tors)
     tors_ring_num = []
     for t in tors: tors_ring_num.append(0);
 else:
     print('FINDING CORE')
     if (grow == 1 and user_core_atom == -1): user_core_atom = -2
     #######Assign_rank--> Extremely slow!
-    [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num] = \
-        pl.FindCore(mae_min_file, user_fixed_bonds, log_file, use_rings, \
+    [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num, residue_file] = \
+        pl.FindCore(mae_min_file, user_fixed_bonds, use_rings, resname, \
                  use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name)
+files2clean.append(residue_file)
 if (use_rings == 1):
     print("Found flexible rings")
 
@@ -331,6 +337,7 @@ back_tors = []
 for i in range(len(new_back_tors)):
     temp = [old_atom_num.index(new_back_tors[i][0]), old_atom_num.index(new_back_tors[i][1])]
     back_tors.append(temp)
+
 
 #Make (or read) original tempalte file
 print('\n')

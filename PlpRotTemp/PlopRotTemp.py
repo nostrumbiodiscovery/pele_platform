@@ -114,6 +114,9 @@ import warnings
 import shutil
 import __main__
 import subprocess
+from rdkit import Chem
+from rdkit.Chem import TorsionFingerprints
+import StringIO
 from schrodinger import structure
 from schrodinger.application.matsci import zmutils
 # from schrodinger import structureutil
@@ -1292,10 +1295,10 @@ def Reorder_Amide_Nitrogen_Hydrogen(ordering, parent, rank, group, nitrogen_atom
 
 
 #######################################
-def FindCoreAA(mae_file, user_fixed_bonds, logfile, use_rings, use_mult_lib, user_core_atom, user_tors):
+def FindCoreAA(mae_file, user_fixed_bonds, use_rings, residue_name, use_mult_lib, user_core_atom, user_tors):
     # adapted from FindCore for unnatural amino acids by Chris McClendon, Jacobson Group
     if (user_tors == []):
-        tors = find_tors_in_log(logfile)
+        tors = get_torsions_from_mae(mae_file, residue_name)
         ########CHANGE     SCHRODINGER######
         [ring_tors, ring_num] = find_tors_in_rings(tors, mae_file)
         ########CHANGE     SCHRODINGER######
@@ -1424,7 +1427,7 @@ def ReorderTorsionsAA(tors, ordering):  # by Chris McClendon, Jacobson Group
 ####################################################
 # End Unnatural Amino Acid Code
 ####################################################
-def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
+def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
              use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name):
     """
 
@@ -1462,7 +1465,8 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
 
     """
     if (user_tors == []):
-        tors = find_tors_in_log(logfile)
+        # tors = find_tors_in_log(logfile)
+        tors = get_torsions_from_mae(mae_file, residue_name)
         print(" - torsions found.")
 
     ########CHANGE     SCHRODINGER######
@@ -1569,6 +1573,21 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
                 #  for i in range(len(atom_names)):
                 #    print atom_names[i].rjust(5),group[i],rank[i],parent[i]
     return old_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num
+
+
+def get_torsions_from_mae(mae_file, residue_name):
+  pdb_file = residue_name + ".pdb"
+  output = StringIO.StringIO()
+  struct = structure.StructureReader(mae_file).next()
+  struct.write(pdb_file)
+  mol = Chem.MolFromPDBFile(pdb_file)
+  torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
+  torsions = [[tor[0], tor[1]] for tor in torsions]
+  try:
+    os.remove(pdb_file)
+  except OSError:
+    print("Error when calculating torsions. Be carefull not to have a {} in your current directory".format(pdb_file))
+  return torsions
 
 
 ####################################
