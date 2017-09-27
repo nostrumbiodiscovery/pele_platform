@@ -116,11 +116,8 @@ import __main__
 import subprocess
 from rdkit import Chem
 from rdkit.Chem import TorsionFingerprints
-import StringIO
 from schrodinger import structure
-from schrodinger.application.matsci import zmutils
 # from schrodinger import structureutil
-import schrodinger.infra.mm as mm
 hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 
 
@@ -1577,7 +1574,6 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
 
 def get_torsions_from_mae(mae_file, residue_name):
   pdb_file = residue_name + ".pdb"
-  output = StringIO.StringIO()
   struct = structure.StructureReader(mae_file).next()
   struct.write(pdb_file)
   mol = Chem.MolFromPDBFile(pdb_file)
@@ -2740,12 +2736,7 @@ def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, orderi
     tors_values = []
     for st in structure.StructureReader(conf_file):
         # Read in the xyz coordinates into cart
-        cart = []
-        for iatom in range(mm.mmct_ct_get_atom_total(st)):
-            x_coord = st.atom[iatom + 1].property['r_m_x_coord']
-            y_coord = st.atom[iatom + 1].property['r_m_y_coord']
-            z_coord = st.atom[iatom + 1].property['r_m_z_coord']
-            cart.append([x_coord, y_coord, z_coord])
+        cart = [atom._getXYZ() for atom in str1.atom]
 
         #    print 'cartesian(xyz)'
         #    for i in range(len(cart)):
@@ -2950,19 +2941,20 @@ def check_oh_tors(mae_file, tors, names):
     # see if each tors is for an OH (or O-D etc) by checking to see if the 
     # larger atom number (farther from core) is bound to only one atom
     # which is in turn bound to no atoms
+    natoms = len(names)
     st1 = structure.StructureReader(mae_file).next()
     is_oh = []
     for tor in tors:
         atom_name0 = names[tor[0]].replace("_", " ");
         atom_name1 = names[tor[1]].replace("_", " ");
         mae_atom1 = -1
-        for iatom in range(mm.mmct_ct_get_atom_total(st1)):
+        for iatom in range(natoms):
             if (atom_name1.strip() == (st1.atom[iatom + 1].property['s_m_pdb_atom_name']).strip()):
                 mae_atom1 = iatom + 1
         if (mae_atom1 < 0):
             raise Exception('Error in check OH Tors')
         bound_atoms = []
-        for iatom in range(mm.mmct_ct_get_atom_total(st1)):
+        for iatom in range(natoms):
             if (atom_name0 != st1.atom[iatom + 1].property['s_m_pdb_atom_name'] and
                         st1.getBond(mae_atom1, iatom + 1) != None):
                 bound_atoms.append(iatom + 1)
@@ -2973,7 +2965,7 @@ def check_oh_tors(mae_file, tors, names):
         if (len(bound_atoms) == 1):
             any_bound = 0;
             first_bound_atom = bound_atoms[0]
-            for iatom in range(mm.mmct_ct_get_atom_total(st1)):
+            for iatom in range(natoms):
                 if (atom_name1 != st1.atom[iatom + 1].property['s_m_pdb_atom_name'] and
                             st1.getBond(first_bound_atom, iatom + 1) != None):
                     #            print "BOUND TO ",st1.atom[iatom+1].property['s_m_pdb_atom_name']
