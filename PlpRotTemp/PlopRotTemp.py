@@ -1636,15 +1636,16 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
     #Prep read in/out
     fin = open(in_file, "r")
     fout = open(out_file, "w")
-    line = fin.readline()
     while fin:  #Get past coments
-        if (not re.search('^\*', line)): break
         line = fin.readline()
         fout.write(line)
+        if (not re.search('^\*', line)): break
+        
+        
 
     a = re.search('^\s*\S+\s+(\d+)\s+(\d+)\s+(\d+)', line)
     if (a):
-        num_atoms = int(a.group(1));
+        num_atoms = int(a.group(1))
         num_bonds = int(a.group(2))
         num_theta = int(a.group(3))
     else:
@@ -2411,9 +2412,9 @@ def build_template(mae_file, output_template_file):
   #Connectivity information from Mae
   res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue 
   atom_names = find_names_in_mae(mae_file, undersc=True)
-  bonds = [[stretching[0], stretching[1]] for stretching in stretchings]
+  # bonds = [[stretching[0:2] for stretching in stretchings]
   zmat = create_zmatrix(mae_file, parents)
-  number_bonds = len(bonds)
+  number_bonds = len(stretchings)
   number_torsions = len(tors)
   number_atoms = len(atom_names)
   number_phis = len(phis)
@@ -2428,7 +2429,7 @@ def build_template(mae_file, output_template_file):
   
   header = ["* LIGAND DATABASE FILE (OPLS2005)",
             "*",
-            '{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
+            '{0:>0}  {1:>6} {2:>5} {3:>5} {4:>7} {5:>7}'.format(res_name, number_atoms, number_bonds,
                                                       number_torsions, (number_phis + number_improper), 0)
             ]
 
@@ -2448,9 +2449,10 @@ def build_template(mae_file, output_template_file):
         #  NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,epsilon, vdw))
  
   strech_section = []
-  for (bond_pair, stretching) in zip(bonds, stretchings):
+  print(stretchings)
+  for stretching in stretchings:
         strech_section.append('{0:>5} {1:>5} {2:>9.3f}  {3:>5.3f}'.format(
-          bond_pair[0], bond_pair[1], float(stretching[0]), float(stretching[1])))
+          stretching[0], stretching[1], float(stretching[2]), float(stretching[3])))
    
   tors_section = []
   for tor in tors:
@@ -2459,14 +2461,15 @@ def build_template(mae_file, output_template_file):
 
   phi_section = []
   phis = descompose_dihedrals(phis)
+  phis = negative_torsions_for_pele(phis)
   for phi in phis:
-    phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
-      phi[0], phi[1], phi[2], phi[3], (float(phi[4])/2.0), -1, abs(float(phi[6]))))
+    phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>4.1f} {6:>3.1f}'.format(
+      phi[0], phi[1], phi[2], phi[3], (float(phi[4])/2.0), phi[5], abs(float(phi[6]))))
 
   iphi_section = []
   for improper in impropers:
     iphi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
-      improper[0], improper[1], improper[2], improper[3], float(improper[4])/2.0, -1, 3))
+      improper[0], improper[1], improper[2], improper[3], float(improper[4])/2.0, -1, 2))
 
   file_content = []
   file_content.extend( header +
@@ -2576,14 +2579,14 @@ def search_and_replace(file, to_search):
   """
     Search and replace atom_names for numbers
   """
-  to_replace = [i for i in range(1, len(to_search)+1)]
+  to_replace = range(1, len(to_search)+1)
 
   f = open(file,'r')
   filedata = f.read()
   f.close()
 
   for (item_to_search, item_to_replace) in zip(to_search, to_replace):
-      filedata = filedata.replace(item_to_search.strip('_'), str(item_to_replace)) #atom types are like _O1_ (strip)
+      filedata = filedata.replace(' ' + item_to_search.strip('_')+' ', ' '+str(item_to_replace)+' ') #atom types are like _O1_ (strip)
 
   f = open(file,'w')
   f.write(filedata)
@@ -2705,11 +2708,37 @@ def descompose_dihedrals(phis):
   new_phi = []
   for phi in phis:
     atoms = phi[0:4]
+    if(phi[4:8] == ['0.000','0.000','0.000','0.000']):
+      new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], phi[4], 1, 1])
+      continue
     for index, component in enumerate(phi[4:8], 1):
       if(component != '0.000'):
         new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], component, 1, index])
   return new_phis
+
+def negative_torsions_for_pele(phis):
+  for i, phi in enumerate(phis):
+    atom1 = phi[0]
+    atom4 = phi[3]
+    for phi_to_compare in phis[0:i]:
       
+      if(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi_to_compare[2]<0):
+        break
+      elif(phi[0:4] == phi_to_compare[0:4]):
+        pass
+      elif(phi_to_compare[2]<0):
+        pass
+      elif(atom1 in phi_to_compare and atom4 in phi_to_compare and phi!=phi_to_compare):
+        phi[2] = -int(phi[2])
+    if(int(phi[6]) in [1,3]):
+      phi[5] = 1.0
+    else:
+      phi[5] = -1.0
+  return(phis)
+
+
+
+
 
 ##################################################
 def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, ordering, mae2temp, temp2mae, gridres,
