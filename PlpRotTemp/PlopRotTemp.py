@@ -112,7 +112,6 @@ import array
 import os
 import warnings
 import shutil
-import __main__
 import subprocess
 from rdkit import Chem
 from rdkit.Chem import TorsionFingerprints
@@ -131,7 +130,7 @@ ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGA
 DEFAULT_RADIUS_VDW = '0.5000'
 DEFAULT_SPRING_K = '268.0'
 DEFAULT_EQ_DIST = '1.529'
-FILE_DIR_PATH = os.path.dirname(__main__.__file__)
+FILE_DIR_PATH = os.path.dirname(__file__)
 PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/sgbnp.param') ##impact??
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
