@@ -74,10 +74,10 @@ import sys
 import os
 import re
 import PlopRotTemp as pl
-import schrodinger.application.macromodel.utils as mu
-import schrodinger.application.macromodel.tools as mt
-import schrodinger.job.jobcontrol as jc
-import schrodinger.infra.mm as mm
+#import schrodinger.application.macromodel.utils as mu
+#import schrodinger.application.macromodel.tools as mt
+#import schrodinger.job.jobcontrol as jc
+#import schrodinger.infra.mm as mm
 
 
 #Defaults
@@ -195,6 +195,7 @@ pl.check_repite_names(atomnames)
 
 
 ####################REMOVE MACROMODEL###########################
+"""
 # Create ComUtil instance , define potential energy surface: solution phase, OPLSAA
 # Serial mode enabled so each structure is used to seed a unique search
 mcu_conf = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
@@ -207,6 +208,7 @@ mxu = mu.CluUtil()
 mcu_conf.SOLV[2] = 1  # water
 mcu_dummy.DEBG[1] = 520  # Debugging output is read to determine zmatrix
 mcu_dummy.DEBG[2] = 521
+"""
 
 ####################REMOVE MACROMODEL###########################
 
@@ -226,7 +228,6 @@ print("User output template file '{}'".format(output_template_file))
 #########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
 #Build a template file
 print("\n")
-print(mae_file)
 print("TEMPLATE GENERATION")
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
     pl.build_template(mae_file, root)
@@ -289,7 +290,7 @@ if (not debug):
 ####################SCHRODINGER-->get atoms from rings & see whether or not they are bonded###########################
 print("\n")
 if (unnat_res == 1):
-    [mae_num, parent, rank, tors, use_rings, group, tors_ring_num, residue_file] = \
+    [mae_num, parent, rank, tors, use_rings, group, tors_ring_num] = \
         pl.FindCoreAA(mae_min_file, user_fixed_bonds, use_rings, resname, use_mult_lib, user_core_atom, user_tors)
     tors_ring_num = []
     for t in tors: tors_ring_num.append(0);
@@ -297,10 +298,9 @@ else:
     print('FINDING CORE')
     if (grow == 1 and user_core_atom == -1): user_core_atom = -2
     #######Assign_rank--> Extremely slow!
-    [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num, residue_file] = \
+    [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num] = \
         pl.FindCore(mae_min_file, user_fixed_bonds, use_rings, resname, \
                  use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name)
-files2clean.append(residue_file)
 if (use_rings == 1):
     print("Found flexible rings")
 
