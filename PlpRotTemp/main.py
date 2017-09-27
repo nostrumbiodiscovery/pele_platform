@@ -74,10 +74,10 @@ import sys
 import os
 import re
 import PlopRotTemp as pl
-import schrodinger.application.macromodel.utils as mu
-import schrodinger.application.macromodel.tools as mt
-import schrodinger.job.jobcontrol as jc
-import schrodinger.infra.mm as mm
+#import schrodinger.application.macromodel.utils as mu
+#import schrodinger.application.macromodel.tools as mt
+#import schrodinger.job.jobcontrol as jc
+#import schrodinger.infra.mm as mm
 
 
 #Defaults
@@ -100,7 +100,7 @@ back_conf_file = ""
 hetgrp_opt = ""
 use_mae_charges = 0
 OPLS = "2005"
-max_tors = 5
+max_tors = -1
 user_fixed_bonds = []
 files2clean = []
 use_mult_lib = 1
@@ -195,6 +195,7 @@ pl.check_repite_names(atomnames)
 
 
 ####################REMOVE MACROMODEL###########################
+"""
 # Create ComUtil instance , define potential energy surface: solution phase, OPLSAA
 # Serial mode enabled so each structure is used to seed a unique search
 mcu_conf = mu.ComUtil(ffld='opls2005', serial=True, solv=True, nant=False, demx=True)
@@ -207,6 +208,7 @@ mxu = mu.CluUtil()
 mcu_conf.SOLV[2] = 1  # water
 mcu_dummy.DEBG[1] = 520  # Debugging output is read to determine zmatrix
 mcu_dummy.DEBG[2] = 521
+"""
 
 ####################REMOVE MACROMODEL###########################
 
@@ -228,17 +230,13 @@ print("User output template file '{}'".format(output_template_file))
 print("\n")
 print("TEMPLATE GENERATION")
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
-    pl.build_template(mae_file, root, OPLS, hetgrp_opt, template_file, \
-                   output_template_file)
-for f in files:
-    files2clean.append(f)
+    pl.build_template(mae_file, root)
+
+
 
 #########################CHANGE HETGRP_FFGEN ligand preparation for PELE###################
 
 ####################CHANGE MACROMODEL MINIMIZATION OF LIGAND-->PymoChimera, OPenMM###########################
-#(.mae)-->pdb (pymol)
-#OpenMM (minimize)
-#(pymol)-->(.mae)
 
 print("\n")
 if (do_init_min == 1):
@@ -260,6 +258,10 @@ else:
     print('\nSkipping Minimization\n ')
     mae_min_file = mae_file_hetgrp_ffgen
 
+
+
+#####################################FINDTORS#####################################
+"""
 #Run the Dummy Conformation Search to Find Bonds
 mcu_dummy.MCMM[1] = 1  # Take 1,000 steps
 mcu_dummy.MCMM[2] = 1  # Store up to 1000 values
@@ -278,6 +280,8 @@ if (not debug):
     files2clean.append(log_file)
     files2clean.append(root + '_IDbonds-out.mae')
     files2clean.append(root + '_IDbonds-out.ouL')
+"""
+
 
 
 #################CHANGE MACROMODEL MINIMIZATION OF LIGAND + CONFORMATIONAL SEARCH###########################
@@ -287,7 +291,7 @@ if (not debug):
 print("\n")
 if (unnat_res == 1):
     [mae_num, parent, rank, tors, use_rings, group, tors_ring_num] = \
-        pl.FindCoreAA(mae_min_file, user_fixed_bonds, log_file, use_rings, use_mult_lib, user_core_atom, user_tors)
+        pl.FindCoreAA(mae_min_file, user_fixed_bonds, use_rings, resname, use_mult_lib, user_core_atom, user_tors)
     tors_ring_num = []
     for t in tors: tors_ring_num.append(0);
 else:
@@ -295,7 +299,7 @@ else:
     if (grow == 1 and user_core_atom == -1): user_core_atom = -2
     #######Assign_rank--> Extremely slow!
     [mae_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num] = \
-        pl.FindCore(mae_min_file, user_fixed_bonds, log_file, use_rings, \
+        pl.FindCore(mae_min_file, user_fixed_bonds, use_rings, resname, \
                  use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name)
 if (use_rings == 1):
     print("Found flexible rings")
@@ -333,6 +337,7 @@ back_tors = []
 for i in range(len(new_back_tors)):
     temp = [old_atom_num.index(new_back_tors[i][0]), old_atom_num.index(new_back_tors[i][1])]
     back_tors.append(temp)
+
 
 #Make (or read) original tempalte file
 print('\n')

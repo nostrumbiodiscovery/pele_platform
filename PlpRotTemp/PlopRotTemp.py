@@ -113,24 +113,40 @@ import os
 import warnings
 import shutil
 import __main__
+import subprocess
+from rdkit import Chem
+from rdkit.Chem import TorsionFingerprints
+import StringIO
 from schrodinger import structure
-from schrodinger import structureutil
+from schrodinger.application.matsci import zmutils
+# from schrodinger import structureutil
 import schrodinger.infra.mm as mm
 hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
+
 
 
 ################################################################################
 # Definitions 
 ################################################################################
 
-ERROR_ATOMTYPES = 'ERROR: ATOM NAMES REPITED IN MAE FILE'
+ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
 ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
 DEFAULT_RADIUS_VDW = '0.5000'
 DEFAULT_SPRING_K = '268.0'
 DEFAULT_EQ_DIST = '1.529'
+FILE_DIR_PATH = os.path.dirname(__main__.__file__)
+PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/sgbnp.param') ##impact??
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
 dummy_atom3 = [0.1, 0.2, 0.3]
+UNK_INT = 6
+DUMMY_COORD = 17.21606
+DUMMY_ANGLE = 45.73961
+DUMMY_DIHEDRAL = 13.21566
+OPLS_CONVERSION_FILE = 'param.dat'
+OPLS_VERSION = '14'
+
+
 
 
 def find_tors_in_log(filename):
@@ -299,7 +315,7 @@ def mass_of_element(element):
 
 
 ####################################
-def find_names_in_mae(filename):
+def find_names_in_mae(filename, undersc=False):
 
     """
     :param: the file name to parse.
@@ -367,8 +383,12 @@ def find_names_in_mae(filename):
             nma = re.search('NMA', mae_atom_values[residue_names_index])  #added by mcclendon
             if ((not ace) and (not nma)):
                 atomname = mae_atom_values[atom_names_index]
-                names.append(atomname)
+                names.append(atomname.strip())
     f.close()
+
+    if(undersc):
+      names = ['_{}_'.format(name.strip()) for name in names]
+
     return names
 ##################################################
 
@@ -380,13 +400,13 @@ def check_repite_names(atomnames):
   """
   atoms_repited = []
   for i, atomname_target in enumerate(atomnames):
-    while(i!=0):
-      i-=1
-      if atomname_target == atomnames[i]:
-        atoms_repited.append(atomname_target)
-        break   
-  if(atoms_repited):
-    raise Exception(ERROR_ATOMTYPES)
+    index = i
+    while(index!=0):
+      index-=1
+      if(atomname_target == atomnames[index]):
+        identifier = ' Atom:{}, AtomType:{}'.format(i, atomname_target)
+        raise Exception(ERROR_ATOMTYPES + identifier)  
+  
 
 #################################################333
 
@@ -440,7 +460,6 @@ def rvdw_change(rotamer_library, radius_vdw_info, start_index, end_index):
     Change all radius vanderwals 0 to 0.5
     from the rotamer's library file
   """
-  print(radius_vdw_info)
   with open(rotamer_library, 'r') as f:
     lines = f.readlines()
     for i, new_line in enumerate(radius_vdw_info):
@@ -1276,10 +1295,10 @@ def Reorder_Amide_Nitrogen_Hydrogen(ordering, parent, rank, group, nitrogen_atom
 
 
 #######################################
-def FindCoreAA(mae_file, user_fixed_bonds, logfile, use_rings, use_mult_lib, user_core_atom, user_tors):
+def FindCoreAA(mae_file, user_fixed_bonds, use_rings, residue_name, use_mult_lib, user_core_atom, user_tors):
     # adapted from FindCore for unnatural amino acids by Chris McClendon, Jacobson Group
     if (user_tors == []):
-        tors = find_tors_in_log(logfile)
+        tors = get_torsions_from_mae(mae_file, residue_name)
         ########CHANGE     SCHRODINGER######
         [ring_tors, ring_num] = find_tors_in_rings(tors, mae_file)
         ########CHANGE     SCHRODINGER######
@@ -1408,7 +1427,7 @@ def ReorderTorsionsAA(tors, ordering):  # by Chris McClendon, Jacobson Group
 ####################################################
 # End Unnatural Amino Acid Code
 ####################################################
-def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
+def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
              use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name):
     """
 
@@ -1446,7 +1465,8 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
 
     """
     if (user_tors == []):
-        tors = find_tors_in_log(logfile)
+        # tors = find_tors_in_log(logfile)
+        tors = get_torsions_from_mae(mae_file, residue_name)
         print(" - torsions found.")
 
     ########CHANGE     SCHRODINGER######
@@ -1520,7 +1540,7 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
     line = ' -Core Atoms (including backbone):'
     for i in range(len(atom_names)):
         if (rank[i] == 0):
-            line = line + atom_names[i]
+            line = line + ' ' + atom_names[i]
     print(line)
     #  for i in range(len(atom_names)):
     #    print atom_names[i].rjust(5),group[i],rank[i]
@@ -1532,7 +1552,7 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
             line = '  -Group %2d' % (grp + 1)
             for i in range(len(atom_names)):
                 if (group[i] == grp):
-                    line = line + atom_names[i]
+                    line = line + ' ' + atom_names[i]
             print(line)
 
     [old_num, parent, rank, group] = order_atoms(bonds, tors, back_tors, assign, rank, group)
@@ -1553,6 +1573,21 @@ def FindCore(mae_file, user_fixed_bonds, logfile, use_rings,
                 #  for i in range(len(atom_names)):
                 #    print atom_names[i].rjust(5),group[i],rank[i],parent[i]
     return old_num, parent, rank, tors, use_rings, group, back_tors, tors_ring_num
+
+
+def get_torsions_from_mae(mae_file, residue_name):
+  pdb_file = residue_name + ".pdb"
+  output = StringIO.StringIO()
+  struct = structure.StructureReader(mae_file).next()
+  struct.write(pdb_file)
+  mol = Chem.MolFromPDBFile(pdb_file)
+  torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
+  torsions = [[tor[0], tor[1]] for tor in torsions]
+  try:
+    os.remove(pdb_file)
+  except OSError:
+    print("Error when calculating torsions. Be carefull not to have a {} in your current directory".format(pdb_file))
+  return torsions
 
 
 ####################################
@@ -1607,7 +1642,6 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
     fin = open(in_file, "r")
     fout = open(out_file, "w")
     line = fin.readline()
-    fout.write(line)
     while fin:  #Get past coments
         if (not re.search('^\*', line)): break
         line = fin.readline()
@@ -1629,7 +1663,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         a = re.search('^\s*(\d+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\d+)\s+([\d\.\-]+)\s+([\d\.\-]+)\s+([\d\-\.]+)',
                       line)
         at.append(a.group(4));
-        name.append(a.group(5));
+        name.append((a.group(5)).strip('_'));
         mat.append(a.group(6));
 
     #Keep as mainchain the z-matrix atoms until R_group_root_atom_name,
@@ -1655,6 +1689,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
             2] + '\n'
         fout.write(outline)
+    """
     # Move to exclude table
     exclude = []
     counts = []
@@ -1662,18 +1697,26 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         line = fin.readline();
         a = re.search('\s*(.*)', line);
         line = a.group(1)
+        print(lines)
         p = re.compile(r'\W+');
         temp = p.split(line);
         counts = counts + temp
+        print(counts)
     for i in range(len(ordering)):
         exclude.append([])
     for i in range(len(ordering)):
-        line = fin.readline();
+        print('ordering')
+        print(len(ordering))
+        line = fin.readline()
+        print(line)
         a = re.search('\s*(.*)', line);
         line = a.group(1)
+        print(line)
         p = re.compile(r'[\W$\s]+');
         temp = p.split(line);
+        print(temp)
         iatom = conv_at(ordering, i + 1)
+        print(iatom)
         for atom in temp:
             if (atom == ''): break;
             if (int(atom) == 0 ):
@@ -1703,7 +1746,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
             line = line + str(atom).rjust(6)
         line = line + '\n';
         fout.write(line)
-
+    """
     #NONBON Region
     line = fin.readline()
     if (not re.search('NBON', line)):
@@ -2031,7 +2074,8 @@ def read_zmat_template(filename):
             else:
                 zmat.append(temp)
             parent.append(int(a.group(1)) - 1)
-            names.append(a.group(2))
+            #de moemnt
+            names.append(a.group(2).strip('_'))
         else:
             raise Exception("Error reading zmat from template")
     f.close()
@@ -2064,11 +2108,6 @@ def MatchTempMaeAtoms(mae_file, template_file):
         raise Exception(
             "MAE and template of different length %d!=%d (check if the input file has more then one residue)\n" % (
             len(mae_names), len(temp_names)));
-    mae2temp = []
-    for i in range(len(mae_names)):
-        for j in range(len(mae_names)):
-            if (i != j and mae_names[i] == mae_names[j]):
-                raise Exception("mae file has a duplicated atom name %s" % mae_names[i])
     mae2temp = []
     temp2mae = []
     num_found = 0
@@ -2205,7 +2244,7 @@ def find_resnames_in_mae(filename):
     mae = builder.build(filename)
 
     #Get residue names list, remove duplicates building a set, and return a list with unique values
-    return list(set([atom['s_m_pdb_residue_name'] for atom in mae.atoms()]))
+    return list(set([atom['s_m_pdb_residue_name'].strip() for atom in mae.atoms()]))
 
 
 ###################################
@@ -2334,256 +2373,335 @@ class MaeFileBuilder:
         return atom
 ############################################################################
 
-def build_template(mae_file):
+def build_template(mae_file, output_template_file):
   """
-    Build the Ligand ($RES_NAME).hetgrp_ffgen template.
+    Build ligand template from mae file
 
+    Input:
+      mae_file: input .mae
+      outpt_template_file = output path
+
+    Output:
+      output: ligand template
+      resname: residue name
+
+    Explanation:
+
+    Preparation of param:
+      1- Use the flld_server schrodinger command line server
+         to create the 2005OPLS paramaters for the ligand
+      2- Parse the previous parameters extracting 
+         atomtypes, bond info, non bonded info, torsions,
+         dihedrals and imporpers rotations.
+      3- From this parameters create the internal coordinates
+         and get some extra parameters as the nonbonded
+         sgb_radius, gammas, alphas from our proper database
+         which is in PARAM_PATH in case it needs to be extended
+         by the user.
+      4- With the previous parsed parameters create the several
+         sections of the template
+      5- Write everything to a RESIDUENAME.hetgrp file
   """
-  atom_names = find_names_in_mae(mae_file)
-  number_atoms = len(atom_names)
-  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue
-  bonds = find_bonds_in_mae(mae_file)
-  parents = search_parent_atom(bonds, number_atoms)
+  
+  #Create ligand params with ffld_sever from schrodinger
+  ffld_server_command = os.path.join(os.environ['SCHRODINGER'], 'utilities/ffld_server')
+  subprocess.call([ffld_server_command, "-imae", mae_file, "-version",
+    OPLS_VERSION, "-print_parameters", "-out_file", OPLS_CONVERSION_FILE])
+
+  #Retrieve all the useful information from that params
+  atom_names_param = retrieve_atom_names(OPLS_CONVERSION_FILE)
+  search_and_replace(OPLS_CONVERSION_FILE, atom_names_param)
+  atom_types, parents, charges, sigmas, epsilons, stretchings, tors, phis, impropers = parse_param(OPLS_CONVERSION_FILE, len(atom_names_param))
+
+  #Connectivity information from Mae
+  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue 
+  atom_names = find_names_in_mae(mae_file, undersc=True)
+  bonds = [[stretching[0], stretching[1]] for stretching in stretchings]
+  zmat = create_zmatrix(mae_file, parents)
   number_bonds = len(bonds)
-  ##############FALTA##############
-  number_torsions = 0
-  number_teth = 0
-  number_improper = 0
-  atom_types = ['O', 'C2', 'O', 'CA', 'CA', 'HA', 'CA', 'HA', 'CA',
-                'HA', 'CA', 'HA', 'CA', 'OS', 'C2', 'O', 'CT', 'HC', 'HC', 'HC'] 
-  unk_int = 1
-  zmatrix = [0,0,0]
+  number_torsions = len(tors)
+  number_atoms = len(atom_names)
+  number_phis = len(phis)
+  number_improper = len(impropers)
 
-  header = '{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
-                                                      number_torsions, number_teth, number_improper)
+  #Missing NBND information in param
+  sgb_radius, gammas, alphas = SGB_paramaters(atom_types)
 
-  connectivity = []
-  for i, (atom_name, atom_type, parent) in enumerate(zip(atom_names, atom_types, parents)):
-    connectivity_line = '{0:>5} {1:>4} {2:>0} {3:>3} _{4:>3}_ {5:>4} {6:>9} {7:>9} {8:>9} '.format(
-                                                                  i, parent, 'S', atom_type, atom_name,
-                                                                  unk_int, zmatrix[0], zmatrix[1], zmatrix[2])
-    connectivity.append(connectivity_line)
+  #Output file
+  output_file = output_template_file + '.hetgrp_ffgen'  
+  ################################Template Creation########################33
+
+  header = ['{0:>0}  {1:>5} {2:>5} {3:>6} {4:>6} {5:>7}'.format(res_name, number_atoms, number_bonds,
+                                                      number_torsions, (number_phis + number_improper), 0)]
+
+  connectivity_section = []
+  for i, (atom_name, atom_type, parent, zmat_row) in enumerate(
+    zip(atom_names, atom_types, parents, zmat), 1):
+    connectivity_line = '{0:>5} {1:>5} {2:>0} {3:>5} {4:>5} {5:>5} {6:>11.5f} {7:>11.5f} {8:>11.5f} '.format(
+      i, parent, 'S', atom_type, atom_name,
+      UNK_INT, zmat_row[0], zmat_row[1], zmat_row[2])
+    connectivity_section.append(connectivity_line)
 
   NBOND_section = []
-  NBOND = read_info_from_param(nb=True)
-  charges = read_charge_from_mae(mae_file)
-  for i, (atom_type, charge) in enumerate(zip(atom_types, charges), start=1):
-    for NBOND_line in NBOND:
-      if(atom_type == NBOND_line[0]):
-        #Calculate sigma = radiVanderwaals*2
-        radius_vdw = NBOND_line[3] 
-        sigma = float(radius_vdw) * 2
-        #Truncating floats
-        SGB_gamma = NBOND_line[7] 
-        SGB_gamma = float(SGB_gamma)
-        SGB_type = NBOND_line[8]  
-        SGB_type = float(SGB_type)
+  for i, (atom_type, charge, sigma, epsilon, radius, gamma, alpha) in enumerate(
+    zip(atom_types, charges, sigmas, epsilons, sgb_radius, gammas, alphas), 1):
+        NBOND_section.append('{0:>5} {1:>8.4f} {2:>8.4f} {3:>10.6f} {4:>8.4f} {5:>8.4f} {5:>13.9f} {6:>13.9f}'.format(
+          i, float(sigma), float(epsilon), float(charge), float(radius), float(sigma)/2.0, float(gamma), float(alpha)))
+        #  NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,epsilon, vdw))
+ 
+  strech_section = []
+  for (bond_pair, stretching) in zip(bonds, stretchings):
+        strech_section.append('{0:>5} {1:>5} {2:>9.3f}  {3:>5.3f}'.format(
+          bond_pair[0], bond_pair[1], float(stretching[0]), float(stretching[1])))
+   
+  tors_section = []
+  for tor in tors:
+    tors_section.append('{0:>5} {1:>5} {2:>5} {3:>11.5f} {4:>10.5f}'.format(
+      tor[0], tor[1], tor[2], float(tor[3]), float(tor[4])))
 
-        NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,
-                                                                                           SGB_gamma, SGB_type, *NBOND_line))
+  phi_section = []
+  phis = descompose_dihedrals(phis)
+  for phi in phis:
+    phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
+      phi[0], phi[1], phi[2], phi[3], (float(phi[4])+float(phi[5])/2.0), -1, abs(float(phi[6]))))
 
+  iphi_section = []
+  for improper in impropers:
+    iphi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
+      improper[0], improper[1], improper[2], improper[3], float(improper[4])/2.0, -1, 3))
 
-  BOND_section = []
-  BOND = read_info_from_param(cv=True)
-  for bond_pair in bonds:
-    index_atom1 = bond_pair[0]
-    index_atom2 = bond_pair[1]
-    atomtype1 = atom_types[index_atom1]
-    atomtype2 = atom_types[index_atom2]
+  file_content = []
+  file_content.extend(header +
+                       connectivity_section +
+                       ['NBON'] +
+                       NBOND_section +
+                       ['BOND'] +
+                       strech_section +
+                       ['THET'] +
+                       tors_section +
+                       ['PHI'] +
+                       phi_section +
+                       ['IPHI'] +
+                       iphi_section +
+                       ['END'])
+
+  with open(output_file, 'w') as f:
+    f.write('\n'.join(file_content))
+  return output_file, res_name, mae_file, output_file, res_name
+
+def SGB_paramaters(atom_types):
+  radius = []
+  gammas = []
+  alphas = [] 
+  lines = preproces_file_lines(PARAM_PATH)
+  for atom_type in atom_types:
     found = False
-    for bonded_param in BOND:
-      if(bonded_param[0]=='THET'):
-        break 
-      elif('{0}-{1}'.format(atomtype1, atomtype2)==bonded_param[0] or '{1}-{0}'.format(atomtype1, atomtype2)==bonded_param[0]):
-        found= True
-        BOND_section.append('{0:>5} {1:>6} {2:>9.3f}  {3:>6.3f}'.format(index_atom1, index_atom2, float(bonded_param[1]), float(bonded_param[2])))
-        print(bonded_param)
+    for line in lines:
+      line = line.split()
+      atom_type_file = line[1]
+      if(atom_type == atom_type_file):
+        radius.append(line[4])
+        gammas.append(line[6])
+        alphas.append(line[7])
+        found = True
     if not found:
-      warnings.warn("Bond {0}-{1} not Found. Using default spring constant and equilibrium distance".format(atomtype1, atomtype2))
-      BOND_section.append('{0:>5} {1:>6} {2:>9.3f}  {3:>6.3f}'.format(index_atom1, index_atom2, float(DEFAULT_SPRING_K), float(DEFAULT_EQ_DIST)))
-  
+      raise Exception('Atomtype parameters {} not found in \
+                      param/sgbnp.param include him and run \
+                       the program againd'.format(atom_type))
+  return(radius, gammas, alphas)
 
 
-
-  
-      
-
-
-  print(header)
-  print('\n'.join(connectivity))
-  print('NBON')
-  print('\n'.join(NBOND_section))
-  print('BOND')
-  print('\n'.join(BOND_section))
-
-def read_info_from_param(nb=False, cv=False):
+def create_zmatrix(mae_file, parents):
   """
-    Parse NBON/BON paramaters data
-    and return alist with all of them
+    Retrieve the internal coordinates (zmatrix)
+    from the complex cooridnates & topology:
+
+    Input:
+      str1: structure.structure class object
+      parents: atom's parent list
+
+    Ouput:
+      zmatrix: structure internal coord
   """
-  directory_path = os.path.dirname(os.path.realpath(__main__.__file__))
-  if nb:
-    paramfile_partial_path = 'param/params.nb'
-  if cv:
-    paramfile_partial_path = 'param/params.cov'
-  paramfile_path = os.path.join(directory_path, paramfile_partial_path)
-  with open(paramfile_path) as f:
+  str1 = structure.StructureReader(mae_file).next()
+  order = [i for i in range(len(parents))]
+  #Gap of 1 between parents list and the one needed for creating zmat
+  parents = [int(parent) - 1 for parent in parents] 
+  coordinates = [atom._getXYZ() for atom in str1.atom]
+  zmat = xyz2int(coordinates, order, parents)
+  return zmat
+
+
+  
+def retrieve_atom_names(OPLS_CONVERSION_FILE):
+  """
+    parse the param.data and retrieve
+    the atom names of the molecule
+  """
+  atom_names = []
+  lines = preproces_file_lines(OPLS_CONVERSION_FILE)
+  start_found_NBND = False
+  for line in lines:
+      if not line.startswith("----------"):
+        if(line.startswith("atom type vdw")):
+          start_found_NBND = True
+        elif(start_found_NBND):
+          try:
+            line = line.split()
+            atom_names.append(line[0])
+          except IndexError:
+            return atom_names
+
+
+def preproces_file_lines(file):
+  with open(file, "r") as f:
     lines = f.readlines()
     for i, line in enumerate(lines):
       line = re.sub(' +',' ',line)
-      line = line.strip('\n')
-      lines[i] = line.split()
-  return(lines)
+      line = line.strip('\n').strip()
+      lines[i] = line
+    return lines
+
+
+
+def search_and_replace(file, to_search):
+  """
+    Search and replace atom_names for numbers
+  """
+  to_replace = [i for i in range(1, len(to_search)+1)]
+
+  f = open(file,'r')
+  filedata = f.read()
+  f.close()
+
+  for (item_to_search, item_to_replace) in zip(to_search, to_replace):
+      filedata = filedata.replace(item_to_search.strip('_'), str(item_to_replace)) #atom types are like _O1_ (strip)
+
+  f = open(file,'w')
+  f.write(filedata)
+  f.close()
+
+def parse_param(param_file, natoms):
+  """
+    Parse the OPLS conversion param file
+    and get the atomtypes.
+
+    Go through the param.dat through several stages
+    while jumping al the ----- lines:
+
+
+    1. Look for the BSCI section for each atom
+       and its parent appending both like
+       bond [A,B] and parent [B].
+    2. Set end_connectivity_found=True to start
+       parsing the NBND section
+    
+    In the NBND section:
+    2. Look for the atom type vd2w line
+    3. Parse each line of the non bonding section
+    4. set NBND_finished= True to start parsing the bonded section
     
 
-
-
-
-  
-def search_parent_atom(bonds, number_atoms):
+    In the BOND section
+    5. For each subsection ([stretchings, bendings, proper_tors, improper_tors]):
+       1. Search for the respective title indicating the beggining of the section
+       (["Stretch", "Bending", "proper Torsion", "improper Torsion"])
+       2. Then parse the section obtaining the values from the columns indicated in columns to take
+       3.when all sections are parsed return all values
   """
-    Iterate over all bonds searching for
-    the smallest parent (smallest atom number)
-    of each atom returning a list with them.
 
-    Input:
-      Bonds: All bonds
-      number_atom: number of atoms
+  atom_types = []
+  parents = [0] * natoms
+  charges = []
+  sigmas = []
+  epsilons = []
+  vdws = []
+  stretchings = []
+  bendings = []
+  proper_tors = []
+  improper_tors = []
+  lists = [stretchings, bendings, proper_tors, improper_tors]
+  keywords = ["Stretch", "Bending", "proper Torsion", "improper Torsion"]
+  columns_to_take = [[0,1, 2, 3], [0, 1, 2, 3,4], [0, 1 ,2 , 3, 4, 5, 6, 7], [0, 1, 2, 3, 4]]
+  start_connectivity_found = False
+  end_connectivity_found = False
+  start_found_NBND = False
+  NBND_finished = False
+  start_found_BND = False
 
-    Ouput:
-      parents: smallest parents of each atom
 
-    Ex--> [0,1,1,3,3,4]
-    Atom number 1 has a 0 which means that doesnt have parent
-    Atom number 2 has atom number 1 as a parent
-    Atom 3 has atom 1
-    Atom 4 has atom 3
-    etc...
+  with open(param_file) as f:
+    lines = f.readlines()
+    for i, line in enumerate(lines):
+      #prepared lines
+      line = re.sub(' +',' ',line)
+      line = line.strip('\n').strip()
+
+      if not end_connectivity_found:
+        if(line.startswith("BCI's")):
+          start_connectivity_found = True
+        elif(start_connectivity_found):
+          try:
+            line = line.split()
+            #parents[int(line[1])-1]-->Atom names start at 1 but list at 0
+            parents[int(line[1])-1] = int(line[0]) 
+          except IndexError:
+            end_connectivity_found = True
+
+
+      #NBND section
+      elif (line.startswith("----------") is False) and (NBND_finished is False) and (end_connectivity_found is True):
+        if(line.startswith("atom type vdw")):
+          start_found_NBND = True
+        elif(start_found_NBND):
+          try:
+            line = line.split()
+            atom_types.append(line[3])
+            charges.append(line[4])
+            sigmas.append(line[5])
+            epsilons.append(line[6])
+          except IndexError:
+            NBND_finished=True
+
+      elif(NBND_finished):
+        for (keyword, indexes, List) in zip(keywords, columns_to_take, lists):
+          while(line.startswith(keyword) is False):
+            line, i = move_line_forward(lines, i)
+          line, i = move_line_forward(lines, i)
+          while(line):
+                line = re.sub(' +',' ',line)
+                line = line.strip('\n')
+                line = line.split()
+                values = [line[index] for index in indexes]
+                List.append(values)
+                line, i = move_line_forward(lines, i)
+        return atom_types, parents, charges, sigmas, epsilons, stretchings, bendings, proper_tors, improper_tors
+
+def move_line_forward(lines, i):
+  i+=1
+  line = lines[i].strip()
+  return line, i
+
+def descompose_dihedrals(phis):
   """
-  parents_template = []
-  parent_initialize = [None] * number_atoms
-  atoms = [i for i in range(number_atoms)] 
-  parents = {atom : parent_init for atom, parent_init in zip(atoms, parent_initialize)}
+    For each dihedral line as:
+    atom1 atom2 atom3 atom4   V1    V2   V3    V4
+      1     2     3      4   0.00 1.000 5.000 3.000
 
-  for bond_pair in bonds:
-    atom = bond_pair[1] 
-    parent = bond_pair[0]
-    if(parent<parents[atom] or parents[atom] is None):
-      parents[atom] = parent
-  for atom, parent in parents.items():
-    if parent is None:
-      parents_template.append(0)
-    else:
-      parents_template.append(parent+1) #Shift of one between mae and bonds
-  return parents_template
-    
-
-def read_charge_from_mae(mae_file):
-    charges = []
-    with open(mae_file, "r") as f:
-
-      atom_sec_found = False
-      while not atom_sec_found:  # Find Atom Section
-          line = f.readline()
-          if line == "" or re.search(r'm_atom\[\d+\]', line):
-            atom_sec_found = True   
-
-      end_atom_section_found = False #Find :::        
-      while not end_atom_section_found:
-          line = f.readline()
-          if line == "" or re.search(':::', line):
-              end_atom_section_found = True
-
-      #Read Charges
-      end_keywords_found = False   
-      while not end_keywords_found:
-          line = f.readline()
-          if line == "" or re.search(':::', line):
-              end_keywords_found = True
-              break
-          mae_atom_values = parse_mae_line(line)
-          charges.append(mae_atom_values[8])
-      return charges
-
-
-
-
-
-
-
-
-# def build_template(mae_file, root, OPLS, hetgrp_opt, old_name, new_name):
-#     """
-#     Build the Ligand ($RES_NAME).hetgrp_ffgen template.
-
-#     Input:
-#       mae_file: ligand mae file
-#       root: name of the ame_file without extensio
-#       OPLS: Type of OPLS to use 2001/2005
-#       hetgrp_opt: Option to include -mae charges in the command line input
-#       old_name: Name of all user given template_files
-#       new_name: User choosen outputfile
-
-#     Output:
-#        template_file: ($RES_NAME).hetgrp_ffgen template
-#        output_template_file:   name of the ligand template file
-#        mae_file_hetgrp_ffgen: ($RES_NAME).hetgrp_ffgen.mae
-#        files: files to clean
-#        resname: residue name on template
-
-#     """
-#     files2clean = []
-#     #Find the first residue name in the mae file
-#     hetgrp_output = root + ".hetgrp_ffgen.out"
-#     res_names = find_resnames_in_mae(mae_file)
-#     mae_out_file = root + ".hetgrp_ffgen.mae"
-#     if (OPLS != "2001" and OPLS != "2005"):
-#         raise Exception('OPLS version must be either 2001 or 2005');
-#     #  if(len(res_names)>1): raise Exception ("ERROR mae file must contain only one residue",res_names[0],res_names[1])
-#     res_names[0] = res_names[0].lower()
-#     a = re.search('^\s*(\S+)\s*$', res_names[0]);
-#     if (a):
-#         res_names[0] = a.group(1)
-#     else:
-#         raise Exception('Input file must have a residue name')
-#     if (old_name == res_names[0]):
-#         raise Exception('Input Template file must have a different name')
-#     if (new_name == ""): new_name = res_names[0];
-#     if (old_name == ""):
-#         # this isn't the right way to do it, but I'm removing the default template
-#         # file if it exists and forcing hetgrp_ffgen to write a new one
-#         f = open(res_names[0], 'w');
-#         f.close();
-#         if (f): 
-#           os.remove(res_names[0]);
-#         line = hetgrp_ffgen + ' ' + OPLS + ' ' + mae_file + ' ' + hetgrp_opt + ' -out ' + mae_out_file + ' > ' + hetgrp_output
-#         os.system(line);
-#         #print("Atom Typing (", OPLS, "): ", mae_file, " -> ", mae_out_file
-#         files2clean.append(hetgrp_output)
-#         output = res_names[0] + ".hetgrp_ffgen";
-#         try:
-#             shutil.copy2(res_names[0], output)
-#         except:
-#             f1 = open(hetgrp_output, "r");
-#             lines = f1.read();
-#             f1.close();
-#             raise Exception('Error assigning atom types \n' + lines)
-#         files2clean.append(output)
-#     else:
-#         print("Reading in template file: {}".format(old_name))
-#         print("Copying Mae File: {0}  -> {1}".format(mae_file, mae_out_file))
-#         shutil.copy2(mae_file, mae_out_file)
-#         output = old_name
-#     files2clean.append(mae_out_file)
-
-
-#     print("Template output {}".format(output)) #The template created. Has the residue name if has been generated automatically. If not, has the user-defined name
-#     print("Residue name on template {}".format(new_name)) #Actually, the name of the residue, will be the name of the generated template
-#     print("Output hetgrp_ffgen {}".format(mae_out_file)) #File created by hetgrp_ffgen, if the used didn't indicate a template. The mae indicated by the user otherwise
-
-#     print([output, new_name, mae_out_file, files2clean, res_names[0]])
-#     return [output, new_name, mae_out_file, files2clean, res_names[0]]
-
+    Separate all components as next:
+    atom1 atom2 atom3 atom4   value  which VX???
+     1     2     3      4     1.000      2
+     1     2     3      4     5.000      3
+  """
+  new_phis = []
+  new_phi = []
+  for phi in phis:
+    atoms = phi[0:4]
+    for index, component in enumerate(phi[4:8], 1):
+      if(component != '0.000'):
+        new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], component, 1, index])
+  return new_phis
+      
 
 ##################################################
 def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, ordering, mae2temp, temp2mae, gridres,
@@ -2829,7 +2947,7 @@ def check_oh_tors(mae_file, tors, names):
         atom_name1 = names[tor[1]].replace("_", " ");
         mae_atom1 = -1
         for iatom in range(mm.mmct_ct_get_atom_total(st1)):
-            if (atom_name1 == st1.atom[iatom + 1].property['s_m_pdb_atom_name']):
+            if (atom_name1.strip() == (st1.atom[iatom + 1].property['s_m_pdb_atom_name']).strip()):
                 mae_atom1 = iatom + 1
         if (mae_atom1 < 0):
             raise Exception('Error in check OH Tors')
