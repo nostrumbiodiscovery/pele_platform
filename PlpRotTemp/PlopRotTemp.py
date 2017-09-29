@@ -132,6 +132,7 @@ DEFAULT_SPRING_K = '268.0'
 DEFAULT_EQ_DIST = '1.529'
 FILE_DIR_PATH = os.path.dirname(__file__)
 PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/sgbnp.param') ##impact??
+SIMILARITY_PATH = os.path.join(FILE_DIR_PATH, 'param/similarity.param') ##impact??
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
 dummy_atom3 = [0.1, 0.2, 0.3]
@@ -1463,6 +1464,7 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
     if (user_tors == []):
         # tors = find_tors_in_log(logfile)
         tors = get_torsions_from_mae(mae_file, residue_name)
+        print(tors)
         print(" - torsions found.")
 
     ########CHANGE     SCHRODINGER######
@@ -1491,6 +1493,7 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
     bonds = find_bonds_in_mae(mae_file) 
     print(' -bonds found in mae file')
     atom_names = find_names_in_mae(mae_file)
+    print(atom_names) 
     print(' -names found in mae file')
     if (len(atom_names) <= 0):
       print("NO ATOMS FOUND IN MAE FILE")
@@ -2449,7 +2452,6 @@ def build_template(mae_file, output_template_file):
         #  NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,epsilon, vdw))
  
   strech_section = []
-  print(stretchings)
   for stretching in stretchings:
         strech_section.append('{0:>5} {1:>5} {2:>9.3f}  {3:>5.3f}'.format(
           stretching[0], stretching[1], float(stretching[2]), float(stretching[3])))
@@ -2500,7 +2502,7 @@ def build_template(mae_file, output_template_file):
   return output_file, res_name, mae_file, output_file, res_name
 
 
-def SGB_paramaters(atom_types):
+def SGB_paramaters(atom_types, tried = []):
   radius = []
   gammas = []
   alphas = [] 
@@ -2516,11 +2518,53 @@ def SGB_paramaters(atom_types):
         alphas.append(line[7])
         found = True
     if not found:
-      raise Exception('Atomtype parameters {} not found in \
-                      param/sgbnp.param include him and run \
-                       the program againd'.format(atom_type))
+      new_params = find_similar_atomtype_params(atom_type, tried=[])
+      if(new_params):
+        radius.append(new_params[4])
+        gammas.append(new_params[6])
+        alphas.append(new_params[7])
+        warnings.warn("Paramaters of {} used for {}.".format(
+          new_params[1], atom_type))
+      else:
+        raise Exception('ATOMTYPE PARAMATERS for [{}] NOT FOUND. \
+Include them in PlpRotTemp/param/sgbnp.param and run \
+the program again.'.format(atom_type))
   return(radius, gammas, alphas)
 
+
+
+def find_similar_atomtype_params(atom_type, tried):
+  """
+    Find parameters from a similar atomtype
+    according to the table in param/similarity.dat
+  """
+  new_atom_type=False
+  similarity = 0
+
+  #Search for the most similar atom
+  lines = preproces_file_lines(SIMILARITY_PATH)
+  for line in lines:
+    line = line.split()
+    if(line[0]==atom_type and line[2]>similarity and line[1] not in tried):
+      similarity = line[2]
+      new_atom_type = line[1]
+    elif(line[1]==atom_type and line[2]>similarity  and line[0] not in tried):
+      similarity = line[2]
+      new_atom_type = line[0]
+  if new_atom_type:
+    tried.append(new_atom_type)
+
+    lines = preproces_file_lines(PARAM_PATH)
+    for line in lines:
+      line = line.split()
+      atom_type_file = line[1]
+      if(atom_type == atom_type_file):
+        return(line)
+    new_params = find_similar_atomtype_params(new_atom_type, tried)
+    return new_params
+
+  else:
+    return []
 
 def create_zmatrix(mae_file, parents):
   """

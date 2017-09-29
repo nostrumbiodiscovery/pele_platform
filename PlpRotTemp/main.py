@@ -130,6 +130,7 @@ parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsio
                               group.  Will freeze bonds to extend the core if \
                               necessary.")
 parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File")
+parser.add_argument("--mae_charges", help="Use charges specified in the ligand.mae file", action='store_true')
 parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
 args = parser.parse_args()
 
@@ -148,6 +149,8 @@ if args.mtor:
 if args.n:
   nrot = args.n
   print('\nUsing {} as a Maximum Number of Entries in Rotamer Files\n'.format(nrot))
+if args.mae_charges:
+  use_mae_charges = 1
 if args.clean:
   clean = args.clean
 
@@ -156,15 +159,15 @@ if args.clean:
 #########################COMENT#################################
 
 # Process options
-"""
-if (gridres_oh == ""): 
-    gridres_oh = gridres
+
+# if (gridres_oh == ""): 
+#     gridres_oh = gridres
 if (use_mae_charges == 1):
     hetgrp_opt = hetgrp_opt + '-use_mae_charges'
 
-if (run_conf == 0): 
-    conf_file = 'none'
-"""
+# if (run_conf == 0): 
+#     conf_file = 'none'
+
 #######################COMENT################################33
 
 ####################CHANGE MACROMODEL###########################
@@ -342,7 +345,7 @@ for i in range(len(new_back_tors)):
 #Make (or read) original tempalte file
 print('\n')
 print('CREATE ROTAMER TEMPLATE FILE: {}'.format(output_template_file))
-names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file,
+names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file.upper(),
                         R_group_root_atom_name=R_group_root_atom_name)
 
 [tors, tors_ring_num, zmat_atoms] = pl.FindTorsAtom(tors, tors_ring_num, parent)
