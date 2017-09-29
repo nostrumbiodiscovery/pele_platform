@@ -372,7 +372,7 @@ def find_names_in_mae(filename, undersc=False):
                 atom_names_index = index
         if residue_names_index is None or atom_names_index is None:
             error_message = "The keywords in the atom section form the .mae file don't match the regular " \
-                            "expressions currently implemented."
+                            "expressions currently implemented. Residue name and atom types are compulsory."
             raise Exception (error_message)
         if len(mae_atom_values) >= 13:
             ace = re.search('ACE', mae_atom_values[residue_names_index])  #added by mcclendon:a ligand or modified
@@ -1546,13 +1546,15 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
 
     #  print "Core atom",core_atom,rank
     if (use_mult_lib == 1):
+      with open('GROUP.dat','w') as f:
         print(' -Number of groups {}:'.format(max_value(group) + 1))
         for grp in range(max_value(group) + 1):
             line = '  -Group %2d' % (grp + 1)
             for i in range(len(atom_names)):
                 if (group[i] == grp):
-                    line = line + ' ' + atom_names[i]
+                    line = line + ' ' + atom_names[i].strip()
             print(line)
+            f.write(line)
 
     [old_num, parent, rank, group] = order_atoms(bonds, tors, back_tors, assign, rank, group)
 
@@ -2721,7 +2723,11 @@ def parse_param(param_file, natoms):
       elif(NBND_finished):
         for (keyword, indexes, List) in zip(keywords, columns_to_take, lists):
           while(line.startswith(keyword) is False):
-            line, i = move_line_forward(lines, i)
+            try:
+              line, i = move_line_forward(lines, i)
+            except IndexError:
+              #There are no improper torsions!!
+              return atom_types, parents, charges, sigmas, epsilons, stretchings, bendings, proper_tors, improper_tors
           line, i = move_line_forward(lines, i)
           while(line):
                 line = re.sub(' +',' ',line)
