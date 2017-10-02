@@ -17,15 +17,7 @@ Outputs: 1) a re-ordered template file (old one is backed up in FILENMAE.hetgrp_
 
 
 Options:
-
-   --core <an1>      Give one atom of the core section
-
-   --n <number>      Maximum Number of Entries in Rotamer File
-
-   --mtor <number>   Gives the maximum number of torsions allowed in each
-                     group.  Will freeze bonds to extend the core if 
-                     necessary
-
+G
    --clean           Clean Intermiadiate files
 
 
@@ -312,7 +304,6 @@ if (unnat_res == 1 or grow == 1 ):
     newtors = pl.ReorderTorsionsAA(tors, mae_num)
 
 ####################SCHRODINGER###########################
-
 
 
 #Change from mae files atom numbering to the template file ones
