@@ -1587,15 +1587,15 @@ def get_torsions_from_mae(mae_file, residue_name):
   struct = structure.StructureReader(mae_file).next()
   struct.write(pdb_file)
   print(pdb_file)
-  mol = Chem.MolFromPDBFile(pdb_file)
+  mol = Chem.MolFromPDBFile(pdb_file, False)
   torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
   torsions = [[tor[0], tor[1]] for tor in torsions]
   OH_torsions = find_OH_torsions(struct, mae_file)
   torsions.extend(OH_torsions)
-  try:
-    os.remove(pdb_file)
-  except OSError:
-    print("Error when calculating torsions. Be carefull not to have a {} in your current directory".format(pdb_file))
+  # try:
+  #   os.remove(pdb_file)
+  # except OSError:
+  #   print("Error when calculating torsions. Be carefull not to have a {} in your current directory".format(pdb_file))
   return torsions
 
 def find_OH_torsions(struct, mae_file):
