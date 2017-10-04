@@ -140,8 +140,12 @@ UNK_INT = 6
 DUMMY_COORD = 17.21606
 DUMMY_ANGLE = 45.73961
 DUMMY_DIHEDRAL = 13.21566
+STANDARD_RESIDUE_NAME = 'LIG'
 OPLS_CONVERSION_FILE = 'param.dat'
 OPLS_VERSION = '14'
+ERROR_ATOMNAMES = "The keywords in the atom section form the .mae file don't match the regular " \
+                  "expressions currently implemented. ATOM NAMES ARE COMPULSORY."
+
 
 
 
@@ -337,6 +341,8 @@ def find_names_in_mae(filename, undersc=False):
     they should be easy to modify
     J.M.I.F
     """
+    ace = None
+    nma = None
     f = open(filename, "r")
     names = []
     keywords = []
@@ -370,17 +376,17 @@ def find_names_in_mae(filename, undersc=False):
                 residue_names_index = index
             elif re.search (r'.*pdb_*atom_*name', key, re.IGNORECASE):
                 atom_names_index = index
-        if residue_names_index is None or atom_names_index is None:
-            error_message = "The keywords in the atom section form the .mae file don't match the regular " \
-                            "expressions currently implemented. Residue name and atom types are compulsory."
-            raise Exception (error_message)
-        if len(mae_atom_values) >= 13:
-            ace = re.search('ACE', mae_atom_values[residue_names_index])  #added by mcclendon:a ligand or modified
-            # residue can't have reserved name for protein capping group ACE or NMA
-            nma = re.search('NMA', mae_atom_values[residue_names_index])  #added by mcclendon
-            if ((not ace) and (not nma)):
-                atomname = mae_atom_values[atom_names_index]
-                names.append(atomname.strip())
+
+        if atom_names_index is None:
+            raise Exception (ERROR_ATOMNAMES)
+        if('s_m_pdb_residue_name' in keywords):
+          if len(mae_atom_values) >= 13:
+              ace = re.search('ACE', mae_atom_values[residue_names_index])  #added by mcclendon:a ligand or modified
+              # residue can't have reserved name for protein capping group ACE or NMA
+              nma = re.search('NMA', mae_atom_values[residue_names_index])  #added by mcclendon
+        if ((not ace) and (not nma)):
+            atomname = mae_atom_values[atom_names_index]
+            names.append(atomname.strip())
     f.close()
 
     if(undersc):
@@ -1580,14 +1586,41 @@ def get_torsions_from_mae(mae_file, residue_name):
   pdb_file = residue_name + ".pdb"
   struct = structure.StructureReader(mae_file).next()
   struct.write(pdb_file)
+  print(pdb_file)
   mol = Chem.MolFromPDBFile(pdb_file)
   torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
   torsions = [[tor[0], tor[1]] for tor in torsions]
+  OH_torsions = find_OH_torsions(struct, mae_file)
+  torsions.extend(OH_torsions)
   try:
     os.remove(pdb_file)
   except OSError:
     print("Error when calculating torsions. Be carefull not to have a {} in your current directory".format(pdb_file))
   return torsions
+
+def find_OH_torsions(struct, mae_file):
+  """
+    Find all the OH terminal bonds
+    and append them to torsions
+  """
+  OH_torsions = []
+  oxygen_atoms = []
+  OH_bonds = []
+  atoms = struct.atom
+  bonds = find_bonds_in_mae(mae_file)
+  for bond in bonds:
+      #struct reader atom list start at 1
+      if(atoms[bond[0]+1]._getAtomElement() == 'O' and atoms[bond[1]+1]._getAtomElement()== 'H'):
+        oxygen_atoms.append(bond[0])
+        OH_bonds.append(bond)
+  for bond in bonds:
+    if(bond not in OH_bonds and (bond[0] in oxygen_atoms or bond[1] in oxygen_atoms)):
+      OH_torsions.append(bond)
+  return OH_torsions
+
+
+  
+ 
 
 
 ####################################
@@ -2243,9 +2276,15 @@ def get_first_res_name(filename):
 def find_resnames_in_mae(filename):
     builder = MaeFileBuilder()
     mae = builder.build(filename)
-
-    #Get residue names list, remove duplicates building a set, and return a list with unique values
-    return list(set([atom['s_m_pdb_residue_name'].strip() for atom in mae.atoms()]))
+    try:
+      #Get residue names list, remove duplicates building a set, and return a list with unique values
+      return list(set([atom['s_m_pdb_residue_name'].strip() for atom in mae.atoms()]))
+    except KeyError:
+      print('a')
+      #Default name
+      warnings.warn("NO RESIDUE NAME FOUND IN MAE."\
+                    " USING RESIDUE NAME [{}].".format(STANDARD_RESIDUE_NAME))
+      return [STANDARD_RESIDUE_NAME]
 
 
 ###################################
@@ -2403,7 +2442,6 @@ def build_template(mae_file, output_template_file):
          sections of the template
       5- Write everything to a RESIDUENAME.hetgrp file
   """
-  
   #Create ligand params with ffld_sever from schrodinger
   ffld_server_command = os.path.join(os.environ['SCHRODINGER'], 'utilities/ffld_server')
   subprocess.call([ffld_server_command, "-imae", mae_file, "-version",
@@ -2412,10 +2450,11 @@ def build_template(mae_file, output_template_file):
   #Retrieve all the useful information from that params
   atom_names_param = retrieve_atom_names(OPLS_CONVERSION_FILE)
   search_and_replace(OPLS_CONVERSION_FILE, atom_names_param)
-  atom_types, parents, charges, sigmas, epsilons, stretchings, tors, phis, impropers = parse_param(OPLS_CONVERSION_FILE, len(atom_names_param))
+  atom_types, parents, charges, sigmas, epsilons, stretchings, tors, phis, impropers = parse_param(OPLS_CONVERSION_FILE, atom_names_param)
+
 
   #Connectivity information from Mae
-  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue 
+  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue
   atom_names = find_names_in_mae(mae_file, undersc=True)
   # bonds = [[stretching[0:2] for stretching in stretchings]
   zmat = create_zmatrix(mae_file, parents)
@@ -2494,7 +2533,7 @@ def build_template(mae_file, output_template_file):
   with open(output_file, 'w') as f:
     f.write('\n'.join(file_content))
   
-  #Remove param.dat file
+  # Remove param.dat file
   try:
     os.remove(OPLS_CONVERSION_FILE)
   except OSError:
@@ -2505,6 +2544,7 @@ def build_template(mae_file, output_template_file):
 
 
 def SGB_paramaters(atom_types, tried = []):
+  print(atom_types)
   radius = []
   gammas = []
   alphas = [] 
@@ -2520,6 +2560,7 @@ def SGB_paramaters(atom_types, tried = []):
         alphas.append(line[7])
         found = True
     if not found:
+      print(atom_type)
       new_params = find_similar_atomtype_params(atom_type, tried=[])
       if(new_params):
         radius.append(new_params[4])
@@ -2627,18 +2668,30 @@ def search_and_replace(file, to_search):
   """
   to_replace = range(1, len(to_search)+1)
 
-  f = open(file,'r')
-  filedata = f.read()
-  f.close()
+  with open(file, "r+") as f:
+    lines = f.readlines()
+    for i, line in enumerate(lines):
+      lines[i] = ' ' + line.strip('\n')
+
+
+  with open(file, "w") as f:
+    f.write('\n'.join(lines))
+  
+  with open(file, "r") as f:
+    filedata = f.read()
+ 
 
   for (item_to_search, item_to_replace) in zip(to_search, to_replace):
       filedata = filedata.replace(' ' + item_to_search.strip('_')+' ', ' '+str(item_to_replace)+' ') #atom types are like _O1_ (strip)
+
+
 
   f = open(file,'w')
   f.write(filedata)
   f.close()
 
-def parse_param(param_file, natoms):
+
+def parse_param(param_file, atom_names):
   """
     Parse the OPLS conversion param file
     and get the atomtypes.
@@ -2668,7 +2721,7 @@ def parse_param(param_file, natoms):
   """
 
   atom_types = []
-  parents = [0] * natoms
+  parents = [0] * len(atom_names)
   charges = []
   sigmas = []
   epsilons = []
@@ -2713,7 +2766,10 @@ def parse_param(param_file, natoms):
         elif(start_found_NBND):
           try:
             line = line.split()
-            atom_types.append(line[3])
+            if not line[3].isdigit():
+              atom_types.append(line[3])
+            else:
+              atom_types.append(atom_names[int(line[3])-1])
             charges.append(line[4])
             sigmas.append(line[5])
             epsilons.append(line[6])
