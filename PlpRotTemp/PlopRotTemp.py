@@ -1586,16 +1586,16 @@ def get_torsions_from_mae(mae_file, residue_name):
   pdb_file = residue_name + ".pdb"
   struct = structure.StructureReader(mae_file).next()
   struct.write(pdb_file)
-  print(pdb_file)
   mol = Chem.MolFromPDBFile(pdb_file, False)
   torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
   torsions = [[tor[0], tor[1]] for tor in torsions]
   OH_torsions = find_OH_torsions(struct, mae_file)
-  torsions.extend(OH_torsions)
-  # try:
-  #   os.remove(pdb_file)
-  # except OSError:
-  #   print("Error when calculating torsions. Be carefull not to have a {} in your current directory".format(pdb_file))
+  NH2_torsions = find_NH2_torsions(struct, mae_file)
+  torsions.extend(OH_torsions+NH2_torsions)
+  try:
+    os.remove(pdb_file)
+  except OSError:
+    print("Error when calculating torsions. Be carefull not to have a {} in your current directory".format(pdb_file))
   return torsions
 
 def find_OH_torsions(struct, mae_file):
@@ -1619,8 +1619,31 @@ def find_OH_torsions(struct, mae_file):
   return OH_torsions
 
 
-  
- 
+def find_NH2_torsions(struct, mae_file):
+
+  """
+    Find all the NH2 terminal bonds
+    and append them to torsions
+  """
+  NH2_torsions = []
+  nitrogen_atoms = []
+  NH_bonds = []
+  atoms = struct.atom
+  bonds = find_bonds_in_mae(mae_file)
+  #Find all NH bonds and Natoms
+  for bond in bonds:
+      #struct reader atom list start at 1
+      if(atoms[bond[0]+1]._getAtomElement() == 'N' and atoms[bond[1]+1]._getAtomElement()== 'H'):
+        NH_bonds.append(bond)
+        if(bond[0] not in nitrogen_atoms):
+          nitrogen_atoms.append(bond[0])
+  #Find NH2-C Bond and include it to torsions
+  for bond in bonds:
+    if(bond not in NH_bonds and (bond[0] in nitrogen_atoms or bond[1] in nitrogen_atoms)):
+      NH2_torsions.append(bond)
+  return NH2_torsions
+
+
 
 
 ####################################
