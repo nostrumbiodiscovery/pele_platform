@@ -125,13 +125,15 @@ hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 # Definitions 
 ################################################################################
 
+CONVERSION = {'CT1': 'CT',
+              'NS': 'N',}
 ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
 ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
 DEFAULT_RADIUS_VDW = '0.5000'
 DEFAULT_SPRING_K = '268.0'
 DEFAULT_EQ_DIST = '1.529'
 FILE_DIR_PATH = os.path.dirname(__file__)
-PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/sgbnp.param') ##impact??
+PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/f14_sgbnp.param') ##impact??
 SIMILARITY_PATH = os.path.join(FILE_DIR_PATH, 'param/similarity.param') ##impact??
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
@@ -140,6 +142,7 @@ UNK_INT = 6
 DUMMY_COORD = 17.21606
 DUMMY_ANGLE = 45.73961
 DUMMY_DIHEDRAL = 13.21566
+DEFAULT_ATOMTYPE = [0.000, 0.000, 1.500, 1.250, 0.005000000, 0.000000000]   
 STANDARD_RESIDUE_NAME = 'LIG'
 OPLS_CONVERSION_FILE = 'param.dat'
 OPLS_VERSION = '14'
@@ -2469,7 +2472,8 @@ def build_template(mae_file, output_template_file):
   ffld_server_command = os.path.join(os.environ['SCHRODINGER'], 'utilities/ffld_server')
   subprocess.call([ffld_server_command, "-imae", mae_file, "-version",
     OPLS_VERSION, "-print_parameters", "-out_file", OPLS_CONVERSION_FILE])
-
+  with open("a.txt","w") as f:
+    shutil.copy(OPLS_CONVERSION_FILE, "a.txt")
   #Retrieve all the useful information from that params
   atom_names_param = retrieve_atom_names(OPLS_CONVERSION_FILE)
   search_and_replace(OPLS_CONVERSION_FILE, atom_names_param)
@@ -2491,7 +2495,9 @@ def build_template(mae_file, output_template_file):
   sgb_radius, gammas, alphas = SGB_paramaters(atom_types)
 
   #Output file
-  output_file = output_template_file + '.hetgrp_ffgen'  
+  output_file = 'LIG.hetgrp_ffgen'
+  # output_file = output_template_file.upper() + '.hetgrp_ffgen'
+  # print(output_file)
   ################################Template Creation########################33
   
   header = ["* LIGAND DATABASE FILE (OPLS2005)",
@@ -2509,9 +2515,9 @@ def build_template(mae_file, output_template_file):
     connectivity_section.append(connectivity_line)
 
   NBOND_section = []
-  for i, (atom_type, charge, sigma, epsilon, radius, gamma, alpha) in enumerate(
-    zip(atom_types, charges, sigmas, epsilons, sgb_radius, gammas, alphas), 1):
-        NBOND_section.append('{0:>5} {1:>8.4f} {2:>8.4f} {3:>10.6f} {4:>8.4f} {5:>8.4f} {5:>13.9f} {6:>13.9f}'.format(
+  for i, (atom_type, charge, sigma, epsilon, radius, alpha, gamma) in enumerate(
+    zip(atom_types, charges, sigmas, epsilons, sgb_radius, alphas, gammas), 1):
+        NBOND_section.append('{0:>5} {1:>8.4f} {2:>8.4f} {3:>10.6f} {4:>8.4f} {5:>8.4f} {6:>13.9f} {7:>13.9f}'.format(
           i, float(sigma), float(epsilon), float(charge), float(radius), float(sigma)/2.0, float(gamma), float(alpha)))
         #  NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,epsilon, vdw))
  
@@ -2573,15 +2579,19 @@ def SGB_paramaters(atom_types, tried = []):
   alphas = [] 
   lines = preproces_file_lines(PARAM_PATH)
   for atom_type in atom_types:
+    if atom_type in CONVERSION:
+        atom_type = CONVERSION[atom_type]
     found = False
     for line in lines:
-      line = line.split()
-      atom_type_file = line[1]
-      if(atom_type == atom_type_file):
-        radius.append(line[4])
-        gammas.append(line[6])
-        alphas.append(line[7])
-        found = True
+      if not line.startswith('#'):
+          line = line.split()
+          atom_type_file = line[1]
+          if(atom_type == atom_type_file):
+            radius.append(line[4])
+            gammas.append(line[6])
+            alphas.append(line[7])
+            found = True
+            break
     if not found:
       print(atom_type)
       new_params = find_similar_atomtype_params(atom_type, tried=[])
@@ -2592,9 +2602,10 @@ def SGB_paramaters(atom_types, tried = []):
         warnings.warn("Paramaters of {} used for {}.".format(
           new_params[1], atom_type))
       else:
-        raise Exception('ATOMTYPE PARAMATERS for [{}] NOT FOUND. \
-Include them in PlpRotTemp/param/sgbnp.param and run \
-the program again.'.format(atom_type))
+        warnings.warn("Defaults Paramaters used for{}.".format(atom_type))
+        radius.append(DEFAULT_ATOMTYPE[3])
+        gammas.append(DEFAULT_ATOMTYPE[4])
+        alphas.append(DEFAULT_ATOMTYPE[5])
   return(radius, gammas, alphas)
 
 
@@ -2622,10 +2633,11 @@ def find_similar_atomtype_params(atom_type, tried):
 
     lines = preproces_file_lines(PARAM_PATH)
     for line in lines:
-      line = line.split()
-      atom_type_file = line[1]
-      if(atom_type == atom_type_file):
-        return(line)
+      if not line.startswith('#'):
+          line = line.split()
+          atom_type_file = line[1]
+          if(atom_type == atom_type_file):
+            return(line)
     new_params = find_similar_atomtype_params(new_atom_type, tried)
     return new_params
 
