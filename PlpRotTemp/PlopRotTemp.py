@@ -1818,6 +1818,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         nonbon.append(line)
     for i in range(len(ordering)):
         line = nonbon[ordering[i]]
+        print(line)
         a = re.search('^\s*\d+(.*)', line)
         line = str(i + 1).rjust(6) + a.group(1) + '\n'
         fout.write(line)
@@ -2491,8 +2492,20 @@ def build_template(mae_file, output_template_file):
   number_phis = len(phis)
   number_improper = len(impropers)
 
+  #fix C=O amides
+  atom_type = fix_amide_carbonyl(atom_types, mae_file)
   #Missing NBND information in param
-  sgb_radius, gammas, alphas = SGB_paramaters(atom_types)
+  sgb_radius, vdw_radius_param, gammas, alphas = SGB_paramaters(atom_types)
+
+  #Choosign param files for hidrogens vdwr or ffldserver params for the rest.
+  vdw_radius = []
+  for vdw_params, sigma, atom_type in zip(vdw_radius_param, sigmas, atom_types):
+    if atom_type.startswith('H'):
+        vdw_radius.append(vdw_params)
+    else:
+        vdw_radius.append(float(sigma)/2.0)
+
+
 
   #Output file
   output_file = 'LIG.hetgrp_ffgen'
@@ -2515,11 +2528,10 @@ def build_template(mae_file, output_template_file):
     connectivity_section.append(connectivity_line)
 
   NBOND_section = []
-  for i, (atom_type, charge, sigma, epsilon, radius, alpha, gamma) in enumerate(
-    zip(atom_types, charges, sigmas, epsilons, sgb_radius, alphas, gammas), 1):
+  for i, (atom_type, charge, sigma, epsilon, radius, vdw, alpha, gamma) in enumerate(
+    zip(atom_types, charges, sigmas, epsilons, sgb_radius, vdw_radius, alphas, gammas), 1):
         NBOND_section.append('{0:>5} {1:>8.4f} {2:>8.4f} {3:>10.6f} {4:>8.4f} {5:>8.4f} {6:>13.9f} {7:>13.9f}'.format(
-          i, float(sigma), float(epsilon), float(charge), float(radius), float(sigma)/2.0, float(gamma), float(alpha)))
-        #  NBOND_section.append('{0:>5} {2:>6} {9:>6} {1:>8} {10:>6} {11:>6} {3:>11.8f} {4:>11.8f}'.format(i, charge, sigma,epsilon, vdw))
+          i, float(sigma), float(epsilon), float(charge), float(radius), float(vdw), float(gamma), float(alpha)))
  
   strech_section = []
   for stretching in stretchings:
@@ -2573,8 +2585,8 @@ def build_template(mae_file, output_template_file):
 
 
 def SGB_paramaters(atom_types, tried = []):
-  print(atom_types)
   radius = []
+  vdw_r = []
   gammas = []
   alphas = [] 
   lines = preproces_file_lines(PARAM_PATH)
@@ -2588,6 +2600,7 @@ def SGB_paramaters(atom_types, tried = []):
           atom_type_file = line[1]
           if(atom_type == atom_type_file):
             radius.append(line[4])
+            vdw_r.append(line[5])
             gammas.append(line[6])
             alphas.append(line[7])
             found = True
@@ -2597,6 +2610,7 @@ def SGB_paramaters(atom_types, tried = []):
       new_params = find_similar_atomtype_params(atom_type, tried=[])
       if(new_params):
         radius.append(new_params[4])
+        vdw_r.append(line[5])
         gammas.append(new_params[6])
         alphas.append(new_params[7])
         warnings.warn("Paramaters of {} used for {}.".format(
@@ -2604,9 +2618,10 @@ def SGB_paramaters(atom_types, tried = []):
       else:
         warnings.warn("Defaults Paramaters used for{}.".format(atom_type))
         radius.append(DEFAULT_ATOMTYPE[3])
+        vdw_r.append(line[5])
         gammas.append(DEFAULT_ATOMTYPE[4])
         alphas.append(DEFAULT_ATOMTYPE[5])
-  return(radius, gammas, alphas)
+  return(radius, vdw_r, gammas, alphas)
 
 
 
@@ -2684,6 +2699,45 @@ def retrieve_atom_names(OPLS_CONVERSION_FILE):
             atom_names.append(line[0])
           except IndexError:
             return atom_names
+
+def fix_amide_carbonyl(atom_types, mae_file):
+    """
+        For each carbonyl check whether or not
+        is an amide carbonyl and then, if it is,
+        set the atom_type = ON
+    """
+
+    st1 = structure.StructureReader(mae_file).next()
+
+    atoms_to_study = []
+    indexes=[]
+    for i, atom in enumerate(st1.atom):
+        if atom_types[i] == 'O':
+            atoms_to_study.append(atom)
+            indexes.append(i)
+            
+    for i, atom in enumerate(atoms_to_study):
+        current_atom = atom
+        for j in range(2): #2 bonds distance
+            atoms_connected = current_atom._getBondedAtoms()
+            for atom_connected in atoms_connected:
+                if(atom_connected == atom):
+                    continue
+                else:
+                    if(atom_connected._getAtomElement()=='N'):
+                            atom_type_index = indexes[i]
+                            atom_types[atom_type_index] = 'ON'
+
+                
+                    elif(atom_connected._getAtomElement()=='N'):
+                            atom_type_index = indexes[i]
+                            atom_types[atom_type_index] = 'ON'
+
+                    current_atom = atom_connected
+    return atom_types
+
+        
+
 
 
 def preproces_file_lines(file):
