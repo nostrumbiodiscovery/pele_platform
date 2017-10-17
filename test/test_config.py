@@ -1,8 +1,41 @@
 import sys
 import os
 import re
+import subprocess
+
+MAE_FILE = 'ain.mae'
+ROOT = 'ain'
+MAE_CONVERSION = [0,1,2,3,4,13,5,14,6,15,7,16,8,9,10,11,12,17,18,19]
+TEMPLATE_CONVERSION = [0,1,2,3,4,6,8,10,12,13,14,15,16,5,7,9,11,17,18,19]
+BONDS = [[0, 1], [1, 2], [1, 3], [3, 4], [3, 8], [4, 5], [4, 13], [5, 6], 
+        [5, 14], [6, 7], [6, 15], [7, 8], [7, 16], [8, 9], [9, 10], [10, 11],
+        [10, 12], [12, 17], [12, 18], [12, 19]]
+PARENT_RESULT = [0, 1, 2, 2, 4, 5, 6, 7, 4, 9, 10, 11, 11, 5, 6, 7, 8, 13, 13, 13]
+REPOS_PATH = os.path.abspath(os.path.join(__file__ ,"../.."))
+TEST_PATH = os.path.join(os.path.dirname(__file__), 'data')
+MAIN_PATH =  os.path.join(REPOS_PATH, 'PlpRotTemp/main.py')
+OLD_MAIN_PATH = '/home/dani/repos/presentation/PlpRotTemp/main_16_9_17.py'
+try:
+    PYTHON_PATH = os.path.join(os.environ['SCHRODINGER'] + "/utilities/python")
+except KeyError:
+    print("Set SCHRODINGER environment variable path")
+TRESHOLD= 0.15
 
 
+
+def run_versions(input_file):
+  try:
+    os.remove("lig")
+    os.remove("LIG")
+  except OSError:
+    pass
+  res_name = "LIG"
+  NAMES = ['atom1', 'atom2', 'spring', 'eq_dist']
+  subprocess.call([PYTHON_PATH, MAIN_PATH, os.path.join(TEST_PATH, input_file)])
+  subprocess.call([PYTHON_PATH, OLD_MAIN_PATH, os.path.join(TEST_PATH, input_file)])
+  new_sections = parse_template(os.path.join(REPOS_PATH,res_name.upper()), res_name.upper())
+  old_sections = parse_template(os.path.join(REPOS_PATH,res_name.lower()), res_name.upper())
+  return new_sections, old_sections
 
 def parse_template(file_path, input_file):
   
