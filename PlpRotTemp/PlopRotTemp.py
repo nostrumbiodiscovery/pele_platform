@@ -126,7 +126,18 @@ hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 ################################################################################
 
 CONVERSION = {'CT1': 'CT',
-              'NS': 'N',}
+              'CT1G': 'CT',
+              'NS': 'N',
+              'NG': 'NY',
+              'CG1': 'CA8',
+              'NE':'NT2',
+              'CB':'CA2',
+              'NNC': 'NY2',
+              'NND': 'NY',
+              'NNB': 'NY',
+              'NI': 'NY',
+              'NIP': 'NP'
+              }
 ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
 ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
 DEFAULT_RADIUS_VDW = '0.5000'
@@ -2492,18 +2503,23 @@ def build_template(mae_file, output_template_file):
   number_phis = len(phis)
   number_improper = len(impropers)
 
+
   #fix C=O amides
-  atom_type = fix_amide_carbonyl(atom_types, mae_file)
+  new_atom_types = fix_atomtype('O', 'N', 'OCN1', 2, atom_types, mae_file)
+  #fix H
+  new_atom_types = fix_atomtype('H', 'N', 'HN', 1, new_atom_types, mae_file)
+  #fix aromatics
+  new_atom_types = fix_aromatics(new_atom_types, mae_file)
+
   #Missing NBND information in param
-  sgb_radius, vdw_radius_param, gammas, alphas = SGB_paramaters(atom_types)
+  sgb_radius, vdw_radius_param, gammas, alphas = SGB_paramaters(new_atom_types)
 
   #Choosign param files for hidrogens vdwr or ffldserver params for the rest.
   vdw_radius = []
   for vdw_params, sigma, atom_type in zip(vdw_radius_param, sigmas, atom_types):
-    if atom_type.startswith('H'):
-        vdw_radius.append(vdw_params)
-    else:
-        vdw_radius.append(float(sigma)/2.0)
+    vdw_radius.append(vdw_params)
+    # else:
+    #     vdw_radius.append(float(sigma)/2.0)
 
 
 
@@ -2575,10 +2591,10 @@ def build_template(mae_file, output_template_file):
     f.write('\n'.join(file_content))
   
   # Remove param.dat file
-  try:
-    os.remove(OPLS_CONVERSION_FILE)
-  except OSError:
-    print("Error, param.dat not created. Make sure $SCHRODINGER/utilities/ffld_server is up and running in your computer.")
+  # try:
+  #   os.remove(OPLS_CONVERSION_FILE)
+  # except OSError:
+  #   print("Error, param.dat not created. Make sure $SCHRODINGER/utilities/ffld_server is up and running in your computer.")
 
   print("Template {} generated successfully".format(output_file))
   return output_file, res_name, mae_file, output_file, res_name
@@ -2610,15 +2626,15 @@ def SGB_paramaters(atom_types, tried = []):
       new_params = find_similar_atomtype_params(atom_type, tried=[])
       if(new_params):
         radius.append(new_params[4])
-        vdw_r.append(line[5])
+        vdw_r.append(new_params[5])
         gammas.append(new_params[6])
         alphas.append(new_params[7])
         warnings.warn("Paramaters of {} used for {}.".format(
           new_params[1], atom_type))
       else:
         warnings.warn("Defaults Paramaters used for{}.".format(atom_type))
-        radius.append(DEFAULT_ATOMTYPE[3])
-        vdw_r.append(line[5])
+        radius.append(DEFAULT_ATOMTYPE[2])
+        vdw_r.append(DEFAULT_ATOMTYPE[3])
         gammas.append(DEFAULT_ATOMTYPE[4])
         alphas.append(DEFAULT_ATOMTYPE[5])
   return(radius, vdw_r, gammas, alphas)
@@ -2700,41 +2716,96 @@ def retrieve_atom_names(OPLS_CONVERSION_FILE):
           except IndexError:
             return atom_names
 
-def fix_amide_carbonyl(atom_types, mae_file):
+def fix_atomtype(target_atom, neighbour, new_atom_type, bonds_dist, atom_types, mae_file):
     """
         For each carbonyl check whether or not
         is an amide carbonyl and then, if it is,
         set the atom_type = ON
     """
-
+    new_atom_types = atom_types[:]
     st1 = structure.StructureReader(mae_file).next()
 
     atoms_to_study = []
     indexes=[]
     for i, atom in enumerate(st1.atom):
-        if atom_types[i] == 'O':
+        if atom_types[i] == target_atom:
             atoms_to_study.append(atom)
             indexes.append(i)
-            
+
     for i, atom in enumerate(atoms_to_study):
         current_atom = atom
-        for j in range(2): #2 bonds distance
+        for j in range(bonds_dist): #2 bonds distance
             atoms_connected = current_atom._getBondedAtoms()
             for atom_connected in atoms_connected:
                 if(atom_connected == atom):
                     continue
                 else:
-                    if(atom_connected._getAtomElement()=='N'):
+                    if(atom_connected._getAtomElement()==neighbour):
                             atom_type_index = indexes[i]
-                            atom_types[atom_type_index] = 'ON'
+                            new_atom_types[atom_type_index] = new_atom_type
+                    current_atom = atom_connected
+    return new_atom_types
+
+def fix_aromatics(atom_types, mae_file):
+    """
+      Look for the atom types ['CA', 'C5A', 'C5B', 'CN', 'CB']
+      and convert them to 'CA2' if they have 3 bonds, in other words,
+      if they are sp2 carbons
+    """
+    new_atom_types = atom_types[:]
+    st1 = structure.StructureReader(mae_file).next()
+    target_atoms = ['CA', 'C5A','CA5', 'C5B', 'C5BC', 'CN', 'CB', 'C56A', 'C56B', 'CT4', 'CRA', 'CN56', 'C5X', 'C5BB', 'CR3']
+    new_atom_type = 'CA2'
+
+    atoms_to_study = []
+    indexes=[]
+    for i, atom in enumerate(st1.atom):
+        if atom_types[i] in target_atoms:
+            atoms_to_study.append(atom)
+            indexes.append(i)
+
+    for i, atom in enumerate(atoms_to_study):
+        atoms_connected = list(atom._getBondedAtoms())
+        if(len(atoms_connected)==3):
+          atom_type_index = indexes[i]
+          new_atom_types[atom_type_index] = new_atom_type
+                  
+    return new_atom_types
+# def fix_amide_carbonyl(atom_types, mae_file):
+#     """
+#         For each carbonyl check whether or not
+#         is an amide carbonyl and then, if it is,
+#         set the atom_type = ON
+#     """
+#     new_atom_types = atom_types[:]
+#     st1 = structure.StructureReader(mae_file).next()
+
+#     atoms_to_study = []
+#     indexes=[]
+#     for i, atom in enumerate(st1.atom):
+#         if atom_types[i] == 'O':
+#             atoms_to_study.append(atom)
+#             indexes.append(i)
+
+#     for i, atom in enumerate(atoms_to_study):
+#         current_atom = atom
+#         for j in range(2): #2 bonds distance
+#             atoms_connected = current_atom._getBondedAtoms()
+#             for atom_connected in atoms_connected:
+#                 if(atom_connected == atom):
+#                     continue
+#                 else:
+#                     if(atom_connected._getAtomElement()=='N'):
+#                             atom_type_index = indexes[i]
+#                             new_atom_types[atom_type_index] = 'OCN1'
 
                 
-                    elif(atom_connected._getAtomElement()=='N'):
-                            atom_type_index = indexes[i]
-                            atom_types[atom_type_index] = 'ON'
+#                     elif(atom_connected._getAtomElement()=='N'):
+#                             atom_type_index = indexes[i]
+#                             new_atom_types[atom_type_index] = 'OCN1'
 
-                    current_atom = atom_connected
-    return atom_types
+#                     current_atom = atom_connected
+#     return new_atom_types
 
         
 
