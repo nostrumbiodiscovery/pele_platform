@@ -126,7 +126,8 @@ hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 ################################################################################
 
 CONVERSION = {'CT1': 'CT',
-              'CT1G': 'CT',
+              'O2Z':'O2',
+              'CT1G':'CT',
               'NS': 'N',
               'NG': 'NY',
               'CG1': 'CA8',
@@ -542,7 +543,7 @@ def find_bonds_in_mae(filename):
     keywords = []
     while f:  # Find Bond Section
         line = f.readline()
-        if line == "" or re.search('m_bond', line):
+        if line == "" or line.startswith(" m_bond"):
             break
     while f:  # Advance to numbers
         line = f.readline()
@@ -565,6 +566,8 @@ def find_bonds_in_mae(filename):
             b.sort()
             out_bond.append(b)
     f.close()
+    if not out_bond:
+      raise Exception("CONNECTIVITY REGION IN MAE CORRUPTED")
     return out_bond
 
 
@@ -734,6 +737,7 @@ def assign_rank(bonds, assign, atom_num):
     rank = assign_rank_group(atom_num, assign, rank, 0)  # assigns atom_num a rank of zero
     while (min_value(rank) < 0):  # do until all are assigned
         cur_rank = max_value(rank)  #the loop is over ranks
+        # print(cur_rank)
         changed = 1
         while (changed == 1):  #while we haven't assigned any atoms
             changed = 0
@@ -1818,6 +1822,13 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         line = line + '\n';
         fout.write(line)
     """
+
+
+    bonds = []
+    tors = []
+    phis = []
+
+
     #NONBON Region
     line = fin.readline()
     if (not re.search('NBON', line)):
@@ -1829,7 +1840,6 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         nonbon.append(line)
     for i in range(len(ordering)):
         line = nonbon[ordering[i]]
-        print(line)
         a = re.search('^\s*\d+(.*)', line)
         line = str(i + 1).rjust(6) + a.group(1) + '\n'
         fout.write(line)
@@ -1846,6 +1856,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         a = re.search('^\s*(\d+)\s+(\d+)(.*)', line)
         line = str(ordering.index(int(a.group(1)) - 1) + 1).rjust(6) + str(
             ordering.index(int(a.group(2)) - 1) + 1).rjust(6) + a.group(3) + '\n'
+        bonds.append(line)
         fout.write(line)
     #Theta Region
     line = fin.readline()
@@ -1861,9 +1872,11 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         line = str(ordering.index(int(a.group(1)) - 1) + 1).rjust(6) + str(
             ordering.index(int(a.group(2)) - 1) + 1).rjust(6) + str(ordering.index(int(a.group(3)) - 1) + 1).rjust(
             6) + a.group(4) + '\n'
+        tors.append(line)
         fout.write(line)
 
     #PHI/IPHI Region
+    iphi_found = False
     line = fin.readline()
     if (not re.search('^PHI', line)):
         raise Exception("ERROR IN TEMPLATE FORMAT\n" + line)
@@ -1873,13 +1886,20 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         if (not (line)): break
         if (re.search('END', line)): fout.write(line);break;
         if (re.search('IPHI', line)):
-            fout.write(line)
+          phis = negative_torsions_for_pele(phis, tors, bonds)
+          iphi_found = True
+          fout.write('\n'.join(phis))
+          fout.write('\n' + line)
         else:
             a = re.search('^\s*([\-\d]+)\s+([\-\d]+)\s+([\-\d]+)\s+([\-\d]+)(.*)', line)
             line = str(conv_at(ordering, a.group(1))).rjust(6) + str(conv_at(ordering, a.group(2))).rjust(6) + str(
                 conv_at(ordering, a.group(3))).rjust(6) + str(conv_at(ordering, a.group(4))).rjust(6) + a.group(
                 5) + '\n'
-            fout.write(line)
+            if iphi_found:
+              fout.write(line)
+            else:
+              phis.append(line)
+            
 
     fin.close()
     fout.close()
@@ -2561,7 +2581,6 @@ def build_template(mae_file, output_template_file):
 
   phi_section = []
   phis = descompose_dihedrals(phis)
-  phis = negative_torsions_for_pele(phis)
   for phi in phis:
     phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>4.1f} {6:>3.1f}'.format(
       phi[0], phi[1], phi[2], phi[3], (float(phi[4])/2.0), phi[5], abs(float(phi[6]))))
@@ -2820,6 +2839,13 @@ def preproces_file_lines(file):
       lines[i] = line
     return lines
 
+def preproces_lines(lines):
+  for i, line in enumerate(lines):
+    line = re.sub(' +',' ',line)
+    line = line.strip('\n').strip().split()
+    lines[i] = line
+  return lines
+
 
 
 def search_and_replace(file, to_search):
@@ -2974,33 +3000,63 @@ def descompose_dihedrals(phis):
   new_phi = []
   for phi in phis:
     atoms = phi[0:4]
-    if(phi[4:8] == ['0.000','0.000','0.000','0.000']):
+    phis_components = ["{0:.3f}".format(abs(float(component))) for component in phi[4:8]]
+    print(phis_components)
+    if(phis_components == ['0.000','0.000','0.000','0.000']):
       new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], phi[4], 1, 1])
       continue
     for index, component in enumerate(phi[4:8], 1):
-      if(component != '0.000'):
+      if(component != '0.000' and component != '-0.000'):
         new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], component, 1, index])
   return new_phis
 
-def negative_torsions_for_pele(phis):
+def negative_torsions_for_pele(phis, tors, bonded):
+  
+  phis = preproces_lines(phis)
+  tors = preproces_lines(tors)
+  bonded = preproces_lines(bonded)
+
+
   for i, phi in enumerate(phis):
     atom1 = phi[0]
     atom4 = phi[3]
     for phi_to_compare in phis[0:i]:
-      
       if(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi_to_compare[2]<0):
         break
       elif(phi[0:4] == phi_to_compare[0:4]):
         pass
       elif(phi_to_compare[2]<0):
         pass
-      elif(atom1 in phi_to_compare and atom4 in phi_to_compare and phi!=phi_to_compare):
-        phi[2] = -int(phi[2])
-    if(int(phi[6]) in [1,3]):
+      elif(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi!=phi_to_compare):
+        if phi[2]>0:
+          phi[2] = -int(phi[2])
+      elif(atom4 == phi_to_compare[0] and atom1 == phi_to_compare[3] and phi!=phi_to_compare):
+        if phi[2]>0:
+          phi[2] = -int(phi[2])
+
+    for tors_to_compare in tors:
+      atom1_atom3_tors = [tors_to_compare[0], tors_to_compare[2]]
+      if(atom1 in atom1_atom3_tors and  atom4 in atom1_atom3_tors):
+        if phi[2]>0:
+          phi[2] = -int(phi[2])
+
+    for bonded_to_compare in bonded:
+      bond = [bonded_to_compare[0], bonded_to_compare[1]]
+      if(atom1 in bond and atom4 in bond):
+        if phi[2]>0:
+          phi[2] = -int(phi[2])
+
+    if(float(phi[6]) in [1.0,3.0]):
       phi[5] = 1.0
     else:
       phi[5] = -1.0
-  return(phis)
+
+  phi_section = []
+  for phi in phis:
+    phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>4.1f} {6:>3.1f}'.format(
+      phi[0], phi[1], phi[2], phi[3], float(phi[4]), phi[5], abs(float(phi[6]))))
+
+  return(phi_section)
 
 
 
