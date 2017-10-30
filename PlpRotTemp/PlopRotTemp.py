@@ -125,39 +125,15 @@ hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 # Definitions 
 ################################################################################
 
-CONVERSION = {'CT1': 'CT',
-              'O2Z':'O2',
-              'CT1G':'CT',
-              'NS': 'N',
-              'NG': 'NY',
-              'CG1': 'CA8',
-              'NE':'NT2',
-              'CB':'CA2',
-              'NNC': 'NY2',
-              'NND': 'NY',
-              'NNB': 'NY',
-              'NI': 'NY',
-              'NIP': 'NP'
-              }
-ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
-ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
-DEFAULT_RADIUS_VDW = '0.5000'
-DEFAULT_SPRING_K = '268.0'
-DEFAULT_EQ_DIST = '1.529'
-FILE_DIR_PATH = os.path.dirname(__file__)
-PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/f14_sgbnp.param') ##impact??
-SIMILARITY_PATH = os.path.join(FILE_DIR_PATH, 'param/similarity.param') ##impact??
+
 dummy_atom1 = [0.8, 0.7, 0.9]
 dummy_atom2 = [0.6, 0.5, 0.4]
 dummy_atom3 = [0.1, 0.2, 0.3]
-UNK_INT = 6
 DUMMY_COORD = 17.21606
 DUMMY_ANGLE = 45.73961
 DUMMY_DIHEDRAL = 13.21566
 DEFAULT_ATOMTYPE = [0.000, 0.000, 1.500, 1.250, 0.005000000, 0.000000000]   
 STANDARD_RESIDUE_NAME = 'LIG'
-OPLS_CONVERSION_FILE = 'param.dat'
-OPLS_VERSION = '14'
 ERROR_ATOMNAMES = "The keywords in the atom section form the .mae file don't match the regular " \
                   "expressions currently implemented. ATOM NAMES ARE COMPULSORY."
 
@@ -1708,7 +1684,6 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
 
     #  for i in range(len(new_parent)):
     #    print zmat[i][0],zmat[i][1],zmat[i][2]
-
     #Prep read in/out
     fin = open(in_file, "r")
     fout = open(out_file, "w")
@@ -1761,71 +1736,10 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
         name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
             2] + '\n'
         fout.write(outline)
-    """
-    # Move to exclude table
-    exclude = []
-    counts = []
-    while (len(counts) < len(ordering)):
-        line = fin.readline();
-        a = re.search('\s*(.*)', line);
-        line = a.group(1)
-        print(lines)
-        p = re.compile(r'\W+');
-        temp = p.split(line);
-        counts = counts + temp
-        print(counts)
-    for i in range(len(ordering)):
-        exclude.append([])
-    for i in range(len(ordering)):
-        print('ordering')
-        print(len(ordering))
-        line = fin.readline()
-        print(line)
-        a = re.search('\s*(.*)', line);
-        line = a.group(1)
-        print(line)
-        p = re.compile(r'[\W$\s]+');
-        temp = p.split(line);
-        print(temp)
-        iatom = conv_at(ordering, i + 1)
-        print(iatom)
-        for atom in temp:
-            if (atom == ''): break;
-            if (int(atom) == 0 ):
-                pass
-            else:
-                #          print "Converting atom ",atom
-                #          print "Ordering atom ",ordering
-                jatom = conv_at(ordering, atom)
-                if (int(iatom) < int(jatom) ):
-                    exclude[iatom - 1].append(jatom)
-                else:
-                    exclude[jatom - 1].append(iatom)
-    for i in range(len(ordering)):
-        if (len(exclude[i]) == 0): exclude[i].append(0)
-    # write out counts
-    line = ''
-    for i in range(len(ordering)):
-        line = line + str(len(exclude[i])).rjust(4)
-        if (i != 0 and (math.modf(1.0 / 16.0 * i))[0] < 0.001 and i < len(ordering)):
-            line = line + '\n'
-    line = line + '\n';
-    fout.write(line)
-    # write out exclude list
-    for i in range(len(ordering)):
-        line = ''
-        for atom in exclude[i]:
-            line = line + str(atom).rjust(6)
-        line = line + '\n';
-        fout.write(line)
-    """
-
 
     bonds = []
     tors = []
     phis = []
-
-
     #NONBON Region
     line = fin.readline()
     if (not re.search('NBON', line)):
@@ -1900,12 +1814,65 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
 
     fin.close()
     fout.close()
+
+    try:
+      os.remove(in_file)
+    except OSError:
+      print("Error, intermidiate ligand template not created.")
     # update names
     names = []
     for i in range(len(temp_names)):
         names.append(temp_names[ordering[i]])
     return names
 
+
+def negative_torsions_for_pele(phis, tors, bonded):
+  
+  phis = preproces_lines(phis)
+  tors = preproces_lines(tors)
+  bonded = preproces_lines(bonded)
+
+
+  for i, phi in enumerate(phis):
+    atom1 = phi[0]
+    atom4 = phi[3]
+    for phi_to_compare in phis[0:i]:
+      if(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi_to_compare[2]<0):
+        break
+      elif(phi[0:4] == phi_to_compare[0:4]):
+        pass
+      elif(phi_to_compare[2]<0):
+        pass
+      elif(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi!=phi_to_compare):
+        if phi[2]>0:
+          phi[2] = -int(phi[2])
+      elif(atom4 == phi_to_compare[0] and atom1 == phi_to_compare[3] and phi!=phi_to_compare):
+        if phi[2]>0:
+          phi[2] = -int(phi[2])
+
+    for tors_to_compare in tors:
+      atom1_atom3_tors = [tors_to_compare[0], tors_to_compare[2]]
+      if(atom1 in atom1_atom3_tors and  atom4 in atom1_atom3_tors):
+        if phi[2]>0:
+          phi[2] = -int(phi[2])
+
+    for bonded_to_compare in bonded:
+      bond = [bonded_to_compare[0], bonded_to_compare[1]]
+      if(atom1 in bond and atom4 in bond):
+        if phi[2]>0:
+          phi[2] = -int(phi[2])
+
+    if(float(phi[6]) in [1.0,3.0]):
+      phi[5] = 1.0
+    else:
+      phi[5] = -1.0
+
+  phi_section = []
+  for phi in phis:
+    phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>4.1f} {6:>3.1f}'.format(
+      phi[0], phi[1], phi[2], phi[3], float(phi[4]), phi[5], abs(float(phi[6]))))
+
+  return(phi_section)
 
 ####################################
 def conv_at(ordering, input):
@@ -2468,359 +2435,6 @@ class MaeFileBuilder:
         return atom
 ############################################################################
 
-def build_template(mae_file, output_template_file):
-  """
-    Build ligand template from mae file
-
-    Input:
-      mae_file: input .mae
-      outpt_template_file = output path
-
-    Output:
-      output: ligand template
-      resname: residue name
-
-    Explanation:
-
-    Preparation of param:
-      1- Use the flld_server schrodinger command line server
-         to create the 2005OPLS paramaters for the ligand
-      2- Parse the previous parameters extracting 
-         atomtypes, bond info, non bonded info, torsions,
-         dihedrals and imporpers rotations.
-      3- From this parameters create the internal coordinates
-         and get some extra parameters as the nonbonded
-         sgb_radius, gammas, alphas from our proper database
-         which is in PARAM_PATH in case it needs to be extended
-         by the user.
-      4- With the previous parsed parameters create the several
-         sections of the template
-      5- Write everything to a RESIDUENAME.hetgrp file
-  """
-  #Create ligand params with ffld_sever from schrodinger
-  ffld_server_command = os.path.join(os.environ['SCHRODINGER'], 'utilities/ffld_server')
-  subprocess.call([ffld_server_command, "-imae", mae_file, "-version",
-    OPLS_VERSION, "-print_parameters", "-out_file", OPLS_CONVERSION_FILE])
-  with open("a.txt","w") as f:
-    shutil.copy(OPLS_CONVERSION_FILE, "a.txt")
-  #Retrieve all the useful information from that params
-  atom_names_param = retrieve_atom_names(OPLS_CONVERSION_FILE)
-  search_and_replace(OPLS_CONVERSION_FILE, atom_names_param)
-  atom_types, parents, charges, sigmas, epsilons, stretchings, tors, phis, impropers = parse_param(OPLS_CONVERSION_FILE, atom_names_param)
-
-
-  #Connectivity information from Mae
-  res_name = find_resnames_in_mae(mae_file)[0] #Ligand must be defined as a whole residue
-  atom_names = find_names_in_mae(mae_file, undersc=True)
-  # bonds = [[stretching[0:2] for stretching in stretchings]
-  zmat = create_zmatrix(mae_file, parents)
-  number_bonds = len(stretchings)
-  number_torsions = len(tors)
-  number_atoms = len(atom_names)
-  number_phis = len(phis)
-  number_improper = len(impropers)
-
-
-  #fix C=O amides
-  new_atom_types = fix_atomtype('O', 'N', 'OCN1', 2, atom_types, mae_file)
-  #fix H
-  new_atom_types = fix_atomtype('H', 'N', 'HN', 1, new_atom_types, mae_file)
-  #fix aromatics
-  new_atom_types = fix_aromatics(new_atom_types, mae_file)
-
-  #Missing NBND information in param
-  sgb_radius, vdw_radius_param, gammas, alphas = SGB_paramaters(new_atom_types)
-
-  #Choosign param files for hidrogens vdwr or ffldserver params for the rest.
-  vdw_radius = []
-  for vdw_params, sigma, atom_type in zip(vdw_radius_param, sigmas, atom_types):
-    vdw_radius.append(vdw_params)
-    # else:
-    #     vdw_radius.append(float(sigma)/2.0)
-
-
-
-  #Output file
-  output_file = 'LIG.hetgrp_ffgen'
-  # output_file = output_template_file.upper() + '.hetgrp_ffgen'
-  # print(output_file)
-  ################################Template Creation########################33
-  
-  header = ["* LIGAND DATABASE FILE (OPLS2005)",
-            "*",
-            '{0:>0}  {1:>6} {2:>5} {3:>5} {4:>7} {5:>7}'.format(res_name, number_atoms, number_bonds,
-                                                      number_torsions, (number_phis + number_improper), 0)
-            ]
-
-  connectivity_section = []
-  for i, (atom_name, atom_type, parent, zmat_row) in enumerate(
-    zip(atom_names, atom_types, parents, zmat), 1):
-    connectivity_line = '{0:>5} {1:>5} {2:>0} {3:>5} {4:>5} {5:>5} {6:>11.5f} {7:>11.5f} {8:>11.5f} '.format(
-      i, parent, 'S', atom_type, atom_name,
-      UNK_INT, zmat_row[0], zmat_row[1], zmat_row[2])
-    connectivity_section.append(connectivity_line)
-
-  NBOND_section = []
-  for i, (atom_type, charge, sigma, epsilon, radius, vdw, alpha, gamma) in enumerate(
-    zip(atom_types, charges, sigmas, epsilons, sgb_radius, vdw_radius, alphas, gammas), 1):
-        NBOND_section.append('{0:>5} {1:>8.4f} {2:>8.4f} {3:>10.6f} {4:>8.4f} {5:>8.4f} {6:>13.9f} {7:>13.9f}'.format(
-          i, float(sigma), float(epsilon), float(charge), float(radius), float(vdw), float(gamma), float(alpha)))
- 
-  strech_section = []
-  for stretching in stretchings:
-        strech_section.append('{0:>5} {1:>5} {2:>9.3f}  {3:>5.3f}'.format(
-          stretching[0], stretching[1], float(stretching[2]), float(stretching[3])))
-   
-  tors_section = []
-  for tor in tors:
-    tors_section.append('{0:>5} {1:>5} {2:>5} {3:>11.5f} {4:>10.5f}'.format(
-      tor[0], tor[1], tor[2], float(tor[3]), float(tor[4])))
-
-  phi_section = []
-  phis = descompose_dihedrals(phis)
-  for phi in phis:
-    phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>4.1f} {6:>3.1f}'.format(
-      phi[0], phi[1], phi[2], phi[3], (float(phi[4])/2.0), phi[5], abs(float(phi[6]))))
-
-  iphi_section = []
-  for improper in impropers:
-    iphi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>3.1f} {6:>3.1f}'.format(
-      improper[0], improper[1], improper[2], improper[3], float(improper[4])/2.0, -1, 2))
-
-  file_content = []
-  file_content.extend( header +
-                       connectivity_section +
-                       ['NBON'] +
-                       NBOND_section +
-                       ['BOND'] +
-                       strech_section +
-                       ['THET'] +
-                       tors_section +
-                       ['PHI'] +
-                       phi_section +
-                       ['IPHI'] +
-                       iphi_section +
-                       ['END'])
-
-  #Write to file
-  with open(output_file, 'w') as f:
-    f.write('\n'.join(file_content))
-  
-  # Remove param.dat file
-  # try:
-  #   os.remove(OPLS_CONVERSION_FILE)
-  # except OSError:
-  #   print("Error, param.dat not created. Make sure $SCHRODINGER/utilities/ffld_server is up and running in your computer.")
-
-  print("Template {} generated successfully".format(output_file))
-  return output_file, res_name, mae_file, output_file, res_name
-
-
-def SGB_paramaters(atom_types, tried = []):
-  radius = []
-  vdw_r = []
-  gammas = []
-  alphas = [] 
-  lines = preproces_file_lines(PARAM_PATH)
-  for atom_type in atom_types:
-    if atom_type in CONVERSION:
-        atom_type = CONVERSION[atom_type]
-    found = False
-    for line in lines:
-      if not line.startswith('#'):
-          line = line.split()
-          atom_type_file = line[1]
-          if(atom_type == atom_type_file):
-            radius.append(line[4])
-            vdw_r.append(line[5])
-            gammas.append(line[6])
-            alphas.append(line[7])
-            found = True
-            break
-    if not found:
-      new_params = find_similar_atomtype_params(atom_type, tried=[])
-      if(new_params):
-        radius.append(new_params[4])
-        vdw_r.append(new_params[5])
-        gammas.append(new_params[6])
-        alphas.append(new_params[7])
-        warnings.warn("Paramaters of {} used for {}.".format(
-          new_params[1], atom_type))
-      else:
-        warnings.warn("Defaults Paramaters used for{}.".format(atom_type))
-        radius.append(DEFAULT_ATOMTYPE[2])
-        vdw_r.append(DEFAULT_ATOMTYPE[3])
-        gammas.append(DEFAULT_ATOMTYPE[4])
-        alphas.append(DEFAULT_ATOMTYPE[5])
-  return(radius, vdw_r, gammas, alphas)
-
-
-
-def find_similar_atomtype_params(atom_type, tried):
-  """
-    Find parameters from a similar atomtype
-    according to the table in param/similarity.dat
-  """
-  new_atom_type=False
-  similarity = 0
-
-  #Search for the most similar atom
-  lines = preproces_file_lines(SIMILARITY_PATH)
-  for line in lines:
-    line = line.split()
-    if(line[0]==atom_type and line[2]>similarity and line[1] not in tried):
-      similarity = line[2]
-      new_atom_type = line[1]
-    elif(line[1]==atom_type and line[2]>similarity  and line[0] not in tried):
-      similarity = line[2]
-      new_atom_type = line[0]
-  if new_atom_type:
-    tried.append(new_atom_type)
-
-    lines = preproces_file_lines(PARAM_PATH)
-    for line in lines:
-      if not line.startswith('#'):
-          line = line.split()
-          atom_type_file = line[1]
-          if(atom_type == atom_type_file):
-            return(line)
-    new_params = find_similar_atomtype_params(new_atom_type, tried)
-    return new_params
-
-  else:
-    return []
-
-def create_zmatrix(mae_file, parents):
-  """
-    Retrieve the internal coordinates (zmatrix)
-    from the complex cooridnates & topology:
-
-    Input:
-      str1: structure.structure class object
-      parents: atom's parent list
-
-    Ouput:
-      zmatrix: structure internal coord
-  """
-  str1 = structure.StructureReader(mae_file).next()
-  order = [i for i in range(len(parents))]
-  #Gap of 1 between parents list and the one needed for creating zmat
-  parents = [int(parent) - 1 for parent in parents] 
-  coordinates = [atom._getXYZ() for atom in str1.atom]
-  zmat = xyz2int(coordinates, order, parents)
-  return zmat
-
-
-  
-def retrieve_atom_names(OPLS_CONVERSION_FILE):
-  """
-    parse the param.data and retrieve
-    the atom names of the molecule
-  """
-  atom_names = []
-  lines = preproces_file_lines(OPLS_CONVERSION_FILE)
-  start_found_NBND = False
-  for line in lines:
-      if not line.startswith("----------"):
-        if(line.startswith("atom type vdw")):
-          start_found_NBND = True
-        elif(start_found_NBND):
-          try:
-            line = line.split()
-            atom_names.append(line[0])
-          except IndexError:
-            return atom_names
-
-def fix_atomtype(target_atom, neighbour, new_atom_type, bonds_dist, atom_types, mae_file):
-    """
-        For each carbonyl check whether or not
-        is an amide carbonyl and then, if it is,
-        set the atom_type = ON
-    """
-    new_atom_types = atom_types[:]
-    st1 = structure.StructureReader(mae_file).next()
-
-    atoms_to_study = []
-    indexes=[]
-    for i, atom in enumerate(st1.atom):
-        if atom_types[i] == target_atom:
-            atoms_to_study.append(atom)
-            indexes.append(i)
-
-    for i, atom in enumerate(atoms_to_study):
-        current_atom = atom
-        for j in range(bonds_dist): #2 bonds distance
-            atoms_connected = current_atom._getBondedAtoms()
-            for atom_connected in atoms_connected:
-                if(atom_connected == atom):
-                    continue
-                else:
-                    if(atom_connected._getAtomElement()==neighbour):
-                            atom_type_index = indexes[i]
-                            new_atom_types[atom_type_index] = new_atom_type
-                    current_atom = atom_connected
-    return new_atom_types
-
-def fix_aromatics(atom_types, mae_file):
-    """
-      Look for the atom types ['CA', 'C5A', 'C5B', 'CN', 'CB']
-      and convert them to 'CA2' if they have 3 bonds, in other words,
-      if they are sp2 carbons
-    """
-    new_atom_types = atom_types[:]
-    st1 = structure.StructureReader(mae_file).next()
-    target_atoms = ['CA', 'C5A','CA5', 'C5B', 'C5BC', 'CN', 'CB', 'C56A', 'C56B', 'CT4', 'CRA', 'CN56', 'C5X', 'C5BB', 'CR3']
-    new_atom_type = 'CA2'
-
-    atoms_to_study = []
-    indexes=[]
-    for i, atom in enumerate(st1.atom):
-        if atom_types[i] in target_atoms:
-            atoms_to_study.append(atom)
-            indexes.append(i)
-
-    for i, atom in enumerate(atoms_to_study):
-        atoms_connected = list(atom._getBondedAtoms())
-        if(len(atoms_connected)==3):
-          atom_type_index = indexes[i]
-          new_atom_types[atom_type_index] = new_atom_type
-                  
-    return new_atom_types
-# def fix_amide_carbonyl(atom_types, mae_file):
-#     """
-#         For each carbonyl check whether or not
-#         is an amide carbonyl and then, if it is,
-#         set the atom_type = ON
-#     """
-#     new_atom_types = atom_types[:]
-#     st1 = structure.StructureReader(mae_file).next()
-
-#     atoms_to_study = []
-#     indexes=[]
-#     for i, atom in enumerate(st1.atom):
-#         if atom_types[i] == 'O':
-#             atoms_to_study.append(atom)
-#             indexes.append(i)
-
-#     for i, atom in enumerate(atoms_to_study):
-#         current_atom = atom
-#         for j in range(2): #2 bonds distance
-#             atoms_connected = current_atom._getBondedAtoms()
-#             for atom_connected in atoms_connected:
-#                 if(atom_connected == atom):
-#                     continue
-#                 else:
-#                     if(atom_connected._getAtomElement()=='N'):
-#                             atom_type_index = indexes[i]
-#                             new_atom_types[atom_type_index] = 'OCN1'
-
-                
-#                     elif(atom_connected._getAtomElement()=='N'):
-#                             atom_type_index = indexes[i]
-#                             new_atom_types[atom_type_index] = 'OCN1'
-
-#                     current_atom = atom_connected
-#     return new_atom_types
 
         
 
@@ -2842,216 +2456,6 @@ def preproces_lines(lines):
     lines[i] = line
   return lines
 
-
-
-def search_and_replace(file, to_search):
-  """
-    Search and replace atom_names for numbers
-  """
-  to_replace = range(1, len(to_search)+1)
-
-  with open(file, "r+") as f:
-    lines = f.readlines()
-    for i, line in enumerate(lines):
-      lines[i] = ' ' + line.strip('\n')
-
-
-  with open(file, "w") as f:
-    f.write('\n'.join(lines))
-  
-  with open(file, "r") as f:
-    filedata = f.read()
- 
-
-  for (item_to_search, item_to_replace) in zip(to_search, to_replace):
-      filedata = filedata.replace(' ' + item_to_search.strip('_')+' ', ' '+str(item_to_replace)+' ') #atom types are like _O1_ (strip)
-
-
-
-  f = open(file,'w')
-  f.write(filedata)
-  f.close()
-
-
-def parse_param(param_file, atom_names):
-  """
-    Parse the OPLS conversion param file
-    and get the atomtypes.
-
-    Go through the param.dat through several stages
-    while jumping al the ----- lines:
-
-
-    1. Look for the BSCI section for each atom
-       and its parent appending both like
-       bond [A,B] and parent [B].
-    2. Set end_connectivity_found=True to start
-       parsing the NBND section
-    
-    In the NBND section:
-    2. Look for the atom type vd2w line
-    3. Parse each line of the non bonding section
-    4. set NBND_finished= True to start parsing the bonded section
-    
-
-    In the BOND section
-    5. For each subsection ([stretchings, bendings, proper_tors, improper_tors]):
-       1. Search for the respective title indicating the beggining of the section
-       (["Stretch", "Bending", "proper Torsion", "improper Torsion"])
-       2. Then parse the section obtaining the values from the columns indicated in columns to take
-       3.when all sections are parsed return all values
-  """
-
-  atom_types = []
-  parents = [0] * len(atom_names)
-  charges = []
-  sigmas = []
-  epsilons = []
-  vdws = []
-  stretchings = []
-  bendings = []
-  proper_tors = []
-  improper_tors = []
-  lists = [stretchings, bendings, proper_tors, improper_tors]
-  keywords = ["Stretch", "Bending", "proper Torsion", "improper Torsion"]
-  columns_to_take = [[0,1, 2, 3], [0, 1, 2, 3,4], [0, 1 ,2 , 3, 4, 5, 6, 7], [0, 1, 2, 3, 4]]
-  start_connectivity_found = False
-  end_connectivity_found = False
-  start_found_NBND = False
-  NBND_finished = False
-  start_found_BND = False
-
-
-  with open(param_file) as f:
-    lines = f.readlines()
-    for i, line in enumerate(lines):
-      #prepared lines
-      line = re.sub(' +',' ',line)
-      line = line.strip('\n').strip()
-
-      if not end_connectivity_found:
-        if(line.startswith("BCI's")):
-          start_connectivity_found = True
-        elif(start_connectivity_found):
-          try:
-            line = line.split()
-            #parents[int(line[1])-1]-->Atom names start at 1 but list at 0
-            parents[int(line[1])-1] = int(line[0]) 
-          except IndexError:
-            end_connectivity_found = True
-
-
-      #NBND section
-      elif (line.startswith("----------") is False) and (NBND_finished is False) and (end_connectivity_found is True):
-        if(line.startswith("atom type vdw")):
-          start_found_NBND = True
-        elif(start_found_NBND):
-          try:
-            line = line.split()
-            if not line[3].isdigit():
-              atom_types.append(line[3])
-            else:
-              atom_types.append(atom_names[int(line[3])-1])
-            charges.append(line[4])
-            sigmas.append(line[5])
-            epsilons.append(line[6])
-          except IndexError:
-            NBND_finished=True
-
-      elif(NBND_finished):
-        for (keyword, indexes, List) in zip(keywords, columns_to_take, lists):
-          while(line.startswith(keyword) is False):
-            try:
-              line, i = move_line_forward(lines, i)
-            except IndexError:
-              #There are no improper torsions!!
-              return atom_types, parents, charges, sigmas, epsilons, stretchings, bendings, proper_tors, improper_tors
-          line, i = move_line_forward(lines, i)
-          while(line):
-                line = re.sub(' +',' ',line)
-                line = line.strip('\n')
-                line = line.split()
-                values = [line[index] for index in indexes]
-                List.append(values)
-                line, i = move_line_forward(lines, i)
-        return atom_types, parents, charges, sigmas, epsilons, stretchings, bendings, proper_tors, improper_tors
-
-def move_line_forward(lines, i):
-  i+=1
-  line = lines[i].strip()
-  return line, i
-
-def descompose_dihedrals(phis):
-  """
-    For each dihedral line as:
-    atom1 atom2 atom3 atom4   V1    V2   V3    V4
-      1     2     3      4   0.00 1.000 5.000 3.000
-
-    Separate all components as next:
-    atom1 atom2 atom3 atom4   value  which VX???
-     1     2     3      4     1.000      2
-     1     2     3      4     5.000      3
-  """
-  new_phis = []
-  new_phi = []
-  for phi in phis:
-    atoms = phi[0:4]
-    phis_components = ["{0:.3f}".format(abs(float(component))) for component in phi[4:8]]
-    if(phis_components == ['0.000','0.000','0.000','0.000']):
-      new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], phi[4], 1, 1])
-      continue
-    for index, component in enumerate(phi[4:8], 1):
-      if(component != '0.000' and component != '-0.000'):
-        new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], component, 1, index])
-  return new_phis
-
-def negative_torsions_for_pele(phis, tors, bonded):
-  
-  phis = preproces_lines(phis)
-  tors = preproces_lines(tors)
-  bonded = preproces_lines(bonded)
-
-
-  for i, phi in enumerate(phis):
-    atom1 = phi[0]
-    atom4 = phi[3]
-    for phi_to_compare in phis[0:i]:
-      if(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi_to_compare[2]<0):
-        break
-      elif(phi[0:4] == phi_to_compare[0:4]):
-        pass
-      elif(phi_to_compare[2]<0):
-        pass
-      elif(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi!=phi_to_compare):
-        if phi[2]>0:
-          phi[2] = -int(phi[2])
-      elif(atom4 == phi_to_compare[0] and atom1 == phi_to_compare[3] and phi!=phi_to_compare):
-        if phi[2]>0:
-          phi[2] = -int(phi[2])
-
-    for tors_to_compare in tors:
-      atom1_atom3_tors = [tors_to_compare[0], tors_to_compare[2]]
-      if(atom1 in atom1_atom3_tors and  atom4 in atom1_atom3_tors):
-        if phi[2]>0:
-          phi[2] = -int(phi[2])
-
-    for bonded_to_compare in bonded:
-      bond = [bonded_to_compare[0], bonded_to_compare[1]]
-      if(atom1 in bond and atom4 in bond):
-        if phi[2]>0:
-          phi[2] = -int(phi[2])
-
-    if(float(phi[6]) in [1.0,3.0]):
-      phi[5] = 1.0
-    else:
-      phi[5] = -1.0
-
-  phi_section = []
-  for phi in phis:
-    phi_section.append('{0:>5} {1:>5} {2:>5} {3:>5} {4:>9.5f} {5:>4.1f} {6:>3.1f}'.format(
-      phi[0], phi[1], phi[2], phi[3], float(phi[4]), phi[5], abs(float(phi[6]))))
-
-  return(phi_section)
 
 
 
