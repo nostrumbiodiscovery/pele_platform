@@ -1339,10 +1339,10 @@ def FindCoreAA(mae_file, user_fixed_bonds, use_rings, residue_name, use_mult_lib
     atom_names = find_names_in_mae(mae_file)
     if (len(atom_names) <= 0): 
       print("NO ATOMS FOUND IN MAE FILE")
-    print("bonds\n")
-    print(bonds)
-    print("tors\n")
-    print(tors)
+      print("bonds\n")
+      print(bonds)
+      print("tors\n")
+      print(tors)
     assign = assign_ligand_groups(tors, bonds, len(atom_names))
     if (user_core_atom > 0):
         core_atom = user_core_atom - 1
@@ -1371,7 +1371,6 @@ def FindCoreAA(mae_file, user_fixed_bonds, use_rings, residue_name, use_mult_lib
         if (rank[i] == 0):
             line = line + atom_names[i].rjust(5)
     print('\n')
-    print(line)
     #  for i in range(len(atom_names)):
     #    print atom_names[i].rjust(5),group[i],rank[i]
 
@@ -1488,7 +1487,6 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
     if (user_tors == []):
         # tors = find_tors_in_log(logfile)
         tors = get_torsions_from_mae(mae_file, residue_name)
-        print(tors)
         print(" - torsions found.")
 
     ########CHANGE     SCHRODINGER######
@@ -1517,7 +1515,6 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
     bonds = find_bonds_in_mae(mae_file) 
     print(' -bonds found in mae file')
     atom_names = find_names_in_mae(mae_file)
-    print(atom_names) 
     print(' -names found in mae file')
     if (len(atom_names) <= 0):
       print("NO ATOMS FOUND IN MAE FILE")
@@ -2169,7 +2166,8 @@ def read_zmat_template(filename):
             #de moemnt
             names.append(a.group(2).strip('_'))
         else:
-            raise Exception("Error reading zmat from template")
+            raise Exception("Error reading zmat from template:  \
+            Be carefull NOT TO HAVE SPACES IN THE ATOM NAME SECTION in mae file")
     f.close()
     return [parent, zmat, names]
 
@@ -2338,7 +2336,6 @@ def find_resnames_in_mae(filename):
       #Get residue names list, remove duplicates building a set, and return a list with unique values
       return list(set([atom['s_m_pdb_residue_name'].strip() for atom in mae.atoms()]))
     except KeyError:
-      print('a')
       #Default name
       warnings.warn("NO RESIDUE NAME FOUND IN MAE."\
                     " USING RESIDUE NAME [{}].".format(STANDARD_RESIDUE_NAME))
@@ -2641,7 +2638,6 @@ def SGB_paramaters(atom_types, tried = []):
             found = True
             break
     if not found:
-      print(atom_type)
       new_params = find_similar_atomtype_params(atom_type, tried=[])
       if(new_params):
         radius.append(new_params[4])
@@ -3001,7 +2997,6 @@ def descompose_dihedrals(phis):
   for phi in phis:
     atoms = phi[0:4]
     phis_components = ["{0:.3f}".format(abs(float(component))) for component in phi[4:8]]
-    print(phis_components)
     if(phis_components == ['0.000','0.000','0.000','0.000']):
       new_phis.append([atoms[0], atoms[1], atoms[2], atoms[3], phi[4], 1, 1])
       continue
