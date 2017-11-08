@@ -66,6 +66,7 @@ import sys
 import os
 import re
 import PlopRotTemp as pl
+from template.templateBuilder import TemplateBuilder
 #import schrodinger.application.macromodel.utils as mu
 #import schrodinger.application.macromodel.tools as mt
 #import schrodinger.job.jobcontrol as jc
@@ -224,8 +225,9 @@ print("User output template file '{}'".format(output_template_file))
 #Build a template file
 print("\n")
 print("TEMPLATE GENERATION")
+template_builder = TemplateBuilder(mae_file, "lig")
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
-    pl.build_template(mae_file, root)
+    template_builder.build_template()
 
 
 
@@ -336,8 +338,8 @@ for i in range(len(new_back_tors)):
 #Make (or read) original tempalte file
 print('\n')
 print('CREATE ROTAMER TEMPLATE FILE: {}'.format(output_template_file))
-names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file.upper(),
-                        R_group_root_atom_name=R_group_root_atom_name)
+names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file.upper(), mae_file, 
+    R_group_root_atom_name=R_group_root_atom_name)
 
 [tors, tors_ring_num, zmat_atoms] = pl.FindTorsAtom(tors, tors_ring_num, parent)
 #Eliminate Torsions in the backbone (included when entire rings are included in the torsions)
