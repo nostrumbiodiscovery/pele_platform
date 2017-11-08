@@ -1734,9 +1734,12 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_g
                     rank_str = ' M'
             else:
                 rank_str = ' S'
-        outline = str(i + 1).rjust(5) + str(new_parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
-        name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
-            2] + '\n'
+        outline = '{0:>5} {1:>5}{2:>0} {3:>4}   _{4:_^3} {5:>5} {6:>11.6f} {7:>11.6f} {8:>11.6f}\n'.format(
+            str(i + 1), str(new_parent[i] + 1), rank_str, at[j], name[j], mat[j], zmat[i][0], zmat[i][1],
+            zmat[i][2])
+        # str(i + 1).rjust(5) + str(new_parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
+        # name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
+        #     2] + '\n'
         fout.write(outline)
 
     bonds = []
@@ -2105,7 +2108,7 @@ def int2xyz(in_zmat, in_parent):
                 zqd = zrd
             temp = [xqd + cart[jatom][0], yqd + cart[jatom][1], zqd + cart[jatom][2]]
             cart[iatom] = temp;
-            
+
     cart = cart[3:len(cart)]
     return cart
 
@@ -2648,6 +2651,7 @@ def make_libraries(resname, conf_file, root, names, zmat_atoms, group, use_rings
             torsion_atom = t[1]
             myname = convert_num_to_name([int(torsion_atom)], names)
             myname_formatted = re.sub(' ', '_', str(myname[0]))
+
             #If we've already gone up to or past the R group, start counting it as the side-chain
             if (R_group_root_atom_name != 'None'):
                 if ((myname_formatted == R_group_root_atom_name) or (
@@ -2764,7 +2768,7 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
                         lib_name = lib_name_oh
                     else:
                         lib_name = lib_name_nom
-                    f.write("   sidelib " + lib_name + " " + names[tors[i][0]] + ' ' + names[tors[i][1]] + " &\n")
+                    f.write("   sidelib {0} _{1:_^3} _{2:_^3} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
                 else:
                     ring_num = tors_ring_num[i]
                     if (written_ring[ring_num] == 0):
