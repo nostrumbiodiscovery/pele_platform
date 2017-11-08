@@ -1638,7 +1638,7 @@ def find_NH2_torsions(struct, mae_file):
 
 
 ####################################
-def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_atom_name='None'):
+def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_group_root_atom_name='None'):
     """
     Create the ain template by parsing the ain.hetgrp_ffgen
     calculating the zmatrix, ordering the connectivity,
@@ -1664,10 +1664,12 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
     #  ordering.insert(0,2);ordering.insert(0,1);ordering.insert(0,0)
     #  zmat.insert(0,[0,0,0]);zmat.insert(0,[0,0,0]);zmat.insert(0,[0,0,0])
     #Convert to cart
-    cart = int2xyz(zmat, old_parent)
-    #  print 'cartesian(xyz)'
-    #  for i in range(len(old_parent)):
-    #     print 'X',cart[i][0],cart[i][1],cart[i][2]
+    # cart = int2xyz(zmat, old_parent)
+    str1 = structure.StructureReader(mae_file).next()
+    cart = [atom._getXYZ() for atom in str1.atom]
+     # print 'cartesian(xyz)'
+     # for i in range(len(old_parent)):
+     #    print 'X',cart[i][0],cart[i][1],cart[i][2]
 
     #Convert back to zmat with new parent list
     zmat = xyz2int(cart, ordering, new_parent)
@@ -1732,7 +1734,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, R_group_root_
                     rank_str = ' M'
             else:
                 rank_str = ' S'
-        outline = str(i + 1).rjust(5) + str(old_parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
+        outline = str(i + 1).rjust(5) + str(new_parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
         name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
             2] + '\n'
         fout.write(outline)
@@ -2021,9 +2023,11 @@ def int2xyz(in_zmat, in_parent):
     # but much more efficient if it does
     epsilon = 0.000000001
     calc = []  # whether or not we have calculated a cart coordinate
+    atoms_for_calculation = []
     for i in range(0, 3): calc.append(1)  # we know dummies
     for i in range(3, len(zmat)): calc.append(0);cart.append([0.0, 0.0, 0.0]);
     while (min_value(calc) < 0.1):
+        print(calc)
         for i in range(3, len(zmat)):  # skip over 3 dummy atoms
             iatom = i
             jatom = parent[iatom]
@@ -2033,6 +2037,7 @@ def int2xyz(in_zmat, in_parent):
             if (calc[jatom] == 0 or calc[katom] == 0 or calc[jatom] == 0): continue
             #       print "Zmat ",iatom,jatom,katom,latom
             calc[iatom] = 1  #signal we have calculated this
+            print("good")
             rcd = zmat[iatom][0]
             thbcd = zmat[iatom][1] * math.pi / 180.0
             phabcd = 2 * math.pi - zmat[iatom][2] * math.pi / 180.0
@@ -2100,7 +2105,7 @@ def int2xyz(in_zmat, in_parent):
                 zqd = zrd
             temp = [xqd + cart[jatom][0], yqd + cart[jatom][1], zqd + cart[jatom][2]]
             cart[iatom] = temp;
-
+            
     cart = cart[3:len(cart)]
     return cart
 
