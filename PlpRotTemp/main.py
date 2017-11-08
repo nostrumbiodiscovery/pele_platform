@@ -17,15 +17,7 @@ Outputs: 1) a re-ordered template file (old one is backed up in FILENMAE.hetgrp_
 
 
 Options:
-
-   --core <an1>      Give one atom of the core section
-
-   --n <number>      Maximum Number of Entries in Rotamer File
-
-   --mtor <number>   Gives the maximum number of torsions allowed in each
-                     group.  Will freeze bonds to extend the core if 
-                     necessary
-
+G
    --clean           Clean Intermiadiate files
 
 
@@ -74,6 +66,7 @@ import sys
 import os
 import re
 import PlopRotTemp as pl
+from template.templateBuilder import TemplateBuilder
 #import schrodinger.application.macromodel.utils as mu
 #import schrodinger.application.macromodel.tools as mt
 #import schrodinger.job.jobcontrol as jc
@@ -130,6 +123,7 @@ parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsio
                               group.  Will freeze bonds to extend the core if \
                               necessary.")
 parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File")
+parser.add_argument("--mae_charges", help="Use charges specified in the ligand.mae file", action='store_true')
 parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
 args = parser.parse_args()
 
@@ -148,6 +142,8 @@ if args.mtor:
 if args.n:
   nrot = args.n
   print('\nUsing {} as a Maximum Number of Entries in Rotamer Files\n'.format(nrot))
+if args.mae_charges:
+  use_mae_charges = 1
 if args.clean:
   clean = args.clean
 
@@ -156,15 +152,15 @@ if args.clean:
 #########################COMENT#################################
 
 # Process options
-"""
-if (gridres_oh == ""): 
-    gridres_oh = gridres
+
+# if (gridres_oh == ""): 
+#     gridres_oh = gridres
 if (use_mae_charges == 1):
     hetgrp_opt = hetgrp_opt + '-use_mae_charges'
 
-if (run_conf == 0): 
-    conf_file = 'none'
-"""
+# if (run_conf == 0): 
+#     conf_file = 'none'
+
 #######################COMENT################################33
 
 ####################CHANGE MACROMODEL###########################
@@ -229,8 +225,9 @@ print("User output template file '{}'".format(output_template_file))
 #Build a template file
 print("\n")
 print("TEMPLATE GENERATION")
+template_builder = TemplateBuilder(mae_file, "lig")
 [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
-    pl.build_template(mae_file, root)
+    template_builder.build_template()
 
 
 
@@ -311,7 +308,6 @@ if (unnat_res == 1 or grow == 1 ):
 ####################SCHRODINGER###########################
 
 
-
 #Change from mae files atom numbering to the template file ones
 #Convert Torsions to match the template file atom numbering
 #Ring numbers don't have to be changed
@@ -342,8 +338,8 @@ for i in range(len(new_back_tors)):
 #Make (or read) original tempalte file
 print('\n')
 print('CREATE ROTAMER TEMPLATE FILE: {}'.format(output_template_file))
-names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file,
-                        R_group_root_atom_name=R_group_root_atom_name)
+names = pl.ReorderTemplate(old_atom_num, parent, rank, template_file, output_template_file.upper(), mae_file, 
+    R_group_root_atom_name=R_group_root_atom_name)
 
 [tors, tors_ring_num, zmat_atoms] = pl.FindTorsAtom(tors, tors_ring_num, parent)
 #Eliminate Torsions in the backbone (included when entire rings are included in the torsions)
