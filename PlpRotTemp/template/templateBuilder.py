@@ -20,12 +20,15 @@ CONVERSION = {'CT1': 'CT',
               'NI': 'NY',
               'NIP': 'NP'
               }
-ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
-ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
+
 DEFAULT_INT = 6
 DEFAULT_RADIUS_VDW = '0.5000'
 DEFAULT_SPRING_K = '268.0'
 DEFAULT_EQ_DIST = '1.529'
+
+ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
+ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
+
 FILE_DIR_PATH = os.path.dirname(os.path.dirname(__file__))
 SIMILARITY_PATH = os.path.join(FILE_DIR_PATH, 'param/similarity.param') ##impact??
 PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/f14_sgbnp.param') ##impact??
@@ -34,6 +37,16 @@ OPLS_VERSION = '14'
 
 
 class TemplateBuilder:
+
+	"""
+	base builder class for ligand tmeplate creation
+
+	Attributes:
+		-input_file: input .mae file
+		-output_file : output template file
+
+	Author: Daniel Soler
+	"""
 
 	def __init__(self, input_file, output_file):
 		self.input_file = input_file
@@ -76,6 +89,7 @@ class TemplateBuilder:
 
 	  #Retrieve all the useful information from that params
 	  atom_names_param = self.retrieve_atom_names(OPLS_CONVERSION_FILE)
+	  shutil.copyfile(OPLS_CONVERSION_FILE, "a.txt")
 	  self.search_and_replace(OPLS_CONVERSION_FILE, atom_names_param)
 	  atom_types, parents, charges, sigmas, epsilons, stretchings, tors, phis, impropers = self.parse_param(OPLS_CONVERSION_FILE, atom_names_param)
 
@@ -83,6 +97,9 @@ class TemplateBuilder:
 	  #Connectivity information from Mae
 	  res_name = find_resnames_in_mae(self.input_file)[0] #Ligand must be defined as a whole residue
 	  atom_names = find_names_in_mae(self.input_file, undersc=True)
+
+
+	  parents = self.fix_parents_rings(parents, atom_names)
 	  # bonds = [[stretching[0:2] for stretching in stretchings]
 	  zmat = self.create_zmatrix(parents)
 	  number_bonds = len(stretchings)
@@ -125,7 +142,7 @@ class TemplateBuilder:
 	  for i, (atom_name, atom_type, parent, zmat_row) in enumerate(
 	    zip(atom_names, atom_types, parents, zmat), 1):
 	    connectivity_line = '{0:>5} {1:>5} {2:>0} {3:>5} {4:>5} {5:>5} {6:>11.5f} {7:>11.5f} {8:>11.5f} '.format(
-	      i, parent, 'S', atom_type, atom_name,
+	      i, int(parent)+1, 'S', atom_type, atom_name,
 	      DEFAULT_INT, zmat_row[0], zmat_row[1], zmat_row[2])
 	    connectivity_section.append(connectivity_line)
 
@@ -174,16 +191,46 @@ class TemplateBuilder:
 	  with open(self.output_file, 'w') as f:
 	    f.write('\n'.join(file_content))
 	  
-	  #Remove param.dat file
-	  try:
-	    os.remove(OPLS_CONVERSION_FILE)
-	  except OSError:
-	    print("Error, param.dat not created. Make sure $SCHRODINGER/utilities/ffld_server is up and running in your computer.")
+	  # #Remove param.dat file
+	  # try:
+	  #   os.remove(OPLS_CONVERSION_FILE)
+	  # except OSError:
+	  #   print("Error, param.dat not created. Make sure $SCHRODINGER/utilities/ffld_server is up and running in your computer.")
 
 	  #stdout
 	  print("Template {} generated successfully".format(self.output_file))
 
 	  return self.output_file, res_name, self.input_file, self.output_file, res_name
+
+
+	def fix_parents_rings(self, parents, atom_names):
+		"""
+			For every ring in the structure assign as parent 
+			of each atom the previous. To close the ring assign
+			as parent of the initial atom the last.
+		"""
+		str1 = structure.StructureReader(self.input_file).next()
+		rings = str1.ring
+		for ring in rings:
+			ring_atoms = ring.getAtomList()
+			initial_atom = ring_atoms[0]-1
+			last_atom= ring_atoms[-1]-1
+
+			start = True
+			current_atom = initial_atom
+			next_atom = ring_atoms[1] -1
+			counter=1
+			while (current_atom != initial_atom  or start is True):
+				try:
+					parents[next_atom] = current_atom
+					counter+=1
+					current_atom=next_atom
+					next_atom=ring_atoms[counter]-1
+					start=False
+				except IndexError:
+					parents[initial_atom] = last_atom
+					break
+		return parents
 
 
 	def create_zmatrix(self, parents):
@@ -200,8 +247,6 @@ class TemplateBuilder:
 	  """
 	  str1 = structure.StructureReader(self.input_file).next()
 	  order = [i for i in range(len(parents))]
-	  #Gap of 1 between parents list and the one needed for creating zmat
-	  parents = [int(parent) - 1 for parent in parents] 
 	  coordinates = [atom._getXYZ() for atom in str1.atom]
 	  zmat = xyz2int(coordinates, order, parents)
 	  return zmat
@@ -514,7 +559,7 @@ class TemplateBuilder:
 	  """
 
 	  atom_types = []
-	  parents = [0] * len(atom_names)
+	  parents = [-1] * len(atom_names)
 	  charges = []
 	  sigmas = []
 	  epsilons = []
@@ -547,7 +592,10 @@ class TemplateBuilder:
 	          try:
 	            line = line.split()
 	            #parents[int(line[1])-1]-->Atom names start at 1 but list at 0
-	            parents[int(line[1])-1] = int(line[0]) 
+	            if(parents[int(line[1])-1]==-1):
+	            	parents[int(line[1])-1] = int(line[0])-1
+	            elif(parents[int(line[0])-1]==-1):
+	            	parents[int(line[0])-1] = int(line[1])-1
 	          except IndexError:
 	            end_connectivity_found = True
 
