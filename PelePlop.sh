@@ -1,7 +1,7 @@
 #!/bin/bash
-
+PlopRotTemp=$(dirname $0)
 #Parse arguments from input
-source $(dirname $0)/Helpers/argparse.bash || exit 1
+source "${PlopRotTemp}"/Helpers/argparse.bash || exit 1
 argparse "$@" <<EOF || exit 1
 parser.add_argument('pdb_file', type=str, help="PDB of COMPLEX to run PELE on.")
 parser.add_argument('ligand_chain', type=str, help="Cain of the ligand to be parametrizeo on the pdb_file")
@@ -18,17 +18,17 @@ else
     ligand_mae="${pdbname}.mae"
 
     #extract ligand
-	mapfile -t ligand_pdb < <(python Helpers/extract_ligand.py --pdb $pdb --general_name $pdbname --ligand_chain $LIGAND_CHAIN --executing_folder $PWD)
+	mapfile -t ligand_pdb < <(python "${PlopRotTemp}/Helpers/extract_ligand.py" --pdb $PDB_FILE --general_name $pdbname --ligand_chain $LIGAND_CHAIN --executing_folder $PWD)
 
 	#PlopRotTemp over ligand
 	$SCHRODINGER/utilities/structconvert -ipdb ${ligand_pdb[0]} -omae $ligand_mae
-	$SCHRODINGER/utilities/python PlpRotTemp/main.py $ligand_mae
+	$SCHRODINGER/utilities/python "${PlopRotTemp}/PlpRotTemp/main.py" $ligand_mae
 	rm ${ligand_pdb[0]}
 	mapfile -t output_files < input.txt
 
 	#Prepare PELE env
     Pele_directory="${pdbname}_Pele"
-    echo "$Pele_directory"
+  
     if [ ! -d "$Pele_directory" ]; then
 		mkdir $Pele_directory
 	fi
@@ -47,10 +47,10 @@ else
 		mkdir "${Pele_directory}/results"
 	fi
 
-	cp $pdb "${Pele_directory}/complex.pdb"
-	cp $pdb "${Pele_directory}/native.pdb"
+	cp $PDB_FILE "${Pele_directory}/complex.pdb"
+	cp $PDB_FILE "${Pele_directory}/native.pdb"
 
-	cp PeleTemplates/*control_file* $Pele_directory
+	cp ${PlopRotTemp}/PeleTemplates/*control_file* $Pele_directory
 
 	rm ligand_mae
 	rm input.txt
