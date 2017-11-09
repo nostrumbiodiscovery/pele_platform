@@ -4,7 +4,11 @@ import shutil
 import re
 import warnings
 from schrodinger import structure
-from PlpRotTemp.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
+
+try:
+	from PlpRotTemp.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
+except ImportError:
+	from PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
 
 CONVERSION = {'CT1': 'CT',
               'O2Z':'O2',
