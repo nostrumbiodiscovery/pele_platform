@@ -1,0 +1,32 @@
+{
+    "licenseDirectoryPath": "/home/usr",
+    "simulationLogPath": "results/Logfile_",
+    "Initialization": {
+        "ForceField": "OPLS2005",
+        "Complex":
+            {
+		"files": [{"path": "complex.pdb"}]
+	    },
+        "Solvent": {
+            "solventType": "VDGBNP",
+            "useDebyeLength": true,
+            "ionicStrength": 0.1
+        }
+    },
+    "commands": [
+        {
+            "commandType": "minimization",
+	    "complexSavingPath": "minimized.pdb",
+            "Minimizer": {
+                "algorithm": "TruncatedNewton",
+                "parameters": {
+                    "MaximumNewtonIterations": 65,
+                    "MinimumRMS": 0.04,
+                    "nonBondingListUpdatedEachMinStep": true,
+                    "alphaUpdated": true,
+		    "sgbUpdated": true
+                }
+            }
+        }
+    ]
+}

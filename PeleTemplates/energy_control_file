@@ -1,0 +1,21 @@
+{
+    "licenseDirectoryPath": "/home/usr",
+    "simulationLogPath": "results/Logfile_",
+    "Initialization": {
+        "ForceField": "OPLS2005",
+        "Complex":
+            {
+		"files": [{"path": "complex.pdb"}]
+	    },
+        "Solvent": {
+            "solventType": "VDGBNP",
+            "useDebyeLength": true,
+            "ionicStrength": 0.1
+        }
+    },
+    "commands": [
+        {
+            "commandType": "energyComputation"
+	}
+    ]
+}
