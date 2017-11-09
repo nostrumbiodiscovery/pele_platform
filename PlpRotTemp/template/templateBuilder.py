@@ -192,7 +192,7 @@ class TemplateBuilder:
 	                       iphi_section +
 	                       ['END'])
 	  #Write to file
-	  with open(self.output_file, 'w') as f:
+	  with open(res_name, 'w') as f:
 	    f.write('\n'.join(file_content))
 	  
 	  # #Remove param.dat file
@@ -204,7 +204,7 @@ class TemplateBuilder:
 	  #stdout
 	  print("Template {} generated successfully".format(self.output_file))
 
-	  return self.output_file, res_name, self.input_file, self.output_file, res_name
+	  return res_name, self.output_file, self.input_file, self.output_file, res_name
 
 
 	def fix_parents_rings(self, parents, atom_names):
