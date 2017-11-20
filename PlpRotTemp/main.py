@@ -65,6 +65,7 @@ import argparse
 import sys
 import os
 import re
+import shutil
 import PlopRotTemp as pl
 from template.templateBuilder import TemplateBuilder
 #import schrodinger.application.macromodel.utils as mu
@@ -551,5 +552,7 @@ if __name__ == "__main__":
     files = main()
     with open("input.txt", "w")as f:
         f.write('\n'.join(files))
+    # shutil.copy(files[0], "LIG")
+    # shutil.copy(files[1], "LIG.rot.assign")
 
 
