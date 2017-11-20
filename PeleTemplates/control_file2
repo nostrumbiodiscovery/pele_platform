@@ -58,7 +58,6 @@
                 },
             "ANM": {
                 "algorithm": "ALPHACARBONS",
-		"preloadedModesIn": "pca_modes.nmd",
                 "options": {
                     "pickingCase": "RANDOM_MODE",
                     "modesMixingOption": "mixMainModeWithOthersModes",
@@ -78,7 +77,7 @@
 		    "MaximumMinimizationIterations": 1,
                     "MaximumNewtonIterations": 100,
                     "MinimumRMS": 0.04,
-                    "nonBondingListUpdatedEachMinStep": true,
+                    "nonBondingListUpdatedEachMinStep": false,
                     "alphaUpdated": false
                     }
                 }
@@ -116,11 +115,11 @@
             "PeleTasks": [
 	        {
                     "metrics": [
-                       {
+                        {
                        	   "type" : "bindingEnergy",
                        	   "boundPartSelection" : {"chains": { "names": [ "$CHAIN" ] } }
                         },
-		       {
+                        {
 			   "type": "rmsd",
 			   	"Native": {
 				   "path": "native.pdb"

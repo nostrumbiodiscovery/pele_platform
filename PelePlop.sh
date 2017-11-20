@@ -1,11 +1,98 @@
 #!/bin/bash
+
+#######################################################
+# PelePlop: Protein Energy Landscape Exploration Platform
+# 
+# https://github.com/miniaoshi/PelePlop
+#
+# Author: Daniel Soler, daniel.soler@nostrumbiodiscovery.com
+#
+# Copyright 2017 BSC, NBD
+# 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+# 
+#      http://www.apache.org/licenses/LICENSE-2.0
+# 
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+########################################################
+
 PlopRotTemp=$(dirname $0)
-#Parse arguments from input
+
+####################### Check env variables are set ######################
+
+if [[ $(which mpirun 2>&1 > /dev/null) != "" ]]; then
+	echo "set mpirun $PATH with: $: set export PATH=/path/to/binary/:$PATH"
+	exit 1
+elif [[ $(which PELE-1.5_mpi 2>&1 > /dev/null) != "" ]]; then
+	echo "set PELE-1.5 binary folder to $PATH with: $: set export PATH=/path/to/binary/:$PATH"
+	exit 1
+fi
+
+###################### Parse arguments from input ######################
+
 source "${PlopRotTemp}"/Helpers/argparse.bash || exit 1
 argparse "$@" <<EOF || exit 1
 parser.add_argument('pdb_file', type=str, help="PDB of COMPLEX to run PELE on.")
-parser.add_argument('ligand_chain', type=str, help="Cain of the ligand to be parametrizeo on the pdb_file")
+parser.add_argument('ligand_residue', type=str, help="Residue of the ligand to be parametrizeo on the pdb_file")
+parser.add_argument('ligand_chain', type=str, help="Chain of the ligand to be parametrizeo on the pdb_file")
+parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each \
+                     group.  Will freeze bonds to extend the core if \
+                     necessary.")
+parser.add_argument("--core", type=int, help="Give one atom of the core section")
+parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File")
+parser.add_argument("--mae_charges", help="Use charges specified in the ligand.mae file", action='store_true')
+parser.add_argument("--clean", help="To clean up all the intermediate files", action='store_true')
+parser.add_argument("--cpus", type=int, help="Number of cores the progam will try to use")
+parser.add_argument("--native", type=str, help="Native structure to calculate the RMSD")
 EOF
+
+PlopRotTemp_opt=""
+Pele_opt=""
+if [ "$MTOR" != "" ]; then
+	PlopRotTemp_opt="$PlopRotTemp_opt --mtor ${MTOR} "
+fi
+
+if [ "$CORE" != "" ]; then
+	PlopRotTemp_opt="$PlopRotTemp_opt --core ${CORE}"
+fi
+
+if [ "$N" != "" ]; then
+	PlopRotTemp_opt="$PlopRotTemp_opt --n ${N}"
+fi
+
+if [ "$MAE_CHARGES" != "" ]; then
+	PlopRotTemp_opt="$PlopRotTemp_opt --mae_charges"
+fi
+
+if [ "$CLEAN" != "" ]; then
+	PlopRotTemp_opt="$PlopRotTemp_opt --clean"
+fi
+
+if [ "$PlopRotTemp_opt" != "" ]; then
+	echo "Using PlopRotTemp options ${PlopRotTemp_opt}"
+fi
+
+if [ "$CPUS" != "" ]; then
+	echo "Using ${CPUS} cpus"
+else
+	CPUS=3
+fi
+
+if [ "$NATIVE" != "" ]; then
+	echo "Using native structure $NATIVE"
+fi
+
+####################################################################################
+
+
+############################### RUN PELEPLOP ########################################
+
 if [ "$SCHRODINGER" == "" ]; then
 	echo "SCHRODINGER IS NOT EXPORTED"
 else
@@ -18,11 +105,12 @@ else
     ligand_mae="${pdbname}.mae"
 
     #extract ligand
-	mapfile -t ligand_pdb < <(python "${PlopRotTemp}/Helpers/extract_ligand.py" --pdb $PDB_FILE --general_name $pdbname --ligand_chain $LIGAND_CHAIN --executing_folder $PWD)
+	mapfile -t ligand_pdb < <(python "${PlopRotTemp}/Helpers/extract_ligand.py" --pdb $PDB_FILE --general_name $pdbname --ligand_chain "${LIGAND_RESIDUE} ${LIGAND_CHAIN}" --executing_folder $PWD)
 
-	#PlopRotTemp over ligand
+	#PlopRotTemp over ligan
 	$SCHRODINGER/utilities/structconvert -ipdb ${ligand_pdb[0]} -omae $ligand_mae
-	$SCHRODINGER/utilities/python "${PlopRotTemp}/PlpRotTemp/main.py" $ligand_mae
+	echo "$SCHRODINGER/utilities/python "${PlopRotTemp}/PlpRotTemp/main.py" $PlopRotTemp_opt $ligand_mae"
+	$SCHRODINGER/utilities/python "${PlopRotTemp}/PlpRotTemp/main.py" $PlopRotTemp_opt $ligand_mae
 	rm ${ligand_pdb[0]}
 	mapfile -t output_files < input.txt
 
@@ -43,16 +131,22 @@ else
 	fi
 	mv "${output_files[1]}" "${Pele_directory}/DataLocal/LigandRotamerLibs"
 
+
 	if [ ! -d "${Pele_directory}/results" ]; then
+		mkdir "${Pele_directory}/results"
+	else
+		rm -rf "${Pele_directory}/results"
 		mkdir "${Pele_directory}/results"
 	fi
 
 	cp $PDB_FILE "${Pele_directory}/complex.pdb"
-	cp $PDB_FILE "${Pele_directory}/native.pdb"
+	cp $NATIVE "${Pele_directory}/native.pdb"
 
-	cp ${PlopRotTemp}/PeleTemplates/*control_file* $Pele_directory
+	cp ${PlopRotTemp}/PeleTemplates/control_file $Pele_directory
+	sed -i 's,$CHAIN,'"${LIGAND_CHAIN}"',g' "${Pele_directory}/control_file"
+	#sed -i 's,$CHAIN,'"${LIGAND_CHAIN}"',g' "${Pele_directory}/pca_control_file"
 
-	rm ligand_mae
+	#rm ligand_mae
 	rm input.txt
 
 	cd "$Pele_directory"
@@ -60,10 +154,10 @@ else
 	ln -s /home/dani/repos/PELErev12535/Documents/ Documents
 
 	#RunPele
-	/usr/lib64/openmpi/bin/mpirun -np 3 /opt/PELE/v12354/bin/PELE-1.5_mpi control_file --license-directory ~/repos/PELErev12535/licenses/
-
+	mpirun -np $CPUS PELE-1.5_mpi control_file --license-directory ~/repos/PELErev12535/licenses/
 fi
 
+###################################################################################3
 
 
 
