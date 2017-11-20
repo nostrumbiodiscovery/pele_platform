@@ -48,7 +48,7 @@ class PlopTest:
 
   def parse_template(self, file_path):
 
-    res_name = "LIG"
+    res_name = find_resnames_in_mae(os.path.join(TEST_PATH, self.input_file))
 
     parents, sidechain, atom_types, names = ([] for i in range(4))
     sigma, epsilon, charges, SGBr, vdwr, alpha, gamma = ([] for i in range(7))
@@ -144,7 +144,6 @@ class PlopTest:
       assert("Different number of bonds")
    
     #"Hashing atom numbers to atom names"
-    print("BBBBB")
     for j, (old_atoms, new_atoms) in enumerate(zip(BND_old_sect[0:section_elements], BND_new_sect[0:section_elements])):
       for i, (old_atom, new_atom) in enumerate(zip(old_atoms, new_atoms)):
         old_atom = int(old_atom)
@@ -164,7 +163,9 @@ class PlopTest:
     return BND_old_sect, BND_new_sect
 
 
-
-
-
+def _file_len(fname):
+  with open(fname) as f:
+    for i, l in enumerate(f):
+      pass
+  return i + 1
 
