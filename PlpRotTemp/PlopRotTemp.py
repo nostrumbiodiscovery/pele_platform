@@ -132,7 +132,8 @@ dummy_atom3 = [0.1, 0.2, 0.3]
 DUMMY_COORD = 17.21606
 DUMMY_ANGLE = 45.73961
 DUMMY_DIHEDRAL = 13.21566
-DEFAULT_ATOMTYPE = [0.000, 0.000, 1.500, 1.250, 0.005000000, 0.000000000]   
+DEFAULT_ATOMTYPE = [0.000, 0.000, 1.500, 1.250, 0.005000000, 0.000000000] 
+DEFAULT_RADIUS_VDW = '0.5000'  
 STANDARD_RESIDUE_NAME = 'LIG'
 ERROR_ATOMNAMES = "The keywords in the atom section form the .mae file don't match the regular " \
                   "expressions currently implemented. ATOM NAMES ARE COMPULSORY."
@@ -1734,9 +1735,14 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_g
                     rank_str = ' M'
             else:
                 rank_str = ' S'
-        outline = '{0:>5} {1:>5}{2:>0} {3:>4}   _{4:_^3} {5:>5} {6:>11.6f} {7:>11.6f} {8:>11.6f}\n'.format(
-            str(i + 1), str(new_parent[i] + 1), rank_str, at[j], name[j], mat[j], zmat[i][0], zmat[i][1],
-            zmat[i][2])
+        if(len(name[j]) < 4):
+          outline = '{0:>5} {1:>5}{2:>0} {3:>4}   _{4:_^3} {5:>5} {6:>11.6f} {7:>11.6f} {8:>11.6f}\n'.format(
+              str(i + 1), str(new_parent[i] + 1), rank_str, at[j], name[j], mat[j], zmat[i][0], zmat[i][1],
+              zmat[i][2])
+        else:
+           outline = '{0:>5} {1:>5}{2:>0} {3:>4}   {4:_^4} {5:>5} {6:>11.6f} {7:>11.6f} {8:>11.6f}\n'.format(
+              str(i + 1), str(new_parent[i] + 1), rank_str, at[j], name[j], mat[j], zmat[i][0], zmat[i][1],
+              zmat[i][2])
         # str(i + 1).rjust(5) + str(new_parent[i] + 1).rjust(6) + rank_str + '   ' + (at[j]).ljust(5) + (
         # name[j]).ljust(4) + mat[j].rjust(6) + '%12.6f' % zmat[i][0] + '%12.6f' % zmat[i][1] + '%12.6f' % zmat[i][
         #     2] + '\n'
@@ -2768,7 +2774,15 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
                         lib_name = lib_name_oh
                     else:
                         lib_name = lib_name_nom
-                    f.write("   sidelib {0} _{1:_^3} _{2:_^3} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
+                    if(len(names[tors[i][0]]) < 4 and len(names[tors[i][1]])<4):
+                      f.write("   sidelib {0} _{1:_^3} _{2:_^3} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
+                    elif(len(names[tors[i][0]] < 4) and len(names[tors[i][1]]>4)):
+                      f.write("   sidelib {0} _{1:_^3} {2:_^4} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
+                    elif(len(names[tors[i][0]] < 4) and len(names[tors[i][1]]>4)):
+                      f.write("   sidelib {0} {1:_^4} _{2:_^3} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
+                    else:
+                      f.write("   sidelib {0} {1:_^4} {2:_^4} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
+
                 else:
                     ring_num = tors_ring_num[i]
                     if (written_ring[ring_num] == 0):
