@@ -57,6 +57,7 @@ class Model(object):
                    self.cpus,
                    self.confile,
                    self.native,
+                   self.forcefield,
                    ]
 
         options = [option for option in options if option]
@@ -119,6 +120,11 @@ class Model(object):
     def native(self):
         native = self.gui.options.var_native_path.get()
         return "--native {}".format(native) if native else None
+
+    @property
+    def forcefield(self):
+        forcefield = self.gui.options.var_forcefield.get()
+        return "--forcefield {}".format(forcefield) if forcefield else None
         
 STYLES = {
     tk.Entry: {
@@ -269,6 +275,7 @@ class Options(tk.Frame):
         self.var_native_path = tk.StringVar()
         self.var_cpus = tk.StringVar()
         self.var_conf_file = tk.StringVar()
+        self.var_forcefield = tk.StringVar()
 
         # Defaults
         self.var_mtor.set(4)
@@ -305,6 +312,10 @@ class Options(tk.Frame):
         self.conf_file_entry = tk.Entry(options_frame, textvariable=self.var_conf_file)
         self.conf_file_search = tk.Button(options_frame, text='...',
                                        command=lambda: _browse_file(self.var_conf_file, "*", "*.json"))
+        self.forcefield_label = tk.Label(options_frame, text="Forcefield Residue")
+        self.forcefield_combobox = ttk.Combobox(options_frame, textvariable=self.var_forcefield)
+        self.forcefield_combobox['values'] = ["OPLS2005", "AMBER99sb", "AMBER99sbBSC0"]
+        self.forcefield_combobox.current(0)
 
         # Grid Widgets
         self.options_title.grid(row=0, column=0, columnspan=2, pady=20)
@@ -324,6 +335,8 @@ class Options(tk.Frame):
         self.conf_file_label.grid(row=8, column=0, sticky="ew")
         self.conf_file_entry.grid(row=8, column=1, sticky="ew")
         self.conf_file_search.grid(row=8, column=2, sticky="ew")
+        self.forcefield_label.grid(row=9, column=0, sticky="ew")
+        self.forcefield_combobox.grid(row=9, column=1, sticky="ew")
 
 
 def _browse_file(var_store_path, file_type1, file_type2):
