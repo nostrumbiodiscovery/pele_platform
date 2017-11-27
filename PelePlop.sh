@@ -49,6 +49,7 @@ parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer 
 parser.add_argument("--mae_charges", help="Use charges specified in the ligand.mae file", action='store_true')
 parser.add_argument("--clean", help="To clean up all the intermediate files", action='store_true')
 parser.add_argument("--cpus", type=int, help="Number of cores the progam will try to use")
+parser.add_argument("--confile", type=str, help="Your own PELE conf file")
 parser.add_argument("--native", type=str, help="Native structure to calculate the RMSD")
 EOF
 
@@ -84,10 +85,16 @@ else
 	CPUS=3
 fi
 
-if [ "$NATIVE" != "" ]; then
-	echo "Using native structure $NATIVE"
+if [ "$CONFILE" != "" ]; then
+	echo "Using control file $CONFILE"
 fi
 
+if [ "$NATIVE" != "" ]; then
+	echo "Using native structure $NATIVE"
+else
+	NATIVE="$PDB_FILE"
+	echo "Using input file as the native structure to compute RMSD"
+fi
 ####################################################################################
 
 
@@ -142,7 +149,12 @@ else
 	cp $PDB_FILE "${Pele_directory}/complex.pdb"
 	cp $NATIVE "${Pele_directory}/native.pdb"
 
-	cp ${PlopRotTemp}/PeleTemplates/control_file $Pele_directory
+	if [[ -f "$CONFILE" ]]; then
+		cp "$CONFILE" "${Pele_directory}/control_file"
+	else
+		cp ${PlopRotTemp}/PeleTemplates/control_file "${Pele_directory}/control_file"
+	fi
+	
 	sed -i 's,$CHAIN,'"${LIGAND_CHAIN}"',g' "${Pele_directory}/control_file"
 	#sed -i 's,$CHAIN,'"${LIGAND_CHAIN}"',g' "${Pele_directory}/pca_control_file"
 
@@ -155,9 +167,10 @@ else
 
 	#RunPele
 	mpirun -np $CPUS PELE-1.5_mpi control_file --license-directory ~/repos/PELErev12535/licenses/
+
 fi
 
-###################################################################################3
+###################################################################################
 
 
 
