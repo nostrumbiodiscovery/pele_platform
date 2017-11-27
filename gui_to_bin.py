@@ -22,30 +22,6 @@ import subprocess
 # #Fill GUI
 
 
-STYLES = {
-    tk.Entry: {
-        'background': 'white',
-        'borderwidth': 1,
-        'highlightthickness': 0,
-        'width': 10,
-    },
-    tk.Listbox: {
-        'height': '10',
-        'width': '5',
-        'background': 'white',
-
-    },
-    tk.Button: {
-        'borderwidth': 1,
-        'highlightthickness': 0,
-
-    },
-    tk.Checkbutton: {
-        #'highlightbackground': chimera.tkgui.app.cget('bg'),
-        #'activebackground': chimera.tkgui.app.cget('bg'),
-    }
-}
-
 
 class Controller(object):
 
@@ -79,6 +55,7 @@ class Model(object):
                    self.sidechains,
                    self.atom_core,
                    self.cpus,
+                   self.confile,
                    self.native,
                    ]
 
@@ -134,10 +111,38 @@ class Model(object):
         return "--cpus {}".format(cpus) if cpus else None
 
     @property
+    def confile(self):
+        confile = self.gui.options.var_conf_file.get()
+        return "--confile {}".format(confile) if confile else None
+
+    @property
     def native(self):
         native = self.gui.options.var_native_path.get()
         return "--native {}".format(native) if native else None
+        
+STYLES = {
+    tk.Entry: {
+        'background': 'white',
+        'borderwidth': 1,
+        'highlightthickness': 0,
+        'width': 10,
+    },
+    tk.Listbox: {
+        'height': '10',
+        'width': '5',
+        'background': 'white',
 
+    },
+    tk.Button: {
+        'borderwidth': 1,
+        'highlightthickness': 0,
+
+    },
+    tk.Checkbutton: {
+        #'highlightbackground': chimera.tkgui.app.cget('bg'),
+        #'activebackground': chimera.tkgui.app.cget('bg'),
+    }
+}
 
 class PelePlopDialog(tk.Frame):
 
@@ -203,7 +208,7 @@ class System(tk.Frame):
         self.input_button = tk.Label(system_frame, text="Input File ")
         self.input_entry = tk.Entry(system_frame, textvariable=self.var_input_path)
         self.input_search = tk.Button(system_frame, text='...',
-                                      command=lambda: _browse_file(self.var_input_path, "pdb", "mae"))
+                                      command=lambda: _browse_file(self.var_input_path, "*.pdb", "*.mae"))
 
         # Grid widgets
         self.input_title.grid(row=0, column=1, pady=20)
@@ -263,6 +268,7 @@ class Options(tk.Frame):
         self.var_core_atom_value = tk.StringVar()
         self.var_native_path = tk.StringVar()
         self.var_cpus = tk.StringVar()
+        self.var_conf_file = tk.StringVar()
 
         # Defaults
         self.var_mtor.set(4)
@@ -291,10 +297,14 @@ class Options(tk.Frame):
             command=lambda: _enable(self.var_core_atom_bool, self.core_atom_entry))
         self.cpu_label = tk.Label(options_frame, text="CPUs")
         self.cpu_entry = tk.Entry(options_frame, textvariable=self.var_cpus)
-        self.native_button = tk.Label(options_frame, text="Native File ")
+        self.native_label = tk.Label(options_frame, text="Native File ")
         self.native_entry = tk.Entry(options_frame, textvariable=self.var_native_path)
         self.native_search = tk.Button(options_frame, text='...',
-                                       command=lambda: _browse_file(self.var_native_path, "pdb", "mae"))
+                                       command=lambda: _browse_file(self.var_native_path, "*.pdb", "*.mae"))
+        self.conf_file_label=tk.Label(options_frame, text="Configuration File")
+        self.conf_file_entry = tk.Entry(options_frame, textvariable=self.var_conf_file)
+        self.conf_file_search = tk.Button(options_frame, text='...',
+                                       command=lambda: _browse_file(self.var_conf_file, "*", "*.json"))
 
         # Grid Widgets
         self.options_title.grid(row=0, column=0, columnspan=2, pady=20)
@@ -308,9 +318,12 @@ class Options(tk.Frame):
         self.core_atom_entry.grid(row=5, column=1, sticky="ew")
         self.cpu_label.grid(row=6, column=0, sticky="ew")
         self.cpu_entry.grid(row=6, column=1, sticky="ew")
-        self.native_button.grid(row=7, column=0, sticky="ew")
+        self.native_label.grid(row=7, column=0, sticky="ew")
         self.native_entry.grid(row=7, column=1, sticky="ew")
         self.native_search.grid(row=7, column=2, sticky="ew")
+        self.conf_file_label.grid(row=8, column=0, sticky="ew")
+        self.conf_file_entry.grid(row=8, column=1, sticky="ew")
+        self.conf_file_search.grid(row=8, column=2, sticky="ew")
 
 
 def _browse_file(var_store_path, file_type1, file_type2):
@@ -324,7 +337,7 @@ def _browse_file(var_store_path, file_type1, file_type2):
     """
 
     path = filedialog.askopenfilename(initialdir='~/', filetypes=(
-        (file_type1, '*.' + file_type1), (file_type2, '*.' + file_type2)))
+        (file_type1, file_type1), (file_type2, file_type2)))
 
     if path:
         var_store_path.set(path)
