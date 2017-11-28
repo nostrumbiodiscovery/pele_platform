@@ -47,7 +47,7 @@ parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsio
                      necessary.")
 parser.add_argument("--core", type=int, help="Give one atom of the core section")
 parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File")
-parser.add_argument("--mae_charges", help="Use charges specified in the ligand.mae file", action='store_true')
+parser.add_argument("--ext_charges", type=str, help="Use charges specified in the file.txt file")
 parser.add_argument("--clean", help="To clean up all the intermediate files", action='store_true')
 parser.add_argument("--cpus", type=int, help="Number of cores the progam will try to use")
 parser.add_argument("--confile", type=str, help="Your own PELE conf file")
@@ -69,8 +69,8 @@ if [ "$N" != "" ]; then
 	PlopRotTemp_opt="$PlopRotTemp_opt --n ${N}"
 fi
 
-if [ "$MAE_CHARGES" != "" ]; then
-	PlopRotTemp_opt="$PlopRotTemp_opt --mae_charges"
+if [ "$EXT_CHARGES" != "" ]; then
+	PlopRotTemp_opt="$PlopRotTemp_opt --ext_charges ${EXT_CHARGES}"
 fi
 
 if [ "$CLEAN" != "" ]; then
