@@ -94,7 +94,7 @@ def main():
     back_algorithm = "none"
     back_conf_file = ""
     hetgrp_opt = ""
-    use_mae_charges = 0
+    use_ext_charges = 0
     OPLS = "2005"
     max_tors = -1
     user_fixed_bonds = []
@@ -126,7 +126,7 @@ def main():
                                   group.  Will freeze bonds to extend the core if \
                                   necessary.")
     parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File")
-    parser.add_argument("--mae_charges", help="Use charges specified in the ligand.mae file", action='store_true')
+    parser.add_argument("--ext_charges", type=str, help="Use charges specified in the file.txt file")
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
     args = parser.parse_args()
 
@@ -135,20 +135,23 @@ def main():
         mae_file = args.mae_file
       else:
         raise Exception('A .mae file is needed')
-    if args.core:
-      print('\nUsing user core information : {}\n'.format(args.core))
+
+    if args.core: print('\nUsing user core information : {}\n'.format(args.core))
+      
     if args.mtor:
       max_tors = args.mtor
       if max_tors>5:
         raise Exception('Maximum mTor number 5')
       print('\nUsing {} as a maximum number of Rotamers\n'.format(max_tors))
+
     if args.n:
       nrot = args.n
       print('\nUsing {} as a Maximum Number of Entries in Rotamer Files\n'.format(nrot))
-    if args.mae_charges:
-      use_mae_charges = 1
-    if args.clean:
-      clean = args.clean
+    
+    ext_charges = args.ext_charges if args.ext_charges else None
+    
+    if args.clean: clean = args.clean 
+      
 
     #########################COMENT#################################
 
@@ -156,8 +159,8 @@ def main():
 
     # if (gridres_oh == ""): 
     #     gridres_oh = gridres
-    if (use_mae_charges == 1):
-        hetgrp_opt = hetgrp_opt + '-use_mae_charges'
+    # if (use_ext_charges == 1):
+    #     hetgrp_opt = hetgrp_opt + '-use_ext_charges'
 
     # if (run_conf == 0): 
     #     conf_file = 'none'
@@ -229,7 +232,7 @@ def main():
     resname=pl.find_resnames_in_mae(mae_file)
     template_builder = TemplateBuilder(mae_file, "{}z".format(resname[0].lower()))
     [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
-        template_builder.build_template()
+        template_builder.build_template(ext_charges)
     print(output_template_file)
 
 
