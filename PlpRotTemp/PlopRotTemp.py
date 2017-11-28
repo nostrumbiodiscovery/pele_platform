@@ -117,7 +117,7 @@ from rdkit import Chem
 from rdkit.Chem import TorsionFingerprints
 from schrodinger import structure
 # from schrodinger import structureutil
-hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
+#hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 
 
 
