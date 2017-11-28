@@ -40,7 +40,7 @@ class Controller(object):
         self.command = self.model.create_command()
 
         print(self.command.split())
-        self.subprocess = subprocess.call(self.command.split())
+        self.subprocess = subprocess.Popen(self.command.split())
 
 
 class Model(object):
@@ -49,7 +49,7 @@ class Model(object):
         self.gui = gui
 
     def create_command(self):
-        options = [self.mae_charges,
+        options = [self.ext_charges,
                    self.clean,
                    self.max_torsions,
                    self.sidechains,
@@ -82,9 +82,9 @@ class Model(object):
         return self.gui.ligand.var_chain.get()
 
     @property
-    def mae_charges(self):
-        mae_charges = self.gui.options.var_mae_charges.get()
-        return mae_charges if mae_charges else None
+    def ext_charges(self):
+        ext_charges = self.gui.options.var_charges.get()
+        return "--ext_charges {}".format(ext_charges) if ext_charges else None
 
     @property
     def clean(self):
@@ -266,7 +266,7 @@ class Options(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
 
         # High level Frame Variables
-        self.var_mae_charges = tk.StringVar()
+        self.var_charges = tk.StringVar()
         self.var_clean = tk.StringVar()
         self.var_mtor = tk.StringVar()
         self.var_sidechains = tk.StringVar()
@@ -288,9 +288,6 @@ class Options(tk.Frame):
 
         # Widgets
         self.options_title = tk.Label(options_frame, text="Advanced Options", font=20)
-        self.mae_charges_checkbut = ttk.Checkbutton(
-            options_frame, text='Keep Charges From Mae File', variable=self.var_mae_charges,
-            onvalue='--mae_charges', offvalue='')
         self.clean_checkbut = ttk.Checkbutton(
             options_frame, text='Clean Residual Files', variable=self.var_clean,
             onvalue='--clean', offvalue='')
@@ -316,10 +313,13 @@ class Options(tk.Frame):
         self.forcefield_combobox = ttk.Combobox(options_frame, textvariable=self.var_forcefield)
         self.forcefield_combobox['values'] = ["OPLS2005", "AMBER99sb", "AMBER99sbBSC0"]
         self.forcefield_combobox.current(0)
+        self.charges_label=tk.Label(options_frame, text="Charges File")
+        self.charges_entry = tk.Entry(options_frame, textvariable=self.var_charges)
+        self.charges_search = tk.Button(options_frame, text='...',
+                                       command=lambda: _browse_file(self.var_charges, "*.txt", "*"))
 
         # Grid Widgets
         self.options_title.grid(row=0, column=0, columnspan=2, pady=20)
-        self.mae_charges_checkbut.grid(row=1, column=0, columnspan=2)
         self.clean_checkbut.grid(row=2, column=0, columnspan=2)
         self.max_torsions_label.grid(row=3, column=0, sticky="ew")
         self.core_checkbut.grid(row=5, column=0)
@@ -337,6 +337,9 @@ class Options(tk.Frame):
         self.conf_file_search.grid(row=8, column=2, sticky="ew")
         self.forcefield_label.grid(row=9, column=0, sticky="ew")
         self.forcefield_combobox.grid(row=9, column=1, sticky="ew")
+        self.charges_label.grid(row=10, column=0, sticky="ew")
+        self.charges_entry.grid(row=10, column=1, sticky="ew")
+        self.charges_search.grid(row=10, column=2, sticky="ew")
 
 
 def _browse_file(var_store_path, file_type1, file_type2):
