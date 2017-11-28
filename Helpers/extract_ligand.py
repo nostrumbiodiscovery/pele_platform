@@ -25,9 +25,7 @@ def extract_ligand(pdb_filename, general_name, ligand_residue, ligand_chain, exe
             if line.startswith("ATOM") or line.startswith("HETATM"):
                 if (line[21] == ligand_chain and line[16:21].strip(' ') == ligand_residue):
                     ligand_text += line
-                elif line[17:20] == "HOH":
-                    receptor_text += line
-                else:
+                elif line[17:20] != "HOH":
                     receptor_text += line
     if ligand_text == "":
         print("Something went wrong when extracting the ligand.")
