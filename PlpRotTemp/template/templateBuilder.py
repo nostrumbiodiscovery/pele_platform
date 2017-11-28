@@ -102,8 +102,9 @@ class TemplateBuilder:
 	  res_name = find_resnames_in_mae(self.input_file)[0] #Ligand must be defined as a whole residue
 	  atom_names = find_names_in_mae(self.input_file, undersc=True)
 
-
+	  #Fix parents
 	  parents = self.fix_parents_rings(parents, atom_names)
+
 	  # bonds = [[stretching[0:2] for stretching in stretchings]
 	  zmat = self.create_zmatrix(parents)
 	  number_bonds = len(stretchings)
@@ -114,7 +115,7 @@ class TemplateBuilder:
 
 	  #charges from file
 	  if charges_from_file: charges = ChargeHandler(charges_from_file, number_atoms).get_charges()
-	  
+
 	  #fix C=O amides
 	  new_atom_types = self.fix_atomtype('O', 'N', 'OCN1', 2, atom_types)
 	  #fix H
@@ -131,12 +132,7 @@ class TemplateBuilder:
 	    vdw_radius.append(vdw_params)
 
 
-
-	  #Output file
-	  #self.output_file = 'LIG.hetgrp_ffgen'
-	  # output_file = self.output_file.upper() + '.hetgrp_ffgen'
-	  # print(output_file)
-	  ################################Template Creation########################33
+	  ################################Template Creation########################
 	  
 	  header = ["* LIGAND DATABASE FILE (OPLS2005)",
 	            "*",
