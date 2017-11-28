@@ -4,6 +4,7 @@ import shutil
 import re
 import warnings
 from schrodinger import structure
+from chargeHandler import ChargeHandler
 
 try:
 	from PlpRotTemp.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
@@ -42,7 +43,7 @@ OPLS_VERSION = '14'
 class TemplateBuilder:
 
 	"""
-	base builder class for ligand tmeplate creation
+	base builder class for ligand template creation
 
 	Attributes:
 		-input_file: input .mae file
@@ -57,7 +58,7 @@ class TemplateBuilder:
 		#self.build_template()
 		
 
-	def build_template(self):
+	def build_template(self, charges_from_file=None):
 	  """
 	    Build ligand template from mae file
 
@@ -111,7 +112,9 @@ class TemplateBuilder:
 	  number_phis = len(phis)
 	  number_improper = len(impropers)
 
-
+	  #charges from file
+	  if charges_from_file: charges = ChargeHandler(charges_from_file, number_atoms).get_charges()
+	  
 	  #fix C=O amides
 	  new_atom_types = self.fix_atomtype('O', 'N', 'OCN1', 2, atom_types)
 	  #fix H
