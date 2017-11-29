@@ -30,9 +30,6 @@ def extract_ligand(pdb_filename, general_name, ligand_residue, ligand_chain, exe
     if ligand_text == "":
         print("Something went wrong when extracting the ligand.")
         return False
-    elif receptor_text == "":
-        print("Something went wrong when extracting the receptor.")
-        return False
     with open(ligand_filename, 'w') as ligand_file:
         ligand_file.write(ligand_text)
     return ligand_filename
