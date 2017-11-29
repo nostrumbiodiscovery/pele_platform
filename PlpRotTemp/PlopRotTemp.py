@@ -1544,15 +1544,15 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
 
     #  print "Core atom",core_atom,rank
     if (use_mult_lib == 1):
-      with open('GROUP.dat','w') as f:
-        print(' -Number of groups {}:'.format(max_value(group) + 1))
-        for grp in range(max_value(group) + 1):
-            line = '  -Group %2d' % (grp + 1)
-            for i in range(len(atom_names)):
-                if (group[i] == grp):
-                    line = line + ' ' + atom_names[i].strip()
-            print(line)
-            f.write(line)
+      # with open('GROUP.dat','w') as f:
+      print(' -Number of groups {}:'.format(max_value(group) + 1))
+      for grp in range(max_value(group) + 1):
+          line = '  -Group %2d' % (grp + 1)
+          for i in range(len(atom_names)):
+              if (group[i] == grp):
+                  line = line + ' ' + atom_names[i].strip()
+          print(line)
+            # f.write(line)
 
     [old_num, parent, rank, group] = order_atoms(bonds, tors, back_tors, assign, rank, group)
 

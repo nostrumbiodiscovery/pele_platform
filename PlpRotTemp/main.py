@@ -553,9 +553,8 @@ def main():
 
 if __name__ == "__main__":
     files = main()
-    with open("input.txt", "w")as f:
-        f.write('\n'.join(files))
-    # shutil.copy(files[0], "LIG")
-    # shutil.copy(files[1], "LIG.rot.assign")
+    # with open("input.txt", "w")as f:
+    #     f.write('\n'.join(files))
+
 
 
