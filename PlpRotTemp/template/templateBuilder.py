@@ -93,7 +93,7 @@ class TemplateBuilder:
 
 	  #Retrieve all the useful information from that params
 	  atom_names_param = self.retrieve_atom_names(OPLS_CONVERSION_FILE)
-	  shutil.copyfile(OPLS_CONVERSION_FILE, "a.txt")
+	  # shutil.copyfile(OPLS_CONVERSION_FILE, "a.txt")
 	  self.search_and_replace(OPLS_CONVERSION_FILE, atom_names_param)
 	  atom_types, parents, charges, sigmas, epsilons, stretchings, tors, phis, impropers = self.parse_param(OPLS_CONVERSION_FILE, atom_names_param)
 
@@ -194,10 +194,10 @@ class TemplateBuilder:
 	    f.write('\n'.join(file_content))
 	  
 	  # #Remove param.dat file
-	  # try:
-	  #   os.remove(OPLS_CONVERSION_FILE)
-	  # except OSError:
-	  #   print("Error, param.dat not created. Make sure $SCHRODINGER/utilities/ffld_server is up and running in your computer.")
+	  try:
+	    os.remove(OPLS_CONVERSION_FILE)
+	  except OSError:
+	    print("Error, param.dat not created. Make sure $SCHRODINGER/utilities/ffld_server is up and running in your computer.")
 
 	  #stdout
 	  print("Template {} generated successfully".format(self.output_file))
