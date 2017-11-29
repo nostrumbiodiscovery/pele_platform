@@ -23,6 +23,7 @@
 ########################################################
 
 PlopRotTemp=$(dirname $0)
+FORCEFIELD="OPLS2005"
 
 ####################### Check env variables are set ######################
 
@@ -46,11 +47,12 @@ parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsio
                      necessary.")
 parser.add_argument("--core", type=int, help="Give one atom of the core section")
 parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File")
-parser.add_argument("--mae_charges", help="Use charges specified in the ligand.mae file", action='store_true')
+parser.add_argument("--ext_charges", type=str, help="Use charges specified in the file.txt file")
 parser.add_argument("--clean", help="To clean up all the intermediate files", action='store_true')
 parser.add_argument("--cpus", type=int, help="Number of cores the progam will try to use")
 parser.add_argument("--confile", type=str, help="Your own PELE conf file")
 parser.add_argument("--native", type=str, help="Native structure to calculate the RMSD")
+parser.add_argument("--forcefield", type=str, help="Forcefield to be used. (default=OPLS2005, AMBER99, AMBERBSC)")
 EOF
 
 PlopRotTemp_opt=""
@@ -67,8 +69,8 @@ if [ "$N" != "" ]; then
 	PlopRotTemp_opt="$PlopRotTemp_opt --n ${N}"
 fi
 
-if [ "$MAE_CHARGES" != "" ]; then
-	PlopRotTemp_opt="$PlopRotTemp_opt --mae_charges"
+if [ "$EXT_CHARGES" != "" ]; then
+	PlopRotTemp_opt="$PlopRotTemp_opt --ext_charges ${EXT_CHARGES}"
 fi
 
 if [ "$CLEAN" != "" ]; then
@@ -131,7 +133,21 @@ else
 	if [ ! -d "${Pele_directory}/DataLocal/Templates/OPLS2005/HeteroAtoms/" ]; then
 		mkdir -p "${Pele_directory}/DataLocal/Templates/OPLS2005/HeteroAtoms/"
 	fi
-	mv "${output_files[0]}" "${Pele_directory}/DataLocal/Templates/OPLS2005/HeteroAtoms/"
+	if [ ! -d "${Pele_directory}/DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/" ]; then
+		mkdir -p "${Pele_directory}/DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/"
+	fi
+	if [ ! -d "${Pele_directory}/DataLocal/Templates/AMBER99/HeteroAtoms/" ]; then
+		mkdir -p "${Pele_directory}/DataLocal/Templates/AMBER99sb/HeteroAtoms/"
+	fi
+
+	if [[ "$FORCEFIELD" == "AMBER99sbBSC0" ]]; then
+		mv "${output_files[0]}" "${Pele_directory}/DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/"
+	elif [[ "$FORCEFIELD" == "AMBER99sb" ]]; then
+		mv "${output_files[0]}" "${Pele_directory}/DataLocal/Templates/AMBER99sb/HeteroAtoms/"
+	else
+		mv "${output_files[0]}" "${Pele_directory}/DataLocal/Templates/OPLS2005/HeteroAtoms/"
+	fi
+	
 	
 	if [ ! -d "${Pele_directory}/DataLocal/LigandRotamerLibs" ]; then
 		mkdir -p "${Pele_directory}/DataLocal/LigandRotamerLibs"
@@ -156,10 +172,17 @@ else
 	fi
 	
 	sed -i 's,$CHAIN,'"${LIGAND_CHAIN}"',g' "${Pele_directory}/control_file"
+	sed -i 's,$FORCEFIELD,'"${FORCEFIELD}"',g' "${Pele_directory}/control_file"
+
 	#sed -i 's,$CHAIN,'"${LIGAND_CHAIN}"',g' "${Pele_directory}/pca_control_file"
 
 	#rm ligand_mae
 	rm input.txt
+
+	#prepare input
+	python Helpers/input_prep.py ${Pele_directory}/complex.pdb
+
+	echo "input prepared"
 
 	cd "$Pele_directory"
 	ln -s /home/dani/repos/PELErev12535/Data/ Data

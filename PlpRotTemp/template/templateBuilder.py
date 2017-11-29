@@ -4,6 +4,7 @@ import shutil
 import re
 import warnings
 from schrodinger import structure
+from chargeHandler import ChargeHandler
 
 try:
 	from PlpRotTemp.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
@@ -42,7 +43,7 @@ OPLS_VERSION = '14'
 class TemplateBuilder:
 
 	"""
-	base builder class for ligand tmeplate creation
+	base builder class for ligand template creation
 
 	Attributes:
 		-input_file: input .mae file
@@ -57,7 +58,7 @@ class TemplateBuilder:
 		#self.build_template()
 		
 
-	def build_template(self):
+	def build_template(self, charges_from_file=None):
 	  """
 	    Build ligand template from mae file
 
@@ -101,8 +102,9 @@ class TemplateBuilder:
 	  res_name = find_resnames_in_mae(self.input_file)[0] #Ligand must be defined as a whole residue
 	  atom_names = find_names_in_mae(self.input_file, undersc=True)
 
-
+	  #Fix parents
 	  parents = self.fix_parents_rings(parents, atom_names)
+
 	  # bonds = [[stretching[0:2] for stretching in stretchings]
 	  zmat = self.create_zmatrix(parents)
 	  number_bonds = len(stretchings)
@@ -111,6 +113,8 @@ class TemplateBuilder:
 	  number_phis = len(phis)
 	  number_improper = len(impropers)
 
+	  #charges from file
+	  if charges_from_file: charges = ChargeHandler(charges_from_file, number_atoms).get_charges()
 
 	  #fix C=O amides
 	  new_atom_types = self.fix_atomtype('O', 'N', 'OCN1', 2, atom_types)
@@ -128,12 +132,7 @@ class TemplateBuilder:
 	    vdw_radius.append(vdw_params)
 
 
-
-	  #Output file
-	  #self.output_file = 'LIG.hetgrp_ffgen'
-	  # output_file = self.output_file.upper() + '.hetgrp_ffgen'
-	  # print(output_file)
-	  ################################Template Creation########################33
+	  ################################Template Creation########################
 	  
 	  header = ["* LIGAND DATABASE FILE (OPLS2005)",
 	            "*",
