@@ -38,6 +38,12 @@ class Controller(object):
         if not self.model.input:
             return
 
+
+        if not self.model.pele:
+             raise ValueError("Executable not found. Specify Pele folder location")
+        else:
+            os.environ["PELE"] = self.model.pele
+
         self.command = self.model.create_command()
 
         print(self.command.split())
@@ -140,6 +146,12 @@ class Model(object):
     def forcefield(self):
         forcefield = self.gui.options.var_forcefield.get()
         return "--forcefield {}".format(forcefield) if forcefield else None
+
+
+    @property
+    def pele(self):
+        pele = self.gui.software.var_pele_path.get()
+        return pele if pele else None
         
 STYLES = {
     tk.Entry: {
@@ -197,6 +209,7 @@ class PelePlopDialog(tk.Frame):
         self.system = System(self.main_frame)
         self.ligand = Ligand(self.main_frame)
         self.options = Options(self.main_frame)
+        self.software = Software(self.main_frame)
 
         # Callbacks
         (self.system.var_input_path).trace_variable(
@@ -220,6 +233,10 @@ class System(tk.Frame):
 
     def __init__(self, parent, *args, **kwargs):
 
+        #Window properties
+        self.padx=32
+        self.pady=10
+
         # High level variables
         self.var_input_path = tk.StringVar()
 
@@ -236,9 +253,9 @@ class System(tk.Frame):
 
         # Grid widgets
         self.input_title.grid(row=0, column=1, pady=20)
-        self.input_button.grid(row=1, column=0, sticky="ew")
-        self.input_entry.grid(row=1, column=1, sticky="ew")
-        self.input_search.grid(row=1, column=2, sticky="ew")
+        self.input_button.grid(row=1, column=0, sticky="ew", padx=(self.padx,0), pady=(0,self.pady))
+        self.input_entry.grid(row=1, column=1, sticky="ew", pady=(0,self.pady   ))
+        self.input_search.grid(row=1, column=2, sticky="ew", padx=(0,self.padx), pady=(0,self.pady))
 
 
 class Ligand(tk.Frame):
@@ -251,6 +268,10 @@ class Ligand(tk.Frame):
     """
 
     def __init__(self, parent, *args, **kwargs):
+
+        #Window properties
+        self.padx=30
+        self.pady=12
 
         # High Level variables
         self.var_residues = tk.StringVar()
@@ -269,10 +290,10 @@ class Ligand(tk.Frame):
 
         # Grid Widgets
         self.ligand_title.grid(row=0, column=0, columnspan=2, pady=20)
-        self.residue_label.grid(row=1, column=0, sticky="ew")
-        self.residue_combobox.grid(row=1, column=1, sticky="ew")
-        self.chain_label.grid(row=2, column=0, sticky="ew", pady=10)
-        self.chain_combobox.grid(row=2, column=1, sticky="ew")
+        self.residue_label.grid(row=1, column=0, sticky="ew", padx=(self.padx,0))
+        self.residue_combobox.grid(row=1, column=1, sticky="ew", padx=(0,self.padx))
+        self.chain_label.grid(row=2, column=0, sticky="ew", padx=(self.padx,0), pady=self.pady)
+        self.chain_combobox.grid(row=2, column=1, sticky="ew", padx=(0,self.padx))
 
 
 class Options(tk.Frame):
@@ -282,6 +303,9 @@ class Options(tk.Frame):
     """
 
     def __init__(self, parent, *args, **kwargs):
+
+        #window properties
+        self.pady=12
 
         # High level Frame Variables
         self.var_charges = tk.StringVar()
@@ -301,7 +325,7 @@ class Options(tk.Frame):
         self.var_cpus.set(3)
 
         # Frame
-        options_frame = ttk.Frame(parent, borderwidth=2, relief="sunken")
+        options_frame = ttk.Frame(parent, borderwidth=2, relief="sunken", width=100)
         options_frame.grid(column=0, row=2, padx=5, pady=20)
 
         # Widgets
@@ -356,8 +380,43 @@ class Options(tk.Frame):
         self.forcefield_label.grid(row=9, column=0, sticky="ew")
         self.forcefield_combobox.grid(row=9, column=1, sticky="ew")
         self.charges_label.grid(row=10, column=0, sticky="ew")
-        self.charges_entry.grid(row=10, column=1, sticky="ew")
+        self.charges_entry.grid(row=10, column=1, sticky="ew", pady=self.pady)
         self.charges_search.grid(row=10, column=2, sticky="ew")
+
+
+class Software(tk.Frame):
+
+    """
+        Display PlopRotTemp Options
+    """
+
+    def __init__(self, parent, *args, **kwargs):
+
+        #Window properties
+        self.pady=12
+
+        # High level Frame Variables
+        self.var_pele_path = tk.StringVar()
+
+        # Frame
+        software_frame = ttk.Frame(parent, borderwidth=2, relief="sunken")
+        software_frame.grid(column=0, row=3, padx=5, pady=20)
+
+        #Widget
+        self.options_title = tk.Label(software_frame, text="Software Location", font=20)
+        self.pele_label = tk.Label(software_frame, text="Pele folder")
+        self.pele_entry = tk.Entry(software_frame, textvariable=self.var_pele_path)
+        self.pele_search = tk.Button(software_frame, text='...',
+            command=lambda: _browse_directory(self.var_pele_path))
+
+        #Grid Widgets
+        self.options_title.grid(row=11, column=0, columnspan=2, pady=20)
+        self.pele_label.grid(row=12,column=0, sticky="ew", padx=(13,0))
+        self.pele_entry.grid(row=12,column=1, sticky="ew",pady=self.pady)
+        self.pele_search.grid(row=12,column=2, sticky="ew", padx=(0,13))
+
+
+
 
 
 def _browse_file(var_store_path, *args, **kwargs):
@@ -376,6 +435,19 @@ def _browse_file(var_store_path, *args, **kwargs):
 
     if path:
         var_store_path.set(path)
+
+
+def _browse_directory(var):
+    """
+    Search for the path to save the output
+    Parameters
+    ----------
+    var= Interface entry widget where we wish insert the path file.
+    """
+
+    path_dir = filedialog.askdirectory(initialdir='~/')
+    if path_dir:
+        var.set(path_dir)
 
 
 def _enable(var, *entries):
