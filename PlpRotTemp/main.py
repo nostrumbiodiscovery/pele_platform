@@ -343,6 +343,8 @@ def main():
 
 if __name__ == "__main__":
     template, rotamers_file = main()
+    with open("input.txt", "w")as f:
+        f.write('\n'.join([template, rotamers_file]))
     print("########################################################################")
     print("\n{} template and {} rotamer library has been successfully created in {}\n").format(
         template,rotamers_file, os.getcwd())
