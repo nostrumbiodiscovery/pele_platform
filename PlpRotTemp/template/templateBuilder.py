@@ -30,9 +30,6 @@ DEFAULT_INT = 6
 DEFAULT_SPRING_K = '268.0'
 DEFAULT_EQ_DIST = '1.529'
 
-ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
-ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
-
 FILE_DIR_PATH = os.path.dirname(os.path.dirname(__file__))
 SIMILARITY_PATH = os.path.join(FILE_DIR_PATH, 'param/similarity.param') ##impact??
 PARAM_PATH = os.path.join(FILE_DIR_PATH, 'param/f14_sgbnp.param') ##impact??

@@ -137,6 +137,8 @@ DEFAULT_RADIUS_VDW = '0.5000'
 STANDARD_RESIDUE_NAME = 'LIG'
 ERROR_ATOMNAMES = "The keywords in the atom section form the .mae file don't match the regular " \
                   "expressions currently implemented. ATOM NAMES ARE COMPULSORY."
+ERROR_ATOMTYPES = 'ATOM NAMES REPITED IN MAE FILE'
+ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGAND'
 
 
 
