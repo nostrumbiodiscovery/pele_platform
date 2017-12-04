@@ -31,13 +31,23 @@ class Controller(object):
         self.set_mvc()
 
     def set_mvc(self):
-        self.model.run_button.config(command=self.run)
+        self.model.run_pele.config(command=self.run_pele)
+        self.model.run_plop.config(command=self.run_plop)
 
-    def run(self):
+    def run_pele(self):
         if not self.model.input:
             return
 
         self.command = self.model.create_command()
+
+        print(self.command.split())
+        self.subprocess = subprocess.Popen(self.command.split())
+
+    def run_plop(self):
+        if not self.model.input:
+            return
+
+        self.command = self.model.create_command("--plop")
 
         print(self.command.split())
         self.subprocess = subprocess.Popen(self.command.split())
@@ -48,7 +58,7 @@ class Model(object):
     def __init__(self, gui, *args, **kwargs):
         self.gui = gui
 
-    def create_command(self):
+    def create_command(self, plop=None):
         options = [self.ext_charges,
                    self.clean,
                    self.max_torsions,
@@ -58,6 +68,7 @@ class Model(object):
                    self.confile,
                    self.native,
                    self.forcefield,
+                   plop,
                    ]
 
         options = [option for option in options if option]
@@ -66,8 +77,12 @@ class Model(object):
         return self.command
 
     @property
-    def run_button(self):
-        return self.gui.run_but
+    def run_pele(self):
+        return self.gui.run_pele_but
+
+    @property
+    def run_plop(self):
+        return self.gui.run_plop_but
 
     @property
     def input(self):
@@ -158,7 +173,7 @@ class PelePlopDialog(tk.Frame):
     """
 
     help = "https://github.com/miniaoshi/PelePlop_gui"
-    VERSION = '0.0.1'
+    VERSION = '1.0.0'
     EXIT = "PelePlopExited"
 
     def __init__(self, parent, *args, **kwargs):
@@ -171,8 +186,12 @@ class PelePlopDialog(tk.Frame):
 
         # main_frames config
         parent.title("PelePlop")
-        self.run_but = tk.Button(self.main_frame, text="Run")
-        self.run_but.grid(column=0, row=4)
+
+        self.run_plop_but = tk.Button(self.main_frame, text="Run PlopRotTemp", width=15)
+        self.run_plop_but.grid(column=0, row=4, pady=20)
+
+        self.run_pele_but = tk.Button(self.main_frame, text="Run PelePlop", width=15)
+        self.run_pele_but.grid(column=0, row=5)
 
         # Top windows
         self.system = System(self.main_frame)
@@ -180,7 +199,6 @@ class PelePlopDialog(tk.Frame):
         self.options = Options(self.main_frame)
 
         # Callbacks
-        self.main_frame.bind('<Return>', (lambda e, b=self.run_but: b.invoke()))  # b is your button
         (self.system.var_input_path).trace_variable(
             "w", lambda x, y, z: _update_lig_resbox(
                 self.system.var_input_path.get(),
@@ -214,7 +232,7 @@ class System(tk.Frame):
         self.input_button = tk.Label(system_frame, text="Input File ")
         self.input_entry = tk.Entry(system_frame, textvariable=self.var_input_path)
         self.input_search = tk.Button(system_frame, text='...',
-                                      command=lambda: _browse_file(self.var_input_path, "*.pdb", "*.mae"))
+                                      command=lambda: _browse_file(self.var_input_path, "*.pdb"))
 
         # Grid widgets
         self.input_title.grid(row=0, column=1, pady=20)
@@ -304,7 +322,7 @@ class Options(tk.Frame):
         self.native_label = tk.Label(options_frame, text="Native File ")
         self.native_entry = tk.Entry(options_frame, textvariable=self.var_native_path)
         self.native_search = tk.Button(options_frame, text='...',
-                                       command=lambda: _browse_file(self.var_native_path, "*.pdb", "*.mae"))
+                                       command=lambda: _browse_file(self.var_native_path, "*.pdb"))
         self.conf_file_label=tk.Label(options_frame, text="Configuration File")
         self.conf_file_entry = tk.Entry(options_frame, textvariable=self.var_conf_file)
         self.conf_file_search = tk.Button(options_frame, text='...',
@@ -316,7 +334,7 @@ class Options(tk.Frame):
         self.charges_label=tk.Label(options_frame, text="Charges File")
         self.charges_entry = tk.Entry(options_frame, textvariable=self.var_charges)
         self.charges_search = tk.Button(options_frame, text='...',
-                                       command=lambda: _browse_file(self.var_charges, "*.txt", "*"))
+                                       command=lambda: _browse_file(self.var_charges, "*.txt"))
 
         # Grid Widgets
         self.options_title.grid(row=0, column=0, columnspan=2, pady=20)
@@ -342,7 +360,7 @@ class Options(tk.Frame):
         self.charges_search.grid(row=10, column=2, sticky="ew")
 
 
-def _browse_file(var_store_path, file_type1, file_type2):
+def _browse_file(var_store_path, *args, **kwargs):
     """
     Browse file path
     Parameters
@@ -351,9 +369,10 @@ def _browse_file(var_store_path, file_type1, file_type2):
     file_type1 = 1st type of file to open
     file_type2 = 2nd  type of file to open
     """
-
+    ftypes = [ (ftype, ftype) for ftype in args]
+    
     path = filedialog.askopenfilename(initialdir='~/', filetypes=(
-        (file_type1, file_type1), (file_type2, file_type2)))
+        ftypes))
 
     if path:
         var_store_path.set(path)

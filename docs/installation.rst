@@ -1,0 +1,21 @@
+============
+Installation
+============
+
+Dependencies
+-------------
+
+	- The schrondinger academic version
+
+	- Rdkit
+
+Env variables
+--------------
+
+export PELE='/path/to/PELE/folder/'
+
+Python Path
+------------
+
+set export PATH=/path/to/PELE-1.5_mpi/:$PATH'
+set export PATH=/path/to/mpirun/:$PATH'
