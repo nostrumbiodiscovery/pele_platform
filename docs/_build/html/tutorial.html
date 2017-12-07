@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Support &#8212; PelePlop 1.0.1 documentation</title>
+    <title>Tutorial &#8212; PelePlop 1.0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -26,7 +26,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="TemplateBuilder" href="template_builder.html" /> 
+    <link rel="next" title="Code" href="code.html" />
+    <link rel="prev" title="Getting Started" href="cookbook.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,7 +40,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="template_builder.html" title="TemplateBuilder"
+          <a href="code.html" title="Code"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cookbook.html" title="Getting Started"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li> 
       </ul>
@@ -50,10 +54,36 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="support">
-<h1>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h1>
-<p>The easiest way to get help with the project is by e-mail (<a class="reference external" href="mailto:daniel&#46;soler&#37;&#52;&#48;nostrumbiodiscovery&#46;com">daniel<span>&#46;</span>soler<span>&#64;</span>nostrumbiodiscovery<span>&#46;</span>com</a>).</p>
-<p>The other good way is to open an issue on <a class="reference external" href="https://github.com/miniaoshi/PelePlop">Github</a>.</p>
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="setting-env-variables">
+<h2>1. Setting env variables<a class="headerlink" href="#setting-env-variables" title="Permalink to this headline">¶</a></h2>
+<p>1.1 export set PATH=/path/to/openmpi/binaries/:$PATH</p>
+<blockquote>
+<div>e.g. set export PATH=/usr/lib64/Openmpi/bin:$Path</div></blockquote>
+<p>1.2 export set PATH=/path/to/PELE/binaries:$PATH</p>
+<blockquote>
+<div>e.g. set export PATH=/usr/lib64/Openmpi/bin:$PATH</div></blockquote>
+<p>1.3 export  Schrodinger</p>
+<blockquote>
+<div>e.g export SCHRODINGER=&#8217;/opt/schrodinger2016/&#8217;</div></blockquote>
+</div>
+<div class="section" id="using-gui">
+<h2>2. Using GUI<a class="headerlink" href="#using-gui" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="2">
+<li>python gui.py</li>
+</ol>
+</div>
+<div class="section" id="using-command-line">
+<h2>2. Using Command Line<a class="headerlink" href="#using-command-line" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="2">
+<li><dl class="first docutils">
+<dt>bash [-options] pdbfile ligand_residue ligand_chain</dt>
+<dd>$ bash PelePlop.sh &#8211;mtor 4 &#8211;clean Samples/jak2_999_complex_processed.pdb LIG Z</dd>
+</dl>
+</li>
+</ol>
+</div>
 </div>
 
 
@@ -62,13 +92,26 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Tutorial</a><ul>
+<li><a class="reference internal" href="#setting-env-variables">1. Setting env variables</a></li>
+<li><a class="reference internal" href="#using-gui">2. Using GUI</a></li>
+<li><a class="reference internal" href="#using-command-line">2. Using Command Line</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
-  <p class="topless"><a href="template_builder.html"
-                        title="previous chapter">TemplateBuilder</a></p>
+  <p class="topless"><a href="cookbook.html"
+                        title="previous chapter">Getting Started</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="code.html"
+                        title="next chapter">Code</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/support.rst.txt"
+      <li><a href="_sources/tutorial.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -96,7 +139,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="template_builder.html" title="TemplateBuilder"
+          <a href="code.html" title="Code"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cookbook.html" title="Getting Started"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li> 
       </ul>

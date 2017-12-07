@@ -10,12 +10,14 @@ Dependencies
 
 Academic Schrondinger (https://www.schrodinger.com/freemaestro)
 
-Rdkit (http://www.rdkit.org/)
+PELE software (commercial - contact - https://pele.bsc.es/)
 
 Env variables
 --------------
 
 export PELE='/path/to/PELE/folder/'
+
+export SCHRODINGER='/path/to/schrodinger/folder/'
 
 Python Path
 ------------

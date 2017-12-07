@@ -24,6 +24,6 @@ Another alternative approach is to launch the program from the command line as:
 
 		$ bash PelePlop.sh [options] pdbfile ligand_residue ligand_chain
 
-		e.g. $ bash PelePlop.sh Samples/jak2_999_complex_processed.pdb LIG Z
+		e.g. $ bash PelePlop.sh --mtor 4 --clean Samples/jak2_999_complex_processed.pdb LIG Z
 
 

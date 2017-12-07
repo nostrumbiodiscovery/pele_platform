@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>PlopRotTemp &mdash; PelePlop 1.0.1 documentation</title>
+    <title>PlopRotTemp &#8212; PelePlop 1.0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,14 +17,15 @@
         VERSION:     '1.0.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="PelePlop 1.0.1 documentation" href="index.html" />
-    <link rel="up" title="Code" href="code.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="TemplateBuilder" href="template_builder.html" />
     <link rel="prev" title="Code" href="code.html" /> 
   </head>
@@ -44,8 +45,8 @@
         <li class="right" >
           <a href="code.html" title="Code"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="code.html" accesskey="U">Code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="code.html" accesskey="U">Code</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -122,19 +123,15 @@ the number of sidechains.</p>
 </ul>
 </dd>
 <dt><strong>Ouput:</strong></dt>
-<dd><ul class="first">
-<li><p class="first">core_atom: atom which will be the center of the core</p>
-</li>
-<li><p class="first">assign: List of atoms with numbers assigned in order to cluster them</p>
-</li>
+<dd><ul class="first simple">
+<li>core_atom: atom which will be the center of the core</li>
+<li>assign: List of atoms with numbers assigned in order to cluster them</li>
 <li><dl class="first docutils">
 <dt>rank:  list of numbers for each atom which will show </dt>
-<dd><p class="first last">which atoms are closer to the atom we are making the rank from.</p>
-</dd>
+<dd>which atoms are closer to the atom we are making the rank from.</dd>
 </dl>
 </li>
-<li><p class="first">group: List that classifies the atoms in groups depending on connectivity</p>
-</li>
+<li>group: List that classifies the atoms in groups depending on connectivity</li>
 </ul>
 <p class="last">to later on make different multiple libraries.</p>
 </dd>
@@ -314,11 +311,10 @@ As small is the number of the rank as close to the atom we are making the rank f
 </ul>
 </dd>
 <dt><strong>Output:</strong></dt>
-<dd><ul class="first last">
+<dd><ul class="first last simple">
 <li><dl class="first docutils">
 <dt>Rank: list of numbers for each grup of atoms or cluster in assign</dt>
-<dd><p class="first last">which will show which atoms are closer to the group.</p>
-</dd>
+<dd>which will show which atoms are closer to the group.</dd>
 </dl>
 </li>
 </ul>
@@ -340,19 +336,15 @@ As small is the number of the rank as close to the atom we are making the rank f
 <p><strong>Description:</strong> Assign rank to each group</p>
 <dl class="docutils">
 <dt><strong>Input:</strong></dt>
-<dd><ul class="first last">
-<li><p class="first">atom_num: Atom respectively which we are producing the rank from</p>
-</li>
-<li><p class="first">assign: Group of molecules grouped on clusters dependiong on the ligand connectivity</p>
-</li>
+<dd><ul class="first last simple">
+<li>atom_num: Atom respectively which we are producing the rank from</li>
+<li>assign: Group of molecules grouped on clusters dependiong on the ligand connectivity</li>
 <li><dl class="first docutils">
 <dt>rank: list of numbers for each atom which will show </dt>
-<dd><p class="first last">which atoms are closer to the atom we are making the rank from.</p>
-</dd>
+<dd>which atoms are closer to the atom we are making the rank from.</dd>
 </dl>
 </li>
-<li><p class="first">rank_num: &#8212;-</p>
-</li>
+<li>rank_num: &#8212;-</li>
 </ul>
 </dd>
 <dt><strong>Output</strong>:</dt>
@@ -639,15 +631,15 @@ from the rotamer&#8217;s library file</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/ploprotemp.txt"
+      <li><a href="_sources/ploprotemp.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -672,13 +664,13 @@ from the rotamer&#8217;s library file</p>
         <li class="right" >
           <a href="code.html" title="Code"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="code.html" >Code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="code.html" >Code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2017, Daniel Soler Viladrich.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.1.
+        &#169; Copyright 2017, Daniel Soler Viladrich.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
     </div>
   </body>
 </html>

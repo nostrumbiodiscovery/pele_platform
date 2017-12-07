@@ -13,6 +13,7 @@ PelePlop Documentation
 
    installation
    cookbook
+   tutorial
    code
    support
 
