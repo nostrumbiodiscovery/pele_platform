@@ -25,18 +25,6 @@
 PlopRotTemp=$(dirname $0)
 
 
-####################### Check env variables are set ######################
-
-if [[ $(which mpirun 2>&1 > /dev/null) != "" ]]; then
-	echo "set mpirun $PATH with: $: set export PATH=/path/to/binary/:$PATH"
-	exit 1
-elif [[ $(which PELE-1.5_mpi 2>&1 > /dev/null) != "" ]]; then
-	echo "set PELE-1.5 binary folder to $PATH with: $: set export PATH=/path/to/binary/:$PATH"
-	exit 1
-elif [[ $PELE = "" ]]; then
-	echo "PELE PATH NOT EXPORTED. e.g. export PELE='/path/to/PELE/' "
-	exit 1
-fi
 
 ###################### Parse arguments from input ######################
 
@@ -136,6 +124,22 @@ else
 	rm input.txt
 
 	if [[ "$PLOP" == "" ]]; then
+
+
+		####################### Check PELE env variables  ######################
+
+		if [[ $(which mpirun 2>&1 > /dev/null) != "" ]]; then
+			echo "set mpirun $PATH with: $: set export PATH=/path/to/binary/:$PATH"
+			exit 1
+		elif [[ $(which PELE-1.5_mpi 2>&1 > /dev/null) != "" ]]; then
+			echo "set PELE-1.5 binary folder to $PATH with: $: set export PATH=/path/to/binary/:$PATH"
+			exit 1
+		elif [[ $PELE = "" ]]; then
+			echo "PELE PATH NOT EXPORTED. e.g. export PELE='/path/to/PELE/' "
+			exit 1
+		fi
+
+		###########################################################################
 
 		#Prepare PELE env
 	    Pele_directory="${pdbname}_Pele"
