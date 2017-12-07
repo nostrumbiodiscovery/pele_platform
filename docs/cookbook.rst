@@ -8,14 +8,15 @@ Getting Started
 Launch PelePlop gui
 --------------------
 
-The most simple way to use PelePlop is throught the GUI. Simply run:
+The most simple way to use PelePlop is through the graphical user interface. Simply run:
 
 
         $ python gui.py
 
+Once inside:
 
 - Run PlopRotTemp to only parametrize the ligand
-- Run PelePlop to run PlopRotTemp and Pele.
+- Run PelePlop to run PlopRotTemp and Pele together.
 
 Run from the command line
 -------------------------
@@ -24,6 +25,6 @@ Another alternative approach is to launch the program from the command line as:
 
 		$ bash PelePlop.sh [options] pdbfile ligand_residue ligand_chain
 
-		e.g. $ bash PelePlop.sh --mtor 4 --clean Samples/jak2_999_complex_processed.pdb LIG Z
+		e.g. $ bash PelePlop.sh - -mtor 4  - -clean Samples/jak2_999_complex_processed.pdb LIG Z
 
 
