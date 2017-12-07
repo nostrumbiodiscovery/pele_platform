@@ -8,23 +8,12 @@ Basic useful feature list:
  * Simplicity from the initial command to the final analysis.
 
 
-<br />
-<br />
-
-
-Command to launch PelePlop:
-
-usage: bash PelePlop.sh [-options]  pdb_file  ligand_residue ligand_chain
+## Documentation:
 
 ```bash
-$: bash PelePlop.sh --mtor 4 --clean R345.pdb AIN L
+$ git clone https://github.com/miniaoshi/PelePlop.git
+$: cd PelePlop/docs
+$: make html
+$: firefox _build/html/index.html &
 ```
 
-
-<br />
-<br />
-
-
-### Library needs:
-
- * Schrodinger academic software
