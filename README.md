@@ -14,18 +14,15 @@ Basic useful feature list:
 
 Command to launch PelePlop:
 
-usage: bash PelePlop.sh  pdb_file ligand_chain
+usage: bash PelePlop.sh [-options]  pdb_file  ligand_residue ligand_chain
 
 ```bash
-$: bash PelePlop.sh R345.pdb L
+$: bash PelePlop.sh --mtor 4 --clean R345.pdb AIN L
 ```
 
 
 <br />
 <br />
-
-
-
 
 
 ### Library needs:
