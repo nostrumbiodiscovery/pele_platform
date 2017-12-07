@@ -1,7 +1,0 @@
-{
-    "LicenseID" : "20170120A",
-    "Licensee" : "Nostrum Biodiscovery",
-    "ExpirationDate": "2017-12-31",
-    "LicensedSoftware": "PELE",
-    "IssueDate": "2017-01-20"
-}
