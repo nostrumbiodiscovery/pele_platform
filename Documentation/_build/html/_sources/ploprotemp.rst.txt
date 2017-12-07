@@ -1,6 +1,0 @@
-===========
-PlopRotTemp
-===========
-
-.. automodule:: PlopRotTemp
-    :members:
