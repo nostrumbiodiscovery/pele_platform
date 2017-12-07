@@ -12,7 +12,7 @@ Basic useful feature list:
 
 ```bash
 $ git clone https://github.com/miniaoshi/PelePlop.git
-$: cd PelePlop/docs
+$: cd PelePlop/documentation
 $: make html
 $: firefox _build/html/index.html &
 ```
