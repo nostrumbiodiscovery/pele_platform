@@ -21,6 +21,8 @@ import subprocess
 
 # #Fill GUI
 
+font=15
+
 
 
 class Controller(object):
@@ -245,7 +247,7 @@ class System(tk.Frame):
         system_frame.grid(column=0, row=0, padx=5, pady=30)
 
         # Fill in system friend
-        self.input_title = tk.Label(system_frame, text="System", font=("Helvetica",20))
+        self.input_title = tk.Label(system_frame, text="System", font=("Helvetica",font))
         self.input_button = tk.Label(system_frame, text="Input File ")
         self.input_entry = tk.Entry(system_frame, textvariable=self.var_input_path)
         self.input_search = tk.Button(system_frame, text='...',
@@ -282,7 +284,7 @@ class Ligand(tk.Frame):
         ligand_frame.grid(column=0, row=1, padx=5, pady=20)
 
         # Widgets
-        self.ligand_title = tk.Label(ligand_frame, text="Ligand", font=("Helvetica",20))
+        self.ligand_title = tk.Label(ligand_frame, text="Ligand", font=("Helvetica",font))
         self.residue_label = tk.Label(ligand_frame, text="Ligand Residue")
         self.residue_combobox = ttk.Combobox(ligand_frame, textvariable=self.var_residues)
         self.chain_label = tk.Label(ligand_frame, text="Chain Residue")
@@ -329,7 +331,7 @@ class Options(tk.Frame):
         options_frame.grid(column=0, row=2, padx=5, pady=20)
 
         # Widgets
-        self.options_title = tk.Label(options_frame, text="Advanced Options", font=("Helvetica",20))
+        self.options_title = tk.Label(options_frame, text="Advanced Options", font=("Helvetica",font))
         self.clean_checkbut = tk.Checkbutton(
             options_frame, text='Clean Residual Files', variable=self.var_clean,
             onvalue='--clean', offvalue='')
@@ -403,7 +405,7 @@ class Software(tk.Frame):
         software_frame.grid(column=0, row=3, padx=5, pady=(20, 0))
 
         #Widget
-        self.options_title = tk.Label(software_frame, text="Software Location", font=("Helvetica",20))
+        self.options_title = tk.Label(software_frame, text="Software Location", font=("Helvetica",font))
         self.pele_label = tk.Label(software_frame, text="Pele folder")
         self.pele_entry = tk.Entry(software_frame, textvariable=self.var_pele_path)
         self.pele_search = tk.Button(software_frame, text='...',
@@ -519,7 +521,7 @@ def _update_lig_chainbox(pdbfile, residue_selected, combobox_chain):
 
 if __name__ == '__main__':
     root = tk.Tk()
-    root.option_add("*Font", "helvetica 12")
+    root.option_add("*Font", "helvetica 10")
     gui = PelePlopDialog(root)
     model = Model(gui)
     Controller(gui, model)
