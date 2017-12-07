@@ -1,0 +1,29 @@
+===============
+Getting Started
+===============
+
+.. toctree::
+   :maxdepth: 2
+
+Launch PelePlop gui
+--------------------
+
+The most simple way to use PelePlop is throught the GUI. Simply run:
+
+
+        $ python gui.py
+
+
+- Run PlopRotTemp to only parametrize the ligand
+- Run PelePlop to run PlopRotTemp and Pele.
+
+Run from the command line
+-------------------------
+
+Another alternative approach is to launch the program from the command line as:
+
+		$ bash PelePlop.sh [options] pdbfile ligand_residue ligand_chain
+
+		e.g. $ bash PelePlop.sh Samples/jak2_999_complex_processed.pdb LIG Z
+
+
