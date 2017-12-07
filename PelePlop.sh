@@ -117,8 +117,8 @@ else
 
 	#PlopRotTemp over ligan
 	$SCHRODINGER/utilities/structconvert -ipdb ${ligand_pdb[0]} -omae $ligand_mae
-	echo "$SCHRODINGER/utilities/python "${PlopRotTemp}/PlpRotTemp/main.py" $PlopRotTemp_opt $ligand_mae"
-	$SCHRODINGER/utilities/python "${PlopRotTemp}/PlpRotTemp/main.py" $PlopRotTemp_opt $ligand_mae
+	echo "$SCHRODINGER/utilities/python "${PlopRotTemp}/PlopRotTemp/main.py" $PlopRotTemp_opt $ligand_mae"
+	$SCHRODINGER/utilities/python "${PlopRotTemp}/PlopRotTemp/main.py" $PlopRotTemp_opt $ligand_mae
 	rm ${ligand_pdb[0]}
 	mapfile -t output_files < input.txt
 	rm input.txt
