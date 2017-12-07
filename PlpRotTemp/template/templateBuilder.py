@@ -40,13 +40,13 @@ OPLS_VERSION = '14'
 class TemplateBuilder:
 
 	"""
-	base builder class for ligand template creation
+	:Description: base builder class for ligand template creation
 
-	Attributes:
-		-input_file: input .mae file
-		-output_file : output template file
+	:Attributes:
+		- input_file: input .mae file
+		- output_file : output template file
 
-	Author: Daniel Soler
+	:Author: Daniel Soler
 	"""
 
 	def __init__(self, input_file, output_file):
@@ -57,13 +57,16 @@ class TemplateBuilder:
 
 	def build_template(self, charges_from_file=None):
 	  """
-	    Build ligand template from mae file
+	    :Description: Build ligand template from mae file
 
-	    Output:
-	      output: ligand template
-	      resname: residue name
+	    :Input:
+	      - charges_from_file: charge to import the charges from
 
-	    Explanation:
+	    :Output:
+	      - output: ligand template
+	      - resname: residue name
+
+	    :Explanation:
 
 	    Preparation of param:
 	      1- Use the flld_server schrodinger command line server
@@ -80,7 +83,7 @@ class TemplateBuilder:
 	         sections of the template
 	      5- Write everything to a RESIDUENAME.hetgrp file
 
-	     Author: Daniel Soler
+	    :Author: Daniel Soler
 	  """
 
 	  #Create ligand params with ffld_sever from schrodinger
@@ -234,15 +237,15 @@ class TemplateBuilder:
 
 	def create_zmatrix(self, parents):
 	  """
-	    Retrieve the internal coordinates (zmatrix)
+	    :Description: Retrieve the internal coordinates (zmatrix)
 	    from the complex cooridnates & topology:
 
-	    Input:
-	      str1: structure.structure class object
-	      parents: atom's parent list
+	    :Input:
+	      - str1: structure.structure class object
+	      - parents: atom's parent list
 
-	    Ouput:
-	      zmatrix: structure internal coord
+	    :Ouput:
+	      - zmatrix: structure internal coord
 	  """
 	  str1 = structure.StructureReader(self.input_file).next()
 	  order = [i for i in range(len(parents))]
@@ -253,12 +256,12 @@ class TemplateBuilder:
 
 	def fix_atomtype(self, target_atom, neighbour, new_atom_type, bonds_dist, atom_types):
 	    """
-	        For each target_atom check whether or not
+	        :Description: For each target_atom check whether or not
 	        there is an atom bonded to the atom neighbour
 	        bonded at a certain bonds_dist, and then,
 	        if there is, set the target_atom to new_atom_type
 
-	        Arguments:
+	        :Input:
 	        	- target_atom :Atom targeted to reassigned its atom type
 	        	- neighbour: Atom bonded to the target_atom at a certain bonds_dist
 	        	- new_atom_type: Atom type to assign to target_atom if the neighbour atom
@@ -266,21 +269,20 @@ class TemplateBuilder:
 	        	-bonds_dist: number of bonds from the target_atom to look for the nighbour_atom
 	        	- atom_types: Atom types of the system
 
-	        Returns: 
-	        	- new_atom_types: New set of atom type where we may have changed the
-	        	                  target_atom atom type if the condition we looked for
-	        	                  where accomplished.
+	        :Output: 
+	        	- new_atom_types: New set of atom type where we may have changed the 
+	        	target_atom atom type if the condition we looked for where accomplished.
 
-	        Example: 
+	        :Example: 
 
-	         	-  new_atom_types = fix_atomtype('O', 'N', 'OCN1', 2, atom_types)
+	         	- new_atom_types = fix_atomtype('O', 'N', 'OCN1', 2, atom_types)
 				   
-				   Look for an carbonyl oxigen atom (O) bonded to a nitrogen (N) at 
-				   a bond distance of (2). If its found the oxigen atom will be reassign
-				   with the new atom type (OCN1). And finally the new atom types will be
-				   returned.
+			   Look for an carbonyl oxigen atom (O) bonded to a nitrogen (N) at 
+			   a bond distance of (2). If its found the oxigen atom will be reassign
+			   with the new atom type (OCN1). And finally the new atom types will be
+			   returned.
 
-			Author: Daniel Soler
+			:Author: Daniel Soler
 
 	    """
 	    new_atom_types = atom_types[:]
@@ -309,11 +311,11 @@ class TemplateBuilder:
 
 	def fix_aromatics(self, atom_types):
 	    """
-	      Look for the atom types ['CA', 'C5A', 'C5B', 'CN', 'CB']
+	      :Description: Look for the atom types ['CA', 'C5A', 'C5B', 'CN', 'CB']
 	      and convert them to 'CA2' if they have 3 bonds, in other words,
 	      if they are sp2 carbons.
 
-	      Author: Daniel Soler
+	      :Author: Daniel Soler
 	    """
 	    new_atom_types = atom_types[:]
 	    st1 = structure.StructureReader(self.input_file).next()
@@ -339,7 +341,7 @@ class TemplateBuilder:
 	@classmethod
 	def SGB_paramaters(cls, atom_types, tried = []):
 	  """
-		Parse the param/f14_sgbnp.param file
+		:Description: Parse the param/f14_sgbnp.param file
 		to obtain all the SGB Nonbonded parameters
 		to build the template file.
 
@@ -349,12 +351,12 @@ class TemplateBuilder:
 		atom_types to tried [] for efficiency and keep looking for
 		other similar atom types.
 
-		Arguments: 
-			-atom_types: atom_types of the system
+		:Arguments: 
+			- atom_types: atom_types of the system
 			- tried: atom_types that we try to obtain its parameters
 					 but they are not contained in the f14_sgbnp.param file.
 
-		Returns:
+		:Returns:
 			- radius: Atoms SGB radius
 			- vdw_r: Atoms Van der Waals
 			- gammas: Atoms gamma solvatation factor
@@ -374,7 +376,7 @@ class TemplateBuilder:
 			3- We return the similar SGB parameters or a default
 			   if they were not found
 
-		Author: Daniel Soler
+		:Author: Daniel Soler
 	  """
 
 	  radius = []
@@ -421,18 +423,18 @@ class TemplateBuilder:
 	@classmethod
 	def find_similar_atomtype_params(cls, atom_type, tried):
 	  """
-	   	If some atom_type is not found in the SGB_paramaters() func
+	   	:Description: If some atom_type is not found in the SGB_paramaters() func
 	   	the param/similarity.param is parsed to look for the next most
 	   	similar atom type.
 		If that is not found as well, we append the tried
 		atom_types to tried [] for efficiency and keep looking for
 		other similar atom types.
 
-		Arguments: 
+		:Input: 
 			-atom_type: atom_type of the atom not found.
 			- tried: similar atom_types that we try to obtain its parameters
 					 but they are not contained in the f14_sgbnp.param file.
-		Returns:
+		:Output:
 			- new_params: [
 						  similar_atom_type,
 			              SGB_radius,
@@ -474,15 +476,15 @@ class TemplateBuilder:
 	@staticmethod  
 	def retrieve_atom_names(OPLS_CONVERSION_FILE):
 	  """
-	    parse the param.data and retrieve
+	    :Description: parse the param.data and retrieve
 	    the atom names of the molecule
 
-	    Arguments: OPLS_CONVERSION_FILE: ffldserver output file
+	    :Input: OPLS_CONVERSION_FILE: ffldserver output file
 	    		   cointaining the system parameters
 
-	   	Returns: atom_names: Atom_names of the systems
+	   	:Output: atom_names: Atom_names of the systems
 
-	    Author: Daniel Soler
+	    :Author: Daniel Soler
 	  """
 	  atom_names = []
 	  lines = preproces_file_lines(OPLS_CONVERSION_FILE)
@@ -530,7 +532,7 @@ class TemplateBuilder:
 	@staticmethod
 	def parse_param(param_file, atom_names):
 	  """
-	    Parse the OPLS conversion param file
+	    :Description: Parse the OPLS conversion param file
 	    and get the atomtypes.
 
 	    Go through the param.dat through several stages
@@ -555,6 +557,9 @@ class TemplateBuilder:
 	       (["Stretch", "Bending", "proper Torsion", "improper Torsion"])
 	       2. Then parse the section obtaining the values from the columns indicated in columns to take
 	       3.when all sections are parsed return all values
+
+	    :Author: Daniel Soler
+
 	  """
 
 	  atom_types = []
@@ -637,7 +642,7 @@ class TemplateBuilder:
 	@staticmethod
 	def descompose_dihedrals(phis):
 		"""
-		For each dihedral line as:
+		:Description: For each dihedral line as:
 		atom1 atom2 atom3 atom4   V1    V2   V3    V4
 		  1     2     3      4   0.00 1.000 5.000 3.000
 

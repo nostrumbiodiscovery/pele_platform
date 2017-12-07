@@ -146,15 +146,18 @@ ERROR_ROTAMER_LIB = 'ERROR: LACK OF NON BONDED OR BOND PRAMETERS IN ROTAMER LIGA
 
 def find_tors_in_log(filename):
     """
-    Return the atom with torsions from a log file
+    |
+    :Description: Return the atom with torsions from a log file
 
-    Input:
-      filename: logfile
+    :Input:
+      - filename: logfile
 
-    Output:
-      torsions: list of atoms with torsions 
-      example--> [[1,2],[4,6],[9.10]]
-      (Atom 1 and 2, 4 and 6, 9 and 10 are respectevly from the same functional group)
+    :Output:
+      - torsions: list of atoms with torsions 
+    
+    e.g.--> [[1,2],[4,6],[9.10]]
+    
+    (Atom 1 and 2, 4 and 6, 9 and 10 are respectevly from the same functional group)
     """
     f = open(filename, 'r')
     out_tors = []
@@ -260,7 +263,7 @@ def remove_tors(tors1, tors2):
 ####################################
 def add_tors(tors1, tors2):
     """
-    adds tors2 to tors 1
+    **Description:** adds tors2 to tors 1
     """
     out_tors = tors1
     for torsion_i in tors2:
@@ -313,27 +316,31 @@ def mass_of_element(element):
 def find_names_in_mae(filename, undersc=False):
 
     """
-    :param: the file name to parse.
-    :rtype: list with atom names
-    This function parses a .mae file to extract the atom names from the bond section.
+    |
+    :Description: This function parses a .mae file to extract the atom names from the bond section.
     This section follows the pattern:
       bond[(0-9)*]{
       keywords
       :::
       values
       }
-      The first line specifies the section followed by the number of atoms enclosed with [].
-      The following lines specify which value is stored in each column in the values section,
-      there's one keyword (column name) by line.
-      The values section has as many lines as atoms in the molecule, the number specified next
-      to "bonds". Each line should have as many fields (separated by blank spaces) as keywords
-      were present, and these fields should be in the same order as the keywords.
+    The first line specifies the section followed by the number of atoms enclosed with [].
+    The following lines specify which value is stored in each column in the values section,
+    there's one keyword (column name) by line.
+    The values section has as many lines as atoms in the molecule, the number specified next
+    to "bonds". Each line should have as many fields (separated by blank spaces) as keywords
+    were present, and these fields should be in the same order as the keywords.
     the function ignores all the lines but the ones in the bond section.
     It reads the keywords in the bond section into a list and then looks in the list for the
     fields containing the atom_pdb_name and the pdb_residue_name, using the regular expressions:
     '.*pdb_*atom_*name' and '.*pdb_*res[idue_]*name.*', respectively, it's case insensitive, and
     they should be easy to modify
     J.M.I.F
+
+    :input: the file name to parse.
+
+    :output: list with atom names
+  
     """
     ace = None
     nma = None
@@ -507,15 +514,18 @@ def find_mass_names(names):
 ####################################
 def find_bonds_in_mae(filename):
     """
-    Search for bonds in MAE
+    |
+    **Description:** Search for bonds in MAE
 
-    Input:
-      filename: MAEfile
+    **Input:**
+      - filename: MAEfile
 
-    Output:
-      Bonds: Bonds in MAEfile
-      ex--> [[0, 1], [0, 5], [0, 6]]
-            (Bond between atom 0 and 1, etc...)
+    **Output:**
+      - Bonds: Bonds in MAEfile
+    
+    e.g. --> [[0, 1], [0, 5], [0, 6]]
+    
+    (Bond between atom 0 and 1, etc...)
     """
     f = open(filename, "r")
     out_bond = []
@@ -553,14 +563,18 @@ def find_bonds_in_mae(filename):
 ####################################
 def find_connected(atom, bonds, assign):
     """
-    Find and assign the same "group (number)" to all the atoms connected to atom
+    |
+    **Description:** Find and assign the same "group (number)" to all the atoms connected to atom
 
-    Input:
+    **Input:**
       atom: atom to look connections from
       bonds: list of all bonds
       assign: list of atoms with numbers assigned in order to cluster them
-      ex: -->[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]
-      Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...
+
+    
+    e.g. -->[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]
+    
+    Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...
 
     """
     for i in range(len(bonds)):
@@ -575,17 +589,20 @@ def find_connected(atom, bonds, assign):
 ####################################
 def assign_ligand_groups(tors, all_bonds, n_atoms):
     """
-    Cluster atoms in groups depending whether or not they are connected
+    |
+    **Description:** Cluster atoms in groups depending whether or not they are connected
 
-    Input:
-      tors: all torsions of the ligand
-      all_bonds: all ligand bonds
-      n_atoms: number of atoms of the ligand
+    **Input:**
+      - tors: all torsions of the ligand
+      - all_bonds: all ligand bonds
+      - n_atoms: number of atoms of the ligand
 
-    Output:
-      assign= List of Cluster of atoms depending whether or not they are connected
-      ex: -->[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]
-      Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...
+    **Output:**
+      - assign= List of Cluster of atoms depending whether or not they are connected
+    
+    e.g. -->[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]
+    
+    Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...
     """
 
     bonds = remove_tors(all_bonds, tors)  # fixed bonds
@@ -648,12 +665,18 @@ def convert_name_to_num(mynames, names):
 ####################################
 def assign_rank_group(atom_num, assign, rank, rank_num):
     """
-    Input:
-      atom_num: Atom respectively which we are producing the rank from
-      assign: Group of molecules grouped on clusters dependiong on the ligand connectivity
-      rank: list of numbers for each atom which will show 
+    |
+    **Description:** Assign rank to each group
+
+    **Input:**
+      - atom_num: Atom respectively which we are producing the rank from
+      - assign: Group of molecules grouped on clusters dependiong on the ligand connectivity
+      - rank: list of numbers for each atom which will show 
             which atoms are closer to the atom we are making the rank from.
-      rank_number: 0
+      - rank_num: ----
+
+    **Output**:
+      - rank: rank of all atoms
     """
 
     # Add assignments for all atom in the same group as atom_num
@@ -690,23 +713,30 @@ def max_value(array):
 ####################################
 def assign_rank(bonds, assign, atom_num):
     """
-    Define a list of ranks for each grup of atoms or cluster in assign
+    |
+    **Description:** Define a list of ranks for each grup of atoms or cluster in assign
     which will show which atoms are closer to the group.
     As small is the number of the rank as close to the atom we are making the rank from it will be.
 
-    Ex:
-    Rank From number 1:
-      Start: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
-      Middle: [0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1] (look for the closest atoms)
-      Final: [0, 0, 0, 1, 2, 3, 4, 3, 2, 3, 4, 5, 5, 3, 4, 5, 4, 6, 6, 6] As small is the number as close to atom number 2 is positioned on the ligand.
-    
-    Input:
-      bonds: Ligand connectivity
-      assign: List of atoms with numbers assigned in order to cluster them
-      atom_num: number of the atom to calculate the rank respect to.
-    Output:
-      Rank: list of numbers for each grup of atoms or cluster in assign
+
+    **Input:**
+      - bonds: Ligand connectivity
+      - assign: List of atoms with numbers assigned in order to cluster them
+      - atom_num: number of the atom to calculate the rank respect to.
+    **Output:**
+      - Rank: list of numbers for each grup of atoms or cluster in assign
             which will show which atoms are closer to the group.
+
+    E.g.
+
+    Rank From number 1:
+
+    Start: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+      
+    Middle: [0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1] (look for the closest atoms)
+      
+    Final: [0, 0, 0, 1, 2, 3, 4, 3, 2, 3, 4, 5, 5, 3, 4, 5, 4, 6, 6, 6] As small is the number as close to atom number 2 is positioned on the ligand.
+    
     """
 
     rank = []
@@ -733,15 +763,16 @@ def assign_rank(bonds, assign, atom_num):
 ####################################
 def assign_group(bonds, rank):
     """
-      With the core atom and its rank defined
+      |
+      **Description:** With the core atom and its rank defined
       grouped the atoms in cluster or rotatable chains.
 
-      Input:
-        bonds: all bonds
-        rank: core atom rank
+      **Input:**
+        - bonds: all bonds
+        - rank: core atom rank
 
-      Output:
-        group: groups of rotatable chains
+      **Output:**
+        - group: groups of rotatable chains
     """
     group = []
     cur_group = -1
@@ -785,26 +816,29 @@ def assign_group(bonds, rank):
 ####################################
 def order_atoms(bonds, tors, back_tors, assign, rank, group):
     """
-      Order the core atomss by connectivity. (distance)
-      Update rank & group information with them.
+    |
+    :Description: Order the core atomss by connectivity. (distance)
+    Update rank & group information with them.
 
-      Example:
-      order: [1,3,5,7,8,9] (starting from the core atom we ordem they by connectivity.)
-      parent: [-1,1,3,1,3,5,7] (We keep track of the parents so we know the atom 3 
-                                is connected to the 1, the 5 to 1, the 7 to the 3rd.)
+    :Input: 
+      - bonds: Connectivity
+      - tors: Atom with torsions
+      - back_tors: Backbone_torsions
+      - assign: list of numbers representing proximity.
+      - rank: list of numbers representing atom clustering depending on connecitvity
 
-    Input: 
-      bonds: Connectivity
-      tors: Atom with torsions
-      back_tors: Backbone_torsions
-      assign: list of numbers representing proximity.
-      rank: list of numbers representing atom clustering depending on connecitvity
+    :Output:
+      - ordering: Order of atoms starting from the core by connectivity.
+      - out_parents: atom parent of the one at the same position inside the ordering list
+      - out_rank: rank of the ordering atoms
+      - out_group: Group of the ordering atoms
 
-    Output:
-      ordering: Order of atoms starting from the core by connectivity.
-      out_parents: atom parent of the one at the same position inside the ordering list
-      out_rank: rank of the ordering atoms
-      out_group: Group of the ordering atoms
+    E.g.
+
+    order: [1,3,5,7,8,9] (starting from the core atom we ordem they by connectivity.)
+    
+    parent: [-1,1,3,1,3,5,7] (We keep track of the parents so we know the atom 3 
+    is connected to the 1, the 5 to 1, the 7 to the 3rd.)
 
 
     """
@@ -878,24 +912,28 @@ def order_atoms(bonds, tors, back_tors, assign, rank, group):
 ####################################
 def get_start_atom(tors, rank):
     """
-    Get the number of atoms inside the core
+    |
+    :Description: Get the number of atoms inside the core
     and the start atom of the core,
     which is the first atom of the cluster with no torsions.
 
-    Input:
-      tors: all atom with torsions
-      rank: Rank: list of numbers for each grup of atoms or cluster in assign
-            which will show which atoms are closer to the group.
+    :Input:
+      - tors: all atom with torsions
+      - rank: Rank: list of numbers for each 
+      grup of atoms or cluster in assign which will show which atoms are closer to the group.
 
-    Output:
-      start_atom: First atom of the cluster (group of atoms bonded together) 
-                  that doesn not have torsions.
-      num_core: number of atoms inside the cluster.
+    :Output:
+      - start_atom: First atom of the cluster 
+      (group of atoms bonded together) that doesn not have torsions.
+      
+      - num_core: number of atoms inside the cluster.
 
-    Ex--> tors: [[1, 3], [8, 9]]
-          rank: [0, 0, 0, 2, 3]
-          The core has 3 atoms and the strating atom
-          is the number 2 because it does not have torsions.
+    e.g. --> tors: [[1, 3], [8, 9]]
+    
+    rank: [0, 0, 0, 2, 3]
+    
+    The core has 3 atoms and the strating atom
+    is the number 2 because it does not have torsions.
     """
     num_core = 0
     start_atom = -100
@@ -930,24 +968,26 @@ def EliminateBackboneTors(in_tors, in_tors_ring_num, in_zmat_atoms, rank):
 ####################################
 def FindCore_GetCoreAtom(tors, bonds, natoms, user_core_atom, back_tors, use_mult_lib,debug=False):
     """
-    Search for the core atom wich maximes the torsions
-    and it's in the center of the ligand??
+    |
+    **Description**: 
+    Search for the core atom wich maximes
+    the number of sidechains.
 
-    Input:
-      tors: Atoms with torsions
-      bonds: connectivity
-      natoms: number of atoms of the ligand
-      user_core_atom: predefined user core atom
-      back_tors: user backbone atoms with torsion
-      use_mult_lib: User decision to use or not multiples libraries.
+    **Input:**
+      - tors: Atoms with torsions
+      - bonds: connectivity
+      - natoms: number of atoms of the ligand
+      - user_core_atom: predefined user core atom
+      - back_tors: user backbone atoms with torsion
+      - use_mult_lib: User decision to use or not multiples libraries.
 
-    Ouput:
-      core_atom: atom which will be the center of the core
-      assign: List of atoms with numbers assigned in order to cluster them
-      rank:  list of numbers for each atom which will show 
-            which atoms are closer to the atom we are making the rank from.
-      group: List that classifies the atoms in groups depending on connectivity
-              to later on make different multiple libraries.
+    **Ouput:**
+      - core_atom: atom which will be the center of the core
+      - assign: List of atoms with numbers assigned in order to cluster them
+      - rank:  list of numbers for each atom which will show 
+               which atoms are closer to the atom we are making the rank from.
+      - group: List that classifies the atoms in groups depending on connectivity
+      to later on make different multiple libraries.
     """
 
     # Split into sections not seperated by rotatable bonds
@@ -1018,19 +1058,20 @@ def FindCore_GetFurthestAtom(tors, bonds, natoms, user_core_atom, back_tors, use
 ####################################
 def assign_bonds_to_groups(tors, group):
     """
-    Make a group for each torsion bond
+    |
+    **Description:** Make a group for each torsion bond
     and keep track of how many members
 
     Finally it returns the biggest group.
 
-    Input:
-      Tors: atoms with torsions
-      Group: Atoms grouped by proximity
+    **Input:**
+      - Tors: atoms with torsions
+      - Group: Atoms grouped by proximity
 
-    Output:
-      output: lit of group_numbers
-      big_grup: biggest group
-      nbig_group: members on the biggest group
+    **Output:**
+      - output: lit of group_numbers
+      - big_grup: biggest group
+      - nbig_group: members on the biggest group
     """
     output = []
     big_group = -1
@@ -1429,38 +1470,45 @@ def ReorderTorsionsAA(tors, ordering):  # by Chris McClendon, Jacobson Group
 def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
              use_mult_lib, user_core_atom, user_tors, back_tors, max_tors, R_group_root_atom_name):
     """
-
-    Find a core group of atoms and cluster the others.
+    |
+    **Description:** Find a core group of atoms and cluster the others.
     
-    Input:
-      mae_file: ligand topology
-      user_fixed_bonds: self-explanatory
-      logfile: file with the connectivity and torsions
-      use_rings: option to search for ring torsions
-      use_mult_lib: use mult library for each cluster
-      user_core_atom: create a cluster starting on these atom
-      user_tors: torsions specified by the user
-      back_torsions: backbone torsions specified By the user
-      max_tors: maximum number of torsions in each group
-      R_group_root_atom_name: ???
+    **Input:**
+      - mae_file: ligand topology
+      - user_fixed_bonds: self-explanatory
+      - logfile: file with the connectivity and torsions
+      - use_rings: option to search for ring torsions
+      - use_mult_lib: use mult library for each cluster
+      - user_core_atom: create a cluster starting on these atom
+      - user_tors: torsions specified by the user
+      - back_torsions: backbone torsions specified By the user
+      - max_tors: maximum number of torsions in each group
+      - R_group_root_atom_name: 
 
-    Output:
-      old_num: Order of atoms by connectivuity starting from the centreal atom of the core
-      parent: atom connected with the one on the same position inside the old_num list
-      rank: atoms in old_num ranked by proximity
-      tors: Atoms with torsions (backbone excluded)
-      use_rings: option to search for ring torsions
-      back_tors: Atoms of the backbone with torsions
-      tors_ring_num: Atoms coming from rings with torsions. (0 for none)
+    **Output:**
+      - old_num: Order of atoms by connectivuity starting
+        from the centreal atom of the core
+      - parent: atom connected with the one on the same position inside
+        the old_num list
+      - rank: atoms in old_num ranked by proximity
+      - tors: Atoms with torsions (backbone excluded)
+      - use_rings: option to search for ring torsions
+      - back_tors: Atoms of the backbone with torsions
+      - tors_ring_num: Atoms coming from rings with torsions. (0 for none)
 
-    example--> 
+    **Example:**
+
     old_num: [4, 3, 8, 5, 13, 6, 14, 7, 15, 16, 1, 0, 2, 9, 10, 11, 12, 17, 18, 19]
+    
     parent: [-1, 0, 1, 0, 0, 3, 3, 5, 5, 7, 1, 10, 10, 2, 13, 14, 14, 16, 16, 16]
+    
     rank: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 2, 3, 3, 4, 4, 4]
 
-    - Atom 4 is close to 3 close to 8 to 5, etc...
-    - Atom 3 is connected to 0, 8 to 1, 5 to 0, 13 to 0, etc...
-    - Atom 4,3,8,5,13,6,14,7,15 are from the rank 0 definides as core. All other ranks are sidechains.
+    Atom 4 is close to 3 close to 8 to 5, etc...
+    
+    Atom 3 is connected to 0, 8 to 1, 5 to 0, 13 to 0, etc...
+    
+    Atom 4,3,8,5,13,6,14,7,15 are rank 0, defined as core. All other ranks are sidechains.
 
     """
     if (user_tors == []):
@@ -1643,13 +1691,14 @@ def find_NH2_torsions(struct, mae_file):
 ####################################
 def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_group_root_atom_name='None'):
     """
-    Create the ain template by parsing the ain.hetgrp_ffgen
+    |
+    **Description:** Create the ain template by parsing the ain.hetgrp_ffgen
     calculating the zmatrix, ordering the connectivity,
     the bonded, non bonded & Improper rotations.
 
-    Output: 
-        names: atom names from the template file
-        mae file: template file of the ligand & input for PELE.
+    **Output:** 
+        - names: atom names from the template file
+        - mae file: template file of the ligand & input for PELE.
     """
 
     [old_parent, zmat, temp_names] = read_zmat_template(in_file)
@@ -2158,20 +2207,22 @@ def read_zmat_template(filename):
 #################################################
 def MatchTempMaeAtoms(mae_file, template_file):
     """
+      |
+      **Description:** Say which number of atom of th mae_file corresponds to the one on the template_file
 
-      Say which number of atom of th mae_file corresponds to the one on the template_file
+      **Input:**
+        - mae_file: topology of the ligand
+        - template_file: topology of the ligand template
 
-      Input:
-        mae_file: topology of the ligand
-        template_file: topology of the ligand template
-
-      Output:
-        mae2temp: Which number of atom of the template file correspond to the same atom on the mae file
+      **Output:**
+        - mae2temp: Which number of atom of the template file correspond to the same atom on the mae file
         Example-->[0, 1, 2, 3, 4, 6, 8, 10, 12, 13, 14, 15, 16, 5, 7, 9, 11, 17, 18, 19]
+
         Explanation--> Atom number 5 from the mae correspond the 6th of the template.
 
-        temp2mae: Which number of atom of the mae file correspond to the same atom on the template file
+        - temp2mae: Which number of atom of the mae file correspond to the same atom on the template file
         Example--> [0, 1, 2, 3, 4, 13, 5, 14, 6, 15, 7, 16, 8, 9, 10, 11, 12, 17, 18, 19]
+
         Explanation--> Atom number 5 of the template file corresponds to atom number 13 of the mae file.
 
     """
@@ -2210,17 +2261,18 @@ def MatchTempMaeAtoms(mae_file, template_file):
 #################################################
 def FindTorsAtom(tors, tors_ring_num, parent):
     '''
-        Find atoms with torsion and append them on the zmatrix
+          | 
+        **Description:** Find atoms with torsion and append them on the zmatrix
 
-        Input:
-            tors: atoms with torsion
-            tors_ring_num: ring atoms with torsion
-            parent: atom connectivity of ordering
+        **Input:**
+            - tors: atoms with torsion
+            - tors_ring_num: ring atoms with torsion
+            - parent: atom connectivity of ordering
 
-        Output:
-            out_tors: torsions
-            out_tors_ring_num: ring atom torsions
-            zmat_atoms: atoms to rotate
+        **Output:**
+            - out_tors: torsions
+            - out_tors_ring_num: ring atom torsions
+            - zmat_atoms: atoms to rotate
     '''
 
     zmat_atoms = []
