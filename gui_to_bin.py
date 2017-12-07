@@ -245,7 +245,7 @@ class System(tk.Frame):
         system_frame.grid(column=0, row=0, padx=5, pady=30)
 
         # Fill in system friend
-        self.input_title = tk.Label(system_frame, text="System", font=20)
+        self.input_title = tk.Label(system_frame, text="System", font=("Helvetica",20))
         self.input_button = tk.Label(system_frame, text="Input File ")
         self.input_entry = tk.Entry(system_frame, textvariable=self.var_input_path)
         self.input_search = tk.Button(system_frame, text='...',
@@ -282,7 +282,7 @@ class Ligand(tk.Frame):
         ligand_frame.grid(column=0, row=1, padx=5, pady=20)
 
         # Widgets
-        self.ligand_title = tk.Label(ligand_frame, text="Ligand", font=20)
+        self.ligand_title = tk.Label(ligand_frame, text="Ligand", font=("Helvetica",20))
         self.residue_label = tk.Label(ligand_frame, text="Ligand Residue")
         self.residue_combobox = ttk.Combobox(ligand_frame, textvariable=self.var_residues)
         self.chain_label = tk.Label(ligand_frame, text="Chain Residue")
@@ -329,8 +329,8 @@ class Options(tk.Frame):
         options_frame.grid(column=0, row=2, padx=5, pady=20)
 
         # Widgets
-        self.options_title = tk.Label(options_frame, text="Advanced Options", font=20)
-        self.clean_checkbut = ttk.Checkbutton(
+        self.options_title = tk.Label(options_frame, text="Advanced Options", font=("Helvetica",20))
+        self.clean_checkbut = tk.Checkbutton(
             options_frame, text='Clean Residual Files', variable=self.var_clean,
             onvalue='--clean', offvalue='')
         self.max_torsions_label = tk.Label(options_frame, text="Max Torsions")
@@ -338,7 +338,7 @@ class Options(tk.Frame):
         self.max_groups_label = tk.Label(options_frame, text="Max Sidechains")
         self.max_groups_entry = tk.Entry(options_frame, textvariable=self.var_sidechains)
         self.core_atom_entry = tk.Entry(options_frame, textvariable=self.var_core_atom_value, state='disabled')
-        self.core_checkbut = ttk.Checkbutton(
+        self.core_checkbut = tk.Checkbutton(
             options_frame, text='Set Core Atom', variable=self.var_core_atom_bool,
             command=lambda: _enable(self.var_core_atom_bool, self.core_atom_entry))
         self.cpu_label = tk.Label(options_frame, text="CPUs")
@@ -361,7 +361,7 @@ class Options(tk.Frame):
                                        command=lambda: _browse_file(self.var_charges, "*.txt"))
 
         # Grid Widgets
-        self.options_title.grid(row=0, column=0, columnspan=2, pady=20)
+        self.options_title.grid(row=0, column=0, columnspan=3, pady=20)
         self.clean_checkbut.grid(row=2, column=0, columnspan=2)
         self.max_torsions_label.grid(row=3, column=0, sticky="ew")
         self.core_checkbut.grid(row=5, column=0)
@@ -400,17 +400,17 @@ class Software(tk.Frame):
 
         # Frame
         software_frame = ttk.Frame(parent, borderwidth=2, relief="sunken")
-        software_frame.grid(column=0, row=3, padx=5, pady=20)
+        software_frame.grid(column=0, row=3, padx=5, pady=(20, 0))
 
         #Widget
-        self.options_title = tk.Label(software_frame, text="Software Location", font=20)
+        self.options_title = tk.Label(software_frame, text="Software Location", font=("Helvetica",20))
         self.pele_label = tk.Label(software_frame, text="Pele folder")
         self.pele_entry = tk.Entry(software_frame, textvariable=self.var_pele_path)
         self.pele_search = tk.Button(software_frame, text='...',
             command=lambda: _browse_directory(self.var_pele_path))
 
         #Grid Widgets
-        self.options_title.grid(row=11, column=0, columnspan=2, pady=20)
+        self.options_title.grid(row=11, column=0, columnspan=3, pady=20)
         self.pele_label.grid(row=12,column=0, sticky="ew", padx=(13,0))
         self.pele_entry.grid(row=12,column=1, sticky="ew",pady=self.pady)
         self.pele_search.grid(row=12,column=2, sticky="ew", padx=(0,13))
@@ -519,6 +519,7 @@ def _update_lig_chainbox(pdbfile, residue_selected, combobox_chain):
 
 if __name__ == '__main__':
     root = tk.Tk()
+    root.option_add("*Font", "helvetica 12")
     gui = PelePlopDialog(root)
     model = Model(gui)
     Controller(gui, model)
