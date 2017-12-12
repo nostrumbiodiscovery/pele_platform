@@ -1,5 +1,5 @@
 {
-    "licenseDirectoryPath": "/home/usr",
+    "licenseDirectoryPath": "/home/dani/repos/PELErev12535/licenses",
     "simulationLogPath": "results/Logfile_",
     "Initialization": {
         "ForceField": "$FORCEFIELD",
