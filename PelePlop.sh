@@ -131,11 +131,17 @@ else
 		if [[ $(which mpirun 2>&1 > /dev/null) != "" ]]; then
 			echo "set mpirun $PATH with: $: set export PATH=/path/to/binary/:$PATH"
 			exit 1
-		elif [[ $(which PELE-1.5_mpi 2>&1 > /dev/null) != "" ]]; then
-			echo "set PELE-1.5 binary folder to $PATH with: $: set export PATH=/path/to/binary/:$PATH"
-			exit 1
-		elif [[ $PELE = "" ]]; then
+		fi
+		
+		if [[ $PELE = "" ]]; then
 			echo "PELE PATH NOT EXPORTED. e.g. export PELE='/path/to/PELE/' "
+			exit 1
+		else
+			PATH=$PATH:$PELE/bin
+		fi
+
+		if [[ $(which PELE-1.5_mpi 2>&1 > /dev/null) != "" ]]; then
+			echo "set PELE-1.5 binary folder to $PATH with: $: set export PATH=/path/to/binary/:$PATH"
 			exit 1
 		fi
 
@@ -143,6 +149,7 @@ else
 
 		#Prepare PELE env
 	    Pele_directory="${pdbname}_Pele"
+
 	  
 	    if [ ! -d "$Pele_directory" ]; then
 			mkdir $Pele_directory
@@ -193,7 +200,7 @@ else
 
 
 		#prepare input
-		python Helpers/input_prep.py ${Pele_directory}/complex.pdb
+		python ${PlopRotTemp}/Helpers/input_prep.py ${Pele_directory}/complex.pdb
 
 		cd "$Pele_directory"
 
@@ -201,18 +208,8 @@ else
 		ln -sf $PELE/Documents/ Documents
 
 		#RunPele
-		if [ "$CONFILE" != "" ]; then
-			mpirun -np $CPUS PELE-1.5_mpi control_file
-		else
-			license="$(dirname "$PELE")"
-			if [[ -d  "${license}/licenses" ]]; then
-				mpirun -np $CPUS PELE-1.5_mpi control_file --license-directory "${license}/licenses"
-			elif [[ -d  "${PELE}/licenses" ]]; then
-				mpirun -np $CPUS PELE-1.5_mpi control_file --license-directory "${PELE}/licenses"
-			else
-				echo "ERROR: LICENSES NOT FOUND. They must be either on $PELE or $license"
-			fi
-		fi
+		mpirun -np $CPUS PELE-1.5_mpi control_file
+
 	fi
 fi
 
