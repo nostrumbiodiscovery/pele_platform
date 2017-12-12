@@ -14,6 +14,8 @@ import os
 import re
 import subprocess
 
+PELEPLOP = "PelePlop.sh"
+
 
 # class Navbar(tk.Frame):
 # #GUI Init
@@ -39,12 +41,6 @@ class Controller(object):
     def run_pele(self):
         if not self.model.input:
             return
-
-
-        if not self.model.pele:
-             raise ValueError("Executable not found. Specify Pele folder location")
-        else:
-            os.environ["PELE"] = self.model.pele
 
         self.command = self.model.create_command()
 
@@ -80,7 +76,8 @@ class Model(object):
                    ]
 
         options = [option for option in options if option]
-        self.command = 'bash PelePlop.sh {} {} {} {}'.format(
+        self.command = 'bash {} {} {} {} {}'.format(
+            os.path.join(os.path.dirname(__file__) , PELEPLOP),
             ' '.join(options), self.input, self.residue, self.chain)
         return self.command
 
@@ -150,10 +147,6 @@ class Model(object):
         return "--forcefield {}".format(forcefield) if forcefield else None
 
 
-    @property
-    def pele(self):
-        pele = self.gui.software.var_pele_path.get()
-        return pele if pele else None
         
 STYLES = {
     tk.Entry: {
@@ -202,7 +195,7 @@ class PelePlopDialog(tk.Frame):
         parent.title("PelePlop")
 
         self.run_plop_but = tk.Button(self.main_frame, text="Run PlopRotTemp", width=15)
-        self.run_plop_but.grid(column=0, row=4, pady=20)
+        self.run_plop_but.grid(column=0, row=4, pady=(10,4))
 
         self.run_pele_but = tk.Button(self.main_frame, text="Run PelePlop", width=15)
         self.run_pele_but.grid(column=0, row=5)
@@ -211,7 +204,6 @@ class PelePlopDialog(tk.Frame):
         self.system = System(self.main_frame)
         self.ligand = Ligand(self.main_frame)
         self.options = Options(self.main_frame)
-        self.software = Software(self.main_frame)
 
         # Callbacks
         (self.system.var_input_path).trace_variable(
@@ -244,7 +236,7 @@ class System(tk.Frame):
 
         # Create system frames
         system_frame = ttk.Frame(parent, borderwidth=2, relief="sunken")
-        system_frame.grid(column=0, row=0, padx=5, pady=30)
+        system_frame.grid(column=0, row=0, padx=5, pady=15)
 
         # Fill in system friend
         self.input_title = tk.Label(system_frame, text="System", font=("Helvetica",font))
@@ -281,7 +273,7 @@ class Ligand(tk.Frame):
 
         # Create Frame
         ligand_frame = ttk.Frame(parent, borderwidth=2, relief="sunken")
-        ligand_frame.grid(column=0, row=1, padx=5, pady=20)
+        ligand_frame.grid(column=0, row=1, padx=5, pady=15)
 
         # Widgets
         self.ligand_title = tk.Label(ligand_frame, text="Ligand", font=("Helvetica",font))
@@ -328,7 +320,7 @@ class Options(tk.Frame):
 
         # Frame
         options_frame = ttk.Frame(parent, borderwidth=2, relief="sunken", width=100)
-        options_frame.grid(column=0, row=2, padx=5, pady=20)
+        options_frame.grid(column=0, row=2, padx=5, pady=15)
 
         # Widgets
         self.options_title = tk.Label(options_frame, text="Advanced Options", font=("Helvetica",font))
@@ -364,7 +356,7 @@ class Options(tk.Frame):
 
         # Grid Widgets
         self.options_title.grid(row=0, column=0, columnspan=3, pady=20)
-        self.clean_checkbut.grid(row=2, column=0, columnspan=2)
+        self.clean_checkbut.grid(row=2, column=0, columnspan=3)
         self.max_torsions_label.grid(row=3, column=0, sticky="ew")
         self.core_checkbut.grid(row=5, column=0)
         self.max_torsions_entry.grid(row=3, column=1, sticky="ew")
@@ -385,37 +377,6 @@ class Options(tk.Frame):
         self.charges_entry.grid(row=10, column=1, sticky="ew", pady=self.pady)
         self.charges_search.grid(row=10, column=2, sticky="ew")
 
-
-class Software(tk.Frame):
-
-    """
-        Display PlopRotTemp Options
-    """
-
-    def __init__(self, parent, *args, **kwargs):
-
-        #Window properties
-        self.pady=12
-
-        # High level Frame Variables
-        self.var_pele_path = tk.StringVar()
-
-        # Frame
-        software_frame = ttk.Frame(parent, borderwidth=2, relief="sunken")
-        software_frame.grid(column=0, row=3, padx=5, pady=(20, 0))
-
-        #Widget
-        self.options_title = tk.Label(software_frame, text="Software Location", font=("Helvetica",font))
-        self.pele_label = tk.Label(software_frame, text="Pele folder")
-        self.pele_entry = tk.Entry(software_frame, textvariable=self.var_pele_path)
-        self.pele_search = tk.Button(software_frame, text='...',
-            command=lambda: _browse_directory(self.var_pele_path))
-
-        #Grid Widgets
-        self.options_title.grid(row=11, column=0, columnspan=3, pady=20)
-        self.pele_label.grid(row=12,column=0, sticky="ew", padx=(13,0))
-        self.pele_entry.grid(row=12,column=1, sticky="ew",pady=self.pady)
-        self.pele_search.grid(row=12,column=2, sticky="ew", padx=(0,13))
 
 
 
