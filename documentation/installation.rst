@@ -10,9 +10,9 @@ First of all, you will need to install several packages and set certain environm
 Dependencies
 -------------
 
-Academic Schrondinger (https://www.schrodinger.com/freemaestro)
+Academic Schrondinger (https://www.schrodinger.com/freemaestro, schrodinger2016-4 or higher).
 
-PELE (commercial software - contact - https://pele.bsc.es/)
+PELE (commercial software - contact - https://pele.bsc.es/).
 
 Env variables
 --------------
@@ -23,8 +23,6 @@ export SCHRODINGER='/path/to/schrodinger/folder/'
 
 Python Path
 ------------
-
-set export PATH=/path/to/PELE-1.5_mpi/:$PATH'
 
 set export PATH=/path/to/mpirun/:$PATH'
 
