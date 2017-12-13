@@ -1,15 +1,17 @@
 import pytest
 import sys
 import os
+import signal
+import glob
 import subprocess
 import time
 from test_config import PlopTest, _file_len, NAMES, TRESHOLD, REPOS_PATH, TEST_PATH, MAIN_PATH, OLD_MAIN_PATH, PYTHON_PATH
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
-import PlpRotTemp.PlopRotTemp as pl
+import PlopRotTemp.PlopRotTemp as pl
 import filecmp
 
 
-@pytest.mark.parametrize("input_file", [
+# @pytest.mark.parametrize("input_file", [
                           #  (MAE_FILE),
                           # ('MI4.mae'),
                           # ('1o3p_ligand.mae'),
@@ -103,7 +105,7 @@ import filecmp
                          
                           # ('801.mae'), ('802.mae'), ('803.mae'), ('804.mae'), ('805.mae'), ('806.mae'), ('807.mae'), ('808.mae'), ('809.mae'), ('810.mae'),
                           # ('811.mae'), ('812.mae'), ('813.mae'),
-                         ])
+                         # ])
 def test_PlopRotTempGroup(input_file):
     try:
         os.remove(os.path.join(REPOS_PATH,'LIG'))
@@ -235,7 +237,7 @@ def test_PlopRotTempGroup(input_file):
 
 #     assert filecmp.cmp(file1, file2)
 
-@pytest.mark.parametrize("input_file", [
+# @pytest.mark.parametrize("input_file", [
                            # ('2.mae'),
                           # ('MI4.mae'),
                   # 
@@ -330,7 +332,7 @@ def test_PlopRotTempGroup(input_file):
                          
                           # ('801.mae'), ('802.mae'), ('803.mae'), ('804.mae'), ('805.mae'), ('806.mae'), ('807.mae'), ('808.mae'), ('809.mae'), ('810.mae'),
                           # ('811.mae'), ('812.mae'), ('813.mae'),
-                         ])
+                         # ])
 def test_PlopRotTemp_NBNB_Param(input_file):
     
     test = PlopTest(input_file)
@@ -354,7 +356,7 @@ def test_PlopRotTemp_NBNB_Param(input_file):
     if differences:
       assert 0 
 
-@pytest.mark.parametrize("input_file", [
+# @pytest.mark.parametrize("input_file", [
                           # (MAE_FILE),
                           # ('MI4.mae'),
                           # ('2.mae'),
@@ -450,7 +452,7 @@ def test_PlopRotTemp_NBNB_Param(input_file):
                          
                           # ('801.mae'), ('802.mae'), ('803.mae'), ('804.mae'), ('805.mae'), ('806.mae'), ('807.mae'), ('808.mae'), ('809.mae'), ('810.mae'),
                           # ('811.mae'), ('812.mae'), ('813.mae'),
-                         ])       
+                         # ])       
 
 def test_PlopRotTemp_BND_Param(input_file):
     
@@ -469,7 +471,7 @@ def test_PlopRotTemp_BND_Param(input_file):
       assert 0
 
 
-@pytest.mark.parametrize("input_file", [
+# @pytest.mark.parametrize("input_file", [
                           #  (MAE_FILE),
                           # ('MI4.mae'),
 
@@ -564,7 +566,7 @@ def test_PlopRotTemp_BND_Param(input_file):
                          
                           # ('801.mae'), ('802.mae'), ('803.mae'), ('804.mae'), ('805.mae'), ('806.mae'), ('807.mae'), ('808.mae'), ('809.mae'), ('810.mae'),
                           # ('811.mae'), ('812.mae'), ('813.mae'),
-                         ])      
+                         # ])      
 def test_PlopRotTemp_TOR_Param(input_file):
 
 
@@ -583,7 +585,7 @@ def test_PlopRotTemp_TOR_Param(input_file):
     if differences:
       assert 0
 
-@pytest.mark.parametrize("input_file", [
+# @pytest.mark.parametrize("input_file", [
                           #  (MAE_FILE),
                           # ('MI4.mae'),
                         
@@ -679,7 +681,7 @@ def test_PlopRotTemp_TOR_Param(input_file):
                          
                          #  ('801.mae'), ('802.mae'), ('803.mae'), ('804.mae'), ('805.mae'), ('806.mae'), ('807.mae'), ('808.mae'), ('809.mae'), ('810.mae'),
                          #  ('811.mae'), ('812.mae'), ('813.mae'),
-                         ])   
+                         # ])   
 def test_PlopRotTemp_PHI_Param(input_file):
 
 
@@ -699,7 +701,7 @@ def test_PlopRotTemp_PHI_Param(input_file):
       print(new_bond)
       assert 0
 
-@pytest.mark.parametrize("input_file", [
+# @pytest.mark.parametrize("input_file", [
                           #  (MAE_FILE),
                           # ('MI4.mae'),
                           # ('692.mae'),
@@ -795,7 +797,7 @@ def test_PlopRotTemp_PHI_Param(input_file):
                          
                           # ('801.mae'), ('802.mae'), ('803.mae'), ('804.mae'), ('805.mae'), ('806.mae'), ('807.mae'), ('808.mae'), ('809.mae'), ('810.mae'),
                           # ('811.mae'), ('812.mae'), ('813.mae'),
-                         ])   
+                         # ])   
 def test_PlopRotTemp_IPHI_Param(input_file):
 
 
@@ -816,7 +818,7 @@ def test_PlopRotTemp_IPHI_Param(input_file):
         assert 0
 
 
-@pytest.mark.parametrize("input_file", [
+# @pytest.mark.parametrize("input_file", [
                           #  (MAE_FILE),
                           # ('MI4.mae'),                                          
 
@@ -910,7 +912,7 @@ def test_PlopRotTemp_IPHI_Param(input_file):
                          
                           # ('801.mae'), ('802.mae'), ('803.mae'), ('804.mae'), ('805.mae'), ('806.mae'), ('807.mae'), ('808.mae'), ('809.mae'), ('810.mae'),
                           # ('811.mae'), ('812.mae'), ('813.mae'),
-                         ])  
+                         # ])  
 def test_PlopRotTemp_parent_tree(input_file):
 
     test = PlopTest(input_file)
@@ -936,29 +938,31 @@ def test_PlopRotTemp_parent_tree(input_file):
       assert 0
 
         
-@pytest.mark.parametrize("input_file", [
-                          ("adrb1_999_complex_processed.pdb"),
-                          ("cdk2_999_complex_processed.pdb"),
-                          ("hiv_1_complex_processed.pdb"),
-                          ("hiv_999_complex_processed.pdb"),
-                          ("jak2_999_complex_processed.pdb"),
-                          ("R345.pdb"),
-                         ])  
+
+
+@pytest.mark.parametrize("input_file", glob.glob('./test/data/pdbbind/*.pdb'))
 def test_PlopRotTemp_pele_plop(input_file):
 
-  cmd = ["bash", "PelePlop.sh", "--mtor", "4", "Samples/{}".format(input_file), "Z"]
+  cmd = ["bash", "PelePlop.sh", "--mtor", "4", "--clean", "{}".format(input_file), "LIG", "Z"]
 
-  process = subprocess.Popen(cmd,shell=False,stdin=None,stdout=None,stderr=None,close_fds=True)
+  process = subprocess.Popen(cmd,shell=False,stdin=None,stdout=None,stderr=None,close_fds=True, preexec_fn=os.setsid)
 
-  time.sleep(300)
+  time.sleep(60)
 
   process.terminate()
 
-  results_file_pele = "{}_Pele/results/complex_report_1".format(input_file.split(".")[0])
-  
+  file, ext = os.path.basename(input_file).split(".")
+
+
+  results_file_pele = "{}_Pele/results/complex_report_1".format(file)
+
+
   lines = _file_len(results_file_pele) if os.path.isfile(results_file_pele) else 0
-  
-  if(lines<3): assert 0 #more than one step
+
+
+  if(lines<2): assert 0 #more than one step
+
+  os.killpg(os.getpgid(process.pid), signal.SIGTERM)
 
 
 
