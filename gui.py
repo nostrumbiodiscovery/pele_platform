@@ -14,7 +14,11 @@ import os
 import re
 import subprocess
 
-PELEPLOP = "PelePlop.sh"
+try:
+    SPYTHON = os.path.join(os.environ["SCHRODINGER"], "utilities/python")
+except KeyError:
+    raise KeyError("SCHRODINGER IS NOT EXPORTED. export SCHRODINGER='/path/to/schrodinger/")
+
 
 
 # class Navbar(tk.Frame):
@@ -29,6 +33,8 @@ font=15
 
 class Controller(object):
 
+
+
     def __init__(self, gui, model, *args, **kwargs):
         self.gui = gui
         self.model = model
@@ -36,25 +42,17 @@ class Controller(object):
 
     def set_mvc(self):
         self.model.run_pele.config(command=self.run_pele)
-        self.model.run_plop.config(command=self.run_plop)
+        self.model.run_plop.config(command=lambda:self.run_pele(True))
 
-    def run_pele(self):
+    def run_pele(self, only_plop=False):
+
         if not self.model.input:
             return
 
-        self.command = self.model.create_command()
+        self.command = self.model.create_command(only_plop)
 
-        print(self.command.split())
-        self.subprocess = subprocess.Popen(self.command.split())
+        subprocess.Popen(self.command.split())
 
-    def run_plop(self):
-        if not self.model.input:
-            return
-
-        self.command = self.model.create_command("--plop")
-
-        print(self.command.split())
-        self.subprocess = subprocess.Popen(self.command.split())
 
 
 class Model(object):
@@ -62,25 +60,41 @@ class Model(object):
     def __init__(self, gui, *args, **kwargs):
         self.gui = gui
 
-    def create_command(self, plop=None):
-        options = [self.ext_charges,
-                   self.clean,
-                   self.max_torsions,
-                   self.sidechains,
-                   self.atom_core,
-                   self.cpus,
-                   self.confile,
-                   self.native,
-                   self.forcefield,
-                   plop,
-                   ]
+    def create_command(self, only_plop=False):
 
-        options = [option for option in options if option]
-        self.command = 'bash {} {} {} {} {}'.format(
-            os.path.join(os.path.dirname(__file__) , PELEPLOP),
-            ' '.join(options), self.input, self.residue, self.chain)
-        return self.command
+        pele_options, plop_options = self.retrieve_options()
 
+        command = "{} main.py {} {} {} {} --plop {}".format(
+            SPYTHON, self.input, self.residue, self.chain,
+            " ".join(pele_options), " ".join(plop_options))
+
+        if only_plop:
+            command += " --only_plop"
+
+        return command
+
+
+
+    def retrieve_options(self):
+        """
+            Retrieve user options
+        """
+        plop_opt =  [self.max_torsions,     
+                     self.clean,
+                     self.sidechains,
+                     self.atom_core,
+                     self.ext_charges]
+
+        pele_opt = [self.forcefield,
+                        self.native,
+                        self.cpus,
+                        self.confile]
+
+
+        plop_options = [str(option) for option in plop_opt]
+        pele_options = [option for option in pele_opt if option]
+
+        return plop_options
     @property
     def run_pele(self):
         return self.gui.run_pele_but
@@ -104,32 +118,32 @@ class Model(object):
     @property
     def ext_charges(self):
         ext_charges = self.gui.options.var_charges.get()
-        return "--ext_charges {}".format(ext_charges) if ext_charges else None
+        return ext_charges if ext_charges else False
 
     @property
     def clean(self):
         clean = self.gui.options.var_clean.get()
-        return clean if clean else None
+        return clean if clean else False
 
     @property
     def max_torsions(self):
         max_tors = self.gui.options.var_mtor.get()
-        return "--mtor {}".format(max_tors) if max_tors else None
+        return max_tors if max_tors else 4
 
     @property
     def sidechains(self):
         sidechains = self.gui.options.var_sidechains.get()
-        return "--n {}".format(sidechains) if sidechains else None
+        return sidechains if sidechains else 1000
 
     @property
     def atom_core(self):
         atom_core = self.gui.options.var_core_atom_value.get()
-        return "--core {}".format(atom_core)if atom_core else None
+        return atom_core if atom_core else -1
 
     @property
     def cpus(self):
         cpus = self.gui.options.var_cpus.get()
-        return "--cpus {}".format(cpus) if cpus else None
+        return cpus if cpus else 3
 
     @property
     def confile(self):
@@ -144,7 +158,7 @@ class Model(object):
     @property
     def forcefield(self):
         forcefield = self.gui.options.var_forcefield.get()
-        return "--forcefield {}".format(forcefield) if forcefield else None
+        return "--forcefiled {}".format(forcefield) if forcefield else None
 
 
         
@@ -326,7 +340,7 @@ class Options(tk.Frame):
         self.options_title = tk.Label(options_frame, text="Advanced Options", font=("Helvetica",font))
         self.clean_checkbut = tk.Checkbutton(
             options_frame, text='Clean Residual Files', variable=self.var_clean,
-            onvalue='--clean', offvalue='')
+            onvalue='True', offvalue='')
         self.max_torsions_label = tk.Label(options_frame, text="Max Torsions")
         self.max_torsions_entry = tk.Entry(options_frame, textvariable=self.var_mtor)
         self.max_groups_label = tk.Label(options_frame, text="Max Sidechains")
@@ -376,6 +390,7 @@ class Options(tk.Frame):
         self.charges_label.grid(row=10, column=0, sticky="ew")
         self.charges_entry.grid(row=10, column=1, sticky="ew", pady=self.pady)
         self.charges_search.grid(row=10, column=2, sticky="ew")
+
 
 
 
