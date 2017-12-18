@@ -20,7 +20,7 @@ class TemplateBuilder(object):
 
         confile_template = Template(confile_data) 
 
-        confile_text = confile_template.substitute(self.keywords)
+        confile_text = confile_template.safe_substitute(self.keywords)
 
         with open(os.path.join(self.file), 'w') as outfile:
             outfile.write(confile_text)
