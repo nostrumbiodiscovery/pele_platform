@@ -6,7 +6,7 @@ from Helpers.prepare_ligand import prepare_ligand
 from Helpers.check_env_var import check_dependencies
 from Helpers.pele_env import set_pele_env
 from Adaptive.adaptive import AdaptiveBuilder
-from Adaptive.clusterAdaptiveRun import cluster
+#from Adaptive.clusterAdaptiveRun import cluster
 # from Adaptive.long_adaptive import long_adaptive
 
 
@@ -16,8 +16,19 @@ FORCEFIELD="OPLS2005"
 PELE_CONFILE = "pele.conf"
 CPUS = 3
 RETURN = True
-ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
 CLUSTERS = 40
+
+
+ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
+
+PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN"]
+
+NATIVE ='''
+                           "Native": {{\n\
+                                "path":\n\
+                                "{}" }},
+'''
+
 
 
 
@@ -25,7 +36,7 @@ CLUSTERS = 40
 
 def run(system, residue, chain, forcefield, confile, native, cpus, plop_opt, only_plop):
 
-    #Variables    
+    #Path Variables    
     pele_dir = os.path.abspath("{}_Pele".format(os.path.splitext(os.path.basename(system))[0]))
     adap_sh_input = os.path.join(pele_dir, "complex.pdb")
     adap_sh_output = os.path.join(pele_dir, "output_adaptive_short")
@@ -33,6 +44,10 @@ def run(system, residue, chain, forcefield, confile, native, cpus, plop_opt, onl
     cluster_output = os.path.join(pele_dir, "output_clustering")
     adap_l_input = "{}/initial_*"
     adap_l_output = os.path.join(pele_dir, "output_adaptive_long")
+
+    #Template Variable
+    print(native)
+    native = NATIVE.format(os.path.abspath(native), chain) if native else native
 
 
     #PlopRotTemp
@@ -44,11 +59,18 @@ def run(system, residue, chain, forcefield, confile, native, cpus, plop_opt, onl
         
         ad_sh_temp, pele_temp, ad_l_temp = set_pele_env(system, forcefield, template, rotamers_file, pele_dir)
 
-        AdaptiveBuilder(ad_sh_temp, RETURN, adap_output, adap_sh_input, cpus, pele_confile, residue)
-        
-        cluster(num_clusters=CLUSTERS, outoutput_folder=cluster_output, ligand_resname=ligand_residue, inputFolder=adap_output)
+        AdaptiveBuilder(pele_confile, PELE_KEYWORDS, native, forcefield, chain)
 
-        AdaptiveBuilder(ad_l_temp, RETURN, adap_l_output, adap_l_input, cpus, pele_confile, residue)
+        adaptive_short = AdaptiveBuilder(ad_sh_temp, ADAPTIVE_KEYWORDS, RETURN, adap_sh_output, adap_sh_input, cpus, pele_confile, residue)
+
+        adaptive_short.run()
+
+        
+        #cluster(num_clusters=CLUSTERS, outoutput_folder=cluster_output, ligand_resname=ligand_residue, inputFolder=adap_output)
+
+        adaptive_long = AdaptiveBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RETURN, adap_l_output, adap_l_input, cpus, pele_confile, residue)
+
+        adaptive_long.run()
 
 
 
