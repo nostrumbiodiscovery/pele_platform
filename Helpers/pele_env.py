@@ -30,7 +30,10 @@ class Pele_env_Builder(object):
 								 "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
 								 "DataLocal/LigandRotamerLibs",
 								 "results",
-								 "output"
+								 "output",
+								 "output_adaptive_short",
+								 "output_clustering",
+								 "output_adaptive_long",
 								 ]
 			
 			for folder in folders_to_create:
