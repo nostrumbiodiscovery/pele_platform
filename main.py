@@ -24,9 +24,25 @@ ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RE
 PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN"]
 
 NATIVE ='''
+                        {{
+
+                           "type": "rmsd",
+                           
                            "Native": {{\n\
-                                "path":\n\
-                                "{}" }},
+                            "path":\n\
+                            "{}" }},\n\
+
+                           "selection": {{ "chains": {{ "names": [ "$CHAIN" ] }} }},\n\
+
+                           "includeHydrogens": false,\n\
+
+                           "doSuperposition": false,\n\
+
+                           "tag" : "ligandRMSD"\n\
+
+                        }},\n\
+
+
 '''
 
 
@@ -46,7 +62,6 @@ def run(system, residue, chain, forcefield, confile, native, cpus, plop_opt, onl
     adap_l_output = os.path.join(pele_dir, "output_adaptive_long")
 
     #Template Variable
-    print(native)
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
 
 
