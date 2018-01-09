@@ -64,13 +64,12 @@ from template.templateBuilder import TemplateBuilder
 
 
 
-def PlopRotTemp(mae_file, max_tors, clean, nrot, user_core_atom, ext_charges):
+def PlopRotTemp(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = False):
 
     #Defaults
-    nrot = int(nrot)
-    max_tors = int(max_tors)
-    clean = True if clean == 'True' or clean is True else False
-    user_core_atom = int(user_core_atom)
+    nrot = nrot
+    max_tors = max_tors
+    user_core_atom = user_core_atom
     template_file = ""
     debug = 0  # 1 means don't run exteral commands (assumes output is already there)
     conf_file = 'none';
@@ -138,7 +137,7 @@ def PlopRotTemp(mae_file, max_tors, clean, nrot, user_core_atom, ext_charges):
     template_builder = TemplateBuilder(mae_file, template_output)
 
     [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
-        template_builder.build_template(ext_charges)
+        template_builder.build_template(mae_charges)
 
     print(output_template_file)
 
@@ -309,41 +308,19 @@ def parse_args():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("mae_file", type=str, help="ligand maestro mae file")
-    parser.add_argument("--core", type=int, help="Give one atom of the core section")
-    parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each \
-                                  group.  Will freeze bonds to extend the core if \
-                                  necessary.")
-    parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File")
-    parser.add_argument("--ext_charges", type=str, help="Use charges specified in the file.txt file")
+    parser.add_argument("--core", type=int, help="Give one atom of the core section", default=-1)
+    parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each group.  Will freeze bonds to extend the core if necessary.", default=4)
+    parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File", default=1000)
+    parser.add_argument("--mae_charges", help="Use charges in mae", action='store_true')
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
     args = parser.parse_args()
 
     
-    if(args.mae_file.endswith('.mae')):   mae_file = args.mae_file
-    
-    else:  raise Exception('A .mae file is needed')
-
-    if args.core: print('\nUsing user core information : {}\n'.format(args.core))
-      
-    if args.mtor: max_tors = args.mtor
-    
-    if max_tors>5: raise Exception('Maximum mTor number 5')
-    
-    if args.clean: clean = args.clean 
-
-    nrot = args.n if args.n else 1000 
-      
-    ext_charges = args.ext_charges if args.ext_charges else None
-
-    print('\nUsing {} as a maximum number of Rotamers\n'.format(max_tors))
-
-    print('\nUsing {} as a Maximum Number of Entries in Rotamer Files\n'.format(nrot))
-
-    return mae_file, max_tors, clean, nrot, ext_charges
+    return args.mae_file, args.mtor, args.n, args.core, args.mae_charges, args.clean
 
 if __name__ == "__main__":
-
-    template, rotamers_file = PlopRotTemp(parse_args())
+    mae_file, mtor, n, core, mae_charge, clean = parse_args() 
+    template, rotamers_file = PlopRotTemp(mae_file, mtor, n, core, mae_charge, clean)
     
 
     print("########################################################################")
