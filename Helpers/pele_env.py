@@ -17,7 +17,7 @@ class Pele_env_Builder(object):
 			self.template = template
 			self.rotamers = rotamers
 			self.pele_dir = pele_dir
-			self.templates = "PeleTemplates"
+			self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
 
 		def folder_levels(self):
 			"""
@@ -54,7 +54,7 @@ class Pele_env_Builder(object):
 
 			#actions
 			shutil.copy(self.input, os.path.join(self.pele_dir, "complex.pdb"))
-			with cd(os.path.abspath("PeleTemplates")):
+			with cd(os.path.abspath(self.templates)):
 					self.copy("adaptive_short.conf", self.pele_dir)
 					self.copy("pele.conf", self.pele_dir)
 					self.copy("adaptive_long.conf", self.pele_dir)
