@@ -13,7 +13,7 @@ def parseArgs():
     parser.add_argument("-atomId", nargs="*", default="", help="Atoms to use for the coordinates of the conformation, if not specified use the center of mass")
     parser.add_argument('-o', type=str, help="Output folder")
     args = parser.parse_args()
-    return args.nClusters,  args.o, args.ligand_resname, args.atomId
+    return args.nClusters, args.ligand_resname, args.atomId, args.o
 
 
 def writePDB(pmf_xyzg, title="clusters.pdb"):
@@ -63,9 +63,9 @@ def get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, cluster
     return centersInfo
 
 
-def cluster(num_clusters, output_folder, ligand_resname, inputFolder, atom_ids=None):
+def main(num_clusters, output_folder, ligand_resname, atom_ids):
     extractCoords.main(folder_name=".", lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids)
-    trajectoryFolder = inputFolder
+    trajectoryFolder = "allTrajs"
     trajectoryBasename = "traj*"
     stride = 1
     clusterCountsThreshold = 0
@@ -92,4 +92,5 @@ def cluster(num_clusters, output_folder, ligand_resname, inputFolder, atom_ids=N
     writeInitialStructures(centersInfo, outputFolder+"initial_%d.pdb")
 
 if __name__ == "__main__":
-    main(parseArgs())
+    n_clusters, lig_name, atom_id, output = parseArgs()
+    main(n_clusters, output, lig_name, atom_id)
