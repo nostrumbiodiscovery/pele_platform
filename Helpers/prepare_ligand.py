@@ -15,7 +15,7 @@ class Lig_Prep(object):
     def extract_ligand(self):
         """
         This function returns the ligand 
-        of the complex of interest
+        and receptor of the complex of interest
         based on residue name and chain
 
         :param self.system: nom del pdb
@@ -27,7 +27,8 @@ class Lig_Prep(object):
         # receptor_with_waters_text = ""
 
         ligand_text = ""
-
+	receptor_text = ""
+	
         pdb_name = os.path.splitext(os.path.basename(self.system))[0]
         ligand_filename = "{}_{}".format(pdb_name, "ligand.pdb")
         # ligand_filepath = os.path.join(pdb_name, "input/{}".format(ligand_filename))
@@ -37,14 +38,20 @@ class Lig_Prep(object):
                 if line.startswith("ATOM") or line.startswith("HETATM"):
                     if (line[21] == self.lig_chain and line[16:21].strip(' ') == self.lig_residue):
                         ligand_text += line
+		    else:
+			receptor_text += line
 
         if ligand_text == "":
             raise ValueError("Something went wrong when extracting the ligand. \
             Check residue and ligand chain parameters")
+	if receptor_text =="":
+            raise ValueError("Something went wrong when extracting the ligand. \
+            Check residue and ligand chain parameters")
+
 
         with open(ligand_filename, 'w') as ligand_file:
             ligand_file.write(ligand_text)
-        return ligand_filename
+        return receptor_text, ligand_filename
 
     def ligand_to_mae(self, ligand_file):
 
@@ -60,6 +67,6 @@ class Lig_Prep(object):
 
 def prepare_ligand(system, lig_residue, lig_chain):
     preparation = Lig_Prep(system, lig_residue, lig_chain)
-    ligand_pdb = preparation.extract_ligand()
+    receptor, ligand_pdb = preparation.extract_ligand()
     ligand_mae = preparation.ligand_to_mae(ligand_pdb)
-    return ligand_mae
+    return receptor, ligand_mae, ligand_pdb
