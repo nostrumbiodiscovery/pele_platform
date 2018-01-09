@@ -1625,7 +1625,7 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
 
 
 def get_torsions_from_mae(mae_file, residue_name):
-  pdb_file = residue_name+ "_tor.pdb"
+  pdb_file = residue_name + ".pdb"
   struct = structure.StructureReader(mae_file).next()
   struct.write(pdb_file)
   mol = Chem.MolFromPDBFile(pdb_file, False)

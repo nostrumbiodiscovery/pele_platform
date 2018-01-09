@@ -1,40 +1,57 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import re
 from tmp_helpers import Helper
 
 
 
 class ChargeHandler(Helper):
 
-	"""
-		Handler class in charge of retrieving
-		atom charges from file to TemplateBuilder
-	"""
+    """
+        Handler class in charge of retrieving
+        atom charges from file to TemplateBuilder
+    """
 
-	def __init__(self, file, num_atoms):
-		self.file = file
-		self.num_atoms = num_atoms
-		
+    def __init__(self, file):
+        self.file = file
+        
 
-	def get_charges(self):
-		"""
-			Parse self.file for charges 
-			and retrieve them if the 
-			nº of them is equal to the
-			number of atoms in the ligand.
-		"""
+    def get_charges(self):
+        """
+            Parse self.file for charges and retrieve.
+        """
+        charges = []
 
-		lines = self.preproces_file_lines(self.file)
+        with open(self.file, "r") as f:
+            while f:  # Find Bond Section
+                line = f.readline()
+                if line.startswith(" m_atom"):
+                    break
+            keywords = []
+            while f:  # Read keywords                
+                line = f.readline()
+                if (re.search(':::', line)):
+                    break
+                else:
+                    keyword = "index" if "index" in line else line.strip()
+                    keywords.append(keyword)
+            while f:  # get charges
+                line = f.readline()
+                if not re.search(':::', line):
+                    line = re.sub(' +',' ',line).strip('\n').strip().split()
+                    for i, keyword in enumerate(keywords):
+                        if keyword.startswith("r_m_charge"):            
+                            charge = line[i]
+                            charges.append(charge)
+                else:
+                    if charges: return charges
+                    else: raise ValueError("NO CHARGES IN MAE")
+            
 
-		charges = [line.replace(',','.') for line in lines if line]
-
-		if len(charges)!= self.num_atoms: 
-			raise ValueError("Not the same number of Charges and pdb Atoms")
-		else:
-			return charges
+                    
 
 
 
 
-	
+    

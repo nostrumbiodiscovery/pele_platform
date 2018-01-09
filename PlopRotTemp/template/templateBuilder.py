@@ -113,10 +113,9 @@ class TemplateBuilder:
 	  number_phis = len(phis)
 	  number_improper = len(impropers)
 
-	  #charges from file
-	  if charges_from_file: charges = ChargeHandler(charges_from_file, number_atoms).get_charges()
-
-	  #fix C=O amides
+	  #Charges from file
+	  if charges_from_file: charges = ChargeHandler(self.input_file).get_charges()
+      #fix C=O amides
 	  new_atom_types = self.fix_atomtype('O', 'N', 'OCN1', 2, atom_types)
 	  #fix H
 	  new_atom_types = self.fix_atomtype('H', 'N', 'HN', 1, new_atom_types)
@@ -249,7 +248,7 @@ class TemplateBuilder:
 	  """
 	  str1 = structure.StructureReader(self.input_file).next()
 	  order = [i for i in range(len(parents))]
-	  coordinates = [atom._getXYZ() for atom in str1.atom]
+	  coordinates = [atom.xyz for atom in str1.atom]
 	  zmat = xyz2int(coordinates, order, parents)
 	  return zmat
 
@@ -298,12 +297,12 @@ class TemplateBuilder:
 	    for i, atom in enumerate(atoms_to_study):
 	        current_atom = atom
 	        for j in range(bonds_dist):
-	            atoms_connected = current_atom._getBondedAtoms()
+	            atoms_connected = current_atom.bonded_atoms
 	            for atom_connected in atoms_connected:
 	                if(atom_connected == atom):
 	                    continue
 	                else:
-	                    if(atom_connected._getAtomElement()==neighbour):
+	                    if(atom_connected.element==neighbour):
 	                            atom_type_index = indexes[i]
 	                            new_atom_types[atom_type_index] = new_atom_type
 	                    current_atom = atom_connected
@@ -330,7 +329,7 @@ class TemplateBuilder:
 	            indexes.append(i)
 
 	    for i, atom in enumerate(atoms_to_study):
-	        atoms_connected = list(atom._getBondedAtoms())
+	        atoms_connected = list(atom.bonded_atoms)
 	        if(len(atoms_connected)==3):
 	          atom_type_index = indexes[i]
 	          new_atom_types[atom_type_index] = new_atom_type
