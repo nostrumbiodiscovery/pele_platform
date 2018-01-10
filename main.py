@@ -1,15 +1,30 @@
 import os
 import sys
+sys.path.insert(0, "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib/python2.7/site-packages/")
+import subprocess
 import argparse
-from PlopRotTemp.main import PlopRotTemp
-from Helpers.prepare_ligand import prepare_ligand
-from Helpers.check_env_var import check_dependencies
-from Helpers.pele_env import set_pele_env
-from Adaptive.adaptive import AdaptiveBuilder
-#from Adaptive.clusterAdaptiveRun import cluster
-from Helpers.center_of_mass import center_of_mass
-from Helpers.constraints import retrieve_constraints
-from SystemBuilder.system_prep import SystemBuilder
+"""
+NEW_LIB = '/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib/ssl:/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib:/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/mmshare-v4.0/lib/Linux-x86_64:/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib/python2.7/site-packages'
+try:
+  OLD_LIB = os.environ["LD_LIBRARY_PATH"]
+except KeyError:
+  os.environ["LD_LIBRARY_PATH"] = NEW_LIB
+else:
+  os.environ["LD_LIBRARY_PATH"] = ':'.join([NEW_LIB, OLD_LIB])
+"""
+print(os.environ["LD_LIBRARY_PATH"])
+
+
+import PlopRotTemp.main as plop
+import Helpers.prepare_ligand as pl
+import Helpers.check_env_var as env
+import Helpers.pele_env as pele
+import Adaptive.adaptive as ad
+import Adaptive.clusterAdaptiveRun as cl
+import Helpers.center_of_mass as cm 
+import Helpers.constraints as ct
+import SystemBuilder.system_prep as sp
+import ppp.mutations_program as ppp
 
 LIG_RES="LIG"
 LIG_CHAIN="Z"
@@ -46,7 +61,7 @@ NATIVE ='''
 
 '''
 
-
+ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
 
 
 
@@ -67,33 +82,39 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
 
 
     #Preparative for Pele
-    receptor, ligand_mae, ligand_pdb = prepare_ligand(system, residue, chain)
-    cm_x, cm_y, cm_z = center_of_mass(ligand_pdb)
-    protein_constraints = retrieve_constraints(system)
-    builder = SystemBuilder(ligands, receptor)
+    receptor, ligand_mae, ligand_pdb = pl.prepare_ligand(system, residue, chain)
+    cm_x, cm_y, cm_z = cm.center_of_mass(ligand_pdb)
+    protein_constraints = ct.retrieve_constraints(system)
+    builder = sp.SystemBuilder(ligands, receptor)
     structures = builder.structs()
     complexes = builder.systems()
 
-    for structure, system in structures, complexes:
-    	template, rotamers_file = PlopRotTemp(structure, mtor, n, core, mae_charges, clean)
-    
-   	#Pele
-   	if not only_plop:
+    for structure, system in zip(structures, complexes):
+
+
+	 system_fix, missing_residues = ppp.main(system)
+
+ 	 for residue, chain in missing_residues:
+		
+		 receptor, ligand_mae, ligand_pdb = pl.prepare_ligand(system, residue, chain)
+
+	         template, rotamers_file = plop.main(ligand_mae, mtor, n, core, mae_charges, clean)
         
-       		 ad_sh_temp, pele_temp, ad_l_temp = set_pele_env(system, forcefield, template, rotamers_file, pele_dir)
+         ad_sh_temp, pele_temp, ad_l_temp = pele.set_pele_env(system, forcefield, template, rotamers_file, pele_dir)
+ 	
+         ad.AdaptiveBuilder(pele_confile, PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints))
 
-      		 AdaptiveBuilder(pele_confile, PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints))
+       	 adaptive_short = ad.AdaptiveBuilder(ad_sh_temp, ADAPTIVE_KEYWORDS, RETURN, adap_sh_output, adap_sh_input, cpus, pele_confile, residue)
 
-       		 adaptive_short = AdaptiveBuilder(ad_sh_temp, ADAPTIVE_KEYWORDS, RETURN, adap_sh_output, adap_sh_input, cpus, pele_confile, residue)
+    	 adaptive_short.run()
 
-    		 adaptive_short.run()
+         with pele.cd(adap_sh_output):
 
-        
-       		 #cluster(num_clusters=CLUSTERS, outoutput_folder=cluster_output, ligand_resname=ligand_residue, inputFolder=adap_output)
+		cl.main(num_clusters=CLUSTERS, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
 
-       		 adaptive_long = AdaptiveBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RETURN, adap_l_output, adap_l_input, cpus, pele_confile, residue)
+       	 #adaptive_long = AdaptiveBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RETURN, adap_l_output, adap_l_input, cpus, pele_confile, residue)
 
-      		 adaptive_long.run()
+      	 #adaptive_long.run()
 
 
 
@@ -101,7 +122,7 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
 
 if __name__ == "__main__":
 
-    check_dependencies()
+    env.check_dependencies()
     
     parser = argparse.ArgumentParser(description='Run Adaptive Pele Platform')
     parser.add_argument('input', type=str, help='complex to run pele on')

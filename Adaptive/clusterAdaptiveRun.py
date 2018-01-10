@@ -1,3 +1,4 @@
+import sys
 import os
 import glob
 import numpy as np
@@ -6,12 +7,13 @@ from AdaptivePELE.utilities import utilities
 from AdaptivePELE.testing import cluster, extractCoords
 
 
+
 def parseArgs():
     parser = argparse.ArgumentParser(description="Script that reclusters the Adaptive clusters")
     parser.add_argument('nClusters', type=int)
     parser.add_argument("ligand_resname", type=str, help="Name of the ligand in the PDB")
     parser.add_argument("-atomId", nargs="*", default="", help="Atoms to use for the coordinates of the conformation, if not specified use the center of mass")
-    parser.add_argument('-o', type=str, help="Output folder")
+    parser.add_argument('-o', type=str, help="Output folder", default="None")
     args = parser.parse_args()
     return args.nClusters, args.ligand_resname, args.atomId, args.o
 
@@ -64,12 +66,11 @@ def get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, cluster
 
 
 def main(num_clusters, output_folder, ligand_resname, atom_ids):
-    extractCoords.main(folder_name=".", lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids)
+    extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids)
     trajectoryFolder = "allTrajs"
     trajectoryBasename = "traj*"
     stride = 1
     clusterCountsThreshold = 0
-
     folders = utilities.get_epoch_folders(".")
     folders.sort(key=int)
 
