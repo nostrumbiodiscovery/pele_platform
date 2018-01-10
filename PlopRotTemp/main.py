@@ -64,7 +64,7 @@ from template.templateBuilder import TemplateBuilder
 
 
 
-def PlopRotTemp(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = False):
+def main(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = False):
 
     #Defaults
     nrot = nrot
@@ -320,7 +320,7 @@ def parse_args():
 
 if __name__ == "__main__":
     mae_file, mtor, n, core, mae_charge, clean = parse_args() 
-    template, rotamers_file = PlopRotTemp(mae_file, mtor, n, core, mae_charge, clean)
+    template, rotamers_file = main(mae_file, mtor, n, core, mae_charge, clean)
     
 
     print("########################################################################")
