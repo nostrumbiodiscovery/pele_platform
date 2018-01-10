@@ -11,12 +11,25 @@ class SystemBuilder(st.StructureReader):
         self.structures = st.StructureReader(self.ligands)
 
     def structs(self):
-	
+	"""
+	   Desciption: Split each entry of a mae_file 
+           retriving the residue_naem and the out file.
+
+ 	   Output:
+  		self.struct_files_mae: list of output .mae files
+		residues: list of residues of all lig in  mae files
+	"""
+
+	self.residues_name = []
 	structures = []
         structures_mae = []
  	structures_pdb = []
+
         for i, structure in enumerate(self.structures):
-            str_name = "{}".format(structure.title)
+           
+	    self.residues_name.append([residue for residue in structure.residue][0].pdbres.strip())
+       
+	    str_name = "{}".format(structure.title)
             if str_name in structures:
                 str_name = "ligand_{:d}".format(i)
 	    try:
@@ -30,11 +43,20 @@ class SystemBuilder(st.StructureReader):
 		structures.append(str_name)
 		structures_mae.append("{}.mae".format(str_name))
 		structures_pdb.append("{}.pdb".format(str_name))
+
 	self.struct_files_mae = [os.path.abspath(structure) for structure in structures_mae]
 	self.struct_files_pdb = [os.path.abspath(structure) for structure in structures_pdb]
-        return self.struct_files_mae
+
+        return self.struct_files_mae, self.residues_name
 
     def systems(self):
+	"""
+	   Description: From one ligand structure build the 
+	   complex with its receptor.
+
+	   Output:
+		self.struct_files_pdb: List of complexes.
+	"""
 	for structure in self.struct_files_pdb:
 		with open(structure, "r") as pdb:
 		    self.lines = pdb.readlines()
