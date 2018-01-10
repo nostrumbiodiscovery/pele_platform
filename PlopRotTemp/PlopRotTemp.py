@@ -1789,7 +1789,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_g
                     rank_str = ' M'
             else:
                 rank_str = ' S'
-        if(len(name[j]) < 4):
+        if(len(name[j]) > 1 and len(name[j]) < 4):
           outline = '{0:>5} {1:>5}{2:>0} {3:>4}   _{4:_^3} {5:>5} {6:>11.6f} {7:>11.6f} {8:>11.6f}\n'.format(
               str(i + 1), str(new_parent[i] + 1), rank_str, at[j], name[j], mat[j], zmat[i][0], zmat[i][1],
               zmat[i][2])
