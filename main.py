@@ -1,20 +1,9 @@
-import os
 import sys
 sys.path.insert(0, "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib/python2.7/site-packages/")
+import os
 import subprocess
+import logging
 import argparse
-"""
-NEW_LIB = '/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib/ssl:/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib:/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/mmshare-v4.0/lib/Linux-x86_64:/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib/python2.7/site-packages'
-try:
-  OLD_LIB = os.environ["LD_LIBRARY_PATH"]
-except KeyError:
-  os.environ["LD_LIBRARY_PATH"] = NEW_LIB
-else:
-  os.environ["LD_LIBRARY_PATH"] = ':'.join([NEW_LIB, OLD_LIB])
-"""
-print(os.environ["LD_LIBRARY_PATH"])
-
-
 import PlopRotTemp.main as plop
 import Helpers.prepare_ligand as pl
 import Helpers.check_env_var as env
@@ -63,61 +52,65 @@ NATIVE ='''
 
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
 
+LOG_FILENAME = "output.out"
+LOG_FORMAT = "%(asctime)s:%(levelname)s:%(message)s"
 
+# Logging definition block
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter(LOG_FORMAT)
+file_handler = logging.FileHandler(LOG_FILENAME, mode='w')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
 
 def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
-    
-    #Path Variables    
-    pele_dir = os.path.abspath("{}_Pele".format(os.path.splitext(os.path.basename(system))[0]))
-    adap_sh_input = os.path.join(pele_dir, "complex.pdb")
-    adap_sh_output = os.path.join(pele_dir, "output_adaptive_short")
-    pele_confile = os.path.join(pele_dir, PELE_CONFILE)
-    cluster_output = os.path.join(pele_dir, "output_clustering")
-    adap_l_input = "{}/initial_*"
-    adap_l_output = os.path.join(pele_dir, "output_adaptive_long")
 
     #Template Variable
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
 
-
     #Preparative for Pele
+    logger.info("Retrieving complexes")
     receptor, ligand_mae, ligand_pdb = pl.prepare_ligand(system, residue, chain)
     cm_x, cm_y, cm_z = cm.center_of_mass(ligand_pdb)
     protein_constraints = ct.retrieve_constraints(system)
     builder = sp.SystemBuilder(ligands, receptor)
-    structures = builder.structs()
+    structs, residues = builder.structs()
     complexes = builder.systems()
+  
+    #Run PlopRotTemp + Pele
+    for residue, sys in zip(residues, complexes):
 
-    for structure, system in zip(structures, complexes):
+	 #Path Variables
+	 logger.info("Creating Path to Pele")
+   	 pele_dir = os.path.abspath("{}_Pele".format(residue))
+   	 adap_sh_input = os.path.join(pele_dir, "complex.pdb")
+   	 adap_sh_output = os.path.join(pele_dir, "output_adaptive_short")
+   	 pele_confile = os.path.join(pele_dir, PELE_CONFILE)
+   	 cluster_output = os.path.join(pele_dir, "output_clustering")
+   	 adap_l_input = "{}/initial_*"
+   	 adap_l_output = os.path.join(pele_dir, "output_adaptive_long")
 
+	 system_fix, missing_residues = ppp.main(sys)
 
-	 system_fix, missing_residues = ppp.main(system)
-
- 	 for residue, chain in missing_residues:
-		
-		 receptor, ligand_mae, ligand_pdb = pl.prepare_ligand(system, residue, chain)
-
+ 	 for res, chain in missing_residues:
+		 logger.info("Creating template for residue {}".format(res))
+		 receptor, ligand_mae, ligand_pdb = pl.prepare_ligand(system_fix, res, chain)
 	         template, rotamers_file = plop.main(ligand_mae, mtor, n, core, mae_charges, clean)
-        
-         ad_sh_temp, pele_temp, ad_l_temp = pele.set_pele_env(system, forcefield, template, rotamers_file, pele_dir)
- 	
+         logger.info("Setting Pele environment folders")
+         ad_sh_temp, pele_temp, ad_l_temp = pele.set_pele_env(system_fix, forcefield, template, rotamers_file, pele_dir)
+ 	 logger.info("Creating pele confitrol file")
          ad.AdaptiveBuilder(pele_confile, PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints))
-
+	 logger.info("Creating adaptive control file")
        	 adaptive_short = ad.AdaptiveBuilder(ad_sh_temp, ADAPTIVE_KEYWORDS, RETURN, adap_sh_output, adap_sh_input, cpus, pele_confile, residue)
-
+	 logger.info("Running Adaptive")
     	 adaptive_short.run()
-
+	 logger.info("MSM Clustering")
          with pele.cd(adap_sh_output):
-
 		cl.main(num_clusters=CLUSTERS, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
-
-       	 #adaptive_long = AdaptiveBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RETURN, adap_l_output, adap_l_input, cpus, pele_confile, residue)
-
-      	 #adaptive_long.run()
-
-
-
+	 logger.info("Running standard Pele")
+       	 # adaptive_long = ad.AdaptiveBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RETURN, adap_l_output, adap_l_input, cpus, pele_confile, residue)
+      	 # adaptive_long.run()
 
 
 if __name__ == "__main__":
