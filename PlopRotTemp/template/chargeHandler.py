@@ -41,7 +41,7 @@ class ChargeHandler(Helper):
                 if not re.search(':::', line):
                     line = re.sub(' +',' ',line).strip('\n').strip().split()
                     for i, keyword in enumerate(keywords):
-                        if keyword.startswith("r_m_charge"):            
+                        if keyword == "r_m_charge1":          
                             charge = line[i]
                             charges.append(charge)
                 else:

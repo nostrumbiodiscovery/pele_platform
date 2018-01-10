@@ -134,6 +134,7 @@ DUMMY_ANGLE = 45.73961
 DUMMY_DIHEDRAL = 13.21566
 DEFAULT_ATOMTYPE = [0.000, 0.000, 1.500, 1.250, 0.005000000, 0.000000000] 
 DEFAULT_RADIUS_VDW = '0.5000'  
+DEFAULT_EPSILON = '0.0300'
 STANDARD_RESIDUE_NAME = 'LIG'
 ERROR_ATOMNAMES = "The keywords in the atom section form the .mae file don't match the regular " \
                   "expressions currently implemented. ATOM NAMES ARE COMPULSORY."
@@ -426,10 +427,15 @@ def replace_vdwr_from_library(rotamer_library):
   for i, rdw_line in enumerate(radius_vdw_info):
     NBOND_info = rdw_line.split()
     rdw = float(NBOND_info[1])/2.0
+    epsilon = float(NBOND_info[2])
     
     if(rdw == 0):
       warnings.warn("Van der Waals of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
       NBOND_info[1] = DEFAULT_RADIUS_VDW
+      found = True
+    if(epsilon == 0):
+      warnings.warn("Epsilon of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
+      NBOND_info[2] = DEFAULT_EPSILON
       found = True
     lines.append(NBOND_info)
 
@@ -1625,15 +1631,12 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
 
 
 def get_torsions_from_mae(mae_file, residue_name):
-  pdb_file = residue_name+ "_tor.pdb"
+  pdb_file = residue_name + ".pdb"
   struct = structure.StructureReader(mae_file).next()
   struct.write(pdb_file)
   mol = Chem.MolFromPDBFile(pdb_file, False)
   torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
   torsions = [[tor[0], tor[1]] for tor in torsions]
-  OH_torsions = find_OH_torsions(struct, mae_file)
-  NH2_torsions = find_NH2_torsions(struct, mae_file)
-  torsions.extend(OH_torsions+NH2_torsions)
   try:
     os.remove(pdb_file)
   except OSError:
