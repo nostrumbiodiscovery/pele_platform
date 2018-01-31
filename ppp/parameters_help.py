@@ -41,7 +41,7 @@ mutants_from_file_description = "This option specifies a path to read the output
                                 "    YYY the desired aminoacid in 3 letters code\n"
 mutant_multiple_description = "This parameter creates one structure with all the\n" \
                               " mutations specified. But it doesn't check for clashes."
-gaps_ter_description = "When this option is present the program will add a TER mark whenever it finds " \
+no_gaps_ter_description = "When this option is present the program won't add a TER mark whenever it finds " \
                        "a gap in the sequence."
 make_unique_description = "This option is optional and should be present if the user wants to make the names " \
                           "in a given CHAIN unique."

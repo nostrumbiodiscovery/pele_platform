@@ -73,11 +73,15 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
     for chain in correct_structure.iterChains():
         # for chain in structure_without_waters.iterChains():
         if chain.getChid() in gaps.keys():
-            gaps_residues = gaps[chain.getChid()]
+            gaps_residues = [y for x in gaps[chain.getChid()] for y in x]
+            gaps_e = [x[0] for x in gaps[chain.getChid()]]
+            gaps_b = [x[1] for x in gaps[chain.getChid()]]
         else:
             gaps_residues = []
+            gaps_b = []
+            gaps_e = []
         if chain.getChid() in no_gaps.keys():
-            no_gaps_residues = no_gaps[chain.getChid()]
+            no_gaps_residues = [y for x in no_gaps[chain.getChid()] for y in x]
         else:
             no_gaps_residues = []
         initial_res, final_res = FindInitialAndFinalResidues(chain)
@@ -93,9 +97,11 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                 possible_names = [["CL"], ["CU"], ["FE1"], ["FE2"], ["ZN"], ["MG"]]
                 heteroatom = True
             else:
-                if resname != 'HOH':
+                if resname == 'HOH':
+                    heteroatom = True
+                else:
                     heteroatom = False
-            if residue.getResnum() == initial_res:
+            if residue.getResnum() == initial_res or residue.getResnum() in gaps_b:
                 # This magic number 0 comes from the fact that for all the aminoacids
                 # except the proline the first set of atoms in the names_dictionary
                 # should have the hydrogen H from the nitrogen, but if the residue is the
@@ -106,19 +112,19 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                                                                                          residue.getResnum())
                 if 'H' in possible_names[0]:
                     possible_names.pop(0)
-            if residue.getResnum() == initial_res or residue.getResnum() == final_res:
+            if residue.getResnum() in [initial_res, final_res] + gaps_residues:
                 # The other in this step is really important it should always be the
                 # possible and then the ending possibilities, otherwise it will create
                 # problems for the ending residues.
                 possible_names = possible_names + tmp_dictio["END"]
 
-            if debug and residue.getResnum() == debug[0] and chain.getChid() == debug[1]:
-                print residue.getResname(), residue.getResnum(), residue.getChid(), residue.getNames()
+            # if debug and residue.getResnum() == debug[0] and chain.getChid() == debug[1]:
+            #     print residue.getResname(), residue.getResnum(), residue.getChid(), residue.getNames()
             for atom in residue.iterAtoms():
                 atom_found = False
                 atom_name = atom.getName()
-                if debug and residue.getResnum() == debug[0] and chain.getChid() == debug[1]:
-                    print 'pos', atom_name, possible_names
+                # if debug and residue.getResnum() == debug[0] and chain.getChid() == debug[1]:
+                #     print 'pos', atom_name, possible_names
                 for atoms in possible_names:
                     if atom_name in atoms:
                         old_atom_name = atom_name
@@ -132,10 +138,12 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                         break
                 if not atom_found and not heteroatom:
                     if atom_name in ['HXT', 'H1', "H2"]:
-                        if residue.getResnum() in gaps_residues:
+                        if residue.getResnum() in gaps_residues or residue.getResnum() in [initial_res, final_res]:
                             pass
                         elif residue.getResnum() in no_gaps_residues:
-                            print "This residue shouldn't be considered as a gap, if it really is one, let the developer know"
+                            print "This residue {} won't be considered as a gap, if it really is one," \
+                                  " let the developer know".format("{} {}".format(residue.getResnum(),
+                                                                                  residue.getChid()))
                     else:
                         print "  The Atom {} from residue {} {} {} doesn't have a valid name.".format(atom_name,
                                                                                                       resname,

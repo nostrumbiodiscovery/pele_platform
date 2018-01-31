@@ -117,8 +117,8 @@ def ParseArguments():
                         help=parameters_help.mutants_from_file_description)
     parser.add_argument("-mutant_multiple", action="store_true", default=False,
                         help=parameters_help.mutant_multiple_description)
-    parser.add_argument("-gaps_ter", action="store_true", default=False,
-                        help=parameters_help.gaps_ter_description)
+    parser.add_argument("-no_gaps_ter", action="store_true", default=False,
+                        help=parameters_help.no_gaps_ter_description)
     parser.add_argument("-make_unique", default=False,
                         help=parameters_help.make_unique_description)
     parser.add_argument("-remove_terminal_missing", default=False, action="store_true")
@@ -194,7 +194,8 @@ def FindInitialAndFinalResidues(structure):
     return initial_residue, final_residue
 
 
-def PDBwriter(output_file_name, structure, make_unique, residues2remove, no_proteic_ligand=None, gaps={}, no_gaps={}):
+def PDBwriter(output_file_name, structure, make_unique, residues2remove, no_ter_mkar_for_gaps, no_proteic_ligand=None,
+              gaps={}, no_gaps={}):
     if '.pdb' not in output_file_name:
         output_file_name += '.pdb'
     outfile = open(output_file_name, 'w')
@@ -206,9 +207,9 @@ def PDBwriter(output_file_name, structure, make_unique, residues2remove, no_prot
         ter = False
         resnums = [residue.getResnum() for residue in chain]
         if chain.getChid() in gaps.keys():
-            gaps_residues = gaps[chain.getChid()]
+            gaps_e = [x[0] for x in gaps[chain.getChid()]]
         else:
-            gaps_residues = []
+            gaps_e = []
         if chain.getChid() == make_unique and no_proteic_ligand is not None:
             change_names = True
         else:
@@ -225,9 +226,11 @@ def PDBwriter(output_file_name, structure, make_unique, residues2remove, no_prot
             if residue.getChid() in residues2remove.keys():
                 if resnum in residues2remove[residue.getChid()]:
                     continue
-            if resnum in gaps_residues:
+            if resnum in gaps_e:
+                ter = True
+                if no_ter_mkar_for_gaps:
+                    ter = False
                 if " HXT" in residue.getNames():
-                    ter = True
                     eliminate_hxt = True
                 elif " H1 " in residue.getNames() or " H2 " in residue.getNames():
                     eliminate_h = True
@@ -315,11 +318,11 @@ def RenumberStructure(initial_structure, gaps={}, no_gaps={}, debug=False):
         residue_number = 1
         chain_id = chain.getChid()
         if chain_id in gaps.keys():
-            gap_residues = gaps[chain_id]
+            gap_residues = [y for x in gaps[chain_id] for y in x]
         else:
             gap_residues = []
         if chain_id in no_gaps.keys():
-            no_gap_residues = no_gaps[chain_id]
+            no_gap_residues = [y for x in no_gaps[chain_id] for y in x]
         else:
             no_gap_residues = []
         for residue in chain.iterResidues():
