@@ -71,12 +71,14 @@ FOLDERS =  ["",
             "DataLocal/LigandRotamerLibs",
             ]
 
-FILES = ["complex.pdb", "pele.conf"]
  
 
 #Log Constants
 LOG_FILENAME = "output.out"
 LOG_FORMAT = "%(asctime)s:%(levelname)s:%(message)s"
+
+#directory
+DIR = os.path.dirname(__file__)
 
 # Logging definition block
 logger = logging.getLogger(__name__)
@@ -94,14 +96,17 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
     logger.info("Preparing ExitPath Adaptive Env")
     pele_dir = os.path.abspath("{}_Pele".format(os.path.splitext(system)[0]))
     pele_confile = os.path.join(pele_dir, PELE_CONFILE)
-    adap_ex_input = os.path.join(pele_dir, COMPLEX)
+    adap_ex_input = os.path.join(pele_dir, os.path.basename(system))
     adap_ex_output = os.path.join(pele_dir, RESULTS)
-    ex_files = FILES.append(COMPLEX)
-    ex_folders = FOLDERS.append(RESULTS) 
+    ad_ex_temp = os.path.join(pele_dir, "adaptive_exit.conf")
 
+    system_fix, missing_residues = ppp.main(system)
+ 
+    ex_files = [system, os.path.join(DIR, "PeleTemplates/pele.conf"), os.path.join(DIR, "PeleTemplates/adaptive_exit.conf")]
+    ex_folders = FOLDERS
+    ex_folders.append(RESULTS) 
  
     #Exit Adaptive 
-    system_fix, missing_residues = ppp.main(system)
     protein_constraints = ct.retrieve_constraints(system)
     receptor, ligand_mae, ligand_pdb = pl.prepare_ligand(system_fix, residue, chain)
     template, rotamers_file = plop.main(ligand_mae, mtor, n, core, mae_charges, clean)
@@ -109,10 +114,9 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
     logger.info("Running exit Adaptive")
     pele.set_pele_env(system_fix, ex_folders, ex_files, forcefield, template, rotamers_file, pele_dir)
     ad.AdaptiveBuilder(pele_confile, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints))
-    adaptive_short = ad.AdaptiveBuilder(ad_sh_temp, ADAPTIVE_KEYWORDS, RESTART, adap_sh_output, adap_sh_input, cpus, pele_confile, residue)
-    adaptive_short.run()
+    adaptive_exit = ad.AdaptiveBuilder(ad_ex_temp, ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_confile, residue)
+    adaptive_exit.run()
     
-    sys.exit(0)
     #Preparative for Pele
     logger.info("Retrieving complexes")
     receptor, ligand_mae, ligand_pdb = pl.prepare_ligand(system, residue, chain)
@@ -129,10 +133,19 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
 	 logger.info("Creating Path to Pele")
    	 adap_sh_input = os.path.join(pele_dir, COMPLEX)
    	 adap_sh_output = os.path.join(pele_dir, "output_adaptive_short")
-   	 pele_confile = os.path.join(pele_dir, PELE_CONFILE)
    	 cluster_output = os.path.join(pele_dir, "output_clustering")
    	 adap_l_input = "{}/initial_*"
    	 adap_l_output = os.path.join(pele_dir, "output_adaptive_long")
+         ad_sh_temp = os.path.join(pele_dir, "adaptive_short.conf")
+         ad_l_temp = os.path.join(pele_dir, "adaptive_long.conf")
+         box_temp = os.path.join(pele_dir, "box.pdb")
+
+
+         #Environment
+         files = [COMPLEX, os.path.join(DIR, "PeleTemplates/box.pdb) os.path.join(DIR, "PeleTemplates/pele.conf"),
+                   os.path.join(DIR, "PeleTemplates/adaptive_short.conf"), os.path.join(DIR, "PeleTemplates/adaptive_long.conf)" ]
+         directories = FOLDERS
+         directories.extend(["output_adaptive_long", "output_adaptive_short", "output_clustering"])
 	 
 	 #Fix protein
 	 system_fix, missing_residues = ppp.main(sys)
