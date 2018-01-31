@@ -3,7 +3,7 @@ import sys
 import subprocess
 from Helpers.pele_env import cd
 from template_builder import TemplateBuilder
-from AdaptivePELE.adaptiveSampling import main
+import AdaptivePELE.adaptiveSampling as ad
 
 
 class AdaptiveBuilder(TemplateBuilder):
@@ -25,7 +25,7 @@ class AdaptiveBuilder(TemplateBuilder):
     def run(self):
 
     	with cd(os.path.dirname(self.file)):
-    	 main(self.file)
+    	 ad.main(self.file)
 
 
 
