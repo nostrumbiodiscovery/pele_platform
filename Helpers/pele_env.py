@@ -11,8 +11,10 @@ class Pele_env_Builder(object):
 			is build by creating folders and files
 		"""
 
-		def __init__(self, input, forcefield, template, rotamers, pele_dir):
+		def __init__(self, input, folders, files, forcefield, template, rotamers, pele_dir):
 			self.input = input
+                        self.folders = folders
+                        self.files = files
 			self.forcefield = forcefield
 			self.template = template
 			self.rotamers = rotamers
@@ -23,20 +25,8 @@ class Pele_env_Builder(object):
 			"""
 				Create pele folders
 			"""
-
-			folders_to_create = ["",
-								 "DataLocal/Templates/OPLS2005/HeteroAtoms/",
-								 "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
-								 "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-								 "DataLocal/LigandRotamerLibs",
-								 "results",
-								 "output",
-								 "output_adaptive_short",
-								 "output_clustering",
-								 "output_adaptive_long",
-								 ]
 			
-			for folder in folders_to_create:
+			for folder in self.folders:
 				self.create_dir(self.pele_dir, folder)
 			
 
@@ -45,7 +35,6 @@ class Pele_env_Builder(object):
 				Copy control rotamer
 				and template files
 			"""
-
 			#paths
 			self.template_dir = os.path.join(
 				self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
@@ -53,20 +42,11 @@ class Pele_env_Builder(object):
 				self.pele_dir, "DataLocal/LigandRotamerLibs")
 
 			#actions
-			shutil.copy(self.input, os.path.join(self.pele_dir, "complex.pdb"))
-			with cd(os.path.abspath(self.templates)):
-					self.copy("adaptive_short.conf", self.pele_dir)
-					self.copy("pele.conf", self.pele_dir)
-					self.copy("adaptive_long.conf", self.pele_dir)
-			
+                        for file in self.files:
+                            self.copy(file, self.pele_dir)
 			shutil.move(self.template, self.template_dir)
 			shutil.move(self.rotamers, self.rotamers_dir)
 
-			adaptive_short_temp = os.path.join(self.pele_dir,"adaptive_short.conf")
-			pele_temp = os.path.join(self.pele_dir,"pele.conf")
-			adaptive_long_temp = os.path.join(self.pele_dir,"adaptive_long.conf")
-
-			return adaptive_short_temp, pele_temp, adaptive_long_temp
 
 
 
@@ -98,6 +78,7 @@ class Pele_env_Builder(object):
 				shutil.copy(user, os.path.join(self.pele_dir, standard))
 			else:
 				shutil.copy(standard, self.pele_dir)
+                        return os.path.join(self.pele_dir,standard)
 
 class cd:
     """Context manager for changing the current working directory"""
@@ -112,8 +93,7 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def set_pele_env(system,  forcefield, template, rotamers_file, pele_dir):
-	pele_env = Pele_env_Builder(system,  forcefield, template, rotamers_file, pele_dir)
+def set_pele_env(system,  folders, files, forcefield, template, rotamers_file, pele_dir):
+	pele_env = Pele_env_Builder(system, folders, files,  forcefield, template, rotamers_file, pele_dir)
 	pele_env.folder_levels()
-	adaptive_short_temp, pele_temp, adaptive_long_temp = pele_env.file_dist()
-	return adaptive_short_temp, pele_temp, adaptive_long_temp
+	pele_env.file_dist()
