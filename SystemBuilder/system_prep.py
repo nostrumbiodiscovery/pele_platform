@@ -47,7 +47,7 @@ class SystemBuilder(st.StructureReader):
 	self.struct_files_mae = [os.path.abspath(structure) for structure in structures_mae]
 	self.struct_files_pdb = [os.path.abspath(structure) for structure in structures_pdb]
 
-        return self.struct_files_mae, self.residues_name
+        return self.struct_files_mae, self.struct_files_pdb ,self.residues_name
 
     def systems(self):
 	"""
