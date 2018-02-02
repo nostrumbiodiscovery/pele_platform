@@ -1,5 +1,6 @@
 import os
 import sys
+import constants
 
 def find_executable(executable, path=None):
     """
@@ -38,7 +39,19 @@ def find_executable(executable, path=None):
 
 def check_dependencies():
 
-	try:
+        os.environ["SCHRODINGER"] = constants.SCHRODINGER
+        os.environ["PELE"] = constants.PELE
+        os.environ["PATH"] = "{}:{}".format(os.environ["PATH"], constants.MPIRUN)
+
+        sys.path.insert(0, os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))       
+        sys.path.insert(0, constants.ADAPTIVE)        
+        """
+        try:
+            os.environ["LD_LIBRARY_PATH"] = "{1}:{0}".format(os.environ["LD_LIBRARY_PATH"], os.path.join(os.environ["SCHRODINGER"],"mmshare-v4.0/lib/Linux-x86_64/"))
+        except KeyError:
+            os.environ["LD_LIBRARY_PATH"] = os.path.join(os.environ["SCHRODINGER"],"mmshare-v4.0/lib/Linux-x86_64/")
+        """
+        try:
 		os.environ["SCHRODINGER"]
 	except KeyError:
 		raise("SCHRODINGER IS NOT EXPORTED. export SCHRODINGER='/path/to/schrodinger/")
@@ -49,14 +62,13 @@ def check_dependencies():
 			os.environ["PATH"],
 			os.path.join(os.environ["PELE"], "bin"))
 	except KeyError:
-		raise("PELE IS NOT EXPORTED. export PELE='/path/to/pele/")
+		raise("PELE IS NOT EXPORTED. Export PELE='/path/to/pele/")
 
 	if not find_executable("mpirun"):
-		raise ValueError("Could not find executable in path. set export PATH=/path/to/mpirun_binary/:$PATH")
+		raise ValueError("Could not find executable in path. Set export PATH=/path/to/mpirun_binary/:$PATH")
 
 	if not find_executable("Pele_mpi") and not find_executable("PELE-1.5_mpi"):
 		raise ValueError("Could not find executable in path. set export PATH=/path/to/pele_binary/:$PATH")
 	
-
 
 
