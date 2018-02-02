@@ -18,8 +18,8 @@ def build_complexes(ligands, receptor):
     structures_mae = []
     structures_pdb = []
 
-    # FAIL WHYYY
-    residues.append([residue for residue in structure.residue][0].pdbres.strip())
+    for structure in st.StructureReader(ligands):
+	    residues.append([residue for residue in structure.residue][0].pdbres.strip())
 
     for i, (structure, res) in enumerate(zip(st.StructureReader(ligands), residues)):
 
