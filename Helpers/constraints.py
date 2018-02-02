@@ -12,11 +12,16 @@ TER_CONSTR = 2.5
 
 BACK_CONSTR = 0.5
 
+CONSTR = '''{{ "type": "constrainAtomToPosition", "springConstant": {0}, "equilibriumDistance": 0.0, "constrainThisAtom": "{1}:{2}:{3}" }},'''
+
+CONSTR_DIST = '''"constraints":[ {{ "type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom": "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}" }},'''
 
 class ConstraintBuilder(object):
 
-	def __init__(self, pdb):
+	def __init__(self, pdb, gaps, metals):
 		self.pdb = pdb
+                self.gaps = gaps
+                self.metals = metals
 
 	def parse_atoms(self):
 
@@ -46,16 +51,38 @@ class ConstraintBuilder(object):
 			constraints.append(constraint)
 
 		constraints.append(constraint_str.format(num_residues, TER_CONSTR).strip(","))
+                
+		constraints = self.gaps_constraints(constraints)
+		constraints = self.metal_constraints(constraints)		
 
 		constraints.append("],")
 
 		return constraints
+	
+	def gaps_constraints(self, constraints):
+       		for  chain, residues in self.gaps.iteritems():
+                	for residue in residues:
+				constraint = CONSTR.format(10, chain, residue, "_CA_")
+				constraints.append(constraint)
+		return constraints
+	
+	def metal_constraints(self, constraints):
+		for metal, ligands in self.metals.iteritems():
+			metal_name, chain, metnum = metal.split(" ")
+                        for ligand in ligands:
+				ligand_info, bond_lenght = ligand
+				resnum, resname, chain, ligname = ligand_info.split(" ")
+                        	constraint = CONSTR_DIST.format(5, bond_lenght, chain, resnum, ligname, chain, metnum, metal_name)
+				constraints.append(constraint)
+		return constraints
 
-def retrieve_constraints(pdb_file):
-	constr = ConstraintBuilder(pdb_file)
+        
+
+def retrieve_constraints(pdb_file, gaps, metal):
+	constr = ConstraintBuilder(pdb_file, gaps, metal)
 	initial_res, final_res = constr.parse_atoms()
-        print(initial_res, final_res)
 	constraints = constr.build_constraint(initial_res, final_res)
+        print(constraints)
 	return constraints
 
 
