@@ -115,13 +115,16 @@ def ParseArguments():
                         help=parameters_help.mutation_description)
     parser.add_argument("-mutants_from_file", '-mut_file', default=False,
                         help=parameters_help.mutants_from_file_description)
-    parser.add_argument("-mutant_multiple", action="store_true", default=False,
+    parser.add_argument("-mutant_multiple", action="store_true",
                         help=parameters_help.mutant_multiple_description)
+    parser.add_argument("-charge_terminals", action="store_true",
+                        help=parameters_help.charge_terminals_description)
     parser.add_argument("-no_gaps_ter", action="store_true", default=False,
                         help=parameters_help.no_gaps_ter_description)
     parser.add_argument("-make_unique", default=False,
                         help=parameters_help.make_unique_description)
-    parser.add_argument("-remove_terminal_missing", default=False, action="store_true")
+    parser.add_argument("-remove_terminal_missing", default=False, action="store_true",
+                        help=parameters_help.remove_terminal_missing_description)
     # parser.add_argument('-force_field', '-ff', type=str, default="OPLS2005",
     #                     choices=["OPLS2005", "OPLS2001", "AMBER99sbBSC0"],
     #                     help=parameters_help.ff_description)

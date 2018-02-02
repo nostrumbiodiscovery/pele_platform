@@ -52,7 +52,7 @@ class ZMATRIX:
                     try:
                         filein = open(filename, 'r')
                     except IOError:
-                        print "No such file or directory: {}".format(filename)
+                        print "    * No such file or directory: {}".format(filename)
                         self.Name = None
                         return None
                     else:

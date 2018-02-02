@@ -3,14 +3,15 @@ supported_aminoacids = ["ALA", "ARG", "ASH", "ASN", "ASP", "CYS", "CYT", "GLH",
                         "LEU", "LYS", "LYN", "MET", "PHE", "PRO", "SER", "TRP",
                         "THR", "TYR", "VAL", "ACE", "NMA"]
 aminoacids_3letter = ['ALA', 'ARG', 'ASH', 'ASN', 'ASP', 'CYS', 'GLH', 'GLN',
-                               'GLU', 'GLY', 'HID', 'HIE', 'HIS', 'HIP', 'ILE', 'LEU',
-                               'LYS', 'LYN', 'MET', 'PHE', 'PRO', 'SER', 'TRP', 'THR',
-                               'TYR', 'VAL']
+                      'GLU', 'GLY', 'HID', 'HIE', 'HIS', 'HIP', 'ILE', 'LEU',
+                      'LYS', 'LYN', 'MET', 'PHE', 'PRO', 'SER', 'TRP', 'THR',
+                      'TYR', 'VAL']
 
 aminoacids_1letter = ["A",  "R", "D", "N", "D", "C", "E", "Q", "E", "G", "H", "H",
                             "H",  "H", "I", "L", "K", "K", "M", "F", "P", "S", "W", "T",
                             "Y", "V"]
-names_dictionary = {
+
+protein_atomnames_dictionary = {
     "END": [["H1", "1H", "HN1", "HN1", "HT1"], ["H2", "2H", "HN2", "HN2", "HT2"],
             ["H3", "3H", "HN3", "H", "HN3", "HT3"], ["OXT", "O1", "OT2", "OXT", "OXT"]],
     "ALA": [['H', 'H', 'HN', 'H2', 'HN', 'H', 'HN'], ['HA', 'HA', 'HA', 'HA', 'HA', 'HA', 'HA'],
@@ -243,6 +244,14 @@ names_dictionary = {
             ['C', 'C'], ['O', 'O']],
     "NMA": [['HH31', '1HA', 'HA1'], ['HH32', '2HA', 'HA2'], ['HH33', '3HA', 'HA3'], ['CA', 'C'], ['H', 'H'], ['N']],
 }
+
+supported_metals = ["MN", "MG", "ZN", "CA", "CU", "FE", "NI", "CO", "PB"]
+
+coordination_geometries = {
+    'octahedric': [[90, 180], 6],
+    'tetrahedric': [[109.5], 4]
+}
+
 default_mutations_maps = {
     'ALA-ARG': [
         ['N', 'H', 'CA', 'HA', 'C', 'O', 'CB'],

@@ -5,7 +5,7 @@ from prody import calcDistance
 from checks_module import CheckClashes
 from coordinates_module import ChangeResidueCoordinates
 from global_processes import FindInitialAndFinalResidues
-from global_variables import names_dictionary, supported_aminoacids
+from global_variables import protein_atomnames_dictionary, supported_aminoacids
 from program_own_classes import ROTAMERLIB
 
 __author__ = 'jelisa'
@@ -88,12 +88,12 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
         if debug:
             print "working with chain {}".format(chain.getChid())
         for residue in chain.iterResidues():
-            tmp_dictio = copy.deepcopy(names_dictionary)
+            tmp_dictio = copy.deepcopy(protein_atomnames_dictionary)
             resname = residue.getResname()
             try:
                 possible_names = tmp_dictio[resname]
             except KeyError:
-                print ' The residue {} is not an aa nor a water.'.format(resname)
+                print '   * The residue {} is not an aa nor a water.'.format(resname)
                 possible_names = [["CL"], ["CU"], ["FE1"], ["FE2"], ["ZN"], ["MG"]]
                 heteroatom = True
             else:
@@ -103,7 +103,7 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                     heteroatom = False
             if residue.getResnum() == initial_res or residue.getResnum() in gaps_b:
                 # This magic number 0 comes from the fact that for all the aminoacids
-                # except the proline the first set of atoms in the names_dictionary
+                # except the proline the first set of atoms in the protein_atomnames_dictionary
                 # should have the hydrogen H from the nitrogen, but if the residue is the
                 # first one in the protein it should be changed into H3 which belongs to
                 # the "END" keyword in the names dictionary.
@@ -141,11 +141,11 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                         if residue.getResnum() in gaps_residues or residue.getResnum() in [initial_res, final_res]:
                             pass
                         elif residue.getResnum() in no_gaps_residues:
-                            print "This residue {} won't be considered as a gap, if it really is one," \
+                            print "   * This residue {} won't be considered as a gap, if it really is one," \
                                   " let the developer know".format("{} {}".format(residue.getResnum(),
                                                                                   residue.getChid()))
                     else:
-                        print "  The Atom {} from residue {} {} {} doesn't have a valid name.".format(atom_name,
+                        print "   * The Atom {} from residue {} {} {} doesn't have a valid name.".format(atom_name,
                                                                                                       resname,
                                                                                                       atom.getChid(),
                                                                                                       atom.getResnum())
@@ -232,8 +232,9 @@ def FixStructureResnames(initial_structure, ligand_chain=False):
                     resname = "HIE"
                 elif "HD1" in res.getNames() or "HND" in res.getNames():
                     resname = "HID"
-                else:
-                    print "The hystidine {} has an incorrect number of atoms.".format(res.getResnum())
+            else:
+                print "  * WARNING: The hystidine {} has an incorrect number " \
+                      "of atoms. PELE won't work correctly".format("{} {}".format(res.getResnum(), res.getChid(),))
         elif resname == "LYS":
             if res.numAtoms() == 21:
                 resname = "LYN"

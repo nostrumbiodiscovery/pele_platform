@@ -85,11 +85,11 @@ def AddAtoms(initial_residue, atoms2add, atomnames_of_2_letters, residue_data, z
 def ModifyExistingAtoms(initial_residue, atoms2change, atomnames_of_2_letters, initial_atoms_index, final_atoms_index,
                         zmatrix):
     residue2modify = initial_residue.copy()
-    print " Modifying the atoms:"
+    print "    * Modifying the atoms:"
     for at_pair in atoms2change:
         ini_atomname = at_pair[initial_atoms_index]
         fin_atomname = at_pair[final_atoms_index]
-        print " # {} -> {}".format(at_pair[initial_atoms_index], at_pair[final_atoms_index])
+        print "      # {} -> {}".format(at_pair[initial_atoms_index], at_pair[final_atoms_index])
         element = fin_atomname[:2]
         if element not in atomnames_of_2_letters:
             element = at_pair[final_atoms_index][0]
@@ -101,7 +101,7 @@ def ModifyExistingAtoms(initial_residue, atoms2change, atomnames_of_2_letters, i
         else:
             atom_coords = GenerateCoordinatesFromZmatrix(residue2modify, [fin_atomname], zmatrix)
         atom2modify.setCoords(atom_coords)
-    print " Done"
+    print "      Done"
     return residue2modify
 
 
