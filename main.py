@@ -1,11 +1,12 @@
 import sys
 import os
+import Helpers.check_env_var as env
+env.check_dependencies()
 import logging
 import argparse
 import PlopRotTemp.main as plop
 import Helpers.helpers as hp
 import Helpers.prepare_ligand as pl
-import Helpers.check_env_var as env
 import Helpers.pele_env as pele
 import Adaptive.adaptive as ad
 import Adaptive.clusterAdaptiveRun as cl
@@ -13,10 +14,9 @@ import Helpers.center_of_mass as cm
 import Helpers.constraints as ct
 import SystemBuilder.system_prep as sp
 import SystemBuilder.box as bx
-import ppp.mutations_program as ppp
+import ppp.mut_prep4pele as ppp
 import msm.analysis as msm
 
-sys.path.insert(0, "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/internal/lib/python2.7/site-packages/")
 
 
 COMPLEX = "complex.pdb"
@@ -25,7 +25,7 @@ LIG_RES = "LIG"
 LIG_CHAIN = "Z"
 FORCEFIELD = "OPLS2005"
 PELE_CONFILE = "pele.conf"
-CPUS = 3
+CPUS = 5
 RESTART = True
 CLUSTERS = 40
 
@@ -92,20 +92,20 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
 
     # Template Variable
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
-    protein_constraints = ct.retrieve_constraints(system)
-    r_cm = cm.center_of_mass(ligand_pdb)
-
+    #r_cm = cm.center_of_mass(ligand_pdb)
+    system_fix, missing_residues, gaps, metals = ppp.main(system)
+    metals = {'MG A 452': [['51 ASP A OD2', 1.9601234654990563], ['155 THR A OG1', 2.6704273066309123], ['322 GLU A OE2', 2.3598733016837992], ['458 HOH A OW', 2.1865664865263068], ['459 HOH A OW', 2.5285240754242326], ['460 HOH A OW', 2.0390237860309495]], 'ZN B 951': [['51 ASP B OD1', 1.9300865265578113], ['102 SER B OG', 1.9943134156897238], ['369 ASP B OD2', 2.1497464966828082], ['370 HID B NE2', 2.2372907723405087]], 'MG B 952': [['51 ASP B OD2', 2.5950433522390322], ['155 THR B OG1', 2.4133192909352048], ['322 GLU B OE2', 2.7436375489484752], ['958 HOH B OW', 2.2750318679086683], ['959 HOH B OW', 2.4520646402572659], ['960 HOH B OW', 2.3868234119850582]], 'ZN A 451': [['51 ASP A OD1', 1.8873645646774262], ['102 SER A OG', 1.9465299894941221], ['369 ASP A OD2', 2.1908174273544541], ['370 HID A NE2', 2.355872874329171]]}	
+    protein_constraints = ct.retrieve_constraints(system_fix, gaps, metals)
+    
     # Exit pathway files
     logger.info("Preparing ExitPath Adaptive Env")
     pele_dir = os.path.abspath("{}_Pele".format(os.path.splitext(system)[0]))
     pele_confile = os.path.join(pele_dir, PELE_CONFILE)
-    adap_ex_input = os.path.join(pele_dir, os.path.basename(system))
+    adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
     adap_ex_output = os.path.join(pele_dir, RESULTS)
     ad_ex_temp = os.path.join(pele_dir, "adaptive_exit.conf")
-    # Running ppp
-    system_fix, missing_residues = ppp.main(system)
     # Files to create
-    ex_files = [system_fix, os.path.join(DIR, "PeleTemplates/pele.conf"), os.path.join(DIR, "PeleTemplates/adaptive_exit.conf")]
+    ex_files = [os.path.basename(system_fix), os.path.join(DIR, "PeleTemplates/pele.conf"), os.path.join(DIR, "PeleTemplates/adaptive_exit.conf")]
     ex_folders = FOLDERS
     ex_folders.append(RESULTS)
     # Look for exit pathway with Adaptive PELE
@@ -120,15 +120,20 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
     # Preparative for Pele
     logger.info("Retrieving Ligands & Complexes")
     receptor = sp.retrieve_receptor(system)
-    ligands, complexes, residues = sp.build_complexes(ligands, receptor)
+    complexes, ligands, residues = sp.build_complexes(ligands, receptor)
     pele_dirs = [os.path.abspath("{}_Pele".format(residue)) for residue in residues]
+    
+    print(complexes, ligands, residues, pele_dirs)
 
     # Run PlopRotTemp + Pele
     for residue, lig, sys, pele_dir in zip(residues, ligands, complexes, pele_dirs):
 
+        # Fix protein
+        system_fix, missing_residues, _, _ = ppp.main(sys)
+
         # Path Variables
         logger.info("Creating Pele env")
-        adap_sh_input = os.path.join(pele_dir, COMPLEX)
+        adap_sh_input = os.path.join(pele_dir, system_fix)
         adap_sh_output = os.path.join(pele_dir, "output_adaptive_short")
         cluster_output = os.path.join(pele_dir, "output_clustering")
         adap_l_input = "{}/initial_*"
@@ -138,24 +143,21 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
         pele_temp = os.path.join(pele_dir, "pele.conf")
         box_temp = os.path.join(pele_dir, "box.pdb")
 
-        files = [COMPLEX, os.path.join(DIR, "PeleTemplates/box.pdb"), os.path.join(DIR, "PeleTemplates / pele.conf"),
+        files = [os.path.basename(system_fix), os.path.join(DIR, "PeleTemplates/box.pdb"), os.path.join(DIR, "PeleTemplates/pele.conf"),
                  os.path.join(DIR, "PeleTemplates/adaptive_short.conf"), os.path.join(DIR, "PeleTemplates/adaptive_long.conf")]
         directories = FOLDERS
         directories.extend(["output_adaptive_long", "output_adaptive_short", "output_clustering"])
 
-        # Fix protein
-        system_fix, missing_residues = ppp.main(sys)
         # Produce Templates of all missing residues
         for res, chain in missing_residues:
             logger.info("Creating template for residue {}".format(res))
             template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
-            hp.silentremove(lig)
+            hp.silentremove([lig])
 
         # Run Pele
         logger.info("Setting Pele environment folders")
         pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
         logger.info("Create box")
-        # HOWWW???
         box = bx.build_box(CENTER, RADIUS, box_temp)
         logger.info("Creating pele control file")
         ad.AdaptiveBuilder(pele_temp, PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), box.center, box.r)
@@ -180,7 +182,6 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
 
 if __name__ == "__main__":
 
-    env.check_dependencies()
 
     parser = argparse.ArgumentParser(description='Run Adaptive Pele Platform')
     parser.add_argument('input', type=str, help='complex to run pele on')
