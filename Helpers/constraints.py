@@ -14,7 +14,7 @@ BACK_CONSTR = 0.5
 
 CONSTR = '''{{ "type": "constrainAtomToPosition", "springConstant": {0}, "equilibriumDistance": 0.0, "constrainThisAtom": "{1}:{2}:{3}" }},'''
 
-CONSTR_DIST = '''"constraints":[ {{ "type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom": "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}" }},'''
+CONSTR_DIST = '''{{ "type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom": "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}" }},'''
 
 class ConstraintBuilder(object):
 
@@ -50,11 +50,11 @@ class ConstraintBuilder(object):
 
 			constraints.append(constraint)
 
-		constraints.append(constraint_str.format(num_residues, TER_CONSTR).strip(","))
                 
 		constraints = self.gaps_constraints(constraints)
 		constraints = self.metal_constraints(constraints)		
 
+		constraints.append(constraint_str.format(num_residues, TER_CONSTR).strip(","))
 		constraints.append("],")
 
 		return constraints
