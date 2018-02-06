@@ -30,20 +30,17 @@ ATOMIC_WEIGHTS = {'H': 1.008, 'HE': 4.002602, 'LI': 6.94, 'BE': 9.012182,
                   'UUP': 288, 'LV': 293, 'UUS': 294}
 
 
-def center_of_mass(pdbfile, include='ATOM,HETATM'):
-  """
-  Calculates center of mass of a protein and/or ligand structure.
-  Returns:
+def center_of_mass(pdb, include='ATOM,HETATM'):
+    """
+    Calculates center of mass of a protein and/or ligand structure.
+    Returns:
       center (list): List of float coordinates [x,y,z] that represent the
       center of mass (precision 3).
-  """
+    """
+    center = [None, None, None]
+    include = tuple(include.split(','))
 
-  center = [None, None, None]
-  include = tuple(include.split(','))
-
-  with open(pdbfile, 'r') as pdb:
-
-    # extract coordinates [ [x1,y1,z1], [x2,y2,z2], ... ]
+    # extract coordinates [ [x1,y1,z1], [x2,y2,z2], ... ]   
     coordinates = []
     masses = []
     for line in pdb:
