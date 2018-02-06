@@ -111,7 +111,7 @@ def parse_values(reports, n_structs, criteria, sort_order):
         report_values =  selected_data.nsmallest(n_structs, criteria)
         report_values.insert(0, PATH, [file]*report_values[criteria].size)
         report_values.insert(1, REPORT, [report_number]*report_values[criteria].size)
-        report_values = report_values[report_values[criteria].between(0.95, 0.98, inclusive=True)]
+        report_values = report_values[report_values[criteria].between(0.0, 1, inclusive=True)]
         try:
             values = pd.concat([values, report_values])
         except ValueError:
