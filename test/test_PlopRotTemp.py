@@ -943,7 +943,7 @@ def test_PlopRotTemp_parent_tree(input_file):
 @pytest.mark.parametrize("input_file", glob.glob('./test/data/pdbbind/*.pdb'))
 def test_PlopRotTemp_pele_plop(input_file):
 
-  cmd = ["bash", "PelePlop.sh", "--mtor", "4", "--clean", "{}".format(input_file), "LIG", "Z"]
+  cmd = ["python", "main.py", "--mtor", "4", "--clean", "{}".format(input_file), "LIG", "Z"]
 
   process = subprocess.Popen(cmd,shell=False,stdin=None,stdout=None,stderr=None,close_fds=True, preexec_fn=os.setsid)
 

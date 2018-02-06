@@ -134,6 +134,7 @@ DUMMY_ANGLE = 45.73961
 DUMMY_DIHEDRAL = 13.21566
 DEFAULT_ATOMTYPE = [0.000, 0.000, 1.500, 1.250, 0.005000000, 0.000000000] 
 DEFAULT_RADIUS_VDW = '0.5000'  
+DEFAULT_EPSILON = '0.0300'
 STANDARD_RESIDUE_NAME = 'LIG'
 ERROR_ATOMNAMES = "The keywords in the atom section form the .mae file don't match the regular " \
                   "expressions currently implemented. ATOM NAMES ARE COMPULSORY."
@@ -426,10 +427,15 @@ def replace_vdwr_from_library(rotamer_library):
   for i, rdw_line in enumerate(radius_vdw_info):
     NBOND_info = rdw_line.split()
     rdw = float(NBOND_info[1])/2.0
+    epsilon = float(NBOND_info[2])
     
     if(rdw == 0):
       warnings.warn("Van der Waals of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
       NBOND_info[1] = DEFAULT_RADIUS_VDW
+      found = True
+    if(epsilon == 0):
+      warnings.warn("Epsilon of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
+      NBOND_info[2] = DEFAULT_EPSILON
       found = True
     lines.append(NBOND_info)
 
@@ -1625,15 +1631,12 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
 
 
 def get_torsions_from_mae(mae_file, residue_name):
-  pdb_file = residue_name + ".pdb"
+  pdb_file = residue_name + "_torsions.pdb"
   struct = structure.StructureReader(mae_file).next()
   struct.write(pdb_file)
   mol = Chem.MolFromPDBFile(pdb_file, False)
   torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
   torsions = [[tor[0], tor[1]] for tor in torsions]
-  OH_torsions = find_OH_torsions(struct, mae_file)
-  NH2_torsions = find_NH2_torsions(struct, mae_file)
-  torsions.extend(OH_torsions+NH2_torsions)
   try:
     os.remove(pdb_file)
   except OSError:
@@ -1652,7 +1655,7 @@ def find_OH_torsions(struct, mae_file):
   bonds = find_bonds_in_mae(mae_file)
   for bond in bonds:
       #struct reader atom list start at 1
-      if(atoms[bond[0]+1]._getAtomElement() == 'O' and atoms[bond[1]+1]._getAtomElement()== 'H'):
+      if(atoms[bond[0]+1].element == 'O' and atoms[bond[1]+1].element== 'H'):
         oxygen_atoms.append(bond[0])
         OH_bonds.append(bond)
   for bond in bonds:
@@ -1675,7 +1678,7 @@ def find_NH2_torsions(struct, mae_file):
   #Find all NH bonds and Natoms
   for bond in bonds:
       #struct reader atom list start at 1
-      if(atoms[bond[0]+1]._getAtomElement() == 'N' and atoms[bond[1]+1]._getAtomElement()== 'H'):
+      if(atoms[bond[0]+1].element == 'N' and atoms[bond[1]+1].element== 'H'):
         NH_bonds.append(bond)
         if(bond[0] not in nitrogen_atoms):
           nitrogen_atoms.append(bond[0])
@@ -1718,7 +1721,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_g
     #Convert to cart
     # cart = int2xyz(zmat, old_parent)
     str1 = structure.StructureReader(mae_file).next()
-    cart = [atom._getXYZ() for atom in str1.atom]
+    cart = [atom.xyz for atom in str1.atom]
      # print 'cartesian(xyz)'
      # for i in range(len(old_parent)):
      #    print 'X',cart[i][0],cart[i][1],cart[i][2]
@@ -1786,7 +1789,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_g
                     rank_str = ' M'
             else:
                 rank_str = ' S'
-        if(len(name[j]) < 4):
+        if(len(name[j]) > 1 and len(name[j]) < 4):
           outline = '{0:>5} {1:>5}{2:>0} {3:>4}   _{4:_^3} {5:>5} {6:>11.6f} {7:>11.6f} {8:>11.6f}\n'.format(
               str(i + 1), str(new_parent[i] + 1), rank_str, at[j], name[j], mat[j], zmat[i][0], zmat[i][1],
               zmat[i][2])
@@ -2556,7 +2559,7 @@ def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, orderi
     tors_values = []
     for st in structure.StructureReader(conf_file):
         # Read in the xyz coordinates into cart
-        cart = [atom._getXYZ() for atom in str1.atom]
+        cart = [atom.xyz for atom in str1.atom]
 
         #    print 'cartesian(xyz)'
         #    for i in range(len(cart)):
