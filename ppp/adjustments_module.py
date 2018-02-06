@@ -5,7 +5,7 @@ from prody import calcDistance
 from checks_module import CheckClashes
 from coordinates_module import ChangeResidueCoordinates
 from global_processes import FindInitialAndFinalResidues
-from global_variables import protein_atomnames_dictionary, supported_aminoacids
+from global_variables import protein_atomnames_dictionary, supported_aminoacids, supported_metals
 from program_own_classes import ROTAMERLIB
 
 __author__ = 'jelisa'
@@ -158,28 +158,20 @@ def WritingAtomNames(initial_structure):
     correct_names_structure = initial_structure.copy()
     for atom in correct_names_structure.iterAtoms():
         atom_name = atom.getName()
-        if atom_name == "CL":
-            atom_name = "CL  ".format(atom_name)
+        if atom.getResname() in supported_metals:
+            atom_name = "{0}  ".format(atom_name)
         elif atom_name == "1HW":
             atom_name = "1HW "
         elif atom_name == "2HW":
             atom_name = "2HW "
-        elif atom_name == "CU":
-            atom_name = "CU  "
         elif atom_name == "FE1":
             atom_name = "FE1 "
         elif atom_name == "FE2":
             atom_name = "FE2 "
-        elif atom_name == "ZN":
-            atom_name = "ZN  "
-        elif atom_name == "MG":
-            atom_name = "MG  "
         elif atom.getResname() == "NA":
             atom_name = "NA  "
-        elif atom.getResname() == "CA":
-            atom_name = "CA  "
-        elif atom.getResname() == "MN":
-            atom_name = "MN  "
+        elif atom_name == "CL":
+            atom_name = "CL  ".format(atom_name)
         elif len(atom_name) == 1:
             atom_name = " " + atom_name + "  "
         elif len(atom_name) == 2:
