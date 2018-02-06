@@ -13,7 +13,7 @@ import Adaptive.clusterAdaptiveRun as cl
 import Helpers.center_of_mass as cm
 import Helpers.constraints as ct
 import SystemBuilder.system_prep as sp
-from Box import box, translateLigand
+import Box.box as bx
 import ppp.mut_prep4pele as ppp
 import msm.analysis as msm
 
@@ -33,7 +33,7 @@ ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RE
 
 EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS"]
 
-PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "BOX_CENTER", "BOX_RADIUS"]
+PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
 
 NATIVE = '''
                         {{
@@ -92,11 +92,11 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
     
     # Preparative for Pele
     logger.info("Retrieving Ligands & Complexes")
-    receptor, lig_ref = sp.retrieve_receptor(system)
+    receptor, lig_ref = sp.retrieve_receptor(system, residue)
     complexes, ligands, residues = sp.build_complexes(ligands, receptor)
     pele_dirs = [os.path.abspath("{}_Pele".format(residue)) for residue in residues]
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
-    center_mass = cm.center_of_mass(lig_ref) 
+    center_mass = cm.center_of_mass(lig_ref.getvalue()) 
 
     for residue, lig, sys, pele_dir in zip(residues, ligands, complexes, pele_dirs):
  
@@ -128,13 +128,13 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
                  os.path.join(DIR, "PeleTemplates/adaptive_exit.conf"), os.path.join(DIR, "PeleTemplates/adaptive_long.conf")]
         directories = FOLDERS
         directories.extend(["output_adaptive_long", "output_adaptive_exit", "output_clustering"])
-       # pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
+        pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
 
         
-       # logger.info("Preparing ExitPath Adaptive Env")
-       # ad.AdaptiveBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints))
-       # adaptive_exit = ad.AdaptiveBuilder(ad_ex_temp, ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_temp, residue)
-        #adaptive_exit.run()  
+        logger.info("Preparing ExitPath Adaptive Env")
+        ad.AdaptiveBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints))
+        adaptive_exit = ad.AdaptiveBuilder(ad_ex_temp, ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_temp, residue)
+        adaptive_exit.run()  
        
 
         logger.info("MSM Clustering")
@@ -142,12 +142,13 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
             cl.main(num_clusters=CLUSTERS, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
 
         logger.info("Create box")
-        center, radius = main(adap_ex_output , clusters , center_mass)
-        box = box.build_box(center, radius, box_temp)
+        center, radius = bx.main(adap_ex_output , clusters , center_mass)
+        box = bx.build_box(center, radius, box_temp)
 
         logger.info("Running standard Pele")
+        ad.AdaptiveBuilder(pele_temp, PELE_KEYWORDS, center, radius)
         adaptive_long = ad.AdaptiveBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue)
-        #adaptive_long.run()
+        adaptive_long.run()
        
         logger.info("Extracting dG with MSM analysis") 
         msm.analyse_results(adap_l_output, residue)
