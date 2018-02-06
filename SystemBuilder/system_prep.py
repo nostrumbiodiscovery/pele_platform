@@ -1,6 +1,6 @@
 import os
 from schrodinger import structure as st
-
+import StringIO
 
 def build_complexes(ligands, receptor):
     """
@@ -62,7 +62,7 @@ def systems(receptor, structs):
     return structs
 
 
-def retrieve_receptor(system):
+def retrieve_receptor(system, residue):
     """
     This function returns receptor of the complex of interest.
 
@@ -70,13 +70,16 @@ def retrieve_receptor(system):
 
     :output: receptor text
     """
-
-    receptor_text = ""
-
+     
+    ligand = StringIO.StringIO()
+    
     with open(system, 'r') as pdb_file:
         receptor_text = [line for line in pdb_file if line.startswith("ATOM")]
+        ligand_text = [line for line in pdb_file if line[17:20].strip() == residue]
 
-    if receptor_text == "":
+    if receptor_text == "" or ligand_text == "" :
         raise ValueError("Something went wrong when extracting the ligand. Ligand must be a HETATOM")
-
-    return "".join(receptor_text)
+   
+    ligand.write("".join(ligand_text))
+    
+    return "".join(receptor_text), ligand
