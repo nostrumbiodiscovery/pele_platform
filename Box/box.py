@@ -7,24 +7,16 @@ import numpy as np
 import argparse
 import math
 from operator import itemgetter, attrgetter
-
-
-
-import Helpers.helpers as hp
-import Helpers.pele_env as pele
-import Adaptive.adaptive as ad
-import Adaptive.clusterAdaptiveRun as cl
-import Helpers.center_of_mass as cm
-import Helpers.constraints as ct
-from Box import box, best_structs
-import ppp.mut_prep4pele as ppp
-import msm.analysis as msm
-
-
-BS = [0, 0, 0]
+import best_structs
+from Adaptive import template_builder as tb
 
 __author__ = "Daniel Soler Viladrich"
 __email__ = "daniel.soler@nostrumbiodiscovery.com"
+
+BS = [0, 0, 0]
+KEYWORDS = ["CENTER_X", "CENTER_Y", "CENTER_Z", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8"]
+COORD = "{:>11.3f}{:>8.3f}{:>8.3f}"
+CENTER = "{:.3f}"
 
 
 def parseargs():
@@ -142,6 +134,28 @@ def WireframeSphere(centre, radius, n_meridians=20, n_circles_latitude=None):
     sphere_z = centre[2] + radius * np.cos(v)
     return sphere_x, sphere_y, sphere_z
 
+def build_box(center, radius, file):
+
+    cx, cy, cz = center
+    v1 = COORD.format(cx - radius, cy - radius, cz - radius)
+    v2 = COORD.format(cx + radius, cy - radius, cz - radius)
+    v3 = COORD.format(cx + radius, cy - radius, cz + radius)
+    v4 = COORD.format(cx - radius, cy - radius, cz + radius)
+    v5 = COORD.format(cx - radius, cy + radius, cz - radius)
+    v6 = COORD.format(cx + radius, cy + radius, cz - radius)
+    v7 = COORD.format(cx + radius, cy + radius, cz + radius)
+    v8 = COORD.format(cx - radius, cy + radius, cz + radius)
+    cx = CENTER.format(cx)
+    cy = CENTER.format(cy)
+    cz = CENTER.format(cz)
+
+    values = [cx, cy, cz, v1, v2, v3, v4, v5, v6, v7, v8]
+
+    replace = {keyword: value for keyword, value in zip(KEYWORDS, values)}
+
+    tb.TemplateBuilder(file, replace)
+
+    return file
 
 if __name__ == '__main__':
         #with pele.cd("/home/dsoler/1sqa/output_adaptive_short/"):
