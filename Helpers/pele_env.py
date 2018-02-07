@@ -4,7 +4,6 @@ import shutil
 import warnings
 
 
-
 class Pele_env_Builder(object):
 		"""
 			Base class wher the needed pele environment
@@ -79,18 +78,6 @@ class Pele_env_Builder(object):
 			else:
 				shutil.copy(standard, self.pele_dir)
                         return os.path.join(self.pele_dir,standard)
-
-class cd:
-    """Context manager for changing the current working directory"""
-    def __init__(self, newPath):
-        self.newPath = os.path.expanduser(newPath)
-
-    def __enter__(self):
-        self.savedPath = os.getcwd()
-        os.chdir(self.newPath)
-
-    def __exit__(self, etype, value, traceback):
-        os.chdir(self.savedPath)
 
 
 def set_pele_env(system,  folders, files, forcefield, template, rotamers_file, pele_dir):
