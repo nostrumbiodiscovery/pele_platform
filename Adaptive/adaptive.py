@@ -1,7 +1,7 @@
 import os
 import sys
 import subprocess
-from Helpers.pele_env import cd
+from Helpers.helpers import cd
 from template_builder import TemplateBuilder
 import AdaptivePELE.adaptiveSampling as ad
 
