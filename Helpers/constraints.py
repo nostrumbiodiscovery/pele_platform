@@ -12,9 +12,11 @@ TER_CONSTR = 2.5
 
 BACK_CONSTR = 0.5
 
-CONSTR = '''{{ "type": "constrainAtomToPosition", "springConstant": {0}, "equilibriumDistance": 0.0, "constrainThisAtom": "{1}:{2}:{3}" }},'''
+CONSTR_ATOM = '''{{ "type": "constrainAtomToPosition", "springConstant": {0}, "equilibriumDistance": 0.0, "constrainThisAtom": "{1}:{2}:{3}" }},'''
 
 CONSTR_DIST = '''{{ "type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom": "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}" }},'''
+
+CONSTR_CALPHA = '''{{ "type": "constrainAtomToPosition", "springConstant": {1}, "equilibriumDistance": 0.0, "constrainThisAtom": "A:{0}:_CA_" }},'''
 
 class ConstraintBuilder(object):
 
@@ -38,43 +40,38 @@ class ConstraintBuilder(object):
 
 	def build_constraint(self, initial_res, num_residues):
 
-		constraints = ['''"constraints":[''', ]
-
-		constraint_str = '''{{ "type": "constrainAtomToPosition", "springConstant": {1}, "equilibriumDistance": 0.0, "constrainThisAtom": "A:{0}:_CA_" }},'''
-
-		for i in range(initial_res, num_residues, 10):
-			if(i==1):
-				constraint = constraint_str.format(i, TER_CONSTR)
-			else:
-				constraint = constraint_str.format(i, BACK_CONSTR)
-
-			constraints.append(constraint)
-
                 
-		constraints = self.gaps_constraints(constraints)
-		constraints = self.metal_constraints(constraints)		
+		init_constr = ['''"constraints":[''', ]
 
-		constraints.append(constraint_str.format(num_residues, TER_CONSTR).strip(","))
-		constraints.append("],")
+		back_constr = [CONSTR_CALPHA.format(i, BACK_CONSTR) for i in range(initial_res+1, num_residues, 10)]
+
+		gaps_constr = self.gaps_constraints()
+
+		metal_constr = self.metal_constraints()		
+
+                terminal_constr = [CONSTR_CALPHA.format(initial_res, TER_CONSTR), CONSTR_CALPHA.format(num_residues, TER_CONSTR).strip(",")]
+
+                final_constr = [ "],"]
+
+		constraints = init_constr + back_constr + gaps_constr + metal_constr + terminal_constr + final_constr
 
 		return constraints
 	
-	def gaps_constraints(self, constraints):
+	def gaps_constraints(self):
+                gaps_constr = []
        		for  chain, residues in self.gaps.iteritems():
-                	for residue in residues:
-				constraint = CONSTR.format(10, chain, residue, "_CA_")
-				constraints.append(constraint)
-		return constraints
+                 	gaps_constr = [CONSTR_ATOM.format(10, chain, residue, "_CA_") for residue in residues]
+		return gaps_constr
 	
-	def metal_constraints(self, constraints):
+	def metal_constraints(self):
+		metal_constr = []
 		for metal, ligands in self.metals.iteritems():
 			metal_name, chain, metnum = metal.split(" ")
                         for ligand in ligands:
 				ligand_info, bond_lenght = ligand
 				resnum, resname, chain, ligname = ligand_info.split(" ")
-                        	constraint = CONSTR_DIST.format(5, bond_lenght, chain, resnum, ligname, chain, metnum, metal_name)
-				constraints.append(constraint)
-		return constraints
+                        	metal_constr.append(CONSTR_DIST.format(5, bond_lenght, chain, resnum, ligname, chain, metnum, metal_name))				
+		return metal_constr
 
         
 
@@ -82,7 +79,6 @@ def retrieve_constraints(pdb_file, gaps, metal):
 	constr = ConstraintBuilder(pdb_file, gaps, metal)
 	initial_res, final_res = constr.parse_atoms()
 	constraints = constr.build_constraint(initial_res, final_res)
-        print(constraints)
 	return constraints
 
 
