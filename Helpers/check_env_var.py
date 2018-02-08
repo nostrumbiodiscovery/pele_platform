@@ -42,15 +42,10 @@ def check_dependencies():
         os.environ["SCHRODINGER"] = constants.SCHRODINGER
         os.environ["PELE"] = constants.PELE
         os.environ["PATH"] = "{}:{}".format(os.environ["PATH"], constants.MPIRUN)
-
         sys.path.insert(0, os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))       
         sys.path.insert(0, constants.ADAPTIVE)        
-        """
-        try:
-            os.environ["LD_LIBRARY_PATH"] = "{1}:{0}".format(os.environ["LD_LIBRARY_PATH"], os.path.join(os.environ["SCHRODINGER"],"mmshare-v4.0/lib/Linux-x86_64/"))
-        except KeyError:
-            os.environ["LD_LIBRARY_PATH"] = os.path.join(os.environ["SCHRODINGER"],"mmshare-v4.0/lib/Linux-x86_64/")
-        """
+  
+
         try:
 		os.environ["SCHRODINGER"]
 	except KeyError:
