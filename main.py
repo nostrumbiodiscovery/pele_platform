@@ -87,7 +87,7 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
+def run(system, residue, chain, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
     
     # Preparative for Pele
     logger.info("Retrieving Ligands & Complexes")
@@ -165,7 +165,6 @@ if __name__ == "__main__":
     parser.add_argument('input', type=str, help='complex to run pele on')
     parser.add_argument('residue', type=str, help='residue of the ligand to extract', default=LIG_RES)
     parser.add_argument('chain', type=str, help='forcefield to use', default=LIG_CHAIN)
-    parser.add_argument('ligands', type=str, help='ligands to run pele on')
     parser.add_argument('--forc', type=str, help='chain of the ligand to extract', default=FORCEFIELD)
     parser.add_argument('--confile', type=str, help='your own pele configuration file', default=PELE_CONFILE)
     parser.add_argument('--native', type=str, help='native file to compare RMSD to', default="")
@@ -178,4 +177,4 @@ if __name__ == "__main__":
     parser.add_argument("--only_plop", help="Whether to run PlopRotTemp or both", action='store_true')
     args = parser.parse_args()
 
-    run(args.input, args.residue, args.chain, args.ligands, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.mae_charges, args.clean, args.only_plop)
+    run(args.input, args.residue, args.chain, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.mae_charges, args.clean, args.only_plop)
