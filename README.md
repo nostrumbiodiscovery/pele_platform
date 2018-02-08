@@ -12,9 +12,10 @@ Monte Carlo Protein Energy Landscape Exploration (PELE) coupled with Markov Stat
 
 # Getting Started
 -------------------
+0) git clone https://github.com/miniaoshi/MSM_PELE.git
 1) Change all paths under **MSM_Pele/constants.py** to your local environment.
 
-2) Export LD_LYBRARY_PATH as next to make schrodinger python work:
+2) Change LD_LYBRARY_PATH as next in the conf.sl to make schrodinger python work:
 -  `e.g. export LD_LIBRARY_PATH=**/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/mmshare-v4.0/lib/Linux-x86_64/**:$LD_LIBRARY_PATH`
 3) Fulfill the next dependencies:
 - Adaptive Pele
@@ -23,6 +24,7 @@ Monte Carlo Protein Energy Landscape Exploration (PELE) coupled with Markov Stat
 4) Run the platform as:
 - python MSM_PELE/main.pdb pdb_with_complex residuename chain
 -  `e.g. python /home/dsoler/PelePlop/main.py PR_1A28_xray_-_minimized.pdb STR Z`
+- slurm: `sbatch conf.sl` (change the complex path)
 
 # Arguments:
 ---------------
