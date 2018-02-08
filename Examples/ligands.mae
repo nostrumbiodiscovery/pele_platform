@@ -1,0 +1,1169 @@
+{ 
+ s_m_m2io_version
+ :::
+ 2.0.0 
+} 
+
+f_m_ct { 
+ s_m_title
+ s_m_entry_id
+ s_m_entry_name
+ s_pdb_PDB_format_version
+ s_m_Source_Path
+ s_m_Source_File
+ i_m_Source_File_Index
+ s_ppw_entry_id_backup
+ b_ppw_prepared
+ s_ppw_prepared_with_version
+ b_ppw_assigned_bond_orders
+ b_ppw_added_hydrogens
+ b_ppw_treated_metals
+ b_ppw_created_disulfur
+ b_ppw_deleted_far_waters
+ i_lp_mmshare_version
+ r_lp_tautomer_probability
+ s_st_Chirality_1
+ s_st_Chirality_2
+ s_st_Chirality_3
+ s_st_Chirality_4
+ s_st_Chirality_5
+ s_st_Chirality_6
+ i_f3d_flags
+ s_lp_Force_Field
+ r_lp_Energy
+ b_lp_Chiralities_Consistent
+ s_lp_Variant
+ s_m_job_name
+ s_ppw_group_name_backup
+ s_st_EZ_1
+ i_m_Molecular_charge
+ i_m_Spin_multiplicity
+ s_j_Task
+ s_j_Jaguar_input_file
+ s_j_Jaguar_restart_input_file
+ s_j_Jaguar_restart_mae_file
+ s_j_Jaguar_output_file
+ s_j_Jaguar_log_file
+ s_j_Jaguar_mae_file
+ s_j_QM_Method
+ s_j_QM_Basis
+ i_j_Number_of_canonical_orbitals
+ r_j_Gas_Phase_Energy
+ r_j_Solution_Phase_Energy
+ r_j_Solvation_Energy_(kcal/mol)
+ r_j_HOMO
+ r_j_LUMO
+ s_j_jname
+ i_m_ct_format
+ :::
+ STR 
+  4 
+  PR_1A28_xray.1 
+  3.0 
+  /home/dani/Downloads 
+  ligands.mae 
+  4
+  6 
+  1
+  2017-3 
+  1
+  1
+  1
+  1
+  1
+  39016
+  0.99999997
+  9_S_10_15_8_33 
+  10_S_11_9_12_34 
+  11_R_6_10_1_20 
+  14_S_18_15_13_19 
+  15_S_14_9_16_39 
+  18_S_21_14_17_44 
+  0
+  OPLS_2005 
+  48.1246748746474
+  1
+  "STR - preprocessed-1" 
+  jag_batch_spe_B3LYP_6-31Gss 
+  group-new1 
+  3_5_6_11_Z 
+  0
+  1
+  "Single Point" 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/STR_2_1_B3LYP_6-31Gss_isomer7.in 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/STR_2_1_B3LYP_6-31Gss_isomer7.01.in 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/STR_2_1_B3LYP_6-31Gss_isomer7.01.mae 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/STR_2_1_B3LYP_6-31Gss_isomer7.out 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/STR_2_1_B3LYP_6-31Gss_isomer7.log 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/STR_2_1_B3LYP_6-31Gss_isomer7.mae 
+  DFT(b3lyp)/SOLV 
+  6-31g** 
+  495
+  -968.793904914263
+  -968.810111211141
+  -10.1696047644047
+  -0.245173096055434
+  -0.0515695811323786
+  STR_2_1_B3LYP_6-31Gss_isomer7 
+  2
+ m_depend[26] { 
+  # First column is dependency index #
+  i_m_depend_dependency
+  s_m_depend_property
+  :::
+  1 10 r_lp_tautomer_probability 
+  2 10 s_st_Chirality_1 
+  3 10 s_st_Chirality_2 
+  4 10 s_st_Chirality_3 
+  5 10 s_st_Chirality_4 
+  6 10 s_st_Chirality_5 
+  7 10 s_st_Chirality_6 
+  8 30 s_m_job_name 
+  9 10 s_st_EZ_1 
+  10 20 i_m_Molecular_charge 
+  11 20 i_m_Spin_multiplicity 
+  12 20 s_j_Task 
+  13 20 s_j_Jaguar_input_file 
+  14 20 s_j_Jaguar_restart_input_file 
+  15 20 s_j_Jaguar_restart_mae_file 
+  16 20 s_j_Jaguar_output_file 
+  17 20 s_j_Jaguar_log_file 
+  18 20 s_j_Jaguar_mae_file 
+  19 20 s_j_QM_Method 
+  20 20 s_j_QM_Basis 
+  21 20 i_j_Number_of_canonical_orbitals 
+  22 20 r_j_Gas_Phase_Energy 
+  23 20 r_j_Solution_Phase_Energy 
+  24 20 r_j_Solvation_Energy_(kcal/mol) 
+  25 20 r_j_HOMO 
+  26 20 r_j_LUMO 
+  :::
+ } 
+ m_atom[53] { 
+  # First column is atom index #
+  i_m_mmod_type
+  r_m_x_coord
+  r_m_y_coord
+  r_m_z_coord
+  i_m_residue_number
+  s_m_chain_name
+  i_m_color
+  r_m_charge1
+  r_m_charge2
+  s_m_pdb_residue_name
+  s_m_pdb_atom_name
+  i_m_atomic_number
+  s_m_color_rgb
+  s_m_atom_name
+  s_m_label_format
+  i_m_label_color
+  s_m_label_user_text
+  r_j_ESP_Charges
+  r_m_pdb_occupancy
+  r_m_pdb_tfactor
+  i_m_pdb_convert_problem
+  i_pdb_PDB_serial
+  i_ppw_anum
+  i_ppw_het
+  s_ppw_CCD_assignment_status
+  b_st_NoSrcChirality
+  :::
+  1 3 -38.820700 59.546885 7.698158 1 Z 10 0.16022 0.16022 "STR " " C1 " 6 1EE11E  C1  "%UT"  10 ""  0.160216147263265 1 24.82 4 4139 1 1 "CCD match"  <>
+  2 3 -39.594097 58.832753 6.583385 1 Z 10 -0.41944 -0.41944 "STR " " C2 " 6 1EE11E  C2  "%UT"  10 ""  -0.419435039792368 1 23.75 4 4140 2 1 "CCD match"  <>
+  3 2 -38.950882 57.486234 6.273385 1 Z 10 0.73638 0.73638 "STR " " C3 " 6 1EE11E  C3  "%UT"  10 ""  0.736378148683233 1 25.95 4 4141 3 1 "CCD match"  <>
+  4 15 -38.923031 57.078571 5.114163 1 Z 75 -0.62431 -0.62431 "STR " " O3 " 8 FF5757  O4  "%UT"  75 ""  -0.624308241377982 1 31.79 4 4142 4 1 "CCD match"  <>
+  5 2 -38.415759 56.715364 7.402412 1 Z 10 -0.53183 -0.53183 "STR " " C4 " 6 1EE11E  C5  "%UT"  10 ""  -0.531828101251965 1 21.13 4 4143 5 1 "CCD match"  <>
+  6 2 -38.305639 57.241655 8.641361 1 Z 10 0.16712 0.16712 "STR " " C5 " 6 1EE11E  C6  "%UT"  10 ""  0.167123178454525 1 20.44 4 4144 6 1 "CCD match"  <>
+  7 3 -37.826127 56.376390 9.796968 1 Z 10 -0.10984 -0.10984 "STR " " C6 " 6 1EE11E  C7  "%UT"  10 ""  -0.10984069872837 1 23.35 4 4145 7 1 "CCD match"  <>
+  8 3 -36.666944 57.029446 10.551621 1 Z 10 -0.02965 -0.02965 "STR " " C7 " 6 1EE11E  C8  "%UT"  10 ""  -0.0296466568789917 1 28.93 4 4146 8 1 "CCD match"  <>
+  9 3 -37.050931 58.431717 11.049895 1 Z 10 -0.07879 -0.07879 "STR " " C8 " 6 1EE11E  C9  "%UT"  10 ""  -0.0787916830264821 1 21.68 4 4147 9 1 "CCD match"  1
+  10 3 -37.481028 59.324459 9.846447 1 Z 10 -0.04582 -0.04582 "STR " " C9 " 6 1EE11E  C10  "%UT"  10 ""  -0.0458230695436804 1 20.21 4 4148 10 1 "CCD match"  1
+  11 3 -38.647449 58.704380 8.997154 1 Z 10 0.05920 0.05920 "STR " " C10" 6 1EE11E  C11  "%UT"  10 ""  0.0591988248806634 1 19.15 4 4149 11 1 "CCD match"  1
+  12 3 -37.718805 60.802257 10.277190 1 Z 10 -0.01283 -0.01283 "STR " " C11" 6 1EE11E  C12  "%UT"  10 ""  -0.0128253518030761 1 20.97 4 4150 12 1 "CCD match"  <>
+  13 3 -36.557059 61.399235 11.102430 1 Z 10 -0.10335 -0.10335 "STR " " C12" 6 1EE11E  C13  "%UT"  10 ""  -0.103353118498883 1 21.57 4 4151 13 1 "CCD match"  <>
+  14 3 -36.212883 60.515103 12.319161 1 Z 10 0.35584 0.35584 "STR " " C13" 6 1EE11E  C14  "%UT"  10 ""  0.355841952389667 1 21.81 4 4152 14 1 "CCD match"  1
+  15 3 -35.878589 59.110472 11.789126 1 Z 10 0.01484 0.01484 "STR " " C14" 6 1EE11E  C15  "%UT"  10 ""  0.0148436917307789 1 21.81 4 4153 15 1 "CCD match"  1
+  16 3 -35.230919 58.399657 12.980666 1 Z 10 0.01989 0.01989 "STR " " C15" 6 1EE11E  C16  "%UT"  10 ""  0.0198936177731568 1 26.96 4 4154 16 1 "CCD match"  <>
+  17 3 -34.453430 59.516863 13.702547 1 Z 10 -0.23522 -0.23522 "STR " " C16" 6 1EE11E  C17  "%UT"  10 ""  -0.235215538208151 1 31.06 4 4155 17 1 "CCD match"  <>
+  18 3 -34.868178 60.845790 13.018289 1 Z 10 -0.05590 -0.05590 "STR " " C17" 6 1EE11E  C18  "%UT"  10 ""  -0.0558975894543501 1 22.28 4 4156 18 1 "CCD match"  1
+  19 3 -37.389911 60.529490 13.340919 1 Z 10 -0.55127 -0.55127 "STR " " C18" 6 1EE11E  C19  "%UT"  10 ""  -0.551271387611322 1 20.57 4 4157 19 1 "CCD match"  <>
+  20 3 -39.987720 58.713790 9.772412 1 Z 10 -0.41094 -0.41094 "STR " " C19" 6 1EE11E  C20  "%UT"  10 ""  -0.410943799182148 1 21.41 4 4158 20 1 "CCD match"  <>
+  21 2 -34.871572 62.084003 13.933745 1 Z 10 0.60621 0.60621 "STR " " C20" 6 1EE11E  C21  "%UT"  10 ""  0.606210850317128 1 25.07 4 4159 21 1 "CCD match"  <>
+  22 15 -34.855536 61.993705 15.160495 1 Z 75 -0.57056 -0.57056 "STR " " O20" 8 FF5757  O22  "%UT"  75 ""  -0.570560463059577 1 29.48 4 4160 22 1 "CCD match"  <>
+  23 3 -34.891328 63.451260 13.259702 1 Z 10 -0.52035 -0.52035 "STR " " C21" 6 1EE11E  C23  "%UT"  10 ""  -0.520352582655495 1 25.63 4 4161 23 1 "CCD match"  <>
+  24 41 -39.319414 60.491233 7.917343 1 Z 21 0.02545 0.02545 "STR " " H11" 1 FFFFFF  H24  ""  21 ""  0.0254452433244973 <> <> <> <> <> <> <> <>
+  25 41 -37.841777 59.819193 7.300159 1 Z 21 -0.00586 -0.00586 "STR " " H12" 1 FFFFFF  H25  ""  21 ""  -0.00585747085814736 <> <> <> <> <> <> <> <>
+  26 41 -39.610594 59.446425 5.682282 1 Z 21 0.10405 0.10405 "STR " " H21" 1 FFFFFF  H26  ""  21 ""  0.104053869117012 <> <> <> <> <> <> <> <>
+  27 41 -40.630129 58.669293 6.879743 1 Z 21 0.13073 0.13073 "STR " " H22" 1 FFFFFF  H27  ""  21 ""  0.130731882838313 <> <> <> <> <> <> <> <>
+  28 41 -38.149510 55.684820 7.218145 1 Z 21 0.18502 0.18502 "STR " " H4 " 1 FFFFFF  H28  ""  21 ""  0.185018724200922 <> <> <> <> <> <> <> <>
+  29 41 -37.520803 55.393757 9.435010 1 Z 21 0.06858 0.06858 "STR " " H61" 1 FFFFFF  H29  ""  21 ""  0.0685756219108272 <> <> <> <> <> <> <> <>
+  30 41 -38.660735 56.205035 10.477207 1 Z 21 0.07219 0.07219 "STR " " H62" 1 FFFFFF  H30  ""  21 ""  0.0721910788008786 <> <> <> <> <> <> <> <>
+  31 41 -35.793544 57.088598 9.900687 1 Z 21 0.03726 0.03726 "STR " " H71" 1 FFFFFF  H31  ""  21 ""  0.0372607770376392 <> <> <> <> <> <> <> <>
+  32 41 -36.385209 56.393492 11.391177 1 Z 21 0.01854 0.01854 "STR " " H72" 1 FFFFFF  H32  ""  21 ""  0.0185398886073913 <> <> <> <> <> <> <> <>
+  33 41 -37.883288 58.315610 11.741739 1 Z 21 0.05674 0.05674 "STR " " H8 " 1 FFFFFF  H33  ""  21 ""  0.0567399931863248 <> <> <> <> <> <> <> <>
+  34 41 -36.611892 59.354350 9.186587 1 Z 21 0.03006 0.03006 "STR " " H9 " 1 FFFFFF  H34  ""  21 ""  0.0300638668885344 <> <> <> <> <> <> <> <>
+  35 41 -38.640923 60.886751 10.849227 1 Z 21 0.02666 0.02666 "STR " "H111" 1 FFFFFF  H35  ""  21 ""  0.0266649271521524 <> <> <> <> <> <> <> <>
+  36 41 -37.859657 61.432597 9.400013 1 Z 21 0.00574 0.00574 "STR " "H112" 1 FFFFFF  H36  ""  21 ""  0.00573701182993522 <> <> <> <> <> <> <> <>
+  37 41 -36.817712 62.408010 11.422345 1 Z 21 0.01851 0.01851 "STR " "H121" 1 FFFFFF  H37  ""  21 ""  0.0185054586490201 <> <> <> <> <> <> <> <>
+  38 41 -35.681415 61.502662 10.460331 1 Z 21 0.01097 0.01097 "STR " "H122" 1 FFFFFF  H38  ""  21 ""  0.0109692989708322 <> <> <> <> <> <> <> <>
+  39 41 -35.081089 59.220408 11.049944 1 Z 21 0.01172 0.01172 "STR " " H14" 1 FFFFFF  H39  ""  21 ""  0.0117157963342784 <> <> <> <> <> <> <> <>
+  40 41 -34.577299 57.585256 12.666610 1 Z 21 0.01426 0.01426 "STR " "H151" 1 FFFFFF  H40  ""  21 ""  0.0142638218692682 <> <> <> <> <> <> <> <>
+  41 41 -35.991634 57.977034 13.637996 1 Z 21 0.01124 0.01124 "STR " "H152" 1 FFFFFF  H41  ""  21 ""  0.0112407850652655 <> <> <> <> <> <> <> <>
+  42 41 -33.378051 59.365672 13.605152 1 Z 21 0.07678 0.07678 "STR " "H161" 1 FFFFFF  H42  ""  21 ""  0.0767758328927057 <> <> <> <> <> <> <> <>
+  43 41 -34.685676 59.492854 14.767803 1 Z 21 0.05410 0.05410 "STR " "H162" 1 FFFFFF  H43  ""  21 ""  0.0540960646110923 <> <> <> <> <> <> <> <>
+  44 41 -34.131442 61.044561 12.238796 1 Z 21 0.03342 0.03342 "STR " " H17" 1 FFFFFF  H44  ""  21 ""  0.0334175484481538 <> <> <> <> <> <> <> <>
+  45 41 -37.166243 59.956237 14.240280 1 Z 21 0.14277 0.14277 "STR " "H181" 1 FFFFFF  H45  ""  21 ""  0.142773352733397 <> <> <> <> <> <> <> <>
+  46 41 -37.619431 61.545477 13.662776 1 Z 21 0.12676 0.12676 "STR " "H182" 1 FFFFFF  H46  ""  21 ""  0.126760594851851 <> <> <> <> <> <> <> <>
+  47 41 -38.314209 60.123885 12.934507 1 Z 21 0.13068 0.13068 "STR " "H183" 1 FFFFFF  H47  ""  21 ""  0.130682068355397 <> <> <> <> <> <> <> <>
+  48 41 -40.350675 59.725483 9.951710 1 Z 21 0.11519 0.11519 "STR " "H191" 1 FFFFFF  H48  ""  21 ""  0.115191580804246 <> <> <> <> <> <> <> <>
+  49 41 -40.767475 58.196193 9.213011 1 Z 21 0.11194 0.11194 "STR " "H192" 1 FFFFFF  H49  ""  21 ""  0.111943295256828 <> <> <> <> <> <> <> <>
+  50 41 -39.913149 58.220202 10.740340 1 Z 21 0.12033 0.12033 "STR " "H193" 1 FFFFFF  H50  ""  21 ""  0.120332911639909 <> <> <> <> <> <> <> <>
+  51 41 -34.537212 63.379453 12.231298 1 Z 21 0.12417 0.12417 "STR " "H211" 1 FFFFFF  H51  ""  21 ""  0.124172557408729 <> <> <> <> <> <> <> <>
+  52 41 -35.905201 63.851062 13.250755 1 Z 21 0.16420 0.16420 "STR " "H212" 1 FFFFFF  H52  ""  21 ""  0.164199299819127 <> <> <> <> <> <> <> <>
+  53 41 -34.248710 64.149361 13.796223 1 Z 21 0.15818 0.15818 "STR " "H213" 1 FFFFFF  H53  ""  21 ""  0.158181227834046 <> <> <> <> <> <> <> <>
+  :::
+ } 
+ m_bond[56] { 
+  # First column is bond index #
+  i_m_from
+  i_m_to
+  i_m_order
+  :::
+  1 1 2 1
+  2 1 11 1
+  3 1 24 1
+  4 1 25 1
+  5 2 3 1
+  6 2 26 1
+  7 2 27 1
+  8 3 4 2
+  9 3 5 1
+  10 5 6 2
+  11 5 28 1
+  12 6 7 1
+  13 6 11 1
+  14 7 8 1
+  15 7 29 1
+  16 7 30 1
+  17 8 9 1
+  18 8 31 1
+  19 8 32 1
+  20 9 10 1
+  21 9 15 1
+  22 9 33 1
+  23 10 11 1
+  24 10 12 1
+  25 10 34 1
+  26 11 20 1
+  27 12 13 1
+  28 12 35 1
+  29 12 36 1
+  30 13 14 1
+  31 13 37 1
+  32 13 38 1
+  33 14 15 1
+  34 14 18 1
+  35 14 19 1
+  36 15 16 1
+  37 15 39 1
+  38 16 17 1
+  39 16 40 1
+  40 16 41 1
+  41 17 18 1
+  42 17 42 1
+  43 17 43 1
+  44 18 21 1
+  45 18 44 1
+  46 19 45 1
+  47 19 46 1
+  48 19 47 1
+  49 20 48 1
+  50 20 49 1
+  51 20 50 1
+  52 21 22 2
+  53 21 23 1
+  54 23 51 1
+  55 23 52 1
+  56 23 53 1
+  :::
+ } 
+} 
+
+f_m_ct { 
+ s_m_title
+ s_m_entry_id
+ s_m_entry_name
+ s_pdb_PDB_format_version
+ s_m_Source_Path
+ s_m_Source_File
+ i_m_Source_File_Index
+ s_ppw_entry_id_backup
+ b_ppw_prepared
+ s_ppw_prepared_with_version
+ b_ppw_assigned_bond_orders
+ b_ppw_added_hydrogens
+ b_ppw_treated_metals
+ b_ppw_created_disulfur
+ b_ppw_deleted_far_waters
+ i_lp_mmshare_version
+ r_lp_tautomer_probability
+ s_st_Chirality_1
+ s_st_Chirality_2
+ s_st_Chirality_3
+ s_st_Chirality_4
+ s_st_Chirality_5
+ s_st_Chirality_6
+ s_st_Chirality_7
+ i_f3d_flags
+ s_lp_Force_Field
+ r_lp_Energy
+ b_lp_Chiralities_Consistent
+ s_lp_Variant
+ s_m_job_name
+ s_ppw_group_name_backup
+ s_st_EZ_1
+ i_m_Molecular_charge
+ i_m_Spin_multiplicity
+ s_j_Task
+ s_j_Jaguar_input_file
+ s_j_Jaguar_restart_input_file
+ s_j_Jaguar_restart_mae_file
+ s_j_Jaguar_output_file
+ s_j_Jaguar_log_file
+ s_j_Jaguar_mae_file
+ s_j_QM_Method
+ s_j_QM_Basis
+ i_j_Number_of_canonical_orbitals
+ r_j_Gas_Phase_Energy
+ r_j_Solution_Phase_Energy
+ r_j_Solvation_Energy_(kcal/mol)
+ r_j_HOMO
+ r_j_LUMO
+ s_j_jname
+ i_m_ct_format
+ :::
+ AS4 
+  3 
+  PR_AS4_xray.1 
+  3.0 
+  /home/dani/Downloads 
+  ligands.mae 
+  3
+  4 
+  1
+  2017-3 
+  1
+  1
+  1
+  1
+  1
+  39016
+  0.99990000499975
+  1_S_14_15_13_27 
+  4_R_5_16_22_8 
+  10_S_11_14_9_37 
+  14_R_3_10_1_2 
+  15_S_16_1_24_42 
+  16_S_17_4_15_43 
+  17_S_18_16_2_44 
+  0
+  OPLS_2005 
+  55.9166069356956
+  1
+  "AS4 - preprocessed-1" 
+  jag_batch_spe_B3LYP_6-31Gss 
+  group-new1 
+  4_5_6_7_Z 
+  0
+  1
+  "Single Point" 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS4_2_1_B3LYP_6-31Gss_isomer5.in 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS4_2_1_B3LYP_6-31Gss_isomer5.01.in 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS4_2_1_B3LYP_6-31Gss_isomer5.01.mae 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS4_2_1_B3LYP_6-31Gss_isomer5.out 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS4_2_1_B3LYP_6-31Gss_isomer5.log 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS4_2_1_B3LYP_6-31Gss_isomer5.mae 
+  DFT(b3lyp)/SOLV 
+  6-31g** 
+  530
+  -1193.19641625671
+  -1193.23470691974
+  -24.0277536630549
+  -0.248035169661767
+  -0.0542303914763394
+  AS4_2_1_B3LYP_6-31Gss_isomer5 
+  2
+ m_depend[27] { 
+  # First column is dependency index #
+  i_m_depend_dependency
+  s_m_depend_property
+  :::
+  1 10 r_lp_tautomer_probability 
+  2 10 s_st_Chirality_1 
+  3 10 s_st_Chirality_2 
+  4 10 s_st_Chirality_3 
+  5 10 s_st_Chirality_4 
+  6 10 s_st_Chirality_5 
+  7 10 s_st_Chirality_6 
+  8 10 s_st_Chirality_7 
+  9 30 s_m_job_name 
+  10 10 s_st_EZ_1 
+  11 20 i_m_Molecular_charge 
+  12 20 i_m_Spin_multiplicity 
+  13 20 s_j_Task 
+  14 20 s_j_Jaguar_input_file 
+  15 20 s_j_Jaguar_restart_input_file 
+  16 20 s_j_Jaguar_restart_mae_file 
+  17 20 s_j_Jaguar_output_file 
+  18 20 s_j_Jaguar_log_file 
+  19 20 s_j_Jaguar_mae_file 
+  20 20 s_j_QM_Method 
+  21 20 s_j_QM_Basis 
+  22 20 i_j_Number_of_canonical_orbitals 
+  23 20 r_j_Gas_Phase_Energy 
+  24 20 r_j_Solution_Phase_Energy 
+  25 20 r_j_Solvation_Energy_(kcal/mol) 
+  26 20 r_j_HOMO 
+  27 20 r_j_LUMO 
+  :::
+ } 
+ m_atom[54] { 
+  # First column is atom index #
+  i_m_mmod_type
+  r_m_x_coord
+  r_m_y_coord
+  r_m_z_coord
+  i_m_residue_number
+  s_m_chain_name
+  i_m_color
+  r_m_charge1
+  r_m_charge2
+  s_m_pdb_residue_name
+  s_m_pdb_atom_name
+  i_m_atomic_number
+  s_m_color_rgb
+  s_m_atom_name
+  s_m_label_format
+  i_m_label_color
+  s_m_label_user_text
+  r_j_ESP_Charges
+  r_m_pdb_occupancy
+  r_m_pdb_tfactor
+  i_m_pdb_convert_problem
+  i_pdb_PDB_serial
+  i_ppw_anum
+  i_ppw_het
+  b_st_NoSrcChirality
+  s_ppw_CCD_assignment_status
+  :::
+  1 3 -35.940836 59.108908 11.828834 1 Z 10 -0.08573 -0.08573 "AS4 " " C1 " 6 1EE11E  C1  "%UT"  10 ""  -0.0857283313990785 1 29.21 4 4025 1 1 1 "CCD match" 
+  2 3 -36.608795 61.419181 11.192092 1 Z 10 -0.29489 -0.29489 "AS4 " " C5 " 6 1EE11E  C2  "%UT"  10 ""  -0.294891728106932 1 26.76 4 4026 2 1 <> "CCD match" 
+  3 2 -37.330390 60.502913 13.479580 1 Z 10 0.28914 0.28914 "AS4 " " C6 " 6 1EE11E  C3  "%UT"  10 ""  0.289136583673331 1 28.82 4 4027 3 1 <> "CCD match" 
+  4 3 -38.701129 58.724833 9.009271 1 Z 10 0.14691 0.14691 "AS4 " " C7 " 6 1EE11E  C4  "%UT"  10 ""  0.146914030637501 1 28.27 4 4028 4 1 1 "CCD match" 
+  5 2 -38.294947 57.284692 8.637479 1 Z 10 0.21556 0.21556 "AS4 " " C8 " 6 1EE11E  C5  "%UT"  10 ""  0.215562528650991 1 27.22 4 4029 5 1 <> "CCD match" 
+  6 2 -38.302212 56.790279 7.380851 1 Z 10 -0.55200 -0.55200 "AS4 " " C9 " 6 1EE11E  C6  "%UT"  10 ""  -0.551999355224106 1 28.21 4 4030 6 1 <> "CCD match" 
+  7 2 -38.782929 57.579473 6.240202 1 Z 10 0.74376 0.74376 "AS4 " " C10" 6 1EE11E  C7  "%UT"  10 ""  0.743763945361897 1 28.61 4 4031 7 1 <> "CCD match" 
+  8 3 -40.086035 58.638091 9.698896 1 Z 10 -0.51245 -0.51245 "AS4 " " C15" 6 1EE11E  C8  "%UT"  10 ""  -0.512447264878042 1 27.12 4 4032 8 1 <> "CCD match" 
+  9 3 -34.408765 59.451468 13.671065 1 Z 10 -0.17908 -0.17908 "AS4 " " C16" 6 1EE11E  C9  "%UT"  10 ""  -0.179083340574738 1 28.8 4 4033 9 1 <> "CCD match" 
+  10 3 -34.828171 60.801466 13.027149 1 Z 10 -0.08155 -0.08155 "AS4 " " C17" 6 1EE11E  C10  "%UT"  10 ""  -0.0815484661003587 1 28.98 4 4034 10 1 1 "CCD match" 
+  11 2 -34.713260 62.023945 13.962218 1 Z 10 0.44325 0.44325 "AS4 " " C18" 6 1EE11E  C11  "%UT"  10 ""  0.443253283634328 1 29.53 4 4035 11 1 <> "CCD match" 
+  12 3 -34.835736 63.406155 13.316442 1 Z 10 0.20367 0.20367 "AS4 " " C19" 6 1EE11E  C12  "%UT"  10 ""  0.203669933549949 1 29.8 4 4036 12 1 <> "CCD match" 
+  13 3 -35.233943 58.359087 12.964842 1 Z 10 -0.05324 -0.05324 "AS4 " " C20" 6 1EE11E  C13  "%UT"  10 ""  -0.0532416598701303 1 27.25 4 4037 13 1 <> "CCD match" 
+  14 3 -36.221108 60.513441 12.392331 1 Z 10 0.47710 0.47710 "AS4 " " C  " 6 1EE11E  C14  "%UT"  10 ""  0.477104881820646 1 29.24 4 4038 14 1 1 "CCD match" 
+  15 3 -37.150546 58.450768 11.123858 1 Z 10 0.03048 0.03048 "AS4 " " C2 " 6 1EE11E  C15  "%UT"  10 ""  0.0304826293827998 1 27.73 4 4039 15 1 1 "CCD match" 
+  16 3 -37.583212 59.353813 9.926980 1 Z 10 -0.48940 -0.48940 "AS4 " " C3 " 6 1EE11E  C16  "%UT"  10 ""  -0.489401814740013 1 27.95 4 4040 16 1 1 "CCD match" 
+  17 3 -37.775446 60.854594 10.334436 1 Z 10 0.51153 0.51153 "AS4 " " C4 " 6 1EE11E  C17  "%UT"  10 ""  0.511526810012566 1 27.71 4 4041 17 1 1 "CCD match" 
+  18 16 -38.997258 61.091171 11.001671 1 Z 75 -0.70120 -0.70120 "AS4 " " O  " 8 FF5757  O18  "%UT"  75 ""  -0.701200750597143 1 29.36 4 4042 18 1 <> "CCD match" 
+  19 15 -37.853871 61.542508 13.878354 1 Z 75 -0.49228 -0.49228 "AS4 " " O1 " 8 FF5757  O19  "%UT"  75 ""  -0.492284036898445 1 29.23 4 4043 19 1 <> "CCD match" 
+  20 15 -38.648366 57.217890 5.073130 1 Z 75 -0.62129 -0.62129 "AS4 " " O2 " 8 FF5757  O20  "%UT"  75 ""  -0.621287740947122 1 29.61 4 4044 20 1 <> "CCD match" 
+  21 3 -39.509775 58.883485 6.547921 1 Z 10 -0.44061 -0.44061 "AS4 " " C11" 6 1EE11E  C21  "%UT"  10 ""  -0.440606996522251 1 28.35 4 4045 21 1 <> "CCD match" 
+  22 3 -38.835500 59.597106 7.725421 1 Z 10 0.18106 0.18106 "AS4 " " C12" 6 1EE11E  C22  "%UT"  10 ""  0.181061749334713 1 28.28 4 4046 22 1 <> "CCD match" 
+  23 3 -37.890613 56.402691 9.806882 1 Z 10 -0.14013 -0.14013 "AS4 " " C13" 6 1EE11E  C23  "%UT"  10 ""  -0.140129241449678 1 27.46 4 4047 23 1 <> "CCD match" 
+  24 3 -36.772520 57.042687 10.627394 1 Z 10 0.01165 0.01165 "AS4 " " C14" 6 1EE11E  C24  "%UT"  10 ""  0.0116454476030653 1 27.39 4 4048 24 1 <> "CCD match" 
+  25 15 -34.533899 61.898253 15.174416 1 Z 75 -0.52834 -0.52834 "AS4 " " O3 " 8 FF5757  O25  "%UT"  75 ""  -0.528339726908924 1 32.26 4 4049 25 1 <> "CCD match" 
+  26 16 -34.268726 64.405060 14.139202 1 Z 75 -0.71103 -0.71103 "AS4 " " O4 " 8 FF5757  O26  "%UT"  75 ""  -0.711031841340148 1 28.1 4 4050 26 1 <> "CCD match" 
+  27 41 -35.176729 59.222281 11.055583 1 Z 21 0.05053 0.05053 "AS4 " " H1 " 1 FFFFFF  H27  ""  21 ""  0.0505348722182187 <> <> <> <> <> <> <> <>
+  28 41 -35.737468 61.530474 10.545112 1 Z 21 0.04169 0.04169 "AS4 " " H51" 1 FFFFFF  H28  ""  21 ""  0.041685299988672 <> <> <> <> <> <> <> <>
+  29 41 -36.850444 62.430008 11.520887 1 Z 21 0.03846 0.03846 "AS4 " " H52" 1 FFFFFF  H29  ""  21 ""  0.038455044923219 <> <> <> <> <> <> <> <>
+  30 41 -37.612896 59.522991 13.863372 1 Z 21 0.04674 0.04674 "AS4 " " H6 " 1 FFFFFF  H30  ""  21 ""  0.0467440508563272 <> <> <> <> <> <> <> <>
+  31 41 -37.998058 55.771561 7.188876 1 Z 21 0.19257 0.19257 "AS4 " " H9 " 1 FFFFFF  H31  ""  21 ""  0.192574729668801 <> <> <> <> <> <> <> <>
+  32 41 -40.585299 59.603589 9.761662 1 Z 21 0.14941 0.14941 "AS4 " "H151" 1 FFFFFF  H32  ""  21 ""  0.149408491079937 <> <> <> <> <> <> <> <>
+  33 41 -40.760949 57.988868 9.139669 1 Z 21 0.13702 0.13702 "AS4 " "H152" 1 FFFFFF  H33  ""  21 ""  0.137023986132644 <> <> <> <> <> <> <> <>
+  34 41 -40.020426 58.234991 10.708973 1 Z 21 0.16180 0.16180 "AS4 " "H153" 1 FFFFFF  H34  ""  21 ""  0.161797211314921 <> <> <> <> <> <> <> <>
+  35 41 -34.600500 59.411566 14.743982 1 Z 21 0.04583 0.04583 "AS4 " "H161" 1 FFFFFF  H35  ""  21 ""  0.0458267332017881 <> <> <> <> <> <> <> <>
+  36 41 -33.340834 59.284105 13.528656 1 Z 21 0.08045 0.08045 "AS4 " "H162" 1 FFFFFF  H36  ""  21 ""  0.0804544622799012 <> <> <> <> <> <> <> <>
+  37 41 -34.133095 60.993579 12.208791 1 Z 21 0.04064 0.04064 "AS4 " " H17" 1 FFFFFF  H37  ""  21 ""  0.0406382790614604 <> <> <> <> <> <> <> <>
+  38 41 -35.887590 63.638839 13.153722 1 Z 21 0.03507 0.03507 "AS4 " "H191" 1 FFFFFF  H38  ""  21 ""  0.0350743755835157 <> <> <> <> <> <> <> <>
+  39 41 -34.336735 63.406944 12.347303 1 Z 21 0.07022 0.07022 "AS4 " "H192" 1 FFFFFF  H39  ""  21 ""  0.0702162509480158 <> <> <> <> <> <> <> <>
+  40 41 -34.602922 57.552414 12.590578 1 Z 21 0.03907 0.03907 "AS4 " "H201" 1 FFFFFF  H40  ""  21 ""  0.0390656084590234 <> <> <> <> <> <> <> <>
+  41 41 -35.956027 57.918357 13.652956 1 Z 21 0.02898 0.02898 "AS4 " "H202" 1 FFFFFF  H41  ""  21 ""  0.0289781070024364 <> <> <> <> <> <> <> <>
+  42 41 -37.979098 58.352604 11.824876 1 Z 21 0.04067 0.04067 "AS4 " " H2 " 1 FFFFFF  H42  ""  21 ""  0.0406692082803141 <> <> <> <> <> <> <> <>
+  43 41 -36.697665 59.376360 9.288485 1 Z 21 0.11528 0.11528 "AS4 " " H3 " 1 FFFFFF  H43  ""  21 ""  0.115276808832843 <> <> <> <> <> <> <> <>
+  44 41 -37.818135 61.459729 9.429352 1 Z 21 -0.03086 -0.03086 "AS4 " " H4 " 1 FFFFFF  H44  ""  21 ""  -0.0308558751813331 <> <> <> <> <> <> <> <>
+  45 42 -39.704393 60.807007 10.442860 1 Z 21 0.41861 0.41861 "AS4 " " HO " 1 FFFFFF  H45  ""  21 ""  0.418611086565065 <> <> <> <> <> <> <> <>
+  46 41 -40.551050 58.660636 6.780729 1 Z 21 0.13571 0.13571 "AS4 " "H111" 1 FFFFFF  H46  ""  21 ""  0.135707581290542 <> <> <> <> <> <> <> <>
+  47 41 -39.506546 59.522636 5.664626 1 Z 21 0.11134 0.11134 "AS4 " "H112" 1 FFFFFF  H47  ""  21 ""  0.11133964249027 <> <> <> <> <> <> <> <>
+  48 41 -37.847988 59.919282 7.390726 1 Z 21 -0.00293 -0.00293 "AS4 " "H121" 1 FFFFFF  H48  ""  21 ""  -0.00293349804147577 <> <> <> <> <> <> <> <>
+  49 41 -39.381510 60.515662 7.942332 1 Z 21 0.02155 0.02155 "AS4 " "H122" 1 FFFFFF  H49  ""  21 ""  0.0215523449071317 <> <> <> <> <> <> <> <>
+  50 41 -37.569265 55.423418 9.450142 1 Z 21 0.07397 0.07397 "AS4 " "H131" 1 FFFFFF  H50  ""  21 ""  0.07397195266274 <> <> <> <> <> <> <> <>
+  51 41 -38.761773 56.226368 10.438074 1 Z 21 0.07931 0.07931 "AS4 " "H132" 1 FFFFFF  H51  ""  21 ""  0.0793137033679301 <> <> <> <> <> <> <> <>
+  52 41 -36.538255 56.395463 11.472900 1 Z 21 0.01309 0.01309 "AS4 " "H141" 1 FFFFFF  H52  ""  21 ""  0.0130947338314761 <> <> <> <> <> <> <> <>
+  53 41 -35.868404 57.093224 10.018758 1 Z 21 0.03964 0.03964 "AS4 " "H142" 1 FFFFFF  H53  ""  21 ""  0.039643435394556 <> <> <> <> <> <> <> <>
+  54 42 -34.749414 64.428519 14.952975 1 Z 21 0.45523 0.45523 "AS4 " " HO4" 1 FFFFFF  H54  ""  21 ""  0.455231844776382 <> <> <> <> <> <> <> <>
+  :::
+ } 
+ m_bond[57] { 
+  # First column is bond index #
+  i_m_from
+  i_m_to
+  i_m_order
+  :::
+  1 1 13 1
+  2 1 14 1
+  3 1 15 1
+  4 1 27 1
+  5 2 14 1
+  6 2 17 1
+  7 2 28 1
+  8 2 29 1
+  9 3 14 1
+  10 3 19 2
+  11 3 30 1
+  12 4 5 1
+  13 4 8 1
+  14 4 16 1
+  15 4 22 1
+  16 5 6 2
+  17 5 23 1
+  18 6 7 1
+  19 6 31 1
+  20 7 20 2
+  21 7 21 1
+  22 8 32 1
+  23 8 33 1
+  24 8 34 1
+  25 9 10 1
+  26 9 13 1
+  27 9 35 1
+  28 9 36 1
+  29 10 11 1
+  30 10 14 1
+  31 10 37 1
+  32 11 12 1
+  33 11 25 2
+  34 12 26 1
+  35 12 38 1
+  36 12 39 1
+  37 13 40 1
+  38 13 41 1
+  39 15 16 1
+  40 15 24 1
+  41 15 42 1
+  42 16 17 1
+  43 16 43 1
+  44 17 18 1
+  45 17 44 1
+  46 18 45 1
+  47 21 22 1
+  48 21 46 1
+  49 21 47 1
+  50 22 48 1
+  51 22 49 1
+  52 23 24 1
+  53 23 50 1
+  54 23 51 1
+  55 24 52 1
+  56 24 53 1
+  57 26 54 1
+  :::
+ } 
+} 
+
+f_m_ct { 
+ s_m_title
+ s_m_entry_id
+ s_m_entry_name
+ s_pdb_PDB_format_version
+ s_m_Source_Path
+ s_m_Source_File
+ i_m_Source_File_Index
+ s_ppw_entry_id_backup
+ b_ppw_prepared
+ s_ppw_prepared_with_version
+ b_ppw_assigned_bond_orders
+ b_ppw_added_hydrogens
+ b_ppw_treated_metals
+ b_ppw_created_disulfur
+ b_ppw_deleted_far_waters
+ i_lp_mmshare_version
+ r_lp_tautomer_probability
+ s_st_Chirality_1
+ s_st_Chirality_2
+ s_st_Chirality_3
+ s_st_Chirality_4
+ s_st_Chirality_5
+ s_st_Chirality_6
+ s_st_Chirality_7
+ i_f3d_flags
+ s_lp_Force_Field
+ r_lp_Energy
+ b_lp_Chiralities_Consistent
+ s_lp_Variant
+ s_m_job_name
+ s_ppw_group_name_backup
+ s_st_EZ_1
+ i_m_Molecular_charge
+ i_m_Spin_multiplicity
+ s_j_Task
+ s_j_Jaguar_input_file
+ s_j_Jaguar_restart_input_file
+ s_j_Jaguar_restart_mae_file
+ s_j_Jaguar_output_file
+ s_j_Jaguar_log_file
+ s_j_Jaguar_mae_file
+ s_j_QM_Method
+ s_j_QM_Basis
+ i_j_Number_of_canonical_orbitals
+ r_j_Gas_Phase_Energy
+ r_j_Solution_Phase_Energy
+ r_j_Solvation_Energy_(kcal/mol)
+ r_j_HOMO
+ r_j_LUMO
+ s_j_jname
+ s_st_Chirality_8
+ i_m_ct_format
+ :::
+ AS3 
+  2 
+  PR_AS3_xray.1 
+  3.0 
+  /home/dani/Downloads 
+  ligands.mae 
+  2
+  3 
+  1
+  2017-3 
+  1
+  1
+  1
+  1
+  1
+  39016
+  0.99990000499975
+  1_S_14_15_13_27 
+  3_S_18_19_14_30 
+  4_R_5_16_22_8 
+  10_S_11_14_9_37 
+  14_R_3_10_1_2 
+  15_S_16_1_24_42 
+  16_S_17_4_15_43 
+  0
+  OPLS_2005 
+  86.3052174697621
+  1
+  "AS3 - preprocessed-1" 
+  jag_batch_spe_B3LYP_6-31Gss 
+  group-new1 
+  4_5_6_7_Z 
+  0
+  1
+  "Single Point" 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS3_2_1_B3LYP_6-31Gss_isomer3.in 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS3_2_1_B3LYP_6-31Gss_isomer3.01.in 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS3_2_1_B3LYP_6-31Gss_isomer3.01.mae 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS3_2_1_B3LYP_6-31Gss_isomer3.out 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS3_2_1_B3LYP_6-31Gss_isomer3.log 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/AS3_2_1_B3LYP_6-31Gss_isomer3.mae 
+  DFT(b3lyp)/SOLV 
+  6-31g** 
+  530
+  -1193.20589741154
+  -1193.24885816235
+  -26.9582779695407
+  -0.246687587523434
+  -0.0529367044426577
+  AS3_2_1_B3LYP_6-31Gss_isomer3 
+  17_S_18_16_2_44 
+  2
+ m_depend[28] { 
+  # First column is dependency index #
+  i_m_depend_dependency
+  s_m_depend_property
+  :::
+  1 10 r_lp_tautomer_probability 
+  2 10 s_st_Chirality_1 
+  3 10 s_st_Chirality_2 
+  4 10 s_st_Chirality_3 
+  5 10 s_st_Chirality_4 
+  6 10 s_st_Chirality_5 
+  7 10 s_st_Chirality_6 
+  8 10 s_st_Chirality_7 
+  9 30 s_m_job_name 
+  10 10 s_st_EZ_1 
+  11 20 i_m_Molecular_charge 
+  12 20 i_m_Spin_multiplicity 
+  13 20 s_j_Task 
+  14 20 s_j_Jaguar_input_file 
+  15 20 s_j_Jaguar_restart_input_file 
+  16 20 s_j_Jaguar_restart_mae_file 
+  17 20 s_j_Jaguar_output_file 
+  18 20 s_j_Jaguar_log_file 
+  19 20 s_j_Jaguar_mae_file 
+  20 20 s_j_QM_Method 
+  21 20 s_j_QM_Basis 
+  22 20 i_j_Number_of_canonical_orbitals 
+  23 20 r_j_Gas_Phase_Energy 
+  24 20 r_j_Solution_Phase_Energy 
+  25 20 r_j_Solvation_Energy_(kcal/mol) 
+  26 20 r_j_HOMO 
+  27 20 r_j_LUMO 
+  28 10 s_st_Chirality_8 
+  :::
+ } 
+ m_atom[54] { 
+  # First column is atom index #
+  i_m_mmod_type
+  r_m_x_coord
+  r_m_y_coord
+  r_m_z_coord
+  i_m_residue_number
+  s_m_chain_name
+  i_m_color
+  r_m_charge1
+  r_m_charge2
+  s_m_pdb_residue_name
+  s_m_pdb_atom_name
+  i_m_atomic_number
+  s_m_color_rgb
+  s_m_atom_name
+  s_m_label_format
+  i_m_label_color
+  s_m_label_user_text
+  r_j_ESP_Charges
+  r_m_pdb_occupancy
+  r_m_pdb_tfactor
+  i_m_pdb_convert_problem
+  i_pdb_PDB_serial
+  i_ppw_anum
+  i_ppw_het
+  b_st_NoSrcChirality
+  s_ppw_CCD_assignment_status
+  :::
+  1 3 -35.734250 59.085371 11.716014 1 Z 10 0.02592 0.02592 "AS3 " " C1 " 6 1EE11E  C1  "%UT"  10 ""  0.0259150512680549 1 29.21 4 4025 1 1 1 "CCD mismatch" 
+  2 3 -36.514542 61.364747 11.060419 1 Z 10 -0.50791 -0.50791 "AS3 " " C5 " 6 1EE11E  C2  "%UT"  10 ""  -0.507905018270356 1 26.76 4 4026 2 1 <> "CCD mismatch" 
+  3 3 -37.459227 60.473215 13.006234 1 Z 10 0.71997 0.71997 "AS3 " " C6 " 6 1EE11E  C3  "%UT"  10 ""  0.719965733516787 1 28.82 4 4027 3 1 1 "CCD mismatch" 
+  4 3 -38.853140 58.656383 9.327866 1 Z 10 0.32092 0.32092 "AS3 " " C7 " 6 1EE11E  C4  "%UT"  10 ""  0.3209158668313 1 28.27 4 4028 4 1 1 "CCD mismatch" 
+  5 2 -38.433706 57.297340 8.723715 1 Z 10 0.14235 0.14235 "AS3 " " C8 " 6 1EE11E  C5  "%UT"  10 ""  0.142350313269168 1 27.22 4 4029 5 1 <> "CCD mismatch" 
+  6 2 -38.721273 56.908666 7.462630 1 Z 10 -0.54577 -0.54577 "AS3 " " C9 " 6 1EE11E  C6  "%UT"  10 ""  -0.545766644387895 1 28.21 4 4030 6 1 <> "CCD mismatch" 
+  7 2 -39.534934 57.731602 6.558892 1 Z 10 0.74025 0.74025 "AS3 " " C10" 6 1EE11E  C7  "%UT"  10 ""  0.740254442689629 1 28.61 4 4031 7 1 <> "CCD mismatch" 
+  8 3 -40.020457 58.416497 10.314560 1 Z 10 -0.52514 -0.52514 "AS3 " " C15" 6 1EE11E  C8  "%UT"  10 ""  -0.525144287554907 1 27.12 4 4032 8 1 <> "CCD mismatch" 
+  9 3 -34.392730 59.521166 13.708438 1 Z 10 -0.09290 -0.09290 "AS3 " " C16" 6 1EE11E  C9  "%UT"  10 ""  -0.0928987317897781 1 28.8 4 4033 9 1 <> "CCD mismatch" 
+  10 3 -34.813727 60.847672 13.037880 1 Z 10 -0.29144 -0.29144 "AS3 " " C17" 6 1EE11E  C10  "%UT"  10 ""  -0.291436800276109 1 28.98 4 4034 10 1 1 "CCD mismatch" 
+  11 2 -34.778096 62.087651 13.948668 1 Z 10 0.60779 0.60779 "AS3 " " C18" 6 1EE11E  C11  "%UT"  10 ""  0.607788350031557 1 29.53 4 4035 11 1 <> "CCD mismatch" 
+  12 3 -34.806512 63.454415 13.258549 1 Z 10 0.15676 0.15676 "AS3 " " C19" 6 1EE11E  C12  "%UT"  10 ""  0.156762014282876 1 29.8 4 4036 12 1 <> "CCD mismatch" 
+  13 3 -35.054060 58.392032 12.901091 1 Z 10 -0.08273 -0.08273 "AS3 " " C20" 6 1EE11E  C13  "%UT"  10 ""  -0.0827259385370742 1 27.25 4 4037 13 1 <> "CCD mismatch" 
+  14 3 -36.101290 60.498073 12.234539 1 Z 10 0.00445 0.00445 "AS3 " " C  " 6 1EE11E  C14  "%UT"  10 ""  0.00445066808894663 1 29.24 4 4038 14 1 1 "CCD mismatch" 
+  15 3 -36.895077 58.341980 11.018963 1 Z 10 0.04721 0.04721 "AS3 " " C2 " 6 1EE11E  C15  "%UT"  10 ""  0.0472082539219628 1 27.73 4 4039 15 1 1 "CCD mismatch" 
+  16 3 -37.611647 59.304487 10.032174 1 Z 10 -0.64422 -0.64422 "AS3 " " C3 " 6 1EE11E  C16  "%UT"  10 ""  -0.644220749643134 1 27.95 4 4040 16 1 1 "CCD mismatch" 
+  17 3 -37.849113 60.678735 10.726535 1 Z 10 0.53358 0.53358 "AS3 " " C4 " 6 1EE11E  C17  "%UT"  10 ""  0.533575531518822 1 27.71 4 4041 17 1 1 "CCD mismatch" 
+  18 16 -38.436220 60.422892 12.005462 1 Z 75 -0.61557 -0.61557 "AS3 " " O  " 8 FF5757  O18  "%UT"  75 ""  -0.615566513052326 1 29.36 4 4042 18 1 <> "CCD mismatch" 
+  19 16 -37.670067 61.617127 13.801545 1 Z 75 -0.77770 -0.77770 "AS3 " " O1 " 8 FF5757  O19  "%UT"  75 ""  -0.777697406886779 1 29.23 4 4043 19 1 <> "CCD mismatch" 
+  20 15 -39.686113 57.464889 5.368583 1 Z 75 -0.62462 -0.62462 "AS3 " " O2 " 8 FF5757  O20  "%UT"  75 ""  -0.624619639107865 1 29.61 4 4044 20 1 <> "CCD mismatch" 
+  21 3 -40.239172 58.945372 7.153680 1 Z 10 -0.41989 -0.41989 "AS3 " " C11" 6 1EE11E  C21  "%UT"  10 ""  -0.419890060954116 1 28.35 4 4045 21 1 <> "CCD mismatch" 
+  22 3 -39.345813 59.616396 8.204025 1 Z 10 0.14003 0.14003 "AS3 " " C12" 6 1EE11E  C22  "%UT"  10 ""  0.140029759483523 1 28.28 4 4046 22 1 <> "CCD mismatch" 
+  23 3 -37.646926 56.371490 9.644122 1 Z 10 -0.04521 -0.04521 "AS3 " " C13" 6 1EE11E  C23  "%UT"  10 ""  -0.0452072751665852 1 27.46 4 4047 23 1 <> "CCD mismatch" 
+  24 3 -36.443950 57.074813 10.281885 1 Z 10 -0.05436 -0.05436 "AS3 " " C14" 6 1EE11E  C24  "%UT"  10 ""  -0.0543599215873074 1 27.39 4 4048 24 1 <> "CCD mismatch" 
+  25 15 -34.722795 61.986091 15.174878 1 Z 75 -0.54138 -0.54138 "AS3 " " O3 " 8 FF5757  O25  "%UT"  75 ""  -0.541377555313225 1 32.26 4 4049 25 1 <> "CCD mismatch" 
+  26 16 -34.314913 64.469907 14.109736 1 Z 75 -0.75003 -0.75003 "AS3 " " O4 " 8 FF5757  O26  "%UT"  75 ""  -0.750034613059642 1 28.1 4 4050 26 1 <> "CCD mismatch" 
+  27 41 -34.955944 59.223606 10.962271 1 Z 21 0.07492 0.07492 "AS3 " " H1 " 1 FFFFFF  H27  ""  21 ""  0.0749171534086009 <> <> <> <> <> <> <> <>
+  28 41 -35.802966 61.355091 10.233918 1 Z 21 0.17002 0.17002 "AS3 " " H51" 1 FFFFFF  H28  ""  21 ""  0.170016120404701 <> <> <> <> <> <> <> <>
+  29 41 -36.677448 62.401413 11.353565 1 Z 21 0.10923 0.10923 "AS3 " " H52" 1 FFFFFF  H29  ""  21 ""  0.10923441017036 <> <> <> <> <> <> <> <>
+  30 41 -37.558892 59.608997 13.663388 1 Z 21 0.03959 0.03959 "AS3 " " H6 " 1 FFFFFF  H30  ""  21 ""  0.039591240174686 <> <> <> <> <> <> <> <>
+  31 41 -38.387796 55.949256 7.094683 1 Z 21 0.18996 0.18996 "AS3 " " H9 " 1 FFFFFF  H31  ""  21 ""  0.189963669615788 <> <> <> <> <> <> <> <>
+  32 41 -40.410401 59.352245 10.714448 1 Z 21 0.15046 0.15046 "AS3 " "H151" 1 FFFFFF  H32  ""  21 ""  0.15045821384462 <> <> <> <> <> <> <> <>
+  33 41 -40.852342 57.910555 9.824109 1 Z 21 0.11966 0.11966 "AS3 " "H152" 1 FFFFFF  H33  ""  21 ""  0.119664345002463 <> <> <> <> <> <> <> <>
+  34 41 -39.731981 57.796576 11.162122 1 Z 21 0.15734 0.15734 "AS3 " "H153" 1 FFFFFF  H34  ""  21 ""  0.157342345967239 <> <> <> <> <> <> <> <>
+  35 41 -34.720333 59.461286 14.747000 1 Z 21 0.03823 0.03823 "AS3 " "H161" 1 FFFFFF  H35  ""  21 ""  0.0382292851701843 <> <> <> <> <> <> <> <>
+  36 41 -33.307047 59.419277 13.705163 1 Z 21 0.06875 0.06875 "AS3 " "H162" 1 FFFFFF  H36  ""  21 ""  0.0687485998412826 <> <> <> <> <> <> <> <>
+  37 41 -34.050220 61.048205 12.285355 1 Z 21 0.13272 0.13272 "AS3 " " H17" 1 FFFFFF  H37  ""  21 ""  0.132716720711845 <> <> <> <> <> <> <> <>
+  38 41 -35.830646 63.698047 12.978536 1 Z 21 0.04642 0.04642 "AS3 " "H191" 1 FFFFFF  H38  ""  21 ""  0.0464215598537469 <> <> <> <> <> <> <> <>
+  39 41 -34.209185 63.421400 12.347357 1 Z 21 0.04368 0.04368 "AS3 " "H192" 1 FFFFFF  H39  ""  21 ""  0.0436844201961609 <> <> <> <> <> <> <> <>
+  40 41 -34.330716 57.644851 12.573307 1 Z 21 0.04726 0.04726 "AS3 " "H201" 1 FFFFFF  H40  ""  21 ""  0.0472565822347928 <> <> <> <> <> <> <> <>
+  41 41 -35.793578 57.881337 13.519109 1 Z 21 0.03454 0.03454 "AS3 " "H202" 1 FFFFFF  H41  ""  21 ""  0.0345427827760758 <> <> <> <> <> <> <> <>
+  42 41 -37.595162 58.029626 11.793242 1 Z 21 0.05491 0.05491 "AS3 " " H2 " 1 FFFFFF  H42  ""  21 ""  0.0549146802313406 <> <> <> <> <> <> <> <>
+  43 41 -36.895878 59.499647 9.231192 1 Z 21 0.17443 0.17443 "AS3 " " H3 " 1 FFFFFF  H43  ""  21 ""  0.174431820678276 <> <> <> <> <> <> <> <>
+  44 41 -38.477445 61.340281 10.132607 1 Z 21 0.02593 0.02593 "AS3 " " H4 " 1 FFFFFF  H44  ""  21 ""  0.0259327480168156 <> <> <> <> <> <> <> <>
+  45 42 -37.566452 62.377831 13.251391 1 Z 21 0.47323 0.47323 "AS3 " " HO1" 1 FFFFFF  H45  ""  21 ""  0.473233355262522 <> <> <> <> <> <> <> <>
+  46 41 -41.180157 58.623107 7.599529 1 Z 21 0.12475 0.12475 "AS3 " "H111" 1 FFFFFF  H46  ""  21 ""  0.124754231521219 <> <> <> <> <> <> <> <>
+  47 41 -40.485110 59.651247 6.359970 1 Z 21 0.10751 0.10751 "AS3 " "H112" 1 FFFFFF  H47  ""  21 ""  0.107513964391903 <> <> <> <> <> <> <> <>
+  48 41 -38.489751 60.049033 7.683476 1 Z 21 -0.01312 -0.01312 "AS3 " "H121" 1 FFFFFF  H48  ""  21 ""  -0.0131172640274172 <> <> <> <> <> <> <> <>
+  49 41 -39.887375 60.461601 8.628937 1 Z 21 0.03126 0.03126 "AS3 " "H122" 1 FFFFFF  H49  ""  21 ""  0.0312604134575763 <> <> <> <> <> <> <> <>
+  50 41 -37.308214 55.490482 9.097424 1 Z 21 0.05810 0.05810 "AS3 " "H131" 1 FFFFFF  H50  ""  21 ""  0.0581033110301082 <> <> <> <> <> <> <> <>
+  51 41 -38.315739 56.006396 10.423792 1 Z 21 0.05413 0.05413 "AS3 " "H132" 1 FFFFFF  H51  ""  21 ""  0.0541252466248592 <> <> <> <> <> <> <> <>
+  52 41 -35.947617 56.392467 10.972237 1 Z 21 0.02330 0.02330 "AS3 " "H141" 1 FFFFFF  H52  ""  21 ""  0.023298780928501 <> <> <> <> <> <> <> <>
+  53 41 -35.712268 57.326112 9.512969 1 Z 21 0.04525 0.04525 "AS3 " "H142" 1 FFFFFF  H53  ""  21 ""  0.0452479581040272 <> <> <> <> <> <> <> <>
+  54 42 -34.355071 65.294655 13.650226 1 Z 21 0.49715 0.49715 "AS3 " " HO4" 1 FFFFFF  H54  ""  21 ""  0.49714847509219 <> <> <> <> <> <> <> <>
+  :::
+ } 
+ m_bond[58] { 
+  # First column is bond index #
+  i_m_from
+  i_m_to
+  i_m_order
+  :::
+  1 1 13 1
+  2 1 14 1
+  3 1 15 1
+  4 1 27 1
+  5 2 14 1
+  6 2 17 1
+  7 2 28 1
+  8 2 29 1
+  9 3 14 1
+  10 3 18 1
+  11 3 19 1
+  12 3 30 1
+  13 4 5 1
+  14 4 8 1
+  15 4 16 1
+  16 4 22 1
+  17 5 6 2
+  18 5 23 1
+  19 6 7 1
+  20 6 31 1
+  21 7 20 2
+  22 7 21 1
+  23 8 32 1
+  24 8 33 1
+  25 8 34 1
+  26 9 10 1
+  27 9 13 1
+  28 9 35 1
+  29 9 36 1
+  30 10 11 1
+  31 10 14 1
+  32 10 37 1
+  33 11 12 1
+  34 11 25 2
+  35 12 26 1
+  36 12 38 1
+  37 12 39 1
+  38 13 40 1
+  39 13 41 1
+  40 15 16 1
+  41 15 24 1
+  42 15 42 1
+  43 16 17 1
+  44 16 43 1
+  45 17 18 1
+  46 17 44 1
+  47 19 45 1
+  48 21 22 1
+  49 21 46 1
+  50 21 47 1
+  51 22 48 1
+  52 22 49 1
+  53 23 24 1
+  54 23 50 1
+  55 23 51 1
+  56 24 52 1
+  57 24 53 1
+  58 26 54 1
+  :::
+ } 
+} 
+
+f_m_ct { 
+ s_m_title
+ s_m_entry_id
+ s_m_entry_name
+ s_pdb_PDB_format_version
+ s_m_Source_Path
+ s_m_Source_File
+ i_m_Source_File_Index
+ s_ppw_entry_id_backup
+ b_ppw_prepared
+ s_ppw_prepared_with_version
+ b_ppw_assigned_bond_orders
+ b_ppw_added_hydrogens
+ b_ppw_treated_metals
+ b_ppw_created_disulfur
+ b_ppw_deleted_far_waters
+ i_lp_mmshare_version
+ r_lp_tautomer_probability
+ s_st_Chirality_1
+ s_st_Chirality_2
+ s_st_Chirality_3
+ s_st_Chirality_4
+ s_st_Chirality_5
+ s_st_Chirality_6
+ s_st_Chirality_7
+ i_f3d_flags
+ s_lp_Force_Field
+ r_lp_Energy
+ b_lp_Chiralities_Consistent
+ s_lp_Variant
+ s_m_job_name
+ s_ppw_group_name_backup
+ s_st_EZ_1
+ i_m_Molecular_charge
+ i_m_Spin_multiplicity
+ s_j_Task
+ s_j_Jaguar_input_file
+ s_j_Jaguar_restart_input_file
+ s_j_Jaguar_restart_mae_file
+ s_j_Jaguar_output_file
+ s_j_Jaguar_log_file
+ s_j_Jaguar_mae_file
+ s_j_QM_Method
+ s_j_QM_Basis
+ i_j_Number_of_canonical_orbitals
+ r_j_Gas_Phase_Energy
+ r_j_Solution_Phase_Energy
+ r_j_Solvation_Energy_(kcal/mol)
+ r_j_HOMO
+ r_j_LUMO
+ s_j_jname
+ i_m_ct_format
+ :::
+ HCY 
+  1 
+  PR_HCY_xray.1 
+  3.0 
+  /home/dani/Downloads 
+  ligands.mae 
+  1
+  5 
+  1
+  2017-3 
+  1
+  1
+  1
+  1
+  1
+  39016
+  1
+  8_S_9_14_7_36 
+  9_S_12_10_8_37 
+  10_R_5_9_1_19 
+  12_S_23_9_11_40 
+  13_S_17_14_11_18 
+  14_S_13_8_15_41 
+  17_R_24_20_13_16 
+  0
+  OPLS_2005 
+  68.4434402431944
+  1
+  "HCY - preprocessed-1" 
+  jag_batch_spe_B3LYP_6-31Gss 
+  group-new1 
+  3_4_5_10_Z 
+  0
+  1
+  "Single Point" 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/HCY_2_1_B3LYP_6-31Gss_isomer1.in 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/HCY_2_1_B3LYP_6-31Gss_isomer1.01.in 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/HCY_2_1_B3LYP_6-31Gss_isomer1.01.mae 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/HCY_2_1_B3LYP_6-31Gss_isomer1.out 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/HCY_2_1_B3LYP_6-31Gss_isomer1.log 
+  /home/kkqt498/PROJECTS/PELE-Project/MSM_project/jag_batch_spe_B3LYP_6-31Gss/HCY_2_1_B3LYP_6-31Gss_isomer1.mae 
+  DFT(b3lyp)/SOLV 
+  6-31g** 
+  540
+  -1194.40398860059
+  -1194.44495329026
+  -25.70573070716
+  -0.24811251702992
+  -0.0529762226413446
+  HCY_2_1_B3LYP_6-31Gss_isomer1 
+  2
+ m_depend[27] { 
+  # First column is dependency index #
+  i_m_depend_dependency
+  s_m_depend_property
+  :::
+  1 10 r_lp_tautomer_probability 
+  2 10 s_st_Chirality_1 
+  3 10 s_st_Chirality_2 
+  4 10 s_st_Chirality_3 
+  5 10 s_st_Chirality_4 
+  6 10 s_st_Chirality_5 
+  7 10 s_st_Chirality_6 
+  8 10 s_st_Chirality_7 
+  9 30 s_m_job_name 
+  10 10 s_st_EZ_1 
+  11 20 i_m_Molecular_charge 
+  12 20 i_m_Spin_multiplicity 
+  13 20 s_j_Task 
+  14 20 s_j_Jaguar_input_file 
+  15 20 s_j_Jaguar_restart_input_file 
+  16 20 s_j_Jaguar_restart_mae_file 
+  17 20 s_j_Jaguar_output_file 
+  18 20 s_j_Jaguar_log_file 
+  19 20 s_j_Jaguar_mae_file 
+  20 20 s_j_QM_Method 
+  21 20 s_j_QM_Basis 
+  22 20 i_j_Number_of_canonical_orbitals 
+  23 20 r_j_Gas_Phase_Energy 
+  24 20 r_j_Solution_Phase_Energy 
+  25 20 r_j_Solvation_Energy_(kcal/mol) 
+  26 20 r_j_HOMO 
+  27 20 r_j_LUMO 
+  :::
+ } 
+ m_atom[56] { 
+  # First column is atom index #
+  i_m_mmod_type
+  r_m_x_coord
+  r_m_y_coord
+  r_m_z_coord
+  i_m_residue_number
+  s_m_chain_name
+  i_m_color
+  r_m_charge1
+  r_m_charge2
+  s_m_pdb_residue_name
+  s_m_pdb_atom_name
+  i_m_atomic_number
+  s_m_color_rgb
+  s_m_atom_name
+  s_m_label_format
+  i_m_label_color
+  s_m_label_user_text
+  r_j_ESP_Charges
+  r_m_pdb_occupancy
+  r_m_pdb_tfactor
+  i_m_pdb_convert_problem
+  i_pdb_PDB_serial
+  i_ppw_anum
+  i_ppw_het
+  s_ppw_CCD_assignment_status
+  b_st_NoSrcChirality
+  :::
+  1 3 -39.102311 59.406061 7.707783 1 Z 10 0.13716 0.13716 "HCY " " C1 " 6 1EE11E  C1  "%UT"  10 ""  0.137155907790087 1 22.29 4 4139 1 1 "CCD match"  <>
+  2 3 -38.101048 59.286400 6.555242 1 Z 10 -0.39059 -0.39059 "HCY " " C2 " 6 1EE11E  C2  "%UT"  10 ""  -0.390591504818473 1 29.61 4 4140 2 1 "CCD match"  <>
+  3 2 -37.904460 57.815221 6.204258 1 Z 10 0.74236 0.74236 "HCY " " C3 " 6 1EE11E  C3  "%UT"  10 ""  0.742363256470943 1 26.79 4 4141 3 1 "CCD match"  <>
+  4 2 -37.798409 56.871678 7.323766 1 Z 10 -0.53684 -0.53684 "HCY " " C4 " 6 1EE11E  C4  "%UT"  10 ""  -0.536842041614354 1 20.22 4 4142 4 1 "CCD match"  <>
+  5 2 -38.123044 57.231281 8.584353 1 Z 10 0.23673 0.23673 "HCY " " C5 " 6 1EE11E  C5  "%UT"  10 ""  0.236733782263926 1 20.07 4 4143 5 1 "CCD match"  <>
+  6 3 -37.783467 56.328683 9.755436 1 Z 10 -0.16541 -0.16541 "HCY " " C6 " 6 1EE11E  C6  "%UT"  10 ""  -0.165412894139395 1 15.87 4 4144 6 1 "CCD match"  <>
+  7 3 -36.729722 57.016980 10.631686 1 Z 10 0.00269 0.00269 "HCY " " C7 " 6 1EE11E  C7  "%UT"  10 ""  0.00268609829583693 1 22.16 4 4145 7 1 "CCD match"  <>
+  8 3 -37.139342 58.442542 11.069793 1 Z 10 -0.01462 -0.01462 "HCY " " C8 " 6 1EE11E  C8  "%UT"  10 ""  -0.0146209341866397 1 22.96 4 4146 8 1 "CCD match"  1
+  9 3 -37.611239 59.311170 9.852590 1 Z 10 0.07144 0.07144 "HCY " " C9 " 6 1EE11E  C9  "%UT"  10 ""  0.071439167599406 1 23.85 4 4147 9 1 "CCD match"  1
+  10 3 -38.712928 58.597528 8.983107 1 Z 10 -0.07311 -0.07311 "HCY " " C10" 6 1EE11E  C10  "%UT"  10 ""  -0.0731100403596265 1 23.1 4 4148 10 1 "CCD match"  1
+  11 3 -36.713934 61.437718 11.067752 1 Z 10 -0.35288 -0.35288 "HCY " " C12" 6 1EE11E  C11  "%UT"  10 ""  -0.352884586600108 1 22.98 4 4149 11 1 "CCD match"  <>
+  12 3 -37.858265 60.811357 10.228115 1 Z 10 0.24063 0.24063 "HCY " " C11" 6 1EE11E  C12  "%UT"  10 ""  0.240627980678289 1 26.39 4 4150 12 1 "CCD match"  1
+  13 3 -36.272574 60.566562 12.275568 1 Z 10 0.31284 0.31284 "HCY " " C13" 6 1EE11E  C13  "%UT"  10 ""  0.312836857566434 1 28.27 4 4151 13 1 "CCD match"  1
+  14 3 -35.952719 59.152887 11.757242 1 Z 10 -0.00116 -0.00116 "HCY " " C14" 6 1EE11E  C14  "%UT"  10 ""  -0.00116192398710126 1 25.6 4 4152 14 1 "CCD match"  1
+  15 3 -35.249164 58.474870 12.936633 1 Z 10 -0.05475 -0.05475 "HCY " " C15" 6 1EE11E  C15  "%UT"  10 ""  -0.0547472119130164 1 24.16 4 4153 15 1 "CCD match"  <>
+  16 3 -34.454065 59.611332 13.614755 1 Z 10 -0.16202 -0.16202 "HCY " " C16" 6 1EE11E  C16  "%UT"  10 ""  -0.162017358120636 1 23.78 4 4154 16 1 "CCD match"  <>
+  17 3 -34.900830 60.943684 12.940732 1 Z 10 0.03828 0.03828 "HCY " " C17" 6 1EE11E  C17  "%UT"  10 ""  0.0382765272144138 1 23.47 4 4155 17 1 "CCD match"  1
+  18 3 -37.401863 60.554294 13.356526 1 Z 10 -0.44631 -0.44631 "HCY " " C18" 6 1EE11E  C18  "%UT"  10 ""  -0.446314027759694 1 20.83 4 4156 18 1 "CCD match"  <>
+  19 3 -40.037567 58.368445 9.759413 1 Z 10 -0.49523 -0.49523 "HCY " " C19" 6 1EE11E  C19  "%UT"  10 ""  -0.495231557550578 1 21.47 4 4157 19 1 "CCD match"  <>
+  20 2 -34.969712 62.154636 13.904019 1 Z 10 0.63549 0.63549 "HCY " " C20" 6 1EE11E  C20  "%UT"  10 ""  0.635494330112445 1 28.96 4 4158 20 1 "CCD match"  <>
+  21 3 -34.705043 63.549541 13.319595 1 Z 10 0.14819 0.14819 "HCY " " C21" 6 1EE11E  C21  "%UT"  10 ""  0.148190454069628 1 24.89 4 4159 21 1 "CCD match"  <>
+  22 15 -37.809918 57.473570 5.027329 1 Z 75 -0.62584 -0.62584 "HCY " " O1 " 8 FF5757  O22  "%UT"  75 ""  -0.625838019925781 1 27.6 4 4160 22 1 "CCD match"  <>
+  23 16 -39.093894 61.027698 10.876022 1 Z 75 -0.68955 -0.68955 "HCY " " O2 " 8 FF5757  O23  "%UT"  75 ""  -0.689551688895521 1 21.7 4 4161 23 1 "CCD match"  <>
+  24 16 -33.933889 61.226104 11.937454 1 Z 75 -0.75580 -0.75580 "HCY " " O3 " 8 FF5757  O24  "%UT"  75 ""  -0.755804858120148 1 24.92 4 4162 24 1 "CCD match"  <>
+  25 15 -35.217104 62.006232 15.102279 1 Z 75 -0.53943 -0.53943 "HCY " " O4 " 8 FF5757  O25  "%UT"  75 ""  -0.539426151206893 1 29.88 4 4163 25 1 "CCD match"  <>
+  26 16 -35.107603 64.569701 14.212168 1 Z 75 -0.76255 -0.76255 "HCY " " O5 " 8 FF5757  O26  "%UT"  75 ""  -0.762547187128577 1 28.77 4 4164 26 1 "CCD match"  <>
+  27 41 -40.058427 59.036841 7.331106 1 Z 21 0.02560 0.02560 "HCY " " H11" 1 FFFFFF  H27  ""  21 ""  0.0256028583601004 <> <> <> <> <> <> <> <>
+  28 41 -39.294048 60.453374 7.932100 1 Z 21 0.01461 0.01461 "HCY " " H12" 1 FFFFFF  H28  ""  21 ""  0.0146134592708185 <> <> <> <> <> <> <> <>
+  29 41 -37.140544 59.720836 6.832733 1 Z 21 0.11065 0.11065 "HCY " " H21" 1 FFFFFF  H29  ""  21 ""  0.110653722175463 <> <> <> <> <> <> <> <>
+  30 41 -38.462161 59.827362 5.680242 1 Z 21 0.10308 0.10308 "HCY " " H22" 1 FFFFFF  H30  ""  21 ""  0.103080351804027 <> <> <> <> <> <> <> <>
+  31 41 -37.359736 55.905455 7.121752 1 Z 21 0.18824 0.18824 "HCY " " H4 " 1 FFFFFF  H31  ""  21 ""  0.188240184768449 <> <> <> <> <> <> <> <>
+  32 41 -37.399225 55.371565 9.400666 1 Z 21 0.07959 0.07959 "HCY " " H61" 1 FFFFFF  H32  ""  21 ""  0.0795884746437406 <> <> <> <> <> <> <> <>
+  33 41 -38.678393 56.099739 10.332864 1 Z 21 0.07748 0.07748 "HCY " " H62" 1 FFFFFF  H33  ""  21 ""  0.0774776420507682 <> <> <> <> <> <> <> <>
+  34 41 -35.793907 57.065499 10.073071 1 Z 21 0.02807 0.02807 "HCY " " H71" 1 FFFFFF  H34  ""  21 ""  0.0280653900693058 <> <> <> <> <> <> <> <>
+  35 41 -36.529300 56.398040 11.506784 1 Z 21 0.02157 0.02157 "HCY " " H72" 1 FFFFFF  H35  ""  21 ""  0.0215740233018261 <> <> <> <> <> <> <> <>
+  36 41 -37.954952 58.333284 11.780707 1 Z 21 0.04162 0.04162 "HCY " " H8 " 1 FFFFFF  H36  ""  21 ""  0.0416215592295701 <> <> <> <> <> <> <> <>
+  37 41 -36.738829 59.359029 9.197834 1 Z 21 0.00610 0.00610 "HCY " " H9 " 1 FFFFFF  H37  ""  21 ""  0.00609929852717289 <> <> <> <> <> <> <> <>
+  38 41 -36.992145 62.439206 11.398025 1 Z 21 0.14148 0.14148 "HCY " "H121" 1 FFFFFF  H38  ""  21 ""  0.141480734691925 <> <> <> <> <> <> <> <>
+  39 41 -35.872571 61.580063 10.390033 1 Z 21 0.06444 0.06444 "HCY " "H122" 1 FFFFFF  H39  ""  21 ""  0.0644440006202934 <> <> <> <> <> <> <> <>
+  40 41 -37.907704 61.396322 9.310810 1 Z 21 0.05066 0.05066 "HCY " " H11" 1 FFFFFF  H40  ""  21 ""  0.0506589406533399 <> <> <> <> <> <> <> <>
+  41 41 -35.191165 59.244276 10.980134 1 Z 21 0.00451 0.00451 "HCY " " H14" 1 FFFFFF  H41  ""  21 ""  0.00450602555786876 <> <> <> <> <> <> <> <>
+  42 41 -34.599450 57.661553 12.612402 1 Z 21 0.03491 0.03491 "HCY " "H151" 1 FFFFFF  H42  ""  21 ""  0.0349109420669167 <> <> <> <> <> <> <> <>
+  43 41 -35.979219 58.054144 13.628951 1 Z 21 0.04038 0.04038 "HCY " "H152" 1 FFFFFF  H43  ""  21 ""  0.0403825242520001 <> <> <> <> <> <> <> <>
+  44 41 -33.380317 59.449158 13.506006 1 Z 21 0.08671 0.08671 "HCY " "H161" 1 FFFFFF  H44  ""  21 ""  0.0867068240060505 <> <> <> <> <> <> <> <>
+  45 41 -34.654759 59.590125 14.686340 1 Z 21 0.05151 0.05151 "HCY " "H162" 1 FFFFFF  H45  ""  21 ""  0.051512629323639 <> <> <> <> <> <> <> <>
+  46 41 -37.092787 60.064570 14.279478 1 Z 21 0.10982 0.10982 "HCY " "H181" 1 FFFFFF  H46  ""  21 ""  0.109818644458197 <> <> <> <> <> <> <> <>
+  47 41 -37.703291 61.567864 13.622691 1 Z 21 0.11197 0.11197 "HCY " "H182" 1 FFFFFF  H47  ""  21 ""  0.11197196866744 <> <> <> <> <> <> <> <>
+  48 41 -38.307027 60.043572 13.040052 1 Z 21 0.12224 0.12224 "HCY " "H183" 1 FFFFFF  H48  ""  21 ""  0.122244988686563 <> <> <> <> <> <> <> <>
+  49 41 -40.621569 59.282831 9.853532 1 Z 21 0.12736 0.12736 "HCY " "H191" 1 FFFFFF  H49  ""  21 ""  0.127364086317196 <> <> <> <> <> <> <> <>
+  50 41 -40.674586 57.655174 9.234704 1 Z 21 0.14863 0.14863 "HCY " "H192" 1 FFFFFF  H50  ""  21 ""  0.148631560025036 <> <> <> <> <> <> <> <>
+  51 41 -39.889385 57.979435 10.764950 1 Z 21 0.15679 0.15679 "HCY " "H193" 1 FFFFFF  H51  ""  21 ""  0.156794142914605 <> <> <> <> <> <> <> <>
+  52 41 -35.240784 63.664661 12.377786 1 Z 21 0.02903 0.02903 "HCY " "H211" 1 FFFFFF  H52  ""  21 ""  0.0290346397413588 <> <> <> <> <> <> <> <>
+  53 41 -33.640687 63.657936 13.110578 1 Z 21 0.07281 0.07281 "HCY " "H212" 1 FFFFFF  H53  ""  21 ""  0.0728071870076824 <> <> <> <> <> <> <> <>
+  54 42 -39.785587 60.703806 10.319546 1 Z 21 0.43384 0.43384 "HCY " " HO2" 1 FFFFFF  H54  ""  21 ""  0.433837771886805 <> <> <> <> <> <> <> <>
+  55 42 -33.880660 60.482142 11.357449 1 Z 21 0.51319 0.51319 "HCY " " HO3" 1 FFFFFF  H55  ""  21 ""  0.513190330585005 <> <> <> <> <> <> <> <>
+  56 42 -34.923584 65.406717 13.814571 1 Z 21 0.50338 0.50338 "HCY " " HO5" 1 FFFFFF  H56  ""  21 ""  0.503382718601968 <> <> <> <> <> <> <> <>
+  :::
+ } 
+ m_bond[59] { 
+  # First column is bond index #
+  i_m_from
+  i_m_to
+  i_m_order
+  :::
+  1 1 2 1
+  2 1 10 1
+  3 1 27 1
+  4 1 28 1
+  5 2 3 1
+  6 2 29 1
+  7 2 30 1
+  8 3 4 1
+  9 3 22 2
+  10 4 5 2
+  11 4 31 1
+  12 5 6 1
+  13 5 10 1
+  14 6 7 1
+  15 6 32 1
+  16 6 33 1
+  17 7 8 1
+  18 7 34 1
+  19 7 35 1
+  20 8 9 1
+  21 8 14 1
+  22 8 36 1
+  23 9 10 1
+  24 9 12 1
+  25 9 37 1
+  26 10 19 1
+  27 11 12 1
+  28 11 13 1
+  29 11 38 1
+  30 11 39 1
+  31 12 23 1
+  32 12 40 1
+  33 13 14 1
+  34 13 17 1
+  35 13 18 1
+  36 14 15 1
+  37 14 41 1
+  38 15 16 1
+  39 15 42 1
+  40 15 43 1
+  41 16 17 1
+  42 16 44 1
+  43 16 45 1
+  44 17 20 1
+  45 17 24 1
+  46 18 46 1
+  47 18 47 1
+  48 18 48 1
+  49 19 49 1
+  50 19 50 1
+  51 19 51 1
+  52 20 21 1
+  53 20 25 2
+  54 21 26 1
+  55 21 52 1
+  56 21 53 1
+  57 23 54 1
+  58 24 55 1
+  59 26 56 1
+  :::
+ } 
+} 
+
