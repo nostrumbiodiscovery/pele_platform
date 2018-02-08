@@ -407,10 +407,10 @@ class TemplateBuilder:
 	        vdw_r.append(new_params[5])
 	        gammas.append(new_params[6])
 	        alphas.append(new_params[7])
-	        warnings.warn("Paramaters of {} used for {}.".format(
-	          new_params[1], atom_type))
+	        #warnings.warn("Paramaters of {} used for {}.".format(
+	         # new_params[1], atom_type))
 	      else:
-	        warnings.warn("Defaults Paramaters used for{}.".format(atom_type))
+	        #warnings.warn("Defaults Paramaters used for{}.".format(atom_type))
 	        radius.append(DEFAULT_ATOMTYPE[2])
 	        vdw_r.append(DEFAULT_ATOMTYPE[3])
 	        gammas.append(DEFAULT_ATOMTYPE[4])
