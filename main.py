@@ -24,13 +24,13 @@ LIG_RES = "LIG"
 LIG_CHAIN = "Z"
 FORCEFIELD = "OPLS2005"
 PELE_CONFILE = "pele.conf"
-CPUS = 5
+CPUS = 140
 RESTART = True
 CLUSTERS = 40
 
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
 
-EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS"]
+EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS"]
 
 PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
 
@@ -72,7 +72,7 @@ FOLDERS = ["",
 
 
 # Log Constants
-LOG_FILENAME = "output.out"
+LOG_FILENAME = "output.log"
 LOG_FORMAT = "%(asctime)s:%(levelname)s:%(message)s"
 
 # directory
@@ -96,7 +96,6 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
     pele_dir = os.path.abspath("{}_Pele".format(residue))
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
     center_mass = cm.center_of_mass(lig_ref)
-    print(center_mass) 
 
     logger.info("Preparing {} system".format(residue))
     system_fix, missing_residues, gaps, metals = ppp.main(system)
@@ -130,7 +129,7 @@ def run(system, residue, chain, ligands, forcefield, confile, native, cpus, core
 
     
     logger.info("Preparing ExitPath Adaptive Env")
-    ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints))
+    ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus)
     adaptive_exit = ad.SimulationBuilder(ad_ex_temp, ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_temp, residue)
     adaptive_exit.run()  
    
