@@ -2,7 +2,7 @@ import sys
 import os
 from AdaptivePELE.freeEnergies import extractCoords, prepareMSMFolders, estimateDGAdaptive
 sys.path.append("/home/dsoler/PelePlop")
-import Helpers.pele_env as pele
+import Helpers.helpers as pele
 
 TRAJS_PER_EPOCH = 50
 LAGTIME = 100
@@ -57,7 +57,8 @@ def asses_convergence(results):
 
 
 if __name__ == "__main__":
-	output=summerize(["/home/dsoler/STR_PEle",], ["STR",])
+        analyse_results("/scratch/jobs/dsoler/testsh/STR_Pele/output_pele", "STR")
+	output=summerize(["/scratch/jobs/dsoler/testsh/STR_Pele",], ["STR",])
         output.insert(0,"#Resiude Epoch DG StdDG Db StdDb\n#==============================\n")
         with open("Pele_ranking.txt", "w") as fout:
             fout.write("".join(output))
