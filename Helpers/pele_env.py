@@ -45,6 +45,7 @@ class Pele_env_Builder(object):
                             self.copy(file, self.pele_dir)
 			shutil.move(self.template, self.template_dir)
 			shutil.move(self.rotamers, self.rotamers_dir)
+                        shutil.move(self.input, self.pele_dir)
 
 
 
