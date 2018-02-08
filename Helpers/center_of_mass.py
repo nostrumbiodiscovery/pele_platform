@@ -1,9 +1,11 @@
-# Sebastian Raschka 2014
+#Sebastian Raschka 2014
 # Script that calculates the weighted center of mass of PDB files.
 # Usage python3 center_of_mass.py file.pdb
 
 # Atomic masses
 # list of atomic weights from http://en.wikipedia.org/wiki/List_of_elements
+
+import helpers
 
 ATOMIC_WEIGHTS = {'H': 1.008, 'HE': 4.002602, 'LI': 6.94, 'BE': 9.012182,
                   'B': 10.81, 'C': 12.011, 'N': 14.007, 'O': 15.999, 'F': 18.9984032,
@@ -30,17 +32,20 @@ ATOMIC_WEIGHTS = {'H': 1.008, 'HE': 4.002602, 'LI': 6.94, 'BE': 9.012182,
                   'UUP': 288, 'LV': 293, 'UUS': 294}
 
 
-def center_of_mass(pdb, include='ATOM,HETATM'):
-    """
-    Calculates center of mass of a protein and/or ligand structure.
-    Returns:
+def center_of_mass(pdbfile, include='ATOM,HETATM'):
+  """
+  Calculates center of mass of a protein and/or ligand structure.
+  Returns:
       center (list): List of float coordinates [x,y,z] that represent the
       center of mass (precision 3).
-    """
-    center = [None, None, None]
-    include = tuple(include.split(','))
+  """
 
-    # extract coordinates [ [x1,y1,z1], [x2,y2,z2], ... ]   
+  center = [None, None, None]
+  include = tuple(include.split(','))
+
+  with open(pdbfile, 'r') as pdb:
+
+    # extract coordinates [ [x1,y1,z1], [x2,y2,z2], ... ]
     coordinates = []
     masses = []
     for line in pdb:
@@ -64,6 +69,7 @@ def center_of_mass(pdb, include='ATOM,HETATM'):
     center = [sum([coordinates[i][j] * weights[i]
                    for i in range(len(weights))]) for j in range(3)]
     center_rounded = [round(center[i], 3) for i in range(3)]
+    helpers.silentremove([pdbfile])
     return center_rounded
 
 
