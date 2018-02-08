@@ -8,12 +8,11 @@ import argparse
 import math
 from operator import itemgetter, attrgetter
 import best_structs
-from Adaptive import template_builder as tb
+import template_builder as tb
 
 __author__ = "Daniel Soler Viladrich"
 __email__ = "daniel.soler@nostrumbiodiscovery.com"
 
-BS = [0, 0, 0]
 KEYWORDS = ["CENTER_X", "CENTER_Y", "CENTER_Z", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8"]
 COORD = "{:>11.3f}{:>8.3f}{:>8.3f}"
 CENTER = "{:.3f}"
@@ -40,13 +39,12 @@ def main(path, clusters, bs):
     points = get_points(clusters)
     centroid = find_centroid(points)
 
-    angle_points = find_angle_lenght(centroid, sasa_points)
+    angle_points = find_angle_lenght(bs, centroid, sasa_points)
     min_angl_points = sorted(angle_points, key=itemgetter(1))
     chosen_point = min_angl_points[0][0]
 
     radius = (distance.euclidean(bs, chosen_point) / 2.0) + 4
-    center = [(final + initial) / 2.0 for initial, final in zip(BS, chosen_point)]
-
+    center = [(final + initial) / 2.0 for initial, final in zip(bs, chosen_point)]
   #  ax.scatter(*decompose(points))
   #  ax.plot_wireframe(*WireframeSphere(center, radius), color="b", alpha=0.5)
   #  ax.scatter(*bs, c='red')
@@ -66,7 +64,6 @@ def get_sasa_points(path, sasa_info):
                 lines = f.readlines()
         coord = [ float(crd) for crd in lines[model].split()[1:]]
         points.append(coord)
-    print(points)
     return points
 
 
@@ -95,9 +92,9 @@ def decompose(points):
     return crd_x, crd_y, crd_z
 
 
-def find_angle_lenght(centroid, points):
+def find_angle_lenght(bs, centroid, points):
     point_angle_lenght = []
-    bs_centroid = [final - initial for initial, final in zip(BS, centroid)]
+    bs_centroid = [final - initial for initial, final in zip(bs, centroid)]
     point_centroid = []
     for point in points:
         point_centroid.append([final - initial for initial, final in zip(centroid, point)])
@@ -111,14 +108,6 @@ def find_angle_lenght(centroid, points):
         point_angle_lenght.append([point, angle, distance.euclidean(centroid, point)])
     return point_angle_lenght
 
-
-def find_radius(points, centroid):
-    x, y, z = decompose(points)
-    direction = [final - initial for initial, final in zip(BS, centroid)]
-    furthest_point = [initial + final for initial, final in zip(direction, centroid)]
-    radius = [final - initial for initial, final in zip(BS, furthest_point)]
-    radius = distance.euclidean(BS, radius) / 2.0 + 10
-    return radius, furthest_point
 
 
 def WireframeSphere(centre, radius, n_meridians=20, n_circles_latitude=None):
@@ -160,6 +149,6 @@ def build_box(center, radius, file):
 if __name__ == '__main__':
         #with pele.cd("/home/dsoler/1sqa/output_adaptive_short/"):
         #    cl.main(num_clusters=40, output_folder="/home/dsoler/1sqa/output_clustering/", ligand_resname="UI1", atom_ids="")
-       	center, radius = main("/home/dsoler/1sqa/output_adaptive_short" ,"/home/dsoler/1sqa/output_clustering/clusters_40_KMeans_allSnapshots.pdb" , [0,0,0])
-        box = box.build_box(center, radius, "/home/dsoler/PelePlop/PeleTemplates/box.pdb")
+       	center, radius = main("/scratch/jobs/dsoler/test/STR_Pele/output_adaptive_exit" ,"/scratch/jobs/dsoler/test/STR_Pele/output_clustering/clusters_40_KMeans_allSnapshots.pdb" , [-20.332, 59.897, 2.8323])
+        box = build_box(center, radius, "/scratch/jobs/dsoler/test/STR_Pele/box.pdb")
 
