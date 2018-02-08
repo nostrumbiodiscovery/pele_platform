@@ -21,6 +21,8 @@ Monte Carlo Protein Energy Landscape Exploration (PELE) coupled with Markov Stat
 - Adaptive Pele
 - pyemma
 - msmtools
+- Prody 1.8.2
+- Pandas
 4) Run the platform as:
 - python MSM_PELE/main.pdb pdb_with_complex residuename chain
 -  `e.g. python /home/dsoler/PelePlop/main.py PR_1A28_xray_-_minimized.pdb STR Z`
