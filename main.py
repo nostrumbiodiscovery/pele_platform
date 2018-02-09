@@ -101,7 +101,7 @@ def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, c
 
     # Produce Templates of all missing residues
     logger.info("Running PlopRotTemp")
-    for res, resname, chain in missing_residues:
+    for res, _, chain in missing_residues:
         logger.info("Creating template for residue {}".format(res))
         template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
         hp.silentremove([lig])
