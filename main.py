@@ -3,6 +3,7 @@ import MSM_PELE.Helpers.check_env_var as env
 env.check_dependencies()
 import logging
 import argparse
+import MSM_PELE.constants as cs
 import MSM_PELE.PlopRotTemp.main as plop
 import MSM_PELE.Helpers.helpers as hp
 import MSM_PELE.Helpers.pele_env as pele
@@ -28,7 +29,7 @@ CLUSTERS = 40
 
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
 
-EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS"]
+EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
 
 PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
 
@@ -124,7 +125,7 @@ def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, c
     pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
 
     logger.info("Preparing ExitPath Adaptive Env")
-    ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus)
+    ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, '''"{}"'''.format(cs.LICENSE))
     adaptive_exit = ad.SimulationBuilder(ad_ex_temp, ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_temp, residue)
     adaptive_exit.run()
 
