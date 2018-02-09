@@ -1,6 +1,8 @@
 import os
 import logging
 import argparse
+import MSM_PELE.Helpers.check_env_var as env
+env.check_dependencies()
 import MSM_PELE.PlopRotTemp.main as plop
 import MSM_PELE.Helpers.helpers as hp
 import MSM_PELE.Helpers.pele_env as pele
@@ -12,8 +14,6 @@ import MSM_PELE.Helpers.system_prep as sp
 import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
-import MSM_PELE.Helpers.check_env_var as env
-env.check_dependencies()
 
 
 COMPLEX = "complex.pdb"
@@ -100,7 +100,7 @@ def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, c
 
     # Produce Templates of all missing residues
     logger.info("Running PlopRotTemp")
-    for res, resname, chain in missing_residues:
+    for res, _, chain in missing_residues:
         logger.info("Creating template for residue {}".format(res))
         template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
         hp.silentremove([lig])
