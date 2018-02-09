@@ -58,6 +58,7 @@ class ConstraintBuilder(object):
 		return constraints
 	
 	def gaps_constraints(self):
+                self.gaps = {}
                 gaps_constr = []
        		for  chain, residues in self.gaps.iteritems():
                  	gaps_constr = [CONSTR_ATOM.format(10, chain, residue, "_CA_") for residue in residues]
