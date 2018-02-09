@@ -1,20 +1,20 @@
 import sys
 import os
-import Helpers.check_env_var as env
+import MSM_PELE.Helpers.check_env_var as env
 env.check_dependencies()
 import logging
 import argparse
-import PlopRotTemp.main as plop
-import Helpers.helpers as hp
-import Helpers.pele_env as pele
-import Helpers.simulation as ad
-import Helpers.clusterAdaptiveRun as cl
-import Helpers.center_of_mass as cm
-import Helpers.constraints as ct
-import Helpers.system_prep as sp
-import Helpers.box as bx
-import PPP.mut_prep4pele as ppp
-import Helpers.msm_analysis as msm
+import MSM_PELE.PlopRotTemp.main as plop
+import MSM_PELE.Helpers.helpers as hp
+import MSM_PELE.Helpers.pele_env as pele
+import MSM_PELE.Helpers.simulation as ad
+import MSM_PELE.Helpers.clusterAdaptiveRun as cl
+import MSM_PELE.Helpers.center_of_mass as cm
+import MSM_PELE.Helpers.constraints as ct
+import MSM_PELE.Helpers.system_prep as sp
+import MSM_PELE.Helpers.box as bx
+import MSM_PELE.PPP.mut_prep4pele as ppp
+import MSM_PELE.Helpers.msm_analysis as msm
 
 
 
@@ -87,8 +87,8 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-def run(system, residue, chain, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
-    
+def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
+    import subprocess
     # Preparative for Pele
     logger.info("Retrieving Ligands & Complexes")
     receptor, lig_ref = sp.retrieve_receptor(system, residue)
@@ -98,16 +98,17 @@ def run(system, residue, chain, forcefield, confile, native, cpus, core, mtor, n
     center_mass = cm.center_of_mass(lig_ref)
 
     logger.info("Preparing {} system".format(residue))
-    system_fix, missing_residues, gaps, metals = ppp.main(system)
+    system_fix, missing_residues, gaps, metals = ppp.main(system, charge_terminals=charge_ter)
     protein_constraints = ct.retrieve_constraints(system_fix, gaps, metals)
 
     # Produce Templates of all missing residues
     logger.info("Running PlopRotTemp")
     for res, resname, chain in missing_residues:
         logger.info("Creating template for residue {}".format(res))
-        template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
-        hp.silentremove([lig])
-   
+        # subprocess.call("/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC/utilities/python /gpfs/projects/bsc72/MSM_PELE/bin/MSM_PELE/PlopRotTemp/main.py {}".format(lig).split())
+        t, r = plop.main(lig, mtor, n, core, mae_charges, clean) 
+        #hp.silentremove([lig])
+    """
 
     logger.info("Creating Pele env")
     adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
@@ -157,7 +158,7 @@ def run(system, residue, chain, forcefield, confile, native, cpus, core, mtor, n
     # output.insert(0, OUTPUT_HEADER)
     # with open(RANKING_FILE, "w") as fout:
     #     fout.write("".join(output))
-
+    """
 if __name__ == "__main__":
 
 
@@ -165,6 +166,7 @@ if __name__ == "__main__":
     parser.add_argument('input', type=str, help='complex to run pele on')
     parser.add_argument('residue', type=str, help='residue of the ligand to extract', default=LIG_RES)
     parser.add_argument('chain', type=str, help='forcefield to use', default=LIG_CHAIN)
+    parser.add_argument("--charge_ter", help="Charge protein terminals", action='store_true')
     parser.add_argument('--forc', type=str, help='chain of the ligand to extract', default=FORCEFIELD)
     parser.add_argument('--confile', type=str, help='your own pele configuration file', default=PELE_CONFILE)
     parser.add_argument('--native', type=str, help='native file to compare RMSD to', default="")
@@ -177,4 +179,4 @@ if __name__ == "__main__":
     parser.add_argument("--only_plop", help="Whether to run PlopRotTemp or both", action='store_true')
     args = parser.parse_args()
 
-    run(args.input, args.residue, args.chain, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.mae_charges, args.clean, args.only_plop)
+    run(args.input, args.residue, args.chain, args.charge_ter, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.mae_charges, args.clean, args.only_plop)

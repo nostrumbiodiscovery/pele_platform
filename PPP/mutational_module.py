@@ -2,10 +2,10 @@ import sys
 
 import numpy as np
 from prody import writePDB, parsePDB, AtomGroup
-from checks_module import CheckMapAndZmatrix
-from coordinates_module import GenerateCoordinatesFromZmatrix, ModifyCoords, ModifyCoordinatesPRO
-from global_variables import default_mutations_maps
-from program_own_classes import ZMATRIX
+from MSM_PELE.PPP.checks_module import CheckMapAndZmatrix
+from MSM_PELE.PPP.coordinates_module import GenerateCoordinatesFromZmatrix, ModifyCoords, ModifyCoordinatesPRO
+from MSM_PELE.PPP.global_variables import default_mutations_maps
+from MSM_PELE.PPP.program_own_classes import ZMATRIX
 
 __author__ = 'jelisa'
 

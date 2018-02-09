@@ -2,15 +2,14 @@
 import sys
 from prody import *
 import os
-import os
 
-from adjustments_module import WritingAtomNames, FixStructureResnames, FixAtomNames, SolveClashes
-from checks_module import CheckMutation, CheckClashes
-from checks_module import CheckStructure, CheckforGaps
-from global_processes import ParseArguments, FindInitialAndFinalResidues, PDBwriter, RenumberStructure
-from hydrogens_addition import FixStructure
-from mutational_module import Mutate
-from global_variables import coordination_geometries
+from MSM_PELE.PPP.adjustments_module import WritingAtomNames, FixStructureResnames, FixAtomNames, SolveClashes
+from MSM_PELE.PPP.checks_module import CheckMutation, CheckClashes
+from MSM_PELE.PPP.checks_module import CheckStructure, CheckforGaps
+from MSM_PELE.PPP.global_processes import ParseArguments, FindInitialAndFinalResidues, PDBwriter, RenumberStructure
+from MSM_PELE.PPP.hydrogens_addition import FixStructure
+from MSM_PELE.PPP.mutational_module import Mutate
+from MSM_PELE.PPP.global_variables import coordination_geometries
 
 __author__ = 'jelisa'
 

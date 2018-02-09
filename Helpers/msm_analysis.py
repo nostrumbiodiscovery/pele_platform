@@ -2,7 +2,7 @@ import sys
 import os
 from AdaptivePELE.freeEnergies import extractCoords, prepareMSMFolders, estimateDGAdaptive
 sys.path.append("/home/dsoler/PelePlop")
-import Helpers.helpers as pele
+import MSM_PELE.Helpers.helpers as pele
 
 TRAJS_PER_EPOCH = 50
 LAGTIME = 100

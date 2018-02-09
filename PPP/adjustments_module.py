@@ -2,11 +2,11 @@ import copy
 
 from prody import calcDistance
 
-from checks_module import CheckClashes
-from coordinates_module import ChangeResidueCoordinates
-from global_processes import FindInitialAndFinalResidues
-from global_variables import protein_atomnames_dictionary, supported_aminoacids, supported_metals
-from program_own_classes import ROTAMERLIB
+from MSM_PELE.PPP.checks_module import CheckClashes
+from MSM_PELE.PPP.coordinates_module import ChangeResidueCoordinates
+from MSM_PELE.PPP.global_processes import FindInitialAndFinalResidues
+from MSM_PELE.PPP.global_variables import protein_atomnames_dictionary, supported_aminoacids, supported_metals
+from MSM_PELE.PPP.program_own_classes import ROTAMERLIB
 
 __author__ = 'jelisa'
 

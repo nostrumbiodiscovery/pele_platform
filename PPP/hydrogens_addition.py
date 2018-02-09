@@ -1,9 +1,9 @@
 from prody import AtomGroup
 
-from mutational_module import AddAtoms, ModifyExistingAtoms
-from program_own_classes import ZMATRIX
-from coordinates_module import ComputeCartesianCoordinates, ComputeDihedral
-from global_processes import FindInitialAndFinalResidues
+from MSM_PELE.PPP.mutational_module import AddAtoms, ModifyExistingAtoms
+from MSM_PELE.PPP.program_own_classes import ZMATRIX
+from MSM_PELE.PPP.coordinates_module import ComputeCartesianCoordinates, ComputeDihedral
+from MSM_PELE.PPP.global_processes import FindInitialAndFinalResidues
 
 __author__ = 'jelisa'
 

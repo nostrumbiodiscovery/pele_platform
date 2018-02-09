@@ -59,8 +59,8 @@ import sys
 import os
 import re
 import shutil
-import PlopRotTemp as pl
-from template.templateBuilder import TemplateBuilder
+import MSM_PELE.PlopRotTemp.PlopRotTemp as pl
+from MSM_PELE.PlopRotTemp.template.templateBuilder import TemplateBuilder
 
 
 

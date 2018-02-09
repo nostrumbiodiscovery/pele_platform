@@ -1,6 +1,6 @@
 import os
 import sys
-import constants
+from MSM_PELE import constants
 
 def find_executable(executable, path=None):
     """

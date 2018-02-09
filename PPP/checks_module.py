@@ -2,9 +2,9 @@ import sys
 
 from prody import Contacts, calcDistance, calcAngle
 
-from global_processes import FindInitialAndFinalResidues
-from global_variables import supported_aminoacids, supported_metals, coordination_geometries
-from program_own_classes import ZMATRIX
+from MSM_PELE.PPP.global_processes import FindInitialAndFinalResidues
+from MSM_PELE.PPP.global_variables import supported_aminoacids, supported_metals, coordination_geometries
+from MSM_PELE.PPP.program_own_classes import ZMATRIX
 
 __author__ = 'jelisa'
 

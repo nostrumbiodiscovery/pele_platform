@@ -1,7 +1,7 @@
 import os
 from schrodinger import structure as st
 import StringIO
-import Helpers.helpers as hp
+import MSM_PELE.Helpers.helpers as hp
 
 def build_complexes(ligands, receptor):
     """

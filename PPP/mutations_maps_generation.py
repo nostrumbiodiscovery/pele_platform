@@ -1,6 +1,6 @@
 import sys
 
-from program_own_classes import ZMATRIX
+from MSM_PELE.PPP.program_own_classes import ZMATRIX
 
 __author__ = 'jelisa'
 

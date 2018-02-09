@@ -1,8 +1,8 @@
 import os
 import sys
 import subprocess
-from Helpers import helpers, template_builder
-from template_builder import TemplateBuilder
+from MSM_PELE.Helpers import helpers, template_builder
+from MSM_PELE.Helpers.template_builder import TemplateBuilder
 import AdaptivePELE.adaptiveSampling as ad
 
 

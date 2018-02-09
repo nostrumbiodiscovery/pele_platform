@@ -1,8 +1,8 @@
 import sys
 from argparse import ArgumentParser, RawTextHelpFormatter
 from re import match
-from global_variables import supported_aminoacids, input_keywords, aminoacids_1letter, aminoacids_3letter
-import parameters_help
+from MSM_PELE.PPP.global_variables import supported_aminoacids, input_keywords, aminoacids_1letter, aminoacids_3letter
+import MSM_PELE.PPP.parameters_help as parameters_help
 
 from prody import parsePDB
 

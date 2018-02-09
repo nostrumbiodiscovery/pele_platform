@@ -7,8 +7,8 @@ import numpy as np
 import argparse
 import math
 from operator import itemgetter, attrgetter
-import best_structs
-import template_builder as tb
+import MSM_PELE.Helpers.best_structs as best_structs
+import MSM_PELE.Helpers.template_builder as tb
 
 __author__ = "Daniel Soler Viladrich"
 __email__ = "daniel.soler@nostrumbiodiscovery.com"

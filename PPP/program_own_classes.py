@@ -1,4 +1,4 @@
-from enviroment_parameters import pele_folder_path
+from MSM_PELE.PPP.enviroment_parameters import pele_folder_path
 
 __author__ = 'jelisa'
 
