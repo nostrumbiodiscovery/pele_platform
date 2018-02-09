@@ -2,11 +2,11 @@ import copy
 
 from prody import calcDistance
 
-from MSM_PELE.PPP.checks_module import CheckClashes
-from MSM_PELE.PPP.coordinates_module import ChangeResidueCoordinates
-from MSM_PELE.PPP.global_processes import FindInitialAndFinalResidues
-from MSM_PELE.PPP.global_variables import protein_atomnames_dictionary, supported_aminoacids, supported_metals
-from MSM_PELE.PPP.program_own_classes import ROTAMERLIB
+from checks_module import CheckClashes
+from coordinates_module import ChangeResidueCoordinates
+from global_processes import FindInitialAndFinalResidues
+from global_variables import protein_atomnames_dictionary, supported_aminoacids, supported_metals
+from program_own_classes import ROTAMERLIB
 
 __author__ = 'jelisa'
 
@@ -135,24 +135,22 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                             1]:  # .split()[0] and atom.getResnum() == debug.split()[1]:
                             print 'a', residue.getResnum(), old_atom_name, atom_name, final_res
                             # print 'a', possible_names
-
                         break
                 if not atom_found and not heteroatom:
                     if atom_name in ['HXT', 'H1', "H2"]:
                         if residue.getResnum() in gaps_residues or residue.getResnum() in [initial_res, final_res]:
                             pass
                         elif residue.getResnum() in no_gaps_residues:
-                            print "   * The residue {} won't be considered as a gap, if it really is one," \
-                                  " let the developer know".format("{2} {1} {0}".format(residue.getResnum(),
-                                                                                        residue.getChid(),
-                                                                                        residue.getResname()))
+                            print "   * This residue {} won't be considered as a gap, if it really is one," \
+                                  " let the developer know".format("{} {}".format(residue.getResnum(),
+                                                                                  residue.getChid()))
                     else:
                         print "   * The Atom {} from residue {} {} {} doesn't have a valid name.".format(atom_name,
-                                                                                                         resname,
-                                                                                                         atom.getChid(),
-                                                                                                         atom.getResnum())
+                                                                                                      resname,
+                                                                                                      atom.getChid(),
+                                                                                                      atom.getResnum())
                 atom.setName(atom_name)
-                # if debug: break
+            # if debug: break
     return correct_structure
 
 
