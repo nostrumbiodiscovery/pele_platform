@@ -38,9 +38,9 @@ Monte Carlo Protein Energy Landscape Exploration (PELE) coupled with Markov Stat
         - **chain**: Chain of the ligand in the BS.
     -  `e.g. python /home/dsoler/PelePlop/main.py PR_1A28_xray_-_minimized.pdb STR Z` <br />
     
-    - **Optional arguments:** 
-        - **--forc FORC**        Forcefield to use ["OPLS2005", "AMBER"]
-        - **--confile CONFILE**  Your own pele configuration file
+    - **Optional arguments:**
+        - **--charge_ter         If set charge protein terminals
+        - **--forc FORC**        Forcefield to use ["OPLS2005", "AMBER99sb"]
         - **--native NATIVE**    Native file to compare RMSD to
         - **--cpus CPUS**        Number of processors to use in adaptive in out
         - **--core CORE**        Give one atom of the core section for PlopRotTemp

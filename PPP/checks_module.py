@@ -572,33 +572,40 @@ def CheckforGaps(structure):
             if previous_residue_number is not None:
                 # if residue.getResnum() > previous_residue_number + 1:
                 if residue.getResname() in supported_aminoacids:
-                    current_residue_N = residue.getAtom("N")
-                    previous_residue = chain.getResidue(previous_residue_number)
-                    previous_residue_C = previous_residue.getAtom('C')
-                    if current_residue_N is not None and previous_residue_C is not None:
-                        distance = calcDistance(current_residue_N, previous_residue_C)
-                        if distance < 1.5:
-                            try:
-                                not_gaps[chain_id]
-                            except KeyError:
-                                not_gaps[chain_id] = []
-                            not_gaps[chain_id].append([previous_residue_number, residue.getResnum()])
-                        else:
-                            try:
-                                gaps[chain_id]
-                            except KeyError:
-                                gaps[chain_id] = []
-                            gaps[chain_id].append([previous_residue_number, residue.getResnum()])
-                    elif current_residue_N is None:
-                        print "   * There's a problem with residue {} {} {} it" \
-                              " doesn't have the N atom".format(residue.getResname(),
-                                                                residue.getResnum(),
-                                                                residue.getChid())
-                    elif previous_residue_C is None:
-                        print "   * There's a problem with residue {} {} {} it doesn't have the C atom".format(
-                            previous_residue.getResname(),
-                            previous_residue.getResnum(),
-                            previous_residue.getChid())
+                    if residue.getResname() == 'ACE':
+                        try:
+                            gaps[chain_id]
+                        except KeyError:
+                            gaps[chain_id] = []
+                        gaps[chain_id].append([previous_residue_number, residue.getResnum()])
+                    else:
+                        current_residue_N = residue.getAtom("N")
+                        previous_residue = chain.getResidue(previous_residue_number)
+                        previous_residue_C = previous_residue.getAtom('C')
+                        if current_residue_N is not None and previous_residue_C is not None:
+                            distance = calcDistance(current_residue_N, previous_residue_C)
+                            if distance < 1.5:
+                                try:
+                                    not_gaps[chain_id]
+                                except KeyError:
+                                    not_gaps[chain_id] = []
+                                not_gaps[chain_id].append([previous_residue_number, residue.getResnum()])
+                            else:
+                                try:
+                                    gaps[chain_id]
+                                except KeyError:
+                                    gaps[chain_id] = []
+                                gaps[chain_id].append([previous_residue_number, residue.getResnum()])
+                        elif current_residue_N is None:
+                            print "   * There's a problem with residue {} {} {} it" \
+                                  " doesn't have the N atom".format(residue.getResname(),
+                                                                    residue.getResnum(),
+                                                                    residue.getChid())
+                        elif previous_residue_C is None:
+                            print "   * There's a problem with residue {} {} {} it doesn't have the C atom".format(
+                                previous_residue.getResname(),
+                                previous_residue.getResnum(),
+                                previous_residue.getChid())
                 if residue.getResnum() == previous_residue_number:
                     if residue.getIcode() == '':
                         if residue.hetero is not None:

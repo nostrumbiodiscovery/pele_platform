@@ -1,7 +1,4 @@
-import sys
 import os
-import MSM_PELE.Helpers.check_env_var as env
-env.check_dependencies()
 import logging
 import argparse
 import MSM_PELE.PlopRotTemp.main as plop
@@ -15,7 +12,8 @@ import MSM_PELE.Helpers.system_prep as sp
 import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
-
+import MSM_PELE.Helpers.check_env_var as env
+env.check_dependencies()
 
 
 COMPLEX = "complex.pdb"
@@ -67,8 +65,7 @@ FOLDERS = ["",
            "DataLocal/Templates/OPLS2005/HeteroAtoms/",
            "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
            "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-           "DataLocal/LigandRotamerLibs",
-           ]
+           "DataLocal/LigandRotamerLibs"]
 
 
 # Log Constants
@@ -88,7 +85,7 @@ logger.addHandler(file_handler)
 
 
 def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
-    import subprocess
+
     # Preparative for Pele
     logger.info("Retrieving Ligands & Complexes")
     receptor, lig_ref = sp.retrieve_receptor(system, residue)
@@ -105,10 +102,8 @@ def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, c
     logger.info("Running PlopRotTemp")
     for res, resname, chain in missing_residues:
         logger.info("Creating template for residue {}".format(res))
-        # subprocess.call("/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC/utilities/python /gpfs/projects/bsc72/MSM_PELE/bin/MSM_PELE/PlopRotTemp/main.py {}".format(lig).split())
-        t, r = plop.main(lig, mtor, n, core, mae_charges, clean) 
-        #hp.silentremove([lig])
-    """
+        template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
+        hp.silentremove([lig])
 
     logger.info("Creating Pele env")
     adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
@@ -121,36 +116,34 @@ def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, c
     pele_temp = os.path.join(pele_dir, "pele.conf")
     box_temp = os.path.join(pele_dir, "box.pdb")
     clusters = os.path.join(cluster_output, "clusters_40_KMeans_allSnapshots.pdb")
-    
+
     files = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
              os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf")]
     directories = FOLDERS
     directories.extend(["output_pele", "output_adaptive_exit", "output_clustering"])
     pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
 
-    
     logger.info("Preparing ExitPath Adaptive Env")
     ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus)
     adaptive_exit = ad.SimulationBuilder(ad_ex_temp, ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_temp, residue)
-    adaptive_exit.run()  
-   
+    adaptive_exit.run()
 
     logger.info("MSM Clustering")
     with hp.cd(adap_ex_output):
         cl.main(num_clusters=CLUSTERS, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
 
     logger.info("Create box")
-    center, radius = bx.main(adap_ex_output , clusters , center_mass)
+    center, radius = bx.main(adap_ex_output, clusters, center_mass)
     box = bx.build_box(center, radius, box_temp)
 
     logger.info("Running standard Pele")
     ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, center, radius)
     adaptive_long = ad.SimulationBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue)
     adaptive_long.run()
-   
-    logger.info("Extracting dG with MSM analysis") 
+
+    logger.info("Extracting dG with MSM analysis")
     msm.analyse_results(adap_l_output, residue)
-    
+
     logger.info("{} System run successfully".format(residue))
 
     # # Analyze results
@@ -158,9 +151,8 @@ def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, c
     # output.insert(0, OUTPUT_HEADER)
     # with open(RANKING_FILE, "w") as fout:
     #     fout.write("".join(output))
-    """
-if __name__ == "__main__":
 
+if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Run Adaptive Pele Platform')
     parser.add_argument('input', type=str, help='complex to run pele on')
