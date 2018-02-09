@@ -86,6 +86,10 @@ logger.addHandler(file_handler)
 
 
 def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
+    
+    template = None
+    rotamers_file = None
+
 
     # Preparative for Pele
     logger.info("Retrieving Ligands & Complexes")
@@ -106,6 +110,7 @@ def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, c
         template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
         hp.silentremove([lig])
 
+
     logger.info("Creating Pele env")
     adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
     adap_ex_output = os.path.join(pele_dir, "output_adaptive_exit")
@@ -121,7 +126,7 @@ def run(system, residue, chain, charge_ter, forcefield, confile, native, cpus, c
     files = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
              os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf")]
     directories = FOLDERS
-    directories.extend(["output_pele", "output_adaptive_exit", "output_clustering"])
+    directories.extend(["output_pele", "output_adaptive_exit", "output_clustering"]) 
     pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
 
     logger.info("Preparing ExitPath Adaptive Env")
