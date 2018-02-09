@@ -1,4 +1,5 @@
 import os
+import MSM_PELE.Helpers.check_env_var as env
 env.check_dependencies()
 import logging
 import argparse
@@ -13,7 +14,6 @@ import MSM_PELE.Helpers.system_prep as sp
 import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
-import MSM_PELE.Helpers.check_env_var as env
 
 
 COMPLEX = "complex.pdb"
