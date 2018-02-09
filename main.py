@@ -1,4 +1,5 @@
 import os
+env.check_dependencies()
 import logging
 import argparse
 import MSM_PELE.PlopRotTemp.main as plop
@@ -13,7 +14,6 @@ import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
 import MSM_PELE.Helpers.check_env_var as env
-env.check_dependencies()
 
 
 COMPLEX = "complex.pdb"
