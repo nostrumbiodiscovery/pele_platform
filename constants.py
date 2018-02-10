@@ -6,7 +6,7 @@ if "bsc.mn" in machine:
     PELE = "/gpfs/projects/bsc72/PELE++/mniv/rev12455"
     ADAPTIVE = "/gpfs/projects/bsc72/adaptiveSampling/bin/v1.4.1"
     MPIRUN = "/apps/INTEL/2017.4/impi/2017.3.196/bin64"
-    LICENSE = "/path/to/lic/"
+    LICENSE = "/gpfs/projects/bsc72/PELE++/license"
 
 else:
     SCHRODINGER = "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
