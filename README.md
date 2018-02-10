@@ -39,7 +39,7 @@ Monte Carlo Protein Energy Landscape Exploration (PELE) coupled with Markov Stat
     -  `e.g. python /home/dsoler/PelePlop/main.py PR_1A28_xray_-_minimized.pdb STR Z` <br />
     
     - **Optional arguments:**
-        - **--charge_ter         If set charge protein terminals
+        - **--charge_ter**       If set charge protein terminals
         - **--forc FORC**        Forcefield to use ["OPLS2005", "AMBER99sb"]
         - **--native NATIVE**    Native file to compare RMSD to
         - **--cpus CPUS**        Number of processors to use in adaptive in out
@@ -47,7 +47,6 @@ Monte Carlo Protein Energy Landscape Exploration (PELE) coupled with Markov Stat
         - **--mtor MTOR**        Gives the maximum number of torsions allowed in each
         group. Will freeze bonds to extend the core if necessary.
         - **--n N**              Maximum Number of Entries in Rotamer File
-        - **--mae_charges**      Use precalculated charges placed in mae
         - **--clean**            Whether to clean up all PlopRotTemp intermediate files
     - **Output:**
         - The platform will output a file results_summary.txt inside {resname}_PELE/output_pele/results_summary.txt with the           absolute free energy average over all pele trajectories and its standard deviation. If nothing is ouputted means             something is wrong and you can refear to the output.log file or mpi_{IDJOB}.err  mpi_{IDJOB}.out files to traceback           the error.
