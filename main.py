@@ -85,7 +85,7 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-def run(system, residue, chain, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
+def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, clean, only_plop):
     
     template = None
     rotamers_file = None
@@ -94,13 +94,21 @@ def run(system, residue, chain, charge_ter, gaps_ter, clusters, forcefield, conf
         raise ValueError("Number of cpus ({}) must be bigger than clusters ({})".format(cpus, clusters))
 
 
-    # Preparative for Pele
+    # Building system and ligand
     logger.info("Retrieving Ligands & Complexes")
-    receptor, lig_ref = sp.retrieve_receptor(system, residue)
-    lig, residue = sp.build_complexes(lig_ref, receptor)
+    if mae_lig:
+        receptor = system
+        lig = mae_lig
+        lig_ref = sp.convert_pdb(mae_lig)
+        system = sp.build_complex(receptor, lig_ref)
+    else:
+        receptor, lig_ref = sp.retrieve_receptor(system, residue)
+        lig, residue = sp.convert_mae(lig_ref, receptor)
+    
+    # Preparative for Pele
     pele_dir = os.path.abspath("{}_Pele".format(residue))
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
-    center_mass = cm.center_of_mass(lig_ref)
+    #center_mass = cm.center_of_mass(lig_ref)
 
     logger.info("Preparing {} system".format(residue))
     system_fix, missing_residues, gaps, metals = ppp.main(system, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
@@ -110,8 +118,14 @@ def run(system, residue, chain, charge_ter, gaps_ter, clusters, forcefield, conf
     logger.info("Running PlopRotTemp")
     for res, _, chain in missing_residues:
         logger.info("Creating template for residue {}".format(res))
-        template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
-        hp.silentremove([lig])
+        if mae_lig:
+            mae_charges = True
+            template, rotamers_file = plop.main(mae_lig, mtor, n, core, mae_charges, clean)
+            hp.silentremove([system])
+        else:
+            mae_charges = False
+            template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
+            hp.silentremove([lig])
 
 
     logger.info("Creating Pele env")
@@ -167,6 +181,7 @@ if __name__ == "__main__":
     parser.add_argument('input', type=str, help='complex to run pele on')
     parser.add_argument('residue', type=str, help='residue of the ligand to extract', default=LIG_RES)
     parser.add_argument('chain', type=str, help='forcefield to use', default=LIG_CHAIN)
+    parser.add_argument("--mae_lig", type=str, help="ligand .mae file to include QM charges coming from jaguar")
     parser.add_argument("--charge_ter", help="Charge protein terminals", action='store_true')
     parser.add_argument("--gaps_ter", help="Include TER when a possible gap is found", action='store_true')
     parser.add_argument("--clust", type=int, help="Numbers of clusters to start PELE's exploration with", default=CLUSTERS)
@@ -177,9 +192,8 @@ if __name__ == "__main__":
     parser.add_argument("--core", type=int, help="Give one atom of the core section", default=-1)
     parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each group.  Will freeze bonds to extend the core if necessary.", default=4)
     parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File", default=1000)
-    parser.add_argument("--mae_charges", help="Use charges in mae", action='store_true')
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
     parser.add_argument("--only_plop", help="Whether to run PlopRotTemp or both", action='store_true')
     args = parser.parse_args()
 
-    run(args.input, args.residue, args.chain, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.mae_charges, args.clean, args.only_plop)
+    run(args.input, args.residue, args.chain, args.mae_lig, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.only_plop)
