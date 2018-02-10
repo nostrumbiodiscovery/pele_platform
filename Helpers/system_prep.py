@@ -20,13 +20,12 @@ def build_complex(receptor, ligand):
 
     with open(ligand, 'r') as pdb_file:
         ligand_text = [line for line in pdb_file if line.startswith("HETATM")]
-    print(ligand)
+
     if not receptor_text  or not ligand_text:
         raise ValueError("The ligand_pdb was not properly created check your mae file")
 
     complex_content.extend(receptor_text + ["TER\n"] + ligand_text + ["END"])
  
-    print(complex_content)
     with open(complex, 'w') as fout:
         fout.write("".join(complex_content))
     

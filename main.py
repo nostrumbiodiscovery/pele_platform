@@ -42,7 +42,7 @@ NATIVE = '''
                             "path":\n\
                             "{}" }},\n\
 
-                           "selection": {{ "chains": {{ "names": [ "$CHAIN" ] }} }},\n\
+                           "selection": {{ "chains": {{ "names": [ "{}" ] }} }},\n\
 
                            "includeHydrogens": false,\n\
 
@@ -103,12 +103,12 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         system = sp.build_complex(receptor, lig_ref)
     else:
         receptor, lig_ref = sp.retrieve_receptor(system, residue)
-        lig, residue = sp.convert_mae(lig_ref, receptor)
+        lig, residue = sp.convert_mae(lig_ref)
     
     # Preparative for Pele
     pele_dir = os.path.abspath("{}_Pele".format(residue))
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
-    #center_mass = cm.center_of_mass(lig_ref)
+    center_mass = cm.center_of_mass(lig_ref)
 
     logger.info("Preparing {} system".format(residue))
     system_fix, missing_residues, gaps, metals = ppp.main(system, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
@@ -116,7 +116,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
     # Produce Templates of all missing residues
     logger.info("Running PlopRotTemp")
-    for res, _, chain in missing_residues:
+    for res, _, _ in missing_residues:
         logger.info("Creating template for residue {}".format(res))
         if mae_lig:
             mae_charges = True
