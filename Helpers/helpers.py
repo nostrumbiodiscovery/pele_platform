@@ -1,4 +1,5 @@
 import os, errno
+import re
 
 def silentremove(*args, **kwargs):
     for files in args:
@@ -22,3 +23,9 @@ class cd:
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
 
+def preproces_lines(lines):
+  for i, line in enumerate(lines):
+    line = re.sub(' +',' ',line)
+    line = line.strip('\n').strip().split()
+    lines[i] = line
+  return lines
