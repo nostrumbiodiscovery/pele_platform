@@ -71,7 +71,8 @@ def main(path, criteria="sasaLig", n_structs=500, sort_order="max", out_freq=FRE
     """ 
 
     #Initial Values
-    reports = glob.glob(os.path.join(path,"*/*report*"))
+    all_reports = glob.glob(os.path.join(path,"*/*report*"))
+    reports = [report for report in all_reports if(os.path.basename(os.path.dirname(report)).isdigit())]
     try:
         traj = ("_".join(reports[0].split("_")[:-1])).replace(REPORT, TRAJ)
     except IndexError:
@@ -79,13 +80,12 @@ def main(path, criteria="sasaLig", n_structs=500, sort_order="max", out_freq=FRE
 
     #Data Mining
     min_values  = parse_values(reports, n_structs, criteria, sort_order)
-
     values = min_values[criteria].tolist()
     paths = min_values[PATH].tolist()
     epochs = [os.path.basename(os.path.normpath(os.path.dirname(path))) for path in paths]
     reports_indexes = min_values.report.tolist()
     step_indexes = min_values[ACCEPTED_STEPS].tolist()
-    max_sasa_info = {epoch: [report, value, int(step)] for epoch, report, value, step in zip(epochs, reports_indexes, values, step_indexes)}
+    max_sasa_info = {i: [epoch, report, value, int(step)] for i, (epoch, report, value, step) in enumerate(zip(epochs, reports_indexes, values, step_indexes))}
     print(max_sasa_info)
     return max_sasa_info
 
@@ -108,14 +108,15 @@ def parse_values(reports, n_structs, criteria, sort_order):
         report_number = os.path.basename(file).split("_")[-1]
         data = pd.read_csv(file, sep='    ',engine='python')
         selected_data = data.loc[:, [ACCEPTED_STEPS,criteria]]
-        report_values =  selected_data.nsmallest(n_structs, criteria)
+        report_values =  selected_data.nlargest(n_structs, criteria)
         report_values.insert(0, PATH, [file]*report_values[criteria].size)
         report_values.insert(1, REPORT, [report_number]*report_values[criteria].size)
-        report_values = report_values[report_values[criteria].between(0.0, 1, inclusive=True)]
+        report_values = report_values[report_values[criteria].between(0.9, 1, inclusive=True)]
         try:
             values = pd.concat([values, report_values])
         except ValueError:
             values = report_values
+    values.sort_values(criteria, ascending=False)
     return values
 
 if __name__ == "__main__":
