@@ -26,10 +26,6 @@ def parseargs():
     return args.bs, args.points
 
 
-PDB = "/home/dani/clusters_40_KMeans_allSnapshots.pdb"
-
-
-
 def main(path, clusters, bs):
     # fig = pyplot.figure()
     # ax = Axes3D(fig)
@@ -57,8 +53,8 @@ def main(path, clusters, bs):
 
 def get_sasa_points(path, sasa_info):
     points = []
-    for epoch, info in sasa_info.items():
-        report, value, model = info
+    for _, info in sasa_info.items():
+        epoch, report, value, model = info
         coord_file = os.path.join(path, "{}/extractedCoordinates/coord_{}.dat".format(epoch, report))
         with open(coord_file, 'r') as f:
                 lines = f.readlines()
