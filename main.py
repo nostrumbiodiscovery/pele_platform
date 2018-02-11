@@ -16,7 +16,7 @@ import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
 
-
+# DEFAULT VALUES
 COMPLEX = "complex.pdb"
 RESULTS = "results"
 LIG_RES = "LIG"
@@ -27,12 +27,10 @@ CPUS = 140
 RESTART = True
 CLUSTERS = 40
 
+# KEYWORDS
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
-
 EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
-
 PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
-
 NATIVE = '''
                         {{
 
@@ -55,26 +53,22 @@ NATIVE = '''
 
 '''
 
+# FOLDERS&PATH
+DIR = os.path.dirname(__file__)
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
-
-# Output Constants
-RANKING_FILE = "Pele_ranking.txt"
-OUTPUT_HEADER = "#Residue Epoch DG StdDG Db StdDb Conv\n#==================================\n"
-
-# Folders and files
 FOLDERS = ["",
            "DataLocal/Templates/OPLS2005/HeteroAtoms/",
            "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
            "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
            "DataLocal/LigandRotamerLibs"]
 
+# ERRORS
+CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
 
-# Log Constants
+# LOG CONSTANTS
 LOG_FILENAME = "output.log"
 LOG_FORMAT = "%(asctime)s:%(levelname)s:%(message)s"
 
-# directory
-DIR = os.path.dirname(__file__)
 
 # Logging definition block
 logger = logging.getLogger(__name__)
@@ -86,13 +80,12 @@ logger.addHandler(file_handler)
 
 
 def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, clean, only_plop):
-    
+
     template = None
     rotamers_file = None
 
     if clusters > cpus:
-        raise ValueError("Number of cpus ({}) must be bigger than clusters ({})".format(cpus, clusters))
-
+        raise ValueError(CLUSTER_ERROR.format(cpus, clusters))
 
     # Building system and ligand
     logger.info("Retrieving Ligands & Complexes")
@@ -104,7 +97,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     else:
         receptor, lig_ref = sp.retrieve_receptor(system, residue)
         lig, residue = sp.convert_mae(lig_ref)
-    
+
     # Preparative for Pele
     pele_dir = os.path.abspath("{}_Pele".format(residue))
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
@@ -126,7 +119,6 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
             mae_charges = False
             template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
             hp.silentremove([lig])
-
 
     logger.info("Creating Pele env")
     adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
@@ -157,7 +149,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
     logger.info("Create box")
     center, radius = bx.main(adap_ex_output, clusters, center_mass)
-    box = bx.build_box(center, radius, box_temp)
+    bx.build_box(center, radius, box_temp)
 
     logger.info("Running standard Pele")
     ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, center, radius)
@@ -169,11 +161,6 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
     logger.info("{} System run successfully".format(residue))
 
-    # # Analyze results
-    # output = msm.summerize(pele_dirs, residues)
-    # output.insert(0, OUTPUT_HEADER)
-    # with open(RANKING_FILE, "w") as fout:
-    #     fout.write("".join(output))
 
 if __name__ == "__main__":
 

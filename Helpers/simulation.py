@@ -1,36 +1,24 @@
 import os
 import sys
-import subprocess
 from MSM_PELE.Helpers import helpers, template_builder
-from MSM_PELE.Helpers.template_builder import TemplateBuilder
 import AdaptivePELE.adaptiveSampling as ad
 
 
 class SimulationBuilder(template_builder.TemplateBuilder):
 
     def __init__(self, file, keywords, *args, **kwargs):
-        
+
         self.file = file
         self.keywords = keywords
 
-        self.ad_opt_new = ["false" if opt == False else opt for opt in locals()["args"]]
-        self.ad_opt = ["true" if opt == True else opt for opt in self.ad_opt_new]
+        self.ad_opt_new = ["false" if opt is False else opt for opt in locals()["args"]]
+        self.ad_opt = ["true" if opt is True else opt for opt in self.ad_opt_new]
 
-        
-        self.replace =  {keyword : value for keyword, value in zip(self.keywords, self.ad_opt)}
+
+        self.replace = {keyword : value for keyword, value in zip(self.keywords, self.ad_opt)}
 
         super(SimulationBuilder, self).__init__(self.file, self.replace)
 
-
     def run(self):
-
-    	with helpers.cd(os.path.dirname(self.file)):
-    	 ad.main(self.file)
-
-
-
-
-
-
-
-
+        with helpers.cd(os.path.dirname(self.file)):
+            ad.main(self.file)

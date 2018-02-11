@@ -1,14 +1,14 @@
-import os, errno
+import os
 import re
+
 
 def silentremove(*args, **kwargs):
     for files in args:
         for filename in files:
-    	    try:
-        	os.remove(filename)
-    	    except OSError as e: # this would be "except OSError, e:" before Python 2.6
-        	if e.errno != errno.ENOENT: # errno.ENOENT = no such file or directory
-            	    raise # re-raise exception if a different error occurred
+            try:
+                os.remove(filename)
+            except OSError:
+                pass
 
 
 class cd:
@@ -23,9 +23,10 @@ class cd:
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
 
+
 def preproces_lines(lines):
-  for i, line in enumerate(lines):
-    line = re.sub(' +',' ',line)
-    line = line.strip('\n').strip().split()
-    lines[i] = line
-  return lines
+    for i, line in enumerate(lines):
+        line = re.sub(' +', ' ', line)
+        line = line.strip('\n').strip().split()
+        lines[i] = line
+    return lines

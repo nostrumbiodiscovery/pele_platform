@@ -2,6 +2,7 @@ import os
 import sys
 from MSM_PELE import constants
 
+
 def find_executable(executable, path=None):
     """
     Find if 'executable' can be run. Looks for it in 'path'
@@ -42,28 +43,22 @@ def check_dependencies():
         os.environ["SCHRODINGER"] = constants.SCHRODINGER
         os.environ["PELE"] = constants.PELE
         os.environ["PATH"] = "{}:{}".format(os.environ["PATH"], constants.MPIRUN)
-        sys.path.insert(0, os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))       
-        sys.path.insert(0, constants.ADAPTIVE)        
-  
+        sys.path.insert(0, os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))
+        sys.path.insert(0, constants.ADAPTIVE)
 
         try:
-		os.environ["SCHRODINGER"]
-	except KeyError:
-		raise("SCHRODINGER IS NOT EXPORTED. export SCHRODINGER='/path/to/schrodinger/")
+            os.environ["SCHRODINGER"]
+        except KeyError:
+            raise("Change SCHRODINGER path in constants.py module")
 
-	try:
-		os.environ["PELE"]
-		os.environ["PATH"]="{}:{}".format(
-			os.environ["PATH"],
-			os.path.join(os.environ["PELE"], "bin"))
-	except KeyError:
-		raise("PELE IS NOT EXPORTED. Export PELE='/path/to/pele/")
+        try:
+            pele_bin_path = os.path.join(os.environ["PELE"], "bin")
+            os.environ["PATH"] = "{}:{}".format(os.environ["PATH"], pele_bin_path)
+        except KeyError:
+            raise("Change PELE path in constants.py module")
 
-	if not find_executable("mpirun"):
-		raise ValueError("Could not find executable in path. Set export PATH=/path/to/mpirun_binary/:$PATH")
+        if not find_executable("mpirun"):
+            raise ValueError("Change mpirun path in constants.py module")
 
-	if not find_executable("Pele_mpi") and not find_executable("PELE-1.5_mpi"):
-		raise ValueError("Could not find executable in path. set export PATH=/path/to/pele_binary/:$PATH")
-	
-
-
+        if not find_executable("Pele_mpi") and not find_executable("PELE-1.5_mpi"):
+            raise ValueError("Change Pele path in constants.py module")

@@ -1,6 +1,4 @@
 import sys
-import os
-
 
 AMINOACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
               "SER", "ASP", "LYS", "MET", "GLN",
@@ -28,7 +26,6 @@ class ConstraintBuilder(object):
     def parse_atoms(self):
         residues = {}
         initial_res = None
-        terminal_res = None
         with open(self.pdb, "r") as pdb:
             for line in pdb:
                 resname = line[16:21].strip()
@@ -37,48 +34,44 @@ class ConstraintBuilder(object):
                 chain = line[20:23].strip()
                 if line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
                     try:
-                        if not initial_res :
+                        if not initial_res:
                             residues["initial"] = [chain, line[22:26].strip()]
                             initial_res = True
                             continue
-                        elif int(resnum)%10 != 1: 
+                        # Apply constraint every 10 residues
+                        elif int(resnum) % 10 != 1:
                             residues["terminal"] = [chain, line[22:26].strip()]
-                        elif int(resnum)%10 == 1 and line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
+                        elif int(resnum) % 10 == 1 and line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
                             residues[resnum] = chain
                     except ValueError:
-                        continue 
+                        continue
         return residues
 
-     
-
-
-
     def build_constraint(self, residues):
-        
-                
+
         init_constr = ['''"constraints":[''', ]
-       
+
         back_constr = [CONSTR_CALPHA.format(chain, resnum, BACK_CONSTR) for resnum, chain in residues.iteritems() if resnum.isdigit()]
 
         gaps_constr = self.gaps_constraints()
 
-        metal_constr = self.metal_constraints()     
+        metal_constr = self.metal_constraints()
 
         terminal_constr = [CONSTR_CALPHA.format(residues["initial"][0], residues["initial"][1], TER_CONSTR), CONSTR_CALPHA.format(residues["terminal"][0], residues["terminal"][1], TER_CONSTR).strip(",")]
 
-        final_constr = [ "],"]
+        final_constr = ["],"]
 
         constraints = init_constr + back_constr + gaps_constr + metal_constr + terminal_constr + final_constr
 
         return constraints
-    
+
     def gaps_constraints(self):
         self.gaps = {}
         gaps_constr = []
-        for  chain, residues in self.gaps.iteritems():
+        for chain, residues in self.gaps.iteritems():
             gaps_constr = [CONSTR_ATOM.format(10, chain, residue, "_CA_") for residue in residues]
         return gaps_constr
-    
+
     def metal_constraints(self):
         metal_constr = []
         for metal, ligands in self.metals.iteritems():
@@ -89,14 +82,9 @@ class ConstraintBuilder(object):
                 metal_constr.append(CONSTR_DIST.format(5, bond_lenght, chain, resnum, ligname, chain, metnum, metal_name))              
         return metal_constr
 
-        
 
 def retrieve_constraints(pdb_file, gaps, metal):
     constr = ConstraintBuilder(pdb_file, gaps, metal)
     residues = constr.parse_atoms()
     constraints = constr.build_constraint(residues)
     return constraints
-
-
-
-
