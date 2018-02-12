@@ -36,27 +36,21 @@ class ZMATRIX:
         :rtype : a ZMATRIX object
         :param aminoacid_name: a string containing the 3 letters code for the desired aminoacid.
         """
-        filename = "DataLocal/Templates/OPLS2005/HeteroAtoms/" + aminoacid_name.lower().strip() + 'z'
+        filename = pele_folder_path + "/Data/Templates/OPLS2005/Protein/" + aminoacid_name.lower()
         try:
             filein = open(filename, 'r')
         except IOError:
-            filename = pele_folder_path + "/Data/Templates/OPLS2005/Protein/" + aminoacid_name.lower()
+            filename = pele_folder_path + "/Data/Templates/OPLS2005/HeteroAtoms/" + aminoacid_name.lower() + 'z'
             try:
                 filein = open(filename, 'r')
             except IOError:
-                filename = pele_folder_path + "/Data/Templates/OPLS2005/HeteroAtoms/" + aminoacid_name.lower() + 'z'
-                try:
-                    filein = open(filename, 'r')
-                except IOError:
-                    print "    * No such file or directory: {}".format(filename)
-                    self.Name = None
-                    return None
-                else:
-                    self.Name = aminoacid_name.upper() + 'Z'
+                print "    * No such file or directory: {}".format(filename)
+                self.Name = None
+                return None
             else:
-                self.Name = aminoacid_name.upper()
+                self.Name = aminoacid_name.upper() + 'Z'
         else:
-            self.Name = aminoacid_name.upper() + 'Z'
+            self.Name = aminoacid_name.upper()
         raw_data = filein.readlines()
         filein.close()
         add_lines = False
