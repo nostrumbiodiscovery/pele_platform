@@ -2,17 +2,44 @@ import os
 from schrodinger import structure as st
 import StringIO
 import MSM_PELE.Helpers.helpers as hp
+from prody import *
 
-def build_complexes(ligands, receptor):
+
+def build_complex(receptor, ligand):
+    """ From the receptor and ligand in pdb build
+        another pdb with the whole complex
+    """
+    complex_content = []
+
+    name = os.path.basename(os.path.splitext(receptor)[0])
+    dirname = os.path.dirname(receptor)
+    complex = os.path.join(dirname, "{}_complex.pdb".format(name)) 
+
+    with open(receptor, 'r') as pdb_file:
+        receptor_text = [line for line in pdb_file if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER")]
+
+    with open(ligand, 'r') as pdb_file:
+        ligand_text = [line for line in pdb_file if line.startswith("HETATM")]
+
+    if not receptor_text  or not ligand_text:
+        raise ValueError("The ligand_pdb was not properly created check your mae file")
+
+    complex_content.extend(receptor_text + ["TER\n"] + ligand_text + ["END"])
+ 
+    with open(complex, 'w') as fout:
+        fout.write("".join(complex_content))
+    
+    return complex
+
+
+def convert_mae(ligands):
     """
        Desciption: From each structure retrieve
-       a .mae file, the complex with the receptor
-       and a the ligand's residue name.
+       a .mae file of the ligand in the receptor.
 
        Output:
-            struct_files_mae: list of ligand.mae files
-            complex: list of receptor+ligand pdb
-            residues: list of residues of ligands
+            structure_mae: ligand
+            res = residue
     """
 
     
@@ -48,4 +75,13 @@ def retrieve_receptor(system, residue):
     with open(ligand, "w") as fout:
 	fout.write("".join(ligand_text))
 
-    return "".join(receptor_text), ligand 
+    return "".join(receptor_text), ligand
+
+def convert_pdb(lig_mae):
+    name = os.path.basename(os.path.splitext(lig_mae)[0])
+    dirname = os.path.dirname(lig_mae)
+    for structure in st.StructureReader(lig_mae):
+        struct_pdb = os.path.join(dirname, "{}.pdb".format(name))
+        structure.write(struct_pdb)
+    return struct_pdb
+    

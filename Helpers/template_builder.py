@@ -1,7 +1,7 @@
 import sys
 import os
-import shutil
 from string import Template
+
 
 class TemplateBuilder(object):
 
@@ -18,7 +18,7 @@ class TemplateBuilder(object):
         with open(os.path.join(self.file), 'r') as infile:
             confile_data = infile.read()
 
-        confile_template = Template(confile_data) 
+        confile_template = Template(confile_data)
 
         confile_text = confile_template.safe_substitute(self.keywords)
 

@@ -1,18 +1,18 @@
 # from matplotlib import pyplot
 # from mpl_toolkits.mplot3d import Axes3D
 import os
-import random
 from scipy.spatial import distance
 import numpy as np
 import argparse
 import math
-from operator import itemgetter, attrgetter
+from operator import itemgetter
 import MSM_PELE.Helpers.best_structs as best_structs
 import MSM_PELE.Helpers.template_builder as tb
 
 __author__ = "Daniel Soler Viladrich"
 __email__ = "daniel.soler@nostrumbiodiscovery.com"
 
+# BOX CONSTANTS
 KEYWORDS = ["CENTER_X", "CENTER_Y", "CENTER_Z", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8"]
 COORD = "{:>11.3f}{:>8.3f}{:>8.3f}"
 CENTER = "{:.3f}"
@@ -27,42 +27,32 @@ def parseargs():
 
 
 def main(path, clusters, bs):
-    # fig = pyplot.figure()
-    # ax = Axes3D(fig)
 
-    sasa_info = best_structs.main(path)    
-    sasa_points = get_sasa_points(path, sasa_info)
+    max_sasa_structs = best_structs.main(path)
+    max_sasa_points = get_sasa_points(path, max_sasa_structs)
     points = get_points(clusters)
     centroid = find_centroid(points)
 
-    angle_points = find_angle_lenght(bs, centroid, sasa_points)
+    angle_points = find_angle_lenght(bs, centroid, max_sasa_points)
     min_angl_points = sorted(angle_points, key=itemgetter(1))
     chosen_point = min_angl_points[0][0]
 
     radius = (distance.euclidean(bs, chosen_point) / 2.0) + 4
     center = [(final + initial) / 2.0 for initial, final in zip(bs, chosen_point)]
-  #  ax.scatter(*decompose(points))
-  #  ax.plot_wireframe(*WireframeSphere(center, radius), color="b", alpha=0.5)
-  #  ax.scatter(*bs, c='red')
-  #  ax.scatter(*chosen_point, c='red')
- #   ax.scatter(*centroid, c='red')
-
-    #pyplot.show()
 
     return center, radius
 
-def get_sasa_points(path, sasa_info):
+
+def get_sasa_points(path, max_sasa_structs):
     points = []
-    for _, info in sasa_info.items():
+    for _, info in max_sasa_structs.items():
         epoch, report, value, model = info
         coord_file = os.path.join(path, "{}/extractedCoordinates/coord_{}.dat".format(epoch, report))
         with open(coord_file, 'r') as f:
                 lines = f.readlines()
-        coord = [ float(crd) for crd in lines[model].split()[1:]]
+        coord = [float(crd) for crd in lines[model].split()[1:]]
         points.append(coord)
     return points
-
-
 
 
 def get_points(pdb):
@@ -70,8 +60,6 @@ def get_points(pdb):
         lines = [line.split() for line in f if line.startswith("HETATM")]
         points = [[float(line[6]), float(line[7]), float(line[8])] for line in lines]
         return points
-
-
 
 
 def find_centroid(points):
@@ -82,9 +70,9 @@ def find_centroid(points):
 
 
 def decompose(points):
-    crd_x = [ x for x, y, z in points]
-    crd_y = [ y for x, y, z in points]
-    crd_z = [ z for x, y, z in points]
+    crd_x = [x for x, y, z in points]
+    crd_y = [y for x, y, z in points]
+    crd_z = [z for x, y, z in points]
     return crd_x, crd_y, crd_z
 
 
@@ -105,7 +93,6 @@ def find_angle_lenght(bs, centroid, points):
     return point_angle_lenght
 
 
-
 def WireframeSphere(centre, radius, n_meridians=20, n_circles_latitude=None):
     """
     Create the arrays of values to plot the wireframe of a sphere.
@@ -118,6 +105,7 @@ def WireframeSphere(centre, radius, n_meridians=20, n_circles_latitude=None):
     sphere_y = centre[1] + radius * np.sin(u) * np.sin(v)
     sphere_z = centre[2] + radius * np.cos(v)
     return sphere_x, sphere_y, sphere_z
+
 
 def build_box(center, radius, file):
 
@@ -140,11 +128,8 @@ def build_box(center, radius, file):
 
     tb.TemplateBuilder(file, replace)
 
-    return file
 
 if __name__ == '__main__':
-        #with pele.cd("/home/dsoler/1sqa/output_adaptive_short/"):
-        #    cl.main(num_clusters=40, output_folder="/home/dsoler/1sqa/output_clustering/", ligand_resname="UI1", atom_ids="")
        	center, radius = main("/scratch/jobs/dsoler/test/STR_Pele/output_adaptive_exit" ,"/scratch/jobs/dsoler/test/STR_Pele/output_clustering/clusters_40_KMeans_allSnapshots.pdb" , [-20.332, 59.897, 2.8323])
         box = build_box(center, radius, "/scratch/jobs/dsoler/test/STR_Pele/box.pdb")
 

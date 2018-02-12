@@ -24,34 +24,29 @@ class Pele_env_Builder(object):
         """
             Create pele folders
         """
-        
+
         for folder in self.folders:
             self.create_dir(self.pele_dir, folder)
-        
 
     def file_dist(self):
         """
             Copy control rotamer
             and template files
         """
-        #paths
+        # Paths
         self.template_dir = os.path.join(
             self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
         self.rotamers_dir = os.path.join(self.pele_dir, "DataLocal/LigandRotamerLibs")
 
-        #actions
+        # Actions
         for file in self.files:
             self.copy(file, self.pele_dir)
-        
+
         if self.template and self.rotamers:
             shutil.move(self.template, self.template_dir)
             shutil.move(self.rotamers, self.rotamers_dir)
 
         shutil.move(self.input, self.pele_dir)
-
-
-
-
 
     def create_dir(self, base_dir, extension=None):
         """
@@ -63,10 +58,10 @@ class Pele_env_Builder(object):
                 base_dir+extension
                 or base_dir if extension is None
         """
-        if extension:               
+        if extension:
             path = os.path.join(base_dir, extension)
             if os.path.isdir(path):
-                warnings.warn("Directory {} already exists.".format(path),RuntimeWarning)
+                warnings.warn("Directory {} already exists.".format(path), RuntimeWarning)
             else:
                 os.makedirs(path)
         else:
@@ -80,7 +75,7 @@ class Pele_env_Builder(object):
             shutil.copy(user, os.path.join(self.pele_dir, standard))
         else:
             shutil.copy(standard, self.pele_dir)
-        return os.path.join(self.pele_dir,standard)
+        return os.path.join(self.pele_dir, standard)
 
 
 def set_pele_env(system,  folders, files, forcefield, template, rotamers_file, pele_dir):

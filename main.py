@@ -16,7 +16,7 @@ import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
 
-
+# DEFAULT VALUES
 COMPLEX = "complex.pdb"
 RESULTS = "results"
 LIG_RES = "LIG"
@@ -27,12 +27,10 @@ CPUS = 140
 RESTART = True
 CLUSTERS = 40
 
+# KEYWORDS
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
-
 EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
-
 PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
-
 NATIVE = '''
                         {{
 
@@ -42,7 +40,7 @@ NATIVE = '''
                             "path":\n\
                             "{}" }},\n\
 
-                           "selection": {{ "chains": {{ "names": [ "$CHAIN" ] }} }},\n\
+                           "selection": {{ "chains": {{ "names": [ "{}" ] }} }},\n\
 
                            "includeHydrogens": false,\n\
 
@@ -55,26 +53,22 @@ NATIVE = '''
 
 '''
 
+# FOLDERS&PATH
+DIR = os.path.dirname(__file__)
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
-
-# Output Constants
-RANKING_FILE = "Pele_ranking.txt"
-OUTPUT_HEADER = "#Residue Epoch DG StdDG Db StdDb Conv\n#==================================\n"
-
-# Folders and files
 FOLDERS = ["",
            "DataLocal/Templates/OPLS2005/HeteroAtoms/",
            "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
            "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
            "DataLocal/LigandRotamerLibs"]
 
+# ERRORS
+CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
 
-# Log Constants
+# LOG CONSTANTS
 LOG_FILENAME = "output.log"
 LOG_FORMAT = "%(asctime)s:%(levelname)s:%(message)s"
 
-# directory
-DIR = os.path.dirname(__file__)
 
 # Logging definition block
 logger = logging.getLogger(__name__)
@@ -85,19 +79,26 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-def run(system, residue, chain, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, mae_charges, clean, only_plop):
-    
+def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, clean, only_plop):
+
     template = None
     rotamers_file = None
 
     if clusters > cpus:
-        raise ValueError("Number of cpus ({}) must be bigger than clusters ({})".format(cpus, clusters))
+        raise ValueError(CLUSTER_ERROR.format(cpus, clusters))
 
+    # Building system and ligand
+    logger.info("Retrieving Ligands & Complexes")
+    if mae_lig:
+        receptor = system
+        lig = mae_lig
+        lig_ref = sp.convert_pdb(mae_lig)
+        system = sp.build_complex(receptor, lig_ref)
+    else:
+        receptor, lig_ref = sp.retrieve_receptor(system, residue)
+        lig, residue = sp.convert_mae(lig_ref)
 
     # Preparative for Pele
-    logger.info("Retrieving Ligands & Complexes")
-    receptor, lig_ref = sp.retrieve_receptor(system, residue)
-    lig, residue = sp.build_complexes(lig_ref, receptor)
     pele_dir = os.path.abspath("{}_Pele".format(residue))
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
     center_mass = cm.center_of_mass(lig_ref)
@@ -108,11 +109,16 @@ def run(system, residue, chain, charge_ter, gaps_ter, clusters, forcefield, conf
 
     # Produce Templates of all missing residues
     logger.info("Running PlopRotTemp")
-    for res, _, chain in missing_residues:
+    for res, _, _ in missing_residues:
         logger.info("Creating template for residue {}".format(res))
-        template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
-        hp.silentremove([lig])
-
+        if mae_lig:
+            mae_charges = True
+            template, rotamers_file = plop.main(mae_lig, mtor, n, core, mae_charges, clean)
+            hp.silentremove([system])
+        else:
+            mae_charges = False
+            template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
+            hp.silentremove([lig])
 
     logger.info("Creating Pele env")
     adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
@@ -143,7 +149,7 @@ def run(system, residue, chain, charge_ter, gaps_ter, clusters, forcefield, conf
 
     logger.info("Create box")
     center, radius = bx.main(adap_ex_output, clusters, center_mass)
-    box = bx.build_box(center, radius, box_temp)
+    bx.build_box(center, radius, box_temp)
 
     logger.info("Running standard Pele")
     ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, center, radius)
@@ -155,11 +161,6 @@ def run(system, residue, chain, charge_ter, gaps_ter, clusters, forcefield, conf
 
     logger.info("{} System run successfully".format(residue))
 
-    # # Analyze results
-    # output = msm.summerize(pele_dirs, residues)
-    # output.insert(0, OUTPUT_HEADER)
-    # with open(RANKING_FILE, "w") as fout:
-    #     fout.write("".join(output))
 
 if __name__ == "__main__":
 
@@ -167,6 +168,7 @@ if __name__ == "__main__":
     parser.add_argument('input', type=str, help='complex to run pele on')
     parser.add_argument('residue', type=str, help='residue of the ligand to extract', default=LIG_RES)
     parser.add_argument('chain', type=str, help='forcefield to use', default=LIG_CHAIN)
+    parser.add_argument("--mae_lig", type=str, help="ligand .mae file to include QM charges coming from jaguar")
     parser.add_argument("--charge_ter", help="Charge protein terminals", action='store_true')
     parser.add_argument("--gaps_ter", help="Include TER when a possible gap is found", action='store_true')
     parser.add_argument("--clust", type=int, help="Numbers of clusters to start PELE's exploration with", default=CLUSTERS)
@@ -177,9 +179,8 @@ if __name__ == "__main__":
     parser.add_argument("--core", type=int, help="Give one atom of the core section", default=-1)
     parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each group.  Will freeze bonds to extend the core if necessary.", default=4)
     parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File", default=1000)
-    parser.add_argument("--mae_charges", help="Use charges in mae", action='store_true')
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
     parser.add_argument("--only_plop", help="Whether to run PlopRotTemp or both", action='store_true')
     args = parser.parse_args()
 
-    run(args.input, args.residue, args.chain, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.mae_charges, args.clean, args.only_plop)
+    run(args.input, args.residue, args.chain, args.mae_lig, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.only_plop)
