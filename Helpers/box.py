@@ -37,7 +37,7 @@ def main(path, clusters, bs):
     min_angl_points = sorted(angle_points, key=itemgetter(1))
     chosen_point = min_angl_points[0][0]
 
-    radius = (distance.euclidean(bs, chosen_point) / 2.0) + 4
+    radius = (distance.euclidean(bs, chosen_point) / 2.0) + 10
     center = [(final + initial) / 2.0 for initial, final in zip(bs, chosen_point)]
 
     return center, radius

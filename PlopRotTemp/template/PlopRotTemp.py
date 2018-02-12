@@ -1631,9 +1631,6 @@ def get_torsions_from_mae(mae_file, residue_name):
   mol = Chem.MolFromPDBFile(pdb_file, False)
   torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
   torsions = [[tor[0], tor[1]] for tor in torsions]
-  OH_torsions = find_OH_torsions(struct, mae_file)
-  NH2_torsions = find_NH2_torsions(struct, mae_file)
-  torsions.extend(OH_torsions+NH2_torsions)
   try:
     os.remove(pdb_file)
   except OSError:

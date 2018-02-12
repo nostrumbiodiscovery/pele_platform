@@ -116,6 +116,7 @@ import subprocess
 from rdkit import Chem
 from rdkit.Chem import TorsionFingerprints
 import schrodinger
+from schrodinger.structutils.analyze import is_bond_rotatable
 from schrodinger import structure
 # from schrodinger import structureutil
 #hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
@@ -1637,60 +1638,55 @@ def get_torsions_from_mae(mae_file, residue_name):
   struct.write(pdb_file)
   mol = Chem.MolFromPDBFile(pdb_file, False)
   torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
-  torsions = [[tor[0], tor[1]] for tor in torsions]
+  all_torsions = [[tor[0], tor[1]] for tor in torsions]
+  torsions = [[bond.atom1.index, bond.atom2.index] for bond in struct.bond if [bond.atom1.index, bond.atom2.index] in all_torsions and is_bond_rotatable(bond)]  
+  final_torsions = remove_amide_bonds(struct, torsions)
+  # Bonds start t 0 we have to adapt torsions as well
+  torsions = [[tor1-1, tor2-1] for tor1, tor2 in final_torsions]
+  print(torsions)
   try:
     os.remove(pdb_file)
   except OSError:
     print("Error when calculating torsions. Be carefull not to have a {} in your current directory".format(pdb_file))
   return torsions
 
-def find_OH_torsions(struct, mae_file):
-  """
-    Find all the OH terminal bonds
-    and append them to torsions
-  """
-  OH_torsions = []
-  oxygen_atoms = []
-  OH_bonds = []
-  atoms = struct.atom
-  bonds = find_bonds_in_mae(mae_file)
-  for bond in bonds:
-      #struct reader atom list start at 1
-      if(atoms[bond[0]+1].element == 'O' and atoms[bond[1]+1].element== 'H'):
-        oxygen_atoms.append(bond[0])
-        OH_bonds.append(bond)
-  for bond in bonds:
-    if(bond not in OH_bonds and (bond[0] in oxygen_atoms or bond[1] in oxygen_atoms)):
-      OH_torsions.append(bond)
-  return OH_torsions
+
+def remove_amide_bonds(structure, torsions):
+
+	to_delete = []
+
+	atoms = structure.atom
+
+	for i, torsion in enumerate(torsions):
 
 
-def find_NH2_torsions(struct, mae_file):
+		atom1, atom2 = torsion
+		atom1 = atoms[atom1]
+		atom2 = atoms[atom2]
 
-  """
-    Find all the NH2 terminal bonds
-    and append them to torsions
-  """
-  NH2_torsions = []
-  nitrogen_atoms = []
-  NH_bonds = []
-  atoms = struct.atom
-  bonds = find_bonds_in_mae(mae_file)
-  #Find all NH bonds and Natoms
-  for bond in bonds:
-      #struct reader atom list start at 1
-      if(atoms[bond[0]+1].element == 'N' and atoms[bond[1]+1].element== 'H'):
-        NH_bonds.append(bond)
-        if(bond[0] not in nitrogen_atoms):
-          nitrogen_atoms.append(bond[0])
-  #Find NH2-C Bond and include it to torsions
-  for bond in bonds:
-    if(bond not in NH_bonds and (bond[0] in nitrogen_atoms or bond[1] in nitrogen_atoms)):
-      NH2_torsions.append(bond)
-  return NH2_torsions
+		boolean = is_amide(atom1, atom2)
 
+		if boolean:
+			to_delete.append(torsion)
 
+		boolean = is_amide(atom2, atom1)
 
+		if boolean:
+			to_delete.append(torsion)
+	print(to_delete)
+	new_torsions = [torsion for torsion in torsions if torsion not in to_delete]
+	print(new_torsions)
+	return new_torsions
+
+def is_amide(atom1, atom2):
+	print(atom1.element, atom2.element)
+	if atom1.element == 'N' and atom2.element == 'C':
+			for atom in atom2.bonded_atoms:
+				print(atom.element)
+				if atom.element == 'O':
+					return True
+
+	return False
 
 ####################################
 def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_group_root_atom_name='None'):
