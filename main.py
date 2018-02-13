@@ -100,6 +100,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
     # Preparative for Pele
     pele_dir = os.path.abspath("{}_Pele".format(residue))
+    pele_dir = pele.is_repited(pele_dir)
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
     center_mass = cm.center_of_mass(lig_ref)
 

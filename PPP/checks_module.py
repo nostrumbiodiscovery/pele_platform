@@ -584,7 +584,7 @@ def CheckforGaps(structure):
                         previous_residue_C = previous_residue.getAtom('C')
                         if current_residue_N is not None and previous_residue_C is not None:
                             distance = calcDistance(current_residue_N, previous_residue_C)
-                            if distance < 1.5:
+                            if distance < 2.5:
                                 try:
                                     not_gaps[chain_id]
                                 except KeyError:
