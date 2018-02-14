@@ -16,7 +16,7 @@ def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
         prepareMSMFolders.main()
         estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER, CLUSTERINSTRIDE)
         results_file = summerize(output_pele)
-        shutil.move(results_file, pele_dir)
+        shutil.move(results_file, os.path.join(pele_dir, "results.txt"))
 
 def summerize(pele_path):
     results_file = os.path.join(pele_path, "results.txt")
