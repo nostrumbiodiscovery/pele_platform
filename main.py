@@ -94,10 +94,8 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         raise ValueError(CLUSTER_ERROR.format(cpus, clusters))
 
     if restart == "all":
-        print("BBBBB")
         pele_dir = pele.is_repited(pele_dir)
     else:
-        print("AAAA")
         pele_dir = pele.is_last(pele_dir)
 
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
