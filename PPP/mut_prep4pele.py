@@ -90,7 +90,6 @@ def main(input_pdb, output_pdb=["",], no_gaps_ter=False, charge_terminals=False,
             if len(atoms_list) in [x[1] for x in coordination_geometries.itervalues()]:
                 coordinated_atoms_ids[metal_id] = atoms_ids
 
-        print(residues_without_template, gaps, coordinated_atoms_ids)
         return output_pdb[0], residues_without_template, gaps, coordinated_atoms_ids
     else:
         clashes = []
