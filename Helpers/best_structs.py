@@ -81,6 +81,10 @@ def main(path, criteria="sasaLig", n_structs=500, sort_order="max", out_freq=FRE
     reports_indexes = min_values.report.tolist()
     step_indexes = min_values[ACCEPTED_STEPS].tolist()
     max_sasa_info = {i: [epoch, report, value, int(step)] for i, (epoch, report, value, step) in enumerate(zip(epochs, reports_indexes, values, step_indexes))}
+    try:
+		max_sasa_info[0]
+    except KeyError:
+		raise KeyError("Adaptive Exit didn't finish. Increase the number of cpus or change parameters inside MSM_PELE/Template/adaptive_exit.conf")
     print(max_sasa_info)
     return max_sasa_info
 
