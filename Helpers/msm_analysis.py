@@ -7,7 +7,7 @@ import MSM_PELE.Helpers.helpers as hp
 TRAJS_PER_EPOCH = 50
 LAGTIME = 100
 NCLUSTER = 200
-CLUSTERINSTRIDE = 10
+CLUSTERINSTRIDE = 1
 
 
 def analyse_results(output_pele, ligand_resname, atom_ids=""):
