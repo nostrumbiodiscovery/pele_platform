@@ -87,7 +87,6 @@ def is_repited(pele_dir):
 
     original_dir = None
     split_dir = pele_dir.split("_")
-    print(split_dir)
     for chunk in split_dir:
         if chunk != "Pele":
             if original_dir:

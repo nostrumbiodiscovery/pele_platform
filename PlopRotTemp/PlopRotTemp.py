@@ -1667,16 +1667,12 @@ def remove_amide_bonds(structure, torsions):
 
 		if boolean:
 			to_delete.append(torsion)
-	print(to_delete)
 	new_torsions = [torsion for torsion in torsions if torsion not in to_delete]
-	print(new_torsions)
 	return new_torsions
 
 def is_amide(atom1, atom2):
-	print(atom1.element, atom2.element)
 	if atom1.element == 'N' and atom2.element == 'C':
 			for atom in atom2.bonded_atoms:
-				print(atom.element)
 				if atom.element == 'O':
 					return True
 
