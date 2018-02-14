@@ -150,18 +150,17 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
         logger.info("Preparing ExitPath Adaptive Env")
         ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
-
-    if restart in ["all", "adaptive"]:
-
         adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_exit_temp, residue, equil_steps)
         adaptive_exit.run()
+
+
+    if restart in ["all", "pele"]:
+
 
         logger.info("MSM Clustering")
         with hp.cd(adap_ex_output):
             cl.main(num_clusters=clusters, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
-
-    if restart in ["all", "adaptive", "pele"]:
-
+ 
         logger.info("Create box")
         center_mass = cm.center_of_mass(lig_ref)
         center, radius = bx.main(adap_ex_output, clusters, center_mass)
@@ -172,7 +171,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         adaptive_long = ad.SimulationBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue)
         adaptive_long.run()
 
-    if restart in ["all", "adaptive", "pele", "msm"]:
+    if restart in ["all", "pele", "msm"]:
 
         logger.info("Extracting dG with MSM analysis")
         msm.analyse_results(adap_l_output, residue, cpus, pele_dir)
@@ -197,7 +196,7 @@ if __name__ == "__main__":
     parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each group.  Will freeze bonds to extend the core if necessary.", default=4)
     parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File", default=1000)
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
-    parser.add_argument("--restart", type=str, help="Restart the platform from [adaptive, pele, msm] with these keywords", default=PLATFORM_RESTART)
+    parser.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=PLATFORM_RESTART)
     args = parser.parse_args()
 
     run(args.input, args.residue, args.chain, args.mae_lig, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
