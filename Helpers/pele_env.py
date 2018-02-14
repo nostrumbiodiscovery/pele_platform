@@ -84,29 +84,49 @@ def set_pele_env(system,  folders, files, forcefield, template, rotamers_file, p
     pele_env.file_dist()
 
 def is_repited(pele_dir):
-	if os.path.isdir(pele_dir):
-		try:
-			original_dir, _, i = pele_dir.rsplit("_", 1)
-			i = int(i) + 1 
-		except ValueError:
-			original_dir, _ = pele_dir.rsplit("_", 1)
-			i = 1
-		finally:
-			new_pele_dir = "{}_Pele_{}".format(original_dir, i)
-			new_pele_dir = is_repited(new_pele_dir)
-			return new_pele_dir
-	else:
+
+    original_dir = None
+    split_dir = pele_dir.split("_")
+    print(split_dir)
+    for chunk in split_dir:
+        if chunk != "Pele":
+            if original_dir:
+                original_dir = "{}_{}".format(original_dir, chunk)
+            else:
+                original_dir = chunk
+        else:
+            break
+    if split_dir[-1].isdigit():
+        i = split_dir[-1]
+        i = int(i) + 1 
+    else:
+        i = 1
+    if os.path.isdir(pele_dir):
+		new_pele_dir = "{}_Pele_{}".format(original_dir, i)
+		new_pele_dir = is_repited(new_pele_dir)
+		return new_pele_dir
+    else:
 		return pele_dir
 
 def is_last(pele_dir):
+
+    original_dir = None
+    split_dir = pele_dir.split("_")
+    for chunk in split_dir:
+		if chunk != "Pele":
+			if original_dir:
+ 				original_dir = "{}_{}".format(original_dir, chunk)
+			else:
+				original_dir = chunk
+		else:
+			break
+    if split_dir[-1].isdigit():
+        i = split_dir[-1]
+        i = int(i) + 1 
+    else:
+		i = 1 
+
     if os.path.isdir(pele_dir):
-        try:
-            original_dir, _, i = pele_dir.r_split("_", 1)
-            i = int(i) + 1
-        except ValueError:
-            original_dir, _ = pele_dir.rsplit("_", 1)
-            i = 1
-        finally:
             new_pele_dir = "{}_Pele_{}".format(original_dir, i)
             if not os.path.isdir(new_pele_dir):
                 return pele_dir
