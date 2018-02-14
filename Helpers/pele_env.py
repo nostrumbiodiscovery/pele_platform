@@ -86,17 +86,14 @@ def set_pele_env(system,  folders, files, forcefield, template, rotamers_file, p
 def is_repited(pele_dir):
 	if os.path.isdir(pele_dir):
 		try:
-			original_dir, _, i = pele_dir.split("_")
+			original_dir, _, i = pele_dir.rsplit("_", 1)
 			i = int(i) + 1 
 		except ValueError:
-			original_dir, _ = pele_dir.split("_")
+			original_dir, _ = pele_dir.rsplit("_", 1)
 			i = 1
 		finally:
 			new_pele_dir = "{}_Pele_{}".format(original_dir, i)
-			print(new_pele_dir)
 			new_pele_dir = is_repited(new_pele_dir)
-			print("B")
-			print(new_pele_dir)
 			return new_pele_dir
 	else:
 		return pele_dir
