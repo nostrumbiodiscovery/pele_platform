@@ -113,8 +113,6 @@ import os
 import warnings
 import shutil
 import subprocess
-from rdkit import Chem
-from rdkit.Chem import TorsionFingerprints
 import schrodinger
 from schrodinger.structutils.analyze import is_bond_rotatable
 from schrodinger import structure
@@ -1636,10 +1634,6 @@ def get_torsions_from_mae(mae_file, residue_name):
   pdb_file = residue_name + "_torsions.pdb"
   struct = structure.StructureReader(mae_file).next()
   struct.write(pdb_file)
-  #mol = Chem.MolFromPDBFile(pdb_file, False)
-  #torsions =  TorsionFingerprints._getBondsForTorsions(mol, True)
-  #all_torsions = [[tor[0], tor[1]] for tor in torsions]
-  #torsions = [[bond.atom1.index, bond.atom2.index] for bond in struct.bond if [bond.atom1.index, bond.atom2.index] in all_torsions and is_bond_rotatable(bond)]  
   torsions = [[bond.atom1.index, bond.atom2.index] for bond in struct.bond if is_bond_rotatable(bond)]
   final_torsions = remove_amide_bonds(struct, torsions)
   # Bonds start t 0 we have to adapt torsions as well
