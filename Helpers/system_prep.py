@@ -71,7 +71,7 @@ def retrieve_receptor(system, residue):
     with open(system, 'r') as pdb_file:
         ligand_text = [line for line in pdb_file if line[17:20].strip() == residue]
     if not receptor_text  or not ligand_text:
-        raise ValueError("Something went wrong when extracting the ligand. Ligand must be a HETATOM")
+        raise ValueError("Something went wrong when extracting the ligand. Check residue&Chain on input")
     with open(ligand, "w") as fout:
 	fout.write("".join(ligand_text))
 

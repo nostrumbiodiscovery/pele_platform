@@ -97,3 +97,23 @@ def is_repited(pele_dir):
 			return new_pele_dir
 	else:
 		return pele_dir
+
+def is_last(pele_dir):
+    if os.path.isdir(pele_dir):
+        try:
+            original_dir, _, i = pele_dir.split("_")
+            i = int(i) + 1
+        except ValueError:
+            original_dir, _ = pele_dir.split("_")
+            i = 1
+        finally:
+            new_pele_dir = "{}_Pele_{}".format(original_dir, i)
+            if not os.path.isdir(new_pele_dir):
+                print("ADEDAE")
+                return pele_dir
+            else:
+			    new_pele_dir = is_last(new_pele_dir)
+			    return new_pele_dir
+    else:
+        return pele_dir
+
