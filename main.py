@@ -27,9 +27,11 @@ CPUS = 140
 RESTART = True
 CLUSTERS = 40
 PLATFORM_RESTART = "all"
+EQ_STEPS = 750
 
 # KEYWORDS
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
+EX_ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "EQ_STEPS"]
 EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
 PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
 NATIVE = '''
@@ -85,6 +87,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     # Preparative for Pele
     template = None
     rotamers_file = None
+    equil_steps = int(EQ_STEPS/cpus)
     pele_dir = os.path.abspath("{}_Pele".format(residue))
 
     if clusters > cpus:
@@ -149,7 +152,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
     if restart in ["all", "adaptive"]:
 
-        adaptive_exit = ad.SimulationBuilder(ad_ex_temp, ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_temp, residue)
+        adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_temp, residue, equil_steps)
         adaptive_exit.run()
 
         logger.info("MSM Clustering")
@@ -171,7 +174,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     if restart in ["all", "adaptive", "pele", "msm"]:
 
         logger.info("Extracting dG with MSM analysis")
-        msm.analyse_results(adap_l_output, residue)
+        msm.analyse_results(adap_l_output, residue, cpus, pele_dir)
         logger.info("{} System run successfully".format(residue))
 
 
