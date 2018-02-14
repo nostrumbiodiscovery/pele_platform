@@ -1,22 +1,22 @@
-import sys
 import os
 from AdaptivePELE.freeEnergies import extractCoords, prepareMSMFolders, estimateDGAdaptive
 import MSM_PELE.Helpers.helpers as hp
+import shutil
 
 # DEFAULT VALUES
-TRAJS_PER_EPOCH = 50
 LAGTIME = 100
 NCLUSTER = 200
 CLUSTERINSTRIDE = 10
 
 
-def analyse_results(output_pele, ligand_resname, atom_ids=""):
+def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
+    trajs_per_epoch = cpus
     with hp.cd(output_pele):
         extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids)
         prepareMSMFolders.main()
-        estimateDGAdaptive.main(TRAJS_PER_EPOCH, LAGTIME, NCLUSTER, CLUSTERINSTRIDE)
-        summerize(output_pele)
-
+        estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER, CLUSTERINSTRIDE)
+        results_file = summerize(output_pele)
+        shutil.move(results_file, pele_dir)
 
 def summerize(pele_path):
     results_file = os.path.join(pele_path, "results.txt")
@@ -33,8 +33,8 @@ def summerize(pele_path):
             finally:
                 lines[i] = " ".join(line)
     with open(results_file, 'w') as results:
-        results.write("\n".join(lines))
-
+        results.write("\n".join(lines)+"\n")
+	return results_file
 
 def asses_convergence(dg, stdDg):
     """
