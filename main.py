@@ -33,7 +33,7 @@ EQ_STEPS = 750
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
 EX_ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "EQ_STEPS"]
 EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
-PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
+PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES", "BOX_CENTER", "BOX_RADIUS"]
 NATIVE = '''
                         {{
 
@@ -87,6 +87,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     # Preparative for Pele
     template = None
     rotamers_file = None
+    license = '''"{}"'''.format(cs.LICENSE)
     equil_steps = int(EQ_STEPS/cpus)
     pele_dir = os.path.abspath("{}_Pele".format(residue))
 
@@ -107,6 +108,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     adap_l_output = os.path.join(pele_dir, "output_pele")
     ad_ex_temp = os.path.join(pele_dir, "adaptive_exit.conf")
     ad_l_temp = os.path.join(pele_dir, "adaptive_long.conf")
+    pele_exit_temp = os.path.join(pele_dir, "pele_exit.conf")
     pele_temp = os.path.join(pele_dir, "pele.conf")
     box_temp = os.path.join(pele_dir, "box.pdb")
     clusters = os.path.join(cluster_output, "clusters_40_KMeans_allSnapshots.pdb")
@@ -140,17 +142,18 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
                 hp.silentremove([lig])
 
         files = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
-                 os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf")]
+                 os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),
+                 os.path.join(DIR, "Templates/pele_exit.conf")]
         directories = FOLDERS
         directories.extend(["output_pele", "output_adaptive_exit", "output_clustering"]) 
         pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
 
         logger.info("Preparing ExitPath Adaptive Env")
-        ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, '''"{}"'''.format(cs.LICENSE))
+        ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
 
     if restart in ["all", "adaptive"]:
 
-        adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_temp, residue, equil_steps)
+        adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_exit_temp, residue, equil_steps)
         adaptive_exit.run()
 
         logger.info("MSM Clustering")
@@ -165,7 +168,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         bx.build_box(center, radius, box_temp)
 
         logger.info("Running standard Pele")
-        ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, center, radius)
+        ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license, center, radius)
         adaptive_long = ad.SimulationBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue)
         adaptive_long.run()
 
