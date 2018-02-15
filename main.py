@@ -3,6 +3,7 @@ import MSM_PELE.Helpers.check_env_var as env
 env.check_dependencies()
 import logging
 import argparse
+import random
 import MSM_PELE.constants as cs
 import MSM_PELE.PlopRotTemp.main as plop
 import MSM_PELE.Helpers.helpers as hp
@@ -30,8 +31,8 @@ PLATFORM_RESTART = "all"
 EQ_STEPS = 750
 
 # KEYWORDS
-ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES"]
-EX_ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "EQ_STEPS"]
+ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "SEED"]
+EX_ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "EQ_STEPS", "SEED"]
 EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
 PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES", "BOX_CENTER", "BOX_RADIUS"]
 NATIVE = '''
@@ -87,6 +88,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     # Preparative for Pele
     template = None
     rotamers_file = None
+    random_num = random.randrange(1,70000) 
     license = '''"{}"'''.format(cs.LICENSE)
     equil_steps = int(EQ_STEPS/cpus)
     pele_dir = os.path.abspath("{}_Pele".format(residue))
@@ -149,7 +151,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
         logger.info("Preparing ExitPath Adaptive Env")
         ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
-        adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_exit_temp, residue, equil_steps)
+        adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_exit_temp, residue, equil_steps, random_num)
         adaptive_exit.run()
 
 
@@ -167,7 +169,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
         logger.info("Running standard Pele")
         ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license, center, radius)
-        adaptive_long = ad.SimulationBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue)
+        adaptive_long = ad.SimulationBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue, random_num)
         adaptive_long.run()
 
     if restart in ["all", "pele", "msm"]:
