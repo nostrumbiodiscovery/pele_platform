@@ -274,7 +274,7 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
                         elif resnum == final_residue or resnum in gaps_e:
                             if "HXT" in over_atoms:
                                 over_atoms.pop(over_atoms.index('HXT'))
-                                atoms2delete.append('HTX')
+                                atoms2delete.append('HXT')
                             if "OXT"in over_atoms:
                                 over_atoms.pop(over_atoms.index('OXT'))
                                 atoms2delete.append('OXT')
