@@ -6,7 +6,7 @@ import shutil
 # DEFAULT VALUES
 LAGTIME = 100
 NCLUSTER = 200
-CLUSTERINSTRIDE = 10
+CLUSTERINSTRIDE = 1
 
 
 def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
