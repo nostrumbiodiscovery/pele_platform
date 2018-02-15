@@ -90,7 +90,6 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     license = '''"{}"'''.format(cs.LICENSE)
     equil_steps = int(EQ_STEPS/cpus)
     pele_dir = os.path.abspath("{}_Pele".format(residue))
-
     if clusters > cpus:
         raise ValueError(CLUSTER_ERROR.format(cpus, clusters))
 
@@ -111,7 +110,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     pele_exit_temp = os.path.join(pele_dir, "pele_exit.conf")
     pele_temp = os.path.join(pele_dir, "pele.conf")
     box_temp = os.path.join(pele_dir, "box.pdb")
-    clusters = os.path.join(cluster_output, "clusters_40_KMeans_allSnapshots.pdb")
+    clusters_output = os.path.join(cluster_output, "clusters_40_KMeans_allSnapshots.pdb")
     lig_ref = os.path.basename(os.path.splitext(mae_lig)[0]) if mae_lig else  os.path.abspath("lig.pdb")
 
     if restart == "all":
@@ -163,7 +162,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
  
         logger.info("Create box")
         center_mass = cm.center_of_mass(lig_ref)
-        center, radius = bx.main(adap_ex_output, clusters, center_mass)
+        center, radius = bx.main(adap_ex_output, clusters_output, center_mass)
         bx.build_box(center, radius, box_temp)
 
         logger.info("Running standard Pele")
