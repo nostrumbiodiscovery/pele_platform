@@ -34,7 +34,7 @@ EQ_STEPS = 750
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "SEED"]
 EX_ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "EQ_STEPS", "SEED"]
 EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
-PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES", "BOX_CENTER", "BOX_RADIUS"]
+PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
 NATIVE = '''
                         {{
 
@@ -148,9 +148,10 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         directories = FOLDERS
         directories.extend(["output_pele", "output_adaptive_exit", "output_clustering"]) 
         pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
+        ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
+        ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
 
         logger.info("Preparing ExitPath Adaptive Env")
-        ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
         adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_exit_temp, residue, equil_steps, random_num)
         adaptive_exit.run()
 
@@ -168,7 +169,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         bx.build_box(center, radius, box_temp)
 
         logger.info("Running standard Pele")
-        ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license, center, radius)
+        ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, center, radius)
         adaptive_long = ad.SimulationBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue, random_num)
         adaptive_long.run()
 
@@ -184,7 +185,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run Adaptive Pele Platform')
     parser.add_argument('input', type=str, help='complex to run pele on')
     parser.add_argument('residue', type=str, help='residue of the ligand to extract', default=LIG_RES)
-    parser.add_argument('chain', type=str, help='forcefield to use', default=LIG_CHAIN)
+    parser.add_argument('chain', type=str, help='chain of the ligand to extract', default=LIG_CHAIN)
     parser.add_argument("--mae_lig", type=str, help="ligand .mae file to include QM charges coming from jaguar")
     parser.add_argument("--charge_ter", help="Charge protein terminals", action='store_true')
     parser.add_argument("--gaps_ter", help="Include TER when a possible gap is found", action='store_true')
