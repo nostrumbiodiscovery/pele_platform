@@ -36,8 +36,10 @@ def main(path, clusters, bs):
     angle_points = find_angle_lenght(bs, centroid, max_sasa_points)
     min_angl_points = sorted(angle_points, key=itemgetter(1))
     chosen_point = min_angl_points[0][0]
+    print(chosen_point)
+    print(bs)
 
-    radius = (distance.euclidean(bs, chosen_point) / 2.0) + 10
+    radius = (distance.euclidean(bs, chosen_point) / 2.0) + 2
     center = [(final + initial) / 2.0 for initial, final in zip(bs, chosen_point)]
 
     return center, radius
