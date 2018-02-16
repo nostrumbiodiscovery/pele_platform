@@ -156,7 +156,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
     if restart in ["all", "pele"]:
 
-        if not clusters_output:
+        if not os.path.isfile(clusters_output):
             logger.info("Running MSM Clustering")
             with hp.cd(adap_ex_output):
                 cl.main(num_clusters=clusters, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
