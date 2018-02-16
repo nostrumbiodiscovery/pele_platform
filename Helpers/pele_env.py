@@ -9,14 +9,13 @@ class Pele_env_Builder(object):
         is build by creating folders and files
     """
 
-    def __init__(self, Input, folders, files, forcefield, template, rotamers, logfile, pele_dir):
-        self.input = Input
+    def __init__(self,folders, files, forcefield, template, rotamers, files_to_move, pele_dir):
         self.folders = folders
         self.files = files
         self.forcefield = forcefield
         self.template = template
         self.rotamers = rotamers
-        self.logfile = logfile
+        self.files_to_move = files_to_move
         self.pele_dir = pele_dir
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
 
@@ -42,12 +41,13 @@ class Pele_env_Builder(object):
         for file in self.files:
             self.copy(file, self.pele_dir)
 
+        for file in self.files_to_move:
+            shutil.move(file, self.pele_dir)
+
         if self.template and self.rotamers:
             shutil.move(self.template, self.template_dir)
             shutil.move(self.rotamers, self.rotamers_dir)
 
-        shutil.move(self.input, self.pele_dir)
-        shutil.move(self.logfile, self.pele_dir)
 
     def create_dir(self, base_dir, extension=None):
         """
@@ -79,8 +79,8 @@ class Pele_env_Builder(object):
         return os.path.join(self.pele_dir, standard)
 
 
-def set_pele_env(system,  folders, files, forcefield, template, rotamers_file, logfile,  pele_dir):
-    pele_env = Pele_env_Builder(system, folders, files,  forcefield, template, rotamers_file, logfile, pele_dir)
+def set_pele_env(folders, files, forcefield, template, rotamers_file, files_to_move,  pele_dir):
+    pele_env = Pele_env_Builder(folders, files,  forcefield, template, rotamers_file, files_to_move, pele_dir)
     pele_env.folder_levels()
     pele_env.file_dist()
 
