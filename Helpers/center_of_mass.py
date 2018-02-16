@@ -69,7 +69,6 @@ def center_of_mass(pdbfile, include='ATOM,HETATM'):
     center = [sum([coordinates[i][j] * weights[i]
                    for i in range(len(weights))]) for j in range(3)]
     center_rounded = [round(center[i], 3) for i in range(3)]
-    helpers.silentremove([pdbfile])
     return center_rounded
 
 
