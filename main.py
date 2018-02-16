@@ -94,7 +94,6 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         pele_dir = pele.is_repited(pele_dir)
     else:
         pele_dir = pele.is_last(pele_dir)
-
     logger, log_name = hp.set_logger(pele_dir, residue)
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
     system_fix = "{}_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0]))
@@ -109,7 +108,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     pele_temp = os.path.join(pele_dir, "pele.conf")
     box_temp = os.path.join(pele_dir, "box.pdb")
     clusters_output = os.path.join(cluster_output, "clusters_40_KMeans_allSnapshots.pdb")
-    lig_ref = os.path.basename(os.path.splitext(mae_lig)[0]) if mae_lig else  os.path.abspath("lig.pdb")
+    lig_ref = os.path.join(pele_dir, "ligand.pdb")
 
     if restart == "all":
 
@@ -139,12 +138,13 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
                 hp.silentremove([lig])
             logger.info("Template {} created".format(template))
 
-        files = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
+        files_to_copy = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
                  os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),
                  os.path.join(DIR, "Templates/pele_exit.conf")]
+        files_to_move = [system_fix, log_name, lig_ref]
         directories = FOLDERS
         directories.extend(["output_pele", "output_adaptive_exit", "output_clustering"]) 
-        pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, log_name, pele_dir)
+        pele.set_pele_env(directories, files_to_copy, forcefield, template, rotamers_file, files_to_move, pele_dir)
         ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
         ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
 
@@ -156,11 +156,13 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
 
     if restart in ["all", "pele"]:
 
-
-        logger.info("Running MSM Clustering")
-        with hp.cd(adap_ex_output):
-            cl.main(num_clusters=clusters, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
-        logger.info("MSM Clustering run successfully")
+        if not clusters_output:
+            logger.info("Running MSM Clustering")
+            with hp.cd(adap_ex_output):
+                cl.main(num_clusters=clusters, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
+            logger.info("MSM Clustering run successfully")
+        else:
+            pass
  
         logger.info("Creating box")
         center_mass = cm.center_of_mass(lig_ref)
