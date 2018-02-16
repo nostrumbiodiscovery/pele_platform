@@ -65,7 +65,7 @@ def retrieve_receptor(system, residue):
 
     :output: receptor text
     """
-    ligand = os.path.abspath("lig.pdb")
+    ligand = os.path.abspath("ligand.pdb")
     with open(system, 'r') as pdb_file:
         receptor_text = [line for line in pdb_file if line.startswith("ATOM")]
     with open(system, 'r') as pdb_file:
@@ -78,10 +78,8 @@ def retrieve_receptor(system, residue):
     return "".join(receptor_text), ligand
 
 def convert_pdb(lig_mae):
-    name = os.path.basename(os.path.splitext(lig_mae)[0])
-    dirname = os.path.dirname(lig_mae)
+    name = "ligand.pdb"
     for structure in st.StructureReader(lig_mae):
-        struct_pdb = os.path.join(dirname, "{}.pdb".format(name))
-        structure.write(struct_pdb)
-    return struct_pdb
+        structure.write(name)
+    return name
     
