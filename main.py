@@ -57,6 +57,10 @@ NATIVE = '''
 
 '''
 
+SYSTEM = "System {} checked successfully\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"
+
+
+
 # FOLDERS&PATH
 DIR = os.path.dirname(__file__)
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
@@ -69,18 +73,8 @@ FOLDERS = ["",
 # ERRORS
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
 
-# LOG CONSTANTS
-LOG_FILENAME = "output.log"
-LOG_FORMAT = "%(asctime)s:%(levelname)s:%(message)s"
 
 
-# Logging definition block
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-formatter = logging.Formatter(LOG_FORMAT)
-file_handler = logging.FileHandler(LOG_FILENAME, mode='w')
-file_handler.setFormatter(formatter)
-logger.addHandler(file_handler)
 
 
 def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, clean, restart):
@@ -92,6 +86,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     license = '''"{}"'''.format(cs.LICENSE)
     equil_steps = int(EQ_STEPS/cpus)
     pele_dir = os.path.abspath("{}_Pele".format(residue))
+
     if clusters > cpus:
         raise ValueError(CLUSTER_ERROR.format(cpus, clusters))
 
@@ -100,6 +95,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     else:
         pele_dir = pele.is_last(pele_dir)
 
+    logger, log_name = hp.set_logger(pele_dir, residue)
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
     system_fix = "{}_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0]))
     adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
@@ -118,7 +114,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     if restart == "all":
 
         # Building system and ligand
-        logger.info("Preparing {} system for Pele".format(residue))
+        logger.info("Checking {} system for Pele".format(residue))
         if mae_lig:
             receptor = system
             lig = mae_lig
@@ -129,8 +125,8 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
             lig, residue = sp.convert_mae(lig_ref)
         system_fix, missing_residues, gaps, metals = ppp.main(system, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
         protein_constraints = ct.retrieve_constraints(system_fix, gaps, metals)
+        logger.info(SYSTEM.format(system_fix,missing_residues, gaps, metals))
 
-        logger.info("Producing template and rotamers Library with  PlopRotTemp")
         for res, _, _ in missing_residues:
             logger.info("Creating template for residue {}".format(res))
             if mae_lig:
@@ -141,42 +137,49 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
                 mae_charges = False
                 template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
                 hp.silentremove([lig])
+            logger.info("Template {} created".format(template))
 
         files = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
                  os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),
                  os.path.join(DIR, "Templates/pele_exit.conf")]
         directories = FOLDERS
         directories.extend(["output_pele", "output_adaptive_exit", "output_clustering"]) 
-        pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, pele_dir)
+        pele.set_pele_env(system_fix, directories, files, forcefield, template, rotamers_file, log_name, pele_dir)
         ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
         ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
 
-        logger.info("Preparing ExitPath Adaptive Env")
+        logger.info("Running ExitPath Adaptive")
         adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_exit_temp, residue, equil_steps, random_num)
         adaptive_exit.run()
+        logger.info("ExitPath Adaptive run successfully")
 
 
     if restart in ["all", "pele"]:
 
 
-        logger.info("MSM Clustering")
+        logger.info("Running MSM Clustering")
         with hp.cd(adap_ex_output):
             cl.main(num_clusters=clusters, output_folder=cluster_output, ligand_resname=residue, atom_ids="")
+        logger.info("MSM Clustering run successfully")
  
-        logger.info("Create box")
+        logger.info("Creating box")
         center_mass = cm.center_of_mass(lig_ref)
         center, radius = bx.main(adap_ex_output, clusters_output, center_mass)
         bx.build_box(center, radius, box_temp)
+        logger.info("Box Created")
 
         logger.info("Running standard Pele")
         ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, center, radius)
         adaptive_long = ad.SimulationBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue, random_num)
         adaptive_long.run()
+        logger.info("Pele run successfully")
 
     if restart in ["all", "pele", "msm"]:
 
-        logger.info("Extracting dG with MSM analysis")
+        logger.info("Running MSM analysis")
         msm.analyse_results(adap_l_output, residue, cpus, pele_dir)
+        logger.info("MSM analysis run successfully")        
+
         logger.info("{} System run successfully".format(residue))
 
 
@@ -201,4 +204,7 @@ if __name__ == "__main__":
     parser.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=PLATFORM_RESTART)
     args = parser.parse_args()
 
-    run(args.input, args.residue, args.chain, args.mae_lig, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
+    if args.clust > args.cpus:
+        raise ValueError(CLUSTER_ERROR.format(args.cpus, args.clust))
+    else:
+        run(args.input, args.residue, args.chain, args.mae_lig, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
