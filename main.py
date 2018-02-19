@@ -108,7 +108,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     pele_temp = os.path.join(pele_dir, "pele.conf")
     box_temp = os.path.join(pele_dir, "box.pdb")
     clusters_output = os.path.join(cluster_output, "clusters_40_KMeans_allSnapshots.pdb")
-    lig_ref = os.path.join(pele_dir, "ligand.pdb")
+    ligand_ref = os.path.join(pele_dir, "ligand.pdb")
 
     if restart == "all":
 
@@ -165,7 +165,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
             pass
  
         logger.info("Creating box")
-        center_mass = cm.center_of_mass(lig_ref)
+        center_mass = cm.center_of_mass(ligand_ref)
         center, radius = bx.main(adap_ex_output, clusters_output, center_mass)
         bx.build_box(center, radius, box_temp)
         logger.info("Box Created")
