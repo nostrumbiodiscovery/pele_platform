@@ -39,7 +39,7 @@ def main(path, clusters, bs):
     print(chosen_point)
     print(bs)
 
-    radius = (distance.euclidean(bs, chosen_point) / 2.0) + 2
+    radius = (distance.euclidean(bs, chosen_point) / 2.0) + 8
     center = [(final + initial) / 2.0 for initial, final in zip(bs, chosen_point)]
 
     return center, radius
