@@ -42,7 +42,7 @@ def check_dependencies():
 
         os.environ["SCHRODINGER"] = constants.SCHRODINGER
         os.environ["PELE"] = constants.PELE
-        sys.path.append(os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))
+        sys.path.insert(0, os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))
         sys.path.insert(0, constants.ADAPTIVE)
 
         try:
