@@ -63,7 +63,6 @@ import MSM_PELE.PlopRotTemp.PlopRotTemp as pl
 from MSM_PELE.PlopRotTemp.template.templateBuilder import TemplateBuilder
 
 
-
 def main(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = False):
 
     #Defaults
