@@ -96,7 +96,10 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         pele_dir = pele.is_last(pele_dir)
     logger, log_name = hp.set_logger(pele_dir, residue)
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
-    system_fix = "{}_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0]))
+    if mae_lig:
+        system_fix = "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0]))
+    else:
+        system_fix = "{}_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0]))
     adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
     adap_ex_output = os.path.join(pele_dir, "output_adaptive_exit")
     cluster_output = os.path.join(pele_dir, "output_clustering")
