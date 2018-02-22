@@ -209,7 +209,7 @@ if __name__ == "__main__":
     parser.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=PLATFORM_RESTART)
     args = parser.parse_args()
 
-    if args.clust > args.cpus:
+    if args.clust > args.cpus and args.restart != msm:
         raise ValueError(CLUSTER_ERROR.format(args.cpus, args.clust))
     else:
         run(args.input, args.residue, args.chain, args.mae_lig, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
