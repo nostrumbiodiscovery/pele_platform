@@ -151,6 +151,8 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
         ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
         ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
 
+    if restart in ["all", "adaptive"]:
+
         logger.info("Running ExitPath Adaptive")
         adaptive_exit = ad.SimulationBuilder(ad_ex_temp, EX_ADAPTIVE_KEYWORDS, RESTART, adap_ex_output, adap_ex_input, cpus, pele_exit_temp, residue, equil_steps, random_num)
         adaptive_exit.run()
