@@ -169,7 +169,7 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
  
         logger.info("Creating box")
         center_mass = cm.center_of_mass(ligand_ref)
-        center, radius = bx.main(adap_ex_output, clusters_output, center_mass)
+        center, radius = bx.main(adap_ex_input, clusters_output, center_mass)
         bx.build_box(center, radius, box_temp)
         logger.info("Box Created")
 
