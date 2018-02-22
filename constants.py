@@ -17,6 +17,12 @@ elif "mn.bsc" in machine:
     MPIRUN = "/apps/OPENMPI/1.8.1-mellanox/bin"
     LICENSE = "/gpfs/projects/bsc72/PELE++/license"
 
+elif "bsccv" in machine:
+    SCHRODINGER = "/data2/bsc72/SCHRODINGER_ACADEMIC"
+    PELE = "/data/EAPM/PELE/PELE++/life/rev12489"
+    ADAPTIVE = "/data2/bsc72/AdaptiveSampling/bin_nord/v1.4.1"
+    MPIRUN = "/data2/apps/OPENMPI/1.6.1/bin"
+    LICENSE = "/data/EAPM/PELE/PELE++/license"
 else:
     SCHRODINGER = "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
     PELE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524/"
