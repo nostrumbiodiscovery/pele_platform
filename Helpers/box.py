@@ -1,12 +1,13 @@
 # from matplotlib import pyplot
 # from mpl_toolkits.mplot3d import Axes3D
 import os
+import prody as pd
 from scipy.spatial import distance
 import numpy as np
 import argparse
 import math
-from operator import itemgetter
-import MSM_PELE.Helpers.best_structs as best_structs
+#from operator import itemgetter
+#import MSM_PELE.Helpers.best_structs as best_structs
 import MSM_PELE.Helpers.template_builder as tb
 
 __author__ = "Daniel Soler Viladrich"
@@ -26,24 +27,53 @@ def parseargs():
     return args.bs, args.points
 
 
-def main(path, clusters, bs):
+def main(system, clusters, bs):
 
-    max_sasa_structs = best_structs.main(path)
-    max_sasa_points = get_sasa_points(path, max_sasa_structs)
+    #max_sasa_structs = best_structs.main(path)
+    #max_sasa_points = get_sasa_points(path, max_sasa_structs)
     points = get_points(clusters)
     centroid = find_centroid(points)
+    chosen_point = find_non_contact_points(system, centroid, bs) 
 
-    angle_points = find_angle_lenght(bs, centroid, max_sasa_points)
-    min_angl_points = sorted(angle_points, key=itemgetter(1))
-    chosen_point = min_angl_points[0][0]
-    print(chosen_point)
-    print(bs)
-
-    radius = (distance.euclidean(bs, chosen_point) / 2.0) + 8
+    radius = (distance.euclidean(bs, chosen_point) / 2.0) 
     center = [(final + initial) / 2.0 for initial, final in zip(bs, chosen_point)]
+
+    remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
 
     return center, radius
 
+def remove_clusters_out_of_box(cluster_directory, center, radius, points):
+    cx, cy, cz = center
+    for i, point in enumerate(points):
+        x,y,z = point
+        if ((x-cx)**2 + (y-cy)**2 + (z-cz)**2) > (radius**2):
+			try:
+				os.remove(os.path.join(cluster_directory, "initial_{}.pdb".format(i)))
+			except OSError:
+				pass
+
+
+def find_non_contact_points(system, centroid, bs):
+    """
+        Find 0 contact point with protein
+        in the direction produced by the 
+        points of the binding side and the 
+        centroide.
+    """
+
+    direction = np.array(centroid, dtype=float) - np.array(bs, dtype=float)
+    directior_unitary = direction / np.linalg.norm(direction)
+    atoms = pd.parsePDB(system)
+    contacts = pd.measure.Contacts(atoms)
+
+    point=np.array(bs, dtype=float)
+    number_of_contacts = False
+    while number_of_contacts > 0 or number_of_contacts is False:
+        number_of_contacts = contacts. select(5, point)
+        point = np.array(point, dtype=float) + directior_unitary
+        print(point)
+        print(number_of_contacts)
+    return point
 
 def get_sasa_points(path, max_sasa_structs):
     points = []
