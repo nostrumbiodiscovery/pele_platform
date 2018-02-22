@@ -8,7 +8,7 @@ if "bsc.mn" in machine:
     MPIRUN = "/apps/INTEL/2017.4/impi/2017.3.196/bin64"
     LICENSE = "/gpfs/projects/bsc72/PELE++/license"
 
-elif "mn.bsc":
+elif "mn.bsc" in machine:
     SCHRODINGER = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC_MN3"
     PELE = "/gpfs/projects/bsc72/PELE++/nord/rev12489"
     ADAPTIVE = "/gpfs/projects/bsc72/adaptiveSampling/bin_nord/v1.4.1"
