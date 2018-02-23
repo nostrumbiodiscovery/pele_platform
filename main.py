@@ -2,6 +2,7 @@ import os
 import MSM_PELE.Helpers.check_env_var as env
 env.check_dependencies()
 import logging
+import shutil
 import argparse
 import random
 import MSM_PELE.constants as cs
@@ -77,7 +78,7 @@ CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
 
 
 
-def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, clean, restart):
+def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, clean, restart):
 
     # Preparative for Pele
     template = None
@@ -86,9 +87,6 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
     license = '''"{}"'''.format(cs.LICENSE)
     equil_steps = int(EQ_STEPS/cpus)
     pele_dir = os.path.abspath("{}_Pele".format(residue))
-
-    if clusters > cpus:
-        raise ValueError(CLUSTER_ERROR.format(cpus, clusters))
 
     if restart == "all":
         pele_dir = pele.is_repited(pele_dir)
@@ -170,10 +168,17 @@ def run(system, residue, chain, mae_lig, charge_ter, gaps_ter, clusters, forcefi
             pass
  
         logger.info("Creating box")
-        center_mass = cm.center_of_mass(ligand_ref)
-        center, radius = bx.main(adap_ex_input, clusters_output, center_mass)
-        bx.build_box(center, radius, box_temp)
-        logger.info("Box Created")
+        if not user_box:
+        	center_mass = cm.center_of_mass(ligand_ref)
+        	center, radius = bx.main(adap_ex_input, clusters_output, center_mass)
+        	bx.build_box(center, radius, box_temp)
+        else:
+			center, radius = bx.retrieve_box_info(user_box, clusters_output)
+			shutil.copy(user_box, os.path.join(pele_dir,"box.pdb"))
+
+        logger.info("Box with center {} radius {} was created".format(center, radius))
+
+
 
         logger.info("Running standard Pele")
         ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, center, radius)
@@ -197,6 +202,7 @@ if __name__ == "__main__":
     parser.add_argument('residue', type=str, help='residue of the ligand to extract', default=LIG_RES)
     parser.add_argument('chain', type=str, help='chain of the ligand to extract', default=LIG_CHAIN)
     parser.add_argument("--mae_lig", type=str, help="ligand .mae file to include QM charges coming from jaguar")
+    parser.add_argument("--box", type=str, help="Exploration box for Pele")
     parser.add_argument("--charge_ter", help="Charge protein terminals", action='store_true')
     parser.add_argument("--gaps_ter", help="Include TER when a possible gap is found", action='store_true')
     parser.add_argument("--clust", type=int, help="Numbers of clusters to start PELE's exploration with", default=CLUSTERS)
@@ -214,4 +220,4 @@ if __name__ == "__main__":
     if args.clust > args.cpus and args.restart != msm:
         raise ValueError(CLUSTER_ERROR.format(args.cpus, args.clust))
     else:
-        run(args.input, args.residue, args.chain, args.mae_lig, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
+        run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)

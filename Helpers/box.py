@@ -9,12 +9,13 @@ import math
 #from operator import itemgetter
 #import MSM_PELE.Helpers.best_structs as best_structs
 import MSM_PELE.Helpers.template_builder as tb
+import MSM_PELE.Helpers.helpers as hp
 
 __author__ = "Daniel Soler Viladrich"
 __email__ = "daniel.soler@nostrumbiodiscovery.com"
 
 # BOX CONSTANTS
-KEYWORDS = ["CENTER_X", "CENTER_Y", "CENTER_Z", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8"]
+KEYWORDS = ["RADIUS", "CENTER_X", "CENTER_Y", "CENTER_Z", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8"]
 COORD = "{:>11.3f}{:>8.3f}{:>8.3f}"
 CENTER = "{:.3f}"
 
@@ -138,6 +139,15 @@ def WireframeSphere(centre, radius, n_meridians=20, n_circles_latitude=None):
     sphere_z = centre[2] + radius * np.cos(v)
     return sphere_x, sphere_y, sphere_z
 
+def retrieve_box_info(box, clusters):
+    with open(box, 'r') as f:
+		lines = hp.preproces_lines(f.readlines()) 
+		center = [float(coord) for coord in lines[1][5:9]]
+		radius = float(lines[2][2])
+    print(center, radius)
+    points = get_points(clusters)
+    remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
+    return center, radius
 
 def build_box(center, radius, file):
 
@@ -154,7 +164,7 @@ def build_box(center, radius, file):
     cy = CENTER.format(cy)
     cz = CENTER.format(cz)
 
-    values = [cx, cy, cz, v1, v2, v3, v4, v5, v6, v7, v8]
+    values = [radius, cx, cy, cz, v1, v2, v3, v4, v5, v6, v7, v8]
 
     replace = {keyword: value for keyword, value in zip(KEYWORDS, values)}
 
