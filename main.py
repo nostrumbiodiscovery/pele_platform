@@ -95,9 +95,9 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
     logger, log_name = hp.set_logger(pele_dir, residue)
     native = NATIVE.format(os.path.abspath(native), chain) if native else native
     if mae_lig:
-        system_fix = "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0]))
+        system_fix = os.path.join(pele_dir, "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0])))
     else:
-        system_fix = "{}_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0]))
+        system_fix = os.path.join(pele_dir, "{}_processed.pdb".format(os.path.abspath(os.path.splitext(system)[0])))
     adap_ex_input = os.path.join(pele_dir, os.path.basename(system_fix))
     adap_ex_output = os.path.join(pele_dir, "output_adaptive_exit")
     cluster_output = os.path.join(pele_dir, "output_clustering")
@@ -123,7 +123,7 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
         else:
             receptor, lig_ref = sp.retrieve_receptor(system, residue)
             lig, residue = sp.convert_mae(lig_ref)
-        system_fix, missing_residues, gaps, metals = ppp.main(system, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
+        system_fix, missing_residues, gaps, metals = ppp.main(system, pele_dir, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
         protein_constraints = ct.retrieve_constraints(system_fix, gaps, metals)
         logger.info(SYSTEM.format(system_fix,missing_residues, gaps, metals))
 
