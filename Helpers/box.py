@@ -7,7 +7,7 @@ import numpy as np
 import argparse
 import math
 #from operator import itemgetter
-#import MSM_PELE.Helpers.best_structs as best_structs
+import MSM_PELE.Helpers.best_structs as best_structs
 import MSM_PELE.Helpers.template_builder as tb
 import MSM_PELE.Helpers.helpers as hp
 
@@ -30,7 +30,7 @@ def parseargs():
 
 def main(system, clusters, bs):
 
-    #max_sasa_structs = best_structs.main(path)
+    max_sasa_structs = best_structs.main(path)
     #max_sasa_points = get_sasa_points(path, max_sasa_structs)
     points = get_points(clusters)
     centroid = find_centroid(points)
