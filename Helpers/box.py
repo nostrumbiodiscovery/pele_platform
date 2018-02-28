@@ -34,10 +34,9 @@ def main(system, clusters, bs):
 
     points = get_points(clusters)
     centroid = find_centroid(points)
-    chosen_point = find_non_contact_points(system, centroid, bs) 
+    center = find_non_contact_points(system, centroid, bs) 
 
-    radius = (distance.euclidean(bs, chosen_point) / 2.0) 
-    center = [(final + initial) / 2.0 for initial, final in zip(bs, chosen_point)]
+    radius = (distance.euclidean(bs, center) + 10) 
 
     remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
 
