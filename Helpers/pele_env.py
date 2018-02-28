@@ -3,19 +3,22 @@ import shutil
 import warnings
 
 
+def set_pele_env(folders, files, forcefield, pele_dir):
+    pele_env = Pele_env_Builder(folders, files, forcefield, pele_dir)
+    pele_env.folder_levels()
+    pele_env.file_dist()
+
+
 class Pele_env_Builder(object):
     """
         Base class wher the needed pele environment
         is build by creating folders and files
     """
 
-    def __init__(self,folders, files, forcefield, template, rotamers, files_to_move, pele_dir):
+    def __init__(self,folders, files, forcefield, pele_dir):
         self.folders = folders
         self.files = files
         self.forcefield = forcefield
-        self.template = template
-        self.rotamers = rotamers
-        self.files_to_move = files_to_move
         self.pele_dir = pele_dir
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
 
@@ -29,24 +32,12 @@ class Pele_env_Builder(object):
 
     def file_dist(self):
         """
-            Copy control rotamer
-            and template files
+            Copy templates
         """
-        # Paths
-        self.template_dir = os.path.join(
-            self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
-        self.rotamers_dir = os.path.join(self.pele_dir, "DataLocal/LigandRotamerLibs")
 
         # Actions
         for file in self.files:
             self.copy(file, self.pele_dir)
-
-        for file in self.files_to_move:
-            shutil.move(file, self.pele_dir)
-
-        if self.template and self.rotamers:
-            shutil.move(self.template, self.template_dir)
-            shutil.move(self.rotamers, self.rotamers_dir)
 
 
     def create_dir(self, base_dir, extension=None):
@@ -78,11 +69,6 @@ class Pele_env_Builder(object):
             shutil.copy(standard, self.pele_dir)
         return os.path.join(self.pele_dir, standard)
 
-
-def set_pele_env(folders, files, forcefield, template, rotamers_file, files_to_move,  pele_dir):
-    pele_env = Pele_env_Builder(folders, files,  forcefield, template, rotamers_file, files_to_move, pele_dir)
-    pele_env.folder_levels()
-    pele_env.file_dist()
 
 def is_repited(pele_dir):
 

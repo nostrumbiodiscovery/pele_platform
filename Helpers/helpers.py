@@ -34,7 +34,7 @@ def preproces_lines(lines):
 
 def set_logger(pele_dir, residue):
 	# Logging definition block
-    log_name = os.path.abspath("{}.log".format(residue))
+    log_name = os.path.join(pele_dir, "{}.log".format(residue))
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)
     formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")

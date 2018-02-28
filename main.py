@@ -17,6 +17,7 @@ import MSM_PELE.Helpers.system_prep as sp
 import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
+import MSM_PELE.Helpers.missing_residues as mr
 
 # DEFAULT VALUES
 COMPLEX = "complex.pdb"
@@ -69,7 +70,18 @@ FOLDERS = ["",
            "DataLocal/Templates/OPLS2005/HeteroAtoms/",
            "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
            "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-           "DataLocal/LigandRotamerLibs"]
+           "DataLocal/LigandRotamerLibs",
+           "output_pele",
+           "output_adaptive_exit",
+           "output_clustering"
+          ]
+
+FILES_TO_COPY = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
+                 os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),                                                                                           
+                 os.path.join(DIR, "Templates/pele_exit.conf")]
+
+
+
 
 # ERRORS
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
@@ -90,6 +102,7 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
 
     if restart == "all":
         pele_dir = pele.is_repited(pele_dir)
+        pele.set_pele_env(FOLDERS, FILES_TO_COPY, forcefield, pele_dir)
     else:
         pele_dir = pele.is_last(pele_dir)
     logger, log_name = hp.set_logger(pele_dir, residue)
@@ -118,34 +131,33 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
         if mae_lig:
             receptor = system
             lig = mae_lig
-            lig_ref = sp.convert_pdb(mae_lig)
-            system = sp.build_complex(receptor, lig_ref)
+            lig_ref = sp.convert_pdb(mae_lig, pele_dir)
+            system = sp.build_complex(receptor, lig_ref, pele_dir)
         else:
-            receptor, lig_ref = sp.retrieve_receptor(system, residue)
+            receptor, lig_ref = sp.retrieve_receptor(system, residue, pele_dir)
             lig, residue = sp.convert_mae(lig_ref)
         system_fix, missing_residues, gaps, metals = ppp.main(system, pele_dir, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
         protein_constraints = ct.retrieve_constraints(system_fix, gaps, metals)
-        logger.info(SYSTEM.format(system_fix,missing_residues, gaps, metals))
+        logger.info(SYSTEM.format(system_fix, missing_residues, gaps, metals))
 
-        for res, _, _ in missing_residues:
-            logger.info("Creating template for residue {}".format(res))
-            if mae_lig:
-                mae_charges = True
-                template, rotamers_file = plop.main(mae_lig, mtor, n, core, mae_charges, clean)
-                hp.silentremove([system])
-            else:
-                mae_charges = False
-                template, rotamers_file = plop.main(lig, mtor, n, core, mae_charges, clean)
-                hp.silentremove([lig])
-            logger.info("Template {} created".format(template))
+        logger.info("Creating template for residue {}".format(residue))
+        if mae_lig:
+            mae_charges = True
+            template, rotamers_file = plop.main(mae_lig, pele_dir, residue, forcefield, mtor, n, core, mae_charges, clean)
+            hp.silentremove([system])
+        else:
+            mae_charges = False
+            template, rotamers_file = plop.main(lig, residue, pele_dir, forcefield, mtor, n, core, mae_charges, clean)
+            hp.silentremove([lig])
+        logger.info("Template {} created".format(template))
 
-        files_to_copy = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
-                 os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),
-                 os.path.join(DIR, "Templates/pele_exit.conf")]
-        files_to_move = [system_fix, log_name, lig_ref]
-        directories = FOLDERS
-        directories.extend(["output_pele", "output_adaptive_exit", "output_clustering"]) 
-        pele.set_pele_env(directories, files_to_copy, forcefield, template, rotamers_file, files_to_move, pele_dir)
+        for res, __, _ in missing_residues:
+            if res != residue:
+				logger.info("Creating template for residue {}".format(res))
+				mr.create_template(system_fix, res, pele_dir, forcefield)
+				logger.info("Template {}z created".format(res))
+
+        #files_to_move = [system_fix, log_name, lig_ref]
         ad.SimulationBuilder(pele_exit_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
         ad.SimulationBuilder(pele_temp, EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
 
@@ -179,9 +191,8 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
 
         logger.info("Box with center {} radius {} was created".format(center, radius))
 
-
-
         logger.info("Running standard Pele")
+        print(center)
         ad.SimulationBuilder(pele_temp, PELE_KEYWORDS, center, radius)
         adaptive_long = ad.SimulationBuilder(ad_l_temp, ADAPTIVE_KEYWORDS, RESTART, adap_l_output, adap_l_input, cpus, pele_temp, residue, random_num)
         adaptive_long.run()
@@ -219,6 +230,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.clust > args.cpus and args.restart != msm:
-        raise ValueError(CLUSTER_ERROR.format(args.cpus, args.clust))
+        #raise ValueError(CLUSTER_ERROR.format(args.cpus, args.clust))
+        run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
+        
     else:
         run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
