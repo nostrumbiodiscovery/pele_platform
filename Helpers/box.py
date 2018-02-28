@@ -27,11 +27,11 @@ def parseargs():
     args = parser.parse_args()
     return args.bs, args.points
 
+def is_exit_finish(path):
+    best_structs.main(path)
 
 def main(system, clusters, bs):
 
-    max_sasa_structs = best_structs.main(path)
-    #max_sasa_points = get_sasa_points(path, max_sasa_structs)
     points = get_points(clusters)
     centroid = find_centroid(points)
     chosen_point = find_non_contact_points(system, centroid, bs) 

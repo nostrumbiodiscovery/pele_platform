@@ -168,6 +168,7 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
             pass
  
         logger.info("Creating box")
+        bx.is_exit_finish(adap_ex_output)
         if not user_box:
         	center_mass = cm.center_of_mass(ligand_ref)
         	center, radius = bx.main(adap_ex_input, clusters_output, center_mass)
