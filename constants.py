@@ -1,6 +1,11 @@
 import socket
-machine = socket.getfqdn()
+import os
 
+###########################
+# USER TO CHANGE
+###########################
+
+machine = socket.getfqdn()
 if "bsc.mn" in machine:
     SCHRODINGER = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC"
     PELE = "/gpfs/projects/bsc72/PELE++/mniv/rev12455"
@@ -30,3 +35,74 @@ else:
     MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/OpenMPI/1.8.4-GCC-4.9.2/bin"
     LICENSE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/licenses/"
     MMSHARE = None
+
+
+
+############################
+# OTHER CONSTANTS
+#############################
+
+# DEFAULT VALUES
+COMPLEX = "complex.pdb"
+RESULTS = "results"
+LIG_RES = "LIG"
+LIG_CHAIN = "Z"
+FORCEFIELD = "OPLS2005"
+PELE_CONFILE = "pele.conf"
+CPUS = 140
+RESTART = True
+CLUSTERS = 40
+PLATFORM_RESTART = "all"
+EQ_STEPS = 750
+
+
+# TEMPLATE KEYWORDS
+ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "SEED"]
+EX_ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "EQ_STEPS", "SEED"]
+EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
+PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS"]
+NATIVE = '''
+                        {{
+
+                           "type": "rmsd",
+
+                           "Native": {{\n\
+                            "path":\n\
+                            "{}" }},\n\
+    
+                           "selection": {{ "chains": {{ "names": [ "{}" ] }} }},\n\
+
+                           "includeHydrogens": false,\n\
+
+                           "doSuperposition": false,\n\
+
+                           "tag" : "ligandRMSD"\n\
+
+                        }},\n\
+
+
+'''
+
+SYSTEM = "System {} checked successfully\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"
+
+
+
+# FOLDERS&PATH
+DIR = os.path.dirname(__file__)
+ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
+FOLDERS = ["",
+           "DataLocal/Templates/OPLS2005/HeteroAtoms/",
+           "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
+           "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
+           "DataLocal/LigandRotamerLibs",
+           "output_pele",
+           "output_adaptive_exit",
+           "output_clustering"
+          ]
+
+FILES = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
+                 os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),
+                 os.path.join(DIR, "Templates/pele_exit.conf")]
+
+# ERRORS
+CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
