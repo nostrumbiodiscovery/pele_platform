@@ -78,8 +78,8 @@ def retrieve_receptor(system, residue, pele_dir, output=False):
 
     return "".join(receptor_text), ligand
 
-def convert_pdb(lig_mae):
-    name = "ligand.pdb"
+def convert_pdb(lig_mae, pele_dir):
+    name = os.path.join(pele_dir, "ligand.pdb")
     for structure in st.StructureReader(lig_mae):
         structure.write(name)
     return name
