@@ -30,10 +30,10 @@ class SimulationBuilder(template_builder.TemplateBuilder):
 		clusters_info = clusters.__getstate__() 
 		if len(clusters_info["clusters"]) == 1:
 			for cluster in clusters_info["clusters"]:
-				clusters_info["thresholdCalculator"].values[0] = 1.25
-			return clusters, True
-		elif len(clusters_info["clusters"]) >= 3 and clusters_info["thresholdCalculator"].values[0] == 1:
-			clusters_info["thresholdCalculator"].values[0] = 1.75
+				print("Clustering diminished from {} to 1.25".format(clusters_info["thresholdCalculator"].values[0]))
+				clusters_info["thresholdCalculator"].values[0] = 1
 			return clusters, True
 		else:
+			print("Clustering increased from {} to 1.75".format(clusters_info["thresholdCalculator"].values[0]))
+			clusters_info["thresholdCalculator"].values[0] = 1.75
 			return clusters, False
