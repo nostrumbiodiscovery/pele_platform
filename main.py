@@ -61,7 +61,7 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
 
         # Fill in Templates
         ad.SimulationBuilder(env.pele_exit_temp, cs.EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, env.license)
-        ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, license)
+        ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, env.license)
 
     if restart in ["all", "adaptive"]:
         
