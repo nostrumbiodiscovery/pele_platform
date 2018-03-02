@@ -12,7 +12,7 @@ CLUSTERINSTRIDE = 1
 def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
     trajs_per_epoch = cpus
     with hp.cd(output_pele):
-        extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids)
+        extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids)
         prepareMSMFolders.main()
         estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER, CLUSTERINSTRIDE)
         results_file = summerize(output_pele)

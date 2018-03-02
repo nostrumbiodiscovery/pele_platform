@@ -5,15 +5,15 @@ import MSM_PELE.Helpers.helpers as hp
 from prody import *
 
 
-def build_complex(receptor, ligand):
-    """ From the receptor and ligand in pdb build
+def build_complex(receptor, ligand, pele_dir):
+    """ 
+        From the receptor and ligand in pdb build
         another pdb with the whole complex
     """
     complex_content = []
 
     name = os.path.basename(os.path.splitext(receptor)[0])
-    dirname = os.path.dirname(receptor)
-    complex = os.path.join(dirname, "{}_complex.pdb".format(name)) 
+    complex = os.path.join(pele_dir, "{}_complex.pdb".format(name)) 
 
     with open(receptor, 'r') as pdb_file:
         receptor_text = [line for line in pdb_file if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER")]
@@ -57,7 +57,7 @@ def convert_mae(ligands):
     return structure_mae, res
 
 
-def retrieve_receptor(system, residue):
+def retrieve_receptor(system, residue, pele_dir, output=False):
     """
     This function returns receptor of the complex of interest.
 
@@ -65,7 +65,8 @@ def retrieve_receptor(system, residue):
 
     :output: receptor text
     """
-    ligand = os.path.abspath("ligand.pdb")
+    ligand = output if output else os.path.join(pele_dir, "ligand.pdb")    
+
     with open(system, 'r') as pdb_file:
         receptor_text = [line for line in pdb_file if line.startswith("ATOM")]
     with open(system, 'r') as pdb_file:
@@ -77,8 +78,8 @@ def retrieve_receptor(system, residue):
 
     return "".join(receptor_text), ligand
 
-def convert_pdb(lig_mae):
-    name = "ligand.pdb"
+def convert_pdb(lig_mae, pele_dir):
+    name = os.path.join(pele_dir, "ligand.pdb")
     for structure in st.StructureReader(lig_mae):
         structure.write(name)
     return name

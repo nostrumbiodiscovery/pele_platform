@@ -19,6 +19,21 @@ class SimulationBuilder(template_builder.TemplateBuilder):
 
         super(SimulationBuilder, self).__init__(self.file, self.replace)
 
-    def run(self):
+    def run(self, hook=False):
         with helpers.cd(os.path.dirname(self.file)):
-            ad.main(self.file)
+            if hook:
+				ad.main(self.file, clusteringHook=self.interactive_clustering)
+            else:
+				ad.main(self.file)
+
+    def interactive_clustering(self, clusters, paths):
+		clusters_info = clusters.__getstate__() 
+		if len(clusters_info["clusters"]) == 1:
+			for cluster in clusters_info["clusters"]:
+				clusters_info["thresholdCalculator"].values[0] = 1.25
+			return clusters, True
+		elif len(clusters_info["clusters"]) >= 3 and clusters_info["thresholdCalculator"].values[0] == 1:
+			clusters_info["thresholdCalculator"].values[0] = 1.75
+			return clusters, True
+		else:
+			return clusters, False

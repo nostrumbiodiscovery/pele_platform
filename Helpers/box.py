@@ -73,7 +73,7 @@ def find_non_contact_points(system, centroid, bs):
         point = np.array(point, dtype=float) + directior_unitary
         print(point)
         print(number_of_contacts)
-    return point
+    return point.tolist()
 
 def get_sasa_points(path, max_sasa_structs):
     points = []

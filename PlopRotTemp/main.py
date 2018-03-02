@@ -63,7 +63,7 @@ import MSM_PELE.PlopRotTemp.PlopRotTemp as pl
 from MSM_PELE.PlopRotTemp.template.templateBuilder import TemplateBuilder
 
 
-def main(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = False):
+def main(mae_file, residue, pele_dir, forcefield, max_tors, nrot, user_core_atom, mae_charges = False, clean = False):
 
     #Defaults
     nrot = nrot
@@ -131,9 +131,9 @@ def main(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = 
     print("TEMPLATE GENERATION")
 
     resname=pl.find_resnames_in_mae(mae_file)
-    template_output = "{}z".format(resname[0].lower())
+    template_output = "{}z".format(residue.lower())
 
-    template_builder = TemplateBuilder(mae_file, template_output)
+    template_builder = TemplateBuilder(mae_file, template_output, residue)
 
     [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
         template_builder.build_template(mae_charges)
@@ -276,7 +276,7 @@ def main(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = 
         
         else:
             if (len(zmat_atoms) > 0):
-                ring_libs = pl.build_ring_libs(mae_min_file, root, resname, tors, \
+                ring_libs = pl.build_ring_libs(mae_min_file, root, residue, tors, \
                                             tors_ring_num, names, rank, parent, old_atom_num, mae2temp, gridres,
                                             files2clean, debug)
      
@@ -284,7 +284,7 @@ def main(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = 
                 ring_libs = []
                 print("No rotatable sidechains found")
             
-            rotamers_file = pl.find_build_lib(resname, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
+            rotamers_file = pl.find_build_lib(residue, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
                                   tors_ring_num, ring_libs, debug)
             print("\n")
             print("CREATE ROTAMER LIBRARY")
@@ -298,6 +298,11 @@ def main(mae_file, max_tors, nrot, user_core_atom, mae_charges = False, clean = 
         for file in files2clean:
             print('Removing Intermediate File: {}'.format(file))
             os.remove(file)
+
+    template_dir = os.path.join(pele_dir, "DataLocal/Templates/{}/HeteroAtoms/{}".format(forcefield, output_template_file))
+    rotamers_dir = os.path.join(pele_dir, "DataLocal/LigandRotamerLibs/{}".format(rotamers_file))
+    shutil.move(output_template_file, template_dir)
+    shutil.move(rotamers_file, rotamers_dir)
 
     return output_template_file, rotamers_file
 
