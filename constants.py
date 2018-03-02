@@ -9,7 +9,7 @@ machine = socket.getfqdn()
 if "bsc.mn" in machine:
     SCHRODINGER = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC"
     PELE = "/gpfs/projects/bsc72/PELE++/mniv/rev12455"
-    ADAPTIVE = "/gpfs/projects/bsc72/adaptiveSampling/bin/v1.4.1"
+    ADAPTIVE = "/gpfs/projects/bsc72/adaptiveSampling/bin/v1.4.2"
     MPIRUN = "/apps/INTEL/2017.4/impi/2017.3.196/bin64"
     LICENSE = "/gpfs/projects/bsc72/PELE++/license"
     MMSHARE = None
