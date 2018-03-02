@@ -45,7 +45,7 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
         env.logger.info("Creating template for residue {}".format(residue))
         if mae_lig:
             mae_charges = True
-            template, rotamers_file = plop.main(mae_lig, env.pele_dir, residue, forcefield, mtor, n, core, mae_charges, clean)
+            template, rotamers_file = plop.main(mae_lig, residue, env.pele_dir, forcefield, mtor, n, core, mae_charges, clean)
             hp.silentremove([system])
         else:
             mae_charges = False
@@ -69,7 +69,7 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
         env.logger.info("Running ExitPath Adaptive")
         adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
             env.adap_ex_input, env.cpus, env.pele_exit_temp, env.residue, env.equil_steps, env.random_num)
-        adaptive_exit.run()
+        adaptive_exit.run(hook=True)
         env.logger.info("ExitPath Adaptive run successfully")
 
 
@@ -135,10 +135,8 @@ if __name__ == "__main__":
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
     parser.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=cs.PLATFORM_RESTART)
     args = parser.parse_args()
-
-    if args.clust > args.cpus and args.restart != msm:
-        #raise ValueError(CLUSTER_ERROR.format(args.cpus, args.clust))
-        run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
-        
+    print(args.restart)
+    if(args.clust > args.cpus and args.restart != "msm"):
+        raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))
     else:
         run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart)
