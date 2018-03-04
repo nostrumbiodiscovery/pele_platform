@@ -26,14 +26,14 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             else:
 				ad.main(self.file)
 
-    def interactive_clustering(self, clusters, paths):
-		clusters_info = clusters.__getstate__() 
-		if len(clusters_info["clusters"]) == 1:
-			for cluster in clusters_info["clusters"]:
-				print("Clustering diminished from {} to 1.25".format(clusters_info["thresholdCalculator"].values[0]))
-				clusters_info["thresholdCalculator"].values[0] = 1
-			return clusters, True
-		else:
-			print("Clustering increased from {} to 1.75".format(clusters_info["thresholdCalculator"].values[0]))
-			clusters_info["thresholdCalculator"].values[0] = 1.75
-			return clusters, False
+    def interactive_clustering(self, cluster_object, paths, simulationRunner, i):
+        initial_rmsd_cluster_values = cluster_object.thresholdCalculator.values
+        while len(cluster_object.clusters.clusters) == 1:
+            current_values = cluster_object.thresholdCalculator.values
+            cluster_object.thresholdCalculator.values = [ value-0.5 if value > 0.5 else value for value in current_values]
+            cluster_object.emptyClustering()
+            clusterPreviousEpochs(cluster_object, i+1, paths.epochOutputPathTempletized, simulationRunner)
+            print("Lowering cluster RMSD to: {}".format(cluster_object.thresholdCalculator.values))
+        cluster_object.thresholdCalculator.values = initial_rmsd_cluster_values
+        print("Interactive clustering ended restoring initial value {}".format(cluster_object.thresholdCalculator.values))
+
