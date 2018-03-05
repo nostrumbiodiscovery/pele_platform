@@ -1,5 +1,4 @@
 import os
-import sys
 from MSM_PELE.Helpers import helpers, template_builder
 import AdaptivePELE.adaptiveSampling as ad
 
@@ -32,7 +31,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             current_values = cluster_object.thresholdCalculator.values
             cluster_object.thresholdCalculator.values = [ value-0.5 if value > 0.5 else value for value in current_values]
             cluster_object.emptyClustering()
-            clusterPreviousEpochs(cluster_object, epoch_number, paths.epochOutputPathTempletized, simulationRunner)
+            ad.clusterPreviousEpochs(cluster_object, epoch_number, paths.epochOutputPathTempletized, simulationRunner)
             print("Lowering cluster RMSD to: {}".format(cluster_object.thresholdCalculator.values))
         cluster_object.thresholdCalculator.values = initial_rmsd_cluster_values
         print("Interactive clustering ended restoring initial value {}".format(cluster_object.thresholdCalculator.values))
