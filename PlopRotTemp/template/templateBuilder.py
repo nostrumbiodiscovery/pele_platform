@@ -49,11 +49,10 @@ class TemplateBuilder:
 	:Author: Daniel Soler
 	"""
 
-	def __init__(self, input_file, output_file):
+	def __init__(self, input_file, output_file, residue_name):
 		self.input_file = input_file
 		self.output_file = output_file
-		#self.build_template()
-		
+		self.residue = residue_name
 
 	def build_template(self, charges_from_file=None):
 	  """
@@ -99,7 +98,7 @@ class TemplateBuilder:
 
 
 	  #Connectivity information from Mae
-	  res_name = find_resnames_in_mae(self.input_file)[0] #Ligand must be defined as a whole residue
+	  res_name = self.residue #Ligand must be defined as a whole residue
 	  atom_names = find_names_in_mae(self.input_file, undersc=True)
 
 	  #Fix parents

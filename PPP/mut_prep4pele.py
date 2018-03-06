@@ -24,11 +24,12 @@ addNonstdAminoacid('CYT', 'neutral', 'acyclic', 'medium', 'polar', 'buried')
 addNonstdAminoacid('LYN', 'neutral', 'acyclic', 'large', 'polar', 'buried')
 
 
-def main(input_pdb, output_pdb=["",], no_gaps_ter=False, charge_terminals=False, make_unique=False,
+def main(input_pdb, pele_dir, output_pdb=["",], no_gaps_ter=False, charge_terminals=False, make_unique=False,
          remove_terminal_missing=False, mutant_multiple=False, mutation=""):
     if not output_pdb[0]:
-        output = os.path.abspath(os.path.splitext(input_pdb)[0])
-        output_pdb[0] = "{}_processed.pdb".format(output)
+        output = os.path.splitext(input_pdb)[0]
+        output_pdb[0] = os.path.join(pele_dir,"{}_processed.pdb".format(output))
+        print(output_pdb[0])
     try:
         initial_structure = parsePDB(input_pdb)
     except IOError:
