@@ -8,4 +8,4 @@ The easiest way to get help with the project is by e-mail (daniel.soler@nostrumb
 Another way is to open an issue on Github_.
 
 
-.. _Github: https://github.com/miniaoshi/PelePlop
+.. _Github: https://github.com/miniaoshi/MSM_PELE

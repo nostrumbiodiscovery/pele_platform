@@ -5,26 +5,27 @@ Getting Started
 .. toctree::
    :maxdepth: 2
 
-Launch PelePlop gui
---------------------
+Launch MSM_Pele with OPLS charges:
+-----------------------------------
 
-The most simple way to use PelePlop is through the graphical user interface. Simply run:
+The prerequisites to run MSM_Pele is:
+
+    - PDB of the complex ligand+receptor
+
+The launch commands is:
+    
+    - python2.X main.py PDB --cpus X
 
 
-        $ python gui.py
+Launch MSM_Pele with QM charges:
+--------------------------------
 
-Once inside:
+The prerequisites to run MSM_Pele with keeping the QM charges of the ligand are:
 
-- Run PlopRotTemp to only parametrize the ligand
-- Run PelePlop to run PlopRotTemp and Pele together.
+    - PDB of the receptor
+    - Maestro file of the ligand with the QM charges
 
-Run from the command line
--------------------------
+The launch command is:
 
-Another alternative approach is to launch the program from the command line as:
-
-		$ bash PelePlop.sh [options] pdbfile ligand_residue ligand_chain
-
-		e.g. $ bash PelePlop.sh - -mtor 4  - -clean Samples/jak2_999_complex_processed.pdb LIG Z
-
+    - python2.X main.py receptor_PDB --mae_lig ligand.mae --cpus X
 
