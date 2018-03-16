@@ -7,37 +7,47 @@ Installation
 
 
 Python Dependencies
--------------
-#Create conda
+--------------------
+
+**Create conda**
+
 conda create -y -n py27 python=2.7 anaconda
 
-#Activate Env
+**Activate Env**
+
 source activate py27
 
-#Install dependencies
+**Install dependencies**
+
 ~/conda/envs/py27/bin/pip install msmtools
+
 ~/conda/envs/py27/bin/pip install pyemma
+
 ~/conda/envs/py27/bin/pip install prody==1.8.2
+
 ~/conda/envs/py27/bin/pip install sklearn
 
  
 Env variables
 --------------
+
 export PYTHONPATH=$PYTHONPATH:'/path/to/MSM_PELE/'
+
 export LD_LIBRARY_PATH=/path/to/schrodinge201X/internal/lib/ssl/:/path/to/schrodinger201X/mmshare-v4.0/lib/Linux-x86_64/:$LD_LIBRARY_PATH
 
 Changing local path
 ---------------------
-Change the public variables path under constants.py to the ones local to your machine
+
+Change the public variables path under **MSM_PELE/constants.py** to the ones local to your machine
 
 Pyemma config
 --------------
 
 $ python
 
->import pyemma
+> import pyemma
 
->pyemma.config.used_filenames
+> pyemma.config.used_filenames
 
 You will recieve a list with files where it is possible to find configuration from pyemma. You need to go over these files and change:
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Getting Started &#8212; PelePlop 1.0.1 documentation</title>
+    <title>Getting Started &#8212; MSM_PELE 1.0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -37,15 +37,12 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="tutorial.html" title="Tutorial"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MSM_PELE 1.0.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -58,23 +55,35 @@
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<div class="section" id="launch-peleplop-gui">
-<h2>Launch PelePlop gui<a class="headerlink" href="#launch-peleplop-gui" title="Permalink to this headline">¶</a></h2>
-<p>The most simple way to use PelePlop is through the graphical user interface. Simply run:</p>
+<div class="section" id="launch-msm-pele-with-opls-charges">
+<h2>Launch MSM_Pele with OPLS charges<a class="headerlink" href="#launch-msm-pele-with-opls-charges" title="Permalink to this headline">¶</a></h2>
+<p>The prerequisites to run MSM_Pele is:</p>
 <blockquote>
-<div>$ python gui.py</div></blockquote>
-<p>Once inside:</p>
-<ul class="simple">
-<li>Run PlopRotTemp to only parametrize the ligand</li>
-<li>Run PelePlop to run PlopRotTemp and Pele together.</li>
+<div><ul class="simple">
+<li>PDB of the complex ligand+receptor</li>
 </ul>
-</div>
-<div class="section" id="run-from-the-command-line">
-<h2>Run from the command line<a class="headerlink" href="#run-from-the-command-line" title="Permalink to this headline">¶</a></h2>
-<p>Another alternative approach is to launch the program from the command line as:</p>
+</div></blockquote>
+<p>The launch commands is:</p>
 <blockquote>
-<div><p>$ bash PelePlop.sh [options] pdbfile ligand_residue ligand_chain</p>
-<p>e.g. $ bash PelePlop.sh - -mtor 4  - -clean Samples/jak2_999_complex_processed.pdb LIG Z</p>
+<div><ul class="simple">
+<li>python2.X main.py PDB &#8211;cpus X</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="launch-msm-pele-with-qm-charges">
+<h2>Launch MSM_Pele with QM charges<a class="headerlink" href="#launch-msm-pele-with-qm-charges" title="Permalink to this headline">¶</a></h2>
+<p>The prerequisites to run MSM_Pele with keeping the QM charges of the ligand are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>PDB of the receptor</li>
+<li>Maestro file of the ligand with the QM charges</li>
+</ul>
+</div></blockquote>
+<p>The launch command is:</p>
+<blockquote>
+<div><ul class="simple">
+<li>python2.X main.py receptor_PDB &#8211;mae_lig ligand.mae &#8211;cpus X</li>
+</ul>
 </div></blockquote>
 </div>
 </div>
@@ -88,8 +97,8 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Getting Started</a><ul>
-<li><a class="reference internal" href="#launch-peleplop-gui">Launch PelePlop gui</a></li>
-<li><a class="reference internal" href="#run-from-the-command-line">Run from the command line</a></li>
+<li><a class="reference internal" href="#launch-msm-pele-with-opls-charges">Launch MSM_Pele with OPLS charges</a></li>
+<li><a class="reference internal" href="#launch-msm-pele-with-qm-charges">Launch MSM_Pele with QM charges</a></li>
 </ul>
 </li>
 </ul>
@@ -128,15 +137,12 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="tutorial.html" title="Tutorial"
              >next</a> |</li>
         <li class="right" >
           <a href="installation.html" title="Installation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MSM_PELE 1.0.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
