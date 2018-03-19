@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &#8212; PelePlop 1.0.1 documentation</title>
+    <title>Installation &#8212; MSM_PELE 1.0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -27,7 +27,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Getting Started" href="cookbook.html" />
-    <link rel="prev" title="PelePlop Documentation" href="index.html" /> 
+    <link rel="prev" title="MSM_PELE Documentation" href="index.html" /> 
   </head>
   <body role="document">
     <div class="related" role="navigation" aria-label="related navigation">
@@ -37,15 +37,12 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="cookbook.html" title="Getting Started"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="PelePlop Documentation"
+          <a href="index.html" title="MSM_PELE Documentation"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MSM_PELE 1.0.1 documentation</a> &#187;</li> 
       </ul>
     </div>  
 
@@ -58,26 +55,37 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<p>First of all, you will need to install several packages and set certain environment variables before running PelePlop.</p>
-<div class="section" id="dependencies">
-<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
-<p>Academic Schrondinger (<a class="reference external" href="https://www.schrodinger.com/freemaestro">https://www.schrodinger.com/freemaestro</a>)</p>
-<p>PELE (commercial software - contact - <a class="reference external" href="https://pele.bsc.es/">https://pele.bsc.es/</a>)</p>
+<div class="section" id="python-dependencies">
+<h2>Python Dependencies<a class="headerlink" href="#python-dependencies" title="Permalink to this headline">¶</a></h2>
+<p><strong>Create conda</strong></p>
+<p>conda create -y -n py27 python=2.7 anaconda</p>
+<p><strong>Activate Env</strong></p>
+<p>source activate py27</p>
+<p><strong>Install dependencies</strong></p>
+<p>~/conda/envs/py27/bin/pip install msmtools</p>
+<p>~/conda/envs/py27/bin/pip install pyemma</p>
+<p>~/conda/envs/py27/bin/pip install prody==1.8.2</p>
+<p>~/conda/envs/py27/bin/pip install sklearn</p>
 </div>
 <div class="section" id="env-variables">
 <h2>Env variables<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
-<p>export PELE=&#8217;/path/to/PELE/folder/&#8217;</p>
-<p>export SCHRODINGER=&#8217;/path/to/schrodinger/folder/&#8217;</p>
+<p>export PYTHONPATH=$PYTHONPATH:&#8217;/path/to/MSM_PELE/&#8217;</p>
+<p>export LD_LIBRARY_PATH=/path/to/schrodinge201X/internal/lib/ssl/:/path/to/schrodinger201X/mmshare-v4.0/lib/Linux-x86_64/:$LD_LIBRARY_PATH</p>
 </div>
-<div class="section" id="python-path">
-<h2>Python Path<a class="headerlink" href="#python-path" title="Permalink to this headline">¶</a></h2>
-<p>set export PATH=/path/to/PELE-1.5_mpi/:$PATH&#8217;</p>
-<p>set export PATH=/path/to/mpirun/:$PATH&#8217;</p>
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
+<div class="section" id="changing-local-path">
+<h2>Changing local path<a class="headerlink" href="#changing-local-path" title="Permalink to this headline">¶</a></h2>
+<p>Change the public variables path under <strong>MSM_PELE/constants.py</strong> to the ones local to your machine</p>
 </div>
-<p>Refer to the <a class="reference internal" href="tutorial.html#tutorial"><span class="std std-ref">Tutorial</span></a> section for more information on how to run PelePlop.</p>
+<div class="section" id="pyemma-config">
+<h2>Pyemma config<a class="headerlink" href="#pyemma-config" title="Permalink to this headline">¶</a></h2>
+<p>$ python</p>
+<p>&gt; import pyemma</p>
+<p>&gt; pyemma.config.used_filenames</p>
+<p>You will recieve a list with files where it is possible to find configuration from pyemma. You need to go over these files and change:</p>
+<blockquote>
+<div><p>show_progress_bars = Flase</p>
+<p>mute= True</p>
+</div></blockquote>
 </div>
 </div>
 
@@ -90,16 +98,17 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li><a class="reference internal" href="#python-dependencies">Python Dependencies</a></li>
 <li><a class="reference internal" href="#env-variables">Env variables</a></li>
-<li><a class="reference internal" href="#python-path">Python Path</a></li>
+<li><a class="reference internal" href="#changing-local-path">Changing local path</a></li>
+<li><a class="reference internal" href="#pyemma-config">Pyemma config</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
-                        title="previous chapter">PelePlop Documentation</a></p>
+                        title="previous chapter">MSM_PELE Documentation</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="cookbook.html"
                         title="next chapter">Getting Started</a></p>
@@ -131,15 +140,12 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="cookbook.html" title="Getting Started"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="PelePlop Documentation"
+          <a href="index.html" title="MSM_PELE Documentation"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">MSM_PELE 1.0.1 documentation</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

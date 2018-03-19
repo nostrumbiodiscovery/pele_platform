@@ -1,9 +1,9 @@
-.. PelePlop documentation master file, created by
+.. MSM_PELE documentation master file, created by
    sphinx-quickstart on Mon Dec  4 11:58:09 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-PelePlop Documentation
+MSM_PELE Documentation
 ======================
 
 
