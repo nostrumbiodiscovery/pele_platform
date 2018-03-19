@@ -14,7 +14,7 @@ The prerequisites to run MSM_Pele is:
 
 The launch commands is:
     
-    - python2.X main.py PDB --cpus X
+    - python2.X main.py PDB ligand_resname ligand_chain --cpus X
 
 
 Launch MSM_Pele with QM charges
@@ -27,5 +27,5 @@ The prerequisites to run MSM_Pele with keeping the QM charges of the ligand are:
 
 The launch command is:
 
-    - python2.X main.py receptor_PDB --mae_lig ligand.mae --cpus X
+    - python2.X main.py receptor_PDB ligand_resname ligand_chain --mae_lig ligand.mae --cpus X
 
