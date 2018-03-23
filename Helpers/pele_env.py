@@ -39,7 +39,7 @@ class Pele_env_Builder(object):
         self.rotamers_file = None
         self.random_num = random.randrange(1, 70000)
         self.license = '''"{}"'''.format(cs.LICENSE)
-        self.equil_steps = int(cs.EQ_STEPS/self.cpus)
+        self.equil_steps = int(cs.EQ_STEPS/self.cpus) if self.cpus < cs.EQ_STEPS else 1
         pele_dir = os.path.abspath("{}_Pele".format(self.residue))
         self.pele_dir = is_repited(pele_dir) if self.restart == "all" else is_last(pele_dir)
         self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else self.native

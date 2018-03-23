@@ -5,28 +5,52 @@ Installation
 .. toctree::
    :maxdepth: 2
 
-First of all, you will need to install several packages and set certain environment variables before running PelePlop.
 
-Dependencies
--------------
+Python Dependencies
+--------------------
 
-Academic Schrondinger (https://www.schrodinger.com/freemaestro, schrodinger2016-4 or higher).
+**Create conda**
 
-PELE (commercial software - contact - https://pele.bsc.es/).
+conda create -y -n py27 python=2.7 anaconda
 
+**Activate Env**
+
+source activate py27
+
+**Install dependencies**
+
+~/conda/envs/py27/bin/pip install msmtools
+
+~/conda/envs/py27/bin/pip install pyemma
+
+~/conda/envs/py27/bin/pip install prody==1.8.2
+
+~/conda/envs/py27/bin/pip install sklearn
+
+ 
 Env variables
 --------------
 
-export PELE='/path/to/PELE/folder/'
+export PYTHONPATH=$PYTHONPATH:'/path/to/MSM_PELE/'
 
-export SCHRODINGER='/path/to/schrodinger/folder/'
+export LD_LIBRARY_PATH=/path/to/schrodinge201X/internal/lib/ssl/:/path/to/schrodinger201X/mmshare-v4.0/lib/Linux-x86_64/:$LD_LIBRARY_PATH
 
-Python Path
-------------
+Changing local path
+---------------------
 
-set export PATH=/path/to/mpirun/:$PATH'
+Change the public variables path under **MSM_PELE/constants.py** to the ones local to your machine
 
-|
-|
+Pyemma config
+--------------
 
-Refer to the :ref:`tutorial` section for more information on how to run PelePlop.
+$ python
+
+> import pyemma
+
+> pyemma.config.used_filenames
+
+You will recieve a list with files where it is possible to find configuration from pyemma. You need to go over these files and change:
+
+    show_progress_bars = Flase
+
+    mute= True

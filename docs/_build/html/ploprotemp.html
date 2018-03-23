@@ -1,676 +1,227 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>PlopRotTemp &#8212; PelePlop 1.0.1 documentation</title>
-    
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.0.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="TemplateBuilder" href="template_builder.html" />
-    <link rel="prev" title="Code" href="code.html" /> 
-  </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="template_builder.html" title="TemplateBuilder"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="code.html" title="Code"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="code.html" accesskey="U">Code</a> &#187;</li> 
-      </ul>
-    </div>  
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PlopRotTemp &mdash; MSM_PELE 1.0.1 documentation</title>
+  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="MSM_PELE 1.0.1 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MSM_PELE
+          
+
+          
+          </a>
+
+          
             
-  <div class="section" id="module-PlopRotTemp">
-<span id="ploprottemp"></span><h1>PlopRotTemp<a class="headerlink" href="#module-PlopRotTemp" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="PlopRotTemp.FindCore">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">FindCore</code><span class="sig-paren">(</span><em>mae_file</em>, <em>user_fixed_bonds</em>, <em>use_rings</em>, <em>residue_name</em>, <em>use_mult_lib</em>, <em>user_core_atom</em>, <em>user_tors</em>, <em>back_tors</em>, <em>max_tors</em>, <em>R_group_root_atom_name</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.FindCore" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
-<p><strong>Description:</strong> Find a core group of atoms and cluster the others.</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>mae_file: ligand topology</li>
-<li>user_fixed_bonds: self-explanatory</li>
-<li>logfile: file with the connectivity and torsions</li>
-<li>use_rings: option to search for ring torsions</li>
-<li>use_mult_lib: use mult library for each cluster</li>
-<li>user_core_atom: create a cluster starting on these atom</li>
-<li>user_tors: torsions specified by the user</li>
-<li>back_torsions: backbone torsions specified By the user</li>
-<li>max_tors: maximum number of torsions in each group</li>
-<li>R_group_root_atom_name:</li>
-</ul>
-</dd>
-<dt><strong>Output:</strong></dt>
-<dd><ul class="first last simple">
-<li>old_num: Order of atoms by connectivuity starting
-from the centreal atom of the core</li>
-<li>parent: atom connected with the one on the same position inside
-the old_num list</li>
-<li>rank: atoms in old_num ranked by proximity</li>
-<li>tors: Atoms with torsions (backbone excluded)</li>
-<li>use_rings: option to search for ring torsions</li>
-<li>back_tors: Atoms of the backbone with torsions</li>
-<li>tors_ring_num: Atoms coming from rings with torsions. (0 for none)</li>
-</ul>
-</dd>
-</dl>
-<p><strong>Example:</strong></p>
-<p>old_num: [4, 3, 8, 5, 13, 6, 14, 7, 15, 16, 1, 0, 2, 9, 10, 11, 12, 17, 18, 19]</p>
-<p>parent: [-1, 0, 1, 0, 0, 3, 3, 5, 5, 7, 1, 10, 10, 2, 13, 14, 14, 16, 16, 16]</p>
-<p>rank: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 2, 3, 3, 4, 4, 4]</p>
-<p>Atom 4 is close to 3 close to 8 to 5, etc...</p>
-<p>Atom 3 is connected to 0, 8 to 1, 5 to 0, 13 to 0, etc...</p>
-<p>Atom 4,3,8,5,13,6,14,7,15 are rank 0, defined as core. All other ranks are sidechains.</p>
-</dd></dl>
 
-<dl class="function">
-<dt id="PlopRotTemp.FindCore_GetCoreAtom">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">FindCore_GetCoreAtom</code><span class="sig-paren">(</span><em>tors</em>, <em>bonds</em>, <em>natoms</em>, <em>user_core_atom</em>, <em>back_tors</em>, <em>use_mult_lib</em>, <em>debug=False</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.FindCore_GetCoreAtom" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cookbook.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">Code</a></li>
+<li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MSM_PELE</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>PlopRotTemp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ploprotemp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
 </div>
-<p><strong>Description</strong>: 
-Search for the core atom wich maximes
-the number of sidechains.</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>tors: Atoms with torsions</li>
-<li>bonds: connectivity</li>
-<li>natoms: number of atoms of the ligand</li>
-<li>user_core_atom: predefined user core atom</li>
-<li>back_tors: user backbone atoms with torsion</li>
-<li>use_mult_lib: User decision to use or not multiples libraries.</li>
-</ul>
-</dd>
-<dt><strong>Ouput:</strong></dt>
-<dd><ul class="first simple">
-<li>core_atom: atom which will be the center of the core</li>
-<li>assign: List of atoms with numbers assigned in order to cluster them</li>
-<li><dl class="first docutils">
-<dt>rank:  list of numbers for each atom which will show </dt>
-<dd>which atoms are closer to the atom we are making the rank from.</dd>
-</dl>
-</li>
-<li>group: List that classifies the atoms in groups depending on connectivity</li>
-</ul>
-<p class="last">to later on make different multiple libraries.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.FindTorsAtom">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">FindTorsAtom</code><span class="sig-paren">(</span><em>tors</em>, <em>tors_ring_num</em>, <em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.FindTorsAtom" title="Permalink to this definition">¶</a></dt>
-<dd><blockquote>
-<div><div class="line-block">
-<div class="line"><br /></div>
-</div>
-</div></blockquote>
-<p><strong>Description:</strong> Find atoms with torsion and append them on the zmatrix</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>tors: atoms with torsion</li>
-<li>tors_ring_num: ring atoms with torsion</li>
-<li>parent: atom connectivity of ordering</li>
-</ul>
-</dd>
-<dt><strong>Output:</strong></dt>
-<dd><ul class="first last simple">
-<li>out_tors: torsions</li>
-<li>out_tors_ring_num: ring atom torsions</li>
-<li>zmat_atoms: atoms to rotate</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.MatchTempMaeAtoms">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">MatchTempMaeAtoms</code><span class="sig-paren">(</span><em>mae_file</em>, <em>template_file</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.MatchTempMaeAtoms" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> Say which number of atom of th mae_file corresponds to the one on the template_file</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>mae_file: topology of the ligand</li>
-<li>template_file: topology of the ligand template</li>
-</ul>
-</dd>
-<dt><strong>Output:</strong></dt>
-<dd><ul class="first simple">
-<li>mae2temp: Which number of atom of the template file correspond to the same atom on the mae file</li>
-</ul>
-<p>Example&#8211;&gt;[0, 1, 2, 3, 4, 6, 8, 10, 12, 13, 14, 15, 16, 5, 7, 9, 11, 17, 18, 19]</p>
-<p>Explanation&#8211;&gt; Atom number 5 from the mae correspond the 6th of the template.</p>
-<ul class="simple">
-<li>temp2mae: Which number of atom of the mae file correspond to the same atom on the template file</li>
-</ul>
-<p>Example&#8211;&gt; [0, 1, 2, 3, 4, 13, 5, 14, 6, 15, 7, 16, 8, 9, 10, 11, 12, 17, 18, 19]</p>
-<p class="last">Explanation&#8211;&gt; Atom number 5 of the template file corresponds to atom number 13 of the mae file.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.ReorderTemplate">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">ReorderTemplate</code><span class="sig-paren">(</span><em>ordering</em>, <em>new_parent</em>, <em>rank</em>, <em>in_file</em>, <em>out_file</em>, <em>mae_file</em>, <em>R_group_root_atom_name='None'</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.ReorderTemplate" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> Create the ain template by parsing the ain.hetgrp_ffgen
-calculating the zmatrix, ordering the connectivity,
-the bonded, non bonded &amp; Improper rotations.</p>
-<dl class="docutils">
-<dt><strong>Output:</strong> </dt>
-<dd><ul class="first last simple">
-<li>names: atom names from the template file</li>
-<li>mae file: template file of the ligand &amp; input for PELE.</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.add_tors">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">add_tors</code><span class="sig-paren">(</span><em>tors1</em>, <em>tors2</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.add_tors" title="Permalink to this definition">¶</a></dt>
-<dd><p><strong>Description:</strong> adds tors2 to tors 1</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.assign_bonds_to_groups">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">assign_bonds_to_groups</code><span class="sig-paren">(</span><em>tors</em>, <em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.assign_bonds_to_groups" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> Make a group for each torsion bond
-and keep track of how many members</p>
-<p>Finally it returns the biggest group.</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>Tors: atoms with torsions</li>
-<li>Group: Atoms grouped by proximity</li>
-</ul>
-</dd>
-<dt><strong>Output:</strong></dt>
-<dd><ul class="first last simple">
-<li>output: lit of group_numbers</li>
-<li>big_grup: biggest group</li>
-<li>nbig_group: members on the biggest group</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.assign_group">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">assign_group</code><span class="sig-paren">(</span><em>bonds</em>, <em>rank</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.assign_group" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> With the core atom and its rank defined
-grouped the atoms in cluster or rotatable chains.</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>bonds: all bonds</li>
-<li>rank: core atom rank</li>
-</ul>
-</dd>
-<dt><strong>Output:</strong></dt>
-<dd><ul class="first last simple">
-<li>group: groups of rotatable chains</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.assign_ligand_groups">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">assign_ligand_groups</code><span class="sig-paren">(</span><em>tors</em>, <em>all_bonds</em>, <em>n_atoms</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.assign_ligand_groups" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> Cluster atoms in groups depending whether or not they are connected</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>tors: all torsions of the ligand</li>
-<li>all_bonds: all ligand bonds</li>
-<li>n_atoms: number of atoms of the ligand</li>
-</ul>
-</dd>
-<dt><strong>Output:</strong></dt>
-<dd><ul class="first last simple">
-<li>assign= List of Cluster of atoms depending whether or not they are connected</li>
-</ul>
-</dd>
-</dl>
-<p>e.g. &#8211;&gt;[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]</p>
-<p>Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.assign_rank">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">assign_rank</code><span class="sig-paren">(</span><em>bonds</em>, <em>assign</em>, <em>atom_num</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.assign_rank" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> Define a list of ranks for each grup of atoms or cluster in assign
-which will show which atoms are closer to the group.
-As small is the number of the rank as close to the atom we are making the rank from it will be.</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>bonds: Ligand connectivity</li>
-<li>assign: List of atoms with numbers assigned in order to cluster them</li>
-<li>atom_num: number of the atom to calculate the rank respect to.</li>
-</ul>
-</dd>
-<dt><strong>Output:</strong></dt>
-<dd><ul class="first last simple">
-<li><dl class="first docutils">
-<dt>Rank: list of numbers for each grup of atoms or cluster in assign</dt>
-<dd>which will show which atoms are closer to the group.</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-<p>E.g.</p>
-<p>Rank From number 1:</p>
-<p>Start: [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]</p>
-<p>Middle: [0, 0, 0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1] (look for the closest atoms)</p>
-<p>Final: [0, 0, 0, 1, 2, 3, 4, 3, 2, 3, 4, 5, 5, 3, 4, 5, 4, 6, 6, 6] As small is the number as close to atom number 2 is positioned on the ligand.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.assign_rank_group">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">assign_rank_group</code><span class="sig-paren">(</span><em>atom_num</em>, <em>assign</em>, <em>rank</em>, <em>rank_num</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.assign_rank_group" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> Assign rank to each group</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>atom_num: Atom respectively which we are producing the rank from</li>
-<li>assign: Group of molecules grouped on clusters dependiong on the ligand connectivity</li>
-<li><dl class="first docutils">
-<dt>rank: list of numbers for each atom which will show </dt>
-<dd>which atoms are closer to the atom we are making the rank from.</dd>
-</dl>
-</li>
-<li>rank_num: &#8212;-</li>
-</ul>
-</dd>
-<dt><strong>Output</strong>:</dt>
-<dd><ul class="first last simple">
-<li>rank: rank of all atoms</li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.check_repite_names">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">check_repite_names</code><span class="sig-paren">(</span><em>atomnames</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.check_repite_names" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the mae_file contains any
-repited name. If it&#8217;s like this
-raise and error.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.find_NH2_torsions">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">find_NH2_torsions</code><span class="sig-paren">(</span><em>struct</em>, <em>mae_file</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.find_NH2_torsions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find all the NH2 terminal bonds
-and append them to torsions</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.find_OH_torsions">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">find_OH_torsions</code><span class="sig-paren">(</span><em>struct</em>, <em>mae_file</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.find_OH_torsions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find all the OH terminal bonds
-and append them to torsions</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.find_bonds_in_mae">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">find_bonds_in_mae</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.find_bonds_in_mae" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> Search for bonds in MAE</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd><ul class="first last simple">
-<li>filename: MAEfile</li>
-</ul>
-</dd>
-<dt><strong>Output:</strong></dt>
-<dd><ul class="first last simple">
-<li>Bonds: Bonds in MAEfile</li>
-</ul>
-</dd>
-</dl>
-<p>e.g. &#8211;&gt; [[0, 1], [0, 5], [0, 6]]</p>
-<p>(Bond between atom 0 and 1, etc...)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.find_connected">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">find_connected</code><span class="sig-paren">(</span><em>atom</em>, <em>bonds</em>, <em>assign</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.find_connected" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<p><strong>Description:</strong> Find and assign the same &#8220;group (number)&#8221; to all the atoms connected to atom</p>
-<dl class="docutils">
-<dt><strong>Input:</strong></dt>
-<dd>atom: atom to look connections from
-bonds: list of all bonds
-assign: list of atoms with numbers assigned in order to cluster them</dd>
-</dl>
-<p>e.g. &#8211;&gt;[1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 2, 3, 3, 3]</p>
-<p>Atom 1 connected to 2 and 3 so they are in the same group specified by the number 1, etc...</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.find_names_in_mae">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">find_names_in_mae</code><span class="sig-paren">(</span><em>filename</em>, <em>undersc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.find_names_in_mae" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Description:</th><td class="field-body">This function parses a .mae file to extract the atom names from the bond section.</td>
-</tr>
-</tbody>
-</table>
-<dl class="docutils">
-<dt>This section follows the pattern:</dt>
-<dd>bond[(0-9)*]{
-keywords
-:::
-values
-}</dd>
-</dl>
-<p>The first line specifies the section followed by the number of atoms enclosed with [].
-The following lines specify which value is stored in each column in the values section,
-there&#8217;s one keyword (column name) by line.
-The values section has as many lines as atoms in the molecule, the number specified next
-to &#8220;bonds&#8221;. Each line should have as many fields (separated by blank spaces) as keywords
-were present, and these fields should be in the same order as the keywords.
-the function ignores all the lines but the ones in the bond section.
-It reads the keywords in the bond section into a list and then looks in the list for the
-fields containing the atom_pdb_name and the pdb_residue_name, using the regular expressions:
-&#8216;.*pdb_*atom_*name&#8217; and &#8216;.*pdb_*res[<a href="#id1"><span class="problematic" id="id2">idue_</span></a>]*name.*&#8217;, respectively, it&#8217;s case insensitive, and
-they should be easy to modify
-J.M.I.F</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Input:</th><td class="field-body">the file name to parse.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Output:</th><td class="field-body">list with atom names</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.find_tors_in_log">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">find_tors_in_log</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.find_tors_in_log" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Description:</th><td class="field-body"><p class="first">Return the atom with torsions from a log file</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Input:</th><td class="field-body"><ul class="first simple">
-<li>filename: logfile</li>
-</ul>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Output:</th><td class="field-body"><ul class="first last simple">
-<li>torsions: list of atoms with torsions</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>e.g.&#8211;&gt; [[1,2],[4,6],[9.10]]</p>
-<p>(Atom 1 and 2, 4 and 6, 9 and 10 are respectevly from the same functional group)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.get_start_atom">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">get_start_atom</code><span class="sig-paren">(</span><em>tors</em>, <em>rank</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.get_start_atom" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Description:</th><td class="field-body">Get the number of atoms inside the core</td>
-</tr>
-</tbody>
-</table>
-<p>and the start atom of the core,
-which is the first atom of the cluster with no torsions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Input:</th><td class="field-body"><ul class="first simple">
-<li>tors: all atom with torsions</li>
-<li>rank: Rank: list of numbers for each</li>
-</ul>
-<p>grup of atoms or cluster in assign which will show which atoms are closer to the group.</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Output:</th><td class="field-body"><ul class="first simple">
-<li>start_atom: First atom of the cluster</li>
-</ul>
-<p>(group of atoms bonded together) that doesn not have torsions.</p>
-<ul class="last simple">
-<li>num_core: number of atoms inside the cluster.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>e.g. &#8211;&gt; tors: [[1, 3], [8, 9]]</p>
-<p>rank: [0, 0, 0, 2, 3]</p>
-<p>The core has 3 atoms and the strating atom
-is the number 2 because it does not have torsions.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.order_atoms">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">order_atoms</code><span class="sig-paren">(</span><em>bonds</em>, <em>tors</em>, <em>back_tors</em>, <em>assign</em>, <em>rank</em>, <em>group</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.order_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><div class="line-block">
-<div class="line"><br /></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Description:</th><td class="field-body">Order the core atomss by connectivity. (distance)</td>
-</tr>
-</tbody>
-</table>
-<p>Update rank &amp; group information with them.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Input:</th><td class="field-body"><ul class="first simple">
-<li>bonds: Connectivity</li>
-<li>tors: Atom with torsions</li>
-<li>back_tors: Backbone_torsions</li>
-<li>assign: list of numbers representing proximity.</li>
-<li>rank: list of numbers representing atom clustering depending on connecitvity</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Output:</th><td class="field-body"><ul class="first last simple">
-<li>ordering: Order of atoms starting from the core by connectivity.</li>
-<li>out_parents: atom parent of the one at the same position inside the ordering list</li>
-<li>out_rank: rank of the ordering atoms</li>
-<li>out_group: Group of the ordering atoms</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>E.g.</p>
-<p>order: [1,3,5,7,8,9] (starting from the core atom we ordem they by connectivity.)</p>
-<p>parent: [-1,1,3,1,3,5,7] (We keep track of the parents so we know the atom 3 
-is connected to the 1, the 5 to 1, the 7 to the 3rd.)</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.parse_mae_line">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">parse_mae_line</code><span class="sig-paren">(</span><em>line</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.parse_mae_line" title="Permalink to this definition">¶</a></dt>
-<dd><p>Notice that this function is the same than MaeFileBuilder.__tokenizeLine . Try to delete this one once it will be no longer needed</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.parse_nonbonded">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">parse_nonbonded</code><span class="sig-paren">(</span><em>rotamer_library</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.parse_nonbonded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find Non bonded parameters inside
-the rotamer&#8217;s library</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.remove_tors">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">remove_tors</code><span class="sig-paren">(</span><em>tors1</em>, <em>tors2</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.remove_tors" title="Permalink to this definition">¶</a></dt>
-<dd><p>return the tors2 from tors 1</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.replace_vdwr_from_library">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">replace_vdwr_from_library</code><span class="sig-paren">(</span><em>rotamer_library</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.replace_vdwr_from_library" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if the rotamer library 
-contains any vdw radius= 0
-and replace them by 0.5000</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="PlopRotTemp.rvdw_change">
-<code class="descclassname">PlopRotTemp.</code><code class="descname">rvdw_change</code><span class="sig-paren">(</span><em>rotamer_library</em>, <em>radius_vdw_info</em>, <em>start_index</em>, <em>end_index</em><span class="sig-paren">)</span><a class="headerlink" href="#PlopRotTemp.rvdw_change" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change all radius vanderwals 0 to 0.5
-from the rotamer&#8217;s library file</p>
-</dd></dl>
-
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ploprottemp">
+<h1>PlopRotTemp<a class="headerlink" href="#ploprottemp" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
+           </div>
+           <div class="articleComments">
+            
+           </div>
           </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Daniel Soler Viladrich.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
         </div>
       </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="code.html"
-                        title="previous chapter">Code</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="template_builder.html"
-                        title="next chapter">TemplateBuilder</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/ploprotemp.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="template_builder.html" title="TemplateBuilder"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="code.html" title="Code"
-             >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">PelePlop 1.0.1 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="code.html" >Code</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, Daniel Soler Viladrich.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
-    </div>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
 </html>
