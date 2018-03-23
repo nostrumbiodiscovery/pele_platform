@@ -25,7 +25,6 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
     env.create()
 
     if restart == "all":
-        
 
         # Building system and ligand
         env.logger.info("Checking {} system for Pele".format(residue))
@@ -55,16 +54,15 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
 
         for res, __, _ in missing_residues:
             if res != residue:
-				env.logger.info("Creating template for residue {}".format(res))
-				mr.create_template(system_fix, res, env.pele_dir, forcefield)
-				env.logger.info("Template {}z created".format(res))
+                env.logger.info("Creating template for residue {}".format(res))
+                mr.create_template(system_fix, res, env.pele_dir, forcefield)
+                env.logger.info("Template {}z created".format(res))
 
         # Fill in Templates
         ad.SimulationBuilder(env.pele_exit_temp, cs.EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, env.license)
         ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, env.license)
 
     if restart in ["all", "adaptive"]:
-        
         # Adaptive Exit
         env.logger.info("Running ExitPath Adaptive")
         adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
@@ -83,17 +81,17 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
             env.logger.info("MSM Clustering run successfully")
         else:
             pass
-        
+
         # Create Box
         env.logger.info("Creating box")
         bx.is_exit_finish(env.adap_ex_output)
         if not user_box:
-        	center_mass = cm.center_of_mass(env.ligand_ref)
-        	center, radius = bx.main(env.adap_ex_input, env.clusters_output, center_mass)
-        	bx.build_box(center, radius, env.box_temp)
+            center_mass = cm.center_of_mass(env.ligand_ref)
+            center, radius = bx.main(env.adap_ex_input, env.clusters_output, center_mass)
+            bx.build_box(center, radius, env.box_temp)
         else:
-			center, radius = bx.retrieve_box_info(user_box, env.clusters_output)
-			shutil.copy(user_box, os.path.join(env.pele_dir, "box.pdb"))
+            center, radius = bx.retrieve_box_info(user_box, env.clusters_output)
+            shutil.copy(user_box, os.path.join(env.pele_dir, "box.pdb"))
         env.logger.info("Box with center {} radius {} was created".format(center, radius))
 
         # Pele Exploration
@@ -109,7 +107,7 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
         # MSM Analysis
         env.logger.info("Running MSM analysis")
         msm.analyse_results(env.adap_l_output, residue, cpus, env.pele_dir)
-        env.logger.info("MSM analysis run successfully")        
+        env.logger.info("MSM analysis run successfully")
 
         env.logger.info("{} System run successfully".format(residue))
 
