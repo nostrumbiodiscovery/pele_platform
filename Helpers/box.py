@@ -140,12 +140,12 @@ def WireframeSphere(centre, radius, n_meridians=20, n_circles_latitude=None):
 
 def retrieve_box_info(box, clusters):
     with open(box, 'r') as f:
-		lines = hp.preproces_lines(f.readlines()) 
+        lines = hp.preproces_lines(f.readlines()) 
         try:
 		    center = [float(coord) for coord in lines[1][5:9]]
         except ValueError:
             raise ValueError("{} not valid. Check the file is not a template.")
-		radius = float(lines[2][2])
+        radius = float(lines[2][2])
     print(center, radius)
     points = get_points(clusters)
     remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
