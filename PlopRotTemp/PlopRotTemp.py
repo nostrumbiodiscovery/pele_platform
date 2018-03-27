@@ -116,8 +116,6 @@ import subprocess
 import schrodinger
 from schrodinger.structutils.analyze import is_bond_rotatable
 from schrodinger import structure
-# from schrodinger import structureutil
-#hetgrp_ffgen = os.environ['SCHRODINGER'] + "/utilities/hetgrp_ffgen"
 
 
 
@@ -1843,7 +1841,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_g
     line = fin.readline()
     if (not re.search('^PHI', line)):
         raise Exception("ERROR IN TEMPLATE FORMAT\n" + line)
-    fout.write(line)
+    fout.write(line.strip("\n"))
     while 1:
         line = fin.readline()
         if (not (line)): break
@@ -1851,8 +1849,10 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_g
         if (re.search('IPHI', line)):
           phis = negative_torsions_for_pele(phis, tors, bonds)
           iphi_found = True
+          if phis:
+             phis.insert(0, "")
           fout.write('\n'.join(phis))
-          fout.write('\n' + line)
+          fout.write('\n'+line)
         else:
             a = re.search('^\s*([\-\d]+)\s+([\-\d]+)\s+([\-\d]+)\s+([\-\d]+)(.*)', line)
             line = str(conv_at(ordering, a.group(1))).rjust(6) + str(conv_at(ordering, a.group(2))).rjust(6) + str(
