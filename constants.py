@@ -16,11 +16,11 @@ if "bsc.mn" in machine:
 
 elif "mn.bsc" in machine:
     SCHRODINGER = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC_NORD"
-    MMSHARE = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC_NORD/mmshare-v3.4/bin/Linux-x86_64"
     PELE = "/gpfs/projects/bsc72/PELE++/nord/rev12489"
-    ADAPTIVE = "/gpfs/projects/bsc72/adaptiveSampling/bin_nord/v1.4.1"
+    ADAPTIVE = "/gpfs/projects/bsc72/adaptiveSampling/bin_nord/v1.4.2_schr"
     MPIRUN = "/apps/OPENMPI/1.8.1-mellanox/bin"
     LICENSE = "/gpfs/projects/bsc72/PELE++/license"
+    MMSHARE = None
 
 elif "bsccv" in machine:
     SCHRODINGER = "/data2/bsc72/SCHRODINGER_ACADEMIC"
