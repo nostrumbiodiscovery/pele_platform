@@ -1,5 +1,7 @@
 import os
+import glob
 from AdaptivePELE.freeEnergies import extractCoords, prepareMSMFolders, estimateDGAdaptive
+from AdaptivePELE.freeEnergies import getRepresentativeStructures as getRepr
 import MSM_PELE.Helpers.helpers as hp
 import shutil
 
@@ -7,6 +9,10 @@ import shutil
 LAGTIME = 100
 NCLUSTER = 200
 CLUSTERINSTRIDE = 1
+# select the first run, as it uses all trajectories (no
+# bootstrap)
+REPRESENTATIVES_FILE = "representative_structures/representative_structures_0.dat"
+REPRESENTATIVES_STRUCTURES = "representative_structures_pdb_%d"
 
 
 def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
@@ -17,6 +23,10 @@ def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
         estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER, CLUSTERINSTRIDE)
         results_file = summerize(output_pele)
         shutil.move(results_file, os.path.join(pele_dir, "results.txt"))
+        # In case of more than one simulation, i.e. MSM_0, MSM_1, etc
+        MSM_folders  = glob.glob(os.path.join(output_pele, "MSM_*"))
+        for i, folder in enumerate(MSM_folders):
+            getRepr.main(os.path.join(output_pele, folder, REPRESENTATIVES_FILE), ".", output=REPRESENTATIVES_STRUCTURES % i)
 
 def summerize(pele_path):
     results_file = os.path.join(pele_path, "results.txt")
