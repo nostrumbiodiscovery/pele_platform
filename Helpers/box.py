@@ -18,7 +18,7 @@ __email__ = "daniel.soler@nostrumbiodiscovery.com"
 KEYWORDS = ["RADIUS", "CENTER_X", "CENTER_Y", "CENTER_Z", "V1", "V2", "V3", "V4", "V5", "V6", "V7", "V8"]
 COORD = "{:>11.3f}{:>8.3f}{:>8.3f}"
 CENTER = "{:.3f}"
-
+SOLVENT_DIST = 6
 
 def parseargs():
     parser = argparse.ArgumentParser(description='Process some integers.')
@@ -34,12 +34,10 @@ def main(system, clusters, bs):
 
     points = get_points(clusters)
     centroid = find_centroid(points)
-    center = find_non_contact_points(system, centroid, bs) 
-
-    radius = (distance.euclidean(bs, center) + 2) 
-
-    remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
-
+    limit = find_non_contact_points(system, centroid, bs) 
+    radius = ((distance.euclidean(bs, limit) + 2))/2
+    center = (np.array(limit, dtype=float) + np.array(bs, dtype=float))/2
+    #remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
     return center, radius
 
 def remove_clusters_out_of_box(cluster_directory, center, radius, points):
@@ -73,6 +71,7 @@ def find_non_contact_points(system, centroid, bs):
         point = np.array(point, dtype=float) + directior_unitary
         print(point)
         print(number_of_contacts)
+    point = (np.array(point, dtype=float) + directior_unitary * SOLVENT_DIST)
     return point.tolist()
 
 def get_sasa_points(path, max_sasa_structs):
@@ -174,7 +173,7 @@ def build_box(center, radius, file):
 
 
 if __name__ == '__main__':
-       	center, radius = main("/scratch/jobs/dsoler/test2/AS4_Pele_24/PR_1A28_protein_complex_processed_processed.pdb" ,"/scratch/jobs/dsoler/test2/AS4_Pele_24/output_clustering/clusters_40_KMeans_allSnapshots.pdb" , [-24.265,  61.355 ,  0.087])
+       	center, radius = main("/scratch/jobs/dsoler/test2/AS4_Pele_24/PR_1A28_protein_complex_processed_processed.pdb" ,"/scratch/jobs/dsoler/test2/AS4_Pele_24/output_clustering/clusters_40_KMeans_allSnapshots.pdb" , [-22.025,  59.558,  -0.648])
         print(center, radius)
         box = build_box(center, radius, "/scratch/jobs/dsoler/test2/AS4_Pele_24/box.pdb")
 
