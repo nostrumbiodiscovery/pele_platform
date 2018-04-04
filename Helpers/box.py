@@ -36,7 +36,7 @@ def main(system, clusters, bs):
     centroid = find_centroid(points)
     center = find_non_contact_points(system, centroid, bs) 
 
-    radius = (distance.euclidean(bs, center) + 10) 
+    radius = (distance.euclidean(bs, center) + 2) 
 
     remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
 
@@ -69,7 +69,7 @@ def find_non_contact_points(system, centroid, bs):
     point=np.array(bs, dtype=float)
     number_of_contacts = False
     while number_of_contacts > 0 or number_of_contacts is False:
-        number_of_contacts = contacts. select(5, point)
+        number_of_contacts = contacts.select(5, point)
         point = np.array(point, dtype=float) + directior_unitary
         print(point)
         print(number_of_contacts)
@@ -174,6 +174,7 @@ def build_box(center, radius, file):
 
 
 if __name__ == '__main__':
-       	center, radius = main("/scratch/jobs/dsoler/test/STR_Pele/output_adaptive_exit" ,"/scratch/jobs/dsoler/test/STR_Pele/output_clustering/clusters_40_KMeans_allSnapshots.pdb" , [-20.332, 59.897, 2.8323])
-        box = build_box(center, radius, "/scratch/jobs/dsoler/test/STR_Pele/box.pdb")
+       	center, radius = main("/scratch/jobs/dsoler/test2/AS4_Pele_24/PR_1A28_protein_complex_processed_processed.pdb" ,"/scratch/jobs/dsoler/test2/AS4_Pele_24/output_clustering/clusters_40_KMeans_allSnapshots.pdb" , [-24.265,  61.355 ,  0.087])
+        print(center, radius)
+        box = build_box(center, radius, "/scratch/jobs/dsoler/test2/AS4_Pele_24/box.pdb")
 
