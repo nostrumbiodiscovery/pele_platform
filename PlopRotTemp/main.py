@@ -63,7 +63,7 @@ import MSM_PELE.PlopRotTemp.PlopRotTemp as pl
 from MSM_PELE.PlopRotTemp.template.templateBuilder import TemplateBuilder
 
 
-def main(mae_file, residue, pele_dir, forcefield, max_tors, nrot, user_core_atom, mae_charges = False, clean = False):
+def main(mae_file, residue, pele_dir, forcefield, max_tors, nrot, user_core_atom, mae_charges = False, clean = False, gridres = "10.0"):
 
     #Defaults
     nrot = nrot
@@ -73,7 +73,6 @@ def main(mae_file, residue, pele_dir, forcefield, max_tors, nrot, user_core_atom
     debug = 0  # 1 means don't run exteral commands (assumes output is already there)
     conf_file = 'none';
     output_template_file = ""
-    gridres = "10.0"
     nsamp = 10000
     Ecut = 100
     use_rings = 0

@@ -2743,7 +2743,7 @@ def convert_gridres(gridres):
     elif (eval(gridres) == 180.0):
         lib_name = "FRE180"
     else:
-        raise Exception('Incorrect grid resolution (5,10,15,20,30,40,45,50,60,90,180)')
+        raise Exception('Incorrect grid resolution (5,10,15,20,30,40,45,60,90,180)')
     return lib_name
 
 
