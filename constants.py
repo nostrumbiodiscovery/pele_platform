@@ -19,11 +19,11 @@ if "bsc.mn" in machine:
 
 elif "mn.bsc" in machine:
     SCHRODINGER = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC_NORD"
-    MMSHARE = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC_NORD/mmshare-v3.4/bin/Linux-x86_64"
     PELE = "/gpfs/projects/bsc72/PELE++/nord/rev12489"
-    ADAPTIVE = "/gpfs/projects/bsc72/adaptiveSampling/bin_nord/v1.4.2"
+    ADAPTIVE = "/gpfs/projects/bsc72/adaptiveSampling/bin_nord/v1.4.2_schr"
     MPIRUN = "/apps/OPENMPI/1.8.1-mellanox/bin"
     LICENSE = "/gpfs/projects/bsc72/PELE++/license"
+    MMSHARE = None
     # Provisional workaround until best_struct.py is fixed
     ACCEPTED_STEPS_NAME = "AcceptedSteps"
     CRITERIA = "SASA"
@@ -70,7 +70,7 @@ RESTART = True
 CLUSTERS = 40
 PLATFORM_RESTART = "all"
 EQ_STEPS = 50
-
+GRIDRES = '10.0'
 
 # TEMPLATE KEYWORDS
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "SEED"]
