@@ -38,7 +38,7 @@ def main(system, clusters, bs):
     radius = ((distance.euclidean(bs, limit) + 2))/2
     center = (np.array(limit, dtype=float) + np.array(bs, dtype=float))/2
     #remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
-    return center, radius
+    return center.tolist(), radius
 
 def remove_clusters_out_of_box(cluster_directory, center, radius, points):
     cx, cy, cz = center
