@@ -7,7 +7,7 @@ import MSM_PELE.constants as cs
 
 
 
-class Pele_env_Builder(object):
+class EnviroBuilder(object):
     """
         Base class wher the needed pele environment
         is build by creating folders and files
@@ -20,15 +20,26 @@ class Pele_env_Builder(object):
         self.forcefield = forcefield
         self.residue = residue
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
-        self.cpus = cpus if not test else self.cpus=4
+        self.cpus = cpus if not test else 4
         self.restart = restart
         self.native = native
         self.chain = chain
         self.mae_lig = mae_lig
-        self.clusters = clusters if not test else self.clusters=3
+        self.clusters = clusters if not test else 3
         self.test = test
 
         self.build_constant_paths()
+
+    @classmethod
+    def build_env(cls, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test, precision):
+        if test:
+            env = cls(cs.FOLDERS, cs.FILES_TEST, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test)
+        elif precision:
+            env = cls(cs.FOLDERS, cs.FILES_XP, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test)
+        else:
+            env = cls(cs.FOLDERS, cs.FILES_SP, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters,  test)
+        env.create()
+        return env
 
     def build_constant_paths(self):
 
