@@ -23,27 +23,16 @@ def run(system, residue=cs.LIG_RES, chain=cs.LIG_CHAIN, mae_lig=None, user_box=N
     gridres='10.0', precision=False, test=False):
 
     # Build folders and logging
-    if test:
-        env = pele.Pele_env_Builder(cs.FOLDERS, cs.FILES_TEST, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test)
-    elif precision:
-        env = pele.Pele_env_Builder(cs.FOLDERS, cs.FILES_XP, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test)
-    else:
-        env = pele.Pele_env_Builder(cs.FOLDERS, cs.FILES_SP, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters,  test)
-    env.create()
+    env = pele.EnviroBuilder.build_env(forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters,  test, precision)
 
     if restart == "all":
 
-        # Building system and ligand
+        # Build System
         env.logger.info("Checking {} system for Pele".format(residue))
-        if mae_lig:
-            receptor = system
-            lig = mae_lig
-            lig_ref = sp.convert_pdb(mae_lig, env.pele_dir)
-            system = sp.build_complex(receptor, lig_ref, env.pele_dir)
-        else:
-            receptor, lig_ref = sp.retrieve_receptor(system, residue, env.pele_dir)
-            lig, residue = sp.convert_mae(lig_ref)
-        system_fix, missing_residues, gaps, metals = ppp.main(system, env.pele_dir, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
+        syst = sp.SystemBuilder.build_system(system, mae_lig, residue, env.pele_dir)
+
+        # Prepare System
+        system_fix, missing_residues, gaps, metals = ppp.main(syst.system, env.pele_dir, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
         protein_constraints = ct.retrieve_constraints(system_fix, gaps, metals)
         env.logger.info(cs.SYSTEM.format(system_fix, missing_residues, gaps, metals))
 
@@ -52,11 +41,11 @@ def run(system, residue=cs.LIG_RES, chain=cs.LIG_CHAIN, mae_lig=None, user_box=N
         if mae_lig:
             mae_charges = True
             template, rotamers_file = plop.main(mae_lig, residue, env.pele_dir, forcefield, mtor, n, core, mae_charges, clean, gridres)
-            hp.silentremove([system])
+            hp.silentremove([syst.system])
         else:
             mae_charges = False
-            template, rotamers_file = plop.main(lig, residue, env.pele_dir, forcefield, mtor, n, core, mae_charges, clean, gridres)
-            hp.silentremove([lig])
+            template, rotamers_file = plop.main(syst.lig, residue, env.pele_dir, forcefield, mtor, n, core, mae_charges, clean, gridres)
+            hp.silentremove([syst.lig])
         env.logger.info("Template {} created".format(template))
 
         for res, __, _ in missing_residues:
