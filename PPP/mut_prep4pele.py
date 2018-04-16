@@ -27,7 +27,7 @@ addNonstdAminoacid('LYN', 'neutral', 'acyclic', 'large', 'polar', 'buried')
 def main(input_pdb, pele_dir, output_pdb=["",], no_gaps_ter=False, charge_terminals=False, make_unique=False,
          remove_terminal_missing=False, mutant_multiple=False, mutation=""):
     if not output_pdb[0]:
-        output = os.path.splitext(input_pdb)[0]
+        output = os.path.splitext(os.path.basename(input_pdb))[0]
         output_pdb[0] = os.path.join(pele_dir,"{}_processed.pdb".format(output))
         print(output_pdb[0])
     try:
