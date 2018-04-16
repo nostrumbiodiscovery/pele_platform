@@ -39,7 +39,7 @@ else:
 
 
 ############################
-# OTHER CONSTANTS
+# PRIVATE CONSTANTS
 #############################
 
 # DEFAULT VALUES
@@ -100,9 +100,19 @@ FOLDERS = ["",
            "output_clustering"
           ]
 
-FILES = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele.conf"),
+FILES_SP = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_SP.conf"),
                  os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),
                  os.path.join(DIR, "Templates/pele_exit.conf")]
+
+FILES_XP = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_XP.conf"),
+                 os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),                                                                                             
+                 os.path.join(DIR, "Templates/pele_exit.conf")]
+
+FILES_TEST = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_SP.conf"),
+                 os.path.join(DIR, "Templates/adaptive_exit_test.conf"), os.path.join(DIR, "Templates/adaptive_long_test.conf"),
+                 os.path.join(DIR, "Templates/pele_exit.conf")]
+
+FILES_NAME = ["box.pdb", "pele.conf", "adaptive_exit.conf", "adaptive_long.conf", "pele_exit.conf"] 
 
 # ERRORS
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"

@@ -18,10 +18,17 @@ import MSM_PELE.Helpers.msm_analysis as msm
 import MSM_PELE.Helpers.missing_residues as mr
 
 
-def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, clusters, forcefield, confile, native, cpus, core, mtor, n, clean, restart, gridres):
+def run(system, residue=cs.LIG_RES, chain=cs.LIG_CHAIN, mae_lig=None, user_box=None, charge_ter=False, gaps_ter=False, clusters=cs.CLUSTERS,
+    forcefield=cs.FORCEFIELD, confile=cs.PELE_CONFILE, native="", cpus=cs.CPUS, core=-1, mtor=4, n=1000, clean=False, restart="all",
+    gridres='10.0', precision=False, test=False):
 
     # Build folders and logging
-    env = pele.Pele_env_Builder(cs.FOLDERS, cs.FILES, forcefield, system, residue, cpus, restart, native, chain, mae_lig)
+    if test:
+        env = pele.Pele_env_Builder(cs.FOLDERS, cs.FILES_TEST, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test)
+    elif precision:
+        env = pele.Pele_env_Builder(cs.FOLDERS, cs.FILES_XP, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test)
+    else:
+        env = pele.Pele_env_Builder(cs.FOLDERS, cs.FILES_SP, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters,  test)
     env.create()
 
     if restart == "all":
@@ -84,7 +91,8 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
 
         # Create Box
         env.logger.info("Creating box")
-        bx.is_exit_finish(env.adap_ex_output)
+        if not test:
+            bx.is_exit_finish(env.adap_ex_output)
         if not user_box:
             center_mass = cm.center_of_mass(env.ligand_ref)
             center, radius = bx.main(env.adap_ex_input, env.clusters_output, center_mass)
@@ -102,7 +110,7 @@ def run(system, residue, chain, mae_lig, user_box, charge_ter, gaps_ter, cluster
         adaptive_long.run()
         env.logger.info("Pele run successfully")
 
-    if restart in ["all", "pele", "msm"]:
+    if restart in ["all", "pele", "msm"] and not test:
 
         # MSM Analysis
         env.logger.info("Running MSM analysis")
@@ -133,9 +141,11 @@ if __name__ == "__main__":
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
     parser.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=cs.PLATFORM_RESTART)
     parser.add_argument("--gridres", type=str, help="Rotamers angle resolution", default=cs.GRIDRES)
+    parser.add_argument("--precision", action='store_true', help="Use a more agressive control file to achieve better convergence", default=cs.GRIDRES)
+    parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test", default=cs.GRIDRES)
     args = parser.parse_args()
-    print(args.restart)
+
     if(args.clust > args.cpus and args.restart != "msm"):
         raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))
     else:
-        run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart, args.gridres)
+        run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart, args.gridres, args.precision, args.test)

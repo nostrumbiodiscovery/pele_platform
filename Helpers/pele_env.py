@@ -6,11 +6,6 @@ import logging
 import MSM_PELE.constants as cs
 
 
-def set_pele_env(folders, files, forcefield, pele_dir):
-    pele_env = Pele_env_Builder(folders, files, forcefield, pele_dir)
-    pele_env.folder_levels()
-    pele_env.file_dist()
-
 
 class Pele_env_Builder(object):
     """
@@ -18,18 +13,20 @@ class Pele_env_Builder(object):
         is build by creating folders and files
     """
 
-    def __init__(self, folders, files, forcefield, system, residue, cpus, restart, native, chain, mae_lig):
+    def __init__(self, folders, files, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test):
         self.folders = folders
         self.files = files
         self.system = system
         self.forcefield = forcefield
         self.residue = residue
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
-        self.cpus = cpus
+        self.cpus = cpus if not test else self.cpus=4
         self.restart = restart
         self.native = native
         self.chain = chain
         self.mae_lig = mae_lig
+        self.clusters = clusters if not test else self.clusters=3
+        self.test = test
 
         self.build_constant_paths()
 
@@ -39,7 +36,10 @@ class Pele_env_Builder(object):
         self.rotamers_file = None
         self.random_num = random.randrange(1, 70000)
         self.license = '''"{}"'''.format(cs.LICENSE)
-        self.equil_steps = int(cs.EQ_STEPS/self.cpus) if self.cpus < cs.EQ_STEPS else 1
+        if self.test:
+            self.equil_steps = 1
+        else:
+            self.equil_steps = int(cs.EQ_STEPS/self.cpus) if self.cpus < cs.EQ_STEPS else 1
         pele_dir = os.path.abspath("{}_Pele".format(self.residue))
         self.pele_dir = is_repited(pele_dir) if self.restart == "all" else is_last(pele_dir)
         self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else self.native
@@ -57,7 +57,7 @@ class Pele_env_Builder(object):
         self.pele_exit_temp = os.path.join(self.pele_dir, "pele_exit.conf")
         self.pele_temp = os.path.join(self.pele_dir, "pele.conf")
         self.box_temp = os.path.join(self.pele_dir, "box.pdb")
-        self.clusters_output = os.path.join(self.cluster_output, "clusters_40_KMeans_allSnapshots.pdb")
+        self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
         self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
        
 
@@ -83,8 +83,8 @@ class Pele_env_Builder(object):
         """
 
         # Actions
-        for file in self.files:
-            self.copy(file, self.pele_dir)
+        for file, destination_name in zip(self.files, cs.FILES_NAME):
+            self.copy(file, os.path.join(self.pele_dir, destination_name))
 
 
     def create_dir(self, base_dir, extension=None):
@@ -113,7 +113,7 @@ class Pele_env_Builder(object):
         if user:
             shutil.copy(user, os.path.join(self.pele_dir, standard))
         else:
-            shutil.copy(standard, self.pele_dir)
+            shutil.copy(standard, destination)
         return os.path.join(self.pele_dir, standard)
 
     def create_logger(self):
