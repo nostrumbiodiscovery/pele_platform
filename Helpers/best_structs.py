@@ -2,6 +2,7 @@ import os
 import argparse
 import pandas as pd
 import glob
+from MSM_PELE import constants
 
 """
 
@@ -27,7 +28,7 @@ N_STRUCTS = 10
 FREQ = 1
 REPORT = "report"
 TRAJ = "trajectory"
-ACCEPTED_STEPS = 'numberOfAcceptedPeleSteps'
+ACCEPTED_STEPS = constants.ACCEPTED_STEPS_NAME
 PATH = 'path'
 
 
@@ -44,7 +45,7 @@ def parse_args():
     return args.path, args.crit, args.nst, args.sort, args.ofreq
 
 
-def main(path, criteria="sasaLig", n_structs=500, sort_order="max", out_freq=FREQ):
+def main(path, criteria=constants.CRITERIA, n_structs=500, sort_order="max", out_freq=FREQ):
     """
 
       Description: Rank the traj found in the report files under path
