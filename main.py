@@ -20,8 +20,8 @@ import MSM_PELE.Helpers.missing_residues as mr
 
 def run(system, residue=cs.LIG_RES, chain=cs.LIG_CHAIN, mae_lig=None, user_box=None, charge_ter=False, gaps_ter=False, clusters=cs.CLUSTERS,
     forcefield=cs.FORCEFIELD, confile=cs.PELE_CONFILE, native="", cpus=cs.CPUS, core=-1, mtor=4, n=1000, clean=False, restart="all",
-    gridres='10.0', precision=False, test=False):
-
+    gridres='10.0', precision=False, test=False, user_center=None, user_radius=None):
+    print(user_center)
     # Build folders and logging
     env = pele.EnviroBuilder.build_env(forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters,  test, precision)
 
@@ -82,13 +82,18 @@ def run(system, residue=cs.LIG_RES, chain=cs.LIG_CHAIN, mae_lig=None, user_box=N
         env.logger.info("Creating box")
         if not test:
             bx.is_exit_finish(env.adap_ex_output)
-        if not user_box:
+        if user_box:
+            center, radius = bx.retrieve_box_info(user_box, env.clusters_output)
+            shutil.copy(user_box, os.path.join(env.pele_dir, "box.pdb")) 
+        else:
             center_mass = cm.center_of_mass(env.ligand_ref)
             center, radius = bx.main(env.adap_ex_input, env.clusters_output, center_mass)
-            bx.build_box(center, radius, env.box_temp)
-        else:
-            center, radius = bx.retrieve_box_info(user_box, env.clusters_output)
-            shutil.copy(user_box, os.path.join(env.pele_dir, "box.pdb"))
+            if user_center and  user_radius:
+                center = user_center
+                radius = user_radius
+                bx.build_box(center, radius, env.box_temp)
+            else:
+                bx.build_box(center, radius, env.box_temp)
         env.logger.info("Box with center {} radius {} was created".format(center, radius))
 
         # Pele Exploration
@@ -132,9 +137,11 @@ if __name__ == "__main__":
     parser.add_argument("--gridres", type=str, help="Rotamers angle resolution", default=cs.GRIDRES)
     parser.add_argument("--precision", action='store_true', help="Use a more agressive control file to achieve better convergence", default=cs.GRIDRES)
     parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test", default=cs.GRIDRES)
+    parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
+    parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
     args = parser.parse_args()
 
     if(args.clust > args.cpus and args.restart != "msm"):
         raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))
     else:
-        run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart, args.gridres, args.precision, args.test)
+        run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart, args.gridres, args.precision, args.test, args.user_center, args.user_radius)
