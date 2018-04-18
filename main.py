@@ -10,7 +10,6 @@ import MSM_PELE.Helpers.pele_env as pele
 import MSM_PELE.Helpers.simulation as ad
 import MSM_PELE.Helpers.clusterAdaptiveRun as cl
 import MSM_PELE.Helpers.center_of_mass as cm
-import MSM_PELE.Helpers.constraints as ct
 import MSM_PELE.Helpers.system_prep as sp
 import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
@@ -18,48 +17,38 @@ import MSM_PELE.Helpers.msm_analysis as msm
 import MSM_PELE.Helpers.missing_residues as mr
 
 
-def run(system, residue=cs.LIG_RES, chain=cs.LIG_CHAIN, mae_lig=None, user_box=None, charge_ter=False, gaps_ter=False, clusters=cs.CLUSTERS,
-    forcefield=cs.FORCEFIELD, confile=cs.PELE_CONFILE, native="", cpus=cs.CPUS, core=-1, mtor=4, n=1000, clean=False, restart="all",
-    gridres='10.0', precision=False, test=False, user_center=None, user_radius=None):
-    print(user_center)
+def run(args):
     # Build folders and logging
-    env = pele.EnviroBuilder.build_env(forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters,  test, precision)
+    env = pele.EnviroBuilder.build_env(args)
 
-    if restart == "all":
+    if args.restart == "all":
 
         # Build System
-        env.logger.info("Checking {} system for Pele".format(residue))
-        syst = sp.SystemBuilder.build_system(system, mae_lig, residue, env.pele_dir)
+        env.logger.info("Checking {} system for Pele".format(args.residue))
+        syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
 
         # Prepare System
-        system_fix, missing_residues, gaps, metals = ppp.main(syst.system, env.pele_dir, charge_terminals=charge_ter, no_gaps_ter=gaps_ter)
-        protein_constraints = ct.retrieve_constraints(system_fix, gaps, metals)
+        system_fix, missing_residues, gaps, metals, protein_constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)
         env.logger.info(cs.SYSTEM.format(system_fix, missing_residues, gaps, metals))
 
-        # Parametrize Ligands
-        env.logger.info("Creating template for residue {}".format(residue))
-        if mae_lig:
-            mae_charges = True
-            template, rotamers_file = plop.main(mae_lig, residue, env.pele_dir, forcefield, mtor, n, core, mae_charges, clean, gridres)
-            hp.silentremove([syst.system])
-        else:
-            mae_charges = False
-            template, rotamers_file = plop.main(syst.lig, residue, env.pele_dir, forcefield, mtor, n, core, mae_charges, clean, gridres)
-            hp.silentremove([syst.lig])
+        # Parametrize Ligand
+        env.logger.info("Creating template for residue {}".format(args.residue))
+        template, rotamers_file = plop.parametrize_miss_residues(args, env, syst)
         env.logger.info("Template {} created".format(template))
 
+        # Parametrize missing residues
         for res, __, _ in missing_residues:
-            if res != residue:
+            if res != args.residue:
                 env.logger.info("Creating template for residue {}".format(res))
-                mr.create_template(system_fix, res, env.pele_dir, forcefield)
+                mr.create_template(system_fix, res, env.pele_dir, args.forcefield)
                 env.logger.info("Template {}z created".format(res))
 
-        # Fill in Templates
-        ad.SimulationBuilder(env.pele_exit_temp, cs.EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, env.license)
-        ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, native, forcefield, chain, "\n".join(protein_constraints), cpus, env.license)
+        # Fill in Simulation Templates
+        ad.SimulationBuilder(env.pele_exit_temp, cs.EX_PELE_KEYWORDS, args.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
+        ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, args.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
 
-    if restart in ["all", "adaptive"]:
-        # Adaptive Exit
+    if args.restart in ["all", "adaptive"]:
+        # Run Adaptive Exit
         env.logger.info("Running ExitPath Adaptive")
         adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
             env.adap_ex_input, env.cpus, env.pele_exit_temp, env.residue, env.equil_steps, env.random_num)
@@ -67,57 +56,44 @@ def run(system, residue=cs.LIG_RES, chain=cs.LIG_CHAIN, mae_lig=None, user_box=N
         env.logger.info("ExitPath Adaptive run successfully")
 
 
-    if restart in ["all", "pele"]:
+    if args.restart in ["all", "adaptive", "pele"]:
 
         # KMeans Clustering
         if not os.path.isfile(env.clusters_output):
             env.logger.info("Running MSM Clustering")
             with hp.cd(env.adap_ex_output):
-                cl.main(num_clusters=clusters, output_folder=env.cluster_output, ligand_resname=residue, atom_ids="")
+                cl.main(env.clusters, env.cluster_output, args.residue, "")
             env.logger.info("MSM Clustering run successfully")
         else:
             pass
 
         # Create Box
         env.logger.info("Creating box")
-        if not test:
-            bx.is_exit_finish(env.adap_ex_output)
-        if user_box:
-            center, radius = bx.retrieve_box_info(user_box, env.clusters_output)
-            shutil.copy(user_box, os.path.join(env.pele_dir, "box.pdb")) 
-        else:
-            center_mass = cm.center_of_mass(env.ligand_ref)
-            center, radius = bx.main(env.adap_ex_input, env.clusters_output, center_mass)
-            if user_center and  user_radius:
-                center = user_center
-                radius = user_radius
-                bx.build_box(center, radius, env.box_temp)
-            else:
-                bx.build_box(center, radius, env.box_temp)
+        center, radius = bx.create_box(args, env)
         env.logger.info("Box with center {} radius {} was created".format(center, radius))
 
         # Pele Exploration
         env.logger.info("Running standard Pele")
         ad.SimulationBuilder(env.pele_temp, cs.PELE_KEYWORDS, center, radius)
         adaptive_long = ad.SimulationBuilder(env.ad_l_temp, cs.ADAPTIVE_KEYWORDS,
-            cs.RESTART, env.adap_l_output, env.adap_l_input, cpus, env.pele_temp, residue, env.random_num)
+            cs.RESTART, env.adap_l_output, env.adap_l_input, args.cpus, env.pele_temp, args.residue, env.random_num)
         adaptive_long.run()
         env.logger.info("Pele run successfully")
 
-    if restart in ["all", "pele", "msm"] and not test:
+    if args.restart in ["all", "adaptive", "pele", "msm"] and not args.test:
 
         # MSM Analysis
         env.logger.info("Running MSM analysis")
-        msm.analyse_results(env.adap_l_output, residue, cpus, env.pele_dir)
+        msm.analyse_results(env.adap_l_output, args.residue, args.cpus, env.pele_dir)
         env.logger.info("MSM analysis run successfully")
 
-        env.logger.info("{} System run successfully".format(residue))
+        env.logger.info("{} System run successfully".format(args.residue))
 
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description='Run Adaptive Pele Platform')
-    parser.add_argument('input', type=str, help='complex to run pele on')
+    parser.add_argument('system', type=str, help='complex to run pele on')
     parser.add_argument('residue', type=str, help='residue of the ligand to extract', default=cs.LIG_RES)
     parser.add_argument('chain', type=str, help='chain of the ligand to extract', default=cs.LIG_CHAIN)
     parser.add_argument("--mae_lig", type=str, help="ligand .mae file to include QM charges coming from jaguar")
@@ -125,7 +101,7 @@ if __name__ == "__main__":
     parser.add_argument("--charge_ter", help="Charge protein terminals", action='store_true')
     parser.add_argument("--gaps_ter", help="Include TER when a possible gap is found", action='store_true')
     parser.add_argument("--clust", type=int, help="Numbers of clusters to start PELE's exploration with", default=cs.CLUSTERS)
-    parser.add_argument('--forc', type=str, help='chain of the ligand to extract', default=cs.FORCEFIELD)
+    parser.add_argument('--forcefield', '-f', type=str, help='chain of the ligand to extract', default=cs.FORCEFIELD)
     parser.add_argument('--confile', type=str, help='your own pele configuration file', default=cs.PELE_CONFILE)
     parser.add_argument('--native', type=str, help='native file to compare RMSD to', default="")
     parser.add_argument('--cpus', type=int, help='number of processors', default=cs.CPUS)
@@ -139,9 +115,10 @@ if __name__ == "__main__":
     parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test", default=cs.GRIDRES)
     parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
+    
     args = parser.parse_args()
 
     if(args.clust > args.cpus and args.restart != "msm"):
         raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))
     else:
-        run(args.input, args.residue, args.chain, args.mae_lig, args.box, args.charge_ter, args.gaps_ter, args.clust, args.forc, args.confile, args.native, args.cpus, args.core, args.mtor, args.n, args.clean, args.restart, args.gridres, args.precision, args.test, args.user_center, args.user_radius)
+        run(args)
