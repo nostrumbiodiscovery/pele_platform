@@ -225,8 +225,11 @@ def FixStructure(initial_structure, residues2fix, gaps, charge_terminals, debug=
                                                                         residue.getResnum(), zmatrix)
                                     old_res = new_residue
                                 elif name[0] == "H" and zmatrix.DeltaFi[zmatrix.AtomNames.index(name)] != 0:
-                                    new_residue = PlaceHydrogen(old_res, name, zmatrix)
-                                    old_res = new_residue
+                                    try:
+                                        new_residue = PlaceHydrogen(old_res, name, zmatrix)
+                                        old_res = new_residue
+                                    except AttributeError:
+                                        pass
                                 else:
                                     new_residue = AddAtoms(old_res, [name], ["FE"], residue_info, zmatrix, False)
                                     old_res = new_residue
