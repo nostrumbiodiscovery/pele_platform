@@ -61,6 +61,7 @@ import re
 import shutil
 import MSM_PELE.PlopRotTemp.PlopRotTemp as pl
 from MSM_PELE.PlopRotTemp.template.templateBuilder import TemplateBuilder
+import MSM_PELE.Helpers.helpers as hp
 
 
 def main(mae_file, residue, pele_dir, forcefield, max_tors, nrot, user_core_atom, mae_charges = False, clean = False, gridres = "10.0"):
@@ -305,6 +306,18 @@ def main(mae_file, residue, pele_dir, forcefield, max_tors, nrot, user_core_atom
 
     return output_template_file, rotamers_file
 
+
+def parametrize_miss_residues(args, env, syst):
+
+    if args.mae_lig:
+        mae_charges = True
+        template, rotamers_file = main(args.mae_lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)
+        hp.silentremove([syst.system]) 
+    else:
+          mae_charges = False
+          template, rotamers_file = plop.main(syst.lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)     
+          hp.silentremove([syst.lig])
+    return template, rotamers_file     
 
 
 def parse_args():
