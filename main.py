@@ -117,7 +117,6 @@ if __name__ == "__main__":
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
     
     args = parser.parse_args()
-    print(args.test)
     if(args.clust > args.cpus and args.restart != "msm"):
         raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))
     else:
