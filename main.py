@@ -112,12 +112,12 @@ if __name__ == "__main__":
     parser.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=cs.PLATFORM_RESTART)
     parser.add_argument("--gridres", type=str, help="Rotamers angle resolution", default=cs.GRIDRES)
     parser.add_argument("--precision", action='store_true', help="Use a more agressive control file to achieve better convergence", default=cs.GRIDRES)
-    parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test", default=cs.GRIDRES)
+    parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test")
     parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
     
     args = parser.parse_args()
-
+    print(args.test)
     if(args.clust > args.cpus and args.restart != "msm"):
         raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))
     else:

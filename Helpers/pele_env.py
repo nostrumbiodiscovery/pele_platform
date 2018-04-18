@@ -24,7 +24,7 @@ class EnviroBuilder(object):
         self.native = args.native
         self.chain = args.chain
         self.mae_lig = args.mae_lig
-        self.clusters = args.clusters = args.clusters if not args.test else 3
+        self.clusters = args.clust = args.clust if not args.test else 3
         self.test = args.test
 
         self.build_constant_paths()
