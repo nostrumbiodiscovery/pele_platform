@@ -1,15 +1,14 @@
-# from matplotlib import pyplot
-# from mpl_toolkits.mplot3d import Axes3D
 import os
 import prody as pd
 from scipy.spatial import distance
+import shutil
 import numpy as np
 import argparse
 import math
-#from operator import itemgetter
 import MSM_PELE.Helpers.best_structs as best_structs
 import MSM_PELE.Helpers.template_builder as tb
 import MSM_PELE.Helpers.helpers as hp
+import MSM_PELE.Helpers.center_of_mass as cm
 
 __author__ = "Daniel Soler Viladrich"
 __email__ = "daniel.soler@nostrumbiodiscovery.com"
@@ -27,10 +26,24 @@ def parseargs():
     args = parser.parse_args()
     return args.bs, args.points
 
-def is_exit_finish(path):
-    best_structs.main(path)
 
-def main(system, clusters, bs):
+def create_box(args, env):
+    if not args.test:
+        is_exit_finish(env.adap_ex_output)
+    if args.box:
+        center, radius = retrieve_box_info(args.box, env.clusters_output)
+        shutil.copy(args.box, os.path.join(env.pele_dir, "box.pdb"))
+    else:
+        center_mass = cm.center_of_mass(env.ligand_ref)
+        center, radius = build_box(env.adap_ex_input, env.clusters_output, center_mass)
+        if args.user_center and args.user_radius:
+            center = args.user_center
+            radius = args.user_radius
+        box_to_pdb(center, radius, env.box_temp)
+    return center, radius
+
+
+def build_box(system, clusters, bs):
 
     points = get_points(clusters)
     centroid = find_centroid(points)
@@ -151,7 +164,7 @@ def retrieve_box_info(box, clusters):
     remove_clusters_out_of_box(os.path.dirname(clusters), center, radius, points)
     return center, radius
 
-def build_box(center, radius, file):
+def box_to_pdb(center, radius, file):
 
     cx, cy, cz = center
     v1 = COORD.format(cx - radius, cy - radius, cz - radius)
@@ -173,8 +186,5 @@ def build_box(center, radius, file):
     tb.TemplateBuilder(file, replace)
 
 
-if __name__ == '__main__':
-        center, radius = main("/scratch/jobs/dsoler/test/STR_Pele/output_adaptive_exit" ,"/scratch/jobs/dsoler/test/STR_Pele/output_clustering/clusters_40_KMeans_allSnapshots.pdb" , [-20.332, 59.897, 2.8323])
-        box = build_box(center, radius, "/scratch/jobs/dsoler/test/STR_Pele/box.pdb")
-
-
+def is_exit_finish(path):
+    best_structs.main(path)
