@@ -6,38 +6,37 @@ import logging
 import MSM_PELE.constants as cs
 
 
-
 class EnviroBuilder(object):
     """
         Base class wher the needed pele environment
         is build by creating folders and files
     """
 
-    def __init__(self, folders, files, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test):
+    def __init__(self, folders, files, args):
         self.folders = folders
         self.files = files
-        self.system = system
-        self.forcefield = forcefield
-        self.residue = residue
+        self.system = args.system
+        self.forcefield = args.forcefield
+        self.residue = args.residue
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
-        self.cpus = cpus if not test else 4
-        self.restart = restart
-        self.native = native
-        self.chain = chain
-        self.mae_lig = mae_lig
-        self.clusters = clusters if not test else 3
-        self.test = test
+        self.cpus = args.cpus = args.cpus if not args.test else 4 
+        self.restart = args.restart
+        self.native = args.native
+        self.chain = args.chain
+        self.mae_lig = args.mae_lig
+        self.clusters = args.clusters = args.clusters if not args.test else 3
+        self.test = args.test
 
         self.build_constant_paths()
 
     @classmethod
-    def build_env(cls, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test, precision):
-        if test:
-            env = cls(cs.FOLDERS, cs.FILES_TEST, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test)
-        elif precision:
-            env = cls(cs.FOLDERS, cs.FILES_XP, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters, test)
+    def build_env(cls, args):
+        if args.test:
+            env = cls(cs.FOLDERS, cs.FILES_TEST, args)
+        elif args.precision:
+            env = cls(cs.FOLDERS, cs.FILES_XP, args)
         else:
-            env = cls(cs.FOLDERS, cs.FILES_SP, forcefield, system, residue, cpus, restart, native, chain, mae_lig, clusters,  test)
+            env = cls(cs.FOLDERS, cs.FILES_SP, args)
         env.create()
         return env
 
@@ -70,13 +69,12 @@ class EnviroBuilder(object):
         self.box_temp = os.path.join(self.pele_dir, "box.pdb")
         self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
         self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
-       
 
     def create(self):
         if self.restart == "all":
-			self.create_folders()
-			self.create_files()
-			self.create_logger()
+            self.create_folders()
+            self.create_files()
+            self.create_logger()
         else:
             self.create_logger()
 
@@ -96,7 +94,6 @@ class EnviroBuilder(object):
         # Actions
         for file, destination_name in zip(self.files, cs.FILES_NAME):
             self.copy(file, os.path.join(self.pele_dir, destination_name))
-
 
     def create_dir(self, base_dir, extension=None):
         """
