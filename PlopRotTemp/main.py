@@ -315,7 +315,7 @@ def parametrize_miss_residues(args, env, syst):
         hp.silentremove([syst.system]) 
     else:
           mae_charges = False
-          template, rotamers_file = plop.main(syst.lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)     
+          template, rotamers_file = main(syst.lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)     
           hp.silentremove([syst.lig])
     return template, rotamers_file     
 
