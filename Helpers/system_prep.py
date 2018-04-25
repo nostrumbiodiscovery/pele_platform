@@ -13,14 +13,14 @@ class SystemBuilder(pl.EnviroBuilder):
         self.system = None if self.ligand else self.receptor
 
     @classmethod
-    def build_system(cls, receptor, ligand, residue, pele_dir):
+    def build_system(cls, receptor, ligand, residue, pele_dir, output=False):
         if ligand:
             system = cls(receptor, ligand, residue, pele_dir)
             system.lig_ref = system.convert_pdb()
             system.system = system.build_complex()
         else:
             system = cls(receptor, ligand, residue, pele_dir)
-            system.receptor, system.lig_ref = system.retrieve_receptor()
+            system.receptor, system.lig_ref = system.retrieve_receptor(output=output)
             system.lig, system.residue = system.convert_mae()
         return system
 
