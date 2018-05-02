@@ -37,6 +37,7 @@ def run(args):
         env.logger.info("Template {} created".format(template))
 
         # Parametrize missing residues
+        print(missing_residues)
         for res, __, _ in missing_residues:
             if res != args.residue:
                 env.logger.info("Creating template for residue {}".format(res))

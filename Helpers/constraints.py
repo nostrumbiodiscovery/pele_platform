@@ -66,20 +66,21 @@ class ConstraintBuilder(object):
         return constraints
 
     def gaps_constraints(self):
-        self.gaps = {}
+        #self.gaps = {}
         gaps_constr = []
         for chain, residues in self.gaps.iteritems():
             gaps_constr = [CONSTR_ATOM.format(10, chain, residue, "_CA_") for residue in residues]
         return gaps_constr
 
     def metal_constraints(self):
+
         metal_constr = []
         for metal, ligands in self.metals.iteritems():
             metal_name, chain, metnum = metal.split(" ")
             for ligand in ligands:
                 ligand_info, bond_lenght = ligand
-                resnum, resname, chain, ligname = ligand_info.split(" ")
-                metal_constr.append(CONSTR_DIST.format(5, bond_lenght, chain, resnum, ligname, chain, metnum, metal_name))              
+                resname, resnum, chain, ligname = ligand_info.split(" ")
+                metal_constr.append(CONSTR_DIST.format(5, bond_lenght, chain, resnum, ligname, chain, metnum, metal_name))
         return metal_constr
 
 
