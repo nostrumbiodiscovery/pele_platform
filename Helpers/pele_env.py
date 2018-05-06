@@ -19,8 +19,6 @@ class EnviroBuilder(object):
         self.forcefield = args.forcefield
         self.residue = args.residue
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
-        print(args.test)
-        print(args.cpus)
         self.cpus = args.cpus = args.cpus if not args.test else 4 
         self.restart = args.restart
         self.native = args.native

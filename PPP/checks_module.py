@@ -138,7 +138,6 @@ def CheckMetalsCoordination(structure):
                 else:
                     prev_atom = None
                     for at in coordinated_atoms.iterAtoms():
-                        print(at.getResnum())
                         if prev_atom is None:
                             coordinated_atoms_list.append(at)
                             prev_atom = at
@@ -146,11 +145,9 @@ def CheckMetalsCoordination(structure):
                             if at.getResnum() == prev_atom.getResnum() and \
                                     (at.getIndex() == prev_atom.getIndex() + 1 or at.getResname() in ['ASP', 'GLU']):
                                 if calcDistance(at, metal_res) > calcDistance(prev_atom, metal_res):
-                                    print("a")
                                     prev_atom = None
                                     continue
                                 else:
-                                    print("b")
                                     coordinated_atoms_list.pop(-1)
                             coordinated_atoms_list.append(at)
                             prev_atom = at
