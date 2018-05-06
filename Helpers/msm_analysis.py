@@ -17,7 +17,7 @@ REPRESENTATIVES_STRUCTURES = "representative_structures_pdb_%d"
 
 def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
     with hp.cd(output_pele):
-        trajs_per_epoch = len(glob.glob(os.path.join("*", "*traj*")))
+        trajs_per_epoch = len(glob.glob(os.path.join("0", "*traj*")))
         extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids)
         prepareMSMFolders.main()
         estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER, CLUSTERINSTRIDE)
