@@ -1,5 +1,6 @@
 import os
 import sys
+import glob
 from MSM_PELE import constants
 
 
@@ -37,14 +38,54 @@ def find_executable(executable, path=None):
     else:
         return None
 
+def patch_environ():
+    """
+
+    Patch current environment variables so Schrodinger can start up and we can import its modules.
+    Be warned that calling this function WILL restart your interpreter. Otherwise, Python
+    won't catch the new LD_LIBRARY_PATH (or platform equivalent) and Schrodinger won't find its
+    libraries during import.
+
+    """
+
+    #Check whether patch_environ was already run
+    if "SCHRODINGER" in os.environ:
+        return
+    else:
+        os.environ["SCHRODINGER"] = constants.SCHRODINGER
+
+    #Find schrodinger libraries
+    schrodinger_libs_pattern = os.path.join(constants.SCHRODINGER, "mmshare*/lib/Linux-x86_64/")
+    schrodinger_libs = glob.glob(schrodinger_libs_pattern)
+    schrodinger_libs.append(os.path.join(constants.SCHRODINGER, "internal/lib/ssl"))
+
+    #Update LD_LIBRARY_PATH
+    if 'LD_LIBRARY_PATH' in os.environ:
+        os.environ['LD_LIBRARY_PATH'] = "{}:{}".format(":".join(schrodinger_libs), os.environ['LD_LIBRARY_PATH'])
+    else:
+        os.environ['LD_LIBRARY_PATH'] = ":".join(schrodinger_libs)
+
+    #Relunch shell
+    os.execve(sys.executable, [sys.executable] + sys.argv, os.environ)
+
 
 def check_dependencies():
+        #Update libraries
+        patch_environ()
+
+        #Update env_variables
+        if "PYTHONPATH" in os.environ:
+            os.environ["PYTHONPATH"] = "{}:{}".format(constants.DIR, os.environ["PYTHONPATH"])
+        else:
+             os.environ["PYTHONPATH"] = constants.DIR
 
         os.environ["SCHRODINGER"] = constants.SCHRODINGER
         os.environ["PELE"] = constants.PELE
+
         # Provisonal line, may be necessary for old schrodinger versions
         if constants.MMSHARE is not None:
             os.environ["MMSHARE_EXEC"] = constants.MMSHARE
+
         sys.path.append(os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))
         sys.path.insert(0, constants.ADAPTIVE)
 
@@ -53,6 +94,7 @@ def check_dependencies():
         except ValueError:
             os.environ["PATH"] = constants.MPIRUN
 
+        #Check dependencies
         try:
             os.environ["SCHRODINGER"]
         except KeyError:

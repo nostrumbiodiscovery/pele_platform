@@ -245,7 +245,7 @@ protein_atomnames_dictionary = {
     "NMA": [['HH31', '1HA', 'HA1'], ['HH32', '2HA', 'HA2'], ['HH33', '3HA', 'HA3'], ['CA', 'C'], ['H', 'H'], ['N']],
 }
 
-supported_metals = ["MN", "MG", "ZN", "CA", "CU", "FE", "NI", "CO", "PB"]
+supported_metals = ["MN", "MG", "ZN", "CA", "CU", "FE", "NI", "CO", "PB", "NA"]
 
 coordination_geometries = {
     'octahedric': [[90, 180], 6],
