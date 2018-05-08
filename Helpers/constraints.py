@@ -6,7 +6,7 @@ AMINOACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
               "PHE", "GLU", "HIS", "HIP", "TYR",
               "CYS", "HID"]
 
-TER_CONSTR = 2.5
+TER_CONSTR = 5
 
 BACK_CONSTR = 0.5
 
@@ -69,7 +69,7 @@ class ConstraintBuilder(object):
         #self.gaps = {}
         gaps_constr = []
         for chain, residues in self.gaps.iteritems():
-            gaps_constr = [CONSTR_ATOM.format(10, chain, residue, "_CA_") for residue in residues]
+            gaps_constr = [CONSTR_ATOM.format(TER_CONSTR, chain, terminal, "_CA_") for terminals in residues for terminal in terminals]
         return gaps_constr
 
     def metal_constraints(self):
@@ -80,7 +80,7 @@ class ConstraintBuilder(object):
             for ligand in ligands:
                 ligand_info, bond_lenght = ligand
                 resname, resnum, chain, ligname = ligand_info.split(" ")
-                metal_constr.append(CONSTR_DIST.format(5, bond_lenght, chain, resnum, ligname, chain, metnum, metal_name))
+                metal_constr.append(CONSTR_DIST.format(TER_CONSTR, bond_lenght, chain, resnum, ligname, chain, metnum, metal_name))
         return metal_constr
 
 
