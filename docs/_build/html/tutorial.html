@@ -25,26 +25,19 @@
   
 
   
-  
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="MSM_PELE 1.0.1 documentation" href="index.html"/>
-        <link rel="next" title="Code" href="code.html"/>
-        <link rel="prev" title="Getting Started" href="cookbook.html"/> 
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Support" href="support.html" />
+    <link rel="prev" title="Documentation" href="documentation.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -90,15 +83,20 @@
               
             
             
-              <ul class="current">
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cookbook.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+</ul>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#command-line-tutorial-prr">Command line tutorial PRR:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#slurm-tutorial-prr">Slurm tutorial PRR:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pr-tutorial">PR Tutorial</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="code.html">Code</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 </ul>
 
@@ -111,7 +109,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">MSM_PELE</a>
@@ -119,9 +117,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -165,45 +164,72 @@
             
   <div class="section" id="tutorial">
 <span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="command-line-tutorial-prr">
-<h2>Command line tutorial PRR:<a class="headerlink" href="#command-line-tutorial-prr" title="Permalink to this headline">¶</a></h2>
-<p>python MSM_PELE/main.py MSM_PELE/Examples/<a href="#id2"><span class="problematic" id="id3">PR_1A28_xray_</span></a>-_minimized.pdb STR Z –cpus 60</p>
+<p>This section will show how to apply the platform to a Nuclear Hormone real
+case</p>
+<div class="section" id="pr-tutorial">
+<h2>PR Tutorial<a class="headerlink" href="#pr-tutorial" title="Permalink to this headline">¶</a></h2>
+<p><strong>Command</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">MSM_PELE</span><span class="o">/</span><span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Examples</span><span class="o">/</span><span class="n">PR_1A28_xray_</span><span class="o">-</span><span class="n">_minimized</span><span class="o">.</span><span class="n">pdb</span> <span class="n">STR</span> <span class="n">Z</span> <span class="o">--</span><span class="n">cpus</span> <span class="mi">120</span>
+</pre></div>
 </div>
-<div class="section" id="slurm-tutorial-prr">
-<h2>Slurm tutorial PRR:<a class="headerlink" href="#slurm-tutorial-prr" title="Permalink to this headline">¶</a></h2>
-<ul>
-<li><p class="first">Inside the slurm file change the fields:</p>
-<blockquote>
-<div><blockquote>
-<div><p>&lt;PDB&gt;: PR_1A28_minimized.pdb</p>
-</div></blockquote>
-<p>&lt;resname&gt;: STR
-&lt;chain&gt;: Z</p>
-</div></blockquote>
-</li>
-<li><p class="first">Launch the job with the next command:</p>
-<blockquote>
-<div><p>sbatch MSM_PELE/Examples/conf.sl</p>
-</div></blockquote>
-</li>
-</ul>
+<p><strong>Adaptive Exit Analysis</strong></p>
+<p>An Adaptive Exit simulation is performed and all conformations are
+clusterize. In order to check good discretization along the exit
+path next instructions should be followed:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">maestro</span> <span class="n">Pele_STR</span><span class="o">/</span><span class="n">PR_1A28_xray_</span><span class="o">-</span><span class="n">_minimized_processed</span><span class="o">.</span><span class="n">pdb</span> <span class="n">Pele_STR</span><span class="o">/</span><span class="n">box</span><span class="o">.</span><span class="n">pdb</span> <span class="n">Pele_STR</span><span class="o">/</span><span class="n">ouput_clustering</span><span class="o">/</span><span class="n">clustering_40_Kmeans</span><span class="o">.</span><span class="n">pdb</span>
+</pre></div>
+</div>
+<p>The representative pdb of each cluster can be found under PELE_STR/output_clustering:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">maestro</span> <span class="n">PELE_STR</span><span class="o">/</span><span class="n">ouput_clustering</span><span class="o">/</span><span class="n">initial_</span><span class="o">*</span>
+</pre></div>
+</div>
+<p><strong>PELE exploration Analysis</strong></p>
+<p>An exhaustive PELE exploration is performed starting from each cluster from the previous
+exit Adaptive period. There are several features we can check to know whether
+the exploration was good enough. Run the next commands under Pele_STR/output_pele/</p>
+<p><cite>Transition Study</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">adaptivePlot</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">rmsd</span> <span class="o">|</span> <span class="n">gnuplot</span> <span class="o">-</span><span class="n">p</span>
+</pre></div>
+</div>
+<p><cite>Total Energy Conformations</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">adaptivePlot</span> <span class="mi">2</span> <span class="mi">4</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">zcol</span> <span class="mi">2</span> <span class="o">-</span><span class="n">be</span>
+<span class="o">|</span> <span class="n">guplot</span> <span class="o">-</span><span class="n">p</span>
+</pre></div>
+</div>
+<p><cite>Counter Plot</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">counter</span><span class="o">.</span><span class="n">py</span> <span class="mi">6</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p><cite>Best Binding Energy Structures</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">bestStructs</span><span class="o">.</span><span class="n">py</span> <span class="n">Binding</span> <span class="n">Energy</span>
+</pre></div>
+</div>
+<p><strong>MSM Analysis</strong></p>
+<p><cite>Correlation Analysis</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">~/</span><span class="n">repos</span><span class="o">/</span><span class="n">PyTools</span><span class="o">/</span><span class="n">PyTools</span><span class="o">/</span><span class="n">autoCorr</span><span class="o">.</span><span class="n">py</span> <span class="o">-</span><span class="n">l</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">n</span> <span class="mi">200</span> <span class="o">--</span><span class="n">clusters</span>
+<span class="n">MSM_0</span><span class="o">/</span><span class="n">clusterCenters_0</span><span class="o">.</span><span class="n">dat</span> <span class="o">--</span><span class="n">trajs</span> <span class="n">allTrajs</span><span class="o">/</span>
+</pre></div>
+</div>
+<p><cite>Correlation Clusters</cite>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vmd</span> <span class="n">Pele_STR</span><span class="o">/</span><span class="n">output_pele</span><span class="o">/</span><span class="n">representative_structures</span><span class="o">/</span><span class="n">clusters_0</span><span class="o">.</span><span class="n">pdb</span> <span class="p">(</span><span class="n">Colored</span>
+<span class="k">with</span> <span class="n">the</span> <span class="n">beta</span> <span class="nb">property</span> <span class="kn">from</span> <span class="nn">red</span> <span class="p">(</span><span class="n">high</span> <span class="n">correlation</span><span class="p">)</span> <span class="n">to</span> <span class="n">blue</span> <span class="p">(</span><span class="n">low</span> <span class="n">correlation</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="code.html" class="btn btn-neutral float-right" title="Code" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="support.html" class="btn btn-neutral float-right" title="Support" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cookbook.html" class="btn btn-neutral" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="documentation.html" class="btn btn-neutral" title="Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -216,7 +242,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -235,6 +261,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'1.0.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -252,14 +279,11 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

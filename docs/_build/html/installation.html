@@ -25,26 +25,19 @@
   
 
   
-  
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="MSM_PELE 1.0.1 documentation" href="index.html"/>
-        <link rel="next" title="Getting Started" href="cookbook.html"/>
-        <link rel="prev" title="MSM_PELE Documentation" href="index.html"/> 
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Getting Started" href="cookbook.html" />
+    <link rel="prev" title="MSM_PELE - MSM Free Energy Calculation Algorithm" href="index.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -92,15 +85,19 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#python-dependencies">Python Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#env-variables">Env variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#changing-local-path">Changing local path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pyemma-config">Pyemma config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conda-installation-recommended">Conda Installation (Recommended)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#msm-pele-configuration">MSM PELE Configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cookbook.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html">Code</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 </ul>
 
@@ -113,7 +110,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">MSM_PELE</a>
@@ -121,9 +118,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -169,45 +167,59 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<div class="section" id="python-dependencies">
-<h2>Python Dependencies<a class="headerlink" href="#python-dependencies" title="Permalink to this headline">¶</a></h2>
-<p><strong>Create conda</strong></p>
-<p>conda create -y -n py27 python=2.7 anaconda</p>
-<p><strong>Activate Env</strong></p>
-<p>source activate py27</p>
-<p><strong>Install dependencies</strong></p>
-<p>~/conda/envs/py27/bin/pip install msmtools</p>
-<p>~/conda/envs/py27/bin/pip install pyemma</p>
-<p>~/conda/envs/py27/bin/pip install prody==1.8.2</p>
-<p>~/conda/envs/py27/bin/pip install sklearn</p>
+<p>MSM PELE installation requires several dependencies they must be set
+before practice. Furthermore MSM PELE requires Schrodinger and PELE installation.</p>
+<div class="section" id="conda-installation-recommended">
+<h2>Conda Installation (Recommended)<a class="headerlink" href="#conda-installation-recommended" title="Permalink to this headline">¶</a></h2>
+<p><strong>Create conda</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">y</span> <span class="o">-</span><span class="n">n</span> <span class="n">py27</span> <span class="n">python</span><span class="o">=</span><span class="mf">2.7</span> <span class="n">anaconda</span>
+</pre></div>
 </div>
-<div class="section" id="env-variables">
-<h2>Env variables<a class="headerlink" href="#env-variables" title="Permalink to this headline">¶</a></h2>
-<p>export PYTHONPATH=$PYTHONPATH:’/path/to/MSM_PELE/’</p>
-<p>export LD_LIBRARY_PATH=/path/to/schrodinge201X/internal/lib/ssl/:/path/to/schrodinger201X/mmshare-v4.0/lib/Linux-x86_64/:$LD_LIBRARY_PATH</p>
+<p><strong>Activate Env</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">activate</span> <span class="n">py27</span>
+</pre></div>
 </div>
-<div class="section" id="changing-local-path">
-<h2>Changing local path<a class="headerlink" href="#changing-local-path" title="Permalink to this headline">¶</a></h2>
-<p>Change the public variables path under <strong>MSM_PELE/constants.py</strong> to the ones local to your machine</p>
+<p><strong>Install dependencies</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">~/</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">py27</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">install</span> <span class="n">msmtools</span>
+
+<span class="o">~/</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">py27</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">install</span> <span class="n">pyemma</span>
+
+<span class="o">~/</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">py27</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">install</span> <span class="n">prody</span><span class="o">==</span><span class="mf">1.8</span><span class="o">.</span><span class="mi">2</span>
+
+<span class="o">~/</span><span class="n">conda</span><span class="o">/</span><span class="n">envs</span><span class="o">/</span><span class="n">py27</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">pip</span> <span class="n">install</span> <span class="n">sklearn</span>
+</pre></div>
 </div>
-<div class="section" id="pyemma-config">
-<h2>Pyemma config<a class="headerlink" href="#pyemma-config" title="Permalink to this headline">¶</a></h2>
-<p>$ python</p>
-<p>&gt; import pyemma</p>
-<p>&gt; pyemma.config.used_filenames</p>
+</div>
+<div class="section" id="msm-pele-configuration">
+<h2>MSM PELE Configuration<a class="headerlink" href="#msm-pele-configuration" title="Permalink to this headline">¶</a></h2>
+<p><strong>Enviromental variables</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>export PYTHONPATH=$PYTHONPATH:&#39;/path/to/MSM_PELE/&#39;
+</pre></div>
+</div>
+<p><strong>Changing local path</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Change</span> <span class="n">the</span> <span class="n">public</span> <span class="n">variables</span> <span class="n">path</span> <span class="n">under</span> <span class="o">**</span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">constants</span><span class="o">.</span><span class="n">py</span><span class="o">**</span> <span class="n">to</span> <span class="n">the</span> <span class="n">ones</span> <span class="n">local</span> <span class="n">to</span> <span class="n">your</span> <span class="n">machine</span>
+</pre></div>
+</div>
+<p><strong>Pyemma config</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python
+
+&gt; import pyemma
+
+&gt; pyemma.config.used_filenames
+</pre></div>
+</div>
 <p>You will recieve a list with files where it is possible to find configuration from pyemma. You need to go over these files and change:</p>
-<blockquote>
-<div><p>show_progress_bars = Flase</p>
-<p>mute= True</p>
-</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">show_progress_bars</span> <span class="o">=</span> <span class="n">Flase</span>
+
+<span class="n">mute</span><span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -216,7 +228,7 @@
         <a href="cookbook.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="MSM_PELE Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="MSM_PELE - MSM Free Energy Calculation Algorithm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -229,7 +241,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -248,6 +260,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'1.0.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -265,14 +278,11 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
