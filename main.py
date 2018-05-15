@@ -44,8 +44,8 @@ def run(args):
                 env.logger.info("Template {}z created".format(res))
 
         # Fill in Simulation Templates
-        ad.SimulationBuilder(env.pele_exit_temp, cs.EX_PELE_KEYWORDS, args.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
-        ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, args.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
+        ad.SimulationBuilder(env.pele_exit_temp, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
+        ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
 
     if args.restart in ["all", "adaptive"]:
         # Run Adaptive Exit

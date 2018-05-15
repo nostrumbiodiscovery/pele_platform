@@ -52,7 +52,6 @@ class EnviroBuilder(object):
             self.equil_steps = int(cs.EQ_STEPS/self.cpus) if self.cpus < cs.EQ_STEPS else 1
         pele_dir = os.path.abspath("{}_Pele".format(self.residue))
         self.pele_dir = is_repited(pele_dir) if self.restart == "all" else is_last(pele_dir)
-        self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else self.native
         if self.mae_lig:
             self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
         else:
@@ -69,6 +68,7 @@ class EnviroBuilder(object):
         self.box_temp = os.path.join(self.pele_dir, "box.pdb")
         self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
         self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
+        self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
 
     def create(self):
         if self.restart == "all":
