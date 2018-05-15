@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MSM_PELE Documentation &mdash; MSM_PELE 1.0.1 documentation</title>
+  <title>MSM_PELE - MSM Free Energy Calculation Algorithm &mdash; MSM_PELE 1.0.1 documentation</title>
   
 
   
@@ -25,25 +25,18 @@
   
 
   
-  
     <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="MSM_PELE 1.0.1 documentation" href="#"/>
-        <link rel="next" title="Installation" href="installation.html"/> 
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Installation" href="installation.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -92,8 +85,14 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cookbook.html">Getting Started</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code.html">Code</a></li>
+</ul>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 </ul>
 
@@ -106,7 +105,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="#">MSM_PELE</a>
@@ -114,9 +113,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -139,7 +139,7 @@
     
       <li><a href="#">Docs</a> &raquo;</li>
         
-      <li>MSM_PELE Documentation</li>
+      <li>MSM_PELE -  MSM Free Energy Calculation Algorithm</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -158,31 +158,68 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="msm-pele-documentation">
-<h1>MSM_PELE Documentation<a class="headerlink" href="#msm-pele-documentation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="msm-pele-msm-free-energy-calculation-algorithm">
+<h1>MSM_PELE -  MSM Free Energy Calculation Algorithm<a class="headerlink" href="#msm-pele-msm-free-energy-calculation-algorithm" title="Permalink to this headline">¶</a></h1>
+<p>MSM PELE  is a Python library with the aim to calculate absolute free energies
+through MSM analysis over paralel monte carlo simulations. Currently, MSM PELE
+is build on top of of next softwares:</p>
+<ul class="simple">
+<li>Protein Energy Landscape Exploration Software</li>
+<li>Adaptive Sampling Simulation to boost Performance</li>
+<li>Markov State Model Analysis</li>
+</ul>
+<p>Technical Features:</p>
+<ul class="simple">
+<li>Code is implemented in Python (supports 2.7)</li>
+<li>Runs on Linux (64 bits), Windows or MAC (64 bits).</li>
+<li>OpenmMP&amp;MPI Implementation</li>
+<li>Schrodinger (2016/17/18) is needed.</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#python-dependencies">Python Dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#env-variables">Env variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#changing-local-path">Changing local path</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#pyemma-config">Pyemma config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#conda-installation-recommended">Conda Installation (Recommended)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#msm-pele-configuration">MSM PELE Configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cookbook.html">Getting Started</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cookbook.html#launch-msm-pele-with-opls-charges">Launch MSM_Pele with OPLS charges</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cookbook.html#launch-msm-pele-with-qm-charges">Launch MSM_Pele with QM charges</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cookbook.html#launch-your-first-msm-job">Launch your first MSM job:</a></li>
 </ul>
 </li>
+</ul>
+</div>
+</div>
+<div class="section" id="documentation">
+<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation.html">Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#how-does-it-works">How does it works:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#optional-options">Optional Options:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation.html#code">Code:</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#command-line-tutorial-prr">Command line tutorial PRR:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#slurm-tutorial-prr">Slurm tutorial PRR:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#pr-tutorial">PR Tutorial</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="code.html">Code</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="code.html#msm-pele-modules">MSM_PELE Modules</a></li>
 </ul>
-</li>
+</div>
+</div>
+<div class="section" id="support">
+<h1>Support<a class="headerlink" href="#support" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="support.html">Support</a></li>
 </ul>
 </div>
@@ -196,9 +233,7 @@
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -218,7 +253,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -237,6 +272,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'1.0.1',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -254,14 +290,11 @@
     <script type="text/javascript" src="_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>

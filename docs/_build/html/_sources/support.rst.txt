@@ -3,9 +3,7 @@
 Support
 =======
 
-The easiest way to get help with the project is by e-mail (daniel.soler@nostrumbiodiscovery.com).
+To  get help with any trouble please use the issue tracker on github. `Github <https://github.com/danielSoler93/MSM_PELE>`_
 
-Another way is to open an issue on Github_.
+To get in touch with the developer please e-mail (daniel.soler@nostrumbiodiscovery.com).
 
-
-.. _Github: https://github.com/miniaoshi/MSM_PELE
