@@ -62,7 +62,7 @@ def run(args):
         if not os.path.isfile(env.clusters_output):
             env.logger.info("Running MSM Clustering")
             with hp.cd(env.adap_ex_output):
-                cl.main(env.clusters, env.cluster_output, args.residue, "")
+                cl.main(env.clusters, env.cluster_output, args.residue, "", env.cpus)
             env.logger.info("MSM Clustering run successfully")
         else:
             pass
