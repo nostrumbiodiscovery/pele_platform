@@ -5,6 +5,7 @@ from AdaptivePELE.freeEnergies import getRepresentativeStructures as getRepr
 import MSM_PELE.Helpers.tica as td 
 import MSM_PELE.Helpers.helpers as hp
 import shutil
+import numpy as np
 
 # DEFAULT VALUES
 LAGTIME = 100
@@ -15,6 +16,9 @@ DIMENSIONS = 2
 # bootstrap)
 REPRESENTATIVES_FILE = "representative_structures/representative_structures_0.dat"
 REPRESENTATIVES_STRUCTURES = "representative_structures_pdb_%d"
+PMF_FILE = "pmf_xyzg_0.dat"
+# Number of the best structures to write
+N_BEST = 5
 
 
 def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids="", runTica=True):
@@ -24,9 +28,8 @@ def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids="", ru
             td.main(DIMENSIONS, NCLUSTER, ligand_resname, LAGTIME, trajs_per_epoch, 1000) 
             return()
         else:
-            extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids)
+            extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids, nProcessors=cpu)
             prepareMSMFolders.main(tica=runTica)
-            #prepareMSMFolders.main()
             estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER)
             results_file = summerize(output_pele)
             shutil.move(results_file, os.path.join(pele_dir, "results.txt"))
@@ -52,7 +55,7 @@ def summerize(pele_path):
                 lines[i] = " ".join(line)
     with open(results_file, 'w') as results:
         results.write("\n".join(lines)+"\n")
-	return results_file
+    return results_file
 
 
 def asses_convergence(dg, stdDg):
@@ -62,12 +65,27 @@ def asses_convergence(dg, stdDg):
     """
     convergence = "M"
     convergence_rate = round((abs(float(stdDg)*100)/float(dg)))
-    if(convergence_rate < 5):
+    if convergence_rate < 5:
         convergence = "G"
-    elif(convergence_rate > 10):
+    elif convergence_rate > 10:
         convergence = "B"
     return convergence
 
 
+def copy_best_structures(pmf_file, output_folder, n_best=5):
+    """
+        Copy the structures of the states with the lowest pmf value as
+        best_x_state_y.pdb, where x is the order of lowest pmf (the absolute
+        min is 1, the second 2, etc.) and y is the number of the state
+    """
+    dest_file = os.path.join(output_folder, "best_%d_state_%d.pdb")
+    origin_file = os.path.join(output_folder, "cluster_%d.pdb")
+    pmf_values = np.loadtxt(pmf_file)
+    # sort by the last column, which corresponds to the pmf
+    sorted_pmf = np.argsort(pmf_values[:, -1])
+    for i, state in enumerate(sorted_pmf[:n_best]):
+        shutil.copy(origin_file % state, dest_file % (i+1, state))
+
+
 if __name__ == "__main__":
-        analyse_results("/home/dsoler/STR_PEle/output_pele", "STR")
+    analyse_results("/home/dsoler/STR_PEle/output_pele", "STR")

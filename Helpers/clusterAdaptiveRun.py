@@ -5,8 +5,9 @@ import numpy as np
 import argparse
 from AdaptivePELE.utilities import utilities
 from AdaptivePELE.freeEnergies import cluster, extractCoords
-
-
+from pympler import summary
+from pympler import tracker
+from pympler import muppy
 
 def parseArgs():
     parser = argparse.ArgumentParser(description="Script that reclusters the Adaptive clusters")
@@ -65,8 +66,8 @@ def get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, cluster
     return centersInfo
 
 
-def main(num_clusters, output_folder, ligand_resname, atom_ids):
-    extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids)
+def main(num_clusters, output_folder, ligand_resname, atom_ids, cpus):
+    extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids, nProcessors=cpus)
     trajectoryFolder = "allTrajs"
     trajectoryBasename = "traj*"
     stride = 1
@@ -80,7 +81,6 @@ def main(num_clusters, output_folder, ligand_resname, atom_ids):
     clusteringObject.clusterTrajectories()
     clusteringObject.eliminateLowPopulatedClusters(clusterCountsThreshold)
     clusterCenters = clusteringObject.clusterCenters
-
     centersInfo = get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, clusterCenters)
     COMArray = [centersInfo[i]['center'] for i in xrange(num_clusters)]
     if output_folder is not None:

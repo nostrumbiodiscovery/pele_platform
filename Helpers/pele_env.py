@@ -54,6 +54,7 @@ class EnviroBuilder(object):
             self.equil_steps = int(cs.EQ_STEPS/self.cpus) if self.cpus < cs.EQ_STEPS else 1
 
         pele_dir = os.path.abspath("{}_Pele".format(self.residue))
+
         if not self.folder:
             self.pele_dir = is_repited(pele_dir) if self.restart == "all" else is_last(pele_dir)
         else:
