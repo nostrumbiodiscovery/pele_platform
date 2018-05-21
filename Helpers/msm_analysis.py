@@ -28,8 +28,8 @@ def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids="", ru
             td.main(DIMENSIONS, NCLUSTER, ligand_resname, LAGTIME, trajs_per_epoch, 1000) 
             return()
         else:
-            extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids, nProcessors=cpu)
-            prepareMSMFolders.main(tica=runTica)
+            extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids, nProcessors=cpus)
+            prepareMSMFolders.main()
             estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER)
             results_file = summerize(output_pele)
             shutil.move(results_file, os.path.join(pele_dir, "results.txt"))
