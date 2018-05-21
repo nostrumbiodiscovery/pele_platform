@@ -67,7 +67,7 @@ def get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, cluster
 
 
 def main(num_clusters, output_folder, ligand_resname, atom_ids, cpus):
-    extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids, nProcessors=cpus)
+    extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids, parallelize=False, nProcessors=cpus)
     trajectoryFolder = "allTrajs"
     trajectoryBasename = "traj*"
     stride = 1

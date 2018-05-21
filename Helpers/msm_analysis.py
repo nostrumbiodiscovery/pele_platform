@@ -22,7 +22,7 @@ N_BEST = 5
 def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
     with hp.cd(output_pele):
         trajs_per_epoch = len(glob.glob(os.path.join("0", "*traj*")))
-        extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids, nProcessors=cpus)
+        extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids, parallelize=False, nProcessors=cpus)
         prepareMSMFolders.main()
         estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER, CLUSTERINSTRIDE)
         results_file = summerize(output_pele)
