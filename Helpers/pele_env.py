@@ -26,6 +26,7 @@ class EnviroBuilder(object):
         self.mae_lig = args.mae_lig
         self.clusters = args.clust = args.clust if not args.test else 3
         self.test = args.test
+        self.work_folder = args.work_folder
 
         self.build_constant_paths()
 
@@ -50,12 +51,18 @@ class EnviroBuilder(object):
             self.equil_steps = 1
         else:
             self.equil_steps = int(cs.EQ_STEPS/self.cpus) if self.cpus < cs.EQ_STEPS else 1
-        pele_dir = os.path.abspath("{}_Pele".format(self.residue))
-        self.pele_dir = is_repited(pele_dir) if self.restart == "all" else is_last(pele_dir)
+
+        if self.work_folder:
+            self.pele_dir = os.path.abspath(self.work_folder)
+        else:
+            pele_dir = os.path.abspath("{}_Pele".format(self.residue))
+            self.pele_dir = is_repited(pele_dir) if self.restart == "all" else is_last(pele_dir)
+
         if self.mae_lig:
             self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
         else:
             self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
+
         self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
         self.adap_ex_output = os.path.join(self.pele_dir, "output_adaptive_exit")
         self.cluster_output = os.path.join(self.pele_dir, "output_clustering")

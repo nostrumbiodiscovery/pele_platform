@@ -115,6 +115,7 @@ if __name__ == "__main__":
     parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test")
     parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
+    parser.add_argument("--work_folder", "-wf", type=str,  help="Output Folder Name", default="")
     
     args = parser.parse_args()
     if(args.clust > args.cpus and args.restart != "msm"):
