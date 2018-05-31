@@ -5,27 +5,22 @@ Getting Started
 .. toctree::
    :maxdepth: 2
 
-Launch MSM_Pele with OPLS charges
------------------------------------
+These MSM Pele cookbook shows how to use basics of the platform and walk you
+through your first steps.
 
-The prerequisites to run MSM_Pele is:
+Launch your first MSM job:
+----------------------------
 
-    - PDB of the complex ligand+receptor
+**Previous Requisites**
 
-The launch commands is:
-    
-    - python2.X main.py PDB ligand_resname ligand_chain --cpus X
+- ligand-receptor complex or both separate.
+
+**Launch MSM_Pele with OPLS charges**::
+
+    python2.X main.py PDB ligand_resname ligand_chain --cpus X
 
 
-Launch MSM_Pele with QM charges
---------------------------------
+**Launch MSM_Pele with QM charges**::
 
-The prerequisites to run MSM_Pele with keeping the QM charges of the ligand are:
-
-    - PDB of the receptor
-    - Maestro file of the ligand with the QM charges
-
-The launch command is:
-
-    - python2.X main.py receptor_PDB ligand_resname ligand_chain --mae_lig ligand.mae --cpus X
+    python2.X main.py receptor_PDB ligand_resname ligand_chain --mae_lig ligand.mae --cpus X
 
