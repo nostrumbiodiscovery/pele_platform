@@ -2810,14 +2810,21 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
     f.write("rot assign res " + resname.upper() + ' &\n')
     if (back_lib != ""):
         f.write(" backlib " + back_lib + " &\n");
-    for grp in range(max(group) + 1):
+    
+    max_rotatable_bonds = check_max_rotatable_bonds(group, tors, tors_ring_num)
+
+    for grp, max_rotatable in zip(range(max(group) + 1), max_rotatable_bonds):
+        rotatable_bonds = 0
         for i in range(len(tors)):
             if ( group[tors[i][0]] == grp or group[tors[i][1]] == grp):
                 if (tors_ring_num[i] == 0):
+                    rotatable_bonds
                     if (is_oh[i] == 1):
                         lib_name = lib_name_oh
                     else:
                         lib_name = lib_name_nom
+                    if max_rotatable:
+                        lib_name = convert_gridres("30.0")
                     if(len(names[tors[i][0]]) < 4 and len(names[tors[i][1]])<4):
                       f.write("   sidelib {0} _{1:_^3} _{2:_^3} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
                     elif(len(names[tors[i][0]] < 4) and len(names[tors[i][1]]>4)):
@@ -2836,7 +2843,28 @@ def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres
             f.write("     newgrp &\n")
     f.close();
     return assign_filename
-    
+
+def check_max_rotatable_bonds(group, tors, tors_ring_num):
+    """
+        Check if some sidechain has more
+        than 2 rotatable bonds to lower
+        its resolution
+    """
+
+    LIMIT_ROTATABLE_BONDS = 2
+
+    max_rotatable_bonds = []
+    for grp in range(max(group) + 1):
+        count = 0
+        for i in range(len(tors)):
+            if ( group[tors[i][0]] == grp or group[tors[i][1]] == grp):
+                if (tors_ring_num[i] == 0):
+                    count += 1
+        if count > LIMIT_ROTATABLE_BONDS:
+            max_rotatable_bonds.append(True)
+        else:
+            max_rotatable_bonds.append(False)
+    return max_rotatable_bonds
 
 
 #################################################

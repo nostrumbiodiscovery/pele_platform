@@ -16,7 +16,7 @@ import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
 import MSM_PELE.Helpers.missing_residues as mr
 
-__version__ = "1.0.2"
+__version__ = "1.0.3"
 
 def run(args):
     # Build folders and logging
@@ -34,8 +34,8 @@ def run(args):
 
         # Parametrize Ligand
         env.logger.info("Creating template for residue {}".format(args.residue))
-        template, rotamers_file = plop.parametrize_miss_residues(args, env, syst)
-        env.logger.info("Template {} created".format(template))
+        plop.parametrize_miss_residues(args, env, syst)
+        env.logger.info("Template {}z created".format(args.residue.lower()))
 
         # Parametrize missing residues
         for res, __, _ in missing_residues:
@@ -116,7 +116,7 @@ if __name__ == "__main__":
     parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test")
     parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
-    parser.add_argument("--folder", type=str,  help="Folder to apply the restart to", default=None)
+    parser.add_argument("--folder", "-wf", type=str,  help="Folder to apply the restart to", default=None)
     
     args = parser.parse_args()
     if(args.clust > args.cpus and args.restart != "msm"):
