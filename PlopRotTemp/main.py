@@ -57,14 +57,15 @@ HELP: $SCHRODINGER/utilities/python main.py --help
 import argparse
 import sys
 import os
-import re
 import shutil
+import subprocess
+import MSM_PELE.constants as cs
 import MSM_PELE.PlopRotTemp.PlopRotTemp as pl
 from MSM_PELE.PlopRotTemp.template.templateBuilder import TemplateBuilder
 import MSM_PELE.Helpers.helpers as hp
 
 
-def main(mae_file, residue, pele_dir, forcefield, max_tors, nrot, user_core_atom, mae_charges = False, clean = False, gridres = "10.0"):
+def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=1000, user_core_atom=-1, mae_charges = False, clean = False, gridres = "10.0"):
 
     #Defaults
     nrot = nrot
@@ -304,45 +305,67 @@ def main(mae_file, residue, pele_dir, forcefield, max_tors, nrot, user_core_atom
     shutil.move(output_template_file, template_dir)
     shutil.move(rotamers_file, rotamers_dir)
 
-    return output_template_file, rotamers_file
-
 
 def parametrize_miss_residues(args, env, syst):
-
+    SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
+    options = retrieve_options(args, env)
     if args.mae_lig:
         mae_charges = True
-        template, rotamers_file = main(args.mae_lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)
-        hp.silentremove([syst.system]) 
+        print("{} {} {} {} {} {}".format(SPYTHON, __file__, options, args.mae_lig, args.residue, env.pele_dir)) 
+        subprocess.call("{} {} {} {} {} {}".format(SPYTHON, __file__, options, args.mae_lig, args.residue, env.pele_dir).split())
+        #template, rotamers_file = main(args.mae_lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)
+        hp.silentremove([syst.system])
     else:
-          mae_charges = False
-          template, rotamers_file = main(syst.lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)     
-          hp.silentremove([syst.lig])
-    return template, rotamers_file     
+        mae_charges = False
+        subprocess.call("{} {} {} {} {} {}".format(SPYTHON, __file__, options, syst.lig, args.residue, env.pele_dir).split())
+        #template, rotamers_file = main(syst.lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)     
+        hp.silentremove([syst.lig])
+
+
+def retrieve_options(args, env):
+    """
+    Retrieve PlopRotTemp options from input arguments
+    """
+
+    options = []
+
+    if args.core != -1:
+        options.extend(["--core {}".format(args.core)])
+    if args.mtor != 4:
+        options.extend(["--mtor {}".format(args.mtor)])
+    if args.n != 1000:
+        options.extend(["--n {}".format(args.n)])
+    if args.forcefield != "OPLS2005":
+        options.extend(["--force {}".format(args.forcefield)])
+    if args.mae_lig:
+        options.extend(["--mae_charges"])
+    if args.gridres != 10:
+        options.extend(["--gridres {}".format(args.gridres)])
+
+    return " ".join(options)
 
 
 def parse_args():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("mae_file", type=str, help="ligand maestro mae file")
+    parser.add_argument("residue", type=str, help="ligand residue")
+    parser.add_argument("output", type=str, help="output folder")
     parser.add_argument("--core", type=int, help="Give one atom of the core section", default=-1)
     parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each group.  Will freeze bonds to extend the core if necessary.", default=4)
     parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File", default=1000)
     parser.add_argument("--mae_charges", help="Use charges in mae", action='store_true')
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
+    parser.add_argument("--gridres", help="Rotamer resolution", type=str, default="10")
+    parser.add_argument("--force",  help="Rotamer resolution", type=str, default="OPLS2005")
     args = parser.parse_args()
 
     
-    return args.mae_file, args.mtor, args.n, args.core, args.mae_charges, args.clean
+    return args.mae_file, args.residue, args.output, args.mtor, args.n, args.core, args.mae_charges, args.clean, args.gridres, args.force
 
 if __name__ == "__main__":
-    mae_file, mtor, n, core, mae_charge, clean = parse_args() 
-    template, rotamers_file = main(mae_file, mtor, n, core, mae_charge, clean)
-    
-
-    print("########################################################################")
-    print("\n{} template and {} rotamer library has been successfully created in {}\n").format(
-        template,rotamers_file, os.getcwd())
-    print("########################################################################")
+    mae_file, residue, output, mtor, n, core, mae_charge, clean, gridres, forcefield = parse_args() 
+    main(mae_file, residue, output, forcefield, mtor, n, core, mae_charge, clean, gridres)
 
 
     
