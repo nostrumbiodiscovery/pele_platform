@@ -58,7 +58,7 @@ class EnviroBuilder(object):
         if not self.folder:
             self.pele_dir = is_repited(pele_dir) if self.restart == "all" else is_last(pele_dir)
         else:
-            self.pele_dir = self.folder
+            self.pele_dir = os.path.abspath(self.folder)
 
         if self.mae_lig:
             self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
