@@ -63,7 +63,7 @@ def run(args):
         if not os.path.isfile(env.clusters_output):
             env.logger.info("Running MSM Clustering")
             with hp.cd(env.adap_ex_output):
-                cl.main(env.clusters, env.cluster_output, args.residue, "", env.cpus)
+                cl.main(env.clusters, env.cluster_output, args.residue, "", env.cpus, env.topology)
             env.logger.info("MSM Clustering run successfully")
         else:
             pass
@@ -85,7 +85,7 @@ def run(args):
 
         # MSM Analysis
         env.logger.info("Running MSM analysis")
-        msm.analyse_results(env.adap_l_output, args.residue, args.cpus, env.pele_dir, runTica=True)
+        msm.analyse_results(env.adap_l_output, args.residue, args.cpus, env.pele_dir, env.topology, runTica=False)
         env.logger.info("MSM analysis run successfully")
 
         env.logger.info("{} System run successfully".format(args.residue))
@@ -117,6 +117,7 @@ if __name__ == "__main__":
     parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
     parser.add_argument("--folder", "-wf", type=str,  help="Folder to apply the restart to", default=None)
+    parser.add_argument("--pdb", action='store_true',  help="Use pdb files as output")
     
     args = parser.parse_args()
     if(args.clust > args.cpus and args.restart != "msm"):
