@@ -21,14 +21,14 @@ PMF_FILE = "pmf_xyzg_0.dat"
 N_BEST = 5
 
 
-def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids="", runTica=True):
-    trajs_per_epoch = len(glob.glob(os.path.join("*", "*traj*")))
+def analyse_results(output_pele, ligand_resname, cpus, pele_dir, topology, atom_ids="", runTica=True):
+    trajs_per_epoch = len(glob.glob(os.path.join("*", "*traj*.*")))
     with hp.cd(output_pele):
         if runTica:
             td.main(DIMENSIONS, NCLUSTER, ligand_resname, LAGTIME, trajs_per_epoch, 1000) 
             return()
         else:
-            extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids, nProcessors=cpus, parallelize=False)
+            extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids, nProcessors=cpus, parallelize=True, topology=topology)
             prepareMSMFolders.main()
             estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER)
             results_file = summerize(output_pele)
@@ -36,7 +36,7 @@ def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids="", ru
             # In case of more than one simulation, i.e. MSM_0, MSM_1, etc
             MSM_folders = glob.glob(os.path.join(output_pele, "MSM_*"))
             for i, folder in enumerate(MSM_folders):
-                getRepr.main(os.path.join(output_pele, folder, REPRESENTATIVES_FILE), ".", output=REPRESENTATIVES_STRUCTURES % i)
+                getRepr.main(os.path.join(output_pele, folder, REPRESENTATIVES_FILE), ".", output=REPRESENTATIVES_STRUCTURES % i, topology=topology)
 
 
 def summerize(pele_path):
