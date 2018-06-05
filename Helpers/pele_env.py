@@ -27,7 +27,7 @@ class EnviroBuilder(object):
         self.clusters = args.clust = args.clust if not args.test else 3
         self.test = args.test
         self.folder = args.folder
-
+        self.pdb = args.pdb
         self.build_constant_paths()
 
     @classmethod
@@ -78,6 +78,7 @@ class EnviroBuilder(object):
         self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
         self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
         self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
+        self.topology = None if self.pdb else os.path.join(self.adap_ex_output, "topology.pdb")
 
     def create(self):
         if self.restart == "all":
