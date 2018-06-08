@@ -45,13 +45,13 @@ def run(args):
                 env.logger.info("Template {}z created".format(res))
 
         # Fill in Simulation Templates
-        ad.SimulationBuilder(env.pele_exit_temp, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
-        ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
+        ad.SimulationBuilder(env.pele_exit_temp,  env.topology, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
+        ad.SimulationBuilder(env.pele_temp,  env.topology, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
 
     if args.restart in ["all", "adaptive"]:
         # Run Adaptive Exit
         env.logger.info("Running ExitPath Adaptive")
-        adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
+        adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, env.topology, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
             env.adap_ex_input, env.cpus, env.pele_exit_temp, env.residue, env.equil_steps, env.random_num)
         adaptive_exit.run(hook=True)
         env.logger.info("ExitPath Adaptive run successfully")
@@ -75,17 +75,17 @@ def run(args):
 
         # Pele Exploration
         env.logger.info("Running standard Pele")
-        ad.SimulationBuilder(env.pele_temp, cs.PELE_KEYWORDS, center, radius)
-        adaptive_long = ad.SimulationBuilder(env.ad_l_temp, cs.ADAPTIVE_KEYWORDS,
+        ad.SimulationBuilder(env.pele_temp,  env.topology, cs.PELE_KEYWORDS, center, radius)
+        adaptive_long = ad.SimulationBuilder(env.ad_l_temp,  env.topology, cs.ADAPTIVE_KEYWORDS,
             cs.RESTART, env.adap_l_output, env.adap_l_input, args.cpus, env.pele_temp, args.residue, env.random_num)
         adaptive_long.run()
         env.logger.info("Pele run successfully")
 
-    if args.restart in ["all", "adaptive", "pele", "msm"] and not args.test:
+    if args.restart in ["all", "adaptive", "pele", "msm"]:
 
         # MSM Analysis
         env.logger.info("Running MSM analysis")
-        msm.analyse_results(env.adap_l_output, args.residue, args.cpus, env.pele_dir, env.topology, runTica=False)
+        msm.analyse_results(env, args, runTica=False)
         env.logger.info("MSM analysis run successfully")
 
         env.logger.info("{} System run successfully".format(args.residue))

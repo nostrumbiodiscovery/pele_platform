@@ -43,7 +43,7 @@ def writeInitialStructures(centers_info, filename_template, topology=None):
             with open(filename_template % cluster_num, "w") as fw:
                 fw.write(snapshots[snap_num])
         else:
-            splitTrajectory.main("", [trajectory, ], topology, [snap_num+1,], filename_template % cluster_num)
+            splitTrajectory.main("", [trajectory, ], topology, [snap_num+1,], filename_temp=filename_template % cluster_num)
 
 
 def get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, clusterCenters):
