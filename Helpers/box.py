@@ -28,8 +28,7 @@ def parseargs():
 
 
 def create_box(args, env):
-    if not args.test:
-        is_exit_finish(env.adap_ex_output)
+    BS_sasa_min, BS_sasa_max = is_exit_finish(env.adap_ex_output, args.test)
     if args.box:
         center, radius = retrieve_box_info(args.box, env.clusters_output)
         shutil.copy(args.box, os.path.join(env.pele_dir, "box.pdb"))
@@ -40,7 +39,7 @@ def create_box(args, env):
             center = args.user_center
             radius = args.user_radius
         box_to_pdb(center, radius, env.box_temp)
-    return center, radius
+    return center, radius, BS_sasa_min, BS_sasa_max
 
 
 def build_box(system, clusters, bs):
@@ -186,5 +185,5 @@ def box_to_pdb(center, radius, file):
     tb.TemplateBuilder(file, replace)
 
 
-def is_exit_finish(path):
-    best_structs.main(path)
+def is_exit_finish(path, test):
+    return best_structs.main(path, test=test)

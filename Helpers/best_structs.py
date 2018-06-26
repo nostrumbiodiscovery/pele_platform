@@ -45,7 +45,7 @@ def parse_args():
     return args.path, args.crit, args.nst, args.sort, args.ofreq
 
 
-def main(path, criteria=constants.CRITERIA, n_structs=500, sort_order="max", out_freq=FREQ):
+def main(path, test=False, criteria=constants.CRITERIA, n_structs=500, sort_order="max", out_freq=FREQ):
     """
 
       Description: Rank the traj found in the report files under path
@@ -71,8 +71,8 @@ def main(path, criteria=constants.CRITERIA, n_structs=500, sort_order="max", out
     """
 
     # Get Files
-    all_reports = glob.glob(os.path.join(path, "*/*report*"))
-    reports = [report for report in all_reports if(os.path.basename(os.path.dirname(report)).isdigit())]
+    reports = glob.glob(os.path.join(path, "*/*report*"))
+    #reports = [report for report in all_reports if(os.path.basename(os.path.dirname(report)).isdigit())]
 
     # Data Mining
     min_values = parse_values(reports, n_structs, criteria, sort_order)
@@ -82,12 +82,24 @@ def main(path, criteria=constants.CRITERIA, n_structs=500, sort_order="max", out
     reports_indexes = min_values.report.tolist()
     step_indexes = min_values[ACCEPTED_STEPS].tolist()
     max_sasa_info = {i: [epoch, report, value, int(step)] for i, (epoch, report, value, step) in enumerate(zip(epochs, reports_indexes, values, step_indexes))}
-    try:
+ 
+    if not test:
+    	try:
 		max_sasa_info[0]
-    except KeyError:
+    	except KeyError:
 		raise KeyError("Adaptive Exit didn't finish. Increase the number of cpus or change parameters inside MSM_PELE/Template/adaptive_exit.conf")
-    print(max_sasa_info)
-    return max_sasa_info
+    equilibration_reports = [report for report in reports if "equilibration" in os.path.basename(os.path.dirname(report))]
+    df_from_each_file = (pd.read_csv(f, sep='    ', engine='python') for f in equilibration_reports)
+    concatenated_df   = pd.concat(df_from_each_file, ignore_index=True)
+    return calculate_BS_sasa(concatenated_df[criteria].mean())
+
+
+def calculate_BS_sasa(sasa):
+	sasa_min = sasa + 0.15 
+	sasa_max = sasa + 0.55 if  0.7 < (sasa + 0.55) < 0.85 else 0.7
+	return sasa_min, sasa_max
+
+
 
 
 def parse_values(reports, n_structs, criteria, sort_order):
