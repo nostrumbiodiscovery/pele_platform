@@ -5,8 +5,7 @@ import numpy as np
 import argparse
 from AdaptivePELE.utilities import utilities
 from AdaptivePELE.freeEnergies import cluster, extractCoords
-
-
+from AdaptivePELE.analysis import splitTrajectory
 
 def parseArgs():
     parser = argparse.ArgumentParser(description="Script that reclusters the Adaptive clusters")
@@ -35,13 +34,16 @@ def writePDB(pmf_xyzg, title="clusters.pdb"):
         f.write(content)
 
 
-def writeInitialStructures(centers_info, filename_template):
+def writeInitialStructures(centers_info, filename_template, topology=None):
     for cluster_num in centers_info:
         epoch_num, traj_num, snap_num = map(int, centers_info[cluster_num]['structure'])
-        trajectory = "%d/trajectory_%d.pdb" % (epoch_num, traj_num)
-        snapshots = utilities.getSnapshots(trajectory)
-        with open(filename_template % cluster_num, "w") as fw:
-            fw.write(snapshots[snap_num])
+        trajectory = "%d/trajectory_%d.xtc" % (epoch_num, traj_num) if topology else "%d/trajectory_%d.pdb" % (epoch_num, traj_num)
+        snapshots = utilities.getSnapshots(trajectory, topology=topology)
+        if not topology:
+            with open(filename_template % cluster_num, "w") as fw:
+                fw.write(snapshots[snap_num])
+        else:
+            splitTrajectory.main("", [trajectory, ], topology, [snap_num+1,], filename_temp=filename_template % cluster_num)
 
 
 def get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, clusterCenters):
@@ -65,8 +67,8 @@ def get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, cluster
     return centersInfo
 
 
-def main(num_clusters, output_folder, ligand_resname, atom_ids):
-    extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids)
+def main(num_clusters, output_folder, ligand_resname, atom_ids, cpus, topology=None):
+    extractCoords.main(lig_resname=ligand_resname, non_Repeat=True, atom_Ids=atom_ids, nProcessors=cpus, parallelize=False, topology=topology)
     trajectoryFolder = "allTrajs"
     trajectoryBasename = "traj*"
     stride = 1
@@ -80,7 +82,6 @@ def main(num_clusters, output_folder, ligand_resname, atom_ids):
     clusteringObject.clusterTrajectories()
     clusteringObject.eliminateLowPopulatedClusters(clusterCountsThreshold)
     clusterCenters = clusteringObject.clusterCenters
-
     centersInfo = get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, clusterCenters)
     COMArray = [centersInfo[i]['center'] for i in xrange(num_clusters)]
     if output_folder is not None:
@@ -90,7 +91,7 @@ def main(num_clusters, output_folder, ligand_resname, atom_ids):
     else:
         outputFolder = ""
     writePDB(COMArray, outputFolder+"clusters_%d_KMeans_allSnapshots.pdb" % num_clusters)
-    writeInitialStructures(centersInfo, outputFolder+"initial_%d.pdb")
+    writeInitialStructures(centersInfo, outputFolder+"initial_%d.pdb", topology=topology)
 
 if __name__ == "__main__":
     n_clusters, lig_name, atom_id, output = parseArgs()

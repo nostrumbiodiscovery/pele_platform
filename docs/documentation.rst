@@ -148,6 +148,3 @@ i.e.3 python -m MSM_PELE.main complex.pbd resname chain --restart msm
                                                 parser.add_argument("--user_radius",
                                                 "-r", type=float,  help="Radius
                                                 of the box", default=None)
-
-Code:
-------
