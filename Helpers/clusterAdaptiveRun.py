@@ -3,9 +3,9 @@ import os
 import glob
 import numpy as np
 import argparse
-from AdaptivePELE.utilities import utilities
-from AdaptivePELE.freeEnergies import cluster, extractCoords
-from AdaptivePELE.analysis import splitTrajectory
+from MSM_PELE.AdaptivePELE.utilities import utilities
+from MSM_PELE.AdaptivePELE.freeEnergies import cluster, extractCoords
+from MSM_PELE.AdaptivePELE.analysis import splitTrajectory
 
 def parseArgs():
     parser = argparse.ArgumentParser(description="Script that reclusters the Adaptive clusters")
@@ -43,7 +43,7 @@ def writeInitialStructures(centers_info, filename_template, topology=None):
             with open(filename_template % cluster_num, "w") as fw:
                 fw.write(snapshots[snap_num])
         else:
-            splitTrajectory.main("", [trajectory, ], topology, [snap_num+1,], filename_temp=filename_template % cluster_num)
+            splitTrajectory.main("", [trajectory, ], topology, [snap_num+1,],template=filename_template % cluster_num)
 
 
 def get_centers_info(trajectoryFolder, trajectoryBasename, num_clusters, clusterCenters):

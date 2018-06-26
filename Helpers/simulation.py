@@ -1,6 +1,6 @@
 import os
 from MSM_PELE.Helpers import helpers, template_builder
-import AdaptivePELE.adaptiveSampling as ad
+import MSM_PELE.AdaptivePELE.adaptiveSampling as ad
 
 
 class SimulationBuilder(template_builder.TemplateBuilder):
