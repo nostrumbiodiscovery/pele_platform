@@ -2,16 +2,12 @@
 #SBATCH -J PELE_MPI
 #SBATCH --output=mpi_%j.out
 #SBATCH --error=mpi_%j.err
-#SBATCH --ntasks=90
-#SBATCH --mem-per-cpu=1G
+#SBATCH --qos=debug
+#SBATCH --ntasks=5
 
+module load intel mkl impi python/2.7.13
 
-module purge
+export PYTHONPATH=/gpfs/projects/bsc72/MSM_XTC/:/gpfs/projects/bsc72/lib/site-packages/:$PYTHONPATH
 
-module load Python PELE
-
-export PYTHONPATH=$PYTHONPATH:/path/to/MSM_PELE/
-
-export LD_LIBRARY_PATH=/path/to/schrodinger2017-4/mmshare-v4.0/lib/Linux-x86_64/:$LD_LIBRARY_PATH
-
-python /path/to/MSM_PELE/main.py  <PDB> <resname> <chain> --cpus <numcpus>
+#python -m MSM_PELE.main  PR_1A28_xray_-_minimized.pdb STR Z --cpus 5 --test -wf /home/bsc72/bsc72893/test_MSM/STR_Pele_9
+python -m MSM_PELE.main  PR_1A28_xray_-_minimized.pdb STR Z --cpus 5 --test 
