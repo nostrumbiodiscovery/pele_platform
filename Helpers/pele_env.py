@@ -19,12 +19,12 @@ class EnviroBuilder(object):
         self.forcefield = args.forcefield
         self.residue = args.residue
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
-        self.cpus = args.cpus = args.cpus if not args.test else 4
+        self.cpus = args.cpus = args.cpus if not args.test else 4 
         self.restart = args.restart
         self.native = args.native
         self.chain = args.chain
         self.mae_lig = args.mae_lig
-        self.clusters = args.clust = args.clust if not args.test else 3
+        self.clusters = args.clust = args.clust if not args.test else 2
         self.test = args.test
         self.folder = args.folder
         self.pdb = args.pdb
@@ -162,7 +162,7 @@ def is_repited(pele_dir):
             break
     if split_dir[-1].isdigit():
         i = split_dir[-1]
-        i = int(i) + 1
+        i = int(i) + 1 
     else:
         i = 1
     if os.path.isdir(pele_dir):
@@ -186,9 +186,9 @@ def is_last(pele_dir):
 			break
     if split_dir[-1].isdigit():
         i = split_dir[-1]
-        i = int(i) + 1
+        i = int(i) + 1 
     else:
-		i = 1
+		i = 1 
 
     if os.path.isdir(pele_dir):
             new_pele_dir = "{}_Pele_{}".format(original_dir, i)

@@ -87,7 +87,6 @@ def check_dependencies():
             os.environ["MMSHARE_EXEC"] = constants.MMSHARE
 
         sys.path.append(os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))
-        sys.path.insert(0, constants.ADAPTIVE)
 
         try:
             os.environ["PATH"] = "{}:{}".format(os.environ["PATH"], constants.MPIRUN)
