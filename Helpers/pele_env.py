@@ -19,15 +19,15 @@ class EnviroBuilder(object):
         self.forcefield = args.forcefield
         self.residue = args.residue
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
-        self.cpus = args.cpus = args.cpus if not args.test else 4 
+        self.cpus = args.cpus = args.cpus if not args.test else 4
         self.restart = args.restart
         self.native = args.native
         self.chain = args.chain
         self.mae_lig = args.mae_lig
         self.clusters = args.clust = args.clust if not args.test else 3
         self.test = args.test
-        self.work_folder = args.work_folder
-
+        self.folder = args.folder
+        self.pdb = args.pdb
         self.build_constant_paths()
 
     @classmethod
@@ -47,16 +47,18 @@ class EnviroBuilder(object):
         self.rotamers_file = None
         self.random_num = random.randrange(1, 70000)
         self.license = '''"{}"'''.format(cs.LICENSE)
+
         if self.test:
             self.equil_steps = 1
         else:
             self.equil_steps = int(cs.EQ_STEPS/self.cpus) if self.cpus < cs.EQ_STEPS else 1
 
-        if self.work_folder:
-            self.pele_dir = os.path.abspath(self.work_folder)
-        else:
-            pele_dir = os.path.abspath("{}_Pele".format(self.residue))
+        pele_dir = os.path.abspath("{}_Pele".format(self.residue))
+
+        if not self.folder:
             self.pele_dir = is_repited(pele_dir) if self.restart == "all" else is_last(pele_dir)
+        else:
+            self.pele_dir = os.path.abspath(self.folder)
 
         if self.mae_lig:
             self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
@@ -76,6 +78,7 @@ class EnviroBuilder(object):
         self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
         self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
         self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
+        self.topology = None if self.pdb else os.path.join(self.adap_ex_output, "topology.pdb")
 
     def create(self):
         if self.restart == "all":
@@ -159,7 +162,7 @@ def is_repited(pele_dir):
             break
     if split_dir[-1].isdigit():
         i = split_dir[-1]
-        i = int(i) + 1 
+        i = int(i) + 1
     else:
         i = 1
     if os.path.isdir(pele_dir):
@@ -183,9 +186,9 @@ def is_last(pele_dir):
 			break
     if split_dir[-1].isdigit():
         i = split_dir[-1]
-        i = int(i) + 1 
+        i = int(i) + 1
     else:
-		i = 1 
+		i = 1
 
     if os.path.isdir(pele_dir):
             new_pele_dir = "{}_Pele_{}".format(original_dir, i)

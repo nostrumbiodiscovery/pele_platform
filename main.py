@@ -16,6 +16,7 @@ import MSM_PELE.PPP.mut_prep4pele as ppp
 import MSM_PELE.Helpers.msm_analysis as msm
 import MSM_PELE.Helpers.missing_residues as mr
 
+__version__ = "1.0.3"
 
 def run(args):
     # Build folders and logging
@@ -33,8 +34,8 @@ def run(args):
 
         # Parametrize Ligand
         env.logger.info("Creating template for residue {}".format(args.residue))
-        template, rotamers_file = plop.parametrize_miss_residues(args, env, syst)
-        env.logger.info("Template {} created".format(template))
+        plop.parametrize_miss_residues(args, env, syst)
+        env.logger.info("Template {}z created".format(args.residue.lower()))
 
         # Parametrize missing residues
         for res, __, _ in missing_residues:
@@ -44,13 +45,13 @@ def run(args):
                 env.logger.info("Template {}z created".format(res))
 
         # Fill in Simulation Templates
-        ad.SimulationBuilder(env.pele_exit_temp, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
-        ad.SimulationBuilder(env.pele_temp, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
+        ad.SimulationBuilder(env.pele_exit_temp,  env.topology, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
+        ad.SimulationBuilder(env.pele_temp,  env.topology, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
 
     if args.restart in ["all", "adaptive"]:
         # Run Adaptive Exit
         env.logger.info("Running ExitPath Adaptive")
-        adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
+        adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, env.topology, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
             env.adap_ex_input, env.cpus, env.pele_exit_temp, env.residue, env.equil_steps, env.random_num)
         adaptive_exit.run(hook=True)
         env.logger.info("ExitPath Adaptive run successfully")
@@ -58,11 +59,11 @@ def run(args):
 
     if args.restart in ["all", "adaptive", "pele"]:
 
-        # KMeans Clustering
+        #KMeans Clustering
         if not os.path.isfile(env.clusters_output):
             env.logger.info("Running MSM Clustering")
             with hp.cd(env.adap_ex_output):
-                cl.main(env.clusters, env.cluster_output, args.residue, "", env.cpus)
+                cl.main(env.clusters, env.cluster_output, args.residue, "", env.cpus, env.topology)
             env.logger.info("MSM Clustering run successfully")
         else:
             pass
@@ -74,17 +75,17 @@ def run(args):
 
         # Pele Exploration
         env.logger.info("Running standard Pele")
-        ad.SimulationBuilder(env.pele_temp, cs.PELE_KEYWORDS, center, radius)
-        adaptive_long = ad.SimulationBuilder(env.ad_l_temp, cs.ADAPTIVE_KEYWORDS,
+        ad.SimulationBuilder(env.pele_temp,  env.topology, cs.PELE_KEYWORDS, center, radius)
+        adaptive_long = ad.SimulationBuilder(env.ad_l_temp,  env.topology, cs.ADAPTIVE_KEYWORDS,
             cs.RESTART, env.adap_l_output, env.adap_l_input, args.cpus, env.pele_temp, args.residue, env.random_num)
         adaptive_long.run()
         env.logger.info("Pele run successfully")
 
-    if args.restart in ["all", "adaptive", "pele", "msm"] and not args.test:
+    if args.restart in ["all", "adaptive", "pele", "msm"]:
 
         # MSM Analysis
         env.logger.info("Running MSM analysis")
-        msm.analyse_results(env.adap_l_output, args.residue, args.cpus, env.pele_dir)
+        msm.analyse_results(env, args, runTica=False)
         env.logger.info("MSM analysis run successfully")
 
         env.logger.info("{} System run successfully".format(args.residue))
@@ -115,8 +116,9 @@ if __name__ == "__main__":
     parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test")
     parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
-    parser.add_argument("--work_folder", "-wf", type=str,  help="Output Folder Name", default="")
-    
+    parser.add_argument("--folder", "-wf", type=str,  help="Folder to apply the restart to", default=None)
+    parser.add_argument("--pdb", action='store_true',  help="Use pdb files as output")
+
     args = parser.parse_args()
     if(args.clust > args.cpus and args.restart != "msm"):
         raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))

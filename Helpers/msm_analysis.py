@@ -2,6 +2,7 @@ import os
 import glob
 from AdaptivePELE.freeEnergies import extractCoords, prepareMSMFolders, estimateDGAdaptive
 from AdaptivePELE.freeEnergies import getRepresentativeStructures as getRepr
+import MSM_PELE.Helpers.tica as td
 import MSM_PELE.Helpers.helpers as hp
 import shutil
 import numpy as np
@@ -10,6 +11,7 @@ import numpy as np
 LAGTIME = 100
 NCLUSTER = 200
 CLUSTERINSTRIDE = 1
+DIMENSIONS = 2
 # select the first run, as it uses all trajectories (no
 # bootstrap)
 REPRESENTATIVES_FILE = "representative_structures/representative_structures_0.dat"
@@ -19,19 +21,25 @@ PMF_FILE = "pmf_xyzg_0.dat"
 N_BEST = 5
 
 
-def analyse_results(output_pele, ligand_resname, cpus, pele_dir, atom_ids=""):
-    with hp.cd(output_pele):
-        trajs_per_epoch = len(glob.glob(os.path.join("0", "*traj*")))
-        extractCoords.main(lig_resname=ligand_resname, non_Repeat=False, atom_Ids=atom_ids, parallelize=False, nProcessors=cpus)
-        prepareMSMFolders.main()
-        estimateDGAdaptive.main(trajs_per_epoch, LAGTIME, NCLUSTER, CLUSTERINSTRIDE)
-        results_file = summerize(output_pele)
-        shutil.move(results_file, os.path.join(pele_dir, "results.txt"))
-        # In case of more than one simulation, i.e. MSM_0, MSM_1, etc
-        MSM_folders = glob.glob(os.path.join(output_pele, "MSM_*"))
-        for i, folder in enumerate(MSM_folders):
-            getRepr.main(os.path.join(output_pele, folder, REPRESENTATIVES_FILE), ".", output=REPRESENTATIVES_STRUCTURES % i)
-            copy_best_structures(os.path.join(output_pele, folder, PMF_FILE), REPRESENTATIVES_STRUCTURES % i, n_best=N_BEST)
+def analyse_results(env, args, runTica=True):
+    trajs_per_epoch = len(glob.glob(os.path.join("*", "*traj*.*")))
+    lagtime = 1 if args.test else LAGTIME
+    lagtimes = None if args.test else None
+    clusters = 2 if args.test else NCLUSTER
+    with hp.cd(env.adap_l_output):
+        if runTica:
+            td.main(DIMENSIONS, clusters, args.residue, lagtime, trajs_per_epoch, 1000)
+            return()
+        else:
+            extractCoords.main(lig_resname=args.residue, non_Repeat=False, atom_Ids="", nProcessors=args.cpus, parallelize=True, topology=env.topology)
+            prepareMSMFolders.main()
+            estimateDGAdaptive.main(trajs_per_epoch, lagtime, clusters, lagtimes=lagtimes)
+            results_file = summerize(env.adap_l_output)
+            shutil.move(results_file, os.path.join(env.pele_dir, "results.txt"))
+            # In case of more than one simulation, i.e. MSM_0, MSM_1, etc
+            MSM_folders = glob.glob(os.path.join(env.adap_l_output, "MSM_*"))
+            for i, folder in enumerate(MSM_folders):
+                getRepr.main(os.path.join(env.adap_l_output, folder, REPRESENTATIVES_FILE), ".", output=REPRESENTATIVES_STRUCTURES % i, topology=env.topology)
 
 
 def summerize(pele_path):
@@ -83,4 +91,4 @@ def copy_best_structures(pmf_file, output_folder, n_best=5):
 
 
 if __name__ == "__main__":
-    analyse_results("/home/dsoler/STR_PEle/output_pele", "STR")
+    analyse_results("/home/dsoler/STR_PEle/env.adap_l_output", "STR")

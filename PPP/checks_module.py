@@ -152,6 +152,9 @@ def CheckMetalsCoordination(structure):
                             coordinated_atoms_list.append(at)
                             prev_atom = at
                     coordinated_metals[metal_res] = coordinated_atoms_list#, 'angles': angles}
+
+
+                    coordinated_metals[metal_res] = coordinated_atoms_list#, 'angles': angles}
     coordinated_atoms_ids = {}
     if coordinated_metals:
         for metal, atoms_list in coordinated_metals.iteritems():

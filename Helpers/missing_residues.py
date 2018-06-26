@@ -11,5 +11,4 @@ def create_template(system, res, pele_dir, forcefield):
     output_pdb = os.path.join(pele_dir, "miss_residue.pdb")
     syst = sp.SystemBuilder.build_system(system, None, res, pele_dir, output=output_pdb)
     print(syst.lig, res)
-    template, rotamers_file = plop.main(syst.lig, res, pele_dir, forcefield, 4, 1000, -1, mae_charges=False, clean=True)
-    hp.silentremove([ligand_pdb, ligand_mae])
+    plop.main(syst.lig, res, pele_dir, forcefield, 4, 1000, -1, mae_charges=False, clean=True)
