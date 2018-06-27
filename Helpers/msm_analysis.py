@@ -22,11 +22,11 @@ N_BEST = 5
 
 
 def analyse_results(env, args, runTica=True):
-    trajs_per_epoch = len(glob.glob(os.path.join("*", "*traj*.*")))
     lagtime = 1 if args.test else LAGTIME
     lagtimes = None if args.test else None
     clusters = 2 if args.test else NCLUSTER
     with hp.cd(env.adap_l_output):
+    	trajs_per_epoch = len(glob.glob(os.path.join("0", "*traj*.*")))
         if runTica:
             td.main(DIMENSIONS, clusters, args.residue, lagtime, trajs_per_epoch, 1000)
             return()
