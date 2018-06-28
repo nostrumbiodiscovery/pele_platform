@@ -210,16 +210,13 @@ def writeFilenamesExtractedCoordinates(pathFolder, lig_resname, atom_Ids, writeL
 
     originalPDBfiles = glob.glob(os.path.join(pathFolder, '*traj*.*'))
     workers = []
-    print(originalPDBfiles)
     for filename in originalPDBfiles:
-        print(filename)
         if pool is None:
             # serial version
             writeFilenameExtractedCoordinates(filename, lig_resname, atom_Ids, pathFolder, writeLigandTrajectory, constants, writeCA, sidechains, topology=topology)
         else:
             # multiprocessor version
             workers.append(pool.apply_async(writeFilenameExtractedCoordinates, args=(filename, lig_resname, atom_Ids, pathFolder, writeLigandTrajectory, constants, writeCA, sidechains, topology)))
-        print(filename)
     for w in workers:
         w.get()
 

@@ -29,7 +29,7 @@ elif machine == "bscls309":
     DATA_FOLDER = "/home/jgilaber/PELE/PELE-1.5/Data"
     DOCUMENTS_FOLDER = "/home/jgilaber/PELE/PELE-1.5/Documents"
 else:
-    PELE_EXECUTABLE = os.path.join(cs.PELE, cs.PELE_BIN_NAME)
+    PELE_EXECUTABLE = cs.PELE_BIN
     DATA_FOLDER = os.path.join(cs.PELE, "Data")
     DOCUMENTS_FOLDER = os.path.join(cs.PELE, "Documents")
 

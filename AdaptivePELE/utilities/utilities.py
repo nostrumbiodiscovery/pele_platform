@@ -67,13 +67,12 @@ def getSnapshots(trajectoryFile, verbose=False, topology=None):
         if not verbose:
             return snapshots
 
-        remarkInfo = "REMARK 000 File created using PELE++\nREMARK source            : %s\nREMARK original model nr : %d\nREMARK First snapshot is 1, not 0 (as opposed to report)\n%s"
-        snapshotsWithInfo = [remarkInfo % (trajectoryFile, i+1, snapshot) for i, snapshot in enumerate(snapshots)]
+        remarkInfo = "REMARK 000 File created using PELE++\nREMARK source            : %s\nREMARK original model nr : %d\nREMARK First snapshot is 1, not 0 (as opposed to report)\n"
+        snapshotsWithInfo = [remarkInfo % (trajectoryFile, i+1)+snapshot for i, snapshot in enumerate(snapshots)]
     elif ext == ".xtc":
         if topology is None:
             raise ValueError("Topology needed for loading xtc files")
-        with md.formats.XTCTrajectoryFile(trajectoryFile) as f:
-            snapshotsWithInfo, _, _, _ = f.read()
+        snapshotsWithInfo = md.load(trajectoryFile, top=topology)
     else:
         raise ValueError("Unrecongnized file extension for %s" % trajectoryFile)
     return snapshotsWithInfo
