@@ -47,9 +47,9 @@ def patch_environ():
     libraries during import.
 
     """
-
+    print(os.path.join(constants.SCHRODINGER, "mmshare*/lib/Linux-x86_64/")) 
     #Check whether patch_environ was already run
-    if "SCHRODINGER" in os.environ:
+    if os.path.join(constants.SCHRODINGER, "mmshare*/lib/Linux-x86_64/")  in os.environ['LD_LIBRARY_PATH']:
         return
     else:
         os.environ["SCHRODINGER"] = constants.SCHRODINGER
@@ -66,6 +66,7 @@ def patch_environ():
         os.environ['LD_LIBRARY_PATH'] = ":".join(schrodinger_libs)
 
     #Relunch shell
+    print( os.environ['LD_LIBRARY_PATH'])
     os.execve(sys.executable, [sys.executable] + sys.argv, os.environ)
 
 
@@ -99,14 +100,8 @@ def check_dependencies():
         except KeyError:
             raise("Change SCHRODINGER path in constants.py module")
 
-        try:
-            pele_bin_path = os.path.join(os.environ["PELE"], "bin")
-            os.environ["PATH"] = "{}:{}".format(os.environ["PATH"], pele_bin_path)
-        except KeyError:
-            raise("Change PELE path in constants.py module")
-
         if not find_executable("mpirun"):
             raise ValueError("Change mpirun path in constants.py module")
 
-        if not find_executable("Pele_mpi") and not find_executable("PELE-1.5_mpi"):
+        if not find_executable(constants.PELE_BIN):
             raise ValueError("Change Pele path in constants.py module")
