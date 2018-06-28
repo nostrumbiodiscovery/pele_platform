@@ -8,7 +8,6 @@
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 from builtins import range
-import os
 import numpy as np
 import glob
 import sys
@@ -299,8 +298,8 @@ def main(trajWildcard, reweightingT=1000):
     # radius of the cube for volume determination
     d = 0.75
 
-    #originalFilenames = glob.glob(trajWildcard)
-    originalFilenames = glob.glob("rawData/"+trajWildcard)
+    originalFilenames = glob.glob(trajWildcard)
+    # originalFilenames = glob.glob("rawData/"+trajWildcard)
     originalCoordinates = gather_coordinates(originalFilenames)
 
     bins = create_box(clusters, originalCoordinates, d)

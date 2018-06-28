@@ -31,7 +31,7 @@ def main(trajsPerEpoch, lagtime, nclusters, clusteringStride=1, nruns=10, lagtim
                                            nruns=nruns,
                                            useAllTrajInFirstRun=True,
                                            computeDetailedBalance=True,
-                                           trajWildcard="*traj*.*",
+                                           trajWildcard="traj_*",
                                            folderWithTraj="rawData",
                                            clusterCountsThreshold=0,
                                            clusteringStride=clusteringStride)
