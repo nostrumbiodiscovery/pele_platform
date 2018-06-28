@@ -47,28 +47,30 @@ def patch_environ():
     libraries during import.
 
     """
-    print(os.path.join(constants.SCHRODINGER, "mmshare*/lib/Linux-x86_64/")) 
-    #Check whether patch_environ was already run
-    if os.path.join(constants.SCHRODINGER, "mmshare*/lib/Linux-x86_64/")  in os.environ['LD_LIBRARY_PATH']:
-        return
-    else:
-        os.environ["SCHRODINGER"] = constants.SCHRODINGER
+
+    os.environ["SCHRODINGER"] = constants.SCHRODINGER
 
     #Find schrodinger libraries
     schrodinger_libs_pattern = os.path.join(constants.SCHRODINGER, "mmshare*/lib/Linux-x86_64/")
     schrodinger_libs = glob.glob(schrodinger_libs_pattern)
     schrodinger_libs.append(os.path.join(constants.SCHRODINGER, "internal/lib/ssl"))
+    print(is_patch_environ_run(schrodinger_libs))
+    #Exit condition
+    if is_patch_environ_run(schrodinger_libs):
+        return
 
     #Update LD_LIBRARY_PATH
     if 'LD_LIBRARY_PATH' in os.environ:
-        os.environ['LD_LIBRARY_PATH'] = "{}:{}".format(":".join(schrodinger_libs), os.environ['LD_LIBRARY_PATH'])
+        os.environ['LD_LIBRARY_PATH'] = "{}:{}".format(os.environ['LD_LIBRARY_PATH'], ":".join(schrodinger_libs))
     else:
         os.environ['LD_LIBRARY_PATH'] = ":".join(schrodinger_libs)
 
     #Relunch shell
-    print( os.environ['LD_LIBRARY_PATH'])
     os.execve(sys.executable, [sys.executable] + sys.argv, os.environ)
 
+def is_patch_environ_run(necessary_libraries):
+    print(os.environ['LD_LIBRARY_PATH'].split(":"))
+    return all([library in os.environ['LD_LIBRARY_PATH'].split(":") for library in necessary_libraries]) 
 
 def check_dependencies():
         #Update libraries
