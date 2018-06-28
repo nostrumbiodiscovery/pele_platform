@@ -92,7 +92,7 @@ def check_dependencies():
         sys.path.append(os.path.join(os.environ["SCHRODINGER"], "internal/lib/python2.7/site-packages/"))
 
         try:
-            os.environ["PATH"] = "{}:{}".format(os.environ["PATH"], constants.MPIRUN)
+            os.environ["PATH"] = "{}:{}".format(constants.MPIRUN, os.environ["PATH"])
         except ValueError:
             os.environ["PATH"] = constants.MPIRUN
 
@@ -101,7 +101,8 @@ def check_dependencies():
             os.environ["SCHRODINGER"]
         except KeyError:
             raise("Change SCHRODINGER path in constants.py module")
-
+        
+        print(find_executable("mpirun"))
         if not find_executable("mpirun"):
             raise ValueError("Change mpirun path in constants.py module")
 
