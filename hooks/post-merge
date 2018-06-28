@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Running post-merge hook from $PWD"
+
+python AdaptivePELE/setup.py build_ext --inplace
+python3 AdaptivePELE/setup.py build_ext --inplace
