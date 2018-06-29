@@ -1,4 +1,7 @@
 import sys
+import os
+import argparse
+import MSM_PELE.Helpers.template_builder as tb
 
 AMINOACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
               "SER", "ASP", "LYS", "MET", "GLN",
@@ -23,7 +26,7 @@ class ConstraintBuilder(object):
         self.gaps = gaps
         self.metals = metals
 
-    def parse_atoms(self):
+    def parse_atoms(self, interval=10):
         residues = {}
         initial_res = None
         with open(self.pdb, "r") as pdb:
@@ -39,15 +42,15 @@ class ConstraintBuilder(object):
                             initial_res = True
                             continue
                         # Apply constraint every 10 residues
-                        elif int(resnum) % 10 != 1:
+                        elif int(resnum) % interval != 1:
                             residues["terminal"] = [chain, line[22:26].strip()]
-                        elif int(resnum) % 10 == 1 and line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
+                        elif int(resnum) % interval == 1 and line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
                             residues[resnum] = chain
                     except ValueError:
                         continue
         return residues
 
-    def build_constraint(self, residues):
+    def build_constraint(self, residues, BACK_CONSTR=BACK_CONSTR, TER_CONSTR=TER_CONSTR):
 
         init_constr = ['''"constraints":[''', ]
 
@@ -84,8 +87,23 @@ class ConstraintBuilder(object):
         return metal_constr
 
 
-def retrieve_constraints(pdb_file, gaps, metal):
+def retrieve_constraints(pdb_file, gaps, metal, back_constr=BACK_CONSTR, ter_constr=TER_CONSTR, interval=10):
     constr = ConstraintBuilder(pdb_file, gaps, metal)
-    residues = constr.parse_atoms()
-    constraints = constr.build_constraint(residues)
+    residues = constr.parse_atoms(interval=interval)
+    constraints = constr.build_constraint(residues, back_constr, ter_constr)
     return constraints
+
+def parseargs():
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('pdb', type=str, help='pdb to create the contraints on')
+    parser.add_argument('conf', help='Control file to fill in. It need to templetazide with $CONSTRAINTS')
+    parser.add_argument('--interval', type=int, help="Every how many CA to constraint")
+    parser.add_argument('--ca', type=int, help="Constraint value to use on backbone CA", default=BACK_CONSTR)
+    parser.add_argument('--terminal', type=int, help="Constraint value to use on terminal CA", default=TER_CONSTR)
+    args = parser.parse_args()
+    return os.path.abspath(args.pdb), os.path.abspath(args.conf), args.interval, args.conf, args.ca, args.terminal
+
+if __name__ == "__main__":
+    pdb, conf, interval, conf, back_constr, ter_constr = parseargs()
+    constraints = retrieve_constraints(pdb, {}, {}, back_constr, ter_constr, interval)
+    tb.TemplateBuilder(conf, { "CONSTRAINTS" : "\n".join(constraints) }) 
