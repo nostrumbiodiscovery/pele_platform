@@ -1,3 +1,4 @@
+import os
 import argparse
 import json
 import sys
@@ -40,7 +41,6 @@ def main(control_file):
 
     # parameters
     trajectoryFolder, trajectoryBasename, numClusters, stride, lagtimes, _, _, numberOfITS, _, _, lagtime, clusterCountsThreshold = readParams(control_file)
-
     # program
     clusteringObject = cluster.Cluster(numClusters, trajectoryFolder, trajectoryBasename, alwaysCluster=False, stride=stride)
     clusteringObject.clusterTrajectories()

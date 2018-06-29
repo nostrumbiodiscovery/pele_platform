@@ -33,8 +33,6 @@ else:
     DATA_FOLDER = os.path.join(cs.PELE, "Data")
     DOCUMENTS_FOLDER = os.path.join(cs.PELE, "Documents")
 
-
-
 inputFileTemplate = "{ \"files\" : [ { \"path\" : \"%s\" } ] }"
 trajectoryBasename = "*traj*"
 
