@@ -9,7 +9,7 @@ machine = socket.getfqdn()
 if "bsc.mn" in machine:
     SCHRODINGER = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC"
     PELE = "/gpfs/projects/bsc72/PELE++/nord/rev090518"
-    PELE_BIN = "/gpfs/projects/bsc72/PELE++/nord/rev090518/bin/PELE-1.5_mpi"
+    PELE_BIN = "PELE-1.5_mpi"
     MPIRUN = "/apps/INTEL/2017.4/impi/2017.3.196/bin64"
     LICENSE = "/gpfs/projects/bsc72/PELE++/license"
     MMSHARE = None
@@ -20,7 +20,7 @@ if "bsc.mn" in machine:
 elif "mn.bsc" in machine:
     SCHRODINGER = "/gpfs/projects/bsc72/SCHRODINGER_ACADEMIC_NORD"
     PELE = "/gpfs/projects/bsc72/PELE++/nord/rev090518"
-    PELE_BIN = "/gpfs/projects/bsc72/PELE++/nord/rev090518/bin/PELE-1.5_mpi"
+    PELE_BIN = "PELE-1.5_mpi"
     MPIRUN = "/apps/OPENMPI/1.8.1-mellanox/bin"
     LICENSE = "/gpfs/projects/bsc72/PELE++/license"
     MMSHARE = None
@@ -31,7 +31,7 @@ elif "mn.bsc" in machine:
 elif "bsccv" in machine:
     SCHRODINGER = "/data2/bsc72/SCHRODINGER_ACADEMIC"
     PELE = "/data/EAPM/PELE/PELE++/life/rev12489"
-    PELE_BIN = "/data/EAPM/PELE/PELE++/life/rev1248/bin/PELE-1.5_mpi"
+    PELE_BIN = "PELE-1.5_mpi"
     MPIRUN = "/data2/apps/OPENMPI/1.6.1/bin"
     #LICENSE = "/gpfs/projects/bsc72/PELE++/license"
     MMSHARE = None
@@ -44,9 +44,8 @@ elif "bsccv" in machine:
 else:
     SCHRODINGER = "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
     PELE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524/"
-    PELE_BIN = "/home/dsoler/cleanPELE_rev/build_gnu/Pele_mpi"
-    #MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/OpenMPI/1.8.4-GCC-4.9.2/bin"
-    MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/OpenMPI/2.1.2-GCC-6.4.0-2.28/bin"
+    PELE_BIN = "/home/dsoler/cleanPELE_rev/build_gnu/Pele_mpi" 
+    MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/OpenMPI/2.1.2-GCC-6.4.0-2.28/bin/"
     LICENSE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/licenses/"
     MMSHARE = None
     # Provisional workaround until best_struct.py is fixed
