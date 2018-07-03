@@ -1,14 +1,13 @@
 import os
 import MSM_PELE.Helpers.check_env_var as env
 env.check_dependencies()
-import shutil
 import argparse
+import MSM_PELE.constants as cs
 import MSM_PELE.PlopRotTemp.main as plop
 import MSM_PELE.Helpers.helpers as hp
 import MSM_PELE.Helpers.pele_env as pele
 import MSM_PELE.Helpers.simulation as ad
 import MSM_PELE.Helpers.clusterAdaptiveRun as cl
-import MSM_PELE.Helpers.center_of_mass as cm
 import MSM_PELE.Helpers.system_prep as sp
 import MSM_PELE.Helpers.box as bx
 import MSM_PELE.PPP.mut_prep4pele as ppp
@@ -17,7 +16,7 @@ import MSM_PELE.Helpers.missing_residues as mr
 
 __version__ = "1.0.3"
 
-def run(args, cs):
+def run(args):
     # Build folders and logging
     env = pele.EnviroBuilder.build_env(args)
 
@@ -44,8 +43,8 @@ def run(args, cs):
                 env.logger.info("Template {}z created".format(res))
 
         # Fill in Simulation Templates
-        ad.SimulationBuilder(env.pele_exit_temp,  env.topology, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
-        ad.SimulationBuilder(env.pele_temp,  env.topology, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
+        ad.Simulation_handler(env, protein_constraints) 
+
 
     if args.restart in cs.SECOND_RESTART:
         # Run Adaptive Exit
