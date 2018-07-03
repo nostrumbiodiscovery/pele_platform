@@ -3,7 +3,6 @@ import MSM_PELE.Helpers.check_env_var as env
 env.check_dependencies()
 import shutil
 import argparse
-import MSM_PELE.constants as cs
 import MSM_PELE.PlopRotTemp.main as plop
 import MSM_PELE.Helpers.helpers as hp
 import MSM_PELE.Helpers.pele_env as pele
@@ -18,11 +17,11 @@ import MSM_PELE.Helpers.missing_residues as mr
 
 __version__ = "1.0.3"
 
-def run(args):
+def run(args, cs):
     # Build folders and logging
     env = pele.EnviroBuilder.build_env(args)
 
-    if args.restart in ["all", "glide"]:
+    if args.restart in cs.FIRST_RESTART:
 
         # Build System
         env.logger.info("Checking {} system for Pele".format(args.residue))
@@ -48,7 +47,7 @@ def run(args):
         ad.SimulationBuilder(env.pele_exit_temp,  env.topology, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
         ad.SimulationBuilder(env.pele_temp,  env.topology, cs.EX_PELE_KEYWORDS, env.native, args.forcefield, args.chain, "\n".join(protein_constraints), args.cpus, env.license)
 
-    if args.restart in ["all", "adaptive", "glide"]:
+    if args.restart in cs.SECOND_RESTART:
         # Run Adaptive Exit
         env.logger.info("Running ExitPath Adaptive")
         adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, env.topology, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
@@ -57,7 +56,7 @@ def run(args):
         env.logger.info("ExitPath Adaptive run successfully")
 
 
-    if args.restart in ["all", "adaptive", "pele"]:
+    if args.restart in cs.THIRD_RESTART:
 
         #KMeans Clustering
         if not os.path.isfile(env.clusters_output):
@@ -81,7 +80,7 @@ def run(args):
         adaptive_long.run()
         env.logger.info("Pele run successfully")
 
-    if args.restart in ["all", "adaptive", "pele", "msm"]:
+    if args.restart in cs.FOURTH_RESTART:
 
         # MSM Analysis
         env.logger.info("Running MSM analysis")

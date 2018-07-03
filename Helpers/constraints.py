@@ -34,7 +34,7 @@ class ConstraintBuilder(object):
                 resname = line[16:21].strip()
                 atomtype = line[11:16].strip()
                 resnum = line[22:26].strip()
-                chain = line[20:23].strip()
+                chain = line[20:22].strip()
                 if line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
                     try:
                         if not initial_res:
