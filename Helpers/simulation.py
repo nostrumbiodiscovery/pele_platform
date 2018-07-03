@@ -1,7 +1,8 @@
 import os
 from MSM_PELE.Helpers import helpers, template_builder
 import MSM_PELE.AdaptivePELE.adaptiveSampling as ad
-
+import MSM_PELE.constants as cs
+import MSM_PELE.Helpers.center_of_mass as cm 
 
 class SimulationBuilder(template_builder.TemplateBuilder):
 
@@ -18,6 +19,19 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         self.replace = {keyword : value for keyword, value in zip(self.keywords, self.ad_opt)}
 
         super(SimulationBuilder, self).__init__(self.file, self.replace)
+
+    @classmethod
+    def Simulation_handler(cls, env, protein_constraints):
+        if not env.hbond:
+            cls(env.pele_exit_temp,  env.topology, cs.EX_PELE_KEYWORDS,
+                    env.native, env.forcefield, env.chain, "\n".join(protein_constraints), env.cpus, env.license)
+            cls(env.pele_temp,  env.topology, cs.EX_PELE_KEYWORDS,
+                    env.native, env.forcefield, env.chain, "\n".join(protein_constraints), env.cpus, env.license)
+        elif env.hbond:
+            cls(env.pele_exit_temp,  env.topology, cs.PELE_GLIDE_KEYWORDS,  cs.LICENSE,
+                    "\n".join(protein_constraints), cm.center_of_mass(env.ligand_ref), env.chain, env.native,
+                    * env.hbond)
+        
 
     def run(self, hook=False):
         with helpers.cd(os.path.dirname(self.file)):
@@ -37,4 +51,5 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             print("Lowering cluster RMSD to: {}".format(cluster_object.thresholdCalculator.values))
         cluster_object.thresholdCalculator.values = initial_rmsd_cluster_values
         print("Interactive clustering ended restoring initial value {}".format(cluster_object.thresholdCalculator.values))
+
 
