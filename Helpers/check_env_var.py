@@ -54,7 +54,6 @@ def patch_environ():
     schrodinger_libs_pattern = os.path.join(constants.SCHRODINGER, "mmshare*/lib/Linux-x86_64/")
     schrodinger_libs = glob.glob(schrodinger_libs_pattern)
     schrodinger_libs.append(os.path.join(constants.SCHRODINGER, "internal/lib/ssl"))
-    print(is_patch_environ_run(schrodinger_libs))
     #Exit condition
     if is_patch_environ_run(schrodinger_libs):
         return
@@ -69,7 +68,6 @@ def patch_environ():
     os.execve(sys.executable, [sys.executable] + sys.argv, os.environ)
 
 def is_patch_environ_run(necessary_libraries):
-    print(os.environ['LD_LIBRARY_PATH'].split(":"))
     return all([library in os.environ['LD_LIBRARY_PATH'].split(":") for library in necessary_libraries]) 
 
 def check_dependencies():
@@ -102,7 +100,6 @@ def check_dependencies():
         except KeyError:
             raise("Change SCHRODINGER path in constants.py module")
         
-        print(find_executable("mpirun"))
         if not find_executable("mpirun"):
             raise ValueError("Change mpirun path in constants.py module")
 
