@@ -58,7 +58,8 @@ else:
 # PRIVATE CONSTANTS
 #############################
 
-# DEFAULT VALUES
+
+# DEFAULTS
 COMPLEX = "complex.pdb"
 RESULTS = "results"
 LIG_RES = "LIG"
@@ -72,63 +73,93 @@ PLATFORM_RESTART = "all"
 EQ_STEPS = 50
 GRIDRES = '10.0'
 
-# TEMPLATE KEYWORDS
+#TEMPLATE KEYWORDS:
 ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "SEED"]
 EX_ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "EQ_STEPS", "SEED"]
 EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
 PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS", "SASA_min", "SASA_max"]
+PELE_GLIDE_KEYWORDS = ["LICENSE", "CONSTRAINTS", "CENTER", "CHAIN", "NATIVE", "HBOND1", "HBOND2"]
+GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
 NATIVE = '''
-                        {{
+                                   {{
+       
+                                      "type": "rmsd",
+       
+                                      "Native": {{\n\
+                                       "path":\n\
+                                       "{}" }},\n\
+       
+                                      "selection": {{ "chains": {{ "names": [ "{}" ] }} }},\n\
+       
+                                      "includeHydrogens": false,\n\
+       
+                                      "doSuperposition": false,\n\
+       
+                                      "tag" : "ligandRMSD"\n\
+       
+                                   }},\n\
+       
+       
+            '''
+       
 
-                           "type": "rmsd",
-
-                           "Native": {{\n\
-                            "path":\n\
-                            "{}" }},\n\
-
-                           "selection": {{ "chains": {{ "names": [ "{}" ] }} }},\n\
-
-                           "includeHydrogens": false,\n\
-
-                           "doSuperposition": false,\n\
-
-                           "tag" : "ligandRMSD"\n\
-
-                        }},\n\
+#RESTARTS:
+FIRST_RESTART = ["all","glide"]
+SECOND_RESTART = ["all", "adaptive", "glide"]
+THIRD_RESTART = ["all", "adaptive", "pele"]
+FOURTH_RESTART = ["all", "adaptive", "pele", "msm"] 
 
 
-'''
-
-SYSTEM = "System {} checked successfully\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"
-
-
-
-# FOLDERS&PATH
+#FOLDERS&PATHS
 DIR = os.path.dirname(__file__)
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
 FOLDERS = ["",
-           "DataLocal/Templates/OPLS2005/HeteroAtoms/",
-           "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
-           "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-           "DataLocal/LigandRotamerLibs",
-           "output_pele",
-           "output_adaptive_exit",
-           "output_clustering"
-          ]
+      "DataLocal/Templates/OPLS2005/HeteroAtoms/",
+      "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
+      "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
+      "DataLocal/LigandRotamerLibs",
+      "output_pele",
+      "output_adaptive_exit",
+      "output_clustering"
+     ]
 
+FOLDERS_GLIDE = ["", 
+      "DataLocal/Templates/OPLS2005/HeteroAtoms/",
+      "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
+      "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
+      "DataLocal/LigandRotamerLibs",
+      "output_adaptive",
+      "output_clustering",
+      "glide_calculations/structures"
+      ]
+
+FILES_GLIDE = [os.path.join(DIR, "Templates/glide.in"),
+               os.path.join(DIR, "Templates/adaptive_glide.conf"),
+               os.path.join(DIR, "Templates/pele_glide.conf")]
+
+
+FILES_GLIDE_TEST = [os.path.join(DIR, "Templates/glide.in"),
+               os.path.join(DIR, "Templates/adaptive_glide_test.conf"),
+               os.path.join(DIR, "Templates/pele_glide.conf")]
+
+FILES_NAME_GLIDE = ["glide.in", "adaptive.conf", "pele.conf"]
 FILES_SP = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_SP.conf"),
-                 os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),
-                 os.path.join(DIR, "Templates/pele_exit.conf")]
+            os.path.join(DIR, "Templates/adaptive_exit.conf"), 
+            os.path.join(DIR, "Templates/adaptive_long.conf"),
+            os.path.join(DIR, "Templates/pele_exit.conf")]
 
 FILES_XP = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_XP.conf"),
-                 os.path.join(DIR, "Templates/adaptive_exit.conf"), os.path.join(DIR, "Templates/adaptive_long.conf"),
-                 os.path.join(DIR, "Templates/pele_exit.conf")]
+            os.path.join(DIR, "Templates/adaptive_exit.conf"), 
+            os.path.join(DIR, "Templates/adaptive_long.conf"), 
+            os.path.join(DIR, "Templates/pele_exit.conf")]
 
 FILES_TEST = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_SP.conf"),
-                 os.path.join(DIR, "Templates/adaptive_exit_test.conf"), os.path.join(DIR, "Templates/adaptive_long_test.conf"),
-                 os.path.join(DIR, "Templates/pele_exit.conf")]
+   os.path.join(DIR, "Templates/adaptive_exit_test.conf"),
+   os.path.join(DIR, "Templates/adaptive_long_test.conf"),
+   os.path.join(DIR, "Templates/pele_exit.conf")]
 
-FILES_NAME = ["box.pdb", "pele.conf", "adaptive_exit.conf", "adaptive_long.conf", "pele_exit.conf"]
+FILES_NAME_MSM = ["box.pdb", "pele.conf", "adaptive_exit.conf", "adaptive_long.conf", "pele_exit.conf"]
 
-# ERRORS
+#MESSAGES&ERRORS
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
+SYSTEM = "System {} checked successfully\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"
