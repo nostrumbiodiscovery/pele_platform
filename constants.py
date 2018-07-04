@@ -104,8 +104,8 @@ NATIVE = '''
        
 
 #RESTARTS:
-FIRST_RESTART = ["all","glide"]
-SECOND_RESTART = ["all", "adaptive", "glide"]
+FIRST_RESTART = ["all",]
+SECOND_RESTART = ["all", "adaptive"]
 THIRD_RESTART = ["all", "adaptive", "pele"]
 FOURTH_RESTART = ["all", "adaptive", "pele", "msm"] 
 

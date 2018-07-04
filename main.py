@@ -1,7 +1,7 @@
 import argparse
-import MSM_PELE.msm as msm
+import MSM_PELE.MSM.main as msm
 import MSM_PELE.constants as cs
-import MSM_PELE.glide as gl
+import MSM_PELE.Rescore.main as gl
 
 
 class Launcher():
@@ -62,6 +62,9 @@ def parseargs():
 
 if __name__ == "__main__":
     args = parseargs()
-    print(args.hbond)
+    if args.hbond:
+        setattr(args, "software", "glide")
+    else:
+        setattr(args, "software", "msm")
     platform_object = Launcher(args)
     platform_object.launch()
