@@ -1,7 +1,9 @@
 import argparse
+import os
 import MSM_PELE.MSM.main as msm
 import MSM_PELE.constants as cs
 import MSM_PELE.Rescore.main as gl
+import MSM_PELE.AdaptivePELE.adaptiveSampling as ad
 
 
 class Launcher():
@@ -11,13 +13,15 @@ class Launcher():
         self.args = args
 
     def launch(self):
-        if not args.hbond:
+        if args.software == "msm":
             if(args.clust > args.cpus and args.restart != "msm" and not args.test):
                 raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))
             else:
                 msm.run(args)
+        elif args.software == "adaptive":
+            ad.main(args)
 
-        else:
+        elif args.software == "glide":
             gl.run(args)
 
     @property
@@ -25,9 +29,6 @@ class Launcher():
         return self.args
 
 
-class ArgsHandler:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
 
 def parseargs():
     parser = argparse.ArgumentParser(description='Run PELE Platform')
@@ -56,6 +57,9 @@ def parseargs():
     parser.add_argument("--folder", "-wf", type=str,  help="Folder to apply the restart to", default=None)
     parser.add_argument("--pdb", action='store_true',  help="Use pdb files as output")
     parser.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default=None)
+    parser.add_argument("--msm", action="store_true",  help="Launch MSM")
+    parser.add_argument("--adaptive", type=str,  help="Adaptive control_file")
+    parser.add_argument("--pele", type=str,  help="Pele control_file")
     parser.add_argument("--precision_glide", type=str,  help="Glide precision.. Options = [SP, XP]", default="SP")
     return parser.parse_args()
 
@@ -64,7 +68,11 @@ if __name__ == "__main__":
     args = parseargs()
     if args.hbond:
         setattr(args, "software", "glide")
-    else:
+    elif args.adaptive and args.pele:
+         setattr(args, "software", "adaptive")
+    elif args.msm:
         setattr(args, "software", "msm")
+    else:
+        raise("Not specified action. Choose an option between msm/adaptive/hbond")
     platform_object = Launcher(args)
     platform_object.launch()

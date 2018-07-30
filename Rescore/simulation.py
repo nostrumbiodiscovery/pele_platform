@@ -38,11 +38,22 @@ def run_adaptive(args):
         # Fill in Simulation Templates
         ad.SimulationBuilder.simulation_handler(env, protein_constraints) 
 
-    if args.restart in ["all", "glide_pele"]:
+    if args.restart in ["all", "glide_pele"] and args.software != "adaptive":
         # Run Adaptive Exit
-        env.logger.info("Running ExitPath Adaptive")
+        env.logger.info("Running Adaptive")
         adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, env.topology, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
             env.adap_ex_input, env.cpus, env.pele_exit_temp, env.residue, env.equil_steps, env.random_num)
-        adaptive_exit.run(hook=False)
-        env.logger.info("ExitPath Adaptive run successfully")
+        adaptive_exit.run()
+        env.logger.info("Adaptive run successfully")
+
+    elif args.software == "adaptive":
+        env.logger.info("Running Adaptive")
+        adaptive = ad.SimulationBuilder(args.adaptive, env.topology, cs.ADAPTIVE, env.adap_ex_input, env.cpus, args.pele, env.residue)
+        ad.SimulationBuilder(args.pele,  env.topology, ["CHAIN"], env.chain)
+        adaptive.run()
+        env.logger.info("Adaptive run successfully")
+
+
+
+
     return env
