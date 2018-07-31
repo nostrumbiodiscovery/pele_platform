@@ -31,6 +31,9 @@ class EnviroBuilder(object):
         self.pdb = args.pdb
         self.hbond = args.hbond
         self.precision_glide = args.precision_glide
+        self.adaptive = args.adaptive if args.adaptive else None
+        self.pele = args.pele if args.adaptive else None
+        self.software = args.software
         self.build_constant_paths()
 
     @classmethod
@@ -52,6 +55,8 @@ class EnviroBuilder(object):
             return  cs.FOLDERS, cs.FILES_XP, cs.FILES_NAME_MSM
         elif args.software == "msm" and not args.precision:
             return cs.FOLDERS, cs.FILES_SP, cs.FILES_NAME_MSM
+        elif args.software == "adaptive":
+            return cs.FOLDERS_ADAPTIVE, [args.adaptive, args.pele], [os.path.basename(args.adaptive), os.path.basename(args.pele)]
             
             
             
@@ -80,7 +85,7 @@ class EnviroBuilder(object):
             self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
 
 
-        if not self.hbond:
+        if self.software == "msm":
             self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
             self.adap_ex_output = os.path.join(self.pele_dir, "output_adaptive_exit")
             self.cluster_output = os.path.join(self.pele_dir, "output_clustering")
@@ -96,7 +101,7 @@ class EnviroBuilder(object):
             self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
             self.topology = None if self.pdb else os.path.join(self.adap_ex_output, "topology.pdb")
 
-        if self.hbond:
+        elif self.software == "glide":
              self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
              self.adap_ex_output = os.path.join(self.pele_dir, "output_adaptive")
              self.cluster_output = os.path.join(self.pele_dir, "output_clustering")
@@ -109,6 +114,14 @@ class EnviroBuilder(object):
              self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
              self.glide_structs = os.path.join(self.pele_dir, "glide_calculations", "structures")
              self.topology = None if self.pdb else os.path.join(self.adap_ex_output, "topology.pdb")
+
+        elif self.software == "adaptive":
+            self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
+            self.ad_ex_temp = os.path.join(self.pele_dir, os.path.basename(self.adaptive))
+            self.pele_exit_temp = os.path.join(self.pele_dir, os.path.basename(self.pele))
+            self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
+            self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
+            self.topology = None if self.pdb else os.path.join("output", "topology.pdb")
 
     def create(self):
         if self.restart in cs.FIRST_RESTART:

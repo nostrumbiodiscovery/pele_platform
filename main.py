@@ -3,7 +3,7 @@ import os
 import MSM_PELE.MSM.main as msm
 import MSM_PELE.constants as cs
 import MSM_PELE.Rescore.main as gl
-import MSM_PELE.AdaptivePELE.adaptiveSampling as ad
+import MSM_PELE.Rescore.simulation as ad
 
 
 class Launcher():
@@ -19,7 +19,7 @@ class Launcher():
             else:
                 msm.run(args)
         elif args.software == "adaptive":
-            ad.main(args)
+            ad.run_adaptive(args)
 
         elif args.software == "glide":
             gl.run(args)

@@ -134,6 +134,13 @@ FOLDERS_GLIDE = ["",
       "glide_calculations/structures"
       ]
 
+FOLDERS_ADAPTIVE = ["",
+      "DataLocal/Templates/OPLS2005/HeteroAtoms/",
+      "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
+      "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
+      "DataLocal/LigandRotamerLibs"
+      ]
+        
 FILES_GLIDE = [os.path.join(DIR, "Templates/glide.in"),
                os.path.join(DIR, "Templates/adaptive_glide.conf"),
                os.path.join(DIR, "Templates/pele_glide.conf")]

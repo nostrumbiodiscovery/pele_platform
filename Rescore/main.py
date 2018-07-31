@@ -2,7 +2,7 @@ import subprocess
 import MSM_PELE.Utilities.Helpers.pele_env as pele
 import os
 import glob
-import MSM_PELE.Utilities.AdaptivePELE.analysis.splitTrajectory as st
+import MSM_PELE.AdaptivePELE.analysis.splitTrajectory as st
 import MSM_PELE.constants as cs
 import MSM_PELE.Utilities.Helpers.template_builder as tb
 import MSM_PELE.Rescore.simulation as sim
