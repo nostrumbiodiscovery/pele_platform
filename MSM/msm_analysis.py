@@ -2,8 +2,8 @@ import os
 import glob
 import shutil
 import numpy as np
-from MSM_PELE.Utilities.AdaptivePELE.freeEnergies import extractCoords, prepareMSMFolders, estimateDGAdaptive
-from MSM_PELE.Utilities.AdaptivePELE.freeEnergies import getRepresentativeStructures as getRepr
+from MSM_PELE.AdaptivePELE.freeEnergies import extractCoords, prepareMSMFolders, estimateDGAdaptive
+from MSM_PELE.AdaptivePELE.freeEnergies import getRepresentativeStructures as getRepr
 import MSM_PELE.Utilities.Helpers.tica as td
 import MSM_PELE.Utilities.Helpers.helpers as hp
 
