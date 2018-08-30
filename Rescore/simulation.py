@@ -1,3 +1,4 @@
+import subprocess
 import MSM_PELE.Utilities.Helpers.pele_env as pele
 import MSM_PELE.constants as cs
 import MSM_PELE.Utilities.Helpers.system_prep as sp
@@ -11,7 +12,6 @@ import MSM_PELE.Utilities.Helpers.simulation as ad
 
 def run_adaptive(args):
     # Build folders and logging
-    print(args)
     env = pele.EnviroBuilder.build_env(args)
 
     if args.restart == "all":
@@ -25,9 +25,17 @@ def run_adaptive(args):
         env.logger.info(cs.SYSTEM.format(system_fix, missing_residues, gaps, metals))
 
         # Parametrize Ligand
-        env.logger.info("Creating template for residue {}".format(args.residue))
-        plop.parametrize_miss_residues(args, env, syst)
-        env.logger.info("Template {}z created".format(args.residue.lower()))
+        if not env.external_template and not env.external_rotamers:
+            env.logger.info("Creating template for residue {}".format(args.residue))
+            plop.parametrize_miss_residues(args, env, syst)
+            env.logger.info("Template {}z created".format(args.residue.lower()))
+        else:
+            cmd_to_move_template = "cp {} {}".format(env.external_template,  env.template_folder)
+            subprocess.call(cmd_to_move_template.split())
+            cmd_to_move_rotamer_file = "cp {} {}".format(env.external_rotamers,  env.rotamers_folder)
+            subprocess.call(cmd_to_move_rotamer_file.split())
+
+
 
         # Parametrize missing residues
         for res, __, _ in missing_residues:

@@ -34,6 +34,10 @@ class EnviroBuilder(object):
         self.adaptive = args.adaptive if args.adaptive else None
         self.pele = args.pele if args.adaptive else None
         self.software = args.software
+        self.external_template = args.template
+        self.external_rotamers = args.rotamers
+        self.lagtime = args.lagtime
+        self.msm_clust = args.msm_clust
         self.build_constant_paths()
 
     @classmethod
@@ -62,8 +66,6 @@ class EnviroBuilder(object):
             
     def build_constant_paths(self):
 
-        self.template = None
-        self.rotamers_file = None
         self.random_num = random.randrange(1, 70000)
         self.license = '''"{}"'''.format(cs.LICENSE)
 
@@ -83,6 +85,9 @@ class EnviroBuilder(object):
             self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
         else:
             self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
+
+        self.template_folder = os.path.join(self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
+        self.rotamers_folder = os.path.join(self.pele_dir, "DataLocal/LigandRotamerLibs/")
 
 
         if self.software == "msm":

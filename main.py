@@ -61,6 +61,10 @@ def parseargs():
     parser.add_argument("--adaptive", type=str,  help="Adaptive control_file")
     parser.add_argument("--pele", type=str,  help="Pele control_file")
     parser.add_argument("--precision_glide", type=str,  help="Glide precision.. Options = [SP, XP]", default="SP")
+    parser.add_argument("--template", type=str,  help="External template for ligand", default=None)
+    parser.add_argument("--rotamers", type=str,  help="External romtamers library for ligand", default=None)
+    parser.add_argument("--lagtime", type=int,  help="MSM Lagtime", default=100)
+    parser.add_argument("--msm_clust", type=int,  help="MSM cluster number", default=200)
     return parser.parse_args()
 
 
