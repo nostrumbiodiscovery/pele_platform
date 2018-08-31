@@ -1,9 +1,9 @@
 import argparse
 import os
-import MSM_PELE.MSM.main as msm
-import MSM_PELE.constants as cs
-import MSM_PELE.Rescore.main as gl
-import MSM_PELE.Rescore.simulation as ad
+import PELE_Platform.MSM.main as msm
+import PELE_Platform.constants as cs
+import PELE_Platform.Rescore.main as gl
+import PELE_Platform.Rescore.simulation as ad
 
 
 class Launcher():
@@ -18,11 +18,13 @@ class Launcher():
                 raise ValueError(cs.CLUSTER_ERROR.format(args.cpus, args.clust))
             else:
                 msm.run(args)
+
         elif args.software == "adaptive":
             ad.run_adaptive(args)
 
-        elif args.software == "glide":
+        elif args.software in ["glide", "out_in", "induce_fit"]:
             gl.run(args)
+
 
     @property
     def args(self):
@@ -51,13 +53,15 @@ def parseargs():
     parser.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=cs.PLATFORM_RESTART)
     parser.add_argument("--gridres", type=str, help="Rotamers angle resolution", default=cs.GRIDRES)
     parser.add_argument("--precision", action='store_true', help="Use a more agressive control file to achieve better convergence")
-    parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test")
+    parser.add_argument("--test", action='store_true', help="Run a fast PELE_Platform test")
     parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
     parser.add_argument("--folder", "-wf", type=str,  help="Folder to apply the restart to", default=None)
     parser.add_argument("--pdb", action='store_true',  help="Use pdb files as output")
-    parser.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default=None)
+    parser.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default= [None, None] )
     parser.add_argument("--msm", action="store_true",  help="Launch MSM")
+    parser.add_argument("--out_in", action="store_true",  help="Launch outside inside adaptive")
+    parser.add_argument("--induce_fit", action="store_true",  help="Launch induce fit adaptive")
     parser.add_argument("--adaptive", type=str,  help="Adaptive control_file")
     parser.add_argument("--pele", type=str,  help="Pele control_file")
     parser.add_argument("--precision_glide", type=str,  help="Glide precision.. Options = [SP, XP]", default="SP")
@@ -70,13 +74,17 @@ def parseargs():
 
 if __name__ == "__main__":
     args = parseargs()
-    if args.hbond:
+    if args.hbond[0]:
         setattr(args, "software", "glide")
     elif args.adaptive and args.pele:
          setattr(args, "software", "adaptive")
+    elif args.out_in:
+        setattr(args, "software", "out_in")
+    elif args.induce_fit:
+        setattr(args, "software", "induce_fit")
     elif args.msm:
         setattr(args, "software", "msm")
     else:
-        raise("Not specified action. Choose an option between msm/adaptive/hbond")
+        raise("Not specified action. Choose an option between msm/adaptive/out_in/induce_fit/hbond")
     platform_object = Launcher(args)
     platform_object.launch()

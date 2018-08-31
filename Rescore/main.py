@@ -1,11 +1,11 @@
 import subprocess
-import MSM_PELE.Utilities.Helpers.pele_env as pele
+import PELE_Platform.Utilities.Helpers.pele_env as pele
 import os
 import glob
-import MSM_PELE.AdaptivePELE.analysis.splitTrajectory as st
-import MSM_PELE.constants as cs
-import MSM_PELE.Utilities.Helpers.template_builder as tb
-import MSM_PELE.Rescore.simulation as sim
+import PELE_Platform.AdaptivePELE.analysis.splitTrajectory as st
+import PELE_Platform.constants as cs
+import PELE_Platform.Utilities.Helpers.template_builder as tb
+import PELE_Platform.Rescore.simulation as sim
 
 def run(args):
     env = sim.run_adaptive(args) 

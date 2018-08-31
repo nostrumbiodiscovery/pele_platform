@@ -1,12 +1,12 @@
 import subprocess
-import MSM_PELE.Utilities.Helpers.pele_env as pele
-import MSM_PELE.constants as cs
-import MSM_PELE.Utilities.Helpers.system_prep as sp
-import MSM_PELE.Utilities.PPP.mut_prep4pele as ppp
-import MSM_PELE.Utilities.PlopRotTemp.main as plop
-import MSM_PELE.Utilities.Helpers.missing_residues as mr
-import MSM_PELE.Utilities.Helpers.simulation as ad
-
+import PELE_Platform.Utilities.Helpers.pele_env as pele
+import PELE_Platform.constants as cs
+import PELE_Platform.Utilities.Helpers.system_prep as sp
+import PELE_Platform.Utilities.PPP.mut_prep4pele as ppp
+import PELE_Platform.Utilities.PlopRotTemp.main as plop
+import PELE_Platform.Utilities.Helpers.missing_residues as mr
+import PELE_Platform.Utilities.Helpers.simulation as ad
+import PELE_Platform.Utilities.Helpers.center_of_mass as cm
 
 
 
@@ -21,7 +21,7 @@ def run_adaptive(args):
         syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
 
         # Prepare System
-        system_fix, missing_residues, gaps, metals, protein_constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)
+        system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)
         env.logger.info(cs.SYSTEM.format(system_fix, missing_residues, gaps, metals))
 
         # Parametrize Ligand
@@ -44,8 +44,11 @@ def run_adaptive(args):
                 mr.create_template(system_fix, res, env.pele_dir, args.forcefield)
                 env.logger.info("Template {}z created".format(res))
 
+        #Set Box
+        env.box_center = cm.center_of_mass(env.ligand_ref)
+
         # Fill in Simulation Templates
-        adaptive = ad.SimulationBuilder.simulation_handler(env, protein_constraints) 
+        adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
         adaptive.run()
         
     return env

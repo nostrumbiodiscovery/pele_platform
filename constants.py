@@ -67,20 +67,11 @@ LIG_CHAIN = "Z"
 FORCEFIELD = "OPLS2005"
 PELE_CONFILE = "pele.conf"
 CPUS = 140
-RESTART = True
+RESTART = "true"
 CLUSTERS = 40
 PLATFORM_RESTART = "all"
 EQ_STEPS = 50
 GRIDRES = '10.0'
-
-#TEMPLATE KEYWORDS:
-ADAPTIVE = ["INPUT", "PELE", "CPUS", "LIG_RES"]
-ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "SEED"]
-EX_ADAPTIVE_KEYWORDS = ["RESTART", "OUTPUT", "INPUT", "CPUS", "PELE_CFILE", "LIG_RES", "EQ_STEPS", "SEED"]
-EX_PELE_KEYWORDS = ["NATIVE", "FORCEFIELD", "CHAIN", "CONSTRAINTS", "CPUS", "LICENSES"]
-PELE_KEYWORDS = ["BOX_CENTER", "BOX_RADIUS", "SASA_min", "SASA_max"]
-PELE_GLIDE_KEYWORDS = ["LICENSE", "CONSTRAINTS", "CENTER", "CHAIN", "NATIVE", "HBOND1", "HBOND2"]
-GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
 NATIVE = '''
                                    {{
        
@@ -104,12 +95,14 @@ NATIVE = '''
             '''
        
 
+#TEMPLATE KEYWORDS
+GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
+
 #RESTARTS:
 FIRST_RESTART = ["all",]
 SECOND_RESTART = ["all", "adaptive"]
 THIRD_RESTART = ["all", "adaptive", "pele"]
 FOURTH_RESTART = ["all", "adaptive", "pele", "msm"] 
-
 
 #FOLDERS&PATHS
 DIR = os.path.dirname(__file__)
@@ -151,6 +144,7 @@ FILES_GLIDE_TEST = [os.path.join(DIR, "Templates/glide.in"),
                os.path.join(DIR, "Templates/pele_glide.conf")]
 
 FILES_NAME_GLIDE = ["glide.in", "adaptive.conf", "pele.conf"]
+
 FILES_SP = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_SP.conf"),
             os.path.join(DIR, "Templates/adaptive_exit.conf"), 
             os.path.join(DIR, "Templates/adaptive_long.conf"),
@@ -167,6 +161,15 @@ FILES_TEST = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templat
    os.path.join(DIR, "Templates/pele_exit.conf")]
 
 FILES_NAME_MSM = ["box.pdb", "pele.conf", "adaptive_exit.conf", "adaptive_long.conf", "pele_exit.conf"]
+
+FILES_OUT_IN = [ os.path.join(DIR, "Templates/out_in_adaptive.conf"), os.path.join(DIR, "Templates/out_in_pele.conf") ]
+
+FILES_NAME_OUT_IN = [ "out_in_adaptive.conf", "out_in_pele.conf" ]
+
+FILES_INDUCE_FIT = [ os.path.join(DIR, "Templates/induce_fit_adaptive.conf") ,  os.path.join(DIR, "Templates/induce_fit_pele.conf") ]
+
+FILES_NAME_INDUCE_FIT = [ "induce_fit_adaptive.conf" ,  "induce_fit_pele.conf" ]
+
 
 #MESSAGES&ERRORS
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
