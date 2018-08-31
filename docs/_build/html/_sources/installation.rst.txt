@@ -35,11 +35,11 @@ MSM PELE Configuration
 
 **Enviromental variables**::
  
-  export PYTHONPATH=$PYTHONPATH:'/path/to/MSM_PELE/'
+  export PYTHONPATH=$PYTHONPATH:'/path/to/PELE_Platform/'
 
 **Changing local path**::
 
-  Change the public variables path under **MSM_PELE/constants.py** to the ones local to your machine
+  Change the public variables path under **PELE_Platform/constants.py** to the ones local to your machine
 
 **Pyemma config**::
 

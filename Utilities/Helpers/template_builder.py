@@ -8,7 +8,8 @@ class TemplateBuilder(object):
     def __init__(self, file, keywords):
 
         self.file = file
-        self.keywords = keywords
+        self.keywords = {k: v for k, v in keywords.items() if v is not None}
+
         self.fill_in()
 
     def fill_in(self):

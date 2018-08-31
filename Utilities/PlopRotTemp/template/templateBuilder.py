@@ -7,9 +7,9 @@ from schrodinger import structure
 from chargeHandler import ChargeHandler
 
 try:
-	from MSM_PELE.Utilities.PlopRotTemp.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
+	from PELE_Platform.Utilities.PlopRotTemp.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
 except ImportError:
-	from MSM_PELE.Utilities.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
+	from PELE_Platform.Utilities.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int
 
 CONVERSION = {'CT1': 'CT',
               'O2Z':'O2',

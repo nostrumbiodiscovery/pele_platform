@@ -1,9 +1,9 @@
-.. MSM_PELE documentation master file, created by
+.. PELE_Platform documentation master file, created by
    sphinx-quickstart on Mon Dec  4 11:58:09 2017.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-MSM_PELE -  MSM Free Energy Calculation Algorithm 
+PELE_Platform -  MSM Free Energy Calculation Algorithm 
 ==================================================
 
 MSM PELE  is a Python library with the aim to calculate absolute free energies

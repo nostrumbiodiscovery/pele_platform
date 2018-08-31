@@ -1,7 +1,7 @@
 import sys
 import os
 import argparse
-import MSM_PELE.Utilities.Helpers.template_builder as tb
+import PELE_Platform.Utilities.Helpers.template_builder as tb
 
 AMINOACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
               "SER", "ASP", "LYS", "MET", "GLN",

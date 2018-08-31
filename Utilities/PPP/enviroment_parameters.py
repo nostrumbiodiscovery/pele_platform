@@ -1,5 +1,5 @@
 import sys
-from MSM_PELE import constants 
+from PELE_Platform import constants 
 
 __author__ = 'jelisa'
 

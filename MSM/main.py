@@ -1,18 +1,18 @@
 import os
-import MSM_PELE.Utilities.Helpers.check_env_var as env
+import PELE_Platform.Utilities.Helpers.check_env_var as env
 env.check_dependencies()
 import argparse
-import MSM_PELE.constants as cs
-import MSM_PELE.Utilities.PlopRotTemp.main as plop
-import MSM_PELE.Utilities.Helpers.helpers as hp
-import MSM_PELE.Utilities.Helpers.pele_env as pele
-import MSM_PELE.Utilities.Helpers.simulation as ad
-import MSM_PELE.MSM.clusterAdaptiveRun as cl
-import MSM_PELE.Utilities.Helpers.system_prep as sp
-import MSM_PELE.MSM.box as bx
-import MSM_PELE.Utilities.PPP.mut_prep4pele as ppp
-import MSM_PELE.MSM.msm_analysis as msm
-import MSM_PELE.Utilities.Helpers.missing_residues as mr
+import PELE_Platform.constants as cs
+import PELE_Platform.Utilities.PlopRotTemp.main as plop
+import PELE_Platform.Utilities.Helpers.helpers as hp
+import PELE_Platform.Utilities.Helpers.pele_env as pele
+import PELE_Platform.Utilities.Helpers.simulation as ad
+import PELE_Platform.MSM.clusterAdaptiveRun as cl
+import PELE_Platform.Utilities.Helpers.system_prep as sp
+import PELE_Platform.MSM.box as bx
+import PELE_Platform.Utilities.PPP.mut_prep4pele as ppp
+import PELE_Platform.MSM.msm_analysis as msm
+import PELE_Platform.Utilities.Helpers.missing_residues as mr
 
 __version__ = "1.0.3"
 
@@ -27,7 +27,7 @@ def run(args):
         syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
 
         # Prepare System
-        system_fix, missing_residues, gaps, metals, protein_constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)
+        system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)
         env.logger.info(cs.SYSTEM.format(system_fix, missing_residues, gaps, metals))
 
         # Parametrize Ligand
@@ -42,15 +42,10 @@ def run(args):
                 mr.create_template(system_fix, res, env.pele_dir, args.forcefield)
                 env.logger.info("Template {}z created".format(res))
 
-        # Fill in Simulation Templates
-        ad.SimulationBuilder.simulation_handler(env, protein_constraints) 
-
-
     if args.restart in cs.SECOND_RESTART:
         # Run Adaptive Exit
         env.logger.info("Running ExitPath Adaptive")
-        adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, env.topology, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
-            env.adap_ex_input, env.cpus, env.pele_exit_temp, env.residue, env.equil_steps, env.random_num)
+        adaptive_exit = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
         adaptive_exit.run(hook=True)
         env.logger.info("ExitPath Adaptive run successfully")
 
@@ -68,14 +63,12 @@ def run(args):
 
         # Create Box
         env.logger.info("Creating box")
-        center, radius, BS_sasa_min, BS_sasa_max = bx.create_box(args, env)
-        env.logger.info("Box with center {} radius {} was created".format(center, radius))
+        env.box_center, env.box_radius, env.sasa_min, env.sasa_max = bx.create_box(args, env)
+        env.logger.info("Box with center {} radius {} was created".format(env.box_center, env.box_radius))
 
         # Pele Exploration
         env.logger.info("Running standard Pele")
-        ad.SimulationBuilder(env.pele_temp,  env.topology, cs.PELE_KEYWORDS, center, radius, BS_sasa_min, BS_sasa_max)
-        adaptive_long = ad.SimulationBuilder(env.ad_l_temp,  env.topology, cs.ADAPTIVE_KEYWORDS,
-            cs.RESTART, env.adap_l_output, env.adap_l_input, args.cpus, env.pele_temp, args.residue, env.random_num)
+        adaptive_long = ad.SimulationBuilder(env.ad_l_temp, env.pele_temp, env)
         adaptive_long.run()
         env.logger.info("Pele run successfully")
 
@@ -112,7 +105,7 @@ if __name__ == "__main__":
     parser.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=cs.PLATFORM_RESTART)
     parser.add_argument("--gridres", type=str, help="Rotamers angle resolution", default=cs.GRIDRES)
     parser.add_argument("--precision", action='store_true', help="Use a more agressive control file to achieve better convergence")
-    parser.add_argument("--test", action='store_true', help="Run a fast MSM_PELE test")
+    parser.add_argument("--test", action='store_true', help="Run a fast PELE_Platform test")
     parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
     parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
     parser.add_argument("--folder", "-wf", type=str,  help="Folder to apply the restart to", default=None)

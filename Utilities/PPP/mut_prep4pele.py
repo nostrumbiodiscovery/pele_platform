@@ -2,7 +2,7 @@
 import sys
 from prody import *
 import os
-import MSM_PELE.Utilities.Helpers.constraints as ct
+import PELE_Platform.Utilities.Helpers.constraints as ct
 from adjustments_module import WritingAtomNames, FixStructureResnames, FixAtomNames, SolveClashes
 from checks_module import CheckMutation, CheckClashes
 from checks_module import CheckStructure, CheckforGaps

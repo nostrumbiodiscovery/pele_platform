@@ -10,9 +10,9 @@ import argparse
 import itertools
 import pyemma.msm as msm
 import pyemma.plots as mplt
-from MSM_PELE.Utilities.AdaptivePELE.freeEnergies import cluster, extractCoords
-from MSM_PELE.Utilities.AdaptivePELE.utilities import utilities
-from MSM_PELE.Utilities.AdaptivePELE.atomset import atomset
+from PELE_Platform.Utilities.AdaptivePELE.freeEnergies import cluster, extractCoords
+from PELE_Platform.Utilities.AdaptivePELE.utilities import utilities
+from PELE_Platform.Utilities.AdaptivePELE.atomset import atomset
 import pyemma.coordinates as coor
 import matplotlib.pyplot as plt
 try:

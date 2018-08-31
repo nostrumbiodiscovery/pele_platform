@@ -59,10 +59,10 @@ import sys
 import os
 import shutil
 import subprocess
-import MSM_PELE.constants as cs
+import PELE_Platform.constants as cs
 import PlopRotTemp as pl
 from template.templateBuilder import TemplateBuilder
-import MSM_PELE.Utilities.Helpers.helpers as hp
+import PELE_Platform.Utilities.Helpers.helpers as hp
 
 
 def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=1000, user_core_atom=-1, mae_charges = False, clean = False, gridres = "10.0"):

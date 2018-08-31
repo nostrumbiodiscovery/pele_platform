@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tutorial &mdash; MSM_PELE 1.0.1 documentation</title>
+  <title>Tutorial &mdash; PELE_Platform 1.0.1 documentation</title>
   
 
   
@@ -49,7 +49,7 @@
           
 
           
-            <a href="index.html" class="icon icon-home"> MSM_PELE
+            <a href="index.html" class="icon icon-home"> PELE_Platform
           
 
           
@@ -112,7 +112,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">MSM_PELE</a>
+          <a href="index.html">PELE_Platform</a>
         
       </nav>
 
@@ -169,7 +169,7 @@ case</p>
 <div class="section" id="pr-tutorial">
 <h2>PR Tutorial<a class="headerlink" href="#pr-tutorial" title="Permalink to this headline">¶</a></h2>
 <p><strong>Command</strong>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">MSM_PELE</span><span class="o">/</span><span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Examples</span><span class="o">/</span><span class="n">PR_1A28_xray_</span><span class="o">-</span><span class="n">_minimized</span><span class="o">.</span><span class="n">pdb</span> <span class="n">STR</span> <span class="n">Z</span> <span class="o">--</span><span class="n">cpus</span> <span class="mi">120</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">PELE_Platform</span><span class="o">/</span><span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="n">PELE_Platform</span><span class="o">/</span><span class="n">Examples</span><span class="o">/</span><span class="n">PR_1A28_xray_</span><span class="o">-</span><span class="n">_minimized</span><span class="o">.</span><span class="n">pdb</span> <span class="n">STR</span> <span class="n">Z</span> <span class="o">--</span><span class="n">cpus</span> <span class="mi">120</span>
 </pre></div>
 </div>
 <p><strong>Adaptive Exit Analysis</strong></p>
@@ -188,20 +188,20 @@ path next instructions should be followed:</p>
 exit Adaptive period. There are several features we can check to know whether
 the exploration was good enough. Run the next commands under Pele_STR/output_pele/</p>
 <p><cite>Transition Study</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">adaptivePlot</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">rmsd</span> <span class="o">|</span> <span class="n">gnuplot</span> <span class="o">-</span><span class="n">p</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PELE_Platform</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">adaptivePlot</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">rmsd</span> <span class="o">|</span> <span class="n">gnuplot</span> <span class="o">-</span><span class="n">p</span>
 </pre></div>
 </div>
 <p><cite>Total Energy Conformations</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">adaptivePlot</span> <span class="mi">2</span> <span class="mi">4</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">zcol</span> <span class="mi">2</span> <span class="o">-</span><span class="n">be</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PELE_Platform</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">adaptivePlot</span> <span class="mi">2</span> <span class="mi">4</span> <span class="mi">1000</span> <span class="o">-</span><span class="n">zcol</span> <span class="mi">2</span> <span class="o">-</span><span class="n">be</span>
 <span class="o">|</span> <span class="n">guplot</span> <span class="o">-</span><span class="n">p</span>
 </pre></div>
 </div>
 <p><cite>Counter Plot</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">counter</span><span class="o">.</span><span class="n">py</span> <span class="mi">6</span> <span class="mi">10</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PELE_Platform</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">counter</span><span class="o">.</span><span class="n">py</span> <span class="mi">6</span> <span class="mi">10</span>
 </pre></div>
 </div>
 <p><cite>Best Binding Energy Structures</cite>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MSM_PELE</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">bestStructs</span><span class="o">.</span><span class="n">py</span> <span class="n">Binding</span> <span class="n">Energy</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PELE_Platform</span><span class="o">/</span><span class="n">Pele_scripts</span><span class="o">/</span><span class="n">AnalysisTools</span><span class="o">/</span><span class="n">bestStructs</span><span class="o">.</span><span class="n">py</span> <span class="n">Binding</span> <span class="n">Energy</span>
 </pre></div>
 </div>
 <p><strong>MSM Analysis</strong></p>

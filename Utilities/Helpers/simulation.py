@@ -1,43 +1,32 @@
 import os
-from MSM_PELE.Utilities.Helpers import helpers, template_builder
-import MSM_PELE.AdaptivePELE.adaptiveSampling as ad
-import MSM_PELE.constants as cs
-import MSM_PELE.Utilities.Helpers.center_of_mass as cm 
+from PELE_Platform.Utilities.Helpers import helpers, template_builder
+import PELE_Platform.AdaptivePELE.adaptiveSampling as ad
+import PELE_Platform.constants as cs
+import PELE_Platform.Utilities.Helpers.center_of_mass as cm 
 
 class SimulationBuilder(template_builder.TemplateBuilder):
 
-    def __init__(self, file, topology, keywords, *args, **kwargs):
+    def __init__(self, adaptive, pele, env):
+        self.adaptive_file = adaptive
+        self.pele_file = pele
+        self.topology = env.topology
+        print(self.adaptive_file, self.pele_file, env.__dict__)
+        self.fill_pele_template(env)
+        self.fill_adaptive_template(env)
 
-        self.file = file
-        self.topology = topology
-        self.keywords = keywords
+    def fill_pele_template(self, env):
+        self.pele_keywords = { "NATIVE": env.native, "FORCEFIELD": env.forcefield, "CHAIN": env.chain, 
+                        "CONSTRAINTS": "\n".join(env.constraints), "CPUS":env.cpus,
+                        "LICENSES": cs.LICENSE, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center, "HBOND1": env.hbond_donor, 
+                        "HBOND2": env.hbond_acceptor, "SASA_min": env.sasa_min, "SASA_max": env.sasa_max }
+        super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
-        self.ad_opt_new = ["false" if opt is False else opt for opt in locals()["args"]]
-        self.ad_opt = ["true" if opt is True else opt for opt in self.ad_opt_new]
+    def fill_adaptive_template(self, env):
+        self.adaptive_keywords = { "RESTART": cs.RESTART, "OUTPUT": env.adap_ex_output, "INPUT":env.adap_ex_input,
+                "CPUS":env.cpus, "PELE_CFILE": self.pele_file, "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps}
+        super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)
 
 
-        self.replace = {keyword : value for keyword, value in zip(self.keywords, self.ad_opt)}
-
-        super(SimulationBuilder, self).__init__(self.file, self.replace)
-
-    @classmethod
-    def simulation_handler(cls, env, protein_constraints):
-        if env.software == "msm":
-            cls(env.pele_exit_temp,  env.topology, cs.EX_PELE_KEYWORDS,
-                    env.native, env.forcefield, env.chain, "\n".join(protein_constraints), env.cpus, env.license)
-            cls(env.pele_temp,  env.topology, cs.EX_PELE_KEYWORDS,
-                    env.native, env.forcefield, env.chain, "\n".join(protein_constraints), env.cpus, env.license)
-        elif env.software == "glide":
-            cls(env.pele_exit_temp,  env.topology, cs.PELE_GLIDE_KEYWORDS,  cs.LICENSE,
-                    "\n".join(protein_constraints), cm.center_of_mass(env.ligand_ref), env.chain, env.native,
-                    * env.hbond)
-            return cls(env.ad_ex_temp, env.topology, cs.EX_ADAPTIVE_KEYWORDS, cs.RESTART, env.adap_ex_output,
-                                env.adap_ex_input, env.cpus, env.pele_exit_temp, env.residue, env.equil_steps, env.random_num)
-        elif env.software == "adaptive":
-            cls(env.pele_exit_temp,  env.topology, ["CHAIN", "CONSTRAINTS", "BOX_RADIUS", "BOX_CENTER"],
-                    env.chain, "\n".join(protein_constraints),  20, cm.center_of_mass(env.ligand_ref))
-            return cls(env.ad_ex_temp, env.topology, cs.ADAPTIVE, env.adap_ex_input, env.pele_exit_temp, env.cpus, env.residue)
-        
 
     def run(self, hook=False):
         with helpers.cd(os.path.dirname(self.file)):

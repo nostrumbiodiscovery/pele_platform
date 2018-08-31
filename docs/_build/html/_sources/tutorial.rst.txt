@@ -13,7 +13,7 @@ PR Tutorial
 
 **Command**::
 
-    python MSM_PELE/main.py MSM_PELE/Examples/PR_1A28_xray_-_minimized.pdb STR Z --cpus 120
+    python PELE_Platform/main.py PELE_Platform/Examples/PR_1A28_xray_-_minimized.pdb STR Z --cpus 120
 
 **Adaptive Exit Analysis**
 
@@ -35,20 +35,20 @@ the exploration was good enough. Run the next commands under Pele_STR/output_pel
 
 `Transition Study`::
 
-  MSM_PELE/Pele_scripts/AnalysisTools/adaptivePlot 5 6 1000 -rmsd | gnuplot -p
+  PELE_Platform/Pele_scripts/AnalysisTools/adaptivePlot 5 6 1000 -rmsd | gnuplot -p
 
 `Total Energy Conformations`::
 
-  MSM_PELE/Pele_scripts/AnalysisTools/adaptivePlot 2 4 1000 -zcol 2 -be
+  PELE_Platform/Pele_scripts/AnalysisTools/adaptivePlot 2 4 1000 -zcol 2 -be
   | guplot -p
 
 `Counter Plot`::
 
-  MSM_PELE/Pele_scripts/AnalysisTools/counter.py 6 10
+  PELE_Platform/Pele_scripts/AnalysisTools/counter.py 6 10
 
 `Best Binding Energy Structures`::
 
-  MSM_PELE/Pele_scripts/AnalysisTools/bestStructs.py Binding Energy
+  PELE_Platform/Pele_scripts/AnalysisTools/bestStructs.py Binding Energy
 
 **MSM Analysis**
 

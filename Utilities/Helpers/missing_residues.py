@@ -1,8 +1,8 @@
 import os
 import shutil
-import MSM_PELE.Utilities.PlopRotTemp.main as plop
-import MSM_PELE.Utilities.Helpers.system_prep as sp
-import MSM_PELE.Utilities.Helpers.helpers as hp
+import PELE_Platform.Utilities.PlopRotTemp.main as plop
+import PELE_Platform.Utilities.Helpers.system_prep as sp
+import PELE_Platform.Utilities.Helpers.helpers as hp
 
 
 def create_template(system, res, pele_dir, forcefield):

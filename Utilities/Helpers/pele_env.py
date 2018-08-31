@@ -3,7 +3,7 @@ import shutil
 import warnings
 import random
 import logging
-import MSM_PELE.constants as cs
+import PELE_Platform.constants as cs
 
 
 class EnviroBuilder(object):
@@ -16,6 +16,11 @@ class EnviroBuilder(object):
         self.folders = folders
         self.files = files
         self.file_names = file_names
+        self.build_variables(args)
+        self.build_paths()
+
+    def build_variables(self, args):
+
         self.system = args.system
         self.forcefield = args.forcefield
         self.residue = args.residue
@@ -29,7 +34,7 @@ class EnviroBuilder(object):
         self.test = args.test
         self.folder = args.folder
         self.pdb = args.pdb
-        self.hbond = args.hbond
+        self.hbond_donor, self.hbond_acceptor = args.hbond
         self.precision_glide = args.precision_glide
         self.adaptive = args.adaptive if args.adaptive else None
         self.pele = args.pele if args.adaptive else None
@@ -38,7 +43,14 @@ class EnviroBuilder(object):
         self.external_rotamers = args.rotamers
         self.lagtime = args.lagtime
         self.msm_clust = args.msm_clust
-        self.build_constant_paths()
+        self.seed = random.randrange(1, 70000)
+        self.license = '''"{}"'''.format(cs.LICENSE)
+        self.equil_steps = 1 if self.test else int(cs.EQ_STEPS/self.cpus) + 1 #+1 to avoid being 0
+        self.sasa_max = None
+        self.sasa_min = None
+        self.box_radius = None
+        self.box_center = None
+        self.constraints = None
 
     @classmethod
     def build_env(cls, args):
@@ -61,18 +73,15 @@ class EnviroBuilder(object):
             return cs.FOLDERS, cs.FILES_SP, cs.FILES_NAME_MSM
         elif args.software == "adaptive":
             return cs.FOLDERS_ADAPTIVE, [args.adaptive, args.pele], [os.path.basename(args.adaptive), os.path.basename(args.pele)]
+        elif args.software == "out_in":
+            return cs.FOLDERS_ADAPTIVE, cs.FILES_OUT_IN, cs.FILES_NAME_OUT_IN
+        elif args.software == "induce_fit":
+            return cs.FOLDERS_ADAPTIVE, cs.FILES_INDUCE_FIT, cs.FILES_NAME_INDUCE_FIT
             
             
             
-    def build_constant_paths(self):
+    def build_paths(self):
 
-        self.random_num = random.randrange(1, 70000)
-        self.license = '''"{}"'''.format(cs.LICENSE)
-
-        if self.test:
-            self.equil_steps = 1
-        else:
-            self.equil_steps = int(cs.EQ_STEPS/self.cpus) if self.cpus < cs.EQ_STEPS else 1
 
         pele_dir = os.path.abspath("{}_Pele".format(self.residue))
 
@@ -86,8 +95,8 @@ class EnviroBuilder(object):
         else:
             self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
 
-        self.template_folder = os.path.join(self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
         self.rotamers_folder = os.path.join(self.pele_dir, "DataLocal/LigandRotamerLibs/")
+        self.template_folder = os.path.join(self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
 
 
         if self.software == "msm":
@@ -120,10 +129,15 @@ class EnviroBuilder(object):
              self.glide_structs = os.path.join(self.pele_dir, "glide_calculations", "structures")
              self.topology = None if self.pdb else os.path.join(self.adap_ex_output, "topology.pdb")
 
-        elif self.software == "adaptive":
+        elif self.software in ["adaptive", "out_in", "induce_fit"]:
+            self.adap_ex_output = None
             self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
-            self.ad_ex_temp = os.path.join(self.pele_dir, os.path.basename(self.adaptive))
-            self.pele_exit_temp = os.path.join(self.pele_dir, os.path.basename(self.pele))
+            if self.software == "adaptive":
+                self.ad_ex_temp = os.path.join(self.pele_dir, os.path.basename(self.adaptive))
+                self.pele_exit_temp = os.path.join(self.pele_dir, os.path.basename(self.pele))
+            else:
+                self.ad_ex_temp = os.path.join(self.pele_dir, os.path.basename(self.files[0]))
+                self.pele_exit_temp = os.path.join(self.pele_dir, os.path.basename(self.files[1]))
             self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
             self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
             self.topology = None if self.pdb else os.path.join("output", "topology.pdb")

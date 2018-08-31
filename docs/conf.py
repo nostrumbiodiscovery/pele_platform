@@ -48,7 +48,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'MSM_PELE'
+project = 'PELE_Platform'
 copyright = '2017, Daniel Soler Viladrich'
 author = 'Daniel Soler Viladrich'
 

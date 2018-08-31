@@ -3,9 +3,9 @@ import os
 import glob
 import numpy as np
 import argparse
-from MSM_PELE.AdaptivePELE.utilities import utilities
-from MSM_PELE.AdaptivePELE.freeEnergies import cluster, extractCoords
-from MSM_PELE.AdaptivePELE.analysis import splitTrajectory
+from PELE_Platform.AdaptivePELE.utilities import utilities
+from PELE_Platform.AdaptivePELE.freeEnergies import cluster, extractCoords
+from PELE_Platform.AdaptivePELE.analysis import splitTrajectory
 
 def parseArgs():
     parser = argparse.ArgumentParser(description="Script that reclusters the Adaptive clusters")

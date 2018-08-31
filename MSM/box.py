@@ -5,10 +5,10 @@ import shutil
 import numpy as np
 import argparse
 import math
-import MSM_PELE.Utilities.Helpers.best_structs as best_structs
-import MSM_PELE.Utilities.Helpers.template_builder as tb
-import MSM_PELE.Utilities.Helpers.helpers as hp
-import MSM_PELE.Utilities.Helpers.center_of_mass as cm
+import PELE_Platform.Utilities.Helpers.best_structs as best_structs
+import PELE_Platform.Utilities.Helpers.template_builder as tb
+import PELE_Platform.Utilities.Helpers.helpers as hp
+import PELE_Platform.Utilities.Helpers.center_of_mass as cm
 
 __author__ = "Daniel Soler Viladrich"
 __email__ = "daniel.soler@nostrumbiodiscovery.com"

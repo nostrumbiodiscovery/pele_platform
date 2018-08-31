@@ -1,7 +1,7 @@
 import os
 import sys
 import glob
-from MSM_PELE import constants
+from PELE_Platform import constants
 
 
 def find_executable(executable, path=None):

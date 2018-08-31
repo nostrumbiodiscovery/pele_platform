@@ -1,6 +1,6 @@
 import os
 from schrodinger import structure as st
-import MSM_PELE.Utilities.Helpers.pele_env as pl
+import PELE_Platform.Utilities.Helpers.pele_env as pl
 
 
 class SystemBuilder(pl.EnviroBuilder):
