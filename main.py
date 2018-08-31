@@ -71,13 +71,16 @@ def parseargs():
     parser.add_argument("--msm_clust", type=int,  help="MSM cluster number", default=200)
     return parser.parse_args()
 
-
-if __name__ == "__main__":
-    args = parseargs()
+def set_software_to_use():
+    """
+    Auxiliar Function to set low variable software
+    which will be use to handle differences 
+    betwwen PELE features along the program
+    """
     if args.hbond[0]:
         setattr(args, "software", "glide")
     elif args.adaptive and args.pele:
-         setattr(args, "software", "adaptive")
+        setattr(args, "software", "adaptive")
     elif args.out_in:
         setattr(args, "software", "out_in")
     elif args.induce_fit:
@@ -85,6 +88,10 @@ if __name__ == "__main__":
     elif args.msm:
         setattr(args, "software", "msm")
     else:
-        raise("Not specified action. Choose an option between msm/adaptive/out_in/induce_fit/hbond")
-    platform_object = Launcher(args)
-    platform_object.launch()
+        raise ValueError("Not specified action. Choose an option between msm/adaptive/out_in/induce_fit/hbond")
+
+
+if __name__ == "__main__":
+    args = parseargs()
+    set_software_to_use()
+    Launcher(args).launch()
