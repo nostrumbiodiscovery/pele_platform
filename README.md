@@ -1,32 +1,32 @@
-# MSM_Pele
---------------
-Monte Carlo Protein Energy Landscape Exploration (PELE) coupled with Markov State Model (MSM) analysis  with the aim to calculate absolute free energies.
+# PELE_Platform
 
-# MSM_Pele's PipeLine
+# PELE_Platform
+--------------
+Wrap up Platform to launch all PELE features. [AdaptivePELE, MSM, LigandGrowing, Glide Rescoring]
+
+# PELE_Platform Fucntionalities
 -------------------------------
-1) [Protein Preparation for Pele](https://github.com/Jelisa/mut-prep4pele)
-2) [PlopRotTemp_SCHR2017](https://github.com/miniaoshi/PlopRotTemp_S_2017)
-3) [Adaptive PELE](https://github.com/AdaptivePELE/AdaptivePELE)
-4) [PELE(comercial software)](https://pele.bsc.es/pele.wt)
-5) [MSM](https://github.com/miniaoshi/Pele_scripts)
+1) Calculate absoluite free energies with [MSM_PELE](https://github.com/danielSoler93/MSM_PELE)
+2) Run Out-in | Kinase Rescoring | Induce-Fit | Free [Adaptive PELE](https://github.com/AdaptivePELE/AdaptivePELE)
+3) Grow your Ligand with [FRAG_PELE] (https://github.com/danielSoler93/LigandGrowing)
 
 # Getting Started
 -------------------
-0) git clone https://github.com/miniaoshi/MSM_PELE.git
-1) Change all paths under **MSM_Pele/constants.py** to your local environment.
+0) git clone https://github.com/miniaoshi/PELE_Platform.git
 
-2) Change LD_LYBRARY_PATH as next in the conf.sl to make schrodinger python work:
--  `e.g. export LD_LIBRARY_PATH=**/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/mmshare-v4.0/lib/Linux-x86_64/**:$LD_LIBRARY_PATH`
+
+Change all path under PELE_Platform/constants.py
+
 3) Fulfill the next dependencies:
 - Adaptive Pele
 - pyemma
 - msmtools
 - Prody 1.8.2
 - Pandas
+
 4) Run the platform as:
-- python MSM_PELE/main.pdb pdb_with_complex residuename chain
--  `e.g. python /home/dsoler/PelePlop/main.py PR_1A28_xray_-_minimized.pdb STR Z`
-- slurm: `sbatch conf.sl` (change the complex path)
+- python PELE_Platform/main.pdb pdb_with_complex residuename chain --functionality
+-  `e.g. python /home/dsoler/PELE_Platform/main.py PR_1A28_xray_-_minimized.pdb STR Z --msm'
 
 # Arguments:
 ---------------
