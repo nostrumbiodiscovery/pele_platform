@@ -4,6 +4,9 @@ import warnings
 import random
 import logging
 import PELE_Platform.constants as cs
+import PELE_Platform.features as fs
+import PELE_Platform.Utilities.Helpers.helpers as hp
+
 
 
 class EnviroBuilder(object):
@@ -12,12 +15,15 @@ class EnviroBuilder(object):
         is build by creating folders and files
     """
 
-    def __init__(self, folders, files, file_names, args):
-        self.folders = folders
-        self.files = files
-        self.file_names = file_names
+    def __init__(self, args):
         self.build_variables(args)
-        self.build_paths()
+        self.build_paths(args)
+
+    @classmethod
+    def build_env(cls, args):
+        env = cls(args)
+        env.create()
+        return env
 
     def build_variables(self, args):
 
@@ -25,7 +31,7 @@ class EnviroBuilder(object):
         self.forcefield = args.forcefield
         self.residue = args.residue
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
-        self.cpus = args.cpus = args.cpus if not args.test else 4 
+        self.cpus = args.cpus = args.cpus if not args.test else 4
         self.restart = args.restart
         self.native = args.native
         self.chain = args.chain
@@ -51,42 +57,20 @@ class EnviroBuilder(object):
         self.box_radius = None
         self.box_center = None
         self.constraints = None
+        self.water_chain = args.water_lig.split(":")[0] if args.water_lig else None
+        self.water_center = None
+        self.water = args.water_exp if args.water_exp else None
+        self.water = args.water_lig if args.water_lig else self.water 
+        self.water_radius = 7 if  self.water else None
 
-    @classmethod
-    def build_env(cls, args):
-        FOLDERS, FILES, FILE_NAMES = cls.choose_env(args)
-        env = cls(FOLDERS, FILES, FILE_NAMES, args)
-        env.create()
-        return env
-
-    @staticmethod
-    def choose_env(args):
-        if args.test and args.software == "msm":
-            return  cs.FOLDERS, cs.FILES_TEST, cs.FILES_NAME_MSM
-        elif args.test and args.software == "glide":
-            return cs.FOLDERS_GLIDE, cs.FILES_GLIDE_TEST, cs.FILES_NAME_GLIDE
-        elif args.software == "glide" and not args.test:
-            return cs.FOLDERS_GLIDE, cs.FILES_GLIDE, cs.FILES_NAME_GLIDE
-        elif args.software == "msm" and args.precision:
-            return  cs.FOLDERS, cs.FILES_XP, cs.FILES_NAME_MSM
-        elif args.software == "msm" and not args.precision:
-            return cs.FOLDERS, cs.FILES_SP, cs.FILES_NAME_MSM
-        elif args.software == "adaptive":
-            return cs.FOLDERS_ADAPTIVE, [args.adaptive, args.pele], [os.path.basename(args.adaptive), os.path.basename(args.pele)]
-        elif args.software == "out_in":
-            return cs.FOLDERS_ADAPTIVE, cs.FILES_OUT_IN, cs.FILES_NAME_OUT_IN
-        elif args.software == "induce_fit":
-            return cs.FOLDERS_ADAPTIVE, cs.FILES_INDUCE_FIT, cs.FILES_NAME_INDUCE_FIT
             
-            
-            
-    def build_paths(self):
+    def build_paths(self, args):
 
 
         pele_dir = os.path.abspath("{}_Pele".format(self.residue))
 
         if not self.folder:
-            self.pele_dir = is_repited(pele_dir) if self.restart in cs.FIRST_RESTART else is_last(pele_dir)
+            self.pele_dir = hp.is_repited(pele_dir) if self.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
         else:
             self.pele_dir = os.path.abspath(self.folder)
 
@@ -99,48 +83,24 @@ class EnviroBuilder(object):
         self.template_folder = os.path.join(self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
 
 
-        if self.software == "msm":
-            self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
-            self.adap_ex_output = os.path.join(self.pele_dir, "output_adaptive_exit")
-            self.cluster_output = os.path.join(self.pele_dir, "output_clustering")
-            self.adap_l_input = "{}/initial_*"
-            self.adap_l_output = os.path.join(self.pele_dir, "output_pele")
-            self.ad_ex_temp = os.path.join(self.pele_dir, "adaptive_exit.conf")
-            self.ad_l_temp = os.path.join(self.pele_dir, "adaptive_long.conf")
-            self.pele_exit_temp = os.path.join(self.pele_dir, "pele_exit.conf")
-            self.pele_temp = os.path.join(self.pele_dir, "pele.conf")
-            self.box_temp = os.path.join(self.pele_dir, "box.pdb")
-            self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
-            self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
-            self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
-            self.topology = None if self.pdb else os.path.join(self.adap_ex_output, "topology.pdb")
+        self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
+        self.cluster_output = os.path.join(self.pele_dir, "output_clustering")
+        self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
+        self.receptor = os.path.join(self.pele_dir, "receptor.pdb")
+        self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
+        self.topology = None if self.pdb else os.path.join("output_pele", "topology.pdb")
+        self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
+        self.pele_temp = os.path.join(self.pele_dir, "pele.conf")
+        self.adap_l_input = "{}/initial_*"
+        self.adap_l_output = os.path.join(self.pele_dir, "output_pele")
+        self.ad_l_temp = os.path.join(self.pele_dir, "adaptive_long.conf")
+        self.box_temp = os.path.join(self.pele_dir, "box.pdb")
+        self.glide_template = os.path.join(self.pele_dir, "glide.in") 
+        self.glide_structs = os.path.join(self.pele_dir, "glide_calculations", "structures")
 
-        elif self.software == "glide":
-             self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
-             self.adap_ex_output = os.path.join(self.pele_dir, "output_adaptive")
-             self.cluster_output = os.path.join(self.pele_dir, "output_clustering")
-             self.glide_template = os.path.join(self.pele_dir, "glide.in") 
-             self.ad_ex_temp = os.path.join(self.pele_dir, "adaptive.conf")
-             self.pele_exit_temp = os.path.join(self.pele_dir, "pele.conf")
-             self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
-             self.pele_temp = os.path.join(self.pele_dir, "pele.conf")
-             self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
-             self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
-             self.glide_structs = os.path.join(self.pele_dir, "glide_calculations", "structures")
-             self.topology = None if self.pdb else os.path.join(self.adap_ex_output, "topology.pdb")
+        for key, value in fs.retrieve_software_settings(args, self.pele_dir).items():
+            setattr(self, key, value)
 
-        elif self.software in ["adaptive", "out_in", "induce_fit"]:
-            self.adap_ex_output = None
-            self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
-            if self.software == "adaptive":
-                self.ad_ex_temp = os.path.join(self.pele_dir, os.path.basename(self.adaptive))
-                self.pele_exit_temp = os.path.join(self.pele_dir, os.path.basename(self.pele))
-            else:
-                self.ad_ex_temp = os.path.join(self.pele_dir, os.path.basename(self.files[0]))
-                self.pele_exit_temp = os.path.join(self.pele_dir, os.path.basename(self.files[1]))
-            self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
-            self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
-            self.topology = None if self.pdb else os.path.join("output", "topology.pdb")
 
     def create(self):
         if self.restart in cs.FIRST_RESTART:
@@ -208,58 +168,3 @@ class EnviroBuilder(object):
 			file_handler = logging.FileHandler(log_name, mode='a')
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
-
-
-
-def is_repited(pele_dir):
-
-    original_dir = None
-    split_dir = pele_dir.split("_")
-    for chunk in split_dir:
-        if chunk != "Pele":
-            if original_dir:
-                original_dir = "{}_{}".format(original_dir, chunk)
-            else:
-                original_dir = chunk
-        else:
-            break
-    if split_dir[-1].isdigit():
-        i = split_dir[-1]
-        i = int(i) + 1 
-    else:
-        i = 1
-    if os.path.isdir(pele_dir):
-		new_pele_dir = "{}_Pele_{}".format(original_dir, i)
-		new_pele_dir = is_repited(new_pele_dir)
-		return new_pele_dir
-    else:
-		return pele_dir
-
-def is_last(pele_dir):
-
-    original_dir = None
-    split_dir = pele_dir.split("_")
-    for chunk in split_dir:
-		if chunk != "Pele":
-			if original_dir:
- 				original_dir = "{}_{}".format(original_dir, chunk)
-			else:
-				original_dir = chunk
-		else:
-			break
-    if split_dir[-1].isdigit():
-        i = split_dir[-1]
-        i = int(i) + 1 
-    else:
-		i = 1 
-
-    if os.path.isdir(pele_dir):
-            new_pele_dir = "{}_Pele_{}".format(original_dir, i)
-            if not os.path.isdir(new_pele_dir):
-                return pele_dir
-            else:
-			    new_pele_dir = is_last(new_pele_dir)
-			    return new_pele_dir
-    else:
-        return pele_dir
-
