@@ -1,6 +1,6 @@
 import os
+import AdaptivePELE.adaptiveSampling as ad
 from PELE_Platform.Utilities.Helpers import helpers, template_builder
-import PELE_Platform.AdaptivePELE.adaptiveSampling as ad
 import PELE_Platform.constants as cs
 import PELE_Platform.Utilities.Helpers.center_of_mass as cm 
 
@@ -10,7 +10,6 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         self.adaptive_file = adaptive
         self.pele_file = pele
         self.topology = env.topology
-        print(self.adaptive_file, self.pele_file, env.__dict__)
         self.fill_pele_template(env)
         self.fill_adaptive_template(env)
 
@@ -18,7 +17,10 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         self.pele_keywords = { "NATIVE": env.native, "FORCEFIELD": env.forcefield, "CHAIN": env.chain, 
                         "CONSTRAINTS": "\n".join(env.constraints), "CPUS":env.cpus,
                         "LICENSES": cs.LICENSE, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center, "HBOND1": env.hbond_donor, 
-                        "HBOND2": env.hbond_acceptor, "SASA_min": env.sasa_min, "SASA_max": env.sasa_max }
+                        "HBOND2": env.hbond_acceptor, "SASA_min": env.sasa_min, "SASA_max": env.sasa_max,
+                        "WATER_RADIUS": env.water_radius, "WATER_CENTER": env.water_center, "WATER": env.water,
+                        "WATER_CHAIN": env.water_chain}
+
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
     def fill_adaptive_template(self, env):
@@ -29,11 +31,11 @@ class SimulationBuilder(template_builder.TemplateBuilder):
 
 
     def run(self, hook=False):
-        with helpers.cd(os.path.dirname(self.file)):
+        with helpers.cd(os.path.dirname(self.adaptive_file)):
             if hook:
-		ad.main(self.file, clusteringHook=self.interactive_clustering)
+		ad.main(self.adaptive_file, clusteringHook=self.interactive_clustering)
             else:
-		ad.main(self.file)
+		ad.main(self.adaptive_file)
 
     def interactive_clustering(self, cluster_object, paths, simulationRunner, epoch_number):
         initial_rmsd_cluster_values = cluster_object.thresholdCalculator.values

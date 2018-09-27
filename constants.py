@@ -51,6 +51,7 @@ else:
     # Provisional workaround until best_struct.py is fixed
     ACCEPTED_STEPS_NAME = "numberOfAcceptedPeleSteps"
     CRITERIA = "sasaLig"
+    PYTHON3 = "/sNow/easybuild/centos/7.4.1708/Skylake/software/Python/3.6.4-foss-2018a/bin/python"
 
 
 
@@ -60,6 +61,8 @@ else:
 
 
 # DEFAULTS
+# --------
+
 COMPLEX = "complex.pdb"
 RESULTS = "results"
 LIG_RES = "LIG"
@@ -96,81 +99,26 @@ NATIVE = '''
        
 
 #TEMPLATE KEYWORDS
+#------------------
+
 GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
 
 #RESTARTS:
+#-----------
+
 FIRST_RESTART = ["all",]
 SECOND_RESTART = ["all", "adaptive"]
 THIRD_RESTART = ["all", "adaptive", "pele"]
 FOURTH_RESTART = ["all", "adaptive", "pele", "msm"] 
 
-#FOLDERS&PATHS
+#PATHS
+#-------
+
 DIR = os.path.dirname(__file__)
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
-FOLDERS = ["",
-      "DataLocal/Templates/OPLS2005/HeteroAtoms/",
-      "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
-      "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-      "DataLocal/LigandRotamerLibs",
-      "output_pele",
-      "output_adaptive_exit",
-      "output_clustering"
-     ]
-
-FOLDERS_GLIDE = ["", 
-      "DataLocal/Templates/OPLS2005/HeteroAtoms/",
-      "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
-      "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-      "DataLocal/LigandRotamerLibs",
-      "output_adaptive",
-      "output_clustering",
-      "glide_calculations/structures"
-      ]
-
-FOLDERS_ADAPTIVE = ["",
-      "DataLocal/Templates/OPLS2005/HeteroAtoms/",
-      "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
-      "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-      "DataLocal/LigandRotamerLibs"
-      ]
-        
-FILES_GLIDE = [os.path.join(DIR, "Templates/glide.in"),
-               os.path.join(DIR, "Templates/adaptive_glide.conf"),
-               os.path.join(DIR, "Templates/pele_glide.conf")]
-
-
-FILES_GLIDE_TEST = [os.path.join(DIR, "Templates/glide.in"),
-               os.path.join(DIR, "Templates/adaptive_glide_test.conf"),
-               os.path.join(DIR, "Templates/pele_glide.conf")]
-
-FILES_NAME_GLIDE = ["glide.in", "adaptive.conf", "pele.conf"]
-
-FILES_SP = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_SP.conf"),
-            os.path.join(DIR, "Templates/adaptive_exit.conf"), 
-            os.path.join(DIR, "Templates/adaptive_long.conf"),
-            os.path.join(DIR, "Templates/pele_exit.conf")]
-
-FILES_XP = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_XP.conf"),
-            os.path.join(DIR, "Templates/adaptive_exit.conf"), 
-            os.path.join(DIR, "Templates/adaptive_long.conf"), 
-            os.path.join(DIR, "Templates/pele_exit.conf")]
-
-FILES_TEST = [os.path.join(DIR, "Templates/box.pdb"), os.path.join(DIR, "Templates/pele_SP.conf"),
-   os.path.join(DIR, "Templates/adaptive_exit_test.conf"),
-   os.path.join(DIR, "Templates/adaptive_long_test.conf"),
-   os.path.join(DIR, "Templates/pele_exit.conf")]
-
-FILES_NAME_MSM = ["box.pdb", "pele.conf", "adaptive_exit.conf", "adaptive_long.conf", "pele_exit.conf"]
-
-FILES_OUT_IN = [ os.path.join(DIR, "Templates/out_in_adaptive.conf"), os.path.join(DIR, "Templates/out_in_pele.conf") ]
-
-FILES_NAME_OUT_IN = [ "out_in_adaptive.conf", "out_in_pele.conf" ]
-
-FILES_INDUCE_FIT = [ os.path.join(DIR, "Templates/induce_fit_adaptive.conf") ,  os.path.join(DIR, "Templates/induce_fit_pele.conf") ]
-
-FILES_NAME_INDUCE_FIT = [ "induce_fit_adaptive.conf" ,  "induce_fit_pele.conf" ]
-
 
 #MESSAGES&ERRORS
+#-----------------
+
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
 SYSTEM = "System {} checked successfully\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"

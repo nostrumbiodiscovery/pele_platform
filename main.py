@@ -22,8 +22,13 @@ class Launcher():
         elif args.software == "adaptive":
             ad.run_adaptive(args)
 
-        elif args.software in ["glide", "out_in", "induce_fit"]:
+        elif args.software in ["glide", "induce_fit"]:
             gl.run(args)
+
+        elif args.software == "frag":
+            main = os.path.join(cs.DIR, "LigandGrowing/grow.py")
+            "{} {} -cp {} -fp {} -ca {} -fa {}".format(cs.PYTHON3, main, args.system, args.frag, args.ca, args.fa)
+
 
 
     @property
@@ -61,6 +66,11 @@ def parseargs():
     parser.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default= [None, None] )
     parser.add_argument("--msm", action="store_true",  help="Launch MSM")
     parser.add_argument("--out_in", action="store_true",  help="Launch outside inside adaptive")
+    parser.add_argument("--full", action="store_true",  help="Launch ful ful binding site exploration")
+    parser.add_argument("--in_out", action="store_true",  help="Launch inside outside soft adaptive")
+    parser.add_argument("--in_out_soft", action="store_true",  help="Launch inside outside adaptive")
+    parser.add_argument("--water_exp", type=str,  help="Launch water exploration adaptive PELE", default=None)
+    parser.add_argument("--water_lig", type=str,  help="Launch ligand-water exploration adaptive PELE", default=None)
     parser.add_argument("--induce_fit", action="store_true",  help="Launch induce fit adaptive")
     parser.add_argument("--adaptive", type=str,  help="Adaptive control_file")
     parser.add_argument("--pele", type=str,  help="Pele control_file")
@@ -69,6 +79,10 @@ def parseargs():
     parser.add_argument("--rotamers", type=str,  help="External romtamers library for ligand", default=None)
     parser.add_argument("--lagtime", type=int,  help="MSM Lagtime", default=100)
     parser.add_argument("--msm_clust", type=int,  help="MSM cluster number", default=200)
+    parser.add_argument("--frag", type=str,  help="Fragment pdb")
+    parser.add_argument("--ca", type=str,  help="Core Atom")
+    parser.add_argument("--fa", type=str,  help="Fragment Atom")
+
     return parser.parse_args()
 
 def set_software_to_use():
@@ -79,14 +93,12 @@ def set_software_to_use():
     """
     if args.hbond[0]:
         setattr(args, "software", "glide")
-    elif args.adaptive and args.pele:
+    elif args.out_in or args.water_lig or args.full or args.water_exp or args.in_out_soft or args.in_out or args.induce_fit or  (args.adaptive and args.pele):
         setattr(args, "software", "adaptive")
-    elif args.out_in:
-        setattr(args, "software", "out_in")
-    elif args.induce_fit:
-        setattr(args, "software", "induce_fit")
     elif args.msm:
         setattr(args, "software", "msm")
+    elif args.frag and args.ca and args.fa:
+        setattr(args, "software", "frag")
     else:
         raise ValueError("Not specified action. Choose an option between msm/adaptive/out_in/induce_fit/hbond")
 
