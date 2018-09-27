@@ -1,0 +1,404 @@
+
+The following have been reloaded with a version change:
+  1) GCCcore/6.3.0 => GCCcore/6.4.0
+
+
+The following have been reloaded with a version change:
+  1) Python/2.7.14-foss-2018a => Python/3.6.4-foss-2018a
+  2) ncurses/6.0-GCCcore-6.3.0 => ncurses/6.0-GCCcore-6.4.0
+
+INFO : The ligand of 181l_prepared.pdb has been extracted and saved in 'BNZ.pdb'
+INFO : The ligand of methyl.pdb has been extracted and saved in 'FRG.pdb'
+INFO : Performing a superimposition of bond [<Atom H1>, <Atom C1>] of the fragment on bond [<Atom C4>, <Atom H4>] of the core...
+INFO : The following names of the fragment have been changed:
+INFO : C1 --> G0
+INFO : H2 --> G1
+INFO : H3 --> G2
+INFO : H4 --> G3
+INFO : The result of core + fragment has been saved in 'growing_result.pdb'. This will be used to create the template file.
+INFO : The result of core + fragment(small) has been saved in 'initialization_grow.pdb'. This will be used to initialise the growing.
+INFO : 
+============ Files selected ============
+Control file: control_template.conf
+PDB file: initialization_grow.pdb
+Results folder name: growing_results/growing_output_0
+Step: 0
+
+INFO : 
+•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.••*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•
+
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+linksToOmit is of incorrect type
+linksToOmit: no enum value found.
+links is of incorrect type
+links: no enum value found.
+Box: extra property 'radius' found.
+type: no enum value found.
+type failed validation
+required item 'x_y_z' not found.
+x_y_z failed validation
+Box: extra property 'radius' found.
+type: no enum value found.
+type failed validation
+required item 'innerRadius' not found.
+innerRadius failed validation
+required item 'outerRadius' not found.
+outerRadius failed validation
+selectionToPerturb is of incorrect type
+selectionToPerturb: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+boundPartSelection is of incorrect type
+boundPartSelection: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+boundPartSelection is of incorrect type
+boundPartSelection: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+selection is of incorrect type
+selection: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+selection is of incorrect type
+selection: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+selection is of incorrect type
+selection: no enum value found.
+superpositionSelection is of incorrect type
+superpositionSelection: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+selection is of incorrect type
+selection: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+INFO : 
+•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.••*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•
+
+INFO : SIMULATION growing_results/growing_output_0 COMPLETED!!! 
+INFO : Looking structures to cluster in '/home/dsoler/repos/Ligand_growing/example/181L_methyl/growing_results/growing_output_0'
+INFO : 
+============ Files selected ============
+Control file: control_template.conf
+PDB file: ['initial_0_0.pdb', 'initial_0_1.pdb', 'initial_0_2.pdb', 'initial_0_3.pdb', 'initial_0_4.pdb', 'initial_0_5.pdb', 'initial_0_6.pdb', 'initial_0_7.pdb', 'initial_0_8.pdb', 'initial_0_9.pdb', 'initial_0_10.pdb', 'initial_0_11.pdb', 'initial_0_12.pdb', 'initial_0_13.pdb', 'initial_0_14.pdb', 'initial_0_15.pdb', 'initial_0_16.pdb', 'initial_0_17.pdb', 'initial_0_18.pdb', 'initial_0_19.pdb', 'initial_0_20.pdb', 'initial_0_21.pdb', 'initial_0_22.pdb', 'initial_0_23.pdb', 'initial_0_24.pdb', 'initial_0_25.pdb', 'initial_0_26.pdb', 'initial_0_27.pdb', 'initial_0_28.pdb', 'initial_0_29.pdb', 'initial_0_30.pdb', 'initial_0_31.pdb', 'initial_0_32.pdb', 'initial_0_33.pdb', 'initial_0_34.pdb', 'initial_0_35.pdb', 'initial_0_36.pdb', 'initial_0_37.pdb', 'initial_0_38.pdb', 'initial_0_39.pdb', 'initial_0_40.pdb', 'initial_0_41.pdb', 'initial_0_42.pdb', 'initial_0_43.pdb', 'initial_0_44.pdb', 'initial_0_45.pdb', 'initial_0_46.pdb']
+Results folder name: growing_results/growing_output_1
+Step: 1
+
+INFO : 
+•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.••*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•*´¨`*•.¸¸.•
+
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+type: no enum value found.
+type failed validation
+required item 'toThisOtherAtom' not found.
+toThisOtherAtom failed validation
+linksToOmit is of incorrect type
+linksToOmit: no enum value found.
+links is of incorrect type
+links: no enum value found.
+Box: extra property 'radius' found.
+type: no enum value found.
+type failed validation
+required item 'x_y_z' not found.
+x_y_z failed validation
+Box: extra property 'radius' found.
+type: no enum value found.
+type failed validation
+required item 'innerRadius' not found.
+innerRadius failed validation
+required item 'outerRadius' not found.
+outerRadius failed validation
+selectionToPerturb is of incorrect type
+selectionToPerturb: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+boundPartSelection is of incorrect type
+boundPartSelection: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+boundPartSelection is of incorrect type
+boundPartSelection: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+selection is of incorrect type
+selection: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+selection is of incorrect type
+selection: no enum value found.
+chains is of incorrect type
+chains: no enum value found.
+selection is of incorrect type
+selection: no enum value found.
+superpositionSelection is of incorrect type
+superpositionSelection: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+selection is of incorrect type
+selection: no enum value found.
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+required item 'point' not found.
+point failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation
+type: no enum value found.
+type failed validation

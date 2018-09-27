@@ -1,0 +1,4 @@
+#Task    Step    numberOfAcceptedPeleSteps    currentEnergy    Binding Energy    sasaLig    RMSD_core    
+1    0    0    -6734.46    -19.924    0.000812949    0.789855    
+1    1    1    -6748.47    -20.0769    0.000812949    0.797235    
+1    4    2    -6748.06    -19.9178    0.000812949    0.822858    
