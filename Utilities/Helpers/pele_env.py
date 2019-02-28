@@ -30,7 +30,9 @@ class EnviroBuilder(object):
         self.system = args.system
         self.forcefield = args.forcefield
         self.residue = args.residue
+        self.skip_prep = args.skip_prep
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
+        self.solvent = args.solvent
         self.cpus = args.cpus = args.cpus if not args.test else 4
         self.restart = args.restart
         self.native = args.native
@@ -45,6 +47,7 @@ class EnviroBuilder(object):
         self.adaptive = args.adaptive if args.adaptive else None
         self.pele = args.pele if args.adaptive else None
         self.software = args.software
+        self.nonstandard = args.nonstandard
         self.external_template = args.template
         self.external_rotamers = args.rotamers
         self.lagtime = args.lagtime
@@ -54,16 +57,25 @@ class EnviroBuilder(object):
         self.equil_steps = 1 if self.test else int(cs.EQ_STEPS/self.cpus) + 1 #+1 to avoid being 0
         self.sasa_max = None
         self.sasa_min = None
+        self.equilibration = "true" if args.noeq else "false"
         self.box_radius = None
-        self.box_center = None
+        self.box_center = "["+ ",".join(args.user_center) + "]" if args.user_center else None
         self.constraints = None
-        self.water_chain = args.water_lig.split(":")[0] if args.water_lig else None
-        self.water_center = None
-        self.water = args.water_exp if args.water_exp else None
-        self.water = args.water_lig if args.water_lig else self.water 
-        self.water_radius = 7 if  self.water else None
-
+        if args.water_exp:
+            self.water_energy = args.water_exp[0].split(":")[0]
+            self.water = args.water_exp
+        elif args.water_lig:
+            for water in args.water_lig:
+                print(water.split(":")[0])
+            self.water_energy = "\n".join([ cs.WATER_ENERGY.format(water.split(":")[0]) for water in args.water_lig ])
+            self.water = ",".join(['"'+water+'"' for water in args.water_lig])
+        else:
+            self.water_energy = None
+            self.water = None
+        self.water_radius = 5 if  self.water else None
+        self.water_center =  ("[" + ",".join([coord for coord in args.water_center]) + "]") if args.water_center else None
             
+
     def build_paths(self, args):
 
 
@@ -75,15 +87,17 @@ class EnviroBuilder(object):
             self.pele_dir = os.path.abspath(self.folder)
 
         if self.mae_lig:
-            self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
+            self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.splitext(os.path.basename(self.system))[0]))
         else:
-            self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.abspath(os.path.splitext(self.system)[0])))
+            self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.splitext(os.path.basename(self.system))[0]))
 
         self.rotamers_folder = os.path.join(self.pele_dir, "DataLocal/LigandRotamerLibs/")
         self.template_folder = os.path.join(self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
 
 
         self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
+        self.obc_tmp = os.path.join(cs.DIR, "Templates/solventParamsHCTOBC.txt")
+        self.obc_file = os.path.join(self.pele_dir, "DataLocal/OBC/solventParamsHCTOBC.txt")
         self.cluster_output = os.path.join(self.pele_dir, "output_clustering")
         self.clusters_output = os.path.join(self.cluster_output, "clusters_{}_KMeans_allSnapshots.pdb".format(self.clusters))
         self.receptor = os.path.join(self.pele_dir, "receptor.pdb")
@@ -98,6 +112,7 @@ class EnviroBuilder(object):
         self.glide_template = os.path.join(self.pele_dir, "glide.in") 
         self.glide_structs = os.path.join(self.pele_dir, "glide_calculations", "structures")
 
+        #####Define files and folders HIDING VARIABLES TO CHANGE#########
         for key, value in fs.retrieve_software_settings(args, self.pele_dir).items():
             setattr(self, key, value)
 

@@ -14,6 +14,7 @@ def retrieve_software_settings(args, pele_dir):
                            "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
                            "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
                            "DataLocal/LigandRotamerLibs",
+                           "DataLocal/OBC",
                            "output_pele",
                            "output_adaptive_exit",
                            "output_clustering"
@@ -46,6 +47,7 @@ def retrieve_software_settings(args, pele_dir):
                     "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
                     "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
                     "DataLocal/LigandRotamerLibs",
+                    "DataLocal/OBC",
                     "output_adaptive",
                     "output_clustering",
                     "glide_calculations/structures"
@@ -68,7 +70,8 @@ def retrieve_software_settings(args, pele_dir):
                     "DataLocal/Templates/OPLS2005/HeteroAtoms/",
                     "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
                     "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-                    "DataLocal/LigandRotamerLibs"
+                    "DataLocal/LigandRotamerLibs",
+                    "DataLocal/OBC"
                     ],
                   "file_names" : ["adaptive.conf", "pele.conf" ],
                   "files" : { "adaptive" : [ args.adaptive, args.pele ],

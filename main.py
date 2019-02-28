@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use("Agg")
 import argparse
 import os
 import PELE_Platform.MSM.main as msm
@@ -59,8 +61,8 @@ def parseargs():
     parser.add_argument("--gridres", type=str, help="Rotamers angle resolution", default=cs.GRIDRES)
     parser.add_argument("--precision", action='store_true', help="Use a more agressive control file to achieve better convergence")
     parser.add_argument("--test", action='store_true', help="Run a fast PELE_Platform test")
-    parser.add_argument("--user_center", "-c", nargs='+', type=float, help='center of the box', default=None)
-    parser.add_argument("--user_radius", "-r", type=float,  help="Radius of the box", default=None)
+    parser.add_argument("--user_center", "-c", nargs='+', type=str, help='center of the box', default=None)
+    parser.add_argument("--box_radius", "-r", type=float,  help="Radius of the box", default=None)
     parser.add_argument("--folder", "-wf", type=str,  help="Folder to apply the restart to", default=None)
     parser.add_argument("--pdb", action='store_true',  help="Use pdb files as output")
     parser.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default= [None, None] )
@@ -70,7 +72,8 @@ def parseargs():
     parser.add_argument("--in_out", action="store_true",  help="Launch inside outside soft adaptive")
     parser.add_argument("--in_out_soft", action="store_true",  help="Launch inside outside adaptive")
     parser.add_argument("--water_exp", type=str,  help="Launch water exploration adaptive PELE", default=None)
-    parser.add_argument("--water_lig", type=str,  help="Launch ligand-water exploration adaptive PELE", default=None)
+    parser.add_argument("--water_lig", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
+    parser.add_argument("--water_center", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
     parser.add_argument("--induce_fit", action="store_true",  help="Launch induce fit adaptive")
     parser.add_argument("--adaptive", type=str,  help="Adaptive control_file")
     parser.add_argument("--pele", type=str,  help="Pele control_file")
@@ -82,6 +85,11 @@ def parseargs():
     parser.add_argument("--frag", type=str,  help="Fragment pdb")
     parser.add_argument("--ca", type=str,  help="Core Atom")
     parser.add_argument("--fa", type=str,  help="Fragment Atom")
+    parser.add_argument("--noeq", action="store_false",  help="Whether to do a initial equilibration or not")
+    parser.add_argument("--skip_prep", action="store_true",  help="Whether to do the initial preprocessing or not")
+    parser.add_argument("--nonstandard", nargs="+",  help="Mid Chain non standard residues to be treated as ATOM not HETATOM", default = [])
+    parser.add_argument('--solvent', type=str, help='Type of implicit solvent (OBC/VDGBNP). default [OBC]. i.e. --solvent VDGBNP', default="OBC")
+    parser.add_argument("--atom_dist", nargs="+",  help="Number of the atoms to calculate the distance in between i.e --atom dist 123 456", default=None)
 
     return parser.parse_args()
 
