@@ -18,6 +18,8 @@ class SystemBuilder(pl.EnviroBuilder):
             system = cls(receptor, ligand, residue, pele_dir)
             system.lig_ref = system.convert_pdb()
             system.system = system.build_complex()
+            system.receptor = system.system
+            system.retrieve_receptor(output=output)
         else:
             system = cls(receptor, ligand, residue, pele_dir)
             system.receptor, system.lig_ref = system.retrieve_receptor(output=output)
@@ -83,7 +85,8 @@ class SystemBuilder(pl.EnviroBuilder):
         receptor =  os.path.join(self.pele_dir, "receptor.pdb")
 
         with open(self.receptor, 'r') as pdb_file:
-            receptor_text = [line for line in pdb_file if line.startswith("ATOM")]
+            lines = [line for line in pdb_file if line.startswith("ATOM") or line.startswith("HETATM")]
+            receptor_text = [line for line in lines if line.startswith("ATOM") or (line.startswith("HETATM") and line[17:20] != self.residue)]
         with open(self.receptor, 'r') as pdb_file:
             ligand_text = [line for line in pdb_file if line[17:20].strip() == self.residue]
         if not receptor_text  or not ligand_text:
