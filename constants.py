@@ -43,15 +43,14 @@ elif "bsccv" in machine:
     CRITERIA = "SASA"
 else:
     SCHRODINGER = "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
-    PELE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524/"
-    PELE_BIN = "/home/dsoler/cleanPELE_rev/build_gnu/Pele_mpi" 
-    MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/OpenMPI/2.1.2-GCC-6.4.0-2.28/bin/"
+    PELE = "/work/NBD_Utilities/PELE/PELE_Softwares/bin/PELErev12535/"
+    PELE_BIN = "/work/NBD_Utilities/PELE/PELE_Softwares/bin/PELErev12535/bin/Pele_mpi" 
+    MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/impi/2018.1.163-iccifort-2018.1.163-GCC-6.4.0-2.28/bin64/"
     LICENSE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/licenses/"
     MMSHARE = None
     # Provisional workaround until best_struct.py is fixed
     ACCEPTED_STEPS_NAME = "numberOfAcceptedPeleSteps"
     CRITERIA = "sasaLig"
-    PYTHON3 = "/sNow/easybuild/centos/7.4.1708/Skylake/software/Python/3.6.4-foss-2018a/bin/python"
 
 
 
@@ -96,7 +95,29 @@ NATIVE = '''
        
        
             '''
-       
+        
+WATER_ENERGY =             '''
+                            {{
+                            "type": "bindingEnergy",\n\
+                            "boundPartSelection": {{ "chains": {{ "names": ["{0}"] }} }},\n\
+                            "tag": "water{0}"\n\
+                            }},\n\
+                           '''
+DISTANCE_ATOMS =     '''
+                     {{
+                     "type":"com_distance",
+                     "tag":"distance{2}",
+                     "selection_group_1":{{
+                     "atoms": {{ "ids":["{0}"]}}
+                     }},
+                     "selection_group_2":{{
+                     "atoms": {{ "ids":["{1}"]}}
+                     }}
+                     }},
+                     '''
+
+
+
 
 #TEMPLATE KEYWORDS
 #------------------
