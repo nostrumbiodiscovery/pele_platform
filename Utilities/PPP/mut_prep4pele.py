@@ -1,6 +1,7 @@
 #!/bin/python
 import sys
 from prody import *
+import shutil
 import os
 import PELE_Platform.Utilities.Helpers.constraints as ct
 from adjustments_module import WritingAtomNames, FixStructureResnames, FixAtomNames, SolveClashes
@@ -25,7 +26,7 @@ addNonstdAminoacid('LYN', 'neutral', 'acyclic', 'large', 'polar', 'buried')
 
 
 def main(input_pdb, pele_dir, output_pdb=["",], no_gaps_ter=False, charge_terminals=False, make_unique=False,
-         remove_terminal_missing=False, mutant_multiple=False, mutation=""):
+         remove_terminal_missing=False, mutant_multiple=False, mutation="", mid_chain_nonstd_residue=[], skip=False):
     if not output_pdb[0]:
         output = os.path.splitext(os.path.basename(input_pdb))[0]
         output_pdb[0] = os.path.join(pele_dir,"{}_processed.pdb".format(output))
@@ -65,6 +66,7 @@ def main(input_pdb, pele_dir, output_pdb=["",], no_gaps_ter=False, charge_termin
     print mutation
 
     if not mutation:
+        ##############WRITE STRUCTURE######################
         print 'Writing the structure to {}'.format(output_pdb[0])
         if make_unique:
             ligand_chain = structure2use.select("chain {}".format(make_unique))
@@ -76,9 +78,13 @@ def main(input_pdb, pele_dir, output_pdb=["",], no_gaps_ter=False, charge_termin
                       no_gaps_ter, not_proteic_ligand, gaps, not_gaps)
         else:
             not_proteic_ligand = None
-            PDBwriter(output_pdb[0], WritingAtomNames(structure2use), make_unique, residues2remove,
-                      no_gaps_ter, not_proteic_ligand, gaps, not_gaps)
+            if not skip:
+                PDBwriter(output_pdb[0], WritingAtomNames(structure2use), make_unique, residues2remove,
+                      no_gaps_ter, not_proteic_ligand, gaps, not_gaps, mid_chain_nonstd_residue)
+            else:
+                shutil.copy(input_pdb, output_pdb[0])
 
+        ########METAL ATOMS PROCESS###############
         coordinated_atoms_ids = {}
         for metal, atoms_list in metals2coordinate.iteritems():
             metal_id = "{} {} {}".format(WritingAtomNames(metal).getNames()[0].replace(' ','_'),
@@ -90,7 +96,10 @@ def main(input_pdb, pele_dir, output_pdb=["",], no_gaps_ter=False, charge_termin
                           calcDistance(metal, at)[0]] for at in atoms_list]
             if len(atoms_list) in [x[1] for x in coordination_geometries.itervalues()]:
                 coordinated_atoms_ids[metal_id] = atoms_ids
+
+        ###########RETRIEVE CONSTANTS###############
         constr = ct.retrieve_constraints(output_pdb[0], gaps, coordinated_atoms_ids)
+
         return output_pdb[0], residues_without_template, gaps, coordinated_atoms_ids, constr
     else:
         clashes = []
