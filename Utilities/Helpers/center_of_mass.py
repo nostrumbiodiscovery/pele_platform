@@ -54,10 +54,13 @@ def center_of_mass(pdbfile, include='ATOM,HETATM'):
                             float(line[38:46]),    # y_coord
                             float(line[46:54])     # z_coord
                             ])
-        element_name = line[76:].strip()
+        element_name = line[76:].strip().upper()
         if element_name not in ATOMIC_WEIGHTS:
           element_name = line.split()[2].strip()[0]
-        masses.append(ATOMIC_WEIGHTS[element_name])
+        try:
+            masses.append(ATOMIC_WEIGHTS[element_name])
+        except KeyError:
+            raise KeyError("Element {} in input pdb not found please change this ligand atom element (last column of your pdb) to an accepted element tipe i.e N1+ --> N".format(line[76:].strip().upper()))
 
     assert len(coordinates) == len(masses)
 
