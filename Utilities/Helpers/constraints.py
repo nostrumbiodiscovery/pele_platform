@@ -98,8 +98,8 @@ def parseargs():
     parser.add_argument('pdb', type=str, help='pdb to create the contraints on')
     parser.add_argument('conf', help='Control file to fill in. It need to templetazide with $CONSTRAINTS')
     parser.add_argument('--interval', type=int, help="Every how many CA to constraint")
-    parser.add_argument('--ca', type=int, help="Constraint value to use on backbone CA", default=BACK_CONSTR)
-    parser.add_argument('--terminal', type=int, help="Constraint value to use on terminal CA", default=TER_CONSTR)
+    parser.add_argument('--ca', type=float, help="Constraint value to use on backbone CA", default=BACK_CONSTR)
+    parser.add_argument('--terminal', type=float, help="Constraint value to use on terminal CA", default=TER_CONSTR)
     args = parser.parse_args()
     return os.path.abspath(args.pdb), os.path.abspath(args.conf), args.interval, args.conf, args.ca, args.terminal
 
