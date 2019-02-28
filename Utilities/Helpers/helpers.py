@@ -85,3 +85,17 @@ def is_last(pele_dir):
     else:
         return pele_dir
 
+
+def retrieve_atom_info(atom, pdb):
+    """
+    Parse pdb and return atom name
+    chain and residue number
+    """
+    with open(pdb, "r") as f:
+        chain, resnum, atomname = atom.split(":")
+        for line in f:
+            try:
+                if line[21].strip() == chain and line[22:26].strip() == resnum and line[12:16].strip() == atomname:
+                    return chain + ":" + resnum + ":" + line[12:16].replace(" ", "_")
+            except IndexError:
+                pass
