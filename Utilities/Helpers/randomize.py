@@ -72,7 +72,10 @@ def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_fil
             contact_near=pymol.cmd.select('contact','(receptor and (ligand around 5))')
             contact_far=pymol.cmd.select('contact','(receptor and (ligand around 8))')
             if int(contact_near) == 0 and int(contact_far) > 0:
-                rand_lig_pdb = os.path.join(env.pele_dir, '%s_rand_position0%d.pdb' %(ligname,n))
+                if env:
+                    rand_lig_pdb = os.path.join(env.pele_dir, '%s_rand_position0%d.pdb' %(ligname,n))
+                else:
+                    rand_lig_pdb = os.path.join(".", '%s_rand_position0%d.pdb' %(ligname,n))
                 pymol.cmd.save(rand_lig_pdb,'ligand')
                 output.append(rand_lig_pdb)
                 n += 1
@@ -102,18 +105,27 @@ def join(receptor, ligands, env, output="input{}.pdb"):
                 current_atomnum += 1
                 
         content_join_file = receptor_content + ligand_content + ["END"]
-        output_path = os.path.join(env.pele_dir, output.format(i))
-
+        if env:
+            output_path = os.path.join(env.pele_dir, output.format(i))
+        else:
+            output_path = os.path.join(".", output.format(i))
         with open(output_path, "w") as fout:
             fout.write("".join(content_join_file))
         outputs.append( output_path )
 
     return outputs
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ligand", type=str, required=True, help="Ligand pdb file")
+    parser.add_argument("--receptor", type=str, required=True, help="Receptor pdb file")
+    parser.add_argument("--resname", type=str, required=True, help="Ligand resname")
+    args = parser.parse_args()
+    return os.path.abspath(args.ligand), os.path.abspath(args.receptor), args.resname
+
 if __name__ == "__main__":
-   path = os.path.abspath("ligand.pdb")
-   receptor = "PR_1A28_xray_-_minimized_processed.pdb"
-   output = randomize_starting_position(path, "input_ligand.pdb", "STR",
-           receptor, None, None)
-   join(receptor, output)
+   ligand, receptor, resname  = parse_args()
+   output = randomize_starting_position(ligand, "ligand_input.pdb", resname,
+           receptor, None, None, None)
+   join(receptor, output, None)
 
