@@ -1,4 +1,7 @@
 import subprocess
+import os
+import shutil
+import glob
 import PELE_Platform.Utilities.Helpers.pele_env as pele
 import PELE_Platform.constants as cs
 import PELE_Platform.Utilities.Helpers.system_prep as sp
@@ -9,6 +12,8 @@ import PELE_Platform.Utilities.Helpers.simulation as ad
 import PELE_Platform.Utilities.Helpers.center_of_mass as cm
 import PELE_Platform.Utilities.Helpers.randomize as rd
 import PELE_Platform.Utilities.Helpers.helpers as hp
+import PELE_Platform.Utilities.Helpers.metrics as mt
+import PELE_Platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 
 
 
@@ -29,9 +34,15 @@ def run_adaptive(args):
             env.adap_ex_input = ", ".join([ '"' + ppp.main(input, env.pele_dir, output_pdb=["" , ], 
                 charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0] + '"' for input in inputs ])
             hp.silentremove(inputs)
+
         # Prepare System
-        system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)
+        system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep)
         env.logger.info(cs.SYSTEM.format(system_fix, missing_residues, gaps, metals))
+        # Build metrics
+        metrics = mt.Metrics_Builder(env.system_fix)
+        if args.atom_dist:
+            metrics.distance_to_atom(args.atom_dist)
+        env.metrics = "\n".join(metrics.get_metrics()) if metrics.get_metrics() else None
 
         # Parametrize Ligand
         if not env.external_template and not env.external_rotamers:
@@ -41,7 +52,7 @@ def run_adaptive(args):
         else:
             cmd_to_move_template = "cp {} {}".format(env.external_template,  env.template_folder)
             subprocess.call(cmd_to_move_template.split())
-            cmd_to_move_rotamer_file = "cp {} {}".format(env.external_rotamers,  env.rotamers_folder)
+            cmd_to_move_rotamer_file = "cp {} {}".format(env.external_rotamers, env.rotamers_folder)
             subprocess.call(cmd_to_move_rotamer_file.split())
 
 
@@ -53,10 +64,20 @@ def run_adaptive(args):
                 mr.create_template(system_fix, res, env.pele_dir, args.forcefield)
                 env.logger.info("Template {}z created".format(res))
 
-        #Set Box
-        env.box_center = cm.center_of_mass(env.ligand_ref)
+        # Parametrize solvent parameters if need it
+        if env.solvent == "OBC":
+            shutil.copy(env.obc_tmp, env.obc_file)
+            for template in glob.glob(os.path.join(env.template_folder, "*")):
+                obc.main(template, env.obc_file)
 
+
+        #Set Box
+        if not env.box_center:
+            env.box_center = cm.center_of_mass(env.ligand_ref)
+            env.logger.info("Box {} created".format(env.box_center))
+        
         # Fill in Simulation Templates
+        env.logger.info("Running Simulation")
         adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
         adaptive.run()
         
