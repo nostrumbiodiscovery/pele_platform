@@ -51,6 +51,7 @@ def parseargs():
     parser.add_argument("--clust", type=int, help="Numbers of clusters to start PELE's exploration with", default=cs.CLUSTERS)
     parser.add_argument('--forcefield', '-f', type=str, help='chain of the ligand to extract', default=cs.FORCEFIELD)
     parser.add_argument('--confile', type=str, help='your own pele configuration file', default=cs.PELE_CONFILE)
+    parser.add_argument('--adapt_conf', type=str, help='your own adaptive pele configuration file', default=None)
     parser.add_argument('--native', type=str, help='native file to compare RMSD to', default="")
     parser.add_argument('--cpus', type=int, help='number of processors', default=cs.CPUS)
     parser.add_argument("--core", type=int, help="Give one atom of the core section", default=-1)
@@ -89,7 +90,9 @@ def parseargs():
     parser.add_argument("--skip_prep", action="store_true",  help="Whether to do the initial preprocessing or not")
     parser.add_argument("--nonstandard", nargs="+",  help="Mid Chain non standard residues to be treated as ATOM not HETATOM", default = [])
     parser.add_argument('--solvent', type=str, help='Type of implicit solvent (OBC/VDGBNP). default [OBC]. i.e. --solvent VDGBNP', default="OBC")
+    parser.add_argument('--randomize', action="store_true", help='Randomize ligand position around protein')
     parser.add_argument("--atom_dist", nargs="+",  help="Number of the atoms to calculate the distance in between i.e --atom dist 123 456", default=None)
+    parser.add_argument('--input', nargs="+", help='Set initial input for simulation')
 
     return parser.parse_args()
 

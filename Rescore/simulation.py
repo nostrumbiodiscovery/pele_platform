@@ -13,6 +13,7 @@ import PELE_Platform.Utilities.Helpers.center_of_mass as cm
 import PELE_Platform.Utilities.Helpers.randomize as rd
 import PELE_Platform.Utilities.Helpers.helpers as hp
 import PELE_Platform.Utilities.Helpers.metrics as mt
+import PELE_Platform.Utilities.Helpers.external_files as ext
 import PELE_Platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 
 
@@ -26,7 +27,19 @@ def run_adaptive(args):
         # Build System
         env.logger.info("Checking {} system for Pele".format(args.residue))
         syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
-        if args.full:
+        
+        # For global simulation place ligans around protein
+        if args.input:
+            env.inputs_simulation = []
+            for input in env.input:
+                input_path  = os.path.join(env.pele_dir, os.path.basename(input))
+                shutil.copy(input, input_path)
+                input_proc = ppp.main(input_path, env.pele_dir, output_pdb=["" , ],
+                                charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0]
+                env.inputs_simulation.append(input_proc)
+                hp.silentremove([input_path])
+            env.adap_ex_input = ", ".join(['"' + input +  '"' for input in env.inputs_simulation])
+        elif args.full or args.randomize:
             ligand_positions = rd.randomize_starting_position(env.ligand_ref, "input_ligand.pdb", env.residue, env.receptor, None, None, env)
             inputs = rd.join(env.receptor, ligand_positions, env)
             hp.silentremove(ligand_positions)
@@ -78,6 +91,10 @@ def run_adaptive(args):
         
         # Fill in Simulation Templates
         env.logger.info("Running Simulation")
+        if env.adapt_conf:
+            ext.external_adaptive_file(env)
+        if env.confile:
+            ext.external_pele_file(env)
         adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
         adaptive.run()
         

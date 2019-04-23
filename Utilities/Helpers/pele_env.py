@@ -34,6 +34,9 @@ class EnviroBuilder(object):
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
         self.solvent = args.solvent
         self.cpus = args.cpus = args.cpus if not args.test else 4
+        self.adapt_conf = args.adapt_conf
+        self.confile = args.confile
+        self.input = args.input
         self.restart = args.restart
         self.native = args.native
         self.chain = args.chain
@@ -103,7 +106,7 @@ class EnviroBuilder(object):
         self.receptor = os.path.join(self.pele_dir, "receptor.pdb")
         self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
         self.topology = None if self.pdb else os.path.join("output_pele", "topology.pdb")
-        self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else cs.NATIVE.format(os.path.abspath(self.ligand_ref), self.chain)
+        self.native = cs.NATIVE.format(os.path.abspath(self.native), self.chain) if self.native else ""
         self.pele_temp = os.path.join(self.pele_dir, "pele.conf")
         self.adap_l_input = "{}/initial_*"
         self.adap_l_output = os.path.join(self.pele_dir, "output_pele")
