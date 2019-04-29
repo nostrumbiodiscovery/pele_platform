@@ -40,9 +40,9 @@ before_deploy:
 
 deploy:
   # Deploy to Anaconda.org
-    provider: script
+  - provider: script
     script: anaconda -t $CONDA_UPLOAD_TOKEN  upload  --skip -u NostrumBioDiscovery $HOME/conda/conda-bld/**/pele_platform-*.tar.bz2
     skip_cleanup: true
     on:
-tags: true
+      tags: true
 
