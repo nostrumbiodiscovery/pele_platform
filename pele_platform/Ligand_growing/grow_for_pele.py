@@ -7,13 +7,13 @@ from logging.config import fileConfig
 import shutil
 import subprocess
 # Local imports
-import PELE_Platform.Ligand_growing.Helpers.clusterizer as clusterizer
-import PELE_Platform.Ligand_growing.Growing.template_fragmenter as template_fragmenter
-import PELE_Platform.Ligand_growing.Growing.simulations_linker as simulations_linker
-import PELE_Platform.Ligand_growing.Growing.add_fragment_from_pdbs as add_fragment_from_pdbs
-import PELE_Platform.Ligand_growing.Growing.AddingFragHelpers as AddingFragHelpers
-import PELE_Platform.Ligand_growing.Growing.bestStructs as bestStructs
-import PELE_Platform.Ligand_growing.constants as c
+import pele_platform.Ligand_growing.Helpers.clusterizer as clusterizer
+import pele_platform.Ligand_growing.Growing.template_fragmenter as template_fragmenter
+import pele_platform.Ligand_growing.Growing.simulations_linker as simulations_linker
+import pele_platform.Ligand_growing.Growing.add_fragment_from_pdbs as add_fragment_from_pdbs
+import pele_platform.Ligand_growing.Growing.AddingFragHelpers as AddingFragHelpers
+import pele_platform.Ligand_growing.Growing.bestStructs as bestStructs
+import pele_platform.Ligand_growing.constants as c
 
 # Calling configuration file for log system
 FilePath = os.path.abspath(__file__)

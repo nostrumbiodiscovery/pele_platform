@@ -2,17 +2,17 @@ import os
 import pele_platform.Utilities.Helpers.check_env_var as env
 env.check_dependencies()
 import argparse
-import PELE_Platform.constants as cs
-import PELE_Platform.Utilities.PlopRotTemp.main as plop
-import PELE_Platform.Utilities.Helpers.helpers as hp
-import PELE_Platform.Utilities.Parameters.pele_env as pele
-import PELE_Platform.Utilities.Helpers.simulation as ad
-import PELE_Platform.MSM.clusterAdaptiveRun as cl
-import PELE_Platform.Utilities.Helpers.system_prep as sp
-import PELE_Platform.MSM.box as bx
-import PELE_Platform.Utilities.PPP.mut_prep4pele as ppp
-import PELE_Platform.MSM.msm_analysis as msm
-import PELE_Platform.Utilities.Helpers.missing_residues as mr
+import pele_platform.constants as cs
+import pele_platform.Utilities.PlopRotTemp.main as plop
+import pele_platform.Utilities.Helpers.helpers as hp
+import pele_platform.Utilities.Parameters.pele_env as pele
+import pele_platform.Utilities.Helpers.simulation as ad
+import pele_platform.MSM.clusterAdaptiveRun as cl
+import pele_platform.Utilities.Helpers.system_prep as sp
+import pele_platform.MSM.box as bx
+import pele_platform.Utilities.PPP.mut_prep4pele as ppp
+import pele_platform.MSM.msm_analysis as msm
+import pele_platform.Utilities.Helpers.missing_residues as mr
 
 __version__ = "1.0.3"
 

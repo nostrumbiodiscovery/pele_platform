@@ -2,20 +2,20 @@ import subprocess
 import os
 import shutil
 import glob
-import PELE_Platform.Utilities.Parameters.pele_env as pele
-import PELE_Platform.Utilities.Helpers.constraints as ct
-import PELE_Platform.constants as cs
-import PELE_Platform.Utilities.Helpers.system_prep as sp
-import PELE_Platform.Utilities.PPP.mut_prep4pele as ppp
-import PELE_Platform.Utilities.PlopRotTemp.main as plop
-import PELE_Platform.Utilities.Helpers.missing_residues as mr
-import PELE_Platform.Utilities.Helpers.simulation as ad
-import PELE_Platform.Utilities.Helpers.center_of_mass as cm
-import PELE_Platform.Utilities.Helpers.randomize as rd
-import PELE_Platform.Utilities.Helpers.helpers as hp
-import PELE_Platform.Utilities.Helpers.metrics as mt
-import PELE_Platform.Utilities.Helpers.external_files as ext
-import PELE_Platform.Utilities.Helpers.solventOBCParamsGenerator as obc
+import pele_platform.Utilities.Parameters.pele_env as pele
+import pele_platform.Utilities.Helpers.constraints as ct
+import pele_platform.constants as cs
+import pele_platform.Utilities.Helpers.system_prep as sp
+import pele_platform.Utilities.PPP.mut_prep4pele as ppp
+import pele_platform.Utilities.PlopRotTemp.main as plop
+import pele_platform.Utilities.Helpers.missing_residues as mr
+import pele_platform.Utilities.Helpers.simulation as ad
+import pele_platform.Utilities.Helpers.center_of_mass as cm
+import pele_platform.Utilities.Helpers.randomize as rd
+import pele_platform.Utilities.Helpers.helpers as hp
+import pele_platform.Utilities.Helpers.metrics as mt
+import pele_platform.Utilities.Helpers.external_files as ext
+import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 
 
 

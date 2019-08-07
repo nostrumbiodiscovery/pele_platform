@@ -7,8 +7,8 @@ import shutil
 import sys
 import Bio.PDB as bio
 # Local imports
-import PELE_Platform.Ligand_growing.Growing.AddingFragHelpers.complex_to_prody as c2p
-import PELE_Platform.Ligand_growing.Growing.AddingFragHelpers.pdb_joiner as pj
+import pele_platform.Ligand_growing.Growing.AddingFragHelpers.complex_to_prody as c2p
+import pele_platform.Ligand_growing.Growing.AddingFragHelpers.pdb_joiner as pj
 
 
 

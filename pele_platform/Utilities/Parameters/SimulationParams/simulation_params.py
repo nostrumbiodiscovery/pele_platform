@@ -1,10 +1,10 @@
 import random
 import os
-import PELE_Platform.constants as cs
-from PELE_Platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
-from PELE_Platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
-from PELE_Platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
-import PELE_Platform.Utilities.Helpers.helpers as hp
+import pele_platform.constants as cs
+from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
+from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
+from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
+import pele_platform.Utilities.Helpers.helpers as hp
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams):

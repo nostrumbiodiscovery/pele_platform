@@ -5,7 +5,7 @@ import subprocess
 import logging
 
 # Local imports
-import PELE_Platform.Ligand_growing.Helpers.templatize as tp
+import pele_platform.Ligand_growing.Helpers.templatize as tp
 
 # Getting the name of the module for the log system
 logger = logging.getLogger(__name__)
