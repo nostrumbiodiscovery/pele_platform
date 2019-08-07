@@ -10,6 +10,27 @@ def silentremove(*args, **kwargs):
             except OSError:
                 pass
 
+def create_dir(base_dir, extension=None):
+    """
+        Class Method to manage
+        directory creation only if that
+        ones doesn't exist
+
+        Location:
+            base_dir+extension
+            or base_dir if extension is None
+    """
+    if extension:
+        path = os.path.join(base_dir, extension)
+        if os.path.isdir(path):
+            warnings.warn("Directory {} already exists.".format(path), RuntimeWarning)
+        else:
+            os.makedirs(path)
+    else:
+        if os.path.isdir(base_dir):
+            warnings.warn("Directory {} already exists.".format(base_dir), RuntimeWarning)
+        else:
+            os.makedirs(base_dir)
 
 class cd:
     """Context manager for changing the current working directory"""

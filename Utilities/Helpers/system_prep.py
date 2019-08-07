@@ -1,9 +1,8 @@
 import os
 from schrodinger import structure as st
-import PELE_Platform.Utilities.Helpers.pele_env as pl
 
 
-class SystemBuilder(pl.EnviroBuilder):
+class SystemBuilder(object):
 
     def __init__(self, receptor, ligand, residue, pele_dir):
         self.receptor = receptor
