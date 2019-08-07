@@ -1,0 +1,6 @@
+rot assign res IK1 &
+   sidelib FREE10 _C12 _N3_ &
+     newgrp &
+   sidelib FREE10 _C11 _C7_ &
+     newgrp &
+   sidelib FREE10 _C10 _C9_ &

@@ -1,0 +1,9 @@
+2019-08-07 15:07:40,882:INFO:Checking IK1 system for Pele
+2019-08-07 15:07:42,469:INFO:System /work/NBD_Utilities/PELE/PELE_Softwares/PELE_Platform/tests/IK1_Pele/1_3ZON_complex_processed.pdb checked successfully
+	**Missing residues found [['IK1', 1, 'Z']]
+	**Gaps found {'A': [[610, 636]]}
+	**Metals found {}
+2019-08-07 15:07:42,469:INFO:Creating template for residue IK1
+2019-08-07 15:07:44,166:INFO:Template ik1z created
+2019-08-07 15:07:44,170:INFO:Box [34.501, -24.589, 3.184] created
+2019-08-07 15:07:44,170:INFO:Running Simulation
