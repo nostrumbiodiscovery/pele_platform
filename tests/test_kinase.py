@@ -1,7 +1,7 @@
 import pytest
 import os
-import PELE_Platform.constants as cs
-import PELE_Platform.main as main
+import pele_platform.constants as cs
+import pele_platform.main as main
 
 test_path = os.path.join(cs.DIR, "Examples")
 

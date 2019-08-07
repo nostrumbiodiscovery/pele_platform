@@ -36,18 +36,18 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 if use_cython:
     ext_modules += [
-            Extension("PELE_Platform.AdaptivePELE.atomset.atomset", ["PELE_Platform/AdaptivePELE/atomset/atomset.pyx"], include_dirs=["PELE_Platform/AdaptivePELE", "PELE_Platform/AdaptivePELE/atomset"]),
-        Extension("PELE_Platform.AdaptivePELE.atomset.SymmetryContactMapEvaluator", ["PELE_Platform/AdaptivePELE/atomset/SymmetryContactMapEvaluator.pyx"], include_dirs=["PELE_Platform/AdaptivePELE", "PELE_Platform/AdaptivePELE/atomset"]),
-        Extension("PELE_Platform.AdaptivePELE.atomset.RMSDCalculator", ["PELE_Platform/AdaptivePELE/atomset/RMSDCalculator.pyx"], include_dirs=["PELE_Platform/AdaptivePELE", "PELE_Platform/AdaptivePELE/atomset"]),
-        Extension("PELE_Platform.AdaptivePELE.freeEnergies.utils", ["PELE_Platform/AdaptivePELE/freeEnergies/utils.pyx"], include_dirs=["PELE_Platform/AdaptivePELE", "PELE_Platform/AdaptivePELE/freeEnergies"])
+            Extension("pele_platform.pele_platform.AdaptivePELE.atomset.atomset", ["pele_platform.pele_platform/AdaptivePELE/atomset/atomset.pyx"], include_dirs=["pele_platform.pele_platform/AdaptivePELE", "pele_platform.pele_platform/AdaptivePELE/atomset"]),
+        Extension("pele_platform.pele_platform.AdaptivePELE.atomset.SymmetryContactMapEvaluator", ["pele_platform.pele_platform/AdaptivePELE/atomset/SymmetryContactMapEvaluator.pyx"], include_dirs=["pele_platform.pele_platform/AdaptivePELE", "pele_platform.pele_platform/AdaptivePELE/atomset"]),
+        Extension("pele_platform.pele_platform.AdaptivePELE.atomset.RMSDCalculator", ["pele_platform.pele_platform/AdaptivePELE/atomset/RMSDCalculator.pyx"], include_dirs=["pele_platform.pele_platform/AdaptivePELE", "pele_platform.pele_platform/AdaptivePELE/atomset"]),
+        Extension("pele_platform.pele_platform.AdaptivePELE.freeEnergies.utils", ["pele_platform.pele_platform/AdaptivePELE/freeEnergies/utils.pyx"], include_dirs=["pele_platform.pele_platform/AdaptivePELE", "pele_platform.pele_platform/AdaptivePELE/freeEnergies"])
     ]
     cmdclass.update({'build_ext': build_ext})
 else:
     ext_modules += [
-        Extension("PELE_Platform.AdaptivePELE.atomset.atomset", ["PELE_Platform/AdaptivePELE/atomset/atomset.c"], include_dirs=["PELE_Platform/AdaptivePELE", "PELE_Platform/AdaptivePELE/atomset"]),
-        Extension("PELE_Platform.AdaptivePELE.atomset.SymmetryContactMapEvaluator", ["PELE_Platform/AdaptivePELE/atomset/SymmetryContactMapEvaluator.c"], include_dirs=["PELE_Platform/AdaptivePELE", "PELE_Platform/Utilities/AdaptivePELE/atomset"]),
-        Extension("PELE_Platform.AdaptivePELE.atomset.RMSDCalculator", ["PELE_Platform/AdaptivePELE/atomset/RMSDCalculator.c"], include_dirs=["PELE_Platform/AdaptivePELE", "PELE_Platform/AdaptivePELE/atomset"]),
-        Extension("PELE_Platform.AdaptivePELE.freeEnergies.utils", ["PELE_Platform/AdaptivePELE/freeEnergies/utils.c"], include_dirs=["PELE_Platform/AdaptivePELE", "PELE_Platform/AdaptivePELE/freeEnergies"])
+        Extension("pele_platform.pele_platform.AdaptivePELE.atomset.atomset", ["pele_platform.pele_platform/AdaptivePELE/atomset/atomset.c"], include_dirs=["pele_platform.pele_platform/AdaptivePELE", "pele_platform.pele_platform/AdaptivePELE/atomset"]),
+        Extension("pele_platform.pele_platform.AdaptivePELE.atomset.SymmetryContactMapEvaluator", ["pele_platform.pele_platform/AdaptivePELE/atomset/SymmetryContactMapEvaluator.c"], include_dirs=["pele_platform.pele_platform/AdaptivePELE", "pele_platform.pele_platform/Utilities/AdaptivePELE/atomset"]),
+        Extension("pele_platform.pele_platform.AdaptivePELE.atomset.RMSDCalculator", ["pele_platform.pele_platform/AdaptivePELE/atomset/RMSDCalculator.c"], include_dirs=["pele_platform.pele_platform/AdaptivePELE", "pele_platform.pele_platform/AdaptivePELE/atomset"]),
+        Extension("pele_platform.pele_platform.AdaptivePELE.freeEnergies.utils", ["pele_platform.pele_platform/AdaptivePELE/freeEnergies/utils.c"], include_dirs=["pele_platform.pele_platform/AdaptivePELE", "pele_platform.pele_platform/AdaptivePELE/freeEnergies"])
     ]
 
 setup(
@@ -60,7 +60,7 @@ setup(
     author_email='danilecina@gmail.com, cescgina@gmail.com',
     license='',
     packages=find_packages(exclude=['docs', 'tests']),
-    package_data={"PELE_Platform/AdaptivePELE/atomset": ['*.pxd']},
+    package_data={"pele_platform.pele_platform/AdaptivePELE/atomset": ['*.pxd']},
     install_requires=['numpy', 'mdtraj'],
     cmdclass=cmdclass,
     ext_modules=cythonize(ext_modules),  # accepts a glob pattern
