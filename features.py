@@ -1,6 +1,11 @@
 import os
 import PELE_Platform.constants as cs
 
+"""
+Description of the file: This file specifies what files to use
+for each job.
+
+"""
     
 def retrieve_software_settings(args, pele_dir):
 
@@ -88,7 +93,9 @@ def retrieve_software_settings(args, pele_dir):
                               "water_exp":  [ os.path.join(cs.DIR, "Templates/adaptive_water.conf"),
                                            os.path.join(cs.DIR, "Templates/pele_water.conf") ],
                               "water_lig":  [ os.path.join(cs.DIR, "Templates/adaptive_water_ligand.conf"),
-                                           os.path.join(cs.DIR, "Templates/pele_water_ligand.conf") ]
+                                           os.path.join(cs.DIR, "Templates/pele_water_ligand.conf") ],
+                              "bias":  [ os.path.join(cs.DIR, "Templates/biased_adaptive.conf"),
+                                           os.path.join(cs.DIR, "Templates/biased_pele.conf") ]
                             }
                  }
              }
@@ -121,6 +128,8 @@ def retrieve_software_settings(args, pele_dir):
                 software_setings["files"] = software_setings["files"].get("water_exp")
             elif args.water_lig:
                 software_setings["files"] = software_setings["files"].get("water_lig")
+            elif args.bias:
+                software_setings["files"] = software_setings["files"].get("bias")
             else:
                 software_setings["files"] = software_setings["files"].get("adaptive")
         
