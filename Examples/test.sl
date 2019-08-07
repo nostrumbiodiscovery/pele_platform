@@ -5,6 +5,7 @@
 #SBATCH --ntasks=11
 #SBATCH --mem-per-cpu=1000
 
+#############################NO CHANGE###########################
 module purge
 unset PYTHONPATH
 unset LD_LIBRARY_PATH
@@ -12,6 +13,10 @@ module load impi
 module load Python/2.7.14-foss-2018a
 export PYTHONPATH=/sNow/easybuild/centos/7.4.1708/Skylake/software/PyMOL/2.2.0_0/lib/python2.7/site-packages/:$PYTHONPATH
 export PYTHONPATH=/work/NBD_Utilities/PELE/PELE_Softwares/:/work/NBD_Utilities/PELE/PELE_Softwares/PELE_Platform/:$PYTHONPATH
+
+
+
+############################CHANGE##########################
 
 #KINASE TEST
 #python -m PELE_Platform.main /work/NBD_Utilities/PELE/PELE_Softwares/PELE_Platform/Examples/Kinase/1_3ZON_complex.pdb IK1 Z --test --hbond A:690:_H__ Z:1:_O2_
