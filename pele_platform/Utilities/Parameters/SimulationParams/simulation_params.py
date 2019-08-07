@@ -92,6 +92,9 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.atom_dist = args.atom_dist
 
     def output_params(self, args):
-        self.pdb = args.pdb
         self.folder = args.folder
+        self.report_name = args.report_name
+        self.traj_name = args.traj_name
+        self.xtc = args.traj_name.endswith(".xtc")
+        self.pdb = args.traj_name.endswith(".pdb")
 

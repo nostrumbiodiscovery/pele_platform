@@ -43,7 +43,8 @@ def test_external_confiles(ext_args):
 
 
 #python -m PELE_Platform.main /work/NBD_Utilities/PELE/PELE_Softwares/PELE_Platform/Examples/Kinase/1_3ZON_complex.pdb IK1 Z --test --out_in
-OUT_IN_ARGS = [os.path.join(test_path, "Kinase/1_3ZON_complex.pdb"), "IK1", "Z", "--test", "--bias", "--out_in", "--solvent", "OBC"]
+OUT_IN_ARGS = [os.path.join(test_path, "Kinase/1_3ZON_complex.pdb"), "IK1", "Z", "--bias", "--out_in", "--solvent", "OBC", "--iterations", "1",
+"--pele_steps", "1", "--cpus", "3", "--report_name", "report_sim1", "--traj_name", "traj_sim1"]
 @pytest.mark.parametrize("ext_args", [
                          (OUT_IN_ARGS),
                          ])
@@ -136,7 +137,7 @@ if __name__ == "__main__":
     #test_kinases(KINASE_ARGS)
     #test_bias(BIAS_ARGS)
     #test_external_confiles(EXTERNAL_CONFILES_ARGS)
-    #test_out_in(OUT_IN_ARGS)
+    test_out_in(OUT_IN_ARGS)
     #test_global(GLOBAL_ARGS)
     #test_induce_fit(INDUCE_FIT_ARGS)
     #test_exit(EXIT_ARGS)
