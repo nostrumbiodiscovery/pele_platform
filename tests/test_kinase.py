@@ -133,7 +133,7 @@ def test_msm_mae(ext_args):
 
 
 if __name__ == "__main__":
-    test_kinases(KINASE_ARGS)
+    #test_kinases(KINASE_ARGS)
     #test_bias(BIAS_ARGS)
     #test_external_confiles(EXTERNAL_CONFILES_ARGS)
     #test_out_in(OUT_IN_ARGS)
