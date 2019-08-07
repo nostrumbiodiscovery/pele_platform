@@ -1,5 +1,5 @@
 import subprocess
-import PELE_Platform.Utilities.Helpers.pele_env as pele
+import PELE_Platform.Utilities.Parameters.pele_env as pele
 import os
 import glob
 import PELE_Platform.AdaptivePELE.analysis.splitTrajectory as st

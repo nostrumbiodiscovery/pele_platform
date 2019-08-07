@@ -2,7 +2,8 @@ import subprocess
 import os
 import shutil
 import glob
-import PELE_Platform.Utilities.Helpers.pele_env as pele
+import PELE_Platform.Utilities.Parameters.pele_env as pele
+import PELE_Platform.Utilities.Helpers.constraints as ct
 import PELE_Platform.constants as cs
 import PELE_Platform.Utilities.Helpers.system_prep as sp
 import PELE_Platform.Utilities.PPP.mut_prep4pele as ppp
@@ -19,7 +20,8 @@ import PELE_Platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 
 
 def run_adaptive(args):
-    # Build folders and logging
+    # Build Folders and Logging and env variable that will containt
+    #all main  attributes of the simulation
     env = pele.EnviroBuilder.build_env(args)
 
     if args.restart == "all":
@@ -28,7 +30,7 @@ def run_adaptive(args):
         env.logger.info("Checking {} system for Pele".format(args.residue))
         syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
         
-        # For global simulation place ligans around protein
+        ########Choose your own input####################
         if args.input:
             env.inputs_simulation = []
             for input in env.input:
@@ -48,16 +50,25 @@ def run_adaptive(args):
                 charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0] + '"' for input in inputs ])
             hp.silentremove(inputs)
 
-        # Prepare System
-        system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep)
+        ##########Prepare System################
+        if env.no_ppp:
+            env.adap_ex_input = system_fix = syst.system
+            missing_residues = []
+            gaps = {}
+            metals = {}
+            env.constraints = ct.retrieve_constraints(system_fix, gaps, metals)
+            shutil.copy(env.adap_ex_input, env.pele_dir)
+        else:
+            system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep)
         env.logger.info(cs.SYSTEM.format(system_fix, missing_residues, gaps, metals))
-        # Build metrics
+
+        ############Build metrics##################
         metrics = mt.Metrics_Builder(env.system_fix)
-        if args.atom_dist:
+        if env.atom_dist:
             metrics.distance_to_atom(args.atom_dist)
         env.metrics = "\n".join(metrics.get_metrics()) if metrics.get_metrics() else None
 
-        # Parametrize Ligand
+        ############3Parametrize Ligand###############3
         if not env.external_template and not env.external_rotamers:
             env.logger.info("Creating template for residue {}".format(args.residue))
             plop.parametrize_miss_residues(args, env, syst)
@@ -70,26 +81,26 @@ def run_adaptive(args):
 
 
 
-        # Parametrize missing residues
+        ###########Parametrize missing residues#################
         for res, __, _ in missing_residues:
             if res != args.residue:
                 env.logger.info("Creating template for residue {}".format(res))
                 mr.create_template(system_fix, res, env.pele_dir, args.forcefield)
                 env.logger.info("Template {}z created".format(res))
 
-        # Parametrize solvent parameters if need it
+        #########Parametrize solvent parameters if need it##############
         if env.solvent == "OBC":
             shutil.copy(env.obc_tmp, env.obc_file)
             for template in glob.glob(os.path.join(env.template_folder, "*")):
                 obc.main(template, env.obc_file)
 
 
-        #Set Box
+        #################3Set Box###################3
         if not env.box_center:
             env.box_center = cm.center_of_mass(env.ligand_ref)
             env.logger.info("Box {} created".format(env.box_center))
         
-        # Fill in Simulation Templates
+        ############Fill in Simulation Templates############
         env.logger.info("Running Simulation")
         if env.adapt_conf:
             ext.external_adaptive_file(env)
