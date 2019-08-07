@@ -5,7 +5,7 @@ import argparse
 import PELE_Platform.constants as cs
 import PELE_Platform.Utilities.PlopRotTemp.main as plop
 import PELE_Platform.Utilities.Helpers.helpers as hp
-import PELE_Platform.Utilities.Helpers.pele_env as pele
+import PELE_Platform.Utilities.Parameters.pele_env as pele
 import PELE_Platform.Utilities.Helpers.simulation as ad
 import PELE_Platform.MSM.clusterAdaptiveRun as cl
 import PELE_Platform.Utilities.Helpers.system_prep as sp
