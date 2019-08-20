@@ -26,10 +26,10 @@ def run_adaptive(args):
 
     if args.restart == "all":
 
-        # Build System
-        env.logger.info("Checking {} system for Pele".format(args.residue))
+        env.logger.info("System: {}; Platform Functionality: {}\n\n".format(env.residue, env.software))
         syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
         
+        env.logger.info("Prepare complex {}".format(syst.system))
         ########Choose your own input####################
         if args.input:
             env.inputs_simulation = []
@@ -60,27 +60,28 @@ def run_adaptive(args):
             shutil.copy(env.adap_ex_input, env.pele_dir)
         else:
             system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep)
-        env.logger.info(cs.SYSTEM.format(system_fix, missing_residues, gaps, metals))
+        env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
+        env.logger.info("Complex {} prepared\n\n".format(system_fix))
 
         ############Build metrics##################
+        env.logger.info("Setting metrics")
         metrics = mt.Metrics_Builder(env.system_fix)
         if env.atom_dist:
             metrics.distance_to_atom(args.atom_dist)
         env.metrics = "\n".join(metrics.get_metrics()) if metrics.get_metrics() else None
+        env.logger.info("Metrics set\n\n")
 
         ############Parametrize Ligand###############
         if not env.external_template and not env.external_rotamers:
             env.logger.info("Creating template for residue {}".format(args.residue))
             with hp.cd(env.pele_dir):
                 plop.parametrize_miss_residues(args, env, syst)
-            env.logger.info("Template {}z created".format(args.residue.lower()))
+            env.logger.info("Template {}z created\n\n".format(args.residue.lower()))
         else:
             cmd_to_move_template = "cp {} {}".format(env.external_template,  env.template_folder)
             subprocess.call(cmd_to_move_template.split())
             cmd_to_move_rotamer_file = "cp {} {}".format(env.external_rotamers, env.rotamers_folder)
             subprocess.call(cmd_to_move_rotamer_file.split())
-
-
 
         ###########Parametrize missing residues#################
         for res, __, _ in missing_residues:
@@ -88,19 +89,24 @@ def run_adaptive(args):
                 env.logger.info("Creating template for residue {}".format(res))
                 with hp.cd(env.pele_dir):
                     mr.create_template(args, env)
-                env.logger.info("Template {}z created".format(res))
+                env.logger.info("Template {}z created\n\n".format(res))
 
         #########Parametrize solvent parameters if need it##############
+        env.logger.info("Setting implicit solvent: {}".format(env.solvent))
         if env.solvent == "OBC":
             shutil.copy(env.obc_tmp, env.obc_file)
             for template in glob.glob(os.path.join(env.template_folder, "*")):
                 obc.main(template, env.obc_file)
+        env.logger.info("Implicit solvent set\n\n".format(env.solvent))
 
 
-        #################3Set Box###################3
+        #################Set Box###################
+        env.logger.info("Generating exploration box")
         if not env.box_center:
             env.box_center = cm.center_of_mass(env.ligand_ref)
-            env.logger.info("Box {} created".format(env.box_center))
+            env.logger.info("Box {} generated\n\n".format(env.box_center))
+        else:
+            env.logger.info("Box {} generated\n\n".format(env.box_center))
         
         ############Fill in Simulation Templates############
         env.logger.info("Running Simulation")
@@ -110,5 +116,6 @@ def run_adaptive(args):
             ext.external_pele_file(env)
         adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
         adaptive.run()
+        env.logger.info("Simulation run succesfully (:\n\n")
         
     return env

@@ -42,11 +42,11 @@ elif "bsccv" in machine:
     ACCEPTED_STEPS_NAME = "AcceptedSteps"
     CRITERIA = "SASA"
 else:
-    SCHRODINGER = "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
-    PELE = "/work/NBD_Utilities/PELE/PELE_Softwares/bin/PELErev12535/"
-    PELE_BIN = "/work/NBD_Utilities/PELE/PELE_Softwares/bin/PELErev12535/bin/Pele_mpi" 
-    MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/impi/2018.1.163-iccifort-2018.1.163-GCC-6.4.0-2.28/bin64/"
-    LICENSE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/licenses/"
+    SCHRODINGER = "/opt/schrodinger2018-1/"
+    PELE = "/opt/PELE/"
+    PELE_BIN = "/opt/PELE/bin/PELE-1.5" 
+    MPIRUN = "/usr/lib64/openmpi/bin/"
+    LICENSE = "/home/ywest/"
     MMSHARE = None
     # Provisional workaround until best_struct.py is fixed
     ACCEPTED_STEPS_NAME = "numberOfAcceptedPeleSteps"
@@ -142,4 +142,4 @@ ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptiv
 #-----------------
 
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
-SYSTEM = "System {} checked successfully\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"
+SYSTEM = "\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"
