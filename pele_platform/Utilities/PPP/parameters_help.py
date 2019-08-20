@@ -48,6 +48,9 @@ remove_terminal_missing_description = "Whe this option is chosen the program wil
                                       "(that is: N, CA, C, O)."
 no_gaps_ter_description = "When this option is present the program won't add a TER mark whenever it finds " \
                        "a gap in the sequence."
+pdb_resolution_description = "A float indicating the pdb resolution, this number will be used as the maximum allowed " \
+                             "between the N atom of a residue and the C atom of the previous residue when checking" \
+                             "for gaps. In this check the minimum distance that will be used is 1.55A."
 make_unique_description = "This option is optional and should be present if the user wants to make the names " \
                           "in a given CHAIN unique."
 remove_terminal_missing = "When this option is present the program will eliminate the first or last residue if they " \

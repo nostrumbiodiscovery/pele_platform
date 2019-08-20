@@ -26,7 +26,7 @@ def analyse_results(env, args, runTica=True):
     lagtimes = None if args.test else None
     clusters = 2 if args.test else env.msm_clust
     with hp.cd(env.adap_l_output):
-    	trajs_per_epoch = len(glob.glob(os.path.join("0", "*report*")))
+        trajs_per_epoch = len(glob.glob(os.path.join("0", "*report*")))
         if runTica:
             td.main(DIMENSIONS, clusters, args.residue, lagtime, trajs_per_epoch, 1000)
             return()
@@ -39,10 +39,10 @@ def analyse_results(env, args, runTica=True):
             # In case of more than one simulation, i.e. MSM_0, MSM_1, etc
             MSM_folders = glob.glob(os.path.join(env.adap_l_output, "MSM_*"))
             for i, folder in enumerate(MSM_folders):
-		try:
-		    getRepr.main(os.path.join(env.adap_l_output, folder, REPRESENTATIVES_FILE), ".", output=REPRESENTATIVES_STRUCTURES % i, topology=env.topology)
-		except IndexError: 
-		    pass
+                try:
+                    getRepr.main(os.path.join(env.adap_l_output, folder, REPRESENTATIVES_FILE), ".", output=REPRESENTATIVES_STRUCTURES % i, topology=env.topology)
+                except IndexError: 
+                    pass
 
 def summerize(pele_path):
     results_file = os.path.join(pele_path, "results.txt")

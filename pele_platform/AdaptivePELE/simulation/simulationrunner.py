@@ -23,6 +23,9 @@ try:
     import subprocess32 as subprocess
 except ImportError:
     import subprocess
+except SyntaxError:
+    import subprocess
+
 
 try:
     basestring

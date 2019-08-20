@@ -76,11 +76,11 @@ def ComputeDihedral(at1, at2, at3, at4, v=False):
     z = dot(u_b2, n2)
     # print z
     if z > 0.0001:
-        print "Z should be almost 0, something in wrong!"
+        print("Z should be almost 0, something in wrong!")
         sys.exit()
     dihedral = arctan2(y, x)
     if v:
-        print "dihedral in rad:", dihedral
+        print("dihedral in rad:", dihedral)
     return Radians2Degrees(dihedral)
 
 
@@ -167,7 +167,7 @@ def ChangeResidueCoordinates(initial_residue, zmatrix, rotamer_library, dihedral
                 try:
                     dihedral_brother[0]
                 except IndexError:
-                    print "Something went wrong when checking brothers while moving the residue to solve clashes."
+                    print("Something went wrong when checking brothers while moving the residue to solve clashes.")
                     sys.exit()
                 else:
                     initial_fi = ComputeDihedral(at1.getCoords()[0], at2.getCoords()[0], at3.getCoords()[0],
@@ -195,7 +195,7 @@ def ChangeResidueCoordinates(initial_residue, zmatrix, rotamer_library, dihedral
             try:
                 dihedral_brother[0]
             except IndexError:
-                print "Something went wrong when checking brothers while moving the residue to solve clashes."
+                print("Something went wrong when checking brothers while moving the residue to solve clashes.")
                 sys.exit()
             else:
                 initial_fi = ComputeDihedral(at1.getCoords()[0], at2.getCoords()[0], at3.getCoords()[0],

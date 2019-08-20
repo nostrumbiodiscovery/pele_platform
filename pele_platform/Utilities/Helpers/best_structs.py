@@ -85,9 +85,9 @@ def main(path, test=False, criteria=constants.CRITERIA, n_structs=500, sort_orde
  
     if not test:
     	try:
-		max_sasa_info[0]
+            max_sasa_info[0]
     	except KeyError:
-		raise KeyError("Adaptive Exit didn't finish. Increase the number of cpus or change parameters inside pele_platform/Template/adaptive_exit.conf")
+            raise KeyError("Adaptive Exit didn't finish. Increase the number of cpus or change parameters inside pele_platform/Template/adaptive_exit.conf")
     equilibration_reports = [report for report in reports if "equilibration" in os.path.basename(os.path.dirname(report))]
     df_from_each_file = (pd.read_csv(f, sep='    ', engine='python') for f in equilibration_reports)
     concatenated_df   = pd.concat(df_from_each_file, ignore_index=True)

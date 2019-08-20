@@ -2,9 +2,9 @@ import sys
 
 from prody import Contacts, calcDistance, calcAngle
 
-from global_processes import FindInitialAndFinalResidues
-from global_variables import supported_aminoacids, supported_metals, coordination_geometries
-from program_own_classes import ZMATRIX
+from pele_platform.Utilities.PPP.global_processes import FindInitialAndFinalResidues
+from pele_platform.Utilities.PPP.global_variables import supported_aminoacids, supported_metals, coordination_geometries
+from pele_platform.Utilities.PPP.program_own_classes import ZMATRIX
 
 __author__ = 'jelisa'
 
@@ -29,8 +29,8 @@ def CheckCysteines(structure):
             if key in crosslinked_cys:
                 continue
             elif key in charged_cys:
-                print "CYS/CYT classification WTF.0??\n cystein {} {}".format(cysteine.getResnum(),
-                                                                              cysteine.getChid())
+                print("CYS/CYT classification WTF.0??\n cystein {} {}".format(cysteine.getResnum(),
+                                                                              cysteine.getChid()))
                 continue
             sg = cysteine.select('name SG')
             if sg is None:
@@ -38,7 +38,7 @@ def CheckCysteines(structure):
             selection_string = "(within 2.1 of atom) and (not (resnum {} and name SG))".format(cysteine.getResnum())
             neighbours = structure.select(selection_string, atom=sg)
             if neighbours is None:
-                print "CYS/CYT classification WTF.1??"
+                print("CYS/CYT classification WTF.1??")
             elif "SG" in neighbours.getNames():
                 crosslinked_cys.append(key)
                 key2 = "{}_{}".format(neighbours.select('name SG').getChids()[0],
@@ -49,10 +49,10 @@ def CheckCysteines(structure):
                 charged_cys.append(key)
     if crosslinked_cys:
         writing_list = ["     * CYS_{} - CYS_{}".format(x, y) for x,y in zip(crosslinked_cys[0::2], crosslinked_cys[1::2])]
-        print "  * The following cysteins will be considered as cross-linked:\n{0}".format("\n".join(writing_list))
+        print("  * The following cysteins will be considered as cross-linked:\n{0}".format("\n".join(writing_list)))
     if charged_cys:
         writing_list = ["     * CYS_{}".format(k) for k in charged_cys]
-        print "  * The following cysteins will be considered as cross-linked:\n{0}".format("\n".join(writing_list))
+        print("  * The following cysteins will be considered as cross-linked:\n{0}".format("\n".join(writing_list)))
     return crosslinked_cys, charged_cys
 
 
@@ -88,10 +88,10 @@ def CheckConformation(angles, conformation):
     ok_angles = []
     accepted_angles, needed_atoms = coordination_geometries[conformation]
     if conformation not in coordination_geometries.keys():
-        print "      * The desired coordination isn't implemented."
+        print("      * The desired coordination isn't implemented.")
     else:
         if len(angles) < needed_atoms:
-            print "       * WARNING: The metal is missing atoms to coordinated with"
+            print("       * WARNING: The metal is missing atoms to coordinated with")
 
     for angle in angles:
         for a_angle in accepted_angles:
@@ -101,16 +101,16 @@ def CheckConformation(angles, conformation):
                 distorted_angles.append(angle)
     if len(ok_angles) > len(distorted_angles):
         if distorted_angles and len(angles) != needed_atoms:
-            print "       * The angles match the {} coordination".format(conformation)
+            print("       * The angles match the {} coordination".format(conformation))
             # print [[[x.getName(), x.getResnum(), x.getChid()] for x in angle[]] for angle in distorted_angles]
-            print "       * The angle(s) formed by the following atoms are distorted for this geometry:"#\n{}".format(
+            print("       * The angle(s) formed by the following atoms are distorted for this geometry:")#\n{}".format(
             for angle in distorted_angles:
-                print "{} {} {} {}".format("        * ",
+                print("{} {} {} {}".format("        * ",
                                            "{}-{}-{}".format(angle[0].getName(), angle[0].getResnum(), angle[0].getChid(),),
                                            "{}-{}-{}".format(angle[1].getNames()[0], angle[1].getResnums()[0], angle[1].getChid()),
-                                           "{}-{}-{}".format(angle[2].getName(), angle[2].getResnum(), angle[2].getChid()))
+                                           "{}-{}-{}".format(angle[2].getName(), angle[2].getResnum(), angle[2].getChid())))
         else:
-            print "       * The angles match perfectly the {} coordination".format(conformation)
+            print("       * The angles match perfectly the {} coordination".format(conformation))
         right_conformation = True
     return right_conformation
 
@@ -125,8 +125,8 @@ def CheckMetalsCoordination(structure):
     coordinated_metals = {}
     for metal in supported_metals:
         if structure.select('resname {}'.format(metal)) is not None:
-            print "  * Checking the metals that can be coordinated. (" \
-                  "a constraint should be used if they're really coordinated)"
+            print("  * Checking the metals that can be coordinated. (" \
+                  "a constraint should be used if they're really coordinated)")
             for metal_res in structure.select('resname {}'.format(metal)).copy().iterResidues():
                 coordinated_atoms_list = []
                 if metal_res.numAtoms() != 1:
@@ -134,7 +134,7 @@ def CheckMetalsCoordination(structure):
                 coordinated_atoms = structure.select(selection_pattern.format(metal_res.getResnum()),
                                                      metal=metal_res)
                 if coordinated_atoms is None:
-                    print "     * The metal atom {} isn't coordinated with the protein. Are you sure it's necessary?"
+                    print("     * The metal atom {} isn't coordinated with the protein. Are you sure it's necessary?")
                 else:
                     prev_atom = None
                     for at in coordinated_atoms.iterAtoms():
@@ -152,9 +152,6 @@ def CheckMetalsCoordination(structure):
                             coordinated_atoms_list.append(at)
                             prev_atom = at
                     coordinated_metals[metal_res] = coordinated_atoms_list#, 'angles': angles}
-
-
-                    coordinated_metals[metal_res] = coordinated_atoms_list#, 'angles': angles}
     coordinated_atoms_ids = {}
     if coordinated_metals:
         for metal, atoms_list in coordinated_metals.iteritems():
@@ -163,26 +160,26 @@ def CheckMetalsCoordination(structure):
                           calcDistance(metal, at)[0]] for at in atoms_list]
             if len(atoms_list) in [x[1] for x in coordination_geometries.itervalues()]:
                 coordinated_atoms_ids[metal_id] = atoms_ids
-            print "     * The metal atom {0} has the following atoms within coordination " \
-                  "distance:\n{1}".format(metal_id, "\n".join(['       * {0}'.format(x[0]) for x in atoms_ids]))
+            print("     * The metal atom {0} has the following atoms within coordination " \
+                  "distance:\n{1}".format(metal_id, "\n".join(['       * {0}'.format(x[0]) for x in atoms_ids])))
             angles = [[at, metal, at2, calcAngle(at, metal, at2)[0]]
                       for idx,at in enumerate(atoms_list) for at2 in atoms_list[idx + 1:]]
             if len(atoms_list) <= 4:
-                print "      * Checking for a tetrahedric coordination for the atom."
+                print("      * Checking for a tetrahedric coordination for the atom.")
                 found_conformation = CheckConformation(angles, 'tetrahedric')
                 if not found_conformation:
-                    print "        * WARNING: The angles are too distorted to ascertain this configuration. CHECK IT manually"
+                    print("        * WARNING: The angles are too distorted to ascertain this configuration. CHECK IT manually")
             elif 4 < len(atoms_list) <= 6: #or not found_conformation:
-                print "      * WARNING: Checking for an octahedric coordination for the atom."
+                print("      * WARNING: Checking for an octahedric coordination for the atom.")
                 found_conformation = CheckConformation(angles, 'octahedric')
                 if not found_conformation:
-                    print "        * The angles are too distorted to ascertain this configuration. CHECK IT manually"
+                    print("        * The angles are too distorted to ascertain this configuration. CHECK IT manually")
             else:
-                print "      * The metal doesn't have a coordination we can validate."
+                print("      * The metal doesn't have a coordination we can validate.")
 
 
     else:
-        print "  * There are no coordinated metals."
+        print("  * There are no coordinated metals.")
 
     return coordinated_metals
 
@@ -192,7 +189,8 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
     residues2fix = {}
     crosslinked_cysteines, charged_cysteines = CheckCysteines(initial_structure)
     residues2remove = {}
-    metals2coordinate = CheckMetalsCoordination(initial_structure)
+    metals2coordinate = {}
+    #metals2coordinate = CheckMetalsCoordination(initial_structure)
     residues_without_template = []
     for chain in initial_structure.iterChains():
         if chain.getChid() in gaps.keys():
@@ -228,9 +226,9 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
                 try:
                     zmatrix = ZMATRIX(resname)
                 except:
-                    print "UP {}".format(resname)
+                    print("UP {}".format(resname))
             if zmatrix.Name is None:
-                print "  * The residue {} {} doesn't have a template, so it won't be checked.".format(resname, resnum)
+                print("  * The residue {} {} doesn't have a template, so it won't be checked.".format(resname, resnum))
                 residues_without_template.append([resname, resnum, chain.getChid()])
                 continue
             residue_atomnames.sort()
@@ -256,9 +254,9 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
                             if "H2" in over_atoms:
                                 over_atoms.pop(over_atoms.index('H2'))
                         if over_atoms:
-                            print "   The residue {} {} has more atoms than the zmatrix." \
+                            print("   The residue {} {} has more atoms than the zmatrix." \
                                   " The extra atoms are:{}\n PELE won't work, review " \
-                                  "them".format(resname, resnum, ",".join(over_atoms))
+                                  "them".format(resname, resnum, ",".join(over_atoms)))
                     else:
                         if resnum == initial_residue or resnum in gaps_b:
                             if "H1" in over_atoms:
@@ -282,22 +280,22 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
                                 over_atoms.pop(over_atoms.index('OXT'))
                                 atoms2delete.append('OXT')
                         if over_atoms:
-                            print "   The residue {} {} has more atoms than the zmatrix. The extra atoms are:{}\n " \
-                                  "PELE won't work, review them".format(resname, resnum, ",".join(over_atoms))
+                            print("   The residue {} {} has more atoms than the zmatrix. The extra atoms are:{}\n " \
+                                  "PELE won't work, review them".format(resname, resnum, ",".join(over_atoms)))
                     # residues2fix["{} {} {}".format(resname, resnum, residue.getChid())] = {'delete': atoms2delete}
                     if debug:
-                        print 'over_atoms: ', over_atoms
-                        print "ZMATRIX: {}\n zmat atoms:{}".format(zmatrix.Name, sorted(zmatrix.AtomNames))
-                        print " resi atoms:", sorted(residue_atomnames)
+                        print('over_atoms: ', over_atoms)
+                        print("ZMATRIX: {}\n zmat atoms:{}".format(zmatrix.Name, sorted(zmatrix.AtomNames)))
+                        print(" resi atoms:", sorted(residue_atomnames))
                 if missing_atoms:
                     if "CA" in missing_atoms or "N" in missing_atoms or "O" in missing_atoms or "C" in missing_atoms:
-                        print "  The residue {} {} is missing one or more heavy atoms in the backbone. " \
-                              "It cannot be fixed.".format(resname, resnum, residue.getChid())
+                        print("  The residue {} {} is missing one or more heavy atoms in the backbone. " \
+                              "It cannot be fixed.".format(resname, resnum, residue.getChid()))
                         if remove_missing_ter:
                             if resnum in [initial_residue, final_residue]:
-                                print " INFO: In structure {} the residue {} {} in chain {} will be eliminated".format(
+                                print(" INFO: In structure {} the residue {} {} in chain {} will be eliminated".format(
                                     initial_structure.getTitle(), residue.getResname(),
-                                    resnum, residue.getChid())
+                                    resnum, residue.getChid()))
                                 try:
                                     residues2remove[residue.getChid()]
                                 except KeyError:
@@ -332,8 +330,8 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
                                     prev_res_resnum = resnum - 1
                                     prev_residue = chain.getResidue(prev_res_resnum)
                                     if prev_residue is None:
-                                        print "There's no residue with number {} in chain {}".format(prev_res_resnum,
-                                                                                                     chain.getChid())
+                                        print("There's no residue with number {} in chain {}".format(prev_res_resnum,
+                                                                                                     chain.getChid()))
                                     elif charge_terminals:
                                         prev_res_resname = prev_residue.getResnames()[0]
                                         atoms2add = {"OXT"}
@@ -347,8 +345,8 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
                                         else:
                                             residues2fix[key]['add'] += atoms2add
                         else:
-                            print "  The program will be interrupted.".format(resname, resnum)
-                            print "     This are the missing atoms: {}".format(missing_atoms)
+                            print("  The program will be interrupted.".format(resname, resnum))
+                            print("     This are the missing atoms: {}".format(missing_atoms))
                             sys.exit()
                     else:
                         if "H" in missing_atoms and resnum in gaps_b and resnum not in residues2ignore:
@@ -370,9 +368,9 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
                                     missing_atoms.pop(missing_atoms.index('HG'))
                         for atom_name in missing_atoms:
                             if atom_name[0] != "H" and atom_name[0].isalpha() and atom_name != 'OXT':
-                                print "  The residue {} {} is missing the heavy atom {}.\n" \
+                                print("  The residue {} {} is missing the heavy atom {}.\n" \
                                       "  All the atoms depending on this atom will" \
-                                      " be placed according to the zmatrix.".format(resname, resnum, atom_name)
+                                      " be placed according to the zmatrix.".format(resname, resnum, atom_name))
                                 atoms2add = zmatrix.GetAllChildrenAtoms(atom_name)
                                 atoms2add = set(atoms2add).union(set(missing_atoms))
                             elif resnum not in residues2ignore:
@@ -413,18 +411,18 @@ def CheckMapAndZmatrix(zmap_atoms, mutation_map, mutation, residue):
         map_atoms += volatile_atoms
     if map_number_of_atoms != residue2mutate_number_of_atoms and map_number_of_atoms != residue2mutate_number_of_atoms + len(
             volatile_atoms):
-        print "Check the number of atoms of the structure because it doesn't match with the map."
-        print "Remember that mutations at the beginning or ending of the protein are not supported yet."
-        print "residue atoms: {}".format(set(residue.getNames()))
-        print "initial residue map atoms: {}".format(initial_residue_map_atoms)
+        print("Check the number of atoms of the structure because it doesn't match with the map.")
+        print("Remember that mutations at the beginning or ending of the protein are not supported yet.")
+        print("residue atoms: {}".format(set(residue.getNames())))
+        print("initial residue map atoms: {}".format(initial_residue_map_atoms))
         sys.exit()
 
     if volatile_atoms_behaviour == 'appear':
         map_atoms += volatile_atoms
     if set(map_atoms) != set(zmap_atoms):
-        print "The zmatrix for the desired aminoacid and the map for the mutation don't agree. Check Them."
-        print "map atoms: {}".format(set(map_atoms))
-        print "zmatrix atoms: {}".format(set(zmap_atoms))
+        print("The zmatrix for the desired aminoacid and the map for the mutation don't agree. Check Them.")
+        print("map atoms: {}".format(set(map_atoms)))
+        print("zmatrix atoms: {}".format(set(zmap_atoms)))
         sys.exit()
 
 
@@ -441,26 +439,24 @@ def CheckMutation(wt_structure, mutation):
     """
 
     if mutation['fin_resname'] not in supported_aminoacids:
-        print "The desired mutation isn't possible because the desired aa. is not supported."
-        print supported_aminoacids
         return False
 
     testing_the_resnum = "resnum {}".format(mutation['resnum'])
     testing_the_resname = "resname {}".format(mutation['ini_resname'])
 
     if wt_structure.select(testing_the_resnum) is None:
-        print "The protein doesn't have a residue numbered {}".format(mutation['resnum'])
+        print("The protein doesn't have a residue numbered {}".format(mutation['resnum']))
         return False
     elif wt_structure.select(testing_the_resname) is None:
-        print "The protein doesn't have a residue named {}".format(mutation['ini_resname'])
+        print("The protein doesn't have a residue named {}".format(mutation['ini_resname']))
         # print wt_structure.getResnames()
         return False
     elif mutation['chain']:
         testing_the_chain = "chain `{}` ".format(mutation['chain'])
         if wt_structure.select(testing_the_chain) is None:
-            print "The protein doesn't have a chain named {}".format(mutation['chain'])
+            print("The protein doesn't have a chain named {}".format(mutation['chain']))
         elif wt_structure.select(testing_the_resname + ' and ' + testing_the_resnum + ' and ' + testing_the_chain) is None:
-            print "The protein doesn't have the residue {0[ini_resname]} {0[chain]} {0[resnum]}".format(mutation)
+            print("The protein doesn't have the residue {0[ini_resname]} {0[chain]} {0[resnum]}".format(mutation))
             return False
     else:
         return True
@@ -507,9 +503,9 @@ def CheckClashes(mutated_protein, mutation, zmatrix, initial_residue,
         try:
             at_vdw = zmatrix.VdWRadius[zmatrix.AtomNames.index(atom_name)]
         except ValueError:
-            print "The atom {} in the mutated residue doesn't agree with the Zmatrix.".format(atom_name)
-            print mutated_residue.getNames()
-            print zmatrix.AtomNames
+            print("The atom {} in the mutated residue doesn't agree with the Zmatrix.".format(atom_name))
+            print(mutated_residue.getNames())
+            print(zmatrix.AtomNames)
             raise ValueError
         dist = (at_vdw + max_vdw) * overlapfactor
         at_contacts = contacts_object.select(dist, at.getCoords())
@@ -547,8 +543,8 @@ def CheckClashes(mutated_protein, mutation, zmatrix, initial_residue,
             else:
                 atom2check_zmatrix = ZMATRIX(atom2check_resname)
             if atom2check_zmatrix.Name is None:
-                print "Cannot load the zmatrix for the residue {} {}.\n" \
-                      "It won't be checked for clashes.".format(atom2check_resname, atom2check_resnum)
+                print("Cannot load the zmatrix for the residue {} {}.\n" \
+                      "It won't be checked for clashes.".format(atom2check_resname, atom2check_resnum))
                 continue
             atom2check_vdw_radius = atom2check_zmatrix.VdWRadius[
                 atom2check_zmatrix.AtomNames.index(atom2check.getNames()[0])]
@@ -563,13 +559,26 @@ def CheckClashes(mutated_protein, mutation, zmatrix, initial_residue,
     return real_clashes
 
 
-def CheckforGaps(structure):
+def CheckforGaps(structure, max_bond_distance):
+    """
+    This function checks all the residues in the protein and checks whether the N of the current residue and the
+    C of the previous one are within peptidic bond distance (specified by the max_bond_distance variable)
+    in order to check for gaps.
+    :param structure: a prody object containing the structure to study.
+    :param max_bond_distance: a float specifying the max bond distance to accept.
+    :return: two dictionaries both containing the chain as key and the residues numbers (previous, current) involved
+    in a bond as values, the first dictionary contains the information about the gaps and the second one contains
+    the information about those not involved in gaps.
+    """
     gaps = {}
     not_gaps = {}
+    if max_bond_distance < 1.55:
+        max_bond_distance = 1.55
     for chain in structure.iterChains():
         # initial, final = FindInitialAndFinalResidues(chain)
+        residues = [residue for residue in chain]
         previous_residue_number = None
-        for residue in chain.iterResidues():
+        for i, residue in enumerate(chain.iterResidues()):
             chain_id = chain.getChid()
             # print residue.getResnum() < previous_residue_number
             if previous_residue_number is not None:
@@ -584,10 +593,12 @@ def CheckforGaps(structure):
                     else:
                         current_residue_N = residue.getAtom("N")
                         previous_residue = chain.getResidue(previous_residue_number)
+                        if not previous_residue:
+                            previous_residue = residues[i-1]
                         previous_residue_C = previous_residue.getAtom('C')
                         if current_residue_N is not None and previous_residue_C is not None:
                             distance = calcDistance(current_residue_N, previous_residue_C)
-                            if distance < 2.5:
+                            if distance < max_bond_distance:
                                 try:
                                     not_gaps[chain_id]
                                 except KeyError:
@@ -600,37 +611,37 @@ def CheckforGaps(structure):
                                     gaps[chain_id] = []
                                 gaps[chain_id].append([previous_residue_number, residue.getResnum()])
                         elif current_residue_N is None:
-                            print "   * There's a problem with residue {} {} {} it" \
+                            print("   * There's a problem with residue {} {} {} it" \
                                   " doesn't have the N atom".format(residue.getResname(),
                                                                     residue.getResnum(),
-                                                                    residue.getChid())
+                                                                    residue.getChid()))
                         elif previous_residue_C is None:
-                            print "   * There's a problem with residue {} {} {} it doesn't have the C atom".format(
+                            print("   * There's a problem with residue {} {} {} it doesn't have the C atom".format(
                                 previous_residue.getResname(),
                                 previous_residue.getResnum(),
-                                previous_residue.getChid())
+                                previous_residue.getChid()))
                 if residue.getResnum() == previous_residue_number:
                     if residue.getIcode() == '':
                         if residue.hetero is not None:
                             residue.setResnum(previous_residue_number + 1)
                         else:
-                            print '   * WARNING: There are two residues with the same resnum in the same chain.' \
+                            print('   * WARNING: There are two residues with the same resnum in the same chain.' \
                                   'The residue {} {} {} '.format(residue.getChid(),
                                                                  residue.getResnum(),
-                                                                 residue.getResname())
+                                                                 residue.getResname()))
                 elif residue.getResnum() < previous_residue_number + 1:
                     if residue.hetero is not None:
                         residue.setResnum(previous_residue_number + 1)
                     else:
                         # print residue.getResnum(), previous_residue_number
-                        print "   * WARNING! The next residue has a lower resnum than the previous one in the chain??"
-                        print "    * CHAIN: {} RESIDUE: {}  {} {}".format(residue.getChid(),
+                        print("   * WARNING! The next residue has a lower resnum than the previous one in the chain??")
+                        print("    * CHAIN: {} RESIDUE: {}  {} {}".format(residue.getChid(),
                                                                     residue.getResnum(),
                                                                     residue.getChid(),
-                                                                    residue.getResname())
-                        print "    * previous: RESIDUE {} {}  {}".format(previous_residue.getResname(),
+                                                                    residue.getResname()))
+                        print("    * previous: RESIDUE {} {}  {}".format(previous_residue.getResname(),
                                                                    previous_residue.getResnum(),
-                                                                   previous_residue.getChid())
+                                                                   previous_residue.getChid()))
                         sys.exit('This should never happen, please review your structure.')
                 else:
                     pass

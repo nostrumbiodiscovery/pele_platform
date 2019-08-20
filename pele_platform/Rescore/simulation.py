@@ -6,7 +6,7 @@ import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
 import pele_platform.constants as cs
 import pele_platform.Utilities.Helpers.system_prep as sp
-import pele_platform.Utilities.PPP.mut_prep4pele as ppp
+import pele_platform.Utilities.PPP.main as ppp
 import pele_platform.Utilities.PlopRotTemp.main as plop
 import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.simulation as ad

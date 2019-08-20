@@ -1,7 +1,7 @@
-from enviroment_parameters import pele_folder_path
+import os
 
 __author__ = 'jelisa'
-
+DIR = os.path.dirname(__file__)
 
 class ZMATRIX:
     """
@@ -36,17 +36,29 @@ class ZMATRIX:
         :rtype : a ZMATRIX object
         :param aminoacid_name: a string containing the 3 letters code for the desired aminoacid.
         """
-        filename = pele_folder_path + "/Data/Templates/OPLS2005/Protein/" + aminoacid_name.lower()
+        filename = "DeataLocal/Templates/OPLS2005/Protein/" + aminoacid_name.lower()
         try:
             filein = open(filename, 'r')
         except IOError:
-            filename = pele_folder_path + "/Data/Templates/OPLS2005/HeteroAtoms/" + aminoacid_name.lower() + 'z'
+            filename = "DaetaLocal/Templates/OPLS2005/HeteroAtoms/" + aminoacid_name.lower().strip() + 'z'
             try:
                 filein = open(filename, 'r')
             except IOError:
-                print "    * No such file or directory: {}".format(filename)
-                self.Name = None
-                return None
+                filename = os.path.join(DIR, "Data/Templates/OPLS2005/Protein/") + aminoacid_name.lower()
+                try:
+                    filein = open(filename, 'r')
+                except IOError:
+                    filename = os.path.join(DIR, "Data/Templates/OPLS2005/HeteroAtoms/") + aminoacid_name.lower() + 'z'
+                    try:
+                        filein = open(filename, 'r')
+                    except IOError:
+                        print("    * No such file or directory: {}".format(filename))
+                        self.Name = None
+                        return None
+                    else:
+                        self.Name = aminoacid_name.upper() + 'Z'
+                else:
+                    self.Name = aminoacid_name.upper()
             else:
                 self.Name = aminoacid_name.upper() + 'Z'
         else:
@@ -59,8 +71,8 @@ class ZMATRIX:
         counter = 0
         for line in raw_data:
             if line.strip() == "":
-                print "The template for the residue {} in {} has a blank line. " \
-                      "Check it or not! Whatever you want.".format(self.Name, filename)
+                print("The template for the residue {} in {} has a blank line. " \
+                      "Check it or not! Whatever you want.".format(self.Name, filename))
                 continue
             if self.Name[-1] in ['z', 'b', 'e', 'a']:
                 possible_name = line[:5]
@@ -93,7 +105,7 @@ class ZMATRIX:
                 add_vdw = True
                 counter = num_of_atoms
                 if counter == 0:
-                    print " - There's a problem with the template of the residue {}.".format(aminoacid_name)
+                    print(" - There's a problem with the template of the residue {}.".format(aminoacid_name))
                     break
             elif add_vdw:
                 self.VdWRadius.append((float(tmp_list[1]) / 2))
@@ -200,7 +212,7 @@ class ROTAMERLIB:
         self.ReadRotamerFile(aminoacid)
 
     def ReadRotamerFile(self, aminoacid):
-        residue_rotamer_library_path = pele_folder_path + "/Data/RotamerLibs/" + aminoacid.upper() + '.side'
+        residue_rotamer_library_path = os.path.join(DIR, "Data/RotamerLibs/") + aminoacid.upper() + '.side'
         filein = open(residue_rotamer_library_path, 'r')
         file_text = filein.readlines()
         filein.close()

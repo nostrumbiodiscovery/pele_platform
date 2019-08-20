@@ -54,6 +54,7 @@ def patch_environ():
     schrodinger_libs_pattern = os.path.join(constants.SCHRODINGER, "mmshare*/lib/Linux-x86_64/")
     schrodinger_libs = glob.glob(schrodinger_libs_pattern)
     schrodinger_libs.append(os.path.join(constants.SCHRODINGER, "internal/lib/ssl"))
+    schrodinger_libs.append(os.path.join(constants.SCHRODINGER, "internal/lib/python2.7/site-packages/schrodinger/infra/"))
     #Exit condition
     if is_patch_environ_run(schrodinger_libs):
         return
@@ -95,13 +96,14 @@ def check_dependencies():
             os.environ["PATH"] = constants.MPIRUN
 
         #Check dependencies
+        constants_path = os.path.join(constants.DIR, "constants.py")
         try:
             os.environ["SCHRODINGER"]
         except KeyError:
-            raise("Change SCHRODINGER path in constants.py module")
+            raise("Change SCHRODINGER path in constants.py module".format(constants_path))
         
         if not find_executable("mpirun"):
-            raise ValueError("Change mpirun path in constants.py module")
+            raise ValueError("Change mpirun path in constants.py module".format(constants_path))
 
         if not find_executable(constants.PELE_BIN):
-            raise ValueError("Change Pele path in constants.py module")
+            raise ValueError("Change Pele path in {} module".format(constants_path))

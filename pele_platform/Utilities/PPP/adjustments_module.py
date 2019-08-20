@@ -2,17 +2,17 @@ import copy
 
 from prody import calcDistance
 
-from checks_module import CheckClashes
-from coordinates_module import ChangeResidueCoordinates
-from global_processes import FindInitialAndFinalResidues
-from global_variables import protein_atomnames_dictionary, supported_aminoacids, supported_metals
-from program_own_classes import ROTAMERLIB
+from pele_platform.Utilities.PPP.checks_module import CheckClashes
+from pele_platform.Utilities.PPP.coordinates_module import ChangeResidueCoordinates
+from pele_platform.Utilities.PPP.global_processes import FindInitialAndFinalResidues
+from pele_platform.Utilities.PPP.global_variables import protein_atomnames_dictionary, supported_aminoacids, supported_metals
+from pele_platform.Utilities.PPP.program_own_classes import ROTAMERLIB
 
 __author__ = 'jelisa'
 
 
 def SolveClashes(initial_structure, initial_clashes, mutation, zmatrix, initial_residue_number, final_residue_number):
-    print "Trying to solve the clashes."
+    print("Trying to solve the clashes.")
     dihedral2check = 0
     initial_part_of_the_protein = initial_structure.select("resnum < {}".format(mutation["resnum"])).copy()
     final_part_of_the_protein = initial_structure.select("resnum > {}".format(mutation["resnum"])).copy()
@@ -28,8 +28,8 @@ def SolveClashes(initial_structure, initial_clashes, mutation, zmatrix, initial_
     initial_number_of_clashes = 0
     for values in initial_clashes.values():
         initial_number_of_clashes += len(values)
-    print "Starting number of heavy atoms clashes: {}".format(len(initial_clashes.keys()))
-    print "Starting number of total clashes: {}".format(initial_number_of_clashes)
+    print("Starting number of heavy atoms clashes: {}".format(len(initial_clashes.keys())))
+    print("Starting number of total clashes: {}".format(initial_number_of_clashes))
 
     zmatrix.ComputeDeltaFi()
     while maximum_number_of_trials > 0:
@@ -51,16 +51,16 @@ def SolveClashes(initial_structure, initial_clashes, mutation, zmatrix, initial_
             break
         elif len(new_clashes.keys()) < len(initial_clashes.keys()):
 
-            print 'The number of clashing heavy atoms in the residue now is: {} and clashes with {} atoms'.format(
+            print('The number of clashing heavy atoms in the residue now is: {} and clashes with {} atoms'.format(
                 len(new_clashes.keys()),
-                current_number_of_clashes)
+                current_number_of_clashes))
             initial_residue = new_residue.copy()
             initial_number_of_clashes = current_number_of_clashes
             initial_clashes = new_clashes
         elif len(new_clashes.keys()) == len(initial_clashes.keys()):
             if current_number_of_clashes < initial_number_of_clashes:
-                print "The number of clashing heavy atoms is still the same but now they clash with {} atoms.".format(
-                    current_number_of_clashes)
+                print("The number of clashing heavy atoms is still the same but now they clash with {} atoms.".format(
+                    current_number_of_clashes))
                 initial_residue = new_residue.copy()
                 initial_number_of_clashes = current_number_of_clashes
     return initial_part_of_the_protein + initial_residue + final_part_of_the_protein
@@ -86,14 +86,14 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
             no_gaps_residues = []
         initial_res, final_res = FindInitialAndFinalResidues(chain)
         if debug:
-            print "working with chain {}".format(chain.getChid())
+            print("working with chain {}".format(chain.getChid()))
         for residue in chain.iterResidues():
             tmp_dictio = copy.deepcopy(protein_atomnames_dictionary)
             resname = residue.getResname()
             try:
                 possible_names = tmp_dictio[resname]
             except KeyError:
-                print '   * The residue {} is not an aa nor a water.'.format(resname)
+                print('   * The residue {} is not an aa nor a water.'.format(resname))
                 possible_names = [["CL"], ["CU"], ["FE1"], ["FE2"], ["ZN"], ["MG"]]
                 heteroatom = True
             else:
@@ -107,9 +107,6 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                 # should have the hydrogen H from the nitrogen, but if the residue is the
                 # first one in the protein it should be changed into H3 which belongs to
                 # the "END" keyword in the names dictionary.
-                if debug:
-                    print 'the initial residue is: {} and the residue number: {}'.format(initial_res,
-                                                                                         residue.getResnum())
                 if 'H' in possible_names[0]:
                     possible_names.pop(0)
             if residue.getResnum() in [initial_res, final_res] + gaps_residues:
@@ -131,10 +128,6 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                         atom_name = atoms[0]
                         atom_found = True
                         possible_names.pop(possible_names.index(atoms))
-                        if debug and atom.getResnum() == debug[0] and chain.getChid() == debug[
-                            1]:  # .split()[0] and atom.getResnum() == debug.split()[1]:
-                            print 'a', residue.getResnum(), old_atom_name, atom_name, final_res
-                            # print 'a', possible_names
 
                         break
                 if not atom_found and not heteroatom:
@@ -142,15 +135,15 @@ def FixAtomNames(initial_structure, gaps={}, no_gaps={}, debug=False):
                         if residue.getResnum() in gaps_residues or residue.getResnum() in [initial_res, final_res]:
                             pass
                         elif residue.getResnum() in no_gaps_residues:
-                            print "   * The residue {} won't be considered as a gap, if it really is one," \
+                            print("   * The residue {} won't be considered as a gap, if it really is one," \
                                   " let the developer know".format("{2} {1} {0}".format(residue.getResnum(),
                                                                                         residue.getChid(),
-                                                                                        residue.getResname()))
+                                                                                        residue.getResname())))
                     else:
-                        print "   * The Atom {} from residue {} {} {} doesn't have a valid name.".format(atom_name,
+                        print("   * The Atom {} from residue {} {} {} doesn't have a valid name.".format(atom_name,
                                                                                                          resname,
                                                                                                          atom.getChid(),
-                                                                                                         atom.getResnum())
+                                                                                                         atom.getResnum()))
                 atom.setName(atom_name)
                 # if debug: break
     return correct_structure
@@ -196,7 +189,7 @@ def FixStructureResnames(initial_structure, ligand_chain=False):
         if ligand_chain == res.getChid() and resname in supported_aminoacids:
             ligand_structure = structure.chain_Z.copy()
         if ligand_structure is not None and ligand_structure.hetero is not None:
-            print "INFO: Renaming the ligand to LIG in structure {}".format(initial_structure.getTitle())
+            print("INFO: Renaming the ligand to LIG in structure {}".format(initial_structure.getTitle()))
             resname = "LIG"
             res.setResnum(1)
         if resname == "HIS":
@@ -219,16 +212,16 @@ def FixStructureResnames(initial_structure, ligand_chain=False):
                 elif "HD1" in res.getNames() or "HND" in res.getNames():
                     resname = "HID"
                 else:
-                    print "Make sure the histidine is correctly protonated and then, only then, explain the bug" \
-                          " to the the developer."
+                    print("Make sure the histidine is correctly protonated and then, only then, explain the bug" \
+                          " to the the developer.")
             elif res.numAtoms() == 17:
                 if "HE2" in res.getNames() or "HNE" in res.getNames():
                     resname = "HIE"
                 elif "HD1" in res.getNames() or "HND" in res.getNames():
                     resname = "HID"
             else:
-                print "  * WARNING: The hystidine {} has an incorrect number " \
-                      "of atoms. PELE won't work correctly".format("{} {}".format(res.getResnum(), res.getChid(),))
+                print("  * WARNING: The hystidine {} has an incorrect number " \
+                      "of atoms. PELE won't work correctly".format("{} {}".format(res.getResnum(), res.getChid(),)))
         elif resname == "LYS":
             if res.numAtoms() == 21:
                 resname = "LYN"
