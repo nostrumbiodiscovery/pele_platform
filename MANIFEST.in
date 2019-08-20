@@ -1,0 +1,4 @@
+include pele_platform/Templates/*
+include pele_platform/Utilities/PlopRotTemp/param/*
+include pele_platform/AdaptivePELE/atomset/*
+recursive-include pele_platform/Utilities/PPP/Data/ *

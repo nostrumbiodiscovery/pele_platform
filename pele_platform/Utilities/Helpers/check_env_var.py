@@ -73,7 +73,7 @@ def is_patch_environ_run(necessary_libraries):
 
 def check_dependencies():
         #Update libraries
-        patch_environ()
+        #patch_environ()
 
         #Update env_variables
         if "PYTHONPATH" in os.environ:

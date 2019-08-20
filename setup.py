@@ -51,18 +51,18 @@ else:
     ]
 
 setup(
-    name="AdaptivePELE",
-    version="1.5",
-    description='Enhanced sampling of molecular simulations',
+    name="pele_platform",
+    version="1.0.0.1",
+    description='Automatic platform to launch PELE',
     long_description=long_description,
-    url="https://github.com/cescgina/AdaptivePELE",
-    author='Daniel Lecina, Joan Francesc Gilabert',
-    author_email='danilecina@gmail.com, cescgina@gmail.com',
-    license='',
+    url="https://github.com/NostrumBioDiscovery/pele_platform",
+    author='Daniel Soler',
+    author_email='daniel.soler@nostrumbiodiscovery.com',
     packages=find_packages(exclude=['docs', 'tests']),
     package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd']},
-    install_requires=['numpy', 'mdtraj'],
+    include_package_data=True,
+    include_dirs=[numpy.get_include()],
+    install_requires=['cython', 'numpy', 'scipy', 'matplotlib', 'biopython ', 'pandas', 'pyemma', 'prody', 'six', 'future', 'fpdf', 'pytest', 'mdtraj'],
     cmdclass=cmdclass,
-    ext_modules=cythonize(ext_modules),  # accepts a glob pattern
-    include_dirs=[numpy.get_include()]
+    ext_modules=cythonize(ext_modules)  # accepts a glob pattern
 )
