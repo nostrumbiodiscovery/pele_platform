@@ -2,7 +2,7 @@
 
 import sys
 import re
-from tmp_helpers import Helper
+from pele_platform.Utilities.PlopRotTemp.template.tmp_helpers import Helper
 
 
 

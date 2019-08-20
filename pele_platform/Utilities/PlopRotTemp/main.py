@@ -57,10 +57,11 @@ HELP: $SCHRODINGER/utilities/python main.py --help
 import argparse
 import sys
 import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 import shutil
 import subprocess
 import pele_platform.constants as cs
-import pele_platform.Utilities.PlopRotTemp as pl
+import pele_platform.Utilities.PlopRotTemp.PlopRotTemp as pl
 from pele_platform.Utilities.PlopRotTemp.template.templateBuilder import TemplateBuilder
 import pele_platform.Utilities.Helpers.helpers as hp
 
@@ -293,8 +294,6 @@ def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=10
             print("\n")
 
 
-
-
     if (clean):
         for file in files2clean:
             print('Removing Intermediate File: {}'.format(file))
@@ -302,8 +301,20 @@ def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=10
 
     template_dir = os.path.join(pele_dir, "DataLocal/Templates/{}/HeteroAtoms/{}".format(forcefield, output_template_file))
     rotamers_dir = os.path.join(pele_dir, "DataLocal/LigandRotamerLibs/{}".format(rotamers_file))
-    shutil.move(output_template_file, template_dir)
-    shutil.move(rotamers_file, rotamers_dir)
+
+    #Moving Files to the write folder without overwritting
+    if os.path.isfile(template_dir):
+        os.remove(output_template_file)
+        print("The template {} has been overwriten by an external one".format(output_template_file))
+    else:
+        shutil.move(output_template_file, template_dir)
+
+    if os.path.isfile(rotamers_dir):
+        os.remove(rotamers_file)
+        print("The rotamers file {} has been overwriten by an external one".format(rotamers_dir))
+    else:
+        shutil.move(rotamers_file, rotamers_dir)
+
 
 
 def parametrize_miss_residues(args, env, syst):
@@ -363,6 +374,8 @@ def parse_args():
     
     return args.mae_file, args.residue, args.output, args.mtor, args.n, args.core, args.mae_charges, args.clean, args.gridres, args.force
 
+print("Statement")
+print(__name__ == "__main__")
 if __name__ == "__main__":
     mae_file, residue, output, mtor, n, core, mae_charge, clean, gridres, forcefield = parse_args() 
     main(mae_file, residue, output, forcefield, mtor, n, core, mae_charge, clean, gridres)

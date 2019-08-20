@@ -113,9 +113,9 @@ import os
 import warnings
 import shutil
 import subprocess
-#import schrodinger
-#from schrodinger.structutils.analyze import is_bond_rotatable
-#from schrodinger import structure
+import schrodinger
+from schrodinger.structutils.analyze import is_bond_rotatable
+from schrodinger import structure
 
 
 
@@ -1407,7 +1407,6 @@ def FindCoreAA(mae_file, user_fixed_bonds, use_rings, residue_name, use_mult_lib
             for i in range(len(atom_names)):
                 if (group[i] == grp):
                     line = line + atom_names[i].rjust(5)
-            print(line)
 
     [old_num, parent, rank, group] = Order_Atoms_AA(bonds, tors, assign, rank, group, mae_file)
     #  for i in range(len(atom_names)):
@@ -1592,7 +1591,6 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
     for i in range(len(atom_names)):
         if (rank[i] == 0):
             line = line + ' ' + atom_names[i]
-    print(line)
     #  for i in range(len(atom_names)):
     #    print atom_names[i].rjust(5),group[i],rank[i]
 
@@ -1605,7 +1603,6 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
           for i in range(len(atom_names)):
               if (group[i] == grp):
                   line = line + ' ' + atom_names[i].strip()
-          print(line)
             # f.write(line)
 
     [old_num, parent, rank, group] = order_atoms(bonds, tors, back_tors, assign, rank, group)
@@ -2077,7 +2074,6 @@ def int2xyz(in_zmat, in_parent):
     for i in range(0, 3): calc.append(1)  # we know dummies
     for i in range(3, len(zmat)): calc.append(0);cart.append([0.0, 0.0, 0.0]);
     while (min_value(calc) < 0.1):
-        print(calc)
         for i in range(3, len(zmat)):  # skip over 3 dummy atoms
             iatom = i
             jatom = parent[iatom]
