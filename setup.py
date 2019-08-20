@@ -52,17 +52,17 @@ else:
 
 setup(
     name="pele_platform",
-    version="1.0.0.1",
+    version="1.0.0.3",
     description='Automatic platform to launch PELE',
     long_description=long_description,
     url="https://github.com/NostrumBioDiscovery/pele_platform",
     author='Daniel Soler',
     author_email='daniel.soler@nostrumbiodiscovery.com',
     packages=find_packages(exclude=['docs', 'tests']),
-    package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd']},
+    package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd'], "pele_platform/AdaptivePELE/freeEnergies/": ['*.pyx']},
     include_package_data=True,
     include_dirs=[numpy.get_include()],
-    install_requires=['cython', 'numpy', 'scipy', 'matplotlib', 'biopython ', 'pandas', 'pyemma', 'prody', 'six', 'future', 'fpdf', 'pytest', 'mdtraj'],
+    install_requires=['cython', 'numpy', 'pillow', 'scipy', 'matplotlib', 'biopython ', 'pandas', 'pyemma', 'prody', 'six', 'future', 'fpdf', 'pytest', 'mdtraj'],
     cmdclass=cmdclass,
     ext_modules=cythonize(ext_modules)  # accepts a glob pattern
 )
