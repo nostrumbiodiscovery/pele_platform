@@ -148,12 +148,10 @@ def parseImpactTemplate(impactTemplate):
         for bond in bonds:
             if ele==bond[0]:
                 counter +=1
-                print('counting   ',ele,bond[0])
                 if getShortName(atomNamesAndTypes[int(ele[0])-1][0])[0]=='H':
                     atomAttached= getShortName(atomNamesAndTypes[int(bond[1])-1][0])[0]
             if ele==bond[1]:
                 counter +=1
-                print('counting   ',ele,bond[1])
                 if getShortName(atomNamesAndTypes[int(ele[0])-1][0])[0]=='H':
                     atomAttached= getShortName(atomNamesAndTypes[int(bond[0])-1][0])[0]
 
