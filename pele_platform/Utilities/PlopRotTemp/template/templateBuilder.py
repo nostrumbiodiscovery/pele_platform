@@ -3,8 +3,8 @@ import os
 import shutil
 import re
 import warnings
-from schrodinger import structure
-from chargeHandler import ChargeHandler
+#from schrodinger import structure
+#from chargeHandler import ChargeHandler
 
 try:
 	from pele_platform.Utilities.PlopRotTemp.PlopRotTemp import preproces_file_lines, find_resnames_in_mae, find_names_in_mae, xyz2int

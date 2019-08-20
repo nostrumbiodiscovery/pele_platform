@@ -35,9 +35,9 @@ class SimulationBuilder(template_builder.TemplateBuilder):
     def run(self, hook=False):
         with helpers.cd(os.path.dirname(self.adaptive_file)):
             if hook:
-		ad.main(self.adaptive_file, clusteringHook=self.interactive_clustering)
+                ad.main(self.adaptive_file, clusteringHook=self.interactive_clustering)
             else:
-		ad.main(self.adaptive_file)
+                ad.main(self.adaptive_file)
 
     def interactive_clustering(self, cluster_object, paths, simulationRunner, epoch_number):
         initial_rmsd_cluster_values = cluster_object.thresholdCalculator.values

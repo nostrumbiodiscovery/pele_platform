@@ -60,8 +60,8 @@ import os
 import shutil
 import subprocess
 import pele_platform.constants as cs
-import PlopRotTemp as pl
-from template.templateBuilder import TemplateBuilder
+import pele_platform.Utilities.PlopRotTemp as pl
+from pele_platform.Utilities.PlopRotTemp.template.templateBuilder import TemplateBuilder
 import pele_platform.Utilities.Helpers.helpers as hp
 
 

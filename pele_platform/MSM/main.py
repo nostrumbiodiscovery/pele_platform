@@ -1,6 +1,6 @@
 import os
 import pele_platform.Utilities.Helpers.check_env_var as env
-env.check_dependencies()
+#env.check_dependencies()
 import argparse
 import pele_platform.constants as cs
 import pele_platform.Utilities.PlopRotTemp.main as plop

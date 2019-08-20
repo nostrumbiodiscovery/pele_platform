@@ -113,9 +113,9 @@ import os
 import warnings
 import shutil
 import subprocess
-import schrodinger
-from schrodinger.structutils.analyze import is_bond_rotatable
-from schrodinger import structure
+#import schrodinger
+#from schrodinger.structutils.analyze import is_bond_rotatable
+#from schrodinger import structure
 
 
 
