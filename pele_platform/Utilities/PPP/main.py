@@ -1,4 +1,5 @@
 #!/bin/python
+import os
 import sys
 from prody import *
 
@@ -9,6 +10,7 @@ from pele_platform.Utilities.PPP.global_processes import ParseArguments, FindIni
 from pele_platform.Utilities.PPP.hydrogens_addition import FixStructure
 from pele_platform.Utilities.PPP.mutational_module import Mutate
 from pele_platform.Utilities.PPP.global_variables import coordination_geometries
+import pele_platform.Utilities.Helpers.constraints as ct
 
 __author__ = 'jelisa'
 
@@ -23,8 +25,13 @@ addNonstdAminoacid('CYT', 'neutral', 'acyclic', 'medium', 'polar', 'buried')
 addNonstdAminoacid('LYN', 'neutral', 'acyclic', 'large', 'polar', 'buried')
 
 
-def main(input_pdb, pdb_resolution, output_pdb="", no_gaps_ter=False, charge_terminals=False, make_unique=False,
-         remove_terminal_missing=False, mutant_multiple=False, mutation=""):
+def main(input_pdb, pele_dir, output_pdb=["",],  no_gaps_ter=False, charge_terminals=False, make_unique=False,
+         remove_terminal_missing=False, mutant_multiple=False, mutation="", mid_chain_nonstd_residue=[], skip=False, resolution=2.5):
+
+    if not output_pdb[0]:
+        output = os.path.splitext(os.path.basename(input_pdb))[0]
+        output_pdb[0] = os.path.join(pele_dir,"{}_processed.pdb".format(output))
+
     try:
         initial_structure = parsePDB(input_pdb)
     except IOError:
@@ -42,7 +49,7 @@ def main(input_pdb, pdb_resolution, output_pdb="", no_gaps_ter=False, charge_ter
     else:
         structure2use = initial_structure
     print("* Checking for gaps.")
-    gaps, not_gaps = CheckforGaps(structure2use, pdb_resolution)
+    gaps, not_gaps = CheckforGaps(structure2use, resolution)
     if gaps is None and not_gaps is None:
         print("WARNING: Problems when checking for gaps, so don't trust the existence of gaps.")
         gaps, not_gaps = {}, {}
@@ -71,10 +78,31 @@ def main(input_pdb, pdb_resolution, output_pdb="", no_gaps_ter=False, charge_ter
                       no_gaps_ter, not_proteic_ligand, gaps, not_gaps)
         else:
             not_proteic_ligand = None
-            PDBwriter(output_pdb[0], WritingAtomNames(structure2use), make_unique, residues2remove,
-                      no_gaps_ter, not_proteic_ligand, gaps, not_gaps)
+            if not skip:
+                PDBwriter(output_pdb[0], WritingAtomNames(structure2use), make_unique, residues2remove,
+                      no_gaps_ter, not_proteic_ligand, gaps, not_gaps, mid_chain_nonstd_residue)
+            else:
+                shutil.copy(input_pdb, output_pdb[0])
 
-        return residues_without_template, gaps, metals2coordinate
+        ########METAL ATOMS PROCESS###############
+        coordinated_atoms_ids = {}
+        for metal, atoms_list in metals2coordinate.items():
+            metal_id = "{} {} {}".format(WritingAtomNames(metal).getNames()[0].replace(' ','_'),
+                                         metal.getChid(),
+                                         metal.getResnum())
+            atoms_ids = [["{} {} {} {}".format(at.getResname(),
+                                               at.getResnum(), at.getChid(),
+                                               WritingAtomNames(at).getNames()[0].replace(' ', '_'),),
+                          calcDistance(metal, at)[0]] for at in atoms_list]
+            if len(atoms_list) in [x[1] for x in coordination_geometries.itervalues()]:
+                coordinated_atoms_ids[metal_id] = atoms_ids
+
+        ###########RETRIEVE CONSTANTS###############
+        constr = ct.retrieve_constraints(output_pdb[0], gaps, coordinated_atoms_ids)
+
+
+
+        return output_pdb[0], residues_without_template, gaps, coordinated_atoms_ids, constr
 
 if __name__ == '__main__':
     arguments = ParseArguments()
