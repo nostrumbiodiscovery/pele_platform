@@ -1,9 +1,11 @@
 import matplotlib
 matplotlib.use("Agg")
+import sys
+import pele_platform.constants as cs
+sys.path.append(cs.DIR)
 import argparse
 import os
 import pele_platform.MSM.main as msm
-import pele_platform.constants as cs
 import pele_platform.Rescore.main as gl
 import pele_platform.Rescore.simulation as ad
 
