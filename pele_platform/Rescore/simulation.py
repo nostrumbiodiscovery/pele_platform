@@ -6,8 +6,8 @@ import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
 import pele_platform.constants as cs
 import pele_platform.Utilities.Helpers.system_prep as sp
+import pele_platform.Utilities.PlopRotTemp.launcher as plop
 import pele_platform.Utilities.PPP.main as ppp
-import pele_platform.Utilities.PlopRotTemp.main as plop
 import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.center_of_mass as cm
@@ -68,10 +68,11 @@ def run_adaptive(args):
             metrics.distance_to_atom(args.atom_dist)
         env.metrics = "\n".join(metrics.get_metrics()) if metrics.get_metrics() else None
 
-        ############3Parametrize Ligand###############3
+        ############Parametrize Ligand###############
         if not env.external_template and not env.external_rotamers:
             env.logger.info("Creating template for residue {}".format(args.residue))
-            plop.parametrize_miss_residues(args, env, syst)
+            with hp.cd(env.pele_dir):
+                plop.parametrize_miss_residues(args, env, syst)
             env.logger.info("Template {}z created".format(args.residue.lower()))
         else:
             cmd_to_move_template = "cp {} {}".format(env.external_template,  env.template_folder)
@@ -85,7 +86,8 @@ def run_adaptive(args):
         for res, __, _ in missing_residues:
             if res != args.residue:
                 env.logger.info("Creating template for residue {}".format(res))
-                mr.create_template(system_fix, res, env.pele_dir, args.forcefield)
+                with hp.cd(env.pele_dir):
+                    mr.create_template(args, env)
                 env.logger.info("Template {}z created".format(res))
 
         #########Parametrize solvent parameters if need it##############

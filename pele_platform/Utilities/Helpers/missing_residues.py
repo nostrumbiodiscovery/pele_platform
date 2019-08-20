@@ -1,14 +1,12 @@
 import os
 import shutil
-import pele_platform.Utilities.PlopRotTemp.main as plop
+import pele_platform.Utilities.PlopRotTemp.launcher as plop
 import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.helpers as hp
 
-
-def create_template(system, res, pele_dir, forcefield):
-    template_dir = os.path.join(pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(forcefield))
-    rotamers_dir = os.path.join(pele_dir, "DataLocal/LigandRotamerLibs")
-    output_pdb = os.path.join(pele_dir, "miss_residue.pdb")
-    syst = sp.SystemBuilder.build_system(system, None, res, pele_dir, output=output_pdb)
-    print(syst.lig, res)
-    plop.main(syst.lig, res, pele_dir, forcefield, 4, 1000, -1, mae_charges=False, clean=True)
+def create_template(args, env):
+    template_dir = os.path.join(env.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(env.forcefield))
+    rotamers_dir = os.path.join(env.pele_dir, "DataLocal/LigandRotamerLibs")
+    output_pdb = os.path.join(env.pele_dir, "miss_residue.pdb")
+    syst = sp.SystemBuilder.build_system(env.system_fix, None, env.residue, env.pele_dir, output=output_pdb)
+    plop.parametrize_miss_residues(args, env, syst)

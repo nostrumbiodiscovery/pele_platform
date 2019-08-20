@@ -1,9 +1,10 @@
 import os
-from schrodinger import structure as st
-
+import sys
+import subprocess
+import argparse
+import pele_platform.constants as cs
 
 class SystemBuilder(object):
-
     def __init__(self, receptor, ligand, residue, pele_dir):
         self.receptor = receptor
         self.ligand = ligand
@@ -13,16 +14,18 @@ class SystemBuilder(object):
 
     @classmethod
     def build_system(cls, receptor, ligand, residue, pele_dir, output=False):
+        SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
         if ligand:
             system = cls(receptor, ligand, residue, pele_dir)
-            system.lig_ref = system.convert_pdb()
+            system.lig_ref = os.path.join(pele_dir, "ligand.pdb")
+            subprocess.call("{} {} {} {} --mae".format(SPYTHON, __file__, system.ligand, system.lig_ref).split())
             system.system = system.build_complex()
-            system.receptor = system.system
-            system.retrieve_receptor(output=output)
         else:
             system = cls(receptor, ligand, residue, pele_dir)
             system.receptor, system.lig_ref = system.retrieve_receptor(output=output)
-            system.lig, system.residue = system.convert_mae()
+            subprocess.call("{} {} {} {}".format(SPYTHON, __file__, system.lig_ref, pele_dir).split())
+            system.lig = "{}.mae".format(residue)
+            system.residue = residue
         return system
 
     def build_complex(self):
@@ -35,10 +38,14 @@ class SystemBuilder(object):
         name = os.path.basename(os.path.splitext(self.receptor)[0])
         self.complex = os.path.join(self.pele_dir, "{}_complex.pdb".format(name))
 
-        with open(self.receptor, 'r') as pdb_file:
-            receptor_text = [line for line in pdb_file if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER")]
-        with open(self.lig_ref, 'r') as pdb_file:
-            ligand_text = [line for line in pdb_file if line.startswith("HETATM")]
+        try:
+            with open(self.receptor, 'r') as pdb_file:
+                receptor_text = [line for line in pdb_file if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER")]
+            with open(self.lig_ref, 'r') as pdb_file:
+                ligand_text = [line for line in pdb_file if line.startswith("HETATM")]
+        except IOError:
+            raise IOError("Receptor or ligand not found. Check your ligand residue/chain name or input files")
+
         if not receptor_text  or not ligand_text:
             raise ValueError("The ligand_pdb was not properly created check your mae file")
 
@@ -53,7 +60,6 @@ class SystemBuilder(object):
         """
            Desciption: From each structure retrieve
            a .mae file of the ligand in the receptor.
-
            Output:
                 structure_mae: ligand
                 res = residue
@@ -75,30 +81,64 @@ class SystemBuilder(object):
     def retrieve_receptor(self, output=False):
         """
         This function returns receptor of the complex of interest.
-
         :param complex: system format pdb
-
         :output: receptor text
         """
-        ligand = output if output else os.path.join(self.pele_dir, "ligand.pdb")
-        receptor =  os.path.join(self.pele_dir, "receptor.pdb")
+        ligand = output if output else os.path.join(self.pele_dir, "ligand.pdb")    
 
         with open(self.receptor, 'r') as pdb_file:
-            lines = [line for line in pdb_file if line.startswith("ATOM") or line.startswith("HETATM")]
-            receptor_text = [line for line in lines if line.startswith("ATOM") or (line.startswith("HETATM") and line[17:20].strip() != self.residue)]
+            receptor_text = [line for line in pdb_file if line.startswith("ATOM")]
         with open(self.receptor, 'r') as pdb_file:
             ligand_text = [line for line in pdb_file if line[17:20].strip() == self.residue]
         if not receptor_text  or not ligand_text:
             raise ValueError("Something went wrong when extracting the ligand. Check residue&Chain on input")
         with open(ligand, "w") as fout:
             fout.write("".join(ligand_text))
-        with open(receptor, "w") as fout:
-            fout.write("".join(receptor_text))
 
         return "".join(receptor_text), ligand
 
-    def convert_pdb(self):
-        name = os.path.join(self.pele_dir, "ligand.pdb")
-        for structure in st.StructureReader(self.ligand):
-            structure.write(name)
-        return name
+def convert_pdb(mae_file, output_dir):
+    from schrodinger import structure as st
+    for structure in st.StructureReader(mae_file):
+        structure.write(output_dir)
+
+
+def convert_mae(pdb, output_dir="."):
+    """
+        Desciption: From each structure retrieve
+        a .mae file of the ligand in the receptor.
+        Output:
+             structure_mae: ligand
+             res = residue
+    """
+    from schrodinger import structure as st
+    for structure in st.StructureReader(pdb):
+        for residue in structure.residue:
+            res = residue.pdbres.strip()
+            str_name = os.path.abspath(os.path.join(output_dir, "{}".format(res)))
+            try:
+                structure.write(str_name + ".mae")
+            except ValueError:
+                str_name = "{}".format(res)
+            finally:
+                structure.write(str_name + ".mae")
+                structure_mae = "{}.mae".format(str_name)
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("ligand", help="ligand input file to convert")
+    parser.add_argument("output_dir", help="output directory to dump the converted file")
+    parser.add_argument("--mae", action="store_true", help="Whether to convert to mae (--mae) or pdb (not --mae)")
+    args = parser.parse_args()
+    return args.ligand, args.output_dir, args.mae
+
+
+
+
+if __name__ == "__main__":
+    input_file, output_dir, ligand_mae = parse_args()
+    if ligand_mae:
+        convert_pdb(input_file, output_dir)
+    else:
+        convert_mae(input_file, output_dir)
+        

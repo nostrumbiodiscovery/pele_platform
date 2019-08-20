@@ -1,16 +1,16 @@
 import os
 import pele_platform.Utilities.Helpers.check_env_var as env
-#env.check_dependencies()
+env.check_dependencies()
 import argparse
 import pele_platform.constants as cs
-import pele_platform.Utilities.PlopRotTemp.main as plop
+import pele_platform.Utilities.PlopRotTemp.launcher as plop
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.MSM.clusterAdaptiveRun as cl
 import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.MSM.box as bx
-import pele_platform.Utilities.PPP.mut_prep4pele as ppp
+import pele_platform.Utilities.PPP.main as ppp
 import pele_platform.MSM.msm_analysis as msm
 import pele_platform.Utilities.Helpers.missing_residues as mr
 
@@ -32,14 +32,16 @@ def run(args):
 
         # Parametrize Ligand
         env.logger.info("Creating template for residue {}".format(args.residue))
-        plop.parametrize_miss_residues(args, env, syst)
+        with hp.cd(env.pele_dir):
+            plop.parametrize_miss_residues(args, env, syst)
         env.logger.info("Template {}z created".format(args.residue.lower()))
 
         # Parametrize missing residues
         for res, __, _ in missing_residues:
             if res != args.residue:
                 env.logger.info("Creating template for residue {}".format(res))
-                mr.create_template(system_fix, res, env.pele_dir, args.forcefield)
+                with hp.cd(env.pele_dir):
+                    mr.create_template(args, env)
                 env.logger.info("Template {}z created".format(res))
 
     if args.restart in cs.SECOND_RESTART:
