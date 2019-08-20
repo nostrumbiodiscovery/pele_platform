@@ -32,7 +32,7 @@ def test_bias(ext_args):
     main.Launcher(arguments).launch()
 
 
-EXTERNAL_CONFILES_ARGS= [os.path.join(test_path, "Msm/PR_1A28_xray_-_minimized.pdb"), "STR", "Z", "--cpus", "2", "--pdb", "--pele", os.path.join(test_path, "Adaptive/pele_file_4Adaptive.conf"), "--adaptive", os.path.join(test_path, "Adaptive/adaptive.conf"), "--template", os.path.join(test_path, "Adaptive/strz"), "--rotamers", os.path.join(test_path, "Adaptive/STR.rot.assign")] 
+EXTERNAL_CONFILES_ARGS= [os.path.join(test_path, "Msm/PR_1A28_xray_-_minimized.pdb"), "STR", "Z", "--cpus", "2", "--pele", os.path.join(test_path, "Adaptive/pele_file_4Adaptive.conf"), "--adaptive", os.path.join(test_path, "Adaptive/adaptive.conf"), "--template", os.path.join(test_path, "Adaptive/strz"), "--rotamers", os.path.join(test_path, "Adaptive/STR.rot.assign")] 
 @pytest.mark.parametrize("ext_args", [
                          (EXTERNAL_CONFILES_ARGS),
                          ])
@@ -137,11 +137,13 @@ if __name__ == "__main__":
     #test_kinases(KINASE_ARGS)
     #test_bias(BIAS_ARGS)
     #test_external_confiles(EXTERNAL_CONFILES_ARGS)
-    test_out_in(OUT_IN_ARGS)
+    #test_out_in(OUT_IN_ARGS)
     #test_global(GLOBAL_ARGS)
     #test_induce_fit(INDUCE_FIT_ARGS)
     #test_exit(EXIT_ARGS)
+    #NOT WORKING WITH NEW
     #test_water(WATER_ARGS)
+    #NOT WORKING WITH NEW
     #test_lig_water(LIG_WATER_ARGS)
     #test_msm_pdb(MSM_PDB_ARGS)
-    ####test_msm_mae(MSM_MAE_ARGS)NOOO!
+    #test_msm_mae(MSM_MAE_ARGS)
