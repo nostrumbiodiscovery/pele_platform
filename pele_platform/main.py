@@ -14,22 +14,27 @@ class Launcher():
 
 
     def __init__(self, arguments):
+        self.cpus = arguments.cpus
+        self.software = arguments.software
+        self.restart = arguments.restart
+        self.test = arguments.test
         self._args = arguments
 
     def launch(self):
         if self._args.software == "msm":
-            if(self._args.clust > self._args.cpus and self._args.restart != "msm" and not self._args.test):
-                raise ValueError(cs.CLUSTER_ERROR.format(self._args.cpus, elf._args.clust))
+            if(self._args.clust > self.cpus and self.restart != "msm" and not self.test):
+                raise ValueError(cs.CLUSTER_ERROR.format(self.cpus, self._args.clust))
             else:
                 msm.run(self._args)
+                
 
-        elif self._args.software == "adaptive":
+        elif self.software == "adaptive":
             ad.run_adaptive(self._args)
 
-        elif self._args.software in ["glide", "induce_fit"]:
+        elif self.software in ["glide", "induce_fit"]:
             gl.run(self._args)
 
-        elif self._args.software == "frag":
+        elif self.software == "frag":
             main = os.path.join(cs.DIR, "LigandGrowing/grow.py")
             "{} {} -cp {} -fp {} -ca {} -fa {}".format(cs.PYTHON3, main, self._args.system, self._args.frag, self._args.ca, self._args.fa)
 
@@ -87,6 +92,7 @@ def parseargs(args=[]):
     parser.add_argument("--fa", type=str,  help="Fragment Atom")
     parser.add_argument("--noeq", action="store_false",  help="Whether to do a initial equilibration or not")
     parser.add_argument("--skip_prep", action="store_true",  help="Whether to do the initial preprocessing or not")
+    parser.add_argument("--adaptive_restart", action="store_true",  help="Whether to set restart true to adaptive")
     parser.add_argument("--nonstandard", nargs="+",  help="Mid Chain non standard residues to be treated as ATOM not HETATOM", default = [])
     parser.add_argument('--solvent', type=str, help='Type of implicit solvent (OBC/VDGBNP). default [OBC]. i.e. --solvent VDGBNP', default="OBC")
     parser.add_argument('--report_name', type=str, help='Name of the output report files. i.e. report_Sim1_. Default [report]', default="report")
@@ -103,7 +109,7 @@ def set_software_to_use(arguments):
     """
     Auxiliar Function to set low variable software
     which will be use to handle differences 
-    betwwen PELE features along the program
+    between PELE features along the program
     """
     if arguments.hbond[0]:
         setattr(arguments, "software", "glide")
@@ -116,8 +122,18 @@ def set_software_to_use(arguments):
     else:
         raise ValueError("Not specified action. Choose an option between msm/adaptive/out_in/induce_fit/hbond")
 
+def main(arguments):
+    """
+    Main function that sets the functionality
+    of the software that will be used [Pele, Adaptive, glide...]
+    and launch the respective job
+    """
+    set_software_to_use(arguments)
+    job = Launcher(arguments)
+    job.launch()
+    return job
+
 
 if __name__ == "__main__":
     arguments = parseargs()
-    set_software_to_use(arguments)
-    Launcher(arguments).launch()
+    job = main(arguments)

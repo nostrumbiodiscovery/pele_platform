@@ -103,7 +103,6 @@ atomTypesHCTradii = [['H','0.85'],
 
 # Parse the impact template to get the residue name and the atom names and atom types
 def parseImpactTemplate(impactTemplate):
-    print('Parsing ... ',impactTemplate)
     
     try:
         fileout = open(impactTemplate)
@@ -194,7 +193,6 @@ def assignOverlapFactor(name,atomTypeOverlapFactorTable,numberOfBonds,realName):
             if name==atomType[0].upper():
                 overlapFactor = atomType[1]
                 found = True
-                print('Atom Name ',realName,'   identified as ',atomType[0], '  with ',numberOfBonds, 'internal name  ',name)  
 
     if name=='H' and numberOfBonds[1]=='O': 
         overlapFactor='1.05' 

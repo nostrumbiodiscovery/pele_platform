@@ -25,7 +25,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
     def fill_adaptive_template(self, env):
-        self.adaptive_keywords = { "RESTART": cs.RESTART, "OUTPUT": env.adap_ex_output, "INPUT":env.adap_ex_input,
+        self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.adap_ex_output, "INPUT":env.adap_ex_input,
                 "CPUS":env.cpus, "PELE_CFILE": self.pele_file, "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,
                 "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, "PELE_STEPS": env.pele_steps, "REPORT_NAME": env.report_name}
         super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)

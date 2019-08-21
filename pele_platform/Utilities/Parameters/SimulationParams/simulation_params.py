@@ -51,10 +51,11 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.pele_steps = args.pele_steps
         self.solvent = args.solvent
         self.cpus = args.cpus = args.cpus if not args.test else 4
-        self.restart = args.restart
+        self.restart = False
         self.test = args.test
         self.equil_steps = 1 if self.test else int(cs.EQ_STEPS/self.cpus) + 1 #+1 to avoid being 0
         self.equilibration = "true" if args.noeq else "false"
+        self.adaptive_restart = args.adaptive_restart
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep
