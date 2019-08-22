@@ -6,6 +6,7 @@ import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.system_prep as sp
+import pele_platform.Utilities.Helpers.prepwizard as pp
 import pele_platform.Utilities.PlopRotTemp.launcher as plop
 import pele_platform.Utilities.PPP.main as ppp
 import pele_platform.Utilities.Helpers.missing_residues as mr
@@ -25,6 +26,11 @@ def run_adaptive(args):
     env = pele.EnviroBuilder.build_env(args)
 
     if args.restart == "all":
+
+        ##PREPWIZARD##
+        if args.prepwizard:
+            args.system = pp.run_prepwizard(args.system) 
+
 
         env.logger.info("System: {}; Platform Functionality: {}\n\n".format(env.residue, env.software))
         syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)

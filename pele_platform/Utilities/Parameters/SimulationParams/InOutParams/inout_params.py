@@ -1,4 +1,4 @@
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 
 class InOutParams(object):
 

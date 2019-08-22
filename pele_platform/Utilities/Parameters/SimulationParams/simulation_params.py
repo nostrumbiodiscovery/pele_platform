@@ -5,6 +5,7 @@ from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_pa
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
+from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
 import pele_platform.Utilities.Helpers.helpers as hp
 
 
@@ -28,6 +29,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         glide_params.GlideParams.__init__(self, args)
         bias_params.BiasParams.__init__(self, args)
         inout_params.InOutParams.__init__(self, args)
+        waterexp_params.WaterExp.__init__(self, args)
 
 
     def simulation_type(self, args):
