@@ -3,7 +3,7 @@ import sys
 import subprocess
 import argparse
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 
 class SystemBuilder(object):
     def __init__(self, receptor, ligand, residue, pele_dir):

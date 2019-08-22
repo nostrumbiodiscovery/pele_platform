@@ -1,7 +1,7 @@
 import os
 import AdaptivePELE.adaptiveSampling as ad
 from pele_platform.Utilities.Helpers import helpers, template_builder
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.center_of_mass as cm 
 
 class SimulationBuilder(template_builder.TemplateBuilder):
@@ -20,7 +20,9 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "HBOND2": env.hbond_acceptor, "SASA_min": env.sasa_min, "SASA_max": env.sasa_max,
                         "WATER_RADIUS": env.water_radius, "WATER_CENTER": env.water_center, "WATER": env.water,
                         "WATER_ENERGY": env.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, "TRAJ_NAME": env.traj_name,
-                        "SOLVENT": env.solvent}
+                        "SOLVENT": env.solvent, "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
+                        "OVERLAP": env.overlap_factor, "STERIC_TRIALS": env.steric_trials, "TEMPERATURE": env.temperature, 
+                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq }
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 

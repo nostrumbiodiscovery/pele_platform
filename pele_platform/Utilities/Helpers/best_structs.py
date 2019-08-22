@@ -2,7 +2,7 @@ import os
 import argparse
 import pandas as pd
 import glob
-from pele_platform import constants
+from pele_platform.constants import constants
 
 """
 

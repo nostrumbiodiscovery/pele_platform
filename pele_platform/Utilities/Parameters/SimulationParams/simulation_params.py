@@ -1,6 +1,6 @@
 import random
 import os
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
@@ -13,7 +13,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
     def __init__(self, args):
         self.simulation_type(args)
-        self.main_params(args)
+        self.main_pele_params(args)
+        self.main_adaptive_params(args)
         self.optative_params(args)
         self.system_preparation_params(args)
         self.ligand_params(args)
@@ -35,22 +36,31 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.adaptive = args.adaptive if args.adaptive else None
         self.hbond_donor, self.hbond_acceptor = args.hbond
 
-
-    def main_params(self, args):
+    def main_pele_params(self,args):
         self.system = args.system
         self.residue = args.residue
         self.chain = args.chain
+        self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params["pele_steps"]
+        self.license = '''"{}"'''.format(cs.LICENSE)
+        self.anm_freq = args.anm_freq
+        self.sidechain_freq = args.sidechain_freq
+        self.min_freq = args.min_freq
+        self.temperature = args.temperature
+        self.sidechain_resolution = args.sidechain_resolution
+        self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params["steric_trials"]
+        self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params["overlap_factor"]
+        self.parameters = self.simulation_params["params"]
+
+    def main_adaptive_params(self, args):
         self.spawning = args.spawning if args.spawning else self.simulation_params["spawning_type"]
         self.density = args.density if args.density else self.simulation_params["density"]
         self.simulation_type = args.simulation_type if args.simulation_type else self.simulation_params["simulation_type"]
         self.iterations = args.iterations if args.iterations else self.simulation_params["iterations"]
-        self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params["pele_steps"]
         self.cluster_values = args.cluster_values if args.cluster_values else self.simulation_params["cluster_values"]
         self.cluster_conditions = args.cluster_conditions if args.cluster_conditions else self.simulation_params["cluster_conditions"]
         self.adapt_conf = args.adapt_conf
         self.confile = args.confile
         self.seed = random.randrange(1, 70000)
-        self.license = '''"{}"'''.format(cs.LICENSE)
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
 
     def optative_params(self, args):
@@ -91,7 +101,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_center =  ("[" + ",".join([coord for coord in args.water_center]) + "]") if args.water_center else None
 
     def box_params(self, args):
-        self.box_radius = None
+        self.box_radius = args.box_radius if args.box_radius else self.simulation_params["box_radius"]
         self.box_center = "["+ ",".join(args.user_center) + "]" if args.user_center else None
 
     def metrics_params(self, args):

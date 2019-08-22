@@ -3,7 +3,7 @@ import shutil
 import warnings
 import random
 import logging
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 import pele_platform.features as fs
 import pele_platform.Utilities.Helpers.helpers as hp
 from pele_platform.Utilities.Parameters.SimulationParams import simulation_params

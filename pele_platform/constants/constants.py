@@ -151,7 +151,7 @@ FOURTH_RESTART = ["all", "adaptive", "pele", "msm"]
 #PATHS
 #-------
 
-DIR = os.path.dirname(__file__)
+DIR = os.path.dirname(os.path.dirname(__file__))
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
 
 #MESSAGES&ERRORS

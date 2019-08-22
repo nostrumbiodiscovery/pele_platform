@@ -1,6 +1,6 @@
 import random
 import os
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationFolders.MSMFolders import msm_folders
 from pele_platform.Utilities.Parameters.SimulationFolders.GlideFolders import glide_folders
 import pele_platform.Utilities.Helpers.helpers as hp

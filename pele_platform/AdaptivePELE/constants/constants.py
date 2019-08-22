@@ -1,7 +1,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 import os
 import socket
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 machine = socket.getfqdn()
 
 print("MACHINE", machine)

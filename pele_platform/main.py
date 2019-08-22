@@ -1,7 +1,7 @@
 import matplotlib
 matplotlib.use("Agg")
 import sys
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 sys.path.append(cs.DIR)
 import argparse
 import os
@@ -110,7 +110,13 @@ def parseargs(args=[]):
     parser.add_argument('--randomize', action="store_true", help='Randomize ligand position around protein')
     parser.add_argument("--atom_dist", nargs="+",  help="Number of the atoms to calculate the distance in between i.e --atom dist 123 456", default=None)
     parser.add_argument('--input', nargs="+", help='Set initial input for simulation')
-   
+    parser.add_argument("--anm_freq", type=int,  help="Frequency to perform ANM", default=4)
+    parser.add_argument("--sidechain_freq", type=int,  help="Frequency to perform sidechain sampling", default=2)
+    parser.add_argument("--min_freq", type=int,  help="Frequency to perform all atoms minimization", default=1)
+    parser.add_argument("--temperature", type=int,  help="Temperature to perform PELE simulation", default=1500)
+    parser.add_argument("--sidechain_resolution", type=int,  help="Every how many degrees the sidechains will be rotated [10, 30...]", default=10)
+    parser.add_argument("--steric_trials", type=int,  help="Number fo steric trials on sidechain sampling", default=None)
+    parser.add_argument("--overlap_factor", type=float,  help="Relaxation of vanderwals clashes from 0 to 1", default=None)
     args = parser.parse_args(args) if args else parser.parse_args()
 
     return args
