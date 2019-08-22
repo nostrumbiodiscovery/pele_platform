@@ -614,6 +614,7 @@ static CYTHON_INLINE float __PYX_NAN() {
 #include <stdio.h>
 #include "numpy/arrayobject.h"
 #include "numpy/ufuncobject.h"
+#include <math.h>
 #ifdef _OPENMP
 #include <omp.h>
 #endif /* _OPENMP */
@@ -1182,7 +1183,7 @@ struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB {
 };
 
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":694
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":729
  *         self.atomList.remove(atomId)
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -1272,6 +1273,56 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_GetAttrStr(PyObject* obj, PyObject
 /* GetBuiltinName.proto */
 static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 
+/* IncludeStringH.proto */
+#include <string.h>
+
+/* BytesEquals.proto */
+static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
+
+/* UnicodeEquals.proto */
+static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
+
+/* PyThreadStateGet.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
+#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
+#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
+#else
+#define __Pyx_PyThreadState_declare
+#define __Pyx_PyThreadState_assign
+#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
+#endif
+
+/* PyErrFetchRestore.proto */
+#if CYTHON_FAST_THREAD_STATE
+#define __Pyx_PyErr_Clear() __Pyx_ErrRestore(NULL, NULL, NULL)
+#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
+#if CYTHON_COMPILING_IN_CPYTHON
+#define __Pyx_PyErr_SetNone(exc) (Py_INCREF(exc), __Pyx_ErrRestore((exc), NULL, NULL))
+#else
+#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
+#endif
+#else
+#define __Pyx_PyErr_Clear() PyErr_Clear()
+#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
+#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestoreInState(tstate, type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
+#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
+#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
+#endif
+
+/* WriteUnraisableException.proto */
+static void __Pyx_WriteUnraisable(const char *name, int clineno,
+                                  int lineno, const char *filename,
+                                  int full_traceback, int nogil);
+
 /* RaiseDoubleKeywords.proto */
 static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
 
@@ -1289,15 +1340,6 @@ static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
     ((likely((Py_TYPE(obj) == type) | (none_allowed && (obj == Py_None)))) ? 1 :\
         __Pyx__ArgTypeTest(obj, type, name, exact))
 static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *name, int exact);
-
-/* IncludeStringH.proto */
-#include <string.h>
-
-/* BytesEquals.proto */
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals);
-
-/* UnicodeEquals.proto */
-static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
 
 /* PyFunctionFastCall.proto */
 #if CYTHON_FAST_PYCALL
@@ -1483,42 +1525,6 @@ static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tsta
 #define __Pyx_PyErr_ExceptionMatches(err)  PyErr_ExceptionMatches(err)
 #endif
 
-/* PyThreadStateGet.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyThreadState_declare  PyThreadState *__pyx_tstate;
-#define __Pyx_PyThreadState_assign  __pyx_tstate = __Pyx_PyThreadState_Current;
-#define __Pyx_PyErr_Occurred()  __pyx_tstate->curexc_type
-#else
-#define __Pyx_PyThreadState_declare
-#define __Pyx_PyThreadState_assign
-#define __Pyx_PyErr_Occurred()  PyErr_Occurred()
-#endif
-
-/* PyErrFetchRestore.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_PyErr_Clear() __Pyx_ErrRestore(NULL, NULL, NULL)
-#define __Pyx_ErrRestoreWithState(type, value, tb)  __Pyx_ErrRestoreInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)    __Pyx_ErrFetchInState(PyThreadState_GET(), type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  __Pyx_ErrRestoreInState(__pyx_tstate, type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)    __Pyx_ErrFetchInState(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb);
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#if CYTHON_COMPILING_IN_CPYTHON
-#define __Pyx_PyErr_SetNone(exc) (Py_INCREF(exc), __Pyx_ErrRestore((exc), NULL, NULL))
-#else
-#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
-#endif
-#else
-#define __Pyx_PyErr_Clear() PyErr_Clear()
-#define __Pyx_PyErr_SetNone(exc) PyErr_SetNone(exc)
-#define __Pyx_ErrRestoreWithState(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchWithState(type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestoreInState(tstate, type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetchInState(tstate, type, value, tb)  PyErr_Fetch(type, value, tb)
-#define __Pyx_ErrRestore(type, value, tb)  PyErr_Restore(type, value, tb)
-#define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
-#endif
-
 /* GetAttr.proto */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
 
@@ -1557,6 +1563,9 @@ static CYTHON_INLINE int __Pyx_IterFinish(void);
 /* UnpackItemEndCheck.proto */
 static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected);
 
+/* RaiseException.proto */
+static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
+
 /* ListAppend.proto */
 #if CYTHON_USE_PYLIST_INTERNALS && CYTHON_ASSUME_SAFE_MACROS
 static CYTHON_INLINE int __Pyx_PyList_Append(PyObject* list, PyObject* x) {
@@ -1589,9 +1598,6 @@ static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject 
 #define __Pyx_ExceptionSave(type, value, tb)   PyErr_GetExcInfo(type, value, tb)
 #define __Pyx_ExceptionReset(type, value, tb)  PyErr_SetExcInfo(type, value, tb)
 #endif
-
-/* RaiseException.proto */
-static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
 /* IsLittleEndian.proto */
 static CYTHON_INLINE int __Pyx_Is_Little_Endian(void);
@@ -1745,6 +1751,15 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_LookupSpecial(PyObject* obj, PyObj
 }
 #else
 #define __Pyx_PyObject_LookupSpecial(o,n) __Pyx_PyObject_GetAttrStr(o,n)
+#endif
+
+/* PyObject_Unicode.proto */
+#if PY_MAJOR_VERSION >= 3
+#define __Pyx_PyObject_Unicode(obj)\
+    (likely(PyUnicode_CheckExact(obj)) ? __Pyx_NewRef(obj) : PyObject_Str(obj))
+#else
+#define __Pyx_PyObject_Unicode(obj)\
+    (likely(PyUnicode_CheckExact(obj)) ? __Pyx_NewRef(obj) : PyObject_Unicode(obj))
 #endif
 
 /* GetException.proto */
@@ -2113,10 +2128,13 @@ static PyTypeObject *__pyx_ptype_5numpy_ndarray = 0;
 static PyTypeObject *__pyx_ptype_5numpy_ufunc = 0;
 static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, char *, char *, int *); /*proto*/
 
+/* Module declarations from 'libc.math' */
+
 /* Module declarations from 'pele_platform.AdaptivePELE.atomset.atomset' */
 static PyTypeObject *__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom = 0;
 static PyTypeObject *__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB = 0;
 static PyTypeObject *__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset___pyx_scope_struct____iter__ = 0;
+static int __pyx_f_13pele_platform_12AdaptivePELE_7atomset_7atomset_check_add_TER(PyObject *, PyObject *); /*proto*/
 static PyObject *__pyx_f_13pele_platform_12AdaptivePELE_7atomset_7atomset___pyx_unpickle_Atom__set_state(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *, PyObject *); /*proto*/
 static PyObject *__pyx_f_13pele_platform_12AdaptivePELE_7atomset_7atomset___pyx_unpickle_PDB__set_state(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *, PyObject *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_float = { "float", NULL, sizeof(float), { 0 }, 0, 'R', 0, 0 };
@@ -2234,7 +2252,6 @@ static const char __pyx_k_dy[] = "dy";
 static const char __pyx_k_dz[] = "dz";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_io[] = "io";
-static const char __pyx_k_md[] = "md";
 static const char __pyx_k_np[] = "np";
 static const char __pyx_k_re[] = "re";
 static const char __pyx_k_rt[] = "rt";
@@ -3121,7 +3138,6 @@ static const char __pyx_k_HETERO[] = "HETERO";
 static const char __pyx_k_PDBstr[] = "PDBstr";
 static const char __pyx_k_getCOM[] = "getCOM";
 static const char __pyx_k_import[] = "__import__";
-static const char __pyx_k_mdtraj[] = "mdtraj";
 static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_pickle[] = "pickle";
 static const char __pyx_k_reduce[] = "__reduce__";
@@ -3134,7 +3150,6 @@ static const char __pyx_k_update[] = "update";
 static const char __pyx_k_values[] = "values";
 static const char __pyx_k_CMAtoms[] = "CMAtoms";
 static const char __pyx_k_IOError[] = "IOError";
-static const char __pyx_k_MODEL_d[] = "MODEL %d\n";
 static const char __pyx_k_PROTEIN[] = "PROTEIN";
 static const char __pyx_k_compile[] = "compile";
 static const char __pyx_k_element[] = "element";
@@ -3144,6 +3159,7 @@ static const char __pyx_k_readPDB[] = "readPDB";
 static const char __pyx_k_resName[] = "resName";
 static const char __pyx_k_resname[] = "resname";
 static const char __pyx_k_typeAll[] = "_typeAll";
+static const char __pyx_k_MODEL_4d[] = "MODEL    %4d\n";
 static const char __pyx_k_StringIO[] = "StringIO";
 static const char __pyx_k_atomList[] = "atomList";
 static const char __pyx_k_atomName[] = "atomName";
@@ -3175,6 +3191,7 @@ static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_PickleError[] = "PickleError";
 static const char __pyx_k_atomContent[] = "atomContent";
 static const char __pyx_k_coordinates[] = "coordinates";
+static const char __pyx_k_extra_atoms[] = "extra_atoms";
 static const char __pyx_k_getCentroid[] = "getCentroid";
 static const char __pyx_k_isHeavyAtom[] = "isHeavyAtom";
 static const char __pyx_k_ligandChain[] = "ligandChain";
@@ -3204,6 +3221,7 @@ static const char __pyx_k_equivalentResname[] = "equivalentResname";
 static const char __pyx_k_pyx_unpickle_Atom[] = "__pyx_unpickle_Atom";
 static const char __pyx_k_ATOM_LINE_TEMPLATE[] = "ATOM_LINE_TEMPLATE";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
+static const char __pyx_k_Input_file_not_found[] = "Input file not found!!";
 static const char __pyx_k_computeCOMDifference[] = "computeCOMDifference";
 static const char __pyx_k_contactThresholdDistance[] = "contactThresholdDistance";
 static const char __pyx_k_computeCOMSquaredDifference[] = "computeCOMSquaredDifference";
@@ -3214,9 +3232,11 @@ static const char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype cod
 static const char __pyx_k_Format_string_allocated_too_shor[] = "Format string allocated too short, see comment in numpy.pxd";
 static const char __pyx_k_Incompatible_checksums_s_vs_0x0d[] = "Incompatible checksums (%s vs 0x0dd8c8e = (atomSerial, id, mass, name, protein, resChain, resname, resnum, type, x, y, z))";
 static const char __pyx_k_Incompatible_checksums_s_vs_0x73[] = "Incompatible checksums (%s vs 0x7330454 = (atomList, atoms, centroid, com, ispdb, pdb, totalMass))";
+static const char __pyx_k_Input_coordinates_and_topology_d[] = "Input coordinates and topology do not match!!!";
+static const char __pyx_k_Input_pdb_was_malformed_or_empty[] = "Input pdb was malformed or empty!!";
 static const char __pyx_k_No_boolean_operator_available_fo[] = "No boolean operator available for PDB apart from equality";
 static const char __pyx_k_Non_native_byte_order_not_suppor[] = "Non-native byte order not supported";
-static const char __pyx_k_The_input_pdb_file_string_was_em[] = "The input pdb file/string was empty, no atoms loaded!";
+static const char __pyx_k_Nothing_found_in_the_input_coord[] = "Nothing found in the input coordinates, please check your selection!";
 static const char __pyx_k_WARNING_Information_about_atom_t[] = "WARNING!: Information about atom type not available, trying to guess from its name, mass properties might be wrong.";
 static const char __pyx_k_computeSquaredCentroidDifference[] = "computeSquaredCentroidDifference";
 static const char __pyx_k_ndarray_is_not_Fortran_contiguou[] = "ndarray is not Fortran contiguous";
@@ -3737,6 +3757,9 @@ static PyObject *__pyx_n_u_IZO;
 static PyObject *__pyx_n_s_ImportError;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x0d;
 static PyObject *__pyx_kp_s_Incompatible_checksums_s_vs_0x73;
+static PyObject *__pyx_kp_u_Input_coordinates_and_topology_d;
+static PyObject *__pyx_kp_u_Input_file_not_found;
+static PyObject *__pyx_kp_u_Input_pdb_was_malformed_or_empty;
 static PyObject *__pyx_n_u_JJJ;
 static PyObject *__pyx_n_u_JJK;
 static PyObject *__pyx_n_u_JJL;
@@ -3843,7 +3866,7 @@ static PyObject *__pyx_n_u_MNL;
 static PyObject *__pyx_n_u_MNV;
 static PyObject *__pyx_n_u_MO;
 static PyObject *__pyx_n_u_MOD;
-static PyObject *__pyx_kp_u_MODEL_d;
+static PyObject *__pyx_kp_u_MODEL_4d;
 static PyObject *__pyx_n_u_MP8;
 static PyObject *__pyx_n_u_MPH;
 static PyObject *__pyx_n_u_MPJ;
@@ -3900,6 +3923,7 @@ static PyObject *__pyx_n_u_NZ;
 static PyObject *__pyx_n_u_NZH;
 static PyObject *__pyx_kp_u_No_boolean_operator_available_fo;
 static PyObject *__pyx_kp_u_Non_native_byte_order_not_suppor;
+static PyObject *__pyx_kp_u_Nothing_found_in_the_input_coord;
 static PyObject *__pyx_n_u_O;
 static PyObject *__pyx_n_u_O12;
 static PyObject *__pyx_n_u_OAR;
@@ -4125,7 +4149,6 @@ static PyObject *__pyx_n_u_TYX;
 static PyObject *__pyx_n_u_TYY;
 static PyObject *__pyx_n_u_TZB;
 static PyObject *__pyx_n_u_TZO;
-static PyObject *__pyx_kp_u_The_input_pdb_file_string_was_em;
 static PyObject *__pyx_n_u_U;
 static PyObject *__pyx_n_u_UMA;
 static PyObject *__pyx_n_u_UN1;
@@ -4216,6 +4239,7 @@ static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_enter;
 static PyObject *__pyx_n_s_equivalentResname;
 static PyObject *__pyx_n_s_exit;
+static PyObject *__pyx_n_s_extra_atoms;
 static PyObject *__pyx_n_s_extractCOM;
 static PyObject *__pyx_n_s_extractCentroid;
 static PyObject *__pyx_n_u_f;
@@ -4245,8 +4269,6 @@ static PyObject *__pyx_n_s_ligandResnum;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_mass;
 static PyObject *__pyx_n_u_mass;
-static PyObject *__pyx_n_s_md;
-static PyObject *__pyx_n_s_mdtraj;
 static PyObject *__pyx_n_s_model_num;
 static PyObject *__pyx_n_u_name;
 static PyObject *__pyx_n_s_name_2;
@@ -4381,9 +4403,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
 static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_4__getstate__(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_6__setstate__(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_state); /* proto */
 static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_8isfromPDBFile(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_10_initialisePDB(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_PDBstr, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element); /* proto */
-static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_12_initialiseXTC(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyArrayObject *__pyx_v_frame, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_topology); /* proto */
-static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_14initialise(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_coordinates, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_topology); /* proto */
+static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_10_initialisePDB(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_PDBstr, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_extra_atoms); /* proto */
+static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_12_initialiseXTC(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyArrayObject *__pyx_v_frame, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_topology, PyObject *__pyx_v_extra_atoms); /* proto */
+static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_14initialise(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_coordinates, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_topology, PyObject *__pyx_v_extra_atoms); /* proto */
 static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_16computeTotalMass(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_18printAtoms(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_20getNumberOfAtoms(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self); /* proto */
@@ -4508,32 +4530,297 @@ static PyObject *__pyx_float_2_01410178;
 static PyObject *__pyx_int_8;
 static PyObject *__pyx_int_14519438;
 static PyObject *__pyx_int_120783956;
+static PyObject *__pyx_k__10;
+static PyObject *__pyx_k__14;
+static PyObject *__pyx_k__16;
 static PyObject *__pyx_tuple__9;
-static PyObject *__pyx_tuple__10;
 static PyObject *__pyx_tuple__11;
 static PyObject *__pyx_tuple__12;
 static PyObject *__pyx_tuple__13;
-static PyObject *__pyx_tuple__14;
 static PyObject *__pyx_tuple__15;
-static PyObject *__pyx_tuple__16;
 static PyObject *__pyx_tuple__17;
 static PyObject *__pyx_tuple__18;
 static PyObject *__pyx_tuple__19;
 static PyObject *__pyx_tuple__20;
+static PyObject *__pyx_tuple__21;
 static PyObject *__pyx_tuple__22;
+static PyObject *__pyx_tuple__23;
 static PyObject *__pyx_tuple__24;
+static PyObject *__pyx_tuple__25;
 static PyObject *__pyx_tuple__26;
 static PyObject *__pyx_tuple__28;
 static PyObject *__pyx_tuple__30;
-static PyObject *__pyx_codeobj__21;
-static PyObject *__pyx_codeobj__23;
-static PyObject *__pyx_codeobj__25;
+static PyObject *__pyx_tuple__32;
+static PyObject *__pyx_tuple__34;
+static PyObject *__pyx_tuple__36;
 static PyObject *__pyx_codeobj__27;
 static PyObject *__pyx_codeobj__29;
 static PyObject *__pyx_codeobj__31;
+static PyObject *__pyx_codeobj__33;
+static PyObject *__pyx_codeobj__35;
+static PyObject *__pyx_codeobj__37;
 /* Late includes */
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":217
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":148
+ * @cython.wraparound(False)
+ * @cython.nonecheck(False)
+ * cdef bint check_add_TER(basestring prevLine, basestring line):             # <<<<<<<<<<<<<<
+ *     cdef basestring prevres = prevLine[22:26], res = line[22:26]
+ *     cdef int prevres_num = int(prevres), resnum = int(res)
+ */
+
+static int __pyx_f_13pele_platform_12AdaptivePELE_7atomset_7atomset_check_add_TER(PyObject *__pyx_v_prevLine, PyObject *__pyx_v_line) {
+  PyObject *__pyx_v_prevres = 0;
+  PyObject *__pyx_v_res = 0;
+  int __pyx_v_prevres_num;
+  int __pyx_v_resnum;
+  PyObject *__pyx_v_resname = 0;
+  PyObject *__pyx_v_prevresname = 0;
+  PyObject *__pyx_v_prevAtomtype = 0;
+  PyObject *__pyx_v_atomtype = 0;
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  __Pyx_RefNannySetupContext("check_add_TER", 0);
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":149
+ * @cython.nonecheck(False)
+ * cdef bint check_add_TER(basestring prevLine, basestring line):
+ *     cdef basestring prevres = prevLine[22:26], res = line[22:26]             # <<<<<<<<<<<<<<
+ *     cdef int prevres_num = int(prevres), resnum = int(res)
+ *     cdef basestring resname, prevresname, prevAtomtype, atomtype
+ */
+  if (unlikely(__pyx_v_prevLine == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 149, __pyx_L1_error)
+  }
+  __pyx_t_1 = PySequence_GetSlice(__pyx_v_prevLine, 22, 26); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_prevres = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+  if (unlikely(__pyx_v_line == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 149, __pyx_L1_error)
+  }
+  __pyx_t_1 = PySequence_GetSlice(__pyx_v_line, 22, 26); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_res = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":150
+ * cdef bint check_add_TER(basestring prevLine, basestring line):
+ *     cdef basestring prevres = prevLine[22:26], res = line[22:26]
+ *     cdef int prevres_num = int(prevres), resnum = int(res)             # <<<<<<<<<<<<<<
+ *     cdef basestring resname, prevresname, prevAtomtype, atomtype
+ *     if abs(prevres_num - resnum) > 1:
+ */
+  __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_v_prevres); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 150, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_prevres_num = __pyx_t_2;
+  __pyx_t_1 = __Pyx_PyNumber_Int(__pyx_v_res); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 150, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_resnum = __pyx_t_2;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":152
+ *     cdef int prevres_num = int(prevres), resnum = int(res)
+ *     cdef basestring resname, prevresname, prevAtomtype, atomtype
+ *     if abs(prevres_num - resnum) > 1:             # <<<<<<<<<<<<<<
+ *         return True
+ *     resname = line[17:20]
+ */
+  __pyx_t_2 = abs((__pyx_v_prevres_num - __pyx_v_resnum)); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 152, __pyx_L1_error)
+  __pyx_t_3 = ((__pyx_t_2 > 1) != 0);
+  if (__pyx_t_3) {
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":153
+ *     cdef basestring resname, prevresname, prevAtomtype, atomtype
+ *     if abs(prevres_num - resnum) > 1:
+ *         return True             # <<<<<<<<<<<<<<
+ *     resname = line[17:20]
+ *     prevresname = prevLine[17:20]
+ */
+    __pyx_r = 1;
+    goto __pyx_L0;
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":152
+ *     cdef int prevres_num = int(prevres), resnum = int(res)
+ *     cdef basestring resname, prevresname, prevAtomtype, atomtype
+ *     if abs(prevres_num - resnum) > 1:             # <<<<<<<<<<<<<<
+ *         return True
+ *     resname = line[17:20]
+ */
+  }
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":154
+ *     if abs(prevres_num - resnum) > 1:
+ *         return True
+ *     resname = line[17:20]             # <<<<<<<<<<<<<<
+ *     prevresname = prevLine[17:20]
+ *     prevAtomtype = prevLine[0:6]
+ */
+  if (unlikely(__pyx_v_line == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 154, __pyx_L1_error)
+  }
+  __pyx_t_1 = PySequence_GetSlice(__pyx_v_line, 17, 20); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 154, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_resname = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":155
+ *         return True
+ *     resname = line[17:20]
+ *     prevresname = prevLine[17:20]             # <<<<<<<<<<<<<<
+ *     prevAtomtype = prevLine[0:6]
+ *     atomtype = line[0:6]
+ */
+  if (unlikely(__pyx_v_prevLine == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 155, __pyx_L1_error)
+  }
+  __pyx_t_1 = PySequence_GetSlice(__pyx_v_prevLine, 17, 20); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_prevresname = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":156
+ *     resname = line[17:20]
+ *     prevresname = prevLine[17:20]
+ *     prevAtomtype = prevLine[0:6]             # <<<<<<<<<<<<<<
+ *     atomtype = line[0:6]
+ *     if prevres != res and (("HOH" == resname or "HOH" == prevresname) or (atomtype != prevAtomtype) or (prevAtomtype == atomtype == "HETATM")):
+ */
+  if (unlikely(__pyx_v_prevLine == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 156, __pyx_L1_error)
+  }
+  __pyx_t_1 = PySequence_GetSlice(__pyx_v_prevLine, 0, 6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_prevAtomtype = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":157
+ *     prevresname = prevLine[17:20]
+ *     prevAtomtype = prevLine[0:6]
+ *     atomtype = line[0:6]             # <<<<<<<<<<<<<<
+ *     if prevres != res and (("HOH" == resname or "HOH" == prevresname) or (atomtype != prevAtomtype) or (prevAtomtype == atomtype == "HETATM")):
+ *         return True
+ */
+  if (unlikely(__pyx_v_line == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
+    __PYX_ERR(0, 157, __pyx_L1_error)
+  }
+  __pyx_t_1 = PySequence_GetSlice(__pyx_v_line, 0, 6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_atomtype = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":158
+ *     prevAtomtype = prevLine[0:6]
+ *     atomtype = line[0:6]
+ *     if prevres != res and (("HOH" == resname or "HOH" == prevresname) or (atomtype != prevAtomtype) or (prevAtomtype == atomtype == "HETATM")):             # <<<<<<<<<<<<<<
+ *         return True
+ *     return False
+ */
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_prevres, __pyx_v_res, Py_NE)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_5 = (__pyx_t_4 != 0);
+  if (__pyx_t_5) {
+  } else {
+    __pyx_t_3 = __pyx_t_5;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_5 = (__Pyx_PyUnicode_Equals(__pyx_n_u_HOH, __pyx_v_resname, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_4 = (__pyx_t_5 != 0);
+  if (!__pyx_t_4) {
+  } else {
+    __pyx_t_3 = __pyx_t_4;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_n_u_HOH, __pyx_v_prevresname, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_5 = (__pyx_t_4 != 0);
+  if (!__pyx_t_5) {
+  } else {
+    __pyx_t_3 = __pyx_t_5;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_5 = (__Pyx_PyUnicode_Equals(__pyx_v_atomtype, __pyx_v_prevAtomtype, Py_NE)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_4 = (__pyx_t_5 != 0);
+  if (!__pyx_t_4) {
+  } else {
+    __pyx_t_3 = __pyx_t_4;
+    goto __pyx_L5_bool_binop_done;
+  }
+  __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_prevAtomtype, __pyx_v_atomtype, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 158, __pyx_L1_error)
+  if (__pyx_t_4) {
+    __pyx_t_4 = (__Pyx_PyUnicode_Equals(__pyx_v_atomtype, __pyx_n_u_HETATM, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 158, __pyx_L1_error)
+  }
+  __pyx_t_5 = (__pyx_t_4 != 0);
+  __pyx_t_3 = __pyx_t_5;
+  __pyx_L5_bool_binop_done:;
+  if (__pyx_t_3) {
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":159
+ *     atomtype = line[0:6]
+ *     if prevres != res and (("HOH" == resname or "HOH" == prevresname) or (atomtype != prevAtomtype) or (prevAtomtype == atomtype == "HETATM")):
+ *         return True             # <<<<<<<<<<<<<<
+ *     return False
+ * 
+ */
+    __pyx_r = 1;
+    goto __pyx_L0;
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":158
+ *     prevAtomtype = prevLine[0:6]
+ *     atomtype = line[0:6]
+ *     if prevres != res and (("HOH" == resname or "HOH" == prevresname) or (atomtype != prevAtomtype) or (prevAtomtype == atomtype == "HETATM")):             # <<<<<<<<<<<<<<
+ *         return True
+ *     return False
+ */
+  }
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":160
+ *     if prevres != res and (("HOH" == resname or "HOH" == prevresname) or (atomtype != prevAtomtype) or (prevAtomtype == atomtype == "HETATM")):
+ *         return True
+ *     return False             # <<<<<<<<<<<<<<
+ * 
+ * REGEX_PATTERN = re.compile("[0-9]|\+|\-")
+ */
+  __pyx_r = 0;
+  goto __pyx_L0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":148
+ * @cython.wraparound(False)
+ * @cython.nonecheck(False)
+ * cdef bint check_add_TER(basestring prevLine, basestring line):             # <<<<<<<<<<<<<<
+ *     cdef basestring prevres = prevLine[22:26], res = line[22:26]
+ *     cdef int prevres_num = int(prevres), resnum = int(res)
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_WriteUnraisable("pele_platform.AdaptivePELE.atomset.atomset.check_add_TER", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_prevres);
+  __Pyx_XDECREF(__pyx_v_res);
+  __Pyx_XDECREF(__pyx_v_resname);
+  __Pyx_XDECREF(__pyx_v_prevresname);
+  __Pyx_XDECREF(__pyx_v_prevAtomtype);
+  __Pyx_XDECREF(__pyx_v_atomtype);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":234
  *                     u"PB": 207.2,
  *                     u"U": 238.03}
  *     def __init__(self, basestring atomContent=u""):             # <<<<<<<<<<<<<<
@@ -4574,7 +4861,7 @@ static int __pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom_1__in
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 217, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 234, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -4588,13 +4875,13 @@ static int __pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom_1__in
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 217, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 234, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.Atom.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomContent), (&PyBaseString_Type), 1, "atomContent", 1))) __PYX_ERR(0, 217, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomContent), (&PyBaseString_Type), 1, "atomContent", 1))) __PYX_ERR(0, 234, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___init__(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_v_self), __pyx_v_atomContent);
 
   /* function exit code */
@@ -4625,7 +4912,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   PyObject *__pyx_t_14 = NULL;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":224
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":241
  *         """
  *         # Force string attributes to be unicode strings
  *         self.atomSerial = u""             # <<<<<<<<<<<<<<
@@ -4638,7 +4925,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   __Pyx_DECREF(__pyx_v_self->atomSerial);
   __pyx_v_self->atomSerial = ((PyObject*)__pyx_kp_u_);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":225
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":242
  *         # Force string attributes to be unicode strings
  *         self.atomSerial = u""
  *         self.name = u""             # <<<<<<<<<<<<<<
@@ -4651,7 +4938,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   __Pyx_DECREF(__pyx_v_self->name);
   __pyx_v_self->name = ((PyObject*)__pyx_kp_u_);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":226
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":243
  *         self.atomSerial = u""
  *         self.name = u""
  *         self.resname = u""             # <<<<<<<<<<<<<<
@@ -4664,7 +4951,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   __Pyx_DECREF(__pyx_v_self->resname);
   __pyx_v_self->resname = ((PyObject*)__pyx_kp_u_);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":227
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":244
  *         self.name = u""
  *         self.resname = u""
  *         self.resChain = u""             # <<<<<<<<<<<<<<
@@ -4677,7 +4964,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   __Pyx_DECREF(__pyx_v_self->resChain);
   __pyx_v_self->resChain = ((PyObject*)__pyx_kp_u_);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":228
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":245
  *         self.resname = u""
  *         self.resChain = u""
  *         self.resnum = u""             # <<<<<<<<<<<<<<
@@ -4690,7 +4977,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   __Pyx_DECREF(__pyx_v_self->resnum);
   __pyx_v_self->resnum = ((PyObject*)__pyx_kp_u_);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":229
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":246
  *         self.resChain = u""
  *         self.resnum = u""
  *         self.type = u""             # <<<<<<<<<<<<<<
@@ -4703,14 +4990,14 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   __Pyx_DECREF(__pyx_v_self->type);
   __pyx_v_self->type = ((PyObject*)__pyx_kp_u_);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":231
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":248
  *         self.type = u""
  *         # atomContent = atomContent.split()
  *         if len(atomContent) > 6 and (atomContent[:4] == u'ATOM' or atomContent[:6] == u'HETATM'):             # <<<<<<<<<<<<<<
  *             self.atomSerial = atomContent[6:11].strip()
  *             self.name = atomContent[12:16].strip()
  */
-  __pyx_t_2 = PyObject_Length(__pyx_v_atomContent); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_2 = PyObject_Length(__pyx_v_atomContent); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 248, __pyx_L1_error)
   __pyx_t_3 = ((__pyx_t_2 > 6) != 0);
   if (__pyx_t_3) {
   } else {
@@ -4719,11 +5006,11 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   }
   if (unlikely(__pyx_v_atomContent == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 231, __pyx_L1_error)
+    __PYX_ERR(0, 248, __pyx_L1_error)
   }
-  __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 0, 4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 0, 4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_n_u_ATOM, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_3 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_n_u_ATOM, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_5 = (__pyx_t_3 != 0);
   if (!__pyx_t_5) {
@@ -4733,18 +5020,18 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   }
   if (unlikely(__pyx_v_atomContent == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 231, __pyx_L1_error)
+    __PYX_ERR(0, 248, __pyx_L1_error)
   }
-  __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 0, 6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 0, 6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_n_u_HETATM, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 231, __pyx_L1_error)
+  __pyx_t_5 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_n_u_HETATM, Py_EQ)); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 248, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_3 = (__pyx_t_5 != 0);
   __pyx_t_1 = __pyx_t_3;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":232
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":249
  *         # atomContent = atomContent.split()
  *         if len(atomContent) > 6 and (atomContent[:4] == u'ATOM' or atomContent[:6] == u'HETATM'):
  *             self.atomSerial = atomContent[6:11].strip()             # <<<<<<<<<<<<<<
@@ -4753,11 +5040,11 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
     if (unlikely(__pyx_v_atomContent == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 232, __pyx_L1_error)
+      __PYX_ERR(0, 249, __pyx_L1_error)
     }
-    __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomContent, 6, 11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomContent, 6, 11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 232, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -4772,17 +5059,17 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     }
     __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 232, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 232, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 249, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_4);
     __Pyx_GOTREF(__pyx_v_self->atomSerial);
     __Pyx_DECREF(__pyx_v_self->atomSerial);
     __pyx_v_self->atomSerial = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":233
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":250
  *         if len(atomContent) > 6 and (atomContent[:4] == u'ATOM' or atomContent[:6] == u'HETATM'):
  *             self.atomSerial = atomContent[6:11].strip()
  *             self.name = atomContent[12:16].strip()             # <<<<<<<<<<<<<<
@@ -4791,11 +5078,11 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
     if (unlikely(__pyx_v_atomContent == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 233, __pyx_L1_error)
+      __PYX_ERR(0, 250, __pyx_L1_error)
     }
-    __pyx_t_7 = PySequence_GetSlice(__pyx_v_atomContent, 12, 16); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 233, __pyx_L1_error)
+    __pyx_t_7 = PySequence_GetSlice(__pyx_v_atomContent, 12, 16); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 250, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 233, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 250, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_7 = NULL;
@@ -4810,17 +5097,17 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     }
     __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 233, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 250, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 233, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 250, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_4);
     __Pyx_GOTREF(__pyx_v_self->name);
     __Pyx_DECREF(__pyx_v_self->name);
     __pyx_v_self->name = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":234
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":251
  *             self.atomSerial = atomContent[6:11].strip()
  *             self.name = atomContent[12:16].strip()
  *             self.resname = atomContent[17:20].strip()             # <<<<<<<<<<<<<<
@@ -4829,11 +5116,11 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
     if (unlikely(__pyx_v_atomContent == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 234, __pyx_L1_error)
+      __PYX_ERR(0, 251, __pyx_L1_error)
     }
-    __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomContent, 17, 20); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomContent, 17, 20); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -4848,33 +5135,33 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     }
     __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_7, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_7);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 234, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 251, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_4);
     __Pyx_GOTREF(__pyx_v_self->resname);
     __Pyx_DECREF(__pyx_v_self->resname);
     __pyx_v_self->resname = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":235
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":252
  *             self.name = atomContent[12:16].strip()
  *             self.resname = atomContent[17:20].strip()
  *             self.resChain = atomContent[21]             # <<<<<<<<<<<<<<
  *             self.resnum = atomContent[22:26].strip()
  *             self.x = float(atomContent[30:38])
  */
-    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_atomContent, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_atomContent, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 252, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 235, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 252, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_4);
     __Pyx_GOTREF(__pyx_v_self->resChain);
     __Pyx_DECREF(__pyx_v_self->resChain);
     __pyx_v_self->resChain = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":236
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":253
  *             self.resname = atomContent[17:20].strip()
  *             self.resChain = atomContent[21]
  *             self.resnum = atomContent[22:26].strip()             # <<<<<<<<<<<<<<
@@ -4883,11 +5170,11 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
     if (unlikely(__pyx_v_atomContent == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 236, __pyx_L1_error)
+      __PYX_ERR(0, 253, __pyx_L1_error)
     }
-    __pyx_t_7 = PySequence_GetSlice(__pyx_v_atomContent, 22, 26); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 236, __pyx_L1_error)
+    __pyx_t_7 = PySequence_GetSlice(__pyx_v_atomContent, 22, 26); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 253, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 236, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 253, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_7 = NULL;
@@ -4902,17 +5189,17 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     }
     __pyx_t_4 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 236, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 253, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 236, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 253, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_4);
     __Pyx_GOTREF(__pyx_v_self->resnum);
     __Pyx_DECREF(__pyx_v_self->resnum);
     __pyx_v_self->resnum = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":237
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":254
  *             self.resChain = atomContent[21]
  *             self.resnum = atomContent[22:26].strip()
  *             self.x = float(atomContent[30:38])             # <<<<<<<<<<<<<<
@@ -4921,15 +5208,15 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
     if (unlikely(__pyx_v_atomContent == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 237, __pyx_L1_error)
+      __PYX_ERR(0, 254, __pyx_L1_error)
     }
-    __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 30, 38); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 30, 38); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = __Pyx_PyObject_AsDouble(__pyx_t_4); if (unlikely(__pyx_t_8 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_AsDouble(__pyx_t_4); if (unlikely(__pyx_t_8 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 254, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_self->x = __pyx_t_8;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":238
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":255
  *             self.resnum = atomContent[22:26].strip()
  *             self.x = float(atomContent[30:38])
  *             self.y = float(atomContent[38:46])             # <<<<<<<<<<<<<<
@@ -4938,15 +5225,15 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
     if (unlikely(__pyx_v_atomContent == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 238, __pyx_L1_error)
+      __PYX_ERR(0, 255, __pyx_L1_error)
     }
-    __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 38, 46); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 238, __pyx_L1_error)
+    __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 38, 46); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 255, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = __Pyx_PyObject_AsDouble(__pyx_t_4); if (unlikely(__pyx_t_8 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 238, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_AsDouble(__pyx_t_4); if (unlikely(__pyx_t_8 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 255, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_self->y = __pyx_t_8;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":239
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":256
  *             self.x = float(atomContent[30:38])
  *             self.y = float(atomContent[38:46])
  *             self.z = float(atomContent[46:54])             # <<<<<<<<<<<<<<
@@ -4955,33 +5242,33 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
     if (unlikely(__pyx_v_atomContent == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 239, __pyx_L1_error)
+      __PYX_ERR(0, 256, __pyx_L1_error)
     }
-    __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 46, 54); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomContent, 46, 54); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 256, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_8 = __Pyx_PyObject_AsDouble(__pyx_t_4); if (unlikely(__pyx_t_8 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 239, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_AsDouble(__pyx_t_4); if (unlikely(__pyx_t_8 == ((double)((double)-1)) && PyErr_Occurred())) __PYX_ERR(0, 256, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_self->z = __pyx_t_8;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":241
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":258
  *             self.z = float(atomContent[46:54])
  * 
  *             self.type = re.sub(self._chargePattern, u"", atomContent[76:80]).strip().upper()             # <<<<<<<<<<<<<<
  *             if self.type in self._ATOM_WEIGHTS:
  *                 self.mass = self._ATOM_WEIGHTS[self.type]
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_re); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 241, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_9, __pyx_n_s_re); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_sub); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 241, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_9, __pyx_n_s_sub); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_chargePattern); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 241, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_chargePattern); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     if (unlikely(__pyx_v_atomContent == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 241, __pyx_L1_error)
+      __PYX_ERR(0, 258, __pyx_L1_error)
     }
-    __pyx_t_11 = PySequence_GetSlice(__pyx_v_atomContent, 76, 80); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 241, __pyx_L1_error)
+    __pyx_t_11 = PySequence_GetSlice(__pyx_v_atomContent, 76, 80); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __pyx_t_12 = NULL;
     __pyx_t_13 = 0;
@@ -4998,7 +5285,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_10)) {
       PyObject *__pyx_temp[4] = {__pyx_t_12, __pyx_t_9, __pyx_kp_u_, __pyx_t_11};
-      __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_13, 3+__pyx_t_13); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 241, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_13, 3+__pyx_t_13); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 258, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -5008,7 +5295,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_10)) {
       PyObject *__pyx_temp[4] = {__pyx_t_12, __pyx_t_9, __pyx_kp_u_, __pyx_t_11};
-      __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_13, 3+__pyx_t_13); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 241, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyCFunction_FastCall(__pyx_t_10, __pyx_temp+1-__pyx_t_13, 3+__pyx_t_13); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 258, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
@@ -5016,7 +5303,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     } else
     #endif
     {
-      __pyx_t_14 = PyTuple_New(3+__pyx_t_13); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 241, __pyx_L1_error)
+      __pyx_t_14 = PyTuple_New(3+__pyx_t_13); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 258, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_14);
       if (__pyx_t_12) {
         __Pyx_GIVEREF(__pyx_t_12); PyTuple_SET_ITEM(__pyx_t_14, 0, __pyx_t_12); __pyx_t_12 = NULL;
@@ -5030,12 +5317,12 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
       PyTuple_SET_ITEM(__pyx_t_14, 2+__pyx_t_13, __pyx_t_11);
       __pyx_t_9 = 0;
       __pyx_t_11 = 0;
-      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_14, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 241, __pyx_L1_error)
+      __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_10, __pyx_t_14, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 258, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
     }
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_strip); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 241, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_7, __pyx_n_s_strip); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_7 = NULL;
@@ -5050,10 +5337,10 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     }
     __pyx_t_6 = (__pyx_t_7) ? __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_7) : __Pyx_PyObject_CallNoArg(__pyx_t_10);
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 241, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_upper); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 241, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_upper); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -5068,47 +5355,47 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     }
     __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_10, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_10);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 241, __pyx_L1_error)
+    if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 241, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 258, __pyx_L1_error)
     __Pyx_GIVEREF(__pyx_t_4);
     __Pyx_GOTREF(__pyx_v_self->type);
     __Pyx_DECREF(__pyx_v_self->type);
     __pyx_v_self->type = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":242
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":259
  * 
  *             self.type = re.sub(self._chargePattern, u"", atomContent[76:80]).strip().upper()
  *             if self.type in self._ATOM_WEIGHTS:             # <<<<<<<<<<<<<<
  *                 self.mass = self._ATOM_WEIGHTS[self.type]
  *             else:
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 242, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 259, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_self->type, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 242, __pyx_L1_error)
+    __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_self->type, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 259, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_3 = (__pyx_t_1 != 0);
     if (__pyx_t_3) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":243
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":260
  *             self.type = re.sub(self._chargePattern, u"", atomContent[76:80]).strip().upper()
  *             if self.type in self._ATOM_WEIGHTS:
  *                 self.mass = self._ATOM_WEIGHTS[self.type]             # <<<<<<<<<<<<<<
  *             else:
  *                 print("WARNING!: Information about atom type not available, trying to guess from its name, mass properties might be wrong.")
  */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 243, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_10 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_v_self->type); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 243, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_v_self->type); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 260, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_10); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 243, __pyx_L1_error)
+      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_10); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 260, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __pyx_v_self->mass = __pyx_t_8;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":242
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":259
  * 
  *             self.type = re.sub(self._chargePattern, u"", atomContent[76:80]).strip().upper()
  *             if self.type in self._ATOM_WEIGHTS:             # <<<<<<<<<<<<<<
@@ -5118,7 +5405,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
       goto __pyx_L7;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":245
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":262
  *                 self.mass = self._ATOM_WEIGHTS[self.type]
  *             else:
  *                 print("WARNING!: Information about atom type not available, trying to guess from its name, mass properties might be wrong.")             # <<<<<<<<<<<<<<
@@ -5126,37 +5413,37 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  * 
  */
     /*else*/ {
-      if (__Pyx_PrintOne(0, __pyx_kp_u_WARNING_Information_about_atom_t) < 0) __PYX_ERR(0, 245, __pyx_L1_error)
+      if (__Pyx_PrintOne(0, __pyx_kp_u_WARNING_Information_about_atom_t) < 0) __PYX_ERR(0, 262, __pyx_L1_error)
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":246
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":263
  *             else:
  *                 print("WARNING!: Information about atom type not available, trying to guess from its name, mass properties might be wrong.")
  *                 self.mass = self._ATOM_WEIGHTS[self.name[0]]             # <<<<<<<<<<<<<<
  * 
  *             if atomContent.startswith(u'ATOM'):
  */
-      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 246, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 263, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
-      __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_self->name, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_self->name, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_10, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 246, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_10, __pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 263, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 246, __pyx_L1_error)
+      __pyx_t_8 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_8 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 263, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_v_self->mass = __pyx_t_8;
     }
     __pyx_L7:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":248
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":265
  *                 self.mass = self._ATOM_WEIGHTS[self.name[0]]
  * 
  *             if atomContent.startswith(u'ATOM'):             # <<<<<<<<<<<<<<
  *                 self.protein = True
  *             else:
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomContent, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomContent, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 265, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_10 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -5170,14 +5457,14 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     }
     __pyx_t_6 = (__pyx_t_10) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_10, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_ATOM);
     __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 248, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 265, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 248, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 265, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_3) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":249
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":266
  * 
  *             if atomContent.startswith(u'ATOM'):
  *                 self.protein = True             # <<<<<<<<<<<<<<
@@ -5186,7 +5473,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
       __pyx_v_self->protein = 1;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":248
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":265
  *                 self.mass = self._ATOM_WEIGHTS[self.name[0]]
  * 
  *             if atomContent.startswith(u'ATOM'):             # <<<<<<<<<<<<<<
@@ -5196,7 +5483,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
       goto __pyx_L8;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":251
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":268
  *                 self.protein = True
  *             else:
  *                 self.protein = False             # <<<<<<<<<<<<<<
@@ -5208,22 +5495,22 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     }
     __pyx_L8:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":253
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":270
  *                 self.protein = False
  * 
  *             self.id = self.atomSerial + u":" + self.name + u":" + self.resname             # <<<<<<<<<<<<<<
  *             # self.id = self.atomSerial
  * 
  */
-    __pyx_t_6 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_self->atomSerial, __pyx_kp_u__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_self->atomSerial, __pyx_kp_u__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 270, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_4 = __Pyx_PyUnicode_ConcatSafe(__pyx_t_6, __pyx_v_self->name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyUnicode_ConcatSafe(__pyx_t_6, __pyx_v_self->name); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_t_4, __pyx_kp_u__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_t_4, __pyx_kp_u__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 270, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyUnicode_ConcatSafe(__pyx_t_6, __pyx_v_self->resname); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyUnicode_ConcatSafe(__pyx_t_6, __pyx_v_self->resname); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GIVEREF(__pyx_t_4);
@@ -5232,7 +5519,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
     __pyx_v_self->id = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":231
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":248
  *         self.type = u""
  *         # atomContent = atomContent.split()
  *         if len(atomContent) > 6 and (atomContent[:4] == u'ATOM' or atomContent[:6] == u'HETATM'):             # <<<<<<<<<<<<<<
@@ -5241,7 +5528,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
  */
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":217
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":234
  *                     u"PB": 207.2,
  *                     u"U": 238.03}
  *     def __init__(self, basestring atomContent=u""):             # <<<<<<<<<<<<<<
@@ -5268,7 +5555,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___ini
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":256
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":273
  *             # self.id = self.atomSerial
  * 
  *     def __getstate__(self):             # <<<<<<<<<<<<<<
@@ -5297,70 +5584,70 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__getstate__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":258
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":275
  *     def __getstate__(self):
  *         # Copy the object's state from
  *         state = {u"atomSerial": self.atomSerial, u"name": self.name, u"x": self.x,             # <<<<<<<<<<<<<<
  *                  u"y": self.y, u"z": self.z, u"mass": self.mass, u"type": self.type,
  *                  u"resname": self.resname, u"resChain": self.resChain,
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(12); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_atomSerial, __pyx_v_self->atomSerial) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_name, __pyx_v_self->name) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_atomSerial, __pyx_v_self->atomSerial) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_name, __pyx_v_self->name) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_x, __pyx_t_2) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_x, __pyx_t_2) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":259
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":276
  *         # Copy the object's state from
  *         state = {u"atomSerial": self.atomSerial, u"name": self.name, u"x": self.x,
  *                  u"y": self.y, u"z": self.z, u"mass": self.mass, u"type": self.type,             # <<<<<<<<<<<<<<
  *                  u"resname": self.resname, u"resChain": self.resChain,
  *                  u"resnum": self.resnum, u"protein": self.protein, u"id": self.id}
  */
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_y, __pyx_t_2) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_y, __pyx_t_2) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->z); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->z); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_z, __pyx_t_2) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_z, __pyx_t_2) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->mass); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->mass); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_mass, __pyx_t_2) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_mass, __pyx_t_2) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_type, __pyx_v_self->type) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_type, __pyx_v_self->type) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":260
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":277
  *         state = {u"atomSerial": self.atomSerial, u"name": self.name, u"x": self.x,
  *                  u"y": self.y, u"z": self.z, u"mass": self.mass, u"type": self.type,
  *                  u"resname": self.resname, u"resChain": self.resChain,             # <<<<<<<<<<<<<<
  *                  u"resnum": self.resnum, u"protein": self.protein, u"id": self.id}
  *         return state
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_resname, __pyx_v_self->resname) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_resChain, __pyx_v_self->resChain) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_resname, __pyx_v_self->resname) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_resChain, __pyx_v_self->resChain) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":261
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":278
  *                  u"y": self.y, u"z": self.z, u"mass": self.mass, u"type": self.type,
  *                  u"resname": self.resname, u"resChain": self.resChain,
  *                  u"resnum": self.resnum, u"protein": self.protein, u"id": self.id}             # <<<<<<<<<<<<<<
  *         return state
  * 
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_resnum, __pyx_v_self->resnum) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_self->protein); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 261, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_resnum, __pyx_v_self->resnum) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_self->protein); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_protein, __pyx_t_2) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_protein, __pyx_t_2) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_id, __pyx_v_self->id) < 0) __PYX_ERR(0, 258, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_id, __pyx_v_self->id) < 0) __PYX_ERR(0, 275, __pyx_L1_error)
   __pyx_v_state = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":262
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":279
  *                  u"resname": self.resname, u"resChain": self.resChain,
  *                  u"resnum": self.resnum, u"protein": self.protein, u"id": self.id}
  *         return state             # <<<<<<<<<<<<<<
@@ -5372,7 +5659,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_r = __pyx_v_state;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":256
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":273
  *             # self.id = self.atomSerial
  * 
  *     def __getstate__(self):             # <<<<<<<<<<<<<<
@@ -5393,7 +5680,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":265
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":282
  * 
  * 
  *     def __setstate__(self, state):             # <<<<<<<<<<<<<<
@@ -5422,184 +5709,184 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   int __pyx_t_3;
   __Pyx_RefNannySetupContext("__setstate__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":267
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":284
  *     def __setstate__(self, state):
  *         # Restore instance attributes
  *         self.atomSerial = state[u'atomSerial']             # <<<<<<<<<<<<<<
  *         self.name = state[u'name']
  *         self.resname = state[u'resname']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_atomSerial); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 267, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_atomSerial); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 267, __pyx_L1_error)
+  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 284, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->atomSerial);
   __Pyx_DECREF(__pyx_v_self->atomSerial);
   __pyx_v_self->atomSerial = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":268
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":285
  *         # Restore instance attributes
  *         self.atomSerial = state[u'atomSerial']
  *         self.name = state[u'name']             # <<<<<<<<<<<<<<
  *         self.resname = state[u'resname']
  *         self.resnum = state[u'resnum']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 268, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 285, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 268, __pyx_L1_error)
+  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 285, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->name);
   __Pyx_DECREF(__pyx_v_self->name);
   __pyx_v_self->name = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":269
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":286
  *         self.atomSerial = state[u'atomSerial']
  *         self.name = state[u'name']
  *         self.resname = state[u'resname']             # <<<<<<<<<<<<<<
  *         self.resnum = state[u'resnum']
  *         self.resChain = state[u'resChain']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_resname); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_resname); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 269, __pyx_L1_error)
+  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 286, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->resname);
   __Pyx_DECREF(__pyx_v_self->resname);
   __pyx_v_self->resname = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":270
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":287
  *         self.name = state[u'name']
  *         self.resname = state[u'resname']
  *         self.resnum = state[u'resnum']             # <<<<<<<<<<<<<<
  *         self.resChain = state[u'resChain']
  *         self.type = state[u'type']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_resnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 270, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_resnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 270, __pyx_L1_error)
+  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 287, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->resnum);
   __Pyx_DECREF(__pyx_v_self->resnum);
   __pyx_v_self->resnum = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":271
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":288
  *         self.resname = state[u'resname']
  *         self.resnum = state[u'resnum']
  *         self.resChain = state[u'resChain']             # <<<<<<<<<<<<<<
  *         self.type = state[u'type']
  *         self.id = state[u'id']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_resChain); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_resChain); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 271, __pyx_L1_error)
+  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 288, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->resChain);
   __Pyx_DECREF(__pyx_v_self->resChain);
   __pyx_v_self->resChain = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":272
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":289
  *         self.resnum = state[u'resnum']
  *         self.resChain = state[u'resChain']
  *         self.type = state[u'type']             # <<<<<<<<<<<<<<
  *         self.id = state[u'id']
  *         self.mass = state[u'mass']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 272, __pyx_L1_error)
+  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 289, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->type);
   __Pyx_DECREF(__pyx_v_self->type);
   __pyx_v_self->type = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":273
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":290
  *         self.resChain = state[u'resChain']
  *         self.type = state[u'type']
  *         self.id = state[u'id']             # <<<<<<<<<<<<<<
  *         self.mass = state[u'mass']
  *         self.x = state[u'x']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_id); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 273, __pyx_L1_error)
+  if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->id);
   __Pyx_DECREF(__pyx_v_self->id);
   __pyx_v_self->id = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":274
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":291
  *         self.type = state[u'type']
  *         self.id = state[u'id']
  *         self.mass = state[u'mass']             # <<<<<<<<<<<<<<
  *         self.x = state[u'x']
  *         self.y = state[u'y']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_mass); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_mass); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->mass = __pyx_t_2;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":275
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":292
  *         self.id = state[u'id']
  *         self.mass = state[u'mass']
  *         self.x = state[u'x']             # <<<<<<<<<<<<<<
  *         self.y = state[u'y']
  *         self.z = state[u'z']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 275, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 292, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->x = __pyx_t_2;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":276
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":293
  *         self.mass = state[u'mass']
  *         self.x = state[u'x']
  *         self.y = state[u'y']             # <<<<<<<<<<<<<<
  *         self.z = state[u'z']
  *         self.protein = state[u'protein']
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 276, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 276, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 293, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->y = __pyx_t_2;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":277
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":294
  *         self.x = state[u'x']
  *         self.y = state[u'y']
  *         self.z = state[u'z']             # <<<<<<<<<<<<<<
  *         self.protein = state[u'protein']
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_z); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_z); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 294, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_2 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_2 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 294, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->z = __pyx_t_2;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":278
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":295
  *         self.y = state[u'y']
  *         self.z = state[u'z']
  *         self.protein = state[u'protein']             # <<<<<<<<<<<<<<
  * 
  *     def equivalentResname(self, resname):
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_protein); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_protein); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 295, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->protein = __pyx_t_3;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":265
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":282
  * 
  * 
  *     def __setstate__(self, state):             # <<<<<<<<<<<<<<
@@ -5620,7 +5907,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":280
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":297
  *         self.protein = state[u'protein']
  * 
  *     def equivalentResname(self, resname):             # <<<<<<<<<<<<<<
@@ -5649,7 +5936,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("equivalentResname", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":281
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":298
  * 
  *     def equivalentResname(self, resname):
  *         return _AMINO_ACID_CODES[self.resname] == _AMINO_ACID_CODES[resname]             # <<<<<<<<<<<<<<
@@ -5657,24 +5944,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *     def set_properties(self, bint isProtein, basestring atomSerial, basestring atomName, basestring resName, basestring resNum, float x, float y, float z, basestring element, basestring resChain):
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AMINO_ACID_CODES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AMINO_ACID_CODES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_v_self->resname); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_v_self->resname); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AMINO_ACID_CODES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_AMINO_ACID_CODES); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_v_resname); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_v_resname); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_1 = PyObject_RichCompare(__pyx_t_2, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":280
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":297
  *         self.protein = state[u'protein']
  * 
  *     def equivalentResname(self, resname):             # <<<<<<<<<<<<<<
@@ -5695,7 +5982,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":283
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":300
  *         return _AMINO_ACID_CODES[self.resname] == _AMINO_ACID_CODES[resname]
  * 
  *     def set_properties(self, bint isProtein, basestring atomSerial, basestring atomName, basestring resName, basestring resNum, float x, float y, float z, basestring element, basestring resChain):             # <<<<<<<<<<<<<<
@@ -5758,59 +6045,59 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_atomSerial)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 1); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 1); __PYX_ERR(0, 300, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_atomName)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 2); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 2); __PYX_ERR(0, 300, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
         if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_resName)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 3); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 3); __PYX_ERR(0, 300, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
         if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_resNum)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 4); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 4); __PYX_ERR(0, 300, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  5:
         if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_x)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 5); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 5); __PYX_ERR(0, 300, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  6:
         if (likely((values[6] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_y)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 6); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 6); __PYX_ERR(0, 300, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  7:
         if (likely((values[7] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_z)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 7); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 7); __PYX_ERR(0, 300, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  8:
         if (likely((values[8] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_element)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 8); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 8); __PYX_ERR(0, 300, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  9:
         if (likely((values[9] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_resChain)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 9); __PYX_ERR(0, 283, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, 9); __PYX_ERR(0, 300, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_properties") < 0)) __PYX_ERR(0, 283, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_properties") < 0)) __PYX_ERR(0, 300, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 10) {
       goto __pyx_L5_argtuple_error;
@@ -5826,31 +6113,31 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
       values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
     }
-    __pyx_v_isProtein = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_isProtein == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 283, __pyx_L3_error)
+    __pyx_v_isProtein = __Pyx_PyObject_IsTrue(values[0]); if (unlikely((__pyx_v_isProtein == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L3_error)
     __pyx_v_atomSerial = ((PyObject*)values[1]);
     __pyx_v_atomName = ((PyObject*)values[2]);
     __pyx_v_resName = ((PyObject*)values[3]);
     __pyx_v_resNum = ((PyObject*)values[4]);
-    __pyx_v_x = __pyx_PyFloat_AsFloat(values[5]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 283, __pyx_L3_error)
-    __pyx_v_y = __pyx_PyFloat_AsFloat(values[6]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 283, __pyx_L3_error)
-    __pyx_v_z = __pyx_PyFloat_AsFloat(values[7]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 283, __pyx_L3_error)
+    __pyx_v_x = __pyx_PyFloat_AsFloat(values[5]); if (unlikely((__pyx_v_x == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_y = __pyx_PyFloat_AsFloat(values[6]); if (unlikely((__pyx_v_y == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L3_error)
+    __pyx_v_z = __pyx_PyFloat_AsFloat(values[7]); if (unlikely((__pyx_v_z == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 300, __pyx_L3_error)
     __pyx_v_element = ((PyObject*)values[8]);
     __pyx_v_resChain = ((PyObject*)values[9]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 283, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_properties", 1, 10, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 300, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.Atom.set_properties", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomSerial), (&PyBaseString_Type), 1, "atomSerial", 1))) __PYX_ERR(0, 283, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomName), (&PyBaseString_Type), 1, "atomName", 1))) __PYX_ERR(0, 283, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resName), (&PyBaseString_Type), 1, "resName", 1))) __PYX_ERR(0, 283, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resNum), (&PyBaseString_Type), 1, "resNum", 1))) __PYX_ERR(0, 283, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_element), (&PyBaseString_Type), 1, "element", 1))) __PYX_ERR(0, 283, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resChain), (&PyBaseString_Type), 1, "resChain", 1))) __PYX_ERR(0, 283, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomSerial), (&PyBaseString_Type), 1, "atomSerial", 1))) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomName), (&PyBaseString_Type), 1, "atomName", 1))) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resName), (&PyBaseString_Type), 1, "resName", 1))) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resNum), (&PyBaseString_Type), 1, "resNum", 1))) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_element), (&PyBaseString_Type), 1, "element", 1))) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resChain), (&PyBaseString_Type), 1, "resChain", 1))) __PYX_ERR(0, 300, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom_8set_properties(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_v_self), __pyx_v_isProtein, __pyx_v_atomSerial, __pyx_v_atomName, __pyx_v_resName, __pyx_v_resNum, __pyx_v_x, __pyx_v_y, __pyx_v_z, __pyx_v_element, __pyx_v_resChain);
 
   /* function exit code */
@@ -5873,7 +6160,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("set_properties", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":284
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":301
  * 
  *     def set_properties(self, bint isProtein, basestring atomSerial, basestring atomName, basestring resName, basestring resNum, float x, float y, float z, basestring element, basestring resChain):
  *         self.atomSerial = atomSerial             # <<<<<<<<<<<<<<
@@ -5886,7 +6173,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_DECREF(__pyx_v_self->atomSerial);
   __pyx_v_self->atomSerial = __pyx_v_atomSerial;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":285
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":302
  *     def set_properties(self, bint isProtein, basestring atomSerial, basestring atomName, basestring resName, basestring resNum, float x, float y, float z, basestring element, basestring resChain):
  *         self.atomSerial = atomSerial
  *         self.name = atomName             # <<<<<<<<<<<<<<
@@ -5899,7 +6186,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_DECREF(__pyx_v_self->name);
   __pyx_v_self->name = __pyx_v_atomName;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":286
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":303
  *         self.atomSerial = atomSerial
  *         self.name = atomName
  *         self.resname = resName             # <<<<<<<<<<<<<<
@@ -5912,7 +6199,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_DECREF(__pyx_v_self->resname);
   __pyx_v_self->resname = __pyx_v_resName;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":287
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":304
  *         self.name = atomName
  *         self.resname = resName
  *         self.resChain = resChain             # <<<<<<<<<<<<<<
@@ -5925,7 +6212,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_DECREF(__pyx_v_self->resChain);
   __pyx_v_self->resChain = __pyx_v_resChain;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":288
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":305
  *         self.resname = resName
  *         self.resChain = resChain
  *         self.resnum = resNum             # <<<<<<<<<<<<<<
@@ -5938,7 +6225,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_DECREF(__pyx_v_self->resnum);
   __pyx_v_self->resnum = __pyx_v_resNum;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":289
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":306
  *         self.resChain = resChain
  *         self.resnum = resNum
  *         self.x = x             # <<<<<<<<<<<<<<
@@ -5947,7 +6234,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
   __pyx_v_self->x = __pyx_v_x;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":290
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":307
  *         self.resnum = resNum
  *         self.x = x
  *         self.y = y             # <<<<<<<<<<<<<<
@@ -5956,7 +6243,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
   __pyx_v_self->y = __pyx_v_y;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":291
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":308
  *         self.x = x
  *         self.y = y
  *         self.z = z             # <<<<<<<<<<<<<<
@@ -5965,7 +6252,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
   __pyx_v_self->z = __pyx_v_z;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":293
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":310
  *         self.z = z
  * 
  *         self.type = element             # <<<<<<<<<<<<<<
@@ -5978,37 +6265,37 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_DECREF(__pyx_v_self->type);
   __pyx_v_self->type = __pyx_v_element;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":294
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":311
  * 
  *         self.type = element
  *         if self.type in self._ATOM_WEIGHTS:             # <<<<<<<<<<<<<<
  *             self.mass = self._ATOM_WEIGHTS[self.type]
  *         else:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 294, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 311, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_v_self->type, __pyx_t_1, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 294, __pyx_L1_error)
+  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_v_self->type, __pyx_t_1, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 311, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":295
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":312
  *         self.type = element
  *         if self.type in self._ATOM_WEIGHTS:
  *             self.mass = self._ATOM_WEIGHTS[self.type]             # <<<<<<<<<<<<<<
  *         else:
  *             print("WARNING!: Information about atom type not available, trying to guess from its name, mass properties might be wrong.")
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 295, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 312, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_v_self->type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 295, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_1, __pyx_v_self->type); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 312, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_4); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 295, __pyx_L1_error)
+    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_4); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 312, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_self->mass = __pyx_t_5;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":294
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":311
  * 
  *         self.type = element
  *         if self.type in self._ATOM_WEIGHTS:             # <<<<<<<<<<<<<<
@@ -6018,7 +6305,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     goto __pyx_L3;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":297
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":314
  *             self.mass = self._ATOM_WEIGHTS[self.type]
  *         else:
  *             print("WARNING!: Information about atom type not available, trying to guess from its name, mass properties might be wrong.")             # <<<<<<<<<<<<<<
@@ -6026,30 +6313,30 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  * 
  */
   /*else*/ {
-    if (__Pyx_PrintOne(0, __pyx_kp_u_WARNING_Information_about_atom_t) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
+    if (__Pyx_PrintOne(0, __pyx_kp_u_WARNING_Information_about_atom_t) < 0) __PYX_ERR(0, 314, __pyx_L1_error)
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":298
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":315
  *         else:
  *             print("WARNING!: Information about atom type not available, trying to guess from its name, mass properties might be wrong.")
  *             self.mass = self._ATOM_WEIGHTS[self.name[0]]             # <<<<<<<<<<<<<<
  * 
  *         self.protein = isProtein
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_ATOM_WEIGHTS); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 315, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_self->name, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_self->name, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 315, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 315, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 298, __pyx_L1_error)
+    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 315, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_v_self->mass = __pyx_t_5;
   }
   __pyx_L3:;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":300
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":317
  *             self.mass = self._ATOM_WEIGHTS[self.name[0]]
  * 
  *         self.protein = isProtein             # <<<<<<<<<<<<<<
@@ -6058,22 +6345,22 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
   __pyx_v_self->protein = __pyx_v_isProtein;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":302
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":319
  *         self.protein = isProtein
  * 
  *         self.id = self.atomSerial + u":" + self.name + u":" + self.resname             # <<<<<<<<<<<<<<
  * 
  *     def isHeavyAtom(self):
  */
-  __pyx_t_6 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_self->atomSerial, __pyx_kp_u__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyUnicode_ConcatSafe(__pyx_v_self->atomSerial, __pyx_kp_u__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 319, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_1 = __Pyx_PyUnicode_ConcatSafe(__pyx_t_6, __pyx_v_self->name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyUnicode_ConcatSafe(__pyx_t_6, __pyx_v_self->name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_kp_u__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_t_1, __pyx_kp_u__2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 319, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyUnicode_ConcatSafe(__pyx_t_6, __pyx_v_self->resname); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyUnicode_ConcatSafe(__pyx_t_6, __pyx_v_self->resname); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 319, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_GIVEREF(__pyx_t_1);
@@ -6082,7 +6369,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_v_self->id = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":283
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":300
  *         return _AMINO_ACID_CODES[self.resname] == _AMINO_ACID_CODES[resname]
  * 
  *     def set_properties(self, bint isProtein, basestring atomSerial, basestring atomName, basestring resName, basestring resNum, float x, float y, float z, basestring element, basestring resChain):             # <<<<<<<<<<<<<<
@@ -6105,7 +6392,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":304
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":321
  *         self.id = self.atomSerial + u":" + self.name + u":" + self.resname
  * 
  *     def isHeavyAtom(self):             # <<<<<<<<<<<<<<
@@ -6134,7 +6421,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isHeavyAtom", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":310
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":327
  *             :returns: bool -- True if Atom is heavy atom, false otherwise
  *        """
  *        return self.type != 'H'             # <<<<<<<<<<<<<<
@@ -6142,14 +6429,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *     def isProtein(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->type, __pyx_n_u_H, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 310, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 310, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->type, __pyx_n_u_H, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 327, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 327, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":304
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":321
  *         self.id = self.atomSerial + u":" + self.name + u":" + self.resname
  * 
  *     def isHeavyAtom(self):             # <<<<<<<<<<<<<<
@@ -6168,7 +6455,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":312
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":329
  *        return self.type != 'H'
  * 
  *     def isProtein(self):             # <<<<<<<<<<<<<<
@@ -6196,7 +6483,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("isProtein", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":318
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":335
  *             :returns: bool -- True if Atom is a protein atom, false otherwise
  *         """
  *         return self.protein             # <<<<<<<<<<<<<<
@@ -6204,13 +6491,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *     def isHeteroAtom(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->protein); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 318, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->protein); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 335, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":312
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":329
  *        return self.type != 'H'
  * 
  *     def isProtein(self):             # <<<<<<<<<<<<<<
@@ -6229,7 +6516,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":320
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":337
  *         return self.protein
  * 
  *     def isHeteroAtom(self):             # <<<<<<<<<<<<<<
@@ -6257,7 +6544,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("isHeteroAtom", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":326
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":343
  *             :returns: bool -- True if Atom is an hetero atom, false otherwise
  *         """
  *         return not self.protein             # <<<<<<<<<<<<<<
@@ -6265,13 +6552,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *     def printAtom(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong((!(__pyx_v_self->protein != 0))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 326, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong((!(__pyx_v_self->protein != 0))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 343, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":320
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":337
  *         return self.protein
  * 
  *     def isHeteroAtom(self):             # <<<<<<<<<<<<<<
@@ -6290,7 +6577,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":328
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":345
  *         return not self.protein
  * 
  *     def printAtom(self):             # <<<<<<<<<<<<<<
@@ -6322,22 +6609,22 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("printAtom", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":332
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":349
  *             Print Atom information
  *         """
  *         print self.atomSerial, self.name, self.resname, self.resChain, self.resnum, self.x, self.y, self.z, self.type, self.mass             # <<<<<<<<<<<<<<
  * 
  *     def __richcmp__(self, Atom atom2, int op):
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_self->x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->y); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_3 = PyFloat_FromDouble(__pyx_v_self->z); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->mass); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->mass); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyTuple_New(10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_INCREF(__pyx_v_self->atomSerial);
   __Pyx_GIVEREF(__pyx_v_self->atomSerial);
@@ -6369,10 +6656,10 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
   __pyx_t_4 = 0;
-  if (__Pyx_Print(0, __pyx_t_5, 1) < 0) __PYX_ERR(0, 332, __pyx_L1_error)
+  if (__Pyx_Print(0, __pyx_t_5, 1) < 0) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":328
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":345
  *         return not self.protein
  * 
  *     def printAtom(self):             # <<<<<<<<<<<<<<
@@ -6397,7 +6684,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":334
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":351
  *         print self.atomSerial, self.name, self.resname, self.resChain, self.resnum, self.x, self.y, self.z, self.type, self.mass
  * 
  *     def __richcmp__(self, Atom atom2, int op):             # <<<<<<<<<<<<<<
@@ -6411,7 +6698,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__richcmp__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atom2), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom, 1, "atom2", 0))) __PYX_ERR(0, 334, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atom2), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom, 1, "atom2", 0))) __PYX_ERR(0, 351, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom_18__richcmp__(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_v_self), ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_v_atom2), ((int)__pyx_v_op));
 
   /* function exit code */
@@ -6433,7 +6720,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__richcmp__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":335
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":352
  * 
  *     def __richcmp__(self, Atom atom2, int op):
  *         if op == 2:             # <<<<<<<<<<<<<<
@@ -6443,18 +6730,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   switch (__pyx_v_op) {
     case 2:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":337
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":354
  *         if op == 2:
  *             #equality
  *             if self.name != atom2.name:             # <<<<<<<<<<<<<<
  *                 return False
  *             if self.atomSerial != atom2.atomSerial:
  */
-    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->name, __pyx_v_atom2->name, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 337, __pyx_L1_error)
+    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->name, __pyx_v_atom2->name, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 354, __pyx_L1_error)
     __pyx_t_2 = (__pyx_t_1 != 0);
     if (__pyx_t_2) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":338
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":355
  *             #equality
  *             if self.name != atom2.name:
  *                 return False             # <<<<<<<<<<<<<<
@@ -6466,7 +6753,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       __pyx_r = Py_False;
       goto __pyx_L0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":337
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":354
  *         if op == 2:
  *             #equality
  *             if self.name != atom2.name:             # <<<<<<<<<<<<<<
@@ -6475,18 +6762,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":339
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":356
  *             if self.name != atom2.name:
  *                 return False
  *             if self.atomSerial != atom2.atomSerial:             # <<<<<<<<<<<<<<
  *                 return False
  *             if self.protein and atom2.protein:
  */
-    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->atomSerial, __pyx_v_atom2->atomSerial, Py_NE)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 339, __pyx_L1_error)
+    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->atomSerial, __pyx_v_atom2->atomSerial, Py_NE)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 356, __pyx_L1_error)
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":340
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":357
  *                 return False
  *             if self.atomSerial != atom2.atomSerial:
  *                 return False             # <<<<<<<<<<<<<<
@@ -6498,7 +6785,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       __pyx_r = Py_False;
       goto __pyx_L0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":339
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":356
  *             if self.name != atom2.name:
  *                 return False
  *             if self.atomSerial != atom2.atomSerial:             # <<<<<<<<<<<<<<
@@ -6507,7 +6794,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":341
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":358
  *             if self.atomSerial != atom2.atomSerial:
  *                 return False
  *             if self.protein and atom2.protein:             # <<<<<<<<<<<<<<
@@ -6525,14 +6812,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":342
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":359
  *                 return False
  *             if self.protein and atom2.protein:
  *                 if not self.equivalentResname(atom2.resname):             # <<<<<<<<<<<<<<
  *                     return False
  *             else:
  */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_equivalentResname); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 342, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_equivalentResname); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 359, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_5 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -6546,15 +6833,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       }
       __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_v_atom2->resname) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_atom2->resname);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 342, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 359, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 342, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 359, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_2 = ((!__pyx_t_1) != 0);
       if (__pyx_t_2) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":343
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":360
  *             if self.protein and atom2.protein:
  *                 if not self.equivalentResname(atom2.resname):
  *                     return False             # <<<<<<<<<<<<<<
@@ -6566,7 +6853,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
         __pyx_r = Py_False;
         goto __pyx_L0;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":342
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":359
  *                 return False
  *             if self.protein and atom2.protein:
  *                 if not self.equivalentResname(atom2.resname):             # <<<<<<<<<<<<<<
@@ -6575,7 +6862,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":341
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":358
  *             if self.atomSerial != atom2.atomSerial:
  *                 return False
  *             if self.protein and atom2.protein:             # <<<<<<<<<<<<<<
@@ -6585,7 +6872,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       goto __pyx_L5;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":345
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":362
  *                     return False
  *             else:
  *                 if self.resname != atom2.resname:             # <<<<<<<<<<<<<<
@@ -6593,11 +6880,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *             return True
  */
     /*else*/ {
-      __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->resname, __pyx_v_atom2->resname, Py_NE)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 345, __pyx_L1_error)
+      __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->resname, __pyx_v_atom2->resname, Py_NE)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 362, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_2 != 0);
       if (__pyx_t_1) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":346
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":363
  *             else:
  *                 if self.resname != atom2.resname:
  *                     return False             # <<<<<<<<<<<<<<
@@ -6609,7 +6896,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
         __pyx_r = Py_False;
         goto __pyx_L0;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":345
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":362
  *                     return False
  *             else:
  *                 if self.resname != atom2.resname:             # <<<<<<<<<<<<<<
@@ -6620,7 +6907,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     }
     __pyx_L5:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":347
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":364
  *                 if self.resname != atom2.resname:
  *                     return False
  *             return True             # <<<<<<<<<<<<<<
@@ -6632,7 +6919,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     __pyx_r = Py_True;
     goto __pyx_L0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":335
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":352
  * 
  *     def __richcmp__(self, Atom atom2, int op):
  *         if op == 2:             # <<<<<<<<<<<<<<
@@ -6642,18 +6929,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     break;
     case 3:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":349
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":366
  *             return True
  *         elif op == 3:
  *             if self.name == atom2.name:             # <<<<<<<<<<<<<<
  *                 return False
  *             if self.atomSerial == atom2.atomSerial:
  */
-    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->name, __pyx_v_atom2->name, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 349, __pyx_L1_error)
+    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->name, __pyx_v_atom2->name, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 366, __pyx_L1_error)
     __pyx_t_2 = (__pyx_t_1 != 0);
     if (__pyx_t_2) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":350
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":367
  *         elif op == 3:
  *             if self.name == atom2.name:
  *                 return False             # <<<<<<<<<<<<<<
@@ -6665,7 +6952,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       __pyx_r = Py_False;
       goto __pyx_L0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":349
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":366
  *             return True
  *         elif op == 3:
  *             if self.name == atom2.name:             # <<<<<<<<<<<<<<
@@ -6674,18 +6961,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":351
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":368
  *             if self.name == atom2.name:
  *                 return False
  *             if self.atomSerial == atom2.atomSerial:             # <<<<<<<<<<<<<<
  *                 return False
  *             if self.protein and atom2.protein:
  */
-    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->atomSerial, __pyx_v_atom2->atomSerial, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 351, __pyx_L1_error)
+    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->atomSerial, __pyx_v_atom2->atomSerial, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 368, __pyx_L1_error)
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":352
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":369
  *                 return False
  *             if self.atomSerial == atom2.atomSerial:
  *                 return False             # <<<<<<<<<<<<<<
@@ -6697,7 +6984,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       __pyx_r = Py_False;
       goto __pyx_L0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":351
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":368
  *             if self.name == atom2.name:
  *                 return False
  *             if self.atomSerial == atom2.atomSerial:             # <<<<<<<<<<<<<<
@@ -6706,7 +6993,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":353
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":370
  *             if self.atomSerial == atom2.atomSerial:
  *                 return False
  *             if self.protein and atom2.protein:             # <<<<<<<<<<<<<<
@@ -6724,14 +7011,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     __pyx_L13_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":354
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":371
  *                 return False
  *             if self.protein and atom2.protein:
  *                 if self.equivalentResname(atom2.resname):             # <<<<<<<<<<<<<<
  *                     return False
  *             else:
  */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_equivalentResname); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 354, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_equivalentResname); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 371, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_5 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -6745,14 +7032,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       }
       __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_v_atom2->resname) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_atom2->resname);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 354, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 371, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 354, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 371, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_1) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":355
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":372
  *             if self.protein and atom2.protein:
  *                 if self.equivalentResname(atom2.resname):
  *                     return False             # <<<<<<<<<<<<<<
@@ -6764,7 +7051,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
         __pyx_r = Py_False;
         goto __pyx_L0;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":354
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":371
  *                 return False
  *             if self.protein and atom2.protein:
  *                 if self.equivalentResname(atom2.resname):             # <<<<<<<<<<<<<<
@@ -6773,7 +7060,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":353
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":370
  *             if self.atomSerial == atom2.atomSerial:
  *                 return False
  *             if self.protein and atom2.protein:             # <<<<<<<<<<<<<<
@@ -6783,7 +7070,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       goto __pyx_L12;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":357
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":374
  *                     return False
  *             else:
  *                 if self.resname == atom2.resname:             # <<<<<<<<<<<<<<
@@ -6791,11 +7078,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *             return True
  */
     /*else*/ {
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->resname, __pyx_v_atom2->resname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 357, __pyx_L1_error)
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->resname, __pyx_v_atom2->resname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 374, __pyx_L1_error)
       __pyx_t_2 = (__pyx_t_1 != 0);
       if (__pyx_t_2) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":358
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":375
  *             else:
  *                 if self.resname == atom2.resname:
  *                     return False             # <<<<<<<<<<<<<<
@@ -6807,7 +7094,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
         __pyx_r = Py_False;
         goto __pyx_L0;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":357
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":374
  *                     return False
  *             else:
  *                 if self.resname == atom2.resname:             # <<<<<<<<<<<<<<
@@ -6818,7 +7105,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     }
     __pyx_L12:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":359
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":376
  *                 if self.resname == atom2.resname:
  *                     return False
  *             return True             # <<<<<<<<<<<<<<
@@ -6830,7 +7117,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     __pyx_r = Py_True;
     goto __pyx_L0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":348
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":365
  *                     return False
  *             return True
  *         elif op == 3:             # <<<<<<<<<<<<<<
@@ -6840,18 +7127,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     break;
     case 1:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":361
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":378
  *             return True
  *         elif op == 1:
  *             if self.id == atom2.id:             # <<<<<<<<<<<<<<
  *                 return True
  *             else:
  */
-    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->id, __pyx_v_atom2->id, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 361, __pyx_L1_error)
+    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->id, __pyx_v_atom2->id, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 378, __pyx_L1_error)
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":362
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":379
  *         elif op == 1:
  *             if self.id == atom2.id:
  *                 return True             # <<<<<<<<<<<<<<
@@ -6863,7 +7150,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       __pyx_r = Py_True;
       goto __pyx_L0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":361
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":378
  *             return True
  *         elif op == 1:
  *             if self.id == atom2.id:             # <<<<<<<<<<<<<<
@@ -6872,7 +7159,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":364
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":381
  *                 return True
  *             else:
  *                 return self.serial < atom2.serial             # <<<<<<<<<<<<<<
@@ -6881,11 +7168,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
     /*else*/ {
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_serial); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 364, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_serial); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 381, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom2), __pyx_n_s_serial); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 364, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom2), __pyx_n_s_serial); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 381, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = PyObject_RichCompare(__pyx_t_3, __pyx_t_4, Py_LT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 364, __pyx_L1_error)
+      __pyx_t_5 = PyObject_RichCompare(__pyx_t_3, __pyx_t_4, Py_LT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 381, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_r = __pyx_t_5;
@@ -6893,7 +7180,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       goto __pyx_L0;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":360
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":377
  *                     return False
  *             return True
  *         elif op == 1:             # <<<<<<<<<<<<<<
@@ -6903,18 +7190,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     break;
     case 5:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":366
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":383
  *                 return self.serial < atom2.serial
  *         elif op == 5:
  *             if self.id == atom2.id:             # <<<<<<<<<<<<<<
  *                 return True
  *             else:
  */
-    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->id, __pyx_v_atom2->id, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 366, __pyx_L1_error)
+    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->id, __pyx_v_atom2->id, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 383, __pyx_L1_error)
     __pyx_t_2 = (__pyx_t_1 != 0);
     if (__pyx_t_2) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":367
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":384
  *         elif op == 5:
  *             if self.id == atom2.id:
  *                 return True             # <<<<<<<<<<<<<<
@@ -6926,7 +7213,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       __pyx_r = Py_True;
       goto __pyx_L0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":366
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":383
  *                 return self.serial < atom2.serial
  *         elif op == 5:
  *             if self.id == atom2.id:             # <<<<<<<<<<<<<<
@@ -6935,7 +7222,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":369
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":386
  *                 return True
  *             else:
  *                 return self.serial > atom2.serial             # <<<<<<<<<<<<<<
@@ -6944,11 +7231,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  */
     /*else*/ {
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_serial); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 369, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_serial); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 386, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom2), __pyx_n_s_serial); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 369, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom2), __pyx_n_s_serial); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 386, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_4, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 369, __pyx_L1_error)
+      __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_4, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 386, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_r = __pyx_t_3;
@@ -6956,7 +7243,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
       goto __pyx_L0;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":365
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":382
  *             else:
  *                 return self.serial < atom2.serial
  *         elif op == 5:             # <<<<<<<<<<<<<<
@@ -6966,7 +7253,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     break;
     case 0:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":371
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":388
  *                 return self.serial > atom2.serial
  *         elif op == 0:
  *             return self.serial < atom2.serial             # <<<<<<<<<<<<<<
@@ -6974,18 +7261,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *             return self.serial > atom2.serial
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_serial); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_serial); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 388, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom2), __pyx_n_s_serial); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom2), __pyx_n_s_serial); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 388, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyObject_RichCompare(__pyx_t_3, __pyx_t_4, Py_LT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(__pyx_t_3, __pyx_t_4, Py_LT); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 388, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":370
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":387
  *             else:
  *                 return self.serial > atom2.serial
  *         elif op == 0:             # <<<<<<<<<<<<<<
@@ -6995,7 +7282,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     break;
     case 4:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":373
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":390
  *             return self.serial < atom2.serial
  *         elif op == 4:
  *             return self.serial > atom2.serial             # <<<<<<<<<<<<<<
@@ -7003,18 +7290,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *     def __str__(self):
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_serial); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 373, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_serial); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 390, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom2), __pyx_n_s_serial); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 373, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom2), __pyx_n_s_serial); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 390, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_4, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 373, __pyx_L1_error)
+    __pyx_t_3 = PyObject_RichCompare(__pyx_t_5, __pyx_t_4, Py_GT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 390, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":372
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":389
  *         elif op == 0:
  *             return self.serial < atom2.serial
  *         elif op == 4:             # <<<<<<<<<<<<<<
@@ -7025,7 +7312,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
     default: break;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":334
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":351
  *         print self.atomSerial, self.name, self.resname, self.resChain, self.resnum, self.x, self.y, self.z, self.type, self.mass
  * 
  *     def __richcmp__(self, Atom atom2, int op):             # <<<<<<<<<<<<<<
@@ -7048,7 +7335,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":375
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":392
  *             return self.serial > atom2.serial
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -7079,7 +7366,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":376
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":393
  * 
  *     def __str__(self):
  *         return u"%s: %s %s %s [%f, %f, %f] %s %f" % (self.id, self.atomSerial,             # <<<<<<<<<<<<<<
@@ -7087,11 +7374,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *                                                     self.x, self.y, self.z,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 376, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(17); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = 0;
   __pyx_t_3 = 127;
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->id), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 376, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->id), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -7102,7 +7389,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_t_2 += 2;
   __Pyx_GIVEREF(__pyx_kp_u__3);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_kp_u__3);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->atomSerial), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 376, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->atomSerial), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -7114,14 +7401,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_GIVEREF(__pyx_kp_u__4);
   PyTuple_SET_ITEM(__pyx_t_1, 3, __pyx_kp_u__4);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":377
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":394
  *     def __str__(self):
  *         return u"%s: %s %s %s [%f, %f, %f] %s %f" % (self.id, self.atomSerial,
  *                                                     self.resChain, self.resnum,             # <<<<<<<<<<<<<<
  *                                                     self.x, self.y, self.z,
  *                                                     self.type, self.mass)
  */
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->resChain), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 377, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->resChain), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 394, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -7132,7 +7419,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__4);
   PyTuple_SET_ITEM(__pyx_t_1, 5, __pyx_kp_u__4);
-  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->resnum), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 377, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->resnum), __pyx_empty_unicode); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 394, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_4);
@@ -7144,16 +7431,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_GIVEREF(__pyx_kp_u__5);
   PyTuple_SET_ITEM(__pyx_t_1, 7, __pyx_kp_u__5);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":378
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":395
  *         return u"%s: %s %s %s [%f, %f, %f] %s %f" % (self.id, self.atomSerial,
  *                                                     self.resChain, self.resnum,
  *                                                     self.x, self.y, self.z,             # <<<<<<<<<<<<<<
  *                                                     self.type, self.mass)
  * 
  */
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->x); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 378, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->x); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_Format(__pyx_t_4, __pyx_n_u_f); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 378, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Format(__pyx_t_4, __pyx_n_u_f); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_3;
@@ -7165,9 +7452,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_t_2 += 2;
   __Pyx_GIVEREF(__pyx_kp_u__6);
   PyTuple_SET_ITEM(__pyx_t_1, 9, __pyx_kp_u__6);
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->y); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 378, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->y); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyObject_Format(__pyx_t_5, __pyx_n_u_f); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 378, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Format(__pyx_t_5, __pyx_n_u_f); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
@@ -7179,9 +7466,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_t_2 += 2;
   __Pyx_GIVEREF(__pyx_kp_u__6);
   PyTuple_SET_ITEM(__pyx_t_1, 11, __pyx_kp_u__6);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->z); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 378, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->z); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = __Pyx_PyObject_Format(__pyx_t_4, __pyx_n_u_f); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 378, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Format(__pyx_t_4, __pyx_n_u_f); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 395, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_3;
@@ -7194,14 +7481,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __Pyx_GIVEREF(__pyx_kp_u__7);
   PyTuple_SET_ITEM(__pyx_t_1, 13, __pyx_kp_u__7);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":379
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":396
  *                                                     self.resChain, self.resnum,
  *                                                     self.x, self.y, self.z,
  *                                                     self.type, self.mass)             # <<<<<<<<<<<<<<
  * 
  *     def getAtomCoords(self):
  */
-  __pyx_t_5 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->type), __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 379, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_FormatSimpleAndDecref(PyObject_Unicode(__pyx_v_self->type), __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 396, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_5) : __pyx_t_3;
   __pyx_t_2 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_5);
@@ -7212,9 +7499,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_t_2 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__4);
   PyTuple_SET_ITEM(__pyx_t_1, 15, __pyx_kp_u__4);
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->mass); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 379, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->mass); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 396, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_4 = __Pyx_PyObject_Format(__pyx_t_5, __pyx_n_u_f); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 379, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Format(__pyx_t_5, __pyx_n_u_f); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 396, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_3 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) > __pyx_t_3) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_4) : __pyx_t_3;
@@ -7223,21 +7510,21 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyTuple_SET_ITEM(__pyx_t_1, 16, __pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":376
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":393
  * 
  *     def __str__(self):
  *         return u"%s: %s %s %s [%f, %f, %f] %s %f" % (self.id, self.atomSerial,             # <<<<<<<<<<<<<<
  *                                                     self.resChain, self.resnum,
  *                                                     self.x, self.y, self.z,
  */
-  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 17, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 376, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyUnicode_Join(__pyx_t_1, 17, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 393, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":375
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":392
  *             return self.serial > atom2.serial
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -7258,7 +7545,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":381
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":398
  *                                                     self.type, self.mass)
  * 
  *     def getAtomCoords(self):             # <<<<<<<<<<<<<<
@@ -7291,7 +7578,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("getAtomCoords", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":387
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":404
  *             :returns: numpy.Array -- Array with the coordinate of the atom
  *         """
  *         return np.array([self.x, self.y, self.z])             # <<<<<<<<<<<<<<
@@ -7299,18 +7586,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  *     def squaredDistance(self, Atom atom2):
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_array); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->x); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_4 = PyFloat_FromDouble(__pyx_v_self->y); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->z); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->z); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = PyList_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_6 = PyList_New(3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_GIVEREF(__pyx_t_2);
   PyList_SET_ITEM(__pyx_t_6, 0, __pyx_t_2);
@@ -7334,14 +7621,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   __pyx_t_1 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_5, __pyx_t_6) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 387, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":381
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":398
  *                                                     self.type, self.mass)
  * 
  *     def getAtomCoords(self):             # <<<<<<<<<<<<<<
@@ -7365,7 +7652,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":389
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":406
  *         return np.array([self.x, self.y, self.z])
  * 
  *     def squaredDistance(self, Atom atom2):             # <<<<<<<<<<<<<<
@@ -7380,7 +7667,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("squaredDistance (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atom2), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom, 1, "atom2", 0))) __PYX_ERR(0, 389, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atom2), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom, 1, "atom2", 0))) __PYX_ERR(0, 406, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom_24squaredDistance(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_v_self), ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_v_atom2));
 
   /* function exit code */
@@ -7398,7 +7685,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("squaredDistance", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":397
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":414
  *             :returns: float -- The distance between the atoms
  *         """
  *         return (self.x - atom2.x)**2 + (self.y - atom2.y)**2 + (self.z - atom2.z)**2             # <<<<<<<<<<<<<<
@@ -7406,13 +7693,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(((pow((__pyx_v_self->x - __pyx_v_atom2->x), 2.0) + pow((__pyx_v_self->y - __pyx_v_atom2->y), 2.0)) + pow((__pyx_v_self->z - __pyx_v_atom2->z), 2.0))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 397, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(((pow((__pyx_v_self->x - __pyx_v_atom2->x), 2.0) + pow((__pyx_v_self->y - __pyx_v_atom2->y), 2.0)) + pow((__pyx_v_self->z - __pyx_v_atom2->z), 2.0))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 414, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":389
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":406
  *         return np.array([self.x, self.y, self.z])
  * 
  *     def squaredDistance(self, Atom atom2):             # <<<<<<<<<<<<<<
@@ -8855,7 +9142,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":415
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":432
  *     ATOM_LINE_TEMPLATE = u"%s%s %s %s %s%s%s   %.3f%.3f%.3f%.2f%.2f          %s   "
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
@@ -8889,14 +9176,14 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":420
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":437
  *             the initialise method to load the file
  *         """
  *         self.atoms = {}             # <<<<<<<<<<<<<<
  *         # {atomId: atom, ...}
  *         # Where atomId := serial:atomName:resName
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 437, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->atoms);
@@ -8904,7 +9191,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
   __pyx_v_self->atoms = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":423
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":440
  *         # {atomId: atom, ...}
  *         # Where atomId := serial:atomName:resName
  *         self.totalMass = 0             # <<<<<<<<<<<<<<
@@ -8913,7 +9200,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
  */
   __pyx_v_self->totalMass = 0.0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":425
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":442
  *         self.totalMass = 0
  *         # ensure every string is unicode
  *         self.pdb = None             # <<<<<<<<<<<<<<
@@ -8926,7 +9213,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
   __Pyx_DECREF(__pyx_v_self->pdb);
   __pyx_v_self->pdb = Py_None;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":426
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":443
  *         # ensure every string is unicode
  *         self.pdb = None
  *         self.com = None             # <<<<<<<<<<<<<<
@@ -8939,7 +9226,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
   __Pyx_DECREF(__pyx_v_self->com);
   __pyx_v_self->com = ((PyObject*)Py_None);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":427
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":444
  *         self.pdb = None
  *         self.com = None
  *         self.centroid = None             # <<<<<<<<<<<<<<
@@ -8952,7 +9239,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
   __Pyx_DECREF(__pyx_v_self->centroid);
   __pyx_v_self->centroid = ((PyObject*)Py_None);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":428
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":445
  *         self.com = None
  *         self.centroid = None
  *         self.ispdb = False             # <<<<<<<<<<<<<<
@@ -8961,14 +9248,14 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
  */
   __pyx_v_self->ispdb = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":431
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":448
  * 
  *         # Necessary for contactMaps
  *         self.atomList = []             # <<<<<<<<<<<<<<
  * 
  *     def __richcmp__(self, object other, int op):
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 431, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 448, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->atomList);
@@ -8976,7 +9263,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
   __pyx_v_self->atomList = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":415
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":432
  *     ATOM_LINE_TEMPLATE = u"%s%s %s %s %s%s%s   %.3f%.3f%.3f%.2f%.2f          %s   "
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
@@ -8996,7 +9283,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":433
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":450
  *         self.atomList = []
  * 
  *     def __richcmp__(self, object other, int op):             # <<<<<<<<<<<<<<
@@ -9037,7 +9324,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *(*__pyx_t_10)(PyObject *);
   __Pyx_RefNannySetupContext("__richcmp__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":439
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":456
  *         """
  *         cdef list pdb1, pdb2
  *         if op == 2:             # <<<<<<<<<<<<<<
@@ -9047,7 +9334,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   switch (__pyx_v_op) {
     case 2:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":440
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":457
  *         cdef list pdb1, pdb2
  *         if op == 2:
  *             if self.ispdb and other.ispdb:             # <<<<<<<<<<<<<<
@@ -9060,24 +9347,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_t_1 = __pyx_t_2;
       goto __pyx_L4_bool_binop_done;
     }
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_ispdb); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 440, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_ispdb); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 457, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 440, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 457, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_1 = __pyx_t_2;
     __pyx_L4_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":441
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":458
  *         if op == 2:
  *             if self.ispdb and other.ispdb:
  *                 pdb1 = [element.strip() for element in self.pdb.split(u'\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]             # <<<<<<<<<<<<<<
  *                 pdb2 = [element.strip() for element in other.pdb.split(u'\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]
  *                 return pdb1 == pdb2
  */
-      __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 441, __pyx_L1_error)
+      __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->pdb, __pyx_n_s_split); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 441, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->pdb, __pyx_n_s_split); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_6 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -9091,16 +9378,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_kp_u__8) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_kp_u__8);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 441, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 458, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
         __pyx_t_5 = __pyx_t_4; __Pyx_INCREF(__pyx_t_5); __pyx_t_7 = 0;
         __pyx_t_8 = NULL;
       } else {
-        __pyx_t_7 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 441, __pyx_L1_error)
+        __pyx_t_7 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_8 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 441, __pyx_L1_error)
+        __pyx_t_8 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 458, __pyx_L1_error)
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       for (;;) {
@@ -9108,17 +9395,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           if (likely(PyList_CheckExact(__pyx_t_5))) {
             if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_5)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 441, __pyx_L1_error)
+            __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
             #else
-            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 441, __pyx_L1_error)
+            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 458, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
             #endif
           } else {
             if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 441, __pyx_L1_error)
+            __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
             #else
-            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 441, __pyx_L1_error)
+            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 458, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
             #endif
           }
@@ -9128,7 +9415,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 441, __pyx_L1_error)
+              else __PYX_ERR(0, 458, __pyx_L1_error)
             }
             break;
           }
@@ -9136,7 +9423,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __Pyx_XDECREF_SET(__pyx_v_element, __pyx_t_4);
         __pyx_t_4 = 0;
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 441, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -9150,17 +9437,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_9, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_n_u_ATOM);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 441, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 441, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         if (!__pyx_t_2) {
         } else {
           __pyx_t_1 = __pyx_t_2;
           goto __pyx_L9_bool_binop_done;
         }
-        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 441, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -9174,15 +9461,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_9, __pyx_n_u_HETATM) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_n_u_HETATM);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 441, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 441, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 458, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __pyx_t_1 = __pyx_t_2;
         __pyx_L9_bool_binop_done:;
         if (__pyx_t_1) {
-          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 441, __pyx_L1_error)
+          __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 458, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_t_9 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -9196,10 +9483,10 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           }
           __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
           __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 441, __pyx_L1_error)
+          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 458, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 441, __pyx_L1_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 458, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         }
       }
@@ -9207,18 +9494,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_v_pdb1 = ((PyObject*)__pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":442
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":459
  *             if self.ispdb and other.ispdb:
  *                 pdb1 = [element.strip() for element in self.pdb.split(u'\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]
  *                 pdb2 = [element.strip() for element in other.pdb.split(u'\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]             # <<<<<<<<<<<<<<
  *                 return pdb1 == pdb2
  *             else:
  */
-      __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 442, __pyx_L1_error)
+      __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_pdb); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 442, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_pdb); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 442, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_split); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = NULL;
@@ -9233,16 +9520,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_5 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_6, __pyx_t_4, __pyx_kp_u__8) : __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_kp_u__8);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 442, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 459, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (likely(PyList_CheckExact(__pyx_t_5)) || PyTuple_CheckExact(__pyx_t_5)) {
         __pyx_t_6 = __pyx_t_5; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
         __pyx_t_8 = NULL;
       } else {
-        __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 442, __pyx_L1_error)
+        __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 442, __pyx_L1_error)
+        __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 459, __pyx_L1_error)
       }
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       for (;;) {
@@ -9250,17 +9537,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           if (likely(PyList_CheckExact(__pyx_t_6))) {
             if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_5 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 442, __pyx_L1_error)
+            __pyx_t_5 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 459, __pyx_L1_error)
             #else
-            __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 442, __pyx_L1_error)
+            __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 459, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_5);
             #endif
           } else {
             if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 442, __pyx_L1_error)
+            __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 459, __pyx_L1_error)
             #else
-            __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 442, __pyx_L1_error)
+            __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 459, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_5);
             #endif
           }
@@ -9270,7 +9557,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 442, __pyx_L1_error)
+              else __PYX_ERR(0, 459, __pyx_L1_error)
             }
             break;
           }
@@ -9278,7 +9565,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __Pyx_XDECREF_SET(__pyx_v_element, __pyx_t_5);
         __pyx_t_5 = 0;
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 442, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -9292,17 +9579,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __pyx_t_5 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_9, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_ATOM);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 442, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 442, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         if (!__pyx_t_2) {
         } else {
           __pyx_t_1 = __pyx_t_2;
           goto __pyx_L14_bool_binop_done;
         }
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 442, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -9316,15 +9603,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __pyx_t_5 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_9, __pyx_n_u_HETATM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_HETATM);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 442, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 442, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 459, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_t_1 = __pyx_t_2;
         __pyx_L14_bool_binop_done:;
         if (__pyx_t_1) {
-          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 442, __pyx_L1_error)
+          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 459, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __pyx_t_9 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -9338,10 +9625,10 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           }
           __pyx_t_5 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
           __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 442, __pyx_L1_error)
+          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 459, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 442, __pyx_L1_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_3, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 459, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         }
       }
@@ -9349,7 +9636,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_v_pdb2 = ((PyObject*)__pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":443
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":460
  *                 pdb1 = [element.strip() for element in self.pdb.split(u'\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]
  *                 pdb2 = [element.strip() for element in other.pdb.split(u'\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]
  *                 return pdb1 == pdb2             # <<<<<<<<<<<<<<
@@ -9357,12 +9644,12 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_3 = PyObject_RichCompare(__pyx_v_pdb1, __pyx_v_pdb2, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 443, __pyx_L1_error)
+      __pyx_t_3 = PyObject_RichCompare(__pyx_v_pdb1, __pyx_v_pdb2, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 460, __pyx_L1_error)
       __pyx_r = __pyx_t_3;
       __pyx_t_3 = 0;
       goto __pyx_L0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":440
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":457
  *         cdef list pdb1, pdb2
  *         if op == 2:
  *             if self.ispdb and other.ispdb:             # <<<<<<<<<<<<<<
@@ -9371,7 +9658,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":445
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":462
  *                 return pdb1 == pdb2
  *             else:
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):             # <<<<<<<<<<<<<<
@@ -9379,9 +9666,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *                         return False
  */
     /*else*/ {
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_atomList); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 445, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_atomList); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 462, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 445, __pyx_L1_error)
+      __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 462, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_INCREF(__pyx_v_self->atomList);
       __Pyx_GIVEREF(__pyx_v_self->atomList);
@@ -9389,16 +9676,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_GIVEREF(__pyx_t_3);
       PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 445, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 462, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
         __pyx_t_6 = __pyx_t_3; __Pyx_INCREF(__pyx_t_6); __pyx_t_7 = 0;
         __pyx_t_8 = NULL;
       } else {
-        __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 445, __pyx_L1_error)
+        __pyx_t_7 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 462, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 445, __pyx_L1_error)
+        __pyx_t_8 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 462, __pyx_L1_error)
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       for (;;) {
@@ -9406,17 +9693,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           if (likely(PyList_CheckExact(__pyx_t_6))) {
             if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_6)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_3 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 445, __pyx_L1_error)
+            __pyx_t_3 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 462, __pyx_L1_error)
             #else
-            __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 445, __pyx_L1_error)
+            __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 462, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_3);
             #endif
           } else {
             if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 445, __pyx_L1_error)
+            __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 462, __pyx_L1_error)
             #else
-            __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 445, __pyx_L1_error)
+            __pyx_t_3 = PySequence_ITEM(__pyx_t_6, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 462, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_3);
             #endif
           }
@@ -9426,7 +9713,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 445, __pyx_L1_error)
+              else __PYX_ERR(0, 462, __pyx_L1_error)
             }
             break;
           }
@@ -9438,7 +9725,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           if (unlikely(size != 2)) {
             if (size > 2) __Pyx_RaiseTooManyValuesError(2);
             else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-            __PYX_ERR(0, 445, __pyx_L1_error)
+            __PYX_ERR(0, 462, __pyx_L1_error)
           }
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
           if (likely(PyTuple_CheckExact(sequence))) {
@@ -9451,15 +9738,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_INCREF(__pyx_t_5);
           __Pyx_INCREF(__pyx_t_4);
           #else
-          __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 445, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 462, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
-          __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 445, __pyx_L1_error)
+          __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 462, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         } else {
           Py_ssize_t index = -1;
-          __pyx_t_9 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 445, __pyx_L1_error)
+          __pyx_t_9 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 462, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __pyx_t_10 = Py_TYPE(__pyx_t_9)->tp_iternext;
@@ -9467,7 +9754,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_GOTREF(__pyx_t_5);
           index = 1; __pyx_t_4 = __pyx_t_10(__pyx_t_9); if (unlikely(!__pyx_t_4)) goto __pyx_L18_unpacking_failed;
           __Pyx_GOTREF(__pyx_t_4);
-          if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_9), 2) < 0) __PYX_ERR(0, 445, __pyx_L1_error)
+          if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_9), 2) < 0) __PYX_ERR(0, 462, __pyx_L1_error)
           __pyx_t_10 = NULL;
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           goto __pyx_L19_unpacking_done;
@@ -9475,7 +9762,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           __pyx_t_10 = NULL;
           if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-          __PYX_ERR(0, 445, __pyx_L1_error)
+          __PYX_ERR(0, 462, __pyx_L1_error)
           __pyx_L19_unpacking_done:;
         }
         __Pyx_XDECREF_SET(__pyx_v_atom1, __pyx_t_5);
@@ -9483,7 +9770,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         __Pyx_XDECREF_SET(__pyx_v_atom2, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":446
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":463
  *             else:
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):
  *                     if self.atoms[atom1] != other.atoms[atom2]:             # <<<<<<<<<<<<<<
@@ -9492,23 +9779,23 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
         if (unlikely(__pyx_v_self->atoms == Py_None)) {
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-          __PYX_ERR(0, 446, __pyx_L1_error)
+          __PYX_ERR(0, 463, __pyx_L1_error)
         }
-        __pyx_t_3 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atom1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 446, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atom1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 463, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_atoms); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 446, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_atoms); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 463, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_v_atom2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 446, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_v_atom2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 463, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_4 = PyObject_RichCompare(__pyx_t_3, __pyx_t_5, Py_NE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 446, __pyx_L1_error)
+        __pyx_t_4 = PyObject_RichCompare(__pyx_t_3, __pyx_t_5, Py_NE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 463, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 446, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 463, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         if (__pyx_t_1) {
 
-          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":447
+          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":464
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):
  *                     if self.atoms[atom1] != other.atoms[atom2]:
  *                         return False             # <<<<<<<<<<<<<<
@@ -9521,7 +9808,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           goto __pyx_L0;
 
-          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":446
+          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":463
  *             else:
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):
  *                     if self.atoms[atom1] != other.atoms[atom2]:             # <<<<<<<<<<<<<<
@@ -9530,7 +9817,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
         }
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":445
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":462
  *                 return pdb1 == pdb2
  *             else:
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):             # <<<<<<<<<<<<<<
@@ -9540,7 +9827,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":448
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":465
  *                     if self.atoms[atom1] != other.atoms[atom2]:
  *                         return False
  *                 return True             # <<<<<<<<<<<<<<
@@ -9553,7 +9840,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       goto __pyx_L0;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":439
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":456
  *         """
  *         cdef list pdb1, pdb2
  *         if op == 2:             # <<<<<<<<<<<<<<
@@ -9563,7 +9850,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     break;
     case 3:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":450
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":467
  *                 return True
  *         elif op == 3:
  *             if self.ispdb and other.ispdb:             # <<<<<<<<<<<<<<
@@ -9576,24 +9863,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_t_1 = __pyx_t_2;
       goto __pyx_L22_bool_binop_done;
     }
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_ispdb); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_ispdb); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 467, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 450, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_6); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 467, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_1 = __pyx_t_2;
     __pyx_L22_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":451
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":468
  *         elif op == 3:
  *             if self.ispdb and other.ispdb:
  *                 pdb1 = [element.strip() for element in self.pdb.split('\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]             # <<<<<<<<<<<<<<
  *                 pdb2 = [element.strip() for element in other.pdb.split('\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]
  *                 return pdb1 != pdb2
  */
-      __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 451, __pyx_L1_error)
+      __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 468, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->pdb, __pyx_n_s_split); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 451, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->pdb, __pyx_n_s_split); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 468, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_3 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -9607,16 +9894,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_4 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_3, __pyx_kp_u__8) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_kp_u__8);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 451, __pyx_L1_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 468, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       if (likely(PyList_CheckExact(__pyx_t_4)) || PyTuple_CheckExact(__pyx_t_4)) {
         __pyx_t_5 = __pyx_t_4; __Pyx_INCREF(__pyx_t_5); __pyx_t_7 = 0;
         __pyx_t_8 = NULL;
       } else {
-        __pyx_t_7 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 451, __pyx_L1_error)
+        __pyx_t_7 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 468, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_8 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 451, __pyx_L1_error)
+        __pyx_t_8 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 468, __pyx_L1_error)
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       for (;;) {
@@ -9624,17 +9911,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           if (likely(PyList_CheckExact(__pyx_t_5))) {
             if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_5)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
+            __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 468, __pyx_L1_error)
             #else
-            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 451, __pyx_L1_error)
+            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 468, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
             #endif
           } else {
             if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
+            __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_7); __Pyx_INCREF(__pyx_t_4); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 468, __pyx_L1_error)
             #else
-            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 451, __pyx_L1_error)
+            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 468, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
             #endif
           }
@@ -9644,7 +9931,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 451, __pyx_L1_error)
+              else __PYX_ERR(0, 468, __pyx_L1_error)
             }
             break;
           }
@@ -9652,7 +9939,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __Pyx_XDECREF_SET(__pyx_v_element, __pyx_t_4);
         __pyx_t_4 = 0;
-        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 451, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 468, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -9666,17 +9953,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_9, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_n_u_ATOM);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 451, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 468, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 468, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         if (!__pyx_t_2) {
         } else {
           __pyx_t_1 = __pyx_t_2;
           goto __pyx_L27_bool_binop_done;
         }
-        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 451, __pyx_L1_error)
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 468, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -9690,15 +9977,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_9, __pyx_n_u_HETATM) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_n_u_HETATM);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 451, __pyx_L1_error)
+        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 468, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 451, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 468, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __pyx_t_1 = __pyx_t_2;
         __pyx_L27_bool_binop_done:;
         if (__pyx_t_1) {
-          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 451, __pyx_L1_error)
+          __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 468, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
           __pyx_t_9 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -9712,10 +9999,10 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           }
           __pyx_t_4 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
           __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 451, __pyx_L1_error)
+          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 468, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 451, __pyx_L1_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_4))) __PYX_ERR(0, 468, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         }
       }
@@ -9723,18 +10010,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_v_pdb1 = ((PyObject*)__pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":452
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":469
  *             if self.ispdb and other.ispdb:
  *                 pdb1 = [element.strip() for element in self.pdb.split('\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]
  *                 pdb2 = [element.strip() for element in other.pdb.split('\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]             # <<<<<<<<<<<<<<
  *                 return pdb1 != pdb2
  *             else:
  */
-      __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 452, __pyx_L1_error)
+      __pyx_t_6 = PyList_New(0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 469, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_pdb); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 452, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_pdb); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 469, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_split); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 452, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_split); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 469, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = NULL;
@@ -9749,16 +10036,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_5 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_kp_u__8) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_kp_u__8);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 452, __pyx_L1_error)
+      if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 469, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (likely(PyList_CheckExact(__pyx_t_5)) || PyTuple_CheckExact(__pyx_t_5)) {
         __pyx_t_3 = __pyx_t_5; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
         __pyx_t_8 = NULL;
       } else {
-        __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 469, __pyx_L1_error)
       }
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       for (;;) {
@@ -9766,17 +10053,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           if (likely(PyList_CheckExact(__pyx_t_3))) {
             if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_5 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 452, __pyx_L1_error)
+            __pyx_t_5 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 469, __pyx_L1_error)
             #else
-            __pyx_t_5 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 452, __pyx_L1_error)
+            __pyx_t_5 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 469, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_5);
             #endif
           } else {
             if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 452, __pyx_L1_error)
+            __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 469, __pyx_L1_error)
             #else
-            __pyx_t_5 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 452, __pyx_L1_error)
+            __pyx_t_5 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 469, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_5);
             #endif
           }
@@ -9786,7 +10073,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 452, __pyx_L1_error)
+              else __PYX_ERR(0, 469, __pyx_L1_error)
             }
             break;
           }
@@ -9794,7 +10081,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __Pyx_XDECREF_SET(__pyx_v_element, __pyx_t_5);
         __pyx_t_5 = 0;
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -9808,17 +10095,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __pyx_t_5 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_9, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_ATOM);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 452, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         if (!__pyx_t_2) {
         } else {
           __pyx_t_1 = __pyx_t_2;
           goto __pyx_L32_bool_binop_done;
         }
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __pyx_t_9 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -9832,15 +10119,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
         __pyx_t_5 = (__pyx_t_9) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_9, __pyx_n_u_HETATM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_HETATM);
         __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 452, __pyx_L1_error)
+        if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 452, __pyx_L1_error)
+        __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 469, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         __pyx_t_1 = __pyx_t_2;
         __pyx_L32_bool_binop_done:;
         if (__pyx_t_1) {
-          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 452, __pyx_L1_error)
+          __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_element, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 469, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __pyx_t_9 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -9854,10 +10141,10 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           }
           __pyx_t_5 = (__pyx_t_9) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_9) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
           __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 452, __pyx_L1_error)
+          if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 469, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-          if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 452, __pyx_L1_error)
+          if (unlikely(__Pyx_ListComp_Append(__pyx_t_6, (PyObject*)__pyx_t_5))) __PYX_ERR(0, 469, __pyx_L1_error)
           __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         }
       }
@@ -9865,7 +10152,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_v_pdb2 = ((PyObject*)__pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":453
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":470
  *                 pdb1 = [element.strip() for element in self.pdb.split('\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]
  *                 pdb2 = [element.strip() for element in other.pdb.split('\n') if element.startswith(u"ATOM") or element.startswith(u"HETATM")]
  *                 return pdb1 != pdb2             # <<<<<<<<<<<<<<
@@ -9873,12 +10160,12 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_6 = PyObject_RichCompare(__pyx_v_pdb1, __pyx_v_pdb2, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 453, __pyx_L1_error)
+      __pyx_t_6 = PyObject_RichCompare(__pyx_v_pdb1, __pyx_v_pdb2, Py_NE); __Pyx_XGOTREF(__pyx_t_6); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 470, __pyx_L1_error)
       __pyx_r = __pyx_t_6;
       __pyx_t_6 = 0;
       goto __pyx_L0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":450
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":467
  *                 return True
  *         elif op == 3:
  *             if self.ispdb and other.ispdb:             # <<<<<<<<<<<<<<
@@ -9887,7 +10174,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":455
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":472
  *                 return pdb1 != pdb2
  *             else:
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):             # <<<<<<<<<<<<<<
@@ -9895,9 +10182,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *                         return False
  */
     /*else*/ {
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_atomList); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 455, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_atomList); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 472, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 455, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 472, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_v_self->atomList);
       __Pyx_GIVEREF(__pyx_v_self->atomList);
@@ -9905,16 +10192,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_GIVEREF(__pyx_t_6);
       PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_6);
       __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 455, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 472, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (likely(PyList_CheckExact(__pyx_t_6)) || PyTuple_CheckExact(__pyx_t_6)) {
         __pyx_t_3 = __pyx_t_6; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
         __pyx_t_8 = NULL;
       } else {
-        __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 455, __pyx_L1_error)
+        __pyx_t_7 = -1; __pyx_t_3 = PyObject_GetIter(__pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 472, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
-        __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 455, __pyx_L1_error)
+        __pyx_t_8 = Py_TYPE(__pyx_t_3)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 472, __pyx_L1_error)
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       for (;;) {
@@ -9922,17 +10209,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           if (likely(PyList_CheckExact(__pyx_t_3))) {
             if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_6); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 455, __pyx_L1_error)
+            __pyx_t_6 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_6); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 472, __pyx_L1_error)
             #else
-            __pyx_t_6 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 455, __pyx_L1_error)
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 472, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_6);
             #endif
           } else {
             if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_3)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_6); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 455, __pyx_L1_error)
+            __pyx_t_6 = PyTuple_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_6); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 472, __pyx_L1_error)
             #else
-            __pyx_t_6 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 455, __pyx_L1_error)
+            __pyx_t_6 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 472, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_6);
             #endif
           }
@@ -9942,7 +10229,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 455, __pyx_L1_error)
+              else __PYX_ERR(0, 472, __pyx_L1_error)
             }
             break;
           }
@@ -9954,7 +10241,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           if (unlikely(size != 2)) {
             if (size > 2) __Pyx_RaiseTooManyValuesError(2);
             else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-            __PYX_ERR(0, 455, __pyx_L1_error)
+            __PYX_ERR(0, 472, __pyx_L1_error)
           }
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
           if (likely(PyTuple_CheckExact(sequence))) {
@@ -9967,15 +10254,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_INCREF(__pyx_t_5);
           __Pyx_INCREF(__pyx_t_4);
           #else
-          __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 455, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 472, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
-          __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 455, __pyx_L1_error)
+          __pyx_t_4 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 472, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           #endif
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         } else {
           Py_ssize_t index = -1;
-          __pyx_t_9 = PyObject_GetIter(__pyx_t_6); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 455, __pyx_L1_error)
+          __pyx_t_9 = PyObject_GetIter(__pyx_t_6); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 472, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_9);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __pyx_t_10 = Py_TYPE(__pyx_t_9)->tp_iternext;
@@ -9983,7 +10270,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_GOTREF(__pyx_t_5);
           index = 1; __pyx_t_4 = __pyx_t_10(__pyx_t_9); if (unlikely(!__pyx_t_4)) goto __pyx_L36_unpacking_failed;
           __Pyx_GOTREF(__pyx_t_4);
-          if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_9), 2) < 0) __PYX_ERR(0, 455, __pyx_L1_error)
+          if (__Pyx_IternextUnpackEndCheck(__pyx_t_10(__pyx_t_9), 2) < 0) __PYX_ERR(0, 472, __pyx_L1_error)
           __pyx_t_10 = NULL;
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           goto __pyx_L37_unpacking_done;
@@ -9991,7 +10278,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           __pyx_t_10 = NULL;
           if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-          __PYX_ERR(0, 455, __pyx_L1_error)
+          __PYX_ERR(0, 472, __pyx_L1_error)
           __pyx_L37_unpacking_done:;
         }
         __Pyx_XDECREF_SET(__pyx_v_atom1, __pyx_t_5);
@@ -9999,7 +10286,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         __Pyx_XDECREF_SET(__pyx_v_atom2, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":456
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":473
  *             else:
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):
  *                     if self.atoms[atom1] == other.atoms[atom2]:             # <<<<<<<<<<<<<<
@@ -10008,23 +10295,23 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
         if (unlikely(__pyx_v_self->atoms == Py_None)) {
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-          __PYX_ERR(0, 456, __pyx_L1_error)
+          __PYX_ERR(0, 473, __pyx_L1_error)
         }
-        __pyx_t_6 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atom1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 456, __pyx_L1_error)
+        __pyx_t_6 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atom1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 473, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_atoms); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 456, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_other, __pyx_n_s_atoms); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 473, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_v_atom2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 456, __pyx_L1_error)
+        __pyx_t_5 = __Pyx_PyObject_GetItem(__pyx_t_4, __pyx_v_atom2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 473, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-        __pyx_t_4 = PyObject_RichCompare(__pyx_t_6, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 456, __pyx_L1_error)
+        __pyx_t_4 = PyObject_RichCompare(__pyx_t_6, __pyx_t_5, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 473, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 456, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 473, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         if (__pyx_t_1) {
 
-          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":457
+          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":474
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):
  *                     if self.atoms[atom1] == other.atoms[atom2]:
  *                         return False             # <<<<<<<<<<<<<<
@@ -10037,7 +10324,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           goto __pyx_L0;
 
-          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":456
+          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":473
  *             else:
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):
  *                     if self.atoms[atom1] == other.atoms[atom2]:             # <<<<<<<<<<<<<<
@@ -10046,7 +10333,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
         }
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":455
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":472
  *                 return pdb1 != pdb2
  *             else:
  *                 for atom1, atom2 in zip(self.atomList, other.atomList):             # <<<<<<<<<<<<<<
@@ -10056,7 +10343,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":458
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":475
  *                     if self.atoms[atom1] == other.atoms[atom2]:
  *                         return False
  *                 return True             # <<<<<<<<<<<<<<
@@ -10069,7 +10356,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       goto __pyx_L0;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":449
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":466
  *                         return False
  *                 return True
  *         elif op == 3:             # <<<<<<<<<<<<<<
@@ -10079,18 +10366,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     break;
     default:
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":460
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":477
  *                 return True
  *         else:
  *             print "No boolean operator available for PDB apart from equality"             # <<<<<<<<<<<<<<
  * 
  *     def __getstate__(self):
  */
-    if (__Pyx_PrintOne(0, __pyx_kp_u_No_boolean_operator_available_fo) < 0) __PYX_ERR(0, 460, __pyx_L1_error)
+    if (__Pyx_PrintOne(0, __pyx_kp_u_No_boolean_operator_available_fo) < 0) __PYX_ERR(0, 477, __pyx_L1_error)
     break;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":433
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":450
  *         self.atomList = []
  * 
  *     def __richcmp__(self, object other, int op):             # <<<<<<<<<<<<<<
@@ -10120,7 +10407,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":462
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":479
  *             print "No boolean operator available for PDB apart from equality"
  * 
  *     def __getstate__(self):             # <<<<<<<<<<<<<<
@@ -10149,68 +10436,68 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__getstate__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":464
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":481
  *     def __getstate__(self):
  *         # Copy the object's state from
  *         state = {u"atoms": self.atoms, u"atomList": self.atomList,             # <<<<<<<<<<<<<<
  *                  u"com": self.com, u"centroid": self.centroid,
  *                  u"totalMass": self.totalMass, u"pdb": self.pdb,
  */
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 464, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 481, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_atoms, __pyx_v_self->atoms) < 0) __PYX_ERR(0, 464, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_atomList, __pyx_v_self->atomList) < 0) __PYX_ERR(0, 464, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_atoms, __pyx_v_self->atoms) < 0) __PYX_ERR(0, 481, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_atomList, __pyx_v_self->atomList) < 0) __PYX_ERR(0, 481, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":465
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":482
  *         # Copy the object's state from
  *         state = {u"atoms": self.atoms, u"atomList": self.atomList,
  *                  u"com": self.com, u"centroid": self.centroid,             # <<<<<<<<<<<<<<
  *                  u"totalMass": self.totalMass, u"pdb": self.pdb,
  *                  u"ispdb": self.ispdb}
  */
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_com, __pyx_v_self->com) < 0) __PYX_ERR(0, 464, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_centroid, __pyx_v_self->centroid) < 0) __PYX_ERR(0, 464, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_com, __pyx_v_self->com) < 0) __PYX_ERR(0, 481, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_centroid, __pyx_v_self->centroid) < 0) __PYX_ERR(0, 481, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":466
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":483
  *         state = {u"atoms": self.atoms, u"atomList": self.atomList,
  *                  u"com": self.com, u"centroid": self.centroid,
  *                  u"totalMass": self.totalMass, u"pdb": self.pdb,             # <<<<<<<<<<<<<<
  *                  u"ispdb": self.ispdb}
  *         return state
  */
-  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 483, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_totalMass, __pyx_t_2) < 0) __PYX_ERR(0, 464, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_totalMass, __pyx_t_2) < 0) __PYX_ERR(0, 481, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_pdb, __pyx_v_self->pdb) < 0) __PYX_ERR(0, 464, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_pdb, __pyx_v_self->pdb) < 0) __PYX_ERR(0, 481, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":467
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":484
  *                  u"com": self.com, u"centroid": self.centroid,
  *                  u"totalMass": self.totalMass, u"pdb": self.pdb,
  *                  u"ispdb": self.ispdb}             # <<<<<<<<<<<<<<
  *         return state
  * 
  */
-  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_self->ispdb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_self->ispdb); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_ispdb, __pyx_t_2) < 0) __PYX_ERR(0, 464, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_1, __pyx_n_u_ispdb, __pyx_t_2) < 0) __PYX_ERR(0, 481, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_state = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":468
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":485
  *                  u"totalMass": self.totalMass, u"pdb": self.pdb,
  *                  u"ispdb": self.ispdb}
  *         return state             # <<<<<<<<<<<<<<
  * 
- * 
+ *     def __setstate__(self, state):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_state);
   __pyx_r = __pyx_v_state;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":462
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":479
  *             print "No boolean operator available for PDB apart from equality"
  * 
  *     def __getstate__(self):             # <<<<<<<<<<<<<<
@@ -10231,8 +10518,8 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":471
- * 
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":487
+ *         return state
  * 
  *     def __setstate__(self, state):             # <<<<<<<<<<<<<<
  *         # Restore instance attributes
@@ -10262,46 +10549,46 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("__setstate__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":473
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":489
  *     def __setstate__(self, state):
  *         # Restore instance attributes
  *         self.atoms = state[u'atoms']             # <<<<<<<<<<<<<<
  *         self.atomList = state[u'atomList']
  *         self.com = state.get(u'com')
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_atoms); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 473, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_atoms); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 489, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(PyDict_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 473, __pyx_L1_error)
+  if (!(likely(PyDict_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "dict", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 489, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->atoms);
   __Pyx_DECREF(__pyx_v_self->atoms);
   __pyx_v_self->atoms = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":474
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":490
  *         # Restore instance attributes
  *         self.atoms = state[u'atoms']
  *         self.atomList = state[u'atomList']             # <<<<<<<<<<<<<<
  *         self.com = state.get(u'com')
  *         self.centroid = state.get(u'centroid')
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_atomList); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 474, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_atomList); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 490, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 474, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 490, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->atomList);
   __Pyx_DECREF(__pyx_v_self->atomList);
   __pyx_v_self->atomList = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":475
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":491
  *         self.atoms = state[u'atoms']
  *         self.atomList = state[u'atomList']
  *         self.com = state.get(u'com')             # <<<<<<<<<<<<<<
  *         self.centroid = state.get(u'centroid')
  *         self.totalMass = state[u'totalMass']
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_get); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 475, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_get); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 491, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -10315,24 +10602,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_n_u_com) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_u_com);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 475, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 491, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 475, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 491, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->com);
   __Pyx_DECREF(__pyx_v_self->com);
   __pyx_v_self->com = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":476
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":492
  *         self.atomList = state[u'atomList']
  *         self.com = state.get(u'com')
  *         self.centroid = state.get(u'centroid')             # <<<<<<<<<<<<<<
  *         self.totalMass = state[u'totalMass']
  *         self.pdb = state[u'pdb']
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_get); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 476, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_get); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 492, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -10346,37 +10633,37 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_n_u_centroid) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_u_centroid);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 476, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 492, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 476, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 492, __pyx_L1_error)
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->centroid);
   __Pyx_DECREF(__pyx_v_self->centroid);
   __pyx_v_self->centroid = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":477
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":493
  *         self.com = state.get(u'com')
  *         self.centroid = state.get(u'centroid')
  *         self.totalMass = state[u'totalMass']             # <<<<<<<<<<<<<<
  *         self.pdb = state[u'pdb']
  *         self.ispdb = state.get(u'ispdb', True)
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_totalMass); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 477, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_totalMass); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 493, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 477, __pyx_L1_error)
+  __pyx_t_4 = __pyx_PyFloat_AsDouble(__pyx_t_1); if (unlikely((__pyx_t_4 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 493, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_v_self->totalMass = __pyx_t_4;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":478
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":494
  *         self.centroid = state.get(u'centroid')
  *         self.totalMass = state[u'totalMass']
  *         self.pdb = state[u'pdb']             # <<<<<<<<<<<<<<
  *         self.ispdb = state.get(u'ispdb', True)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_pdb); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 478, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Dict_GetItem(__pyx_v_state, __pyx_n_u_pdb); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 494, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __Pyx_GOTREF(__pyx_v_self->pdb);
@@ -10384,24 +10671,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_v_self->pdb = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":479
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":495
  *         self.totalMass = state[u'totalMass']
  *         self.pdb = state[u'pdb']
  *         self.ispdb = state.get(u'ispdb', True)             # <<<<<<<<<<<<<<
  * 
  *     def isfromPDBFile(self):
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 479, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_get); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 495, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 479, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 495, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 479, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely((__pyx_t_5 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 495, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_self->ispdb = __pyx_t_5;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":471
- * 
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":487
+ *         return state
  * 
  *     def __setstate__(self, state):             # <<<<<<<<<<<<<<
  *         # Restore instance attributes
@@ -10423,7 +10710,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":481
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":497
  *         self.ispdb = state.get(u'ispdb', True)
  * 
  *     def isfromPDBFile(self):             # <<<<<<<<<<<<<<
@@ -10450,21 +10737,21 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("isfromPDBFile", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":482
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":498
  * 
  *     def isfromPDBFile(self):
  *         return self.ispdb             # <<<<<<<<<<<<<<
  * 
- *     def _initialisePDB(self, basestring PDBstr, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=""):
+ *     def _initialisePDB(self, basestring PDBstr, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element="", dict extra_atoms={}):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->ispdb); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->ispdb); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 498, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":481
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":497
  *         self.ispdb = state.get(u'ispdb', True)
  * 
  *     def isfromPDBFile(self):             # <<<<<<<<<<<<<<
@@ -10483,10 +10770,10 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":484
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":500
  *         return self.ispdb
  * 
- *     def _initialisePDB(self, basestring PDBstr, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=""):             # <<<<<<<<<<<<<<
+ *     def _initialisePDB(self, basestring PDBstr, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element="", dict extra_atoms={}):             # <<<<<<<<<<<<<<
  *         """
  *             Load the information from a PDB file or a string with the PDB
  */
@@ -10503,21 +10790,25 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_v_chain = 0;
   int __pyx_v_resnum;
   PyObject *__pyx_v_element = 0;
+  PyObject *__pyx_v_extra_atoms = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_initialisePDB (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_PDBstr,&__pyx_n_s_heavyAtoms,&__pyx_n_s_resname,&__pyx_n_s_atomname,&__pyx_n_s_type,&__pyx_n_s_chain,&__pyx_n_s_resnum,&__pyx_n_s_element,0};
-    PyObject* values[8] = {0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_PDBstr,&__pyx_n_s_heavyAtoms,&__pyx_n_s_resname,&__pyx_n_s_atomname,&__pyx_n_s_type,&__pyx_n_s_chain,&__pyx_n_s_resnum,&__pyx_n_s_element,&__pyx_n_s_extra_atoms,0};
+    PyObject* values[9] = {0,0,0,0,0,0,0,0,0};
     values[2] = ((PyObject*)__pyx_kp_u_);
     values[3] = ((PyObject*)__pyx_kp_u_);
     values[4] = ((PyObject*)__pyx_n_u_ALL);
     values[5] = ((PyObject*)__pyx_kp_u_);
     values[7] = ((PyObject*)__pyx_kp_u_);
+    values[8] = __pyx_k__10;
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        CYTHON_FALLTHROUGH;
         case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
         CYTHON_FALLTHROUGH;
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
@@ -10584,12 +10875,20 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_element);
           if (value) { values[7] = value; kw_args--; }
         }
+        CYTHON_FALLTHROUGH;
+        case  8:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_extra_atoms);
+          if (value) { values[8] = value; kw_args--; }
+        }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_initialisePDB") < 0)) __PYX_ERR(0, 484, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_initialisePDB") < 0)) __PYX_ERR(0, 500, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
+        CYTHON_FALLTHROUGH;
         case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
         CYTHON_FALLTHROUGH;
         case  7: values[6] = PyTuple_GET_ITEM(__pyx_args, 6);
@@ -10611,7 +10910,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_v_PDBstr = ((PyObject*)values[0]);
     if (values[1]) {
-      __pyx_v_heavyAtoms = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_heavyAtoms == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 484, __pyx_L3_error)
+      __pyx_v_heavyAtoms = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_heavyAtoms == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 500, __pyx_L3_error)
     } else {
       __pyx_v_heavyAtoms = ((int)1);
     }
@@ -10620,27 +10919,29 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __pyx_v_type = ((PyObject*)values[4]);
     __pyx_v_chain = ((PyObject*)values[5]);
     if (values[6]) {
-      __pyx_v_resnum = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_resnum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 484, __pyx_L3_error)
+      __pyx_v_resnum = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_resnum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 500, __pyx_L3_error)
     } else {
       __pyx_v_resnum = ((int)0);
     }
     __pyx_v_element = ((PyObject*)values[7]);
+    __pyx_v_extra_atoms = ((PyObject*)values[8]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_initialisePDB", 0, 1, 8, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 484, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_initialisePDB", 0, 1, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 500, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB._initialisePDB", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDBstr), (&PyBaseString_Type), 1, "PDBstr", 1))) __PYX_ERR(0, 484, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resname), (&PyBaseString_Type), 1, "resname", 1))) __PYX_ERR(0, 484, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomname), (&PyBaseString_Type), 1, "atomname", 1))) __PYX_ERR(0, 484, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_type), (&PyBaseString_Type), 1, "type", 1))) __PYX_ERR(0, 484, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_chain), (&PyBaseString_Type), 1, "chain", 1))) __PYX_ERR(0, 484, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_element), (&PyBaseString_Type), 1, "element", 1))) __PYX_ERR(0, 484, __pyx_L1_error)
-  __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_10_initialisePDB(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_PDBstr, __pyx_v_heavyAtoms, __pyx_v_resname, __pyx_v_atomname, __pyx_v_type, __pyx_v_chain, __pyx_v_resnum, __pyx_v_element);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDBstr), (&PyBaseString_Type), 1, "PDBstr", 1))) __PYX_ERR(0, 500, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resname), (&PyBaseString_Type), 1, "resname", 1))) __PYX_ERR(0, 500, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomname), (&PyBaseString_Type), 1, "atomname", 1))) __PYX_ERR(0, 500, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_type), (&PyBaseString_Type), 1, "type", 1))) __PYX_ERR(0, 500, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_chain), (&PyBaseString_Type), 1, "chain", 1))) __PYX_ERR(0, 500, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_element), (&PyBaseString_Type), 1, "element", 1))) __PYX_ERR(0, 500, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_extra_atoms), (&PyDict_Type), 1, "extra_atoms", 1))) __PYX_ERR(0, 500, __pyx_L1_error)
+  __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_10_initialisePDB(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_PDBstr, __pyx_v_heavyAtoms, __pyx_v_resname, __pyx_v_atomname, __pyx_v_type, __pyx_v_chain, __pyx_v_resnum, __pyx_v_element, __pyx_v_extra_atoms);
 
   /* function exit code */
   goto __pyx_L0;
@@ -10651,14 +10952,16 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_10_initialisePDB(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_PDBstr, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element) {
+static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_10_initialisePDB(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_PDBstr, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_extra_atoms) {
   PyObject *__pyx_v_PDBContent = 0;
   PyObject *__pyx_v_stringWithPDBContent = 0;
+  int __pyx_v_pdb_lines;
   PyObject *__pyx_v_atomName = 0;
   PyObject *__pyx_v_resName = 0;
   PyObject *__pyx_v_atomLine = 0;
   PyObject *__pyx_v_resnumStr = 0;
   struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *__pyx_v_atom = 0;
+  PyObject *__pyx_v_CMAtoms = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -10676,7 +10979,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   int __pyx_t_13;
   __Pyx_RefNannySetupContext("_initialisePDB", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":510
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":526
  *         cdef basestring atomName, resName, atomLine, resnumStr
  *         cdef Atom atom
  *         if resnum == 0:             # <<<<<<<<<<<<<<
@@ -10686,7 +10989,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_t_1 = ((__pyx_v_resnum == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":511
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":527
  *         cdef Atom atom
  *         if resnum == 0:
  *             resnumStr = u""             # <<<<<<<<<<<<<<
@@ -10696,7 +10999,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_INCREF(__pyx_kp_u_);
     __pyx_v_resnumStr = ((PyObject*)__pyx_kp_u_);
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":510
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":526
  *         cdef basestring atomName, resName, atomLine, resnumStr
  *         cdef Atom atom
  *         if resnum == 0:             # <<<<<<<<<<<<<<
@@ -10706,7 +11009,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     goto __pyx_L3;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":513
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":529
  *             resnumStr = u""
  *         else:
  *             resnumStr = u"%d" % (resnum)             # <<<<<<<<<<<<<<
@@ -10714,9 +11017,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         # creates a buffer that can handle a pdb file or a string containing
  */
   /*else*/ {
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_resnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 513, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_resnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 529, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyUnicode_Format(__pyx_kp_u_d, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 513, __pyx_L1_error)
+    __pyx_t_3 = PyUnicode_Format(__pyx_kp_u_d, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 529, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_resnumStr = ((PyObject*)__pyx_t_3);
@@ -10724,16 +11027,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __pyx_L3:;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":514
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":530
  *         else:
  *             resnumStr = u"%d" % (resnum)
  *         PDBContent = StringIO(readPDB(PDBstr))  # Using StringIO             # <<<<<<<<<<<<<<
  *         # creates a buffer that can handle a pdb file or a string containing
  *         # the PDB
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_StringIO); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 514, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_StringIO); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 530, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_readPDB); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 514, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_readPDB); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 530, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_5))) {
@@ -10747,7 +11050,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_v_PDBstr) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_PDBstr);
   __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 514, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 530, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __pyx_t_5 = NULL;
@@ -10763,20 +11066,20 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 514, __pyx_L1_error)
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 530, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_PDBContent = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":517
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":533
  *         # creates a buffer that can handle a pdb file or a string containing
  *         # the PDB
  *         self.pdb = PDBContent.read()  # in case one wants to write it             # <<<<<<<<<<<<<<
- * 
- *         stringWithPDBContent = self.pdb.split(u'\n')
+ *         if extra_atoms != {}:
+ *             CMAtoms = extra_atoms
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_PDBContent, __pyx_n_s_read); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 517, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_PDBContent, __pyx_n_s_read); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 533, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -10790,7 +11093,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 517, __pyx_L1_error)
+  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 533, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_GIVEREF(__pyx_t_3);
@@ -10799,66 +11102,162 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_v_self->pdb = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":519
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":534
+ *         # the PDB
  *         self.pdb = PDBContent.read()  # in case one wants to write it
+ *         if extra_atoms != {}:             # <<<<<<<<<<<<<<
+ *             CMAtoms = extra_atoms
+ *         else:
+ */
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 534, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_extra_atoms, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 534, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 534, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__pyx_t_1) {
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":535
+ *         self.pdb = PDBContent.read()  # in case one wants to write it
+ *         if extra_atoms != {}:
+ *             CMAtoms = extra_atoms             # <<<<<<<<<<<<<<
+ *         else:
+ *             CMAtoms = self.CMAtoms
+ */
+    __Pyx_INCREF(__pyx_v_extra_atoms);
+    __pyx_v_CMAtoms = __pyx_v_extra_atoms;
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":534
+ *         # the PDB
+ *         self.pdb = PDBContent.read()  # in case one wants to write it
+ *         if extra_atoms != {}:             # <<<<<<<<<<<<<<
+ *             CMAtoms = extra_atoms
+ *         else:
+ */
+    goto __pyx_L4;
+  }
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":537
+ *             CMAtoms = extra_atoms
+ *         else:
+ *             CMAtoms = self.CMAtoms             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  /*else*/ {
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_CMAtoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 537, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_v_CMAtoms = __pyx_t_2;
+    __pyx_t_2 = 0;
+  }
+  __pyx_L4:;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":540
+ * 
  * 
  *         stringWithPDBContent = self.pdb.split(u'\n')             # <<<<<<<<<<<<<<
+ *         if len(stringWithPDBContent) < 2:
+ *             # If the string got here and only contains one line means that is a
+ */
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->pdb, __pyx_n_s_split); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 540, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_3, function);
+    }
+  }
+  __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_kp_u__8) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_kp_u__8);
+  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+  if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 540, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (!(likely(PyList_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 540, __pyx_L1_error)
+  __pyx_v_stringWithPDBContent = ((PyObject*)__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":541
+ * 
+ *         stringWithPDBContent = self.pdb.split(u'\n')
+ *         if len(stringWithPDBContent) < 2:             # <<<<<<<<<<<<<<
+ *             # If the string got here and only contains one line means that is a
+ *             # path which does not exist
+ */
+  if (unlikely(__pyx_v_stringWithPDBContent == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 541, __pyx_L1_error)
+  }
+  __pyx_t_7 = PyList_GET_SIZE(__pyx_v_stringWithPDBContent); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 541, __pyx_L1_error)
+  __pyx_t_1 = ((__pyx_t_7 < 2) != 0);
+  if (unlikely(__pyx_t_1)) {
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":544
+ *             # If the string got here and only contains one line means that is a
+ *             # path which does not exist
+ *             raise ValueError("Input file not found!!")             # <<<<<<<<<<<<<<
+ *         pdb_lines = 0
+ *         for atomLine in stringWithPDBContent:
+ */
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 544, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __PYX_ERR(0, 544, __pyx_L1_error)
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":541
+ * 
+ *         stringWithPDBContent = self.pdb.split(u'\n')
+ *         if len(stringWithPDBContent) < 2:             # <<<<<<<<<<<<<<
+ *             # If the string got here and only contains one line means that is a
+ *             # path which does not exist
+ */
+  }
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":545
+ *             # path which does not exist
+ *             raise ValueError("Input file not found!!")
+ *         pdb_lines = 0             # <<<<<<<<<<<<<<
  *         for atomLine in stringWithPDBContent:
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->pdb, __pyx_n_s_split); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 519, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_kp_u__8) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_kp_u__8);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 519, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(PyList_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 519, __pyx_L1_error)
-  __pyx_v_stringWithPDBContent = ((PyObject*)__pyx_t_3);
-  __pyx_t_3 = 0;
+  __pyx_v_pdb_lines = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":520
- * 
- *         stringWithPDBContent = self.pdb.split(u'\n')
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":546
+ *             raise ValueError("Input file not found!!")
+ *         pdb_lines = 0
  *         for atomLine in stringWithPDBContent:             # <<<<<<<<<<<<<<
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  *                 continue
  */
   if (unlikely(__pyx_v_stringWithPDBContent == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 520, __pyx_L1_error)
+    __PYX_ERR(0, 546, __pyx_L1_error)
   }
-  __pyx_t_3 = __pyx_v_stringWithPDBContent; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
+  __pyx_t_2 = __pyx_v_stringWithPDBContent; __Pyx_INCREF(__pyx_t_2); __pyx_t_7 = 0;
   for (;;) {
-    if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_3)) break;
+    if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_2)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_7); __Pyx_INCREF(__pyx_t_2); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 520, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_7); __Pyx_INCREF(__pyx_t_3); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 546, __pyx_L1_error)
     #else
-    __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 520, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 546, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     #endif
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 520, __pyx_L1_error)
-    __Pyx_XDECREF_SET(__pyx_v_atomLine, ((PyObject*)__pyx_t_2));
-    __pyx_t_2 = 0;
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 546, __pyx_L1_error)
+    __Pyx_XDECREF_SET(__pyx_v_atomLine, ((PyObject*)__pyx_t_3));
+    __pyx_t_3 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":521
- *         stringWithPDBContent = self.pdb.split(u'\n')
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":547
+ *         pdb_lines = 0
  *         for atomLine in stringWithPDBContent:
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):             # <<<<<<<<<<<<<<
  *                 continue
- *             if type == self._typeCM:
+ *             pdb_lines += 1
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomLine, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 521, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomLine, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 547, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -10870,20 +11269,20 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         __Pyx_DECREF_SET(__pyx_t_4, function);
       }
     }
-    __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_ATOM);
+    __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_ATOM);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 521, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 521, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_9 = ((!__pyx_t_8) != 0);
     if (__pyx_t_9) {
     } else {
       __pyx_t_1 = __pyx_t_9;
-      goto __pyx_L7_bool_binop_done;
+      goto __pyx_L9_bool_binop_done;
     }
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomLine, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 521, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomLine, __pyx_n_s_startswith); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 547, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -10895,63 +11294,72 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         __Pyx_DECREF_SET(__pyx_t_4, function);
       }
     }
-    __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_n_u_HETATM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_HETATM);
+    __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_5, __pyx_n_u_HETATM) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_n_u_HETATM);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 521, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 521, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 547, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_8 = ((!__pyx_t_9) != 0);
     __pyx_t_1 = __pyx_t_8;
-    __pyx_L7_bool_binop_done:;
+    __pyx_L9_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":522
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":548
  *         for atomLine in stringWithPDBContent:
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  *                 continue             # <<<<<<<<<<<<<<
+ *             pdb_lines += 1
  *             if type == self._typeCM:
- *                 atomName = atomLine[12:16].strip()
  */
-      goto __pyx_L4_continue;
+      goto __pyx_L6_continue;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":521
- *         stringWithPDBContent = self.pdb.split(u'\n')
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":547
+ *         pdb_lines = 0
  *         for atomLine in stringWithPDBContent:
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):             # <<<<<<<<<<<<<<
  *                 continue
- *             if type == self._typeCM:
+ *             pdb_lines += 1
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":523
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":549
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  *                 continue
+ *             pdb_lines += 1             # <<<<<<<<<<<<<<
+ *             if type == self._typeCM:
+ *                 atomName = atomLine[12:16].strip()
+ */
+    __pyx_v_pdb_lines = (__pyx_v_pdb_lines + 1);
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":550
+ *                 continue
+ *             pdb_lines += 1
  *             if type == self._typeCM:             # <<<<<<<<<<<<<<
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeCM); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 523, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 523, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeCM); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 550, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 550, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":524
- *                 continue
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":551
+ *             pdb_lines += 1
  *             if type == self._typeCM:
  *                 atomName = atomLine[12:16].strip()             # <<<<<<<<<<<<<<
  *                 resName = atomLine[17:20].strip()
- *                 if resName not in self.CMAtoms:
+ *                 if resName not in CMAtoms:
  */
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 524, __pyx_L1_error)
+        __PYX_ERR(0, 551, __pyx_L1_error)
       }
-      __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 524, __pyx_L1_error)
+      __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 551, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_strip); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 524, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_strip); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 551, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __pyx_t_4 = NULL;
@@ -10964,29 +11372,29 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_DECREF_SET(__pyx_t_5, function);
         }
       }
-      __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+      __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 524, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 551, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 524, __pyx_L1_error)
-      __Pyx_XDECREF_SET(__pyx_v_atomName, ((PyObject*)__pyx_t_2));
-      __pyx_t_2 = 0;
+      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 551, __pyx_L1_error)
+      __Pyx_XDECREF_SET(__pyx_v_atomName, ((PyObject*)__pyx_t_3));
+      __pyx_t_3 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":525
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":552
  *             if type == self._typeCM:
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()             # <<<<<<<<<<<<<<
- *                 if resName not in self.CMAtoms:
+ *                 if resName not in CMAtoms:
  *                     continue
  */
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 525, __pyx_L1_error)
+        __PYX_ERR(0, 552, __pyx_L1_error)
       }
-      __pyx_t_5 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 525, __pyx_L1_error)
+      __pyx_t_5 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 552, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 525, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 552, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_5 = NULL;
@@ -10999,101 +11407,95 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_DECREF_SET(__pyx_t_4, function);
         }
       }
-      __pyx_t_2 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
+      __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 525, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 552, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 525, __pyx_L1_error)
-      __Pyx_XDECREF_SET(__pyx_v_resName, ((PyObject*)__pyx_t_2));
-      __pyx_t_2 = 0;
+      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 552, __pyx_L1_error)
+      __Pyx_XDECREF_SET(__pyx_v_resName, ((PyObject*)__pyx_t_3));
+      __pyx_t_3 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":526
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":553
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()
- *                 if resName not in self.CMAtoms:             # <<<<<<<<<<<<<<
+ *                 if resName not in CMAtoms:             # <<<<<<<<<<<<<<
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:
  */
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_CMAtoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 526, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_resName, __pyx_t_2, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 526, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+      __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_resName, __pyx_v_CMAtoms, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 553, __pyx_L1_error)
       __pyx_t_8 = (__pyx_t_1 != 0);
       if (__pyx_t_8) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":527
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":554
  *                 resName = atomLine[17:20].strip()
- *                 if resName not in self.CMAtoms:
+ *                 if resName not in CMAtoms:
  *                     continue             # <<<<<<<<<<<<<<
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":526
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":553
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()
- *                 if resName not in self.CMAtoms:             # <<<<<<<<<<<<<<
+ *                 if resName not in CMAtoms:             # <<<<<<<<<<<<<<
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":528
- *                 if resName not in self.CMAtoms:
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":555
+ *                 if resName not in CMAtoms:
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:             # <<<<<<<<<<<<<<
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:             # <<<<<<<<<<<<<<
  *                     continue
  *             else:
  */
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_atomName, __pyx_n_u_CA, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 528, __pyx_L1_error)
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_atomName, __pyx_n_u_CA, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 555, __pyx_L1_error)
       __pyx_t_9 = (__pyx_t_1 != 0);
       if (__pyx_t_9) {
       } else {
         __pyx_t_8 = __pyx_t_9;
-        goto __pyx_L12_bool_binop_done;
+        goto __pyx_L14_bool_binop_done;
       }
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_CMAtoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 528, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_4 = __Pyx_PyObject_GetItem(__pyx_t_2, __pyx_v_resName); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 528, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_atomName, __pyx_t_4, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 528, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_3 = __Pyx_PyObject_GetItem(__pyx_v_CMAtoms, __pyx_v_resName); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 555, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_atomName, __pyx_t_3, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 555, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_8 = __pyx_t_9;
-      __pyx_L12_bool_binop_done:;
+      __pyx_L14_bool_binop_done:;
       if (__pyx_t_8) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":529
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":556
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:
  *                     continue             # <<<<<<<<<<<<<<
  *             else:
  *                 # HUGE optimisation (not to create an atom each time ~ 2e-5 s/atom)
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":528
- *                 if resName not in self.CMAtoms:
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":555
+ *                 if resName not in CMAtoms:
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:             # <<<<<<<<<<<<<<
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:             # <<<<<<<<<<<<<<
  *                     continue
  *             else:
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":523
- *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":550
  *                 continue
+ *             pdb_lines += 1
  *             if type == self._typeCM:             # <<<<<<<<<<<<<<
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()
  */
-      goto __pyx_L9;
+      goto __pyx_L11;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":532
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":559
  *             else:
  *                 # HUGE optimisation (not to create an atom each time ~ 2e-5 s/atom)
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:             # <<<<<<<<<<<<<<
@@ -11101,54 +11503,54 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  */
     /*else*/ {
-      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_resname, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 532, __pyx_L1_error)
+      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_resname, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 559, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_9 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_8 = __pyx_t_1;
-        goto __pyx_L15_bool_binop_done;
+        goto __pyx_L17_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 532, __pyx_L1_error)
+        __PYX_ERR(0, 559, __pyx_L1_error)
       }
-      __pyx_t_2 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 532, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 532, __pyx_L1_error)
+      __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 559, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_strip); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 559, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = NULL;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-        __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-        if (likely(__pyx_t_2)) {
+        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_4)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-          __Pyx_INCREF(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_4);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_5, function);
         }
       }
-      __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 532, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 559, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_v_resname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 532, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_v_resname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 559, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_9 = ((!__pyx_t_1) != 0);
       __pyx_t_8 = __pyx_t_9;
-      __pyx_L15_bool_binop_done:;
+      __pyx_L17_bool_binop_done:;
       if (__pyx_t_8) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":533
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":560
  *                 # HUGE optimisation (not to create an atom each time ~ 2e-5 s/atom)
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:
  *                     continue             # <<<<<<<<<<<<<<
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":532
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":559
  *             else:
  *                 # HUGE optimisation (not to create an atom each time ~ 2e-5 s/atom)
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:             # <<<<<<<<<<<<<<
@@ -11157,61 +11559,61 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":534
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":561
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:
  *                     continue
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:             # <<<<<<<<<<<<<<
  *                     continue
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  */
-      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_atomname, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 534, __pyx_L1_error)
+      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_atomname, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 561, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_9 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_8 = __pyx_t_1;
-        goto __pyx_L18_bool_binop_done;
+        goto __pyx_L20_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 534, __pyx_L1_error)
+        __PYX_ERR(0, 561, __pyx_L1_error)
       }
-      __pyx_t_5 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 534, __pyx_L1_error)
+      __pyx_t_5 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 561, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_strip); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 534, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 561, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_5 = NULL;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
+        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
         if (likely(__pyx_t_5)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
           __Pyx_INCREF(__pyx_t_5);
           __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_2, function);
+          __Pyx_DECREF_SET(__pyx_t_4, function);
         }
       }
-      __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+      __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 534, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_v_atomname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 534, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 561, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_v_atomname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 561, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_9 = ((!__pyx_t_1) != 0);
       __pyx_t_8 = __pyx_t_9;
-      __pyx_L18_bool_binop_done:;
+      __pyx_L20_bool_binop_done:;
       if (__pyx_t_8) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":535
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":562
  *                     continue
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  *                     continue             # <<<<<<<<<<<<<<
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":534
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":561
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:
  *                     continue
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:             # <<<<<<<<<<<<<<
@@ -11220,61 +11622,61 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":536
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":563
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  *                     continue
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:             # <<<<<<<<<<<<<<
  *                     continue
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  */
-      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_chain, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 536, __pyx_L1_error)
+      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_chain, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 563, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_9 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_8 = __pyx_t_1;
-        goto __pyx_L21_bool_binop_done;
+        goto __pyx_L23_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 536, __pyx_L1_error)
+        __PYX_ERR(0, 563, __pyx_L1_error)
       }
-      __pyx_t_2 = PySequence_GetSlice(__pyx_v_atomLine, 21, 22); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 536, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 536, __pyx_L1_error)
+      __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomLine, 21, 22); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 563, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_strip); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 563, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = NULL;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-        __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-        if (likely(__pyx_t_2)) {
+        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_4)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-          __Pyx_INCREF(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_4);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_5, function);
         }
       }
-      __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 536, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 563, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_v_chain, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 536, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_v_chain, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 563, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_9 = ((!__pyx_t_1) != 0);
       __pyx_t_8 = __pyx_t_9;
-      __pyx_L21_bool_binop_done:;
+      __pyx_L23_bool_binop_done:;
       if (__pyx_t_8) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":537
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":564
  *                     continue
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  *                     continue             # <<<<<<<<<<<<<<
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":536
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":563
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  *                     continue
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:             # <<<<<<<<<<<<<<
@@ -11283,61 +11685,61 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":538
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":565
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  *                     continue
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:             # <<<<<<<<<<<<<<
  *                     continue
  *                 if element != u"" and not atomLine[76:78].strip() == element:
  */
-      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_resnumStr, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 538, __pyx_L1_error)
+      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_resnumStr, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 565, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_9 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_8 = __pyx_t_1;
-        goto __pyx_L24_bool_binop_done;
+        goto __pyx_L26_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 538, __pyx_L1_error)
+        __PYX_ERR(0, 565, __pyx_L1_error)
       }
-      __pyx_t_5 = PySequence_GetSlice(__pyx_v_atomLine, 22, 26); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 538, __pyx_L1_error)
+      __pyx_t_5 = PySequence_GetSlice(__pyx_v_atomLine, 22, 26); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 565, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_strip); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 538, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 565, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_5 = NULL;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
+        __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_4);
         if (likely(__pyx_t_5)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
           __Pyx_INCREF(__pyx_t_5);
           __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_2, function);
+          __Pyx_DECREF_SET(__pyx_t_4, function);
         }
       }
-      __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+      __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 538, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_v_resnumStr, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 538, __pyx_L1_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 565, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_v_resnumStr, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 565, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_9 = ((!__pyx_t_1) != 0);
       __pyx_t_8 = __pyx_t_9;
-      __pyx_L24_bool_binop_done:;
+      __pyx_L26_bool_binop_done:;
       if (__pyx_t_8) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":539
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":566
  *                     continue
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  *                     continue             # <<<<<<<<<<<<<<
  *                 if element != u"" and not atomLine[76:78].strip() == element:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":538
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":565
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  *                     continue
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:             # <<<<<<<<<<<<<<
@@ -11346,61 +11748,61 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":540
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":567
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  *                     continue
  *                 if element != u"" and not atomLine[76:78].strip() == element:             # <<<<<<<<<<<<<<
  *                     continue
  * 
  */
-      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_element, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 540, __pyx_L1_error)
+      __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_element, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 567, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_9 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_8 = __pyx_t_1;
-        goto __pyx_L27_bool_binop_done;
+        goto __pyx_L29_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 540, __pyx_L1_error)
+        __PYX_ERR(0, 567, __pyx_L1_error)
       }
-      __pyx_t_2 = PySequence_GetSlice(__pyx_v_atomLine, 76, 78); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 540, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 540, __pyx_L1_error)
+      __pyx_t_4 = PySequence_GetSlice(__pyx_v_atomLine, 76, 78); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 567, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_strip); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 567, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = NULL;
+      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-        __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-        if (likely(__pyx_t_2)) {
+        __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+        if (likely(__pyx_t_4)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-          __Pyx_INCREF(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_4);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_5, function);
         }
       }
-      __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 540, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
+      __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 567, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_4, __pyx_v_element, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 540, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_3, __pyx_v_element, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 567, __pyx_L1_error)
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_9 = ((!__pyx_t_1) != 0);
       __pyx_t_8 = __pyx_t_9;
-      __pyx_L27_bool_binop_done:;
+      __pyx_L29_bool_binop_done:;
       if (__pyx_t_8) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":541
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":568
  *                     continue
  *                 if element != u"" and not atomLine[76:78].strip() == element:
  *                     continue             # <<<<<<<<<<<<<<
  * 
  *             atom = Atom(atomLine)
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":540
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":567
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  *                     continue
  *                 if element != u"" and not atomLine[76:78].strip() == element:             # <<<<<<<<<<<<<<
@@ -11409,21 +11811,21 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
     }
-    __pyx_L9:;
+    __pyx_L11:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":543
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":570
  *                     continue
  * 
  *             atom = Atom(atomLine)             # <<<<<<<<<<<<<<
  *             # Here atom will be not null, empty or not.
  *             # With "try", we prune empty atoms
  */
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom), __pyx_v_atomLine); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 543, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_XDECREF_SET(__pyx_v_atom, ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_t_4));
-    __pyx_t_4 = 0;
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom), __pyx_v_atomLine); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 570, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_XDECREF_SET(__pyx_v_atom, ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_t_3));
+    __pyx_t_3 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":546
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":573
  *             # Here atom will be not null, empty or not.
  *             # With "try", we prune empty atoms
  *             try:             # <<<<<<<<<<<<<<
@@ -11439,7 +11841,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_XGOTREF(__pyx_t_12);
       /*try:*/ {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":547
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":574
  *             # With "try", we prune empty atoms
  *             try:
  *                 if (not heavyAtoms or atom.isHeavyAtom()) and\             # <<<<<<<<<<<<<<
@@ -11449,124 +11851,124 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         __pyx_t_9 = ((!(__pyx_v_heavyAtoms != 0)) != 0);
         if (!__pyx_t_9) {
         } else {
-          goto __pyx_L39_next_and;
+          goto __pyx_L41_next_and;
         }
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isHeavyAtom); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 547, __pyx_L29_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isHeavyAtom); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 574, __pyx_L31_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_2 = NULL;
+        __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-          __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-          if (likely(__pyx_t_2)) {
+          __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+          if (likely(__pyx_t_4)) {
             PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-            __Pyx_INCREF(__pyx_t_2);
+            __Pyx_INCREF(__pyx_t_4);
             __Pyx_INCREF(function);
             __Pyx_DECREF_SET(__pyx_t_5, function);
           }
         }
-        __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 547, __pyx_L29_error)
-        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 574, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 547, __pyx_L29_error)
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 574, __pyx_L31_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         if (__pyx_t_9) {
         } else {
           __pyx_t_8 = __pyx_t_9;
-          goto __pyx_L38_bool_binop_done;
+          goto __pyx_L40_bool_binop_done;
         }
-        __pyx_L39_next_and:;
+        __pyx_L41_next_and:;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":548
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":575
  *             try:
  *                 if (not heavyAtoms or atom.isHeavyAtom()) and\
  *                    (type == self._typeAll or type == self._typeCM or (type == self._typeProtein and atom.isProtein()) or (type == self._typeHetero and atom.isHeteroAtom())):             # <<<<<<<<<<<<<<
  *                         self.atoms.update({atom.id: atom})
  *                         self.atomList.append(atom.id)
  */
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeAll); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeAll); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         if (!__pyx_t_9) {
         } else {
           __pyx_t_8 = __pyx_t_9;
-          goto __pyx_L38_bool_binop_done;
+          goto __pyx_L40_bool_binop_done;
         }
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeCM); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeCM); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         if (!__pyx_t_9) {
         } else {
           __pyx_t_8 = __pyx_t_9;
-          goto __pyx_L38_bool_binop_done;
+          goto __pyx_L40_bool_binop_done;
         }
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeProtein); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeProtein); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         if (!__pyx_t_9) {
-          goto __pyx_L43_next_or;
+          goto __pyx_L45_next_or;
         } else {
         }
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isProtein); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 548, __pyx_L29_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isProtein); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 575, __pyx_L31_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_2 = NULL;
+        __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-          __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-          if (likely(__pyx_t_2)) {
+          __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+          if (likely(__pyx_t_4)) {
             PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-            __Pyx_INCREF(__pyx_t_2);
+            __Pyx_INCREF(__pyx_t_4);
             __Pyx_INCREF(function);
             __Pyx_DECREF_SET(__pyx_t_5, function);
           }
         }
-        __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         if (!__pyx_t_9) {
         } else {
           __pyx_t_8 = __pyx_t_9;
-          goto __pyx_L38_bool_binop_done;
+          goto __pyx_L40_bool_binop_done;
         }
-        __pyx_L43_next_or:;
-        __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeHetero); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_GOTREF(__pyx_t_4);
-        __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_4, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_L45_next_or:;
+        __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeHetero); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_3);
+        __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         if (__pyx_t_9) {
         } else {
           __pyx_t_8 = __pyx_t_9;
-          goto __pyx_L38_bool_binop_done;
+          goto __pyx_L40_bool_binop_done;
         }
-        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isHeteroAtom); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 548, __pyx_L29_error)
+        __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isHeteroAtom); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 575, __pyx_L31_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_2 = NULL;
+        __pyx_t_4 = NULL;
         if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-          __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
-          if (likely(__pyx_t_2)) {
+          __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
+          if (likely(__pyx_t_4)) {
             PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-            __Pyx_INCREF(__pyx_t_2);
+            __Pyx_INCREF(__pyx_t_4);
             __Pyx_INCREF(function);
             __Pyx_DECREF_SET(__pyx_t_5, function);
           }
         }
-        __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
-        __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-        if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_GOTREF(__pyx_t_4);
+        __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
+        __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+        if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 548, __pyx_L29_error)
-        __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+        __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 575, __pyx_L31_error)
+        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         __pyx_t_8 = __pyx_t_9;
-        __pyx_L38_bool_binop_done:;
+        __pyx_L40_bool_binop_done:;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":547
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":574
  *             # With "try", we prune empty atoms
  *             try:
  *                 if (not heavyAtoms or atom.isHeavyAtom()) and\             # <<<<<<<<<<<<<<
@@ -11575,18 +11977,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
         if (__pyx_t_8) {
 
-          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":549
+          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":576
  *                 if (not heavyAtoms or atom.isHeavyAtom()) and\
  *                    (type == self._typeAll or type == self._typeCM or (type == self._typeProtein and atom.isProtein()) or (type == self._typeHetero and atom.isHeteroAtom())):
  *                         self.atoms.update({atom.id: atom})             # <<<<<<<<<<<<<<
  *                         self.atomList.append(atom.id)
  *             except:
  */
-          __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->atoms, __pyx_n_s_update); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 549, __pyx_L29_error)
+          __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->atoms, __pyx_n_s_update); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 576, __pyx_L31_error)
           __Pyx_GOTREF(__pyx_t_5);
-          __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 549, __pyx_L29_error)
-          __Pyx_GOTREF(__pyx_t_2);
-          if (PyDict_SetItem(__pyx_t_2, __pyx_v_atom->id, ((PyObject *)__pyx_v_atom)) < 0) __PYX_ERR(0, 549, __pyx_L29_error)
+          __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 576, __pyx_L31_error)
+          __Pyx_GOTREF(__pyx_t_4);
+          if (PyDict_SetItem(__pyx_t_4, __pyx_v_atom->id, ((PyObject *)__pyx_v_atom)) < 0) __PYX_ERR(0, 576, __pyx_L31_error)
           __pyx_t_6 = NULL;
           if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
             __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_5);
@@ -11597,15 +11999,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
               __Pyx_DECREF_SET(__pyx_t_5, function);
             }
           }
-          __pyx_t_4 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_2);
+          __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_6, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
           __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-          __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 549, __pyx_L29_error)
-          __Pyx_GOTREF(__pyx_t_4);
-          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+          if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 576, __pyx_L31_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":550
+          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":577
  *                    (type == self._typeAll or type == self._typeCM or (type == self._typeProtein and atom.isProtein()) or (type == self._typeHetero and atom.isHeteroAtom())):
  *                         self.atoms.update({atom.id: atom})
  *                         self.atomList.append(atom.id)             # <<<<<<<<<<<<<<
@@ -11614,14 +12016,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
           if (unlikely(__pyx_v_self->atomList == Py_None)) {
             PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-            __PYX_ERR(0, 550, __pyx_L29_error)
+            __PYX_ERR(0, 577, __pyx_L31_error)
           }
-          __pyx_t_4 = __pyx_v_atom->id;
-          __Pyx_INCREF(__pyx_t_4);
-          __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_self->atomList, __pyx_t_4); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 550, __pyx_L29_error)
-          __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+          __pyx_t_3 = __pyx_v_atom->id;
+          __Pyx_INCREF(__pyx_t_3);
+          __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_self->atomList, __pyx_t_3); if (unlikely(__pyx_t_13 == ((int)-1))) __PYX_ERR(0, 577, __pyx_L31_error)
+          __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":547
+          /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":574
  *             # With "try", we prune empty atoms
  *             try:
  *                 if (not heavyAtoms or atom.isHeavyAtom()) and\             # <<<<<<<<<<<<<<
@@ -11630,7 +12032,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
         }
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":546
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":573
  *             # Here atom will be not null, empty or not.
  *             # With "try", we prune empty atoms
  *             try:             # <<<<<<<<<<<<<<
@@ -11641,84 +12043,116 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_XDECREF(__pyx_t_11); __pyx_t_11 = 0;
       __Pyx_XDECREF(__pyx_t_12); __pyx_t_12 = 0;
-      goto __pyx_L36_try_end;
-      __pyx_L29_error:;
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+      goto __pyx_L38_try_end;
+      __pyx_L31_error:;
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":551
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":578
  *                         self.atoms.update({atom.id: atom})
  *                         self.atomList.append(atom.id)
  *             except:             # <<<<<<<<<<<<<<
  *                 pass
- *         if self.atoms == {}:
+ *         if pdb_lines == 0:
  */
       /*except:*/ {
         __Pyx_ErrRestore(0,0,0);
-        goto __pyx_L30_exception_handled;
+        goto __pyx_L32_exception_handled;
       }
-      __pyx_L30_exception_handled:;
+      __pyx_L32_exception_handled:;
       __Pyx_XGIVEREF(__pyx_t_10);
       __Pyx_XGIVEREF(__pyx_t_11);
       __Pyx_XGIVEREF(__pyx_t_12);
       __Pyx_ExceptionReset(__pyx_t_10, __pyx_t_11, __pyx_t_12);
-      __pyx_L36_try_end:;
+      __pyx_L38_try_end:;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":520
- * 
- *         stringWithPDBContent = self.pdb.split(u'\n')
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":546
+ *             raise ValueError("Input file not found!!")
+ *         pdb_lines = 0
  *         for atomLine in stringWithPDBContent:             # <<<<<<<<<<<<<<
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  *                 continue
  */
-    __pyx_L4_continue:;
+    __pyx_L6_continue:;
   }
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":553
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":580
  *             except:
  *                 pass
- *         if self.atoms == {}:             # <<<<<<<<<<<<<<
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
- * 
+ *         if pdb_lines == 0:             # <<<<<<<<<<<<<<
+ *             raise ValueError("Input pdb was malformed or empty!!")
+ *         if self.atoms == {}:
  */
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 553, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyObject_RichCompare(__pyx_v_self->atoms, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 553, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 553, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __pyx_t_8 = ((__pyx_v_pdb_lines == 0) != 0);
   if (unlikely(__pyx_t_8)) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":554
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":581
  *                 pass
+ *         if pdb_lines == 0:
+ *             raise ValueError("Input pdb was malformed or empty!!")             # <<<<<<<<<<<<<<
  *         if self.atoms == {}:
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')             # <<<<<<<<<<<<<<
- * 
- *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None):
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  */
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 554, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 554, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 581, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __PYX_ERR(0, 581, __pyx_L1_error)
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":553
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":580
  *             except:
  *                 pass
+ *         if pdb_lines == 0:             # <<<<<<<<<<<<<<
+ *             raise ValueError("Input pdb was malformed or empty!!")
+ *         if self.atoms == {}:
+ */
+  }
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":582
+ *         if pdb_lines == 0:
+ *             raise ValueError("Input pdb was malformed or empty!!")
  *         if self.atoms == {}:             # <<<<<<<<<<<<<<
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
+ * 
+ */
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 582, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = PyObject_RichCompare(__pyx_v_self->atoms, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 582, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 582, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(__pyx_t_8)) {
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":583
+ *             raise ValueError("Input pdb was malformed or empty!!")
+ *         if self.atoms == {}:
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')             # <<<<<<<<<<<<<<
+ * 
+ *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):
+ */
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 583, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __PYX_ERR(0, 583, __pyx_L1_error)
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":582
+ *         if pdb_lines == 0:
+ *             raise ValueError("Input pdb was malformed or empty!!")
+ *         if self.atoms == {}:             # <<<<<<<<<<<<<<
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  * 
  */
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":484
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":500
  *         return self.ispdb
  * 
- *     def _initialisePDB(self, basestring PDBstr, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=""):             # <<<<<<<<<<<<<<
+ *     def _initialisePDB(self, basestring PDBstr, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element="", dict extra_atoms={}):             # <<<<<<<<<<<<<<
  *         """
  *             Load the information from a PDB file or a string with the PDB
  */
@@ -11742,15 +12176,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_XDECREF(__pyx_v_atomLine);
   __Pyx_XDECREF(__pyx_v_resnumStr);
   __Pyx_XDECREF((PyObject *)__pyx_v_atom);
+  __Pyx_XDECREF(__pyx_v_CMAtoms);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":556
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":585
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  * 
- *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None):             # <<<<<<<<<<<<<<
+ *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):             # <<<<<<<<<<<<<<
  *         """
  *             Load the information from a loaded XTC file into a  mdtraj Trajectory
  */
@@ -11768,22 +12203,26 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   int __pyx_v_resnum;
   PyObject *__pyx_v_element = 0;
   PyObject *__pyx_v_topology = 0;
+  PyObject *__pyx_v_extra_atoms = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_initialiseXTC (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_frame,&__pyx_n_s_heavyAtoms,&__pyx_n_s_resname,&__pyx_n_s_atomname,&__pyx_n_s_type,&__pyx_n_s_chain,&__pyx_n_s_resnum,&__pyx_n_s_element,&__pyx_n_s_topology,0};
-    PyObject* values[9] = {0,0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_frame,&__pyx_n_s_heavyAtoms,&__pyx_n_s_resname,&__pyx_n_s_atomname,&__pyx_n_s_type,&__pyx_n_s_chain,&__pyx_n_s_resnum,&__pyx_n_s_element,&__pyx_n_s_topology,&__pyx_n_s_extra_atoms,0};
+    PyObject* values[10] = {0,0,0,0,0,0,0,0,0,0};
     values[2] = ((PyObject*)__pyx_kp_u_);
     values[3] = ((PyObject*)__pyx_kp_u_);
     values[4] = ((PyObject*)__pyx_n_u_ALL);
     values[5] = ((PyObject*)__pyx_kp_u_);
     values[7] = ((PyObject*)__pyx_kp_u_);
     values[8] = ((PyObject*)Py_None);
+    values[9] = __pyx_k__14;
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        CYTHON_FALLTHROUGH;
         case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         CYTHON_FALLTHROUGH;
         case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
@@ -11858,12 +12297,20 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_topology);
           if (value) { values[8] = value; kw_args--; }
         }
+        CYTHON_FALLTHROUGH;
+        case  9:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_extra_atoms);
+          if (value) { values[9] = value; kw_args--; }
+        }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_initialiseXTC") < 0)) __PYX_ERR(0, 556, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_initialiseXTC") < 0)) __PYX_ERR(0, 585, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        CYTHON_FALLTHROUGH;
         case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         CYTHON_FALLTHROUGH;
         case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
@@ -11887,7 +12334,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_v_frame = ((PyArrayObject *)values[0]);
     if (values[1]) {
-      __pyx_v_heavyAtoms = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_heavyAtoms == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 556, __pyx_L3_error)
+      __pyx_v_heavyAtoms = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_heavyAtoms == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 585, __pyx_L3_error)
     } else {
       __pyx_v_heavyAtoms = ((int)1);
     }
@@ -11896,29 +12343,31 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __pyx_v_type = ((PyObject*)values[4]);
     __pyx_v_chain = ((PyObject*)values[5]);
     if (values[6]) {
-      __pyx_v_resnum = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_resnum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 556, __pyx_L3_error)
+      __pyx_v_resnum = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_resnum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 585, __pyx_L3_error)
     } else {
       __pyx_v_resnum = ((int)0);
     }
     __pyx_v_element = ((PyObject*)values[7]);
     __pyx_v_topology = ((PyObject*)values[8]);
+    __pyx_v_extra_atoms = ((PyObject*)values[9]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_initialiseXTC", 0, 1, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 556, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_initialiseXTC", 0, 1, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 585, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB._initialiseXTC", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_frame), __pyx_ptype_5numpy_ndarray, 1, "frame", 0))) __PYX_ERR(0, 556, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resname), (&PyBaseString_Type), 1, "resname", 1))) __PYX_ERR(0, 556, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomname), (&PyBaseString_Type), 1, "atomname", 1))) __PYX_ERR(0, 556, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_type), (&PyBaseString_Type), 1, "type", 1))) __PYX_ERR(0, 556, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_chain), (&PyBaseString_Type), 1, "chain", 1))) __PYX_ERR(0, 556, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_element), (&PyBaseString_Type), 1, "element", 1))) __PYX_ERR(0, 556, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_topology), (&PyList_Type), 1, "topology", 1))) __PYX_ERR(0, 556, __pyx_L1_error)
-  __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_12_initialiseXTC(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_frame, __pyx_v_heavyAtoms, __pyx_v_resname, __pyx_v_atomname, __pyx_v_type, __pyx_v_chain, __pyx_v_resnum, __pyx_v_element, __pyx_v_topology);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_frame), __pyx_ptype_5numpy_ndarray, 1, "frame", 0))) __PYX_ERR(0, 585, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resname), (&PyBaseString_Type), 1, "resname", 1))) __PYX_ERR(0, 585, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomname), (&PyBaseString_Type), 1, "atomname", 1))) __PYX_ERR(0, 585, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_type), (&PyBaseString_Type), 1, "type", 1))) __PYX_ERR(0, 585, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_chain), (&PyBaseString_Type), 1, "chain", 1))) __PYX_ERR(0, 585, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_element), (&PyBaseString_Type), 1, "element", 1))) __PYX_ERR(0, 585, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_topology), (&PyList_Type), 1, "topology", 1))) __PYX_ERR(0, 585, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_extra_atoms), (&PyDict_Type), 1, "extra_atoms", 1))) __PYX_ERR(0, 585, __pyx_L1_error)
+  __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_12_initialiseXTC(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_frame, __pyx_v_heavyAtoms, __pyx_v_resname, __pyx_v_atomname, __pyx_v_type, __pyx_v_chain, __pyx_v_resnum, __pyx_v_element, __pyx_v_topology, __pyx_v_extra_atoms);
 
   /* function exit code */
   goto __pyx_L0;
@@ -11929,7 +12378,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_12_initialiseXTC(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyArrayObject *__pyx_v_frame, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_topology) {
+static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_12_initialiseXTC(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyArrayObject *__pyx_v_frame, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_topology, PyObject *__pyx_v_extra_atoms) {
   PyObject *__pyx_v_atomName = 0;
   PyObject *__pyx_v_resName = 0;
   PyObject *__pyx_v_atomLine = 0;
@@ -11943,6 +12392,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   float __pyx_v_y;
   float __pyx_v_z;
   int __pyx_v_iatom;
+  PyObject *__pyx_v_CMAtoms = NULL;
   PyObject *__pyx_v_resNum = NULL;
   __Pyx_LocalBuf_ND __pyx_pybuffernd_frame;
   __Pyx_Buffer __pyx_pybuffer_frame;
@@ -11977,11 +12427,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_pybuffernd_frame.rcbuffer = &__pyx_pybuffer_frame;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_frame.rcbuffer->pybuffer, (PyObject*)__pyx_v_frame, &__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 556, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_frame.rcbuffer->pybuffer, (PyObject*)__pyx_v_frame, &__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 585, __pyx_L1_error)
   }
   __pyx_pybuffernd_frame.diminfo[0].strides = __pyx_pybuffernd_frame.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_frame.diminfo[0].shape = __pyx_pybuffernd_frame.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_frame.diminfo[1].strides = __pyx_pybuffernd_frame.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_frame.diminfo[1].shape = __pyx_pybuffernd_frame.rcbuffer->pybuffer.shape[1];
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":582
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":611
  *         cdef float x, y, z
  *         cdef int iatom
  *         if resnum == 0:             # <<<<<<<<<<<<<<
@@ -11991,7 +12441,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_t_1 = ((__pyx_v_resnum == 0) != 0);
   if (__pyx_t_1) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":583
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":612
  *         cdef int iatom
  *         if resnum == 0:
  *             resnumStr = u""             # <<<<<<<<<<<<<<
@@ -12001,7 +12451,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_INCREF(__pyx_kp_u_);
     __pyx_v_resnumStr = ((PyObject*)__pyx_kp_u_);
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":582
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":611
  *         cdef float x, y, z
  *         cdef int iatom
  *         if resnum == 0:             # <<<<<<<<<<<<<<
@@ -12011,17 +12461,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     goto __pyx_L3;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":585
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":614
  *             resnumStr = u""
  *         else:
  *             resnumStr = u"%d" % (resnum)             # <<<<<<<<<<<<<<
  *         self.pdb = self.join_PDB_lines(topology, frame)  # in case one wants to write it
- *         for iatom in range(len(topology)):
+ *         if len(frame) != len(topology):
  */
   /*else*/ {
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_resnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 585, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_resnum); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyUnicode_Format(__pyx_kp_u_d, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 585, __pyx_L1_error)
+    __pyx_t_3 = PyUnicode_Format(__pyx_kp_u_d, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 614, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_resnumStr = ((PyObject*)__pyx_t_3);
@@ -12029,14 +12479,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __pyx_L3:;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":586
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":615
  *         else:
  *             resnumStr = u"%d" % (resnum)
  *         self.pdb = self.join_PDB_lines(topology, frame)  # in case one wants to write it             # <<<<<<<<<<<<<<
- *         for iatom in range(len(topology)):
- *             atomLine = topology[iatom]
+ *         if len(frame) != len(topology):
+ *             raise ValueError("Input coordinates and topology do not match!!!")
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_join_PDB_lines); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 586, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_join_PDB_lines); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 615, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -12053,7 +12503,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_v_topology, ((PyObject *)__pyx_v_frame)};
-    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 586, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 615, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
@@ -12061,13 +12511,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_v_topology, ((PyObject *)__pyx_v_frame)};
-    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 586, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 615, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_3);
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 586, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 615, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -12078,7 +12528,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_INCREF(((PyObject *)__pyx_v_frame));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_frame));
     PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, ((PyObject *)__pyx_v_frame));
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 586, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 615, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
@@ -12089,24 +12539,112 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_v_self->pdb = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":587
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":616
  *             resnumStr = u"%d" % (resnum)
  *         self.pdb = self.join_PDB_lines(topology, frame)  # in case one wants to write it
+ *         if len(frame) != len(topology):             # <<<<<<<<<<<<<<
+ *             raise ValueError("Input coordinates and topology do not match!!!")
+ *         if extra_atoms != {}:
+ */
+  __pyx_t_7 = PyObject_Length(((PyObject *)__pyx_v_frame)); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 616, __pyx_L1_error)
+  if (unlikely(__pyx_v_topology == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
+    __PYX_ERR(0, 616, __pyx_L1_error)
+  }
+  __pyx_t_8 = PyList_GET_SIZE(__pyx_v_topology); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 616, __pyx_L1_error)
+  __pyx_t_1 = ((__pyx_t_7 != __pyx_t_8) != 0);
+  if (unlikely(__pyx_t_1)) {
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":617
+ *         self.pdb = self.join_PDB_lines(topology, frame)  # in case one wants to write it
+ *         if len(frame) != len(topology):
+ *             raise ValueError("Input coordinates and topology do not match!!!")             # <<<<<<<<<<<<<<
+ *         if extra_atoms != {}:
+ *             CMAtoms = extra_atoms
+ */
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 617, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __PYX_ERR(0, 617, __pyx_L1_error)
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":616
+ *             resnumStr = u"%d" % (resnum)
+ *         self.pdb = self.join_PDB_lines(topology, frame)  # in case one wants to write it
+ *         if len(frame) != len(topology):             # <<<<<<<<<<<<<<
+ *             raise ValueError("Input coordinates and topology do not match!!!")
+ *         if extra_atoms != {}:
+ */
+  }
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":618
+ *         if len(frame) != len(topology):
+ *             raise ValueError("Input coordinates and topology do not match!!!")
+ *         if extra_atoms != {}:             # <<<<<<<<<<<<<<
+ *             CMAtoms = extra_atoms
+ *         else:
+ */
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 618, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = PyObject_RichCompare(__pyx_v_extra_atoms, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 618, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 618, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (__pyx_t_1) {
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":619
+ *             raise ValueError("Input coordinates and topology do not match!!!")
+ *         if extra_atoms != {}:
+ *             CMAtoms = extra_atoms             # <<<<<<<<<<<<<<
+ *         else:
+ *             CMAtoms = self.CMAtoms
+ */
+    __Pyx_INCREF(__pyx_v_extra_atoms);
+    __pyx_v_CMAtoms = __pyx_v_extra_atoms;
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":618
+ *         if len(frame) != len(topology):
+ *             raise ValueError("Input coordinates and topology do not match!!!")
+ *         if extra_atoms != {}:             # <<<<<<<<<<<<<<
+ *             CMAtoms = extra_atoms
+ *         else:
+ */
+    goto __pyx_L5;
+  }
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":621
+ *             CMAtoms = extra_atoms
+ *         else:
+ *             CMAtoms = self.CMAtoms             # <<<<<<<<<<<<<<
+ *         for iatom in range(len(topology)):
+ *             atomLine = topology[iatom]
+ */
+  /*else*/ {
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_CMAtoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 621, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_v_CMAtoms = __pyx_t_2;
+    __pyx_t_2 = 0;
+  }
+  __pyx_L5:;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":622
+ *         else:
+ *             CMAtoms = self.CMAtoms
  *         for iatom in range(len(topology)):             # <<<<<<<<<<<<<<
  *             atomLine = topology[iatom]
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  */
   if (unlikely(__pyx_v_topology == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 587, __pyx_L1_error)
+    __PYX_ERR(0, 622, __pyx_L1_error)
   }
-  __pyx_t_7 = PyList_GET_SIZE(__pyx_v_topology); if (unlikely(__pyx_t_7 == ((Py_ssize_t)-1))) __PYX_ERR(0, 587, __pyx_L1_error)
-  __pyx_t_8 = __pyx_t_7;
-  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_8; __pyx_t_5+=1) {
+  __pyx_t_8 = PyList_GET_SIZE(__pyx_v_topology); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 622, __pyx_L1_error)
+  __pyx_t_7 = __pyx_t_8;
+  for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_7; __pyx_t_5+=1) {
     __pyx_v_iatom = __pyx_t_5;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":588
- *         self.pdb = self.join_PDB_lines(topology, frame)  # in case one wants to write it
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":623
+ *             CMAtoms = self.CMAtoms
  *         for iatom in range(len(topology)):
  *             atomLine = topology[iatom]             # <<<<<<<<<<<<<<
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
@@ -12114,80 +12652,80 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_topology == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 588, __pyx_L1_error)
+      __PYX_ERR(0, 623, __pyx_L1_error)
     }
-    __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_topology, __pyx_v_iatom, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 588, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 588, __pyx_L1_error)
-    __Pyx_XDECREF_SET(__pyx_v_atomLine, ((PyObject*)__pyx_t_3));
-    __pyx_t_3 = 0;
+    __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_topology, __pyx_v_iatom, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 623, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 623, __pyx_L1_error)
+    __Pyx_XDECREF_SET(__pyx_v_atomLine, ((PyObject*)__pyx_t_2));
+    __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":589
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":624
  *         for iatom in range(len(topology)):
  *             atomLine = topology[iatom]
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):             # <<<<<<<<<<<<<<
  *                 continue
  *             if type == self._typeCM:
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomLine, __pyx_n_s_startswith); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 589, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomLine, __pyx_n_s_startswith); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_6 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_2);
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
       if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_2, function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
       }
     }
-    __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_6, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_u_ATOM);
+    __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_6, __pyx_n_u_ATOM) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_n_u_ATOM);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 589, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 589, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_10 = ((!__pyx_t_9) != 0);
     if (__pyx_t_10) {
     } else {
       __pyx_t_1 = __pyx_t_10;
-      goto __pyx_L7_bool_binop_done;
+      goto __pyx_L9_bool_binop_done;
     }
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomLine, __pyx_n_s_startswith); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 589, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_atomLine, __pyx_n_s_startswith); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_6 = NULL;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_2);
+    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
       if (likely(__pyx_t_6)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
         __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_2, function);
+        __Pyx_DECREF_SET(__pyx_t_3, function);
       }
     }
-    __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_6, __pyx_n_u_HETATM) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_u_HETATM);
+    __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_6, __pyx_n_u_HETATM) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_n_u_HETATM);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 589, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 589, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_9 = ((!__pyx_t_10) != 0);
     __pyx_t_1 = __pyx_t_9;
-    __pyx_L7_bool_binop_done:;
+    __pyx_L9_bool_binop_done:;
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":590
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":625
  *             atomLine = topology[iatom]
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  *                 continue             # <<<<<<<<<<<<<<
  *             if type == self._typeCM:
  *                 atomName = atomLine[12:16].strip()
  */
-      goto __pyx_L4_continue;
+      goto __pyx_L6_continue;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":589
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":624
  *         for iatom in range(len(topology)):
  *             atomLine = topology[iatom]
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):             # <<<<<<<<<<<<<<
@@ -12196,175 +12734,169 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":591
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":626
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  *                 continue
  *             if type == self._typeCM:             # <<<<<<<<<<<<<<
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeCM); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 591, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_3, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 591, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeCM); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 626, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 626, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_1) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":592
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":627
  *                 continue
  *             if type == self._typeCM:
  *                 atomName = atomLine[12:16].strip()             # <<<<<<<<<<<<<<
  *                 resName = atomLine[17:20].strip()
- *                 if resName not in self.CMAtoms:
+ *                 if resName not in CMAtoms:
  */
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 592, __pyx_L1_error)
+        __PYX_ERR(0, 627, __pyx_L1_error)
       }
-      __pyx_t_2 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 592, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 592, __pyx_L1_error)
+      __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 627, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 627, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __pyx_t_2 = NULL;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_3 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
-        __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_6);
-        if (likely(__pyx_t_2)) {
+        __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_6);
+        if (likely(__pyx_t_3)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-          __Pyx_INCREF(__pyx_t_2);
+          __Pyx_INCREF(__pyx_t_3);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_6, function);
         }
       }
-      __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
-      __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 592, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
+      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 627, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 592, __pyx_L1_error)
-      __Pyx_XDECREF_SET(__pyx_v_atomName, ((PyObject*)__pyx_t_3));
-      __pyx_t_3 = 0;
+      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 627, __pyx_L1_error)
+      __Pyx_XDECREF_SET(__pyx_v_atomName, ((PyObject*)__pyx_t_2));
+      __pyx_t_2 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":593
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":628
  *             if type == self._typeCM:
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()             # <<<<<<<<<<<<<<
- *                 if resName not in self.CMAtoms:
+ *                 if resName not in CMAtoms:
  *                     continue
  */
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 593, __pyx_L1_error)
+        __PYX_ERR(0, 628, __pyx_L1_error)
       }
-      __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 593, __pyx_L1_error)
+      __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 628, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 593, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 628, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_6 = NULL;
-      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_2);
+      if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
+        __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_3);
         if (likely(__pyx_t_6)) {
-          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+          PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
           __Pyx_INCREF(__pyx_t_6);
           __Pyx_INCREF(function);
-          __Pyx_DECREF_SET(__pyx_t_2, function);
+          __Pyx_DECREF_SET(__pyx_t_3, function);
         }
       }
-      __pyx_t_3 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
+      __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 593, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(0, 593, __pyx_L1_error)
-      __Pyx_XDECREF_SET(__pyx_v_resName, ((PyObject*)__pyx_t_3));
-      __pyx_t_3 = 0;
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 628, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 628, __pyx_L1_error)
+      __Pyx_XDECREF_SET(__pyx_v_resName, ((PyObject*)__pyx_t_2));
+      __pyx_t_2 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":594
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":629
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()
- *                 if resName not in self.CMAtoms:             # <<<<<<<<<<<<<<
+ *                 if resName not in CMAtoms:             # <<<<<<<<<<<<<<
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:
  */
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_CMAtoms); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 594, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_resName, __pyx_t_3, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 594, __pyx_L1_error)
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_resName, __pyx_v_CMAtoms, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 629, __pyx_L1_error)
       __pyx_t_9 = (__pyx_t_1 != 0);
       if (__pyx_t_9) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":595
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":630
  *                 resName = atomLine[17:20].strip()
- *                 if resName not in self.CMAtoms:
+ *                 if resName not in CMAtoms:
  *                     continue             # <<<<<<<<<<<<<<
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":594
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":629
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()
- *                 if resName not in self.CMAtoms:             # <<<<<<<<<<<<<<
+ *                 if resName not in CMAtoms:             # <<<<<<<<<<<<<<
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":596
- *                 if resName not in self.CMAtoms:
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":631
+ *                 if resName not in CMAtoms:
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:             # <<<<<<<<<<<<<<
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:             # <<<<<<<<<<<<<<
  *                     continue
  *             else:
  */
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_atomName, __pyx_n_u_CA, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 596, __pyx_L1_error)
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_atomName, __pyx_n_u_CA, Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 631, __pyx_L1_error)
       __pyx_t_10 = (__pyx_t_1 != 0);
       if (__pyx_t_10) {
       } else {
         __pyx_t_9 = __pyx_t_10;
-        goto __pyx_L12_bool_binop_done;
+        goto __pyx_L14_bool_binop_done;
       }
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_CMAtoms); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 596, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_t_3, __pyx_v_resName); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 596, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_GetItem(__pyx_v_CMAtoms, __pyx_v_resName); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 631, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_atomName, __pyx_t_2, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 596, __pyx_L1_error)
+      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_atomName, __pyx_t_2, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 631, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_9 = __pyx_t_10;
-      __pyx_L12_bool_binop_done:;
+      __pyx_L14_bool_binop_done:;
       if (__pyx_t_9) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":597
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":632
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:
  *                     continue             # <<<<<<<<<<<<<<
  *             else:
  *                 # HUGE optimisation (not to create an atom each time ~ 2e-5 s/atom)
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":596
- *                 if resName not in self.CMAtoms:
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":631
+ *                 if resName not in CMAtoms:
  *                     continue
- *                 if atomName != u"CA" and atomName != self.CMAtoms[resName]:             # <<<<<<<<<<<<<<
+ *                 if atomName != u"CA" and atomName != CMAtoms[resName]:             # <<<<<<<<<<<<<<
  *                     continue
  *             else:
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":591
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":626
  *             if not atomLine.startswith(u"ATOM") and not atomLine.startswith(u"HETATM"):
  *                 continue
  *             if type == self._typeCM:             # <<<<<<<<<<<<<<
  *                 atomName = atomLine[12:16].strip()
  *                 resName = atomLine[17:20].strip()
  */
-      goto __pyx_L9;
+      goto __pyx_L11;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":600
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":635
  *             else:
  *                 # HUGE optimisation (not to create an atom each time ~ 2e-5 s/atom)
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:             # <<<<<<<<<<<<<<
@@ -12372,20 +12904,20 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  */
     /*else*/ {
-      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_resname, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 600, __pyx_L1_error)
+      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_resname, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 635, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_10 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_9 = __pyx_t_1;
-        goto __pyx_L15_bool_binop_done;
+        goto __pyx_L17_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 600, __pyx_L1_error)
+        __PYX_ERR(0, 635, __pyx_L1_error)
       }
-      __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 600, __pyx_L1_error)
+      __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 635, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 600, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 635, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_3 = NULL;
@@ -12400,26 +12932,26 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 600, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 635, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_resname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 600, __pyx_L1_error)
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_resname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 635, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_10 = ((!__pyx_t_1) != 0);
       __pyx_t_9 = __pyx_t_10;
-      __pyx_L15_bool_binop_done:;
+      __pyx_L17_bool_binop_done:;
       if (__pyx_t_9) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":601
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":636
  *                 # HUGE optimisation (not to create an atom each time ~ 2e-5 s/atom)
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:
  *                     continue             # <<<<<<<<<<<<<<
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":600
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":635
  *             else:
  *                 # HUGE optimisation (not to create an atom each time ~ 2e-5 s/atom)
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:             # <<<<<<<<<<<<<<
@@ -12428,27 +12960,27 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":602
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":637
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:
  *                     continue
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:             # <<<<<<<<<<<<<<
  *                     continue
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  */
-      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_atomname, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 602, __pyx_L1_error)
+      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_atomname, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 637, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_10 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_9 = __pyx_t_1;
-        goto __pyx_L18_bool_binop_done;
+        goto __pyx_L20_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 602, __pyx_L1_error)
+        __PYX_ERR(0, 637, __pyx_L1_error)
       }
-      __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 602, __pyx_L1_error)
+      __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 637, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 602, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 637, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_6 = NULL;
@@ -12463,26 +12995,26 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 602, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 637, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_atomname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 602, __pyx_L1_error)
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_atomname, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 637, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_10 = ((!__pyx_t_1) != 0);
       __pyx_t_9 = __pyx_t_10;
-      __pyx_L18_bool_binop_done:;
+      __pyx_L20_bool_binop_done:;
       if (__pyx_t_9) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":603
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":638
  *                     continue
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  *                     continue             # <<<<<<<<<<<<<<
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":602
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":637
  *                 if resname != u"" and not atomLine[17:20].strip() == resname:
  *                     continue
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:             # <<<<<<<<<<<<<<
@@ -12491,27 +13023,27 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":604
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":639
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  *                     continue
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:             # <<<<<<<<<<<<<<
  *                     continue
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  */
-      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_chain, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 604, __pyx_L1_error)
+      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_chain, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 639, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_10 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_9 = __pyx_t_1;
-        goto __pyx_L21_bool_binop_done;
+        goto __pyx_L23_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 604, __pyx_L1_error)
+        __PYX_ERR(0, 639, __pyx_L1_error)
       }
-      __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 21, 22); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 604, __pyx_L1_error)
+      __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 21, 22); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 639, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 604, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 639, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_3 = NULL;
@@ -12526,26 +13058,26 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 604, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 639, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_chain, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 604, __pyx_L1_error)
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_chain, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 639, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_10 = ((!__pyx_t_1) != 0);
       __pyx_t_9 = __pyx_t_10;
-      __pyx_L21_bool_binop_done:;
+      __pyx_L23_bool_binop_done:;
       if (__pyx_t_9) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":605
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":640
  *                     continue
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  *                     continue             # <<<<<<<<<<<<<<
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":604
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":639
  *                 if atomname != u"" and not atomLine[12:16].strip() == atomname:
  *                     continue
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:             # <<<<<<<<<<<<<<
@@ -12554,27 +13086,27 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":606
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":641
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  *                     continue
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:             # <<<<<<<<<<<<<<
  *                     continue
  *                 if element != u"" and not atomLine[58:60].strip() == element:
  */
-      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_resnumStr, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 606, __pyx_L1_error)
+      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_resnumStr, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 641, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_10 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_9 = __pyx_t_1;
-        goto __pyx_L24_bool_binop_done;
+        goto __pyx_L26_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 606, __pyx_L1_error)
+        __PYX_ERR(0, 641, __pyx_L1_error)
       }
-      __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 22, 26); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 606, __pyx_L1_error)
+      __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 22, 26); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 641, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 606, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 641, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_t_6 = NULL;
@@ -12589,26 +13121,26 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 606, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 641, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_resnumStr, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 606, __pyx_L1_error)
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_resnumStr, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 641, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_10 = ((!__pyx_t_1) != 0);
       __pyx_t_9 = __pyx_t_10;
-      __pyx_L24_bool_binop_done:;
+      __pyx_L26_bool_binop_done:;
       if (__pyx_t_9) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":607
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":642
  *                     continue
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  *                     continue             # <<<<<<<<<<<<<<
  *                 if element != u"" and not atomLine[58:60].strip() == element:
  *                     continue
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":606
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":641
  *                 if chain != u"" and not atomLine[21:22].strip() == chain:
  *                     continue
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:             # <<<<<<<<<<<<<<
@@ -12617,27 +13149,27 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":608
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":643
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  *                     continue
  *                 if element != u"" and not atomLine[58:60].strip() == element:             # <<<<<<<<<<<<<<
  *                     continue
  *             isProtein = atomLine[:4] == u"ATOM"
  */
-      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_element, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 608, __pyx_L1_error)
+      __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_element, __pyx_kp_u_, Py_NE)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 643, __pyx_L1_error)
       __pyx_t_1 = (__pyx_t_10 != 0);
       if (__pyx_t_1) {
       } else {
         __pyx_t_9 = __pyx_t_1;
-        goto __pyx_L27_bool_binop_done;
+        goto __pyx_L29_bool_binop_done;
       }
       if (unlikely(__pyx_v_atomLine == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 608, __pyx_L1_error)
+        __PYX_ERR(0, 643, __pyx_L1_error)
       }
-      __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 58, 60); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 608, __pyx_L1_error)
+      __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 58, 60); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 643, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 608, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 643, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_3 = NULL;
@@ -12652,26 +13184,26 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 608, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 643, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_element, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 608, __pyx_L1_error)
+      __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_v_element, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 643, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_10 = ((!__pyx_t_1) != 0);
       __pyx_t_9 = __pyx_t_10;
-      __pyx_L27_bool_binop_done:;
+      __pyx_L29_bool_binop_done:;
       if (__pyx_t_9) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":609
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":644
  *                     continue
  *                 if element != u"" and not atomLine[58:60].strip() == element:
  *                     continue             # <<<<<<<<<<<<<<
  *             isProtein = atomLine[:4] == u"ATOM"
  *             atomSerial = atomLine[6:11].strip()
  */
-        goto __pyx_L4_continue;
+        goto __pyx_L6_continue;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":608
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":643
  *                 if resnumStr != u"" and not atomLine[22:26].strip() == resnumStr:
  *                     continue
  *                 if element != u"" and not atomLine[58:60].strip() == element:             # <<<<<<<<<<<<<<
@@ -12680,9 +13212,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       }
     }
-    __pyx_L9:;
+    __pyx_L11:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":610
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":645
  *                 if element != u"" and not atomLine[58:60].strip() == element:
  *                     continue
  *             isProtein = atomLine[:4] == u"ATOM"             # <<<<<<<<<<<<<<
@@ -12691,15 +13223,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_atomLine == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 610, __pyx_L1_error)
+      __PYX_ERR(0, 645, __pyx_L1_error)
     }
-    __pyx_t_2 = PySequence_GetSlice(__pyx_v_atomLine, 0, 4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 610, __pyx_L1_error)
+    __pyx_t_2 = PySequence_GetSlice(__pyx_v_atomLine, 0, 4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 645, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_n_u_ATOM, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 610, __pyx_L1_error)
+    __pyx_t_9 = (__Pyx_PyUnicode_Equals(__pyx_t_2, __pyx_n_u_ATOM, Py_EQ)); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 645, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_isProtein = __pyx_t_9;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":611
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":646
  *                     continue
  *             isProtein = atomLine[:4] == u"ATOM"
  *             atomSerial = atomLine[6:11].strip()             # <<<<<<<<<<<<<<
@@ -12708,11 +13240,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_atomLine == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 611, __pyx_L1_error)
+      __PYX_ERR(0, 646, __pyx_L1_error)
     }
-    __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 6, 11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 611, __pyx_L1_error)
+    __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 6, 11); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 646, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 611, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 646, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -12727,14 +13259,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 611, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 646, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 611, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 646, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_atomSerial, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":612
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":647
  *             isProtein = atomLine[:4] == u"ATOM"
  *             atomSerial = atomLine[6:11].strip()
  *             atomName = atomLine[12:16].strip()             # <<<<<<<<<<<<<<
@@ -12743,11 +13275,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_atomLine == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 612, __pyx_L1_error)
+      __PYX_ERR(0, 647, __pyx_L1_error)
     }
-    __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 612, __pyx_L1_error)
+    __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 12, 16); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 647, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 612, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 647, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = NULL;
@@ -12762,14 +13294,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 612, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 647, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 612, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 647, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_atomName, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":613
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":648
  *             atomSerial = atomLine[6:11].strip()
  *             atomName = atomLine[12:16].strip()
  *             resName = atomLine[17:20].strip()             # <<<<<<<<<<<<<<
@@ -12778,11 +13310,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_atomLine == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 613, __pyx_L1_error)
+      __PYX_ERR(0, 648, __pyx_L1_error)
     }
-    __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 613, __pyx_L1_error)
+    __pyx_t_6 = PySequence_GetSlice(__pyx_v_atomLine, 17, 20); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 648, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 613, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_strip); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 648, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -12797,14 +13329,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 613, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 648, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 613, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 648, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_resName, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":614
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":649
  *             atomName = atomLine[12:16].strip()
  *             resName = atomLine[17:20].strip()
  *             resNum = atomLine[22:26].strip()             # <<<<<<<<<<<<<<
@@ -12813,11 +13345,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_atomLine == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 614, __pyx_L1_error)
+      __PYX_ERR(0, 649, __pyx_L1_error)
     }
-    __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 22, 26); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 614, __pyx_L1_error)
+    __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 22, 26); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 649, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 614, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 649, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = NULL;
@@ -12832,26 +13364,26 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 614, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 649, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF_SET(__pyx_v_resNum, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":615
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":650
  *             resName = atomLine[17:20].strip()
  *             resNum = atomLine[22:26].strip()
  *             resChain = atomLine[21]             # <<<<<<<<<<<<<<
  *             x = frame[iatom, 0]
  *             y = frame[iatom, 1]
  */
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_atomLine, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 615, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_atomLine, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 650, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 615, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 650, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_resChain, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":616
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":651
  *             resNum = atomLine[22:26].strip()
  *             resChain = atomLine[21]
  *             x = frame[iatom, 0]             # <<<<<<<<<<<<<<
@@ -12871,11 +13403,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     } else if (unlikely(__pyx_t_12 >= __pyx_pybuffernd_frame.diminfo[1].shape)) __pyx_t_13 = 1;
     if (unlikely(__pyx_t_13 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_13);
-      __PYX_ERR(0, 616, __pyx_L1_error)
+      __PYX_ERR(0, 651, __pyx_L1_error)
     }
     __pyx_v_x = (*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_11, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_12, __pyx_pybuffernd_frame.diminfo[1].strides));
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":617
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":652
  *             resChain = atomLine[21]
  *             x = frame[iatom, 0]
  *             y = frame[iatom, 1]             # <<<<<<<<<<<<<<
@@ -12895,11 +13427,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     } else if (unlikely(__pyx_t_15 >= __pyx_pybuffernd_frame.diminfo[1].shape)) __pyx_t_13 = 1;
     if (unlikely(__pyx_t_13 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_13);
-      __PYX_ERR(0, 617, __pyx_L1_error)
+      __PYX_ERR(0, 652, __pyx_L1_error)
     }
     __pyx_v_y = (*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_15, __pyx_pybuffernd_frame.diminfo[1].strides));
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":618
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":653
  *             x = frame[iatom, 0]
  *             y = frame[iatom, 1]
  *             z = frame[iatom, 2]             # <<<<<<<<<<<<<<
@@ -12919,11 +13451,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     } else if (unlikely(__pyx_t_17 >= __pyx_pybuffernd_frame.diminfo[1].shape)) __pyx_t_13 = 1;
     if (unlikely(__pyx_t_13 != -1)) {
       __Pyx_RaiseBufferIndexError(__pyx_t_13);
-      __PYX_ERR(0, 618, __pyx_L1_error)
+      __PYX_ERR(0, 653, __pyx_L1_error)
     }
     __pyx_v_z = (*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_17, __pyx_pybuffernd_frame.diminfo[1].strides));
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":621
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":656
  *             # due to the way the topology object is extracted the positions of
  *             # the element in 58-60
  *             element_atom = atomLine[58:60].strip().upper()             # <<<<<<<<<<<<<<
@@ -12932,11 +13464,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_atomLine == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 621, __pyx_L1_error)
+      __PYX_ERR(0, 656, __pyx_L1_error)
     }
-    __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 58, 60); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 621, __pyx_L1_error)
+    __pyx_t_3 = PySequence_GetSlice(__pyx_v_atomLine, 58, 60); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 656, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 621, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_strip); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 656, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = NULL;
@@ -12951,10 +13483,10 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_6 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 621, __pyx_L1_error)
+    if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 656, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_upper); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 621, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_n_s_upper); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 656, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_t_6 = NULL;
@@ -12969,41 +13501,41 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_6) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_6) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 621, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 656, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 621, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 656, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_element_atom, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":622
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":657
  *             # the element in 58-60
  *             element_atom = atomLine[58:60].strip().upper()
  *             atom = Atom()             # <<<<<<<<<<<<<<
  *             atom.set_properties(isProtein, atomSerial, atomName, resName, resNum, x, y, z, element_atom, resChain)
  *             if (not heavyAtoms or atom.isHeavyAtom()) and\
  */
-    __pyx_t_2 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 622, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 657, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_atom, ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":623
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":658
  *             element_atom = atomLine[58:60].strip().upper()
  *             atom = Atom()
  *             atom.set_properties(isProtein, atomSerial, atomName, resName, resNum, x, y, z, element_atom, resChain)             # <<<<<<<<<<<<<<
  *             if (not heavyAtoms or atom.isHeavyAtom()) and\
  *                 (type == self._typeAll or type == self._typeCM or (type == self._typeProtein and atom.isProtein()) or (type == self._typeHetero and atom.isHeteroAtom())):
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_set_properties); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 623, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_set_properties); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 658, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_v_isProtein); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 623, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_v_isProtein); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 658, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 623, __pyx_L1_error)
+    __pyx_t_3 = PyFloat_FromDouble(__pyx_v_x); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 658, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_18 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 623, __pyx_L1_error)
+    __pyx_t_18 = PyFloat_FromDouble(__pyx_v_y); if (unlikely(!__pyx_t_18)) __PYX_ERR(0, 658, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_18);
-    __pyx_t_19 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 623, __pyx_L1_error)
+    __pyx_t_19 = PyFloat_FromDouble(__pyx_v_z); if (unlikely(!__pyx_t_19)) __PYX_ERR(0, 658, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_19);
     __pyx_t_20 = NULL;
     __pyx_t_13 = 0;
@@ -13020,7 +13552,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[11] = {__pyx_t_20, __pyx_t_6, __pyx_v_atomSerial, __pyx_v_atomName, __pyx_v_resName, __pyx_v_resNum, __pyx_t_3, __pyx_t_18, __pyx_t_19, __pyx_v_element_atom, __pyx_v_resChain};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_13, 10+__pyx_t_13); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 623, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_13, 10+__pyx_t_13); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 658, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_20); __pyx_t_20 = 0;
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -13032,7 +13564,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[11] = {__pyx_t_20, __pyx_t_6, __pyx_v_atomSerial, __pyx_v_atomName, __pyx_v_resName, __pyx_v_resNum, __pyx_t_3, __pyx_t_18, __pyx_t_19, __pyx_v_element_atom, __pyx_v_resChain};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_13, 10+__pyx_t_13); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 623, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_13, 10+__pyx_t_13); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 658, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_20); __pyx_t_20 = 0;
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -13042,7 +13574,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     } else
     #endif
     {
-      __pyx_t_21 = PyTuple_New(10+__pyx_t_13); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 623, __pyx_L1_error)
+      __pyx_t_21 = PyTuple_New(10+__pyx_t_13); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 658, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_21);
       if (__pyx_t_20) {
         __Pyx_GIVEREF(__pyx_t_20); PyTuple_SET_ITEM(__pyx_t_21, 0, __pyx_t_20); __pyx_t_20 = NULL;
@@ -13077,14 +13609,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_t_3 = 0;
       __pyx_t_18 = 0;
       __pyx_t_19 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_21, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 623, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_21, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 658, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":624
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":659
  *             atom = Atom()
  *             atom.set_properties(isProtein, atomSerial, atomName, resName, resNum, x, y, z, element_atom, resChain)
  *             if (not heavyAtoms or atom.isHeavyAtom()) and\             # <<<<<<<<<<<<<<
@@ -13094,9 +13626,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __pyx_t_10 = ((!(__pyx_v_heavyAtoms != 0)) != 0);
     if (!__pyx_t_10) {
     } else {
-      goto __pyx_L31_next_and;
+      goto __pyx_L33_next_and;
     }
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isHeavyAtom); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isHeavyAtom); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 659, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_21 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -13110,52 +13642,52 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_21) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_21) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_21); __pyx_t_21 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 624, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 659, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 624, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 659, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_10) {
     } else {
       __pyx_t_9 = __pyx_t_10;
-      goto __pyx_L30_bool_binop_done;
+      goto __pyx_L32_bool_binop_done;
     }
-    __pyx_L31_next_and:;
+    __pyx_L33_next_and:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":625
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":660
  *             atom.set_properties(isProtein, atomSerial, atomName, resName, resNum, x, y, z, element_atom, resChain)
  *             if (not heavyAtoms or atom.isHeavyAtom()) and\
  *                 (type == self._typeAll or type == self._typeCM or (type == self._typeProtein and atom.isProtein()) or (type == self._typeHetero and atom.isHeteroAtom())):             # <<<<<<<<<<<<<<
  * 
  *                 self.atoms.update({atom.id: atom})
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeAll); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeAll); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!__pyx_t_10) {
     } else {
       __pyx_t_9 = __pyx_t_10;
-      goto __pyx_L30_bool_binop_done;
+      goto __pyx_L32_bool_binop_done;
     }
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeCM); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeCM); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!__pyx_t_10) {
     } else {
       __pyx_t_9 = __pyx_t_10;
-      goto __pyx_L30_bool_binop_done;
+      goto __pyx_L32_bool_binop_done;
     }
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeProtein); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeProtein); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!__pyx_t_10) {
-      goto __pyx_L35_next_or;
+      goto __pyx_L37_next_or;
     } else {
     }
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isProtein); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isProtein); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_21 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -13169,27 +13701,27 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_21) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_21) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_21); __pyx_t_21 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 625, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!__pyx_t_10) {
     } else {
       __pyx_t_9 = __pyx_t_10;
-      goto __pyx_L30_bool_binop_done;
+      goto __pyx_L32_bool_binop_done;
     }
-    __pyx_L35_next_or:;
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeHetero); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_L37_next_or:;
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_typeHetero); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_10 = (__Pyx_PyUnicode_Equals(__pyx_v_type, __pyx_t_2, Py_EQ)); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_10) {
     } else {
       __pyx_t_9 = __pyx_t_10;
-      goto __pyx_L30_bool_binop_done;
+      goto __pyx_L32_bool_binop_done;
     }
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isHeteroAtom); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_atom), __pyx_n_s_isHeteroAtom); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_21 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -13203,15 +13735,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_21) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_21) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_21); __pyx_t_21 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 625, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 625, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 660, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_9 = __pyx_t_10;
-    __pyx_L30_bool_binop_done:;
+    __pyx_L32_bool_binop_done:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":624
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":659
  *             atom = Atom()
  *             atom.set_properties(isProtein, atomSerial, atomName, resName, resNum, x, y, z, element_atom, resChain)
  *             if (not heavyAtoms or atom.isHeavyAtom()) and\             # <<<<<<<<<<<<<<
@@ -13220,18 +13752,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (__pyx_t_9) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":627
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":662
  *                 (type == self._typeAll or type == self._typeCM or (type == self._typeProtein and atom.isProtein()) or (type == self._typeHetero and atom.isHeteroAtom())):
  * 
  *                 self.atoms.update({atom.id: atom})             # <<<<<<<<<<<<<<
  *                 self.atomList.append(atom.id)
  *         if self.atoms == {}:
  */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->atoms, __pyx_n_s_update); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 627, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->atoms, __pyx_n_s_update); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 662, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_21 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 627, __pyx_L1_error)
+      __pyx_t_21 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_21)) __PYX_ERR(0, 662, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_21);
-      if (PyDict_SetItem(__pyx_t_21, __pyx_v_atom->id, ((PyObject *)__pyx_v_atom)) < 0) __PYX_ERR(0, 627, __pyx_L1_error)
+      if (PyDict_SetItem(__pyx_t_21, __pyx_v_atom->id, ((PyObject *)__pyx_v_atom)) < 0) __PYX_ERR(0, 662, __pyx_L1_error)
       __pyx_t_19 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
         __pyx_t_19 = PyMethod_GET_SELF(__pyx_t_4);
@@ -13245,28 +13777,28 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_t_2 = (__pyx_t_19) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_19, __pyx_t_21) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_21);
       __Pyx_XDECREF(__pyx_t_19); __pyx_t_19 = 0;
       __Pyx_DECREF(__pyx_t_21); __pyx_t_21 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 627, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 662, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":628
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":663
  * 
  *                 self.atoms.update({atom.id: atom})
  *                 self.atomList.append(atom.id)             # <<<<<<<<<<<<<<
  *         if self.atoms == {}:
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  */
       if (unlikely(__pyx_v_self->atomList == Py_None)) {
         PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "append");
-        __PYX_ERR(0, 628, __pyx_L1_error)
+        __PYX_ERR(0, 663, __pyx_L1_error)
       }
       __pyx_t_2 = __pyx_v_atom->id;
       __Pyx_INCREF(__pyx_t_2);
-      __pyx_t_22 = __Pyx_PyList_Append(__pyx_v_self->atomList, __pyx_t_2); if (unlikely(__pyx_t_22 == ((int)-1))) __PYX_ERR(0, 628, __pyx_L1_error)
+      __pyx_t_22 = __Pyx_PyList_Append(__pyx_v_self->atomList, __pyx_t_2); if (unlikely(__pyx_t_22 == ((int)-1))) __PYX_ERR(0, 663, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":624
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":659
  *             atom = Atom()
  *             atom.set_properties(isProtein, atomSerial, atomName, resName, resNum, x, y, z, element_atom, resChain)
  *             if (not heavyAtoms or atom.isHeavyAtom()) and\             # <<<<<<<<<<<<<<
@@ -13274,50 +13806,50 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  * 
  */
     }
-    __pyx_L4_continue:;
+    __pyx_L6_continue:;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":629
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":664
  *                 self.atoms.update({atom.id: atom})
  *                 self.atomList.append(atom.id)
  *         if self.atoms == {}:             # <<<<<<<<<<<<<<
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  * 
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 629, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 664, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_4 = PyObject_RichCompare(__pyx_v_self->atoms, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 629, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_v_self->atoms, __pyx_t_2, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 664, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 629, __pyx_L1_error)
+  __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 664, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (unlikely(__pyx_t_9)) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":630
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":665
  *                 self.atomList.append(atom.id)
  *         if self.atoms == {}:
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')             # <<<<<<<<<<<<<<
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')             # <<<<<<<<<<<<<<
  * 
- *     def initialise(self, object coordinates, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None):
+ *     def initialise(self, object coordinates, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):
  */
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 630, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 665, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 630, __pyx_L1_error)
+    __PYX_ERR(0, 665, __pyx_L1_error)
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":629
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":664
  *                 self.atoms.update({atom.id: atom})
  *                 self.atomList.append(atom.id)
  *         if self.atoms == {}:             # <<<<<<<<<<<<<<
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  * 
  */
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":556
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":585
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  * 
- *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None):             # <<<<<<<<<<<<<<
+ *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):             # <<<<<<<<<<<<<<
  *         """
  *             Load the information from a loaded XTC file into a  mdtraj Trajectory
  */
@@ -13354,16 +13886,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_XDECREF(__pyx_v_atomSerial);
   __Pyx_XDECREF(__pyx_v_resChain);
   __Pyx_XDECREF((PyObject *)__pyx_v_atom);
+  __Pyx_XDECREF(__pyx_v_CMAtoms);
   __Pyx_XDECREF(__pyx_v_resNum);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":632
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":667
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  * 
- *     def initialise(self, object coordinates, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None):             # <<<<<<<<<<<<<<
+ *     def initialise(self, object coordinates, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):             # <<<<<<<<<<<<<<
  *         """
  *             Wrapper function
  */
@@ -13381,22 +13914,26 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   int __pyx_v_resnum;
   PyObject *__pyx_v_element = 0;
   PyObject *__pyx_v_topology = 0;
+  PyObject *__pyx_v_extra_atoms = 0;
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("initialise (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_coordinates,&__pyx_n_s_heavyAtoms,&__pyx_n_s_resname,&__pyx_n_s_atomname,&__pyx_n_s_type,&__pyx_n_s_chain,&__pyx_n_s_resnum,&__pyx_n_s_element,&__pyx_n_s_topology,0};
-    PyObject* values[9] = {0,0,0,0,0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_coordinates,&__pyx_n_s_heavyAtoms,&__pyx_n_s_resname,&__pyx_n_s_atomname,&__pyx_n_s_type,&__pyx_n_s_chain,&__pyx_n_s_resnum,&__pyx_n_s_element,&__pyx_n_s_topology,&__pyx_n_s_extra_atoms,0};
+    PyObject* values[10] = {0,0,0,0,0,0,0,0,0,0};
     values[2] = ((PyObject*)__pyx_kp_u_);
     values[3] = ((PyObject*)__pyx_kp_u_);
     values[4] = ((PyObject*)__pyx_n_u_ALL);
     values[5] = ((PyObject*)__pyx_kp_u_);
     values[7] = ((PyObject*)__pyx_kp_u_);
     values[8] = ((PyObject*)Py_None);
+    values[9] = __pyx_k__16;
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        CYTHON_FALLTHROUGH;
         case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         CYTHON_FALLTHROUGH;
         case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
@@ -13471,12 +14008,20 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_topology);
           if (value) { values[8] = value; kw_args--; }
         }
+        CYTHON_FALLTHROUGH;
+        case  9:
+        if (kw_args > 0) {
+          PyObject* value = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_extra_atoms);
+          if (value) { values[9] = value; kw_args--; }
+        }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "initialise") < 0)) __PYX_ERR(0, 632, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "initialise") < 0)) __PYX_ERR(0, 667, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
+        case 10: values[9] = PyTuple_GET_ITEM(__pyx_args, 9);
+        CYTHON_FALLTHROUGH;
         case  9: values[8] = PyTuple_GET_ITEM(__pyx_args, 8);
         CYTHON_FALLTHROUGH;
         case  8: values[7] = PyTuple_GET_ITEM(__pyx_args, 7);
@@ -13500,7 +14045,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_v_coordinates = values[0];
     if (values[1]) {
-      __pyx_v_heavyAtoms = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_heavyAtoms == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 632, __pyx_L3_error)
+      __pyx_v_heavyAtoms = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_heavyAtoms == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 667, __pyx_L3_error)
     } else {
       __pyx_v_heavyAtoms = ((int)1);
     }
@@ -13509,28 +14054,30 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __pyx_v_type = ((PyObject*)values[4]);
     __pyx_v_chain = ((PyObject*)values[5]);
     if (values[6]) {
-      __pyx_v_resnum = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_resnum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 632, __pyx_L3_error)
+      __pyx_v_resnum = __Pyx_PyInt_As_int(values[6]); if (unlikely((__pyx_v_resnum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 667, __pyx_L3_error)
     } else {
       __pyx_v_resnum = ((int)0);
     }
     __pyx_v_element = ((PyObject*)values[7]);
     __pyx_v_topology = ((PyObject*)values[8]);
+    __pyx_v_extra_atoms = ((PyObject*)values[9]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("initialise", 0, 1, 9, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 632, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("initialise", 0, 1, 10, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 667, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB.initialise", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resname), (&PyBaseString_Type), 1, "resname", 1))) __PYX_ERR(0, 632, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomname), (&PyBaseString_Type), 1, "atomname", 1))) __PYX_ERR(0, 632, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_type), (&PyBaseString_Type), 1, "type", 1))) __PYX_ERR(0, 632, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_chain), (&PyBaseString_Type), 1, "chain", 1))) __PYX_ERR(0, 632, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_element), (&PyBaseString_Type), 1, "element", 1))) __PYX_ERR(0, 632, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_topology), (&PyList_Type), 1, "topology", 1))) __PYX_ERR(0, 632, __pyx_L1_error)
-  __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_14initialise(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_coordinates, __pyx_v_heavyAtoms, __pyx_v_resname, __pyx_v_atomname, __pyx_v_type, __pyx_v_chain, __pyx_v_resnum, __pyx_v_element, __pyx_v_topology);
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_resname), (&PyBaseString_Type), 1, "resname", 1))) __PYX_ERR(0, 667, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_atomname), (&PyBaseString_Type), 1, "atomname", 1))) __PYX_ERR(0, 667, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_type), (&PyBaseString_Type), 1, "type", 1))) __PYX_ERR(0, 667, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_chain), (&PyBaseString_Type), 1, "chain", 1))) __PYX_ERR(0, 667, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_element), (&PyBaseString_Type), 1, "element", 1))) __PYX_ERR(0, 667, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_topology), (&PyList_Type), 1, "topology", 1))) __PYX_ERR(0, 667, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_extra_atoms), (&PyDict_Type), 1, "extra_atoms", 1))) __PYX_ERR(0, 667, __pyx_L1_error)
+  __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_14initialise(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_coordinates, __pyx_v_heavyAtoms, __pyx_v_resname, __pyx_v_atomname, __pyx_v_type, __pyx_v_chain, __pyx_v_resnum, __pyx_v_element, __pyx_v_topology, __pyx_v_extra_atoms);
 
   /* function exit code */
   goto __pyx_L0;
@@ -13541,7 +14088,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_14initialise(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_coordinates, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_topology) {
+static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_14initialise(struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *__pyx_v_self, PyObject *__pyx_v_coordinates, int __pyx_v_heavyAtoms, PyObject *__pyx_v_resname, PyObject *__pyx_v_atomname, PyObject *__pyx_v_type, PyObject *__pyx_v_chain, int __pyx_v_resnum, PyObject *__pyx_v_element, PyObject *__pyx_v_topology, PyObject *__pyx_v_extra_atoms) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -13550,147 +14097,42 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
-  PyObject *__pyx_t_7 = NULL;
-  int __pyx_t_8;
-  PyObject *__pyx_t_9 = NULL;
   __Pyx_RefNannySetupContext("initialise", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":636
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":671
  *             Wrapper function
  *         """
  *         if isinstance(coordinates, basestring):             # <<<<<<<<<<<<<<
  *             self.ispdb = True
- *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element)
+ *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, extra_atoms=extra_atoms)
  */
   __pyx_t_1 = __Pyx_PyBaseString_Check(__pyx_v_coordinates); 
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":637
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":672
  *         """
  *         if isinstance(coordinates, basestring):
  *             self.ispdb = True             # <<<<<<<<<<<<<<
- *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element)
+ *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, extra_atoms=extra_atoms)
  *         else:
  */
     __pyx_v_self->ispdb = 1;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":638
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":673
  *         if isinstance(coordinates, basestring):
  *             self.ispdb = True
- *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element)             # <<<<<<<<<<<<<<
+ *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, extra_atoms=extra_atoms)             # <<<<<<<<<<<<<<
  *         else:
  *             self.ispdb = False
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_initialisePDB); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 638, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBool_FromLong(__pyx_v_heavyAtoms); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 638, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_resnum); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 638, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = NULL;
-    __pyx_t_8 = 0;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_4);
-      if (likely(__pyx_t_7)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-        __Pyx_INCREF(__pyx_t_7);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_4, function);
-        __pyx_t_8 = 1;
-      }
-    }
-    #if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(__pyx_t_4)) {
-      PyObject *__pyx_temp[9] = {__pyx_t_7, __pyx_v_coordinates, __pyx_t_5, __pyx_v_resname, __pyx_v_atomname, __pyx_v_type, __pyx_v_chain, __pyx_t_6, __pyx_v_element};
-      __pyx_t_3 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 8+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 638, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    } else
-    #endif
-    #if CYTHON_FAST_PYCCALL
-    if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
-      PyObject *__pyx_temp[9] = {__pyx_t_7, __pyx_v_coordinates, __pyx_t_5, __pyx_v_resname, __pyx_v_atomname, __pyx_v_type, __pyx_v_chain, __pyx_t_6, __pyx_v_element};
-      __pyx_t_3 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_8, 8+__pyx_t_8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 638, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    } else
-    #endif
-    {
-      __pyx_t_9 = PyTuple_New(8+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 638, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_9);
-      if (__pyx_t_7) {
-        __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
-      }
-      __Pyx_INCREF(__pyx_v_coordinates);
-      __Pyx_GIVEREF(__pyx_v_coordinates);
-      PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_8, __pyx_v_coordinates);
-      __Pyx_GIVEREF(__pyx_t_5);
-      PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_t_5);
-      __Pyx_INCREF(__pyx_v_resname);
-      __Pyx_GIVEREF(__pyx_v_resname);
-      PyTuple_SET_ITEM(__pyx_t_9, 2+__pyx_t_8, __pyx_v_resname);
-      __Pyx_INCREF(__pyx_v_atomname);
-      __Pyx_GIVEREF(__pyx_v_atomname);
-      PyTuple_SET_ITEM(__pyx_t_9, 3+__pyx_t_8, __pyx_v_atomname);
-      __Pyx_INCREF(__pyx_v_type);
-      __Pyx_GIVEREF(__pyx_v_type);
-      PyTuple_SET_ITEM(__pyx_t_9, 4+__pyx_t_8, __pyx_v_type);
-      __Pyx_INCREF(__pyx_v_chain);
-      __Pyx_GIVEREF(__pyx_v_chain);
-      PyTuple_SET_ITEM(__pyx_t_9, 5+__pyx_t_8, __pyx_v_chain);
-      __Pyx_GIVEREF(__pyx_t_6);
-      PyTuple_SET_ITEM(__pyx_t_9, 6+__pyx_t_8, __pyx_t_6);
-      __Pyx_INCREF(__pyx_v_element);
-      __Pyx_GIVEREF(__pyx_v_element);
-      PyTuple_SET_ITEM(__pyx_t_9, 7+__pyx_t_8, __pyx_v_element);
-      __pyx_t_5 = 0;
-      __pyx_t_6 = 0;
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_9, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 638, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":636
- *             Wrapper function
- *         """
- *         if isinstance(coordinates, basestring):             # <<<<<<<<<<<<<<
- *             self.ispdb = True
- *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element)
- */
-    goto __pyx_L3;
-  }
-
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":640
- *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element)
- *         else:
- *             self.ispdb = False             # <<<<<<<<<<<<<<
- *             self._initialiseXTC(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, topology=topology)
- * 
- */
-  /*else*/ {
-    __pyx_v_self->ispdb = 0;
-
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":641
- *         else:
- *             self.ispdb = False
- *             self._initialiseXTC(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, topology=topology)             # <<<<<<<<<<<<<<
- * 
- *     def computeTotalMass(self):
- */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_initialiseXTC); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 641, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_initialisePDB); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 673, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyBool_FromLong(__pyx_v_heavyAtoms); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 641, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyBool_FromLong(__pyx_v_heavyAtoms); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 673, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_9 = __Pyx_PyInt_From_int(__pyx_v_resnum); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 641, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_6 = PyTuple_New(8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 641, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_resnum); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 673, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = PyTuple_New(8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 673, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_coordinates);
     __Pyx_GIVEREF(__pyx_v_coordinates);
@@ -13709,29 +14151,99 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_INCREF(__pyx_v_chain);
     __Pyx_GIVEREF(__pyx_v_chain);
     PyTuple_SET_ITEM(__pyx_t_6, 5, __pyx_v_chain);
-    __Pyx_GIVEREF(__pyx_t_9);
-    PyTuple_SET_ITEM(__pyx_t_6, 6, __pyx_t_9);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_6, 6, __pyx_t_5);
     __Pyx_INCREF(__pyx_v_element);
     __Pyx_GIVEREF(__pyx_v_element);
     PyTuple_SET_ITEM(__pyx_t_6, 7, __pyx_v_element);
     __pyx_t_4 = 0;
-    __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 641, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    if (PyDict_SetItem(__pyx_t_9, __pyx_n_s_topology, __pyx_v_topology) < 0) __PYX_ERR(0, 641, __pyx_L1_error)
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, __pyx_t_9); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 641, __pyx_L1_error)
+    __pyx_t_5 = 0;
+    __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 673, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_extra_atoms, __pyx_v_extra_atoms) < 0) __PYX_ERR(0, 673, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 673, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":671
+ *             Wrapper function
+ *         """
+ *         if isinstance(coordinates, basestring):             # <<<<<<<<<<<<<<
+ *             self.ispdb = True
+ *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, extra_atoms=extra_atoms)
+ */
+    goto __pyx_L3;
+  }
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":675
+ *             self._initialisePDB(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, extra_atoms=extra_atoms)
+ *         else:
+ *             self.ispdb = False             # <<<<<<<<<<<<<<
+ *             self._initialiseXTC(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, topology=topology, extra_atoms=extra_atoms)
+ * 
+ */
+  /*else*/ {
+    __pyx_v_self->ispdb = 0;
+
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":676
+ *         else:
+ *             self.ispdb = False
+ *             self._initialiseXTC(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, topology=topology, extra_atoms=extra_atoms)             # <<<<<<<<<<<<<<
+ * 
+ *     def computeTotalMass(self):
+ */
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_initialiseXTC); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 676, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_5 = __Pyx_PyBool_FromLong(__pyx_v_heavyAtoms); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 676, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyInt_From_int(__pyx_v_resnum); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 676, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_3 = PyTuple_New(8); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 676, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_INCREF(__pyx_v_coordinates);
+    __Pyx_GIVEREF(__pyx_v_coordinates);
+    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_coordinates);
+    __Pyx_GIVEREF(__pyx_t_5);
+    PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_5);
+    __Pyx_INCREF(__pyx_v_resname);
+    __Pyx_GIVEREF(__pyx_v_resname);
+    PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_v_resname);
+    __Pyx_INCREF(__pyx_v_atomname);
+    __Pyx_GIVEREF(__pyx_v_atomname);
+    PyTuple_SET_ITEM(__pyx_t_3, 3, __pyx_v_atomname);
+    __Pyx_INCREF(__pyx_v_type);
+    __Pyx_GIVEREF(__pyx_v_type);
+    PyTuple_SET_ITEM(__pyx_t_3, 4, __pyx_v_type);
+    __Pyx_INCREF(__pyx_v_chain);
+    __Pyx_GIVEREF(__pyx_v_chain);
+    PyTuple_SET_ITEM(__pyx_t_3, 5, __pyx_v_chain);
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_3, 6, __pyx_t_6);
+    __Pyx_INCREF(__pyx_v_element);
+    __Pyx_GIVEREF(__pyx_v_element);
+    PyTuple_SET_ITEM(__pyx_t_3, 7, __pyx_v_element);
+    __pyx_t_5 = 0;
+    __pyx_t_6 = 0;
+    __pyx_t_6 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 676, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_topology, __pyx_v_topology) < 0) __PYX_ERR(0, 676, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_extra_atoms, __pyx_v_extra_atoms) < 0) __PYX_ERR(0, 676, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 676, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __pyx_L3:;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":632
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":667
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
  * 
- *     def initialise(self, object coordinates, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None):             # <<<<<<<<<<<<<<
+ *     def initialise(self, object coordinates, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):             # <<<<<<<<<<<<<<
  *         """
  *             Wrapper function
  */
@@ -13744,8 +14256,6 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_9);
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB.initialise", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -13754,8 +14264,8 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":643
- *             self._initialiseXTC(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, topology=topology)
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":678
+ *             self._initialiseXTC(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, topology=topology, extra_atoms=extra_atoms)
  * 
  *     def computeTotalMass(self):             # <<<<<<<<<<<<<<
  *         """
@@ -13790,7 +14300,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   double __pyx_t_7;
   __Pyx_RefNannySetupContext("computeTotalMass", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":648
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":683
  *         """
  *         cdef int atomNum
  *         self.totalMass = 0.0             # <<<<<<<<<<<<<<
@@ -13799,7 +14309,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   __pyx_v_self->totalMass = 0.0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":649
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":684
  *         cdef int atomNum
  *         self.totalMass = 0.0
  *         for atomNum in range(len(self.atomList)):             # <<<<<<<<<<<<<<
@@ -13810,15 +14320,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 649, __pyx_L1_error)
+    __PYX_ERR(0, 684, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 649, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 684, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = __pyx_t_2;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_atomNum = __pyx_t_4;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":650
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":685
  *         self.totalMass = 0.0
  *         for atomNum in range(len(self.atomList)):
  *             atom = self.atoms[self.atomList[atomNum]]             # <<<<<<<<<<<<<<
@@ -13827,42 +14337,42 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_self->atoms == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 650, __pyx_L1_error)
+      __PYX_ERR(0, 685, __pyx_L1_error)
     }
     if (unlikely(__pyx_v_self->atomList == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 650, __pyx_L1_error)
+      __PYX_ERR(0, 685, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->atomList, __pyx_v_atomNum, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 650, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->atomList, __pyx_v_atomNum, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 685, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 650, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 685, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF_SET(__pyx_v_atom, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":651
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":686
  *         for atomNum in range(len(self.atomList)):
  *             atom = self.atoms[self.atomList[atomNum]]
  *             self.totalMass += atom.mass             # <<<<<<<<<<<<<<
  * 
  *     def printAtoms(self):
  */
-    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 651, __pyx_L1_error)
+    __pyx_t_5 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 686, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_mass); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 651, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_mass); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 686, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = PyNumber_InPlaceAdd(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 651, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_InPlaceAdd(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 686, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 651, __pyx_L1_error)
+    __pyx_t_7 = __pyx_PyFloat_AsDouble(__pyx_t_6); if (unlikely((__pyx_t_7 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 686, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_v_self->totalMass = __pyx_t_7;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":643
- *             self._initialiseXTC(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, topology=topology)
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":678
+ *             self._initialiseXTC(coordinates, heavyAtoms, resname, atomname, type, chain, resnum, element, topology=topology, extra_atoms=extra_atoms)
  * 
  *     def computeTotalMass(self):             # <<<<<<<<<<<<<<
  *         """
@@ -13885,7 +14395,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":653
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":688
  *             self.totalMass += atom.mass
  * 
  *     def printAtoms(self):             # <<<<<<<<<<<<<<
@@ -13917,7 +14427,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *(*__pyx_t_4)(PyObject *);
   __Pyx_RefNannySetupContext("printAtoms", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":658
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":693
  *         """
  *         cdef Atom atom
  *         for atom in self.atoms.values():             # <<<<<<<<<<<<<<
@@ -13926,17 +14436,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   if (unlikely(__pyx_v_self->atoms == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "values");
-    __PYX_ERR(0, 658, __pyx_L1_error)
+    __PYX_ERR(0, 693, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyDict_Values(__pyx_v_self->atoms); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 658, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_Values(__pyx_v_self->atoms); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 693, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (likely(PyList_CheckExact(__pyx_t_1)) || PyTuple_CheckExact(__pyx_t_1)) {
     __pyx_t_2 = __pyx_t_1; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 658, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 693, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 658, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 693, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   for (;;) {
@@ -13944,17 +14454,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       if (likely(PyList_CheckExact(__pyx_t_2))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 658, __pyx_L1_error)
+        __pyx_t_1 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 693, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 658, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 693, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 658, __pyx_L1_error)
+        __pyx_t_1 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_1); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 693, __pyx_L1_error)
         #else
-        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 658, __pyx_L1_error)
+        __pyx_t_1 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 693, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         #endif
       }
@@ -13964,26 +14474,26 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 658, __pyx_L1_error)
+          else __PYX_ERR(0, 693, __pyx_L1_error)
         }
         break;
       }
       __Pyx_GOTREF(__pyx_t_1);
     }
-    if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom))))) __PYX_ERR(0, 658, __pyx_L1_error)
+    if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom))))) __PYX_ERR(0, 693, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_atom, ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":659
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":694
  *         cdef Atom atom
  *         for atom in self.atoms.values():
  *             print atom  # atom.printAtom()             # <<<<<<<<<<<<<<
  * 
  *     def getNumberOfAtoms(self):
  */
-    if (__Pyx_PrintOne(0, ((PyObject *)__pyx_v_atom)) < 0) __PYX_ERR(0, 659, __pyx_L1_error)
+    if (__Pyx_PrintOne(0, ((PyObject *)__pyx_v_atom)) < 0) __PYX_ERR(0, 694, __pyx_L1_error)
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":658
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":693
  *         """
  *         cdef Atom atom
  *         for atom in self.atoms.values():             # <<<<<<<<<<<<<<
@@ -13993,7 +14503,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":653
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":688
  *             self.totalMass += atom.mass
  * 
  *     def printAtoms(self):             # <<<<<<<<<<<<<<
@@ -14016,7 +14526,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":661
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":696
  *             print atom  # atom.printAtom()
  * 
  *     def getNumberOfAtoms(self):             # <<<<<<<<<<<<<<
@@ -14045,7 +14555,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("getNumberOfAtoms", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":667
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":702
  *             :returns: int -- Number of atoms in the PDB
  *         """
  *         return len(self.atoms)             # <<<<<<<<<<<<<<
@@ -14057,17 +14567,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 667, __pyx_L1_error)
+    __PYX_ERR(0, 702, __pyx_L1_error)
   }
-  __pyx_t_2 = PyDict_Size(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 667, __pyx_L1_error)
+  __pyx_t_2 = PyDict_Size(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 702, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 667, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 702, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":661
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":696
  *             print atom  # atom.printAtom()
  * 
  *     def getNumberOfAtoms(self):             # <<<<<<<<<<<<<<
@@ -14086,7 +14596,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":669
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":704
  *         return len(self.atoms)
  * 
  *     def getAtom(self, atomId):             # <<<<<<<<<<<<<<
@@ -14114,7 +14624,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("getAtom", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":678
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":713
  *             :raises: KeyError if the id is not in the PDB
  *         """
  *         return self.atoms[atomId]             # <<<<<<<<<<<<<<
@@ -14124,15 +14634,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(__pyx_v_self->atoms == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 678, __pyx_L1_error)
+    __PYX_ERR(0, 713, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atomId); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 678, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atomId); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 713, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":669
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":704
  *         return len(self.atoms)
  * 
  *     def getAtom(self, atomId):             # <<<<<<<<<<<<<<
@@ -14151,7 +14661,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":680
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":715
  *         return self.atoms[atomId]
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -14179,7 +14689,7 @@ static Py_ssize_t __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB
   Py_ssize_t __pyx_t_2;
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":681
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":716
  * 
  *     def __len__(self):
  *         return len(self.atomList)             # <<<<<<<<<<<<<<
@@ -14190,14 +14700,14 @@ static Py_ssize_t __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 681, __pyx_L1_error)
+    __PYX_ERR(0, 716, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 681, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 716, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":680
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":715
  *         return self.atoms[atomId]
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -14215,7 +14725,7 @@ static Py_ssize_t __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":684
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":719
  * 
  * 
  *     def __getitem__(self, atomId):             # <<<<<<<<<<<<<<
@@ -14242,7 +14752,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":685
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":720
  * 
  *     def __getitem__(self, atomId):
  *         return self.atoms[atomId]             # <<<<<<<<<<<<<<
@@ -14252,15 +14762,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(__pyx_v_self->atoms == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 685, __pyx_L1_error)
+    __PYX_ERR(0, 720, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atomId); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 685, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atomId); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 720, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":684
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":719
  * 
  * 
  *     def __getitem__(self, atomId):             # <<<<<<<<<<<<<<
@@ -14279,7 +14789,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":687
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":722
  *         return self.atoms[atomId]
  * 
  *     def __setitem__(self, atomId, atom):             # <<<<<<<<<<<<<<
@@ -14305,7 +14815,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_28__se
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setitem__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":688
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":723
  * 
  *     def __setitem__(self, atomId, atom):
  *         self.atoms[atomId] = atom             # <<<<<<<<<<<<<<
@@ -14314,11 +14824,11 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_28__se
  */
   if (unlikely(__pyx_v_self->atoms == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 688, __pyx_L1_error)
+    __PYX_ERR(0, 723, __pyx_L1_error)
   }
-  if (unlikely(PyDict_SetItem(__pyx_v_self->atoms, __pyx_v_atomId, __pyx_v_atom) < 0)) __PYX_ERR(0, 688, __pyx_L1_error)
+  if (unlikely(PyDict_SetItem(__pyx_v_self->atoms, __pyx_v_atomId, __pyx_v_atom) < 0)) __PYX_ERR(0, 723, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":687
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":722
  *         return self.atoms[atomId]
  * 
  *     def __setitem__(self, atomId, atom):             # <<<<<<<<<<<<<<
@@ -14337,7 +14847,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_28__se
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":690
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":725
  *         self.atoms[atomId] = atom
  * 
  *     def __delitem__(self, atomId):             # <<<<<<<<<<<<<<
@@ -14366,7 +14876,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_30__de
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__delitem__", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":691
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":726
  * 
  *     def __delitem__(self, atomId):
  *         self.atoms.pop(atomId)             # <<<<<<<<<<<<<<
@@ -14375,20 +14885,20 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_30__de
  */
   if (unlikely(__pyx_v_self->atoms == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%.30s'", "pop");
-    __PYX_ERR(0, 691, __pyx_L1_error)
+    __PYX_ERR(0, 726, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_PyDict_Pop(__pyx_v_self->atoms, __pyx_v_atomId, ((PyObject *)NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 691, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyDict_Pop(__pyx_v_self->atoms, __pyx_v_atomId, ((PyObject *)NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 726, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":692
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":727
  *     def __delitem__(self, atomId):
  *         self.atoms.pop(atomId)
  *         self.atomList.remove(atomId)             # <<<<<<<<<<<<<<
  * 
  *     def __iter__(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->atomList, __pyx_n_s_remove); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 692, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->atomList, __pyx_n_s_remove); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 727, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -14402,12 +14912,12 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_30__de
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_atomId) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_atomId);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 692, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 727, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":690
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":725
  *         self.atoms[atomId] = atom
  * 
  *     def __delitem__(self, atomId):             # <<<<<<<<<<<<<<
@@ -14430,7 +14940,7 @@ static int __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_30__de
 }
 static PyObject *__pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_34generator(__pyx_CoroutineObject *__pyx_generator, CYTHON_UNUSED PyThreadState *__pyx_tstate, PyObject *__pyx_sent_value); /* proto */
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":694
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":729
  *         self.atomList.remove(atomId)
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -14460,7 +14970,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   if (unlikely(!__pyx_cur_scope)) {
     __pyx_cur_scope = ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset___pyx_scope_struct____iter__ *)Py_None);
     __Pyx_INCREF(Py_None);
-    __PYX_ERR(0, 694, __pyx_L1_error)
+    __PYX_ERR(0, 729, __pyx_L1_error)
   } else {
     __Pyx_GOTREF(__pyx_cur_scope);
   }
@@ -14468,7 +14978,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
   {
-    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_34generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_iter, __pyx_n_s_PDB___iter, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!gen)) __PYX_ERR(0, 694, __pyx_L1_error)
+    __pyx_CoroutineObject *gen = __Pyx_Generator_New((__pyx_coroutine_body_t) __pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_34generator, NULL, (PyObject *) __pyx_cur_scope, __pyx_n_s_iter, __pyx_n_s_PDB___iter, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!gen)) __PYX_ERR(0, 729, __pyx_L1_error)
     __Pyx_DECREF(__pyx_cur_scope);
     __Pyx_RefNannyFinishContext();
     return (PyObject *) gen;
@@ -14501,9 +15011,9 @@ static PyObject *__pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     return NULL;
   }
   __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 694, __pyx_L1_error)
+  if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 729, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":695
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":730
  * 
  *     def __iter__(self):
  *         for atomId in self.atomList:             # <<<<<<<<<<<<<<
@@ -14512,15 +15022,15 @@ static PyObject *__pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   if (unlikely(__pyx_cur_scope->__pyx_v_self->atomList == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 695, __pyx_L1_error)
+    __PYX_ERR(0, 730, __pyx_L1_error)
   }
   __pyx_t_1 = __pyx_cur_scope->__pyx_v_self->atomList; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
   for (;;) {
     if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 695, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_3); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 730, __pyx_L1_error)
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 695, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 730, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
     __Pyx_XGOTREF(__pyx_cur_scope->__pyx_v_atomId);
@@ -14528,7 +15038,7 @@ static PyObject *__pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_GIVEREF(__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":696
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":731
  *     def __iter__(self):
  *         for atomId in self.atomList:
  *             yield self.atoms[atomId]             # <<<<<<<<<<<<<<
@@ -14537,9 +15047,9 @@ static PyObject *__pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_cur_scope->__pyx_v_self->atoms == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 696, __pyx_L1_error)
+      __PYX_ERR(0, 731, __pyx_L1_error)
     }
-    __pyx_t_3 = __Pyx_PyDict_GetItem(__pyx_cur_scope->__pyx_v_self->atoms, __pyx_cur_scope->__pyx_v_atomId); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 696, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_GetItem(__pyx_cur_scope->__pyx_v_self->atoms, __pyx_cur_scope->__pyx_v_atomId); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 731, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
@@ -14557,9 +15067,9 @@ static PyObject *__pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __pyx_cur_scope->__pyx_t_0 = 0;
     __Pyx_XGOTREF(__pyx_t_1);
     __pyx_t_2 = __pyx_cur_scope->__pyx_t_1;
-    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 696, __pyx_L1_error)
+    if (unlikely(!__pyx_sent_value)) __PYX_ERR(0, 731, __pyx_L1_error)
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":695
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":730
  * 
  *     def __iter__(self):
  *         for atomId in self.atomList:             # <<<<<<<<<<<<<<
@@ -14570,7 +15080,7 @@ static PyObject *__pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":694
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":729
  *         self.atomList.remove(atomId)
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -14596,7 +15106,7 @@ static PyObject *__pyx_gb_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":698
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":733
  *             yield self.atoms[atomId]
  * 
  *     def updateCoords(self, newCoords):             # <<<<<<<<<<<<<<
@@ -14633,14 +15143,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *(*__pyx_t_8)(PyObject *);
   __Pyx_RefNannySetupContext("updateCoords", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":699
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":734
  * 
  *     def updateCoords(self, newCoords):
  *         for atom, coords in zip(self.atomList, newCoords):             # <<<<<<<<<<<<<<
  *             atomObj = self.atoms[atom]
  *             atomObj.x = coords[0]
  */
-  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 699, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self->atomList);
   __Pyx_GIVEREF(__pyx_v_self->atomList);
@@ -14648,16 +15158,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF(__pyx_v_newCoords);
   __Pyx_GIVEREF(__pyx_v_newCoords);
   PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_newCoords);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 699, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_zip, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_t_2)) || PyTuple_CheckExact(__pyx_t_2)) {
     __pyx_t_1 = __pyx_t_2; __Pyx_INCREF(__pyx_t_1); __pyx_t_3 = 0;
     __pyx_t_4 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 699, __pyx_L1_error)
+    __pyx_t_3 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 734, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 699, __pyx_L1_error)
+    __pyx_t_4 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 734, __pyx_L1_error)
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   for (;;) {
@@ -14665,17 +15175,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 699, __pyx_L1_error)
+        __pyx_t_2 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 734, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 699, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 734, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       } else {
         if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 699, __pyx_L1_error)
+        __pyx_t_2 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_3); __Pyx_INCREF(__pyx_t_2); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 734, __pyx_L1_error)
         #else
-        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 699, __pyx_L1_error)
+        __pyx_t_2 = PySequence_ITEM(__pyx_t_1, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 734, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         #endif
       }
@@ -14685,7 +15195,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(__Pyx_PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 699, __pyx_L1_error)
+          else __PYX_ERR(0, 734, __pyx_L1_error)
         }
         break;
       }
@@ -14697,7 +15207,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       if (unlikely(size != 2)) {
         if (size > 2) __Pyx_RaiseTooManyValuesError(2);
         else if (size >= 0) __Pyx_RaiseNeedMoreValuesError(size);
-        __PYX_ERR(0, 699, __pyx_L1_error)
+        __PYX_ERR(0, 734, __pyx_L1_error)
       }
       #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
       if (likely(PyTuple_CheckExact(sequence))) {
@@ -14710,15 +15220,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_INCREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_t_6);
       #else
-      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 699, __pyx_L1_error)
+      __pyx_t_5 = PySequence_ITEM(sequence, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 734, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 699, __pyx_L1_error)
+      __pyx_t_6 = PySequence_ITEM(sequence, 1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 734, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       #endif
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else {
       Py_ssize_t index = -1;
-      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 699, __pyx_L1_error)
+      __pyx_t_7 = PyObject_GetIter(__pyx_t_2); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 734, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_t_8 = Py_TYPE(__pyx_t_7)->tp_iternext;
@@ -14726,7 +15236,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_GOTREF(__pyx_t_5);
       index = 1; __pyx_t_6 = __pyx_t_8(__pyx_t_7); if (unlikely(!__pyx_t_6)) goto __pyx_L5_unpacking_failed;
       __Pyx_GOTREF(__pyx_t_6);
-      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 699, __pyx_L1_error)
+      if (__Pyx_IternextUnpackEndCheck(__pyx_t_8(__pyx_t_7), 2) < 0) __PYX_ERR(0, 734, __pyx_L1_error)
       __pyx_t_8 = NULL;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       goto __pyx_L6_unpacking_done;
@@ -14734,7 +15244,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
       if (__Pyx_IterFinish() == 0) __Pyx_RaiseNeedMoreValuesError(index);
-      __PYX_ERR(0, 699, __pyx_L1_error)
+      __PYX_ERR(0, 734, __pyx_L1_error)
       __pyx_L6_unpacking_done:;
     }
     __Pyx_XDECREF_SET(__pyx_v_atom, __pyx_t_5);
@@ -14742,7 +15252,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_XDECREF_SET(__pyx_v_coords, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":700
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":735
  *     def updateCoords(self, newCoords):
  *         for atom, coords in zip(self.atomList, newCoords):
  *             atomObj = self.atoms[atom]             # <<<<<<<<<<<<<<
@@ -14751,50 +15261,50 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_self->atoms == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 700, __pyx_L1_error)
+      __PYX_ERR(0, 735, __pyx_L1_error)
     }
-    __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atom); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 700, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atom); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 735, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_atomObj, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":701
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":736
  *         for atom, coords in zip(self.atomList, newCoords):
  *             atomObj = self.atoms[atom]
  *             atomObj.x = coords[0]             # <<<<<<<<<<<<<<
  *             atomObj.y = coords[1]
  *             atomObj.z = coords[2]
  */
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 701, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_coords, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 736, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_atomObj, __pyx_n_s_x, __pyx_t_2) < 0) __PYX_ERR(0, 701, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_atomObj, __pyx_n_s_x, __pyx_t_2) < 0) __PYX_ERR(0, 736, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":702
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":737
  *             atomObj = self.atoms[atom]
  *             atomObj.x = coords[0]
  *             atomObj.y = coords[1]             # <<<<<<<<<<<<<<
  *             atomObj.z = coords[2]
  * 
  */
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 702, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_coords, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 737, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_atomObj, __pyx_n_s_y, __pyx_t_2) < 0) __PYX_ERR(0, 702, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_atomObj, __pyx_n_s_y, __pyx_t_2) < 0) __PYX_ERR(0, 737, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":703
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":738
  *             atomObj.x = coords[0]
  *             atomObj.y = coords[1]
  *             atomObj.z = coords[2]             # <<<<<<<<<<<<<<
  * 
  *     def extractCOM(self):
  */
-    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 703, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_GetItemInt(__pyx_v_coords, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 738, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (__Pyx_PyObject_SetAttrStr(__pyx_v_atomObj, __pyx_n_s_z, __pyx_t_2) < 0) __PYX_ERR(0, 703, __pyx_L1_error)
+    if (__Pyx_PyObject_SetAttrStr(__pyx_v_atomObj, __pyx_n_s_z, __pyx_t_2) < 0) __PYX_ERR(0, 738, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":699
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":734
  * 
  *     def updateCoords(self, newCoords):
  *         for atom, coords in zip(self.atomList, newCoords):             # <<<<<<<<<<<<<<
@@ -14804,7 +15314,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":698
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":733
  *             yield self.atoms[atomId]
  * 
  *     def updateCoords(self, newCoords):             # <<<<<<<<<<<<<<
@@ -14832,7 +15342,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":705
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":740
  *             atomObj.z = coords[2]
  * 
  *     def extractCOM(self):             # <<<<<<<<<<<<<<
@@ -14873,7 +15383,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_11 = NULL;
   __Pyx_RefNannySetupContext("extractCOM", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":711
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":746
  *             :returns: list -- List with the center of mass coordinates
  *         """
  *         if not self.totalMass:             # <<<<<<<<<<<<<<
@@ -14883,14 +15393,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_t_1 = ((!(__pyx_v_self->totalMass != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":712
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":747
  *         """
  *         if not self.totalMass:
  *             self.computeTotalMass()             # <<<<<<<<<<<<<<
  *         cdef list COM
  *         cdef int atomNum
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_computeTotalMass); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 712, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_computeTotalMass); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 747, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -14904,12 +15414,12 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_2 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 712, __pyx_L1_error)
+    if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 747, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":711
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":746
  *             :returns: list -- List with the center of mass coordinates
  *         """
  *         if not self.totalMass:             # <<<<<<<<<<<<<<
@@ -14918,14 +15428,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":715
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":750
  *         cdef list COM
  *         cdef int atomNum
  *         COM = [0., 0., 0.]             # <<<<<<<<<<<<<<
  *         for atomName in self.atoms:
  *             atom = self.atoms[atomName]
  */
-  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 715, __pyx_L1_error)
+  __pyx_t_2 = PyList_New(3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 750, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_float_0_);
   __Pyx_GIVEREF(__pyx_float_0_);
@@ -14939,7 +15449,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_v_COM = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":716
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":751
  *         cdef int atomNum
  *         COM = [0., 0., 0.]
  *         for atomName in self.atoms:             # <<<<<<<<<<<<<<
@@ -14949,9 +15459,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_t_5 = 0;
   if (unlikely(__pyx_v_self->atoms == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
-    __PYX_ERR(0, 716, __pyx_L1_error)
+    __PYX_ERR(0, 751, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_dict_iterator(__pyx_v_self->atoms, 1, ((PyObject *)NULL), (&__pyx_t_6), (&__pyx_t_7)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 716, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_dict_iterator(__pyx_v_self->atoms, 1, ((PyObject *)NULL), (&__pyx_t_6), (&__pyx_t_7)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 751, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_2);
   __pyx_t_2 = __pyx_t_3;
@@ -14959,12 +15469,12 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   while (1) {
     __pyx_t_8 = __Pyx_dict_iter_next(__pyx_t_2, __pyx_t_6, &__pyx_t_5, &__pyx_t_3, NULL, NULL, __pyx_t_7);
     if (unlikely(__pyx_t_8 == 0)) break;
-    if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 716, __pyx_L1_error)
+    if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 751, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_atomName, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":717
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":752
  *         COM = [0., 0., 0.]
  *         for atomName in self.atoms:
  *             atom = self.atoms[atomName]             # <<<<<<<<<<<<<<
@@ -14973,14 +15483,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_self->atoms == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 717, __pyx_L1_error)
+      __PYX_ERR(0, 752, __pyx_L1_error)
     }
-    __pyx_t_3 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atomName); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 717, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_v_atomName); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 752, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_XDECREF_SET(__pyx_v_atom, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":718
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":753
  *         for atomName in self.atoms:
  *             atom = self.atoms[atomName]
  *             COM[0] += atom.mass * atom.x             # <<<<<<<<<<<<<<
@@ -14988,24 +15498,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *             COM[2] += atom.mass * atom.z
  */
     __pyx_t_9 = 0;
-    __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_9, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 718, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_9, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 753, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_mass); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 718, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_mass); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 753, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_x); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 718, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_x); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 753, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_11 = PyNumber_Multiply(__pyx_t_4, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 718, __pyx_L1_error)
+    __pyx_t_11 = PyNumber_Multiply(__pyx_t_4, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 753, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = PyNumber_InPlaceAdd(__pyx_t_3, __pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 718, __pyx_L1_error)
+    __pyx_t_10 = PyNumber_InPlaceAdd(__pyx_t_3, __pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 753, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_9, __pyx_t_10, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 718, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_9, __pyx_t_10, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 753, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":719
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":754
  *             atom = self.atoms[atomName]
  *             COM[0] += atom.mass * atom.x
  *             COM[1] += atom.mass * atom.y             # <<<<<<<<<<<<<<
@@ -15013,24 +15523,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  * 
  */
     __pyx_t_9 = 1;
-    __pyx_t_10 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_9, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 719, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_9, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 754, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_mass); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 719, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_mass); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 754, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 719, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 754, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyNumber_Multiply(__pyx_t_11, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 719, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_Multiply(__pyx_t_11, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 754, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyNumber_InPlaceAdd(__pyx_t_10, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 719, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_InPlaceAdd(__pyx_t_10, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 754, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_9, __pyx_t_3, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 719, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_9, __pyx_t_3, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 754, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":720
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":755
  *             COM[0] += atom.mass * atom.x
  *             COM[1] += atom.mass * atom.y
  *             COM[2] += atom.mass * atom.z             # <<<<<<<<<<<<<<
@@ -15038,26 +15548,26 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         COM[0] /= self.totalMass
  */
     __pyx_t_9 = 2;
-    __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_9, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 720, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_9, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 755, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_mass); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 720, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_mass); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 755, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_z); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 720, __pyx_L1_error)
+    __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_z); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 755, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_11 = PyNumber_Multiply(__pyx_t_4, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 720, __pyx_L1_error)
+    __pyx_t_11 = PyNumber_Multiply(__pyx_t_4, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 755, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_10 = PyNumber_InPlaceAdd(__pyx_t_3, __pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 720, __pyx_L1_error)
+    __pyx_t_10 = PyNumber_InPlaceAdd(__pyx_t_3, __pyx_t_11); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 755, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_9, __pyx_t_10, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 720, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_9, __pyx_t_10, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 755, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":722
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":757
  *             COM[2] += atom.mass * atom.z
  * 
  *         COM[0] /= self.totalMass             # <<<<<<<<<<<<<<
@@ -15065,18 +15575,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         COM[2] /= self.totalMass
  */
   __pyx_t_6 = 0;
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 722, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 757, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 722, __pyx_L1_error)
+  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 757, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_2, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 722, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_2, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 757, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_6, __pyx_t_11, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 722, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_6, __pyx_t_11, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 757, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":723
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":758
  * 
  *         COM[0] /= self.totalMass
  *         COM[1] /= self.totalMass             # <<<<<<<<<<<<<<
@@ -15084,18 +15594,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         self.com = COM
  */
   __pyx_t_6 = 1;
-  __pyx_t_11 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 723, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 758, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
-  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 723, __pyx_L1_error)
+  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 758, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_2 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_11, __pyx_t_10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 723, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_11, __pyx_t_10); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 758, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_6, __pyx_t_2, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 723, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_6, __pyx_t_2, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 758, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":724
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":759
  *         COM[0] /= self.totalMass
  *         COM[1] /= self.totalMass
  *         COM[2] /= self.totalMass             # <<<<<<<<<<<<<<
@@ -15103,18 +15613,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         return COM
  */
   __pyx_t_6 = 2;
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 724, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 759, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 724, __pyx_L1_error)
+  __pyx_t_10 = PyFloat_FromDouble(__pyx_v_self->totalMass); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 759, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_10);
-  __pyx_t_11 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_2, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 724, __pyx_L1_error)
+  __pyx_t_11 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_2, __pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 759, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_6, __pyx_t_11, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 724, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_COM, __pyx_t_6, __pyx_t_11, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 759, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":725
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":760
  *         COM[1] /= self.totalMass
  *         COM[2] /= self.totalMass
  *         self.com = COM             # <<<<<<<<<<<<<<
@@ -15127,7 +15637,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_DECREF(__pyx_v_self->com);
   __pyx_v_self->com = __pyx_v_COM;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":726
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":761
  *         COM[2] /= self.totalMass
  *         self.com = COM
  *         return COM             # <<<<<<<<<<<<<<
@@ -15139,7 +15649,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_r = __pyx_v_COM;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":705
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":740
  *             atomObj.z = coords[2]
  * 
  *     def extractCOM(self):             # <<<<<<<<<<<<<<
@@ -15165,7 +15675,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":728
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":763
  *         return COM
  * 
  *     def getCOM(self):             # <<<<<<<<<<<<<<
@@ -15197,7 +15707,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("getCOM", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":734
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":769
  *             :returns: list -- List with the center of mass coordinates
  *         """
  *         if self.com is None:             # <<<<<<<<<<<<<<
@@ -15208,7 +15718,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":735
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":770
  *         """
  *         if self.com is None:
  *             return self.extractCOM()             # <<<<<<<<<<<<<<
@@ -15216,7 +15726,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *             return self.com
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_extractCOM); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 735, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_extractCOM); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 770, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -15230,14 +15740,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 735, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 770, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":734
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":769
  *             :returns: list -- List with the center of mass coordinates
  *         """
  *         if self.com is None:             # <<<<<<<<<<<<<<
@@ -15246,7 +15756,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":737
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":772
  *             return self.extractCOM()
  *         else:
  *             return self.com             # <<<<<<<<<<<<<<
@@ -15260,7 +15770,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     goto __pyx_L0;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":728
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":763
  *         return COM
  * 
  *     def getCOM(self):             # <<<<<<<<<<<<<<
@@ -15281,7 +15791,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":739
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":774
  *             return self.com
  * 
  *     def extractCentroid(self):             # <<<<<<<<<<<<<<
@@ -15319,14 +15829,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("extractCentroid", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":748
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":783
  *         cdef double n
  *         cdef int atomNum
  *         centroid = [0., 0., 0.]             # <<<<<<<<<<<<<<
  *         for atomNum in range(len(self.atomList)):
  *             atom = self.atoms[self.atomList[atomNum]]
  */
-  __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 748, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 783, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_float_0_);
   __Pyx_GIVEREF(__pyx_float_0_);
@@ -15340,7 +15850,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_v_centroid = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":749
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":784
  *         cdef int atomNum
  *         centroid = [0., 0., 0.]
  *         for atomNum in range(len(self.atomList)):             # <<<<<<<<<<<<<<
@@ -15351,15 +15861,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 749, __pyx_L1_error)
+    __PYX_ERR(0, 784, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 749, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 784, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = __pyx_t_2;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_atomNum = __pyx_t_4;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":750
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":785
  *         centroid = [0., 0., 0.]
  *         for atomNum in range(len(self.atomList)):
  *             atom = self.atoms[self.atomList[atomNum]]             # <<<<<<<<<<<<<<
@@ -15368,21 +15878,21 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_self->atoms == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 750, __pyx_L1_error)
+      __PYX_ERR(0, 785, __pyx_L1_error)
     }
     if (unlikely(__pyx_v_self->atomList == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 750, __pyx_L1_error)
+      __PYX_ERR(0, 785, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->atomList, __pyx_v_atomNum, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 750, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_self->atomList, __pyx_v_atomNum, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 785, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 750, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyDict_GetItem(__pyx_v_self->atoms, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 785, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF_SET(__pyx_v_atom, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":751
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":786
  *         for atomNum in range(len(self.atomList)):
  *             atom = self.atoms[self.atomList[atomNum]]
  *             centroid[0] += atom.x             # <<<<<<<<<<<<<<
@@ -15390,18 +15900,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *             centroid[2] += atom.z
  */
     __pyx_t_6 = 0;
-    __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 751, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 786, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 751, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 786, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 751, __pyx_L1_error)
+    __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 786, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_6, __pyx_t_7, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 751, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_6, __pyx_t_7, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 786, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":752
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":787
  *             atom = self.atoms[self.atomList[atomNum]]
  *             centroid[0] += atom.x
  *             centroid[1] += atom.y             # <<<<<<<<<<<<<<
@@ -15409,18 +15919,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  * 
  */
     __pyx_t_6 = 1;
-    __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 752, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 787, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 752, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_y); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 787, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_5 = PyNumber_InPlaceAdd(__pyx_t_7, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 752, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_InPlaceAdd(__pyx_t_7, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 787, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_6, __pyx_t_5, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 752, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_6, __pyx_t_5, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 787, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":753
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":788
  *             centroid[0] += atom.x
  *             centroid[1] += atom.y
  *             centroid[2] += atom.z             # <<<<<<<<<<<<<<
@@ -15428,19 +15938,19 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         n = float(len(self.atoms))
  */
     __pyx_t_6 = 2;
-    __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 753, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_6, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 788, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_z); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 753, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_atom, __pyx_n_s_z); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 788, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 753, __pyx_L1_error)
+    __pyx_t_7 = PyNumber_InPlaceAdd(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 788, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_6, __pyx_t_7, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 753, __pyx_L1_error)
+    if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_6, __pyx_t_7, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 788, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":755
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":790
  *             centroid[2] += atom.z
  * 
  *         n = float(len(self.atoms))             # <<<<<<<<<<<<<<
@@ -15451,13 +15961,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF(__pyx_t_7);
   if (unlikely(__pyx_t_7 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 755, __pyx_L1_error)
+    __PYX_ERR(0, 790, __pyx_L1_error)
   }
-  __pyx_t_2 = PyDict_Size(__pyx_t_7); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 755, __pyx_L1_error)
+  __pyx_t_2 = PyDict_Size(__pyx_t_7); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 790, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __pyx_v_n = ((double)__pyx_t_2);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":756
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":791
  * 
  *         n = float(len(self.atoms))
  *         centroid[0] /= n             # <<<<<<<<<<<<<<
@@ -15465,18 +15975,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         centroid[2] /= n
  */
   __pyx_t_2 = 0;
-  __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_2, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 756, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_2, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 791, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 756, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 791, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_7, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 756, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_7, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 791, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_2, __pyx_t_5, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 756, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_2, __pyx_t_5, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 791, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":757
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":792
  *         n = float(len(self.atoms))
  *         centroid[0] /= n
  *         centroid[1] /= n             # <<<<<<<<<<<<<<
@@ -15484,18 +15994,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         self.centroid = centroid
  */
   __pyx_t_2 = 1;
-  __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_2, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 757, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_2, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 792, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 757, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 792, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_7 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 757, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 792, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_2, __pyx_t_7, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 757, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_2, __pyx_t_7, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 792, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":758
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":793
  *         centroid[0] /= n
  *         centroid[1] /= n
  *         centroid[2] /= n             # <<<<<<<<<<<<<<
@@ -15503,18 +16013,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *         return centroid
  */
   __pyx_t_2 = 2;
-  __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_2, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 758, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_GetItemInt_List(__pyx_v_centroid, __pyx_t_2, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 793, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 758, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_n); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 793, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_7, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 758, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyNumber_InPlaceDivide(__pyx_t_7, __pyx_t_1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 793, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_2, __pyx_t_5, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 758, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_v_centroid, __pyx_t_2, __pyx_t_5, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 793, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":759
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":794
  *         centroid[1] /= n
  *         centroid[2] /= n
  *         self.centroid = centroid             # <<<<<<<<<<<<<<
@@ -15527,7 +16037,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_DECREF(__pyx_v_self->centroid);
   __pyx_v_self->centroid = __pyx_v_centroid;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":760
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":795
  *         centroid[2] /= n
  *         self.centroid = centroid
  *         return centroid             # <<<<<<<<<<<<<<
@@ -15539,7 +16049,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_r = __pyx_v_centroid;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":739
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":774
  *             return self.com
  * 
  *     def extractCentroid(self):             # <<<<<<<<<<<<<<
@@ -15562,7 +16072,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":762
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":797
  *         return centroid
  * 
  *     def getCentroid(self):             # <<<<<<<<<<<<<<
@@ -15594,7 +16104,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("getCentroid", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":768
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":803
  *             :returns: list -- List with the centroid coordinates
  *         """
  *         if self.centroid is None:             # <<<<<<<<<<<<<<
@@ -15605,7 +16115,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":769
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":804
  *         """
  *         if self.centroid is None:
  *             return self.extractCentroid()             # <<<<<<<<<<<<<<
@@ -15613,7 +16123,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *             return self.centroid
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_extractCentroid); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 769, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_extractCentroid); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 804, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -15627,14 +16137,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_3 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_4);
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 769, __pyx_L1_error)
+    if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 804, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":768
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":803
  *             :returns: list -- List with the centroid coordinates
  *         """
  *         if self.centroid is None:             # <<<<<<<<<<<<<<
@@ -15643,7 +16153,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":771
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":806
  *             return self.extractCentroid()
  *         else:
  *             return self.centroid             # <<<<<<<<<<<<<<
@@ -15657,7 +16167,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     goto __pyx_L0;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":762
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":797
  *         return centroid
  * 
  *     def getCentroid(self):             # <<<<<<<<<<<<<<
@@ -15678,7 +16188,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":776
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":811
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     def join_PDB_lines(self, list topology, np.ndarray[float, ndim=2] frame):             # <<<<<<<<<<<<<<
@@ -15717,11 +16227,11 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_frame)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("join_PDB_lines", 1, 2, 2, 1); __PYX_ERR(0, 776, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("join_PDB_lines", 1, 2, 2, 1); __PYX_ERR(0, 811, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "join_PDB_lines") < 0)) __PYX_ERR(0, 776, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "join_PDB_lines") < 0)) __PYX_ERR(0, 811, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -15734,14 +16244,14 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("join_PDB_lines", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 776, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("join_PDB_lines", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 811, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB.join_PDB_lines", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_topology), (&PyList_Type), 1, "topology", 1))) __PYX_ERR(0, 776, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_frame), __pyx_ptype_5numpy_ndarray, 1, "frame", 0))) __PYX_ERR(0, 776, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_topology), (&PyList_Type), 1, "topology", 1))) __PYX_ERR(0, 811, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_frame), __pyx_ptype_5numpy_ndarray, 1, "frame", 0))) __PYX_ERR(0, 811, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_45join_PDB_lines(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_topology, __pyx_v_frame);
 
   /* function exit code */
@@ -15791,11 +16301,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_pybuffernd_frame.rcbuffer = &__pyx_pybuffer_frame;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_frame.rcbuffer->pybuffer, (PyObject*)__pyx_v_frame, &__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 776, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_frame.rcbuffer->pybuffer, (PyObject*)__pyx_v_frame, &__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 811, __pyx_L1_error)
   }
   __pyx_pybuffernd_frame.diminfo[0].strides = __pyx_pybuffernd_frame.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_frame.diminfo[0].shape = __pyx_pybuffernd_frame.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_frame.diminfo[1].strides = __pyx_pybuffernd_frame.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_frame.diminfo[1].shape = __pyx_pybuffernd_frame.rcbuffer->pybuffer.shape[1];
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":777
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":812
  *     @cython.wraparound(False)
  *     def join_PDB_lines(self, list topology, np.ndarray[float, ndim=2] frame):
  *         cdef basestring prevLine = None             # <<<<<<<<<<<<<<
@@ -15805,7 +16315,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF(Py_None);
   __pyx_v_prevLine = ((PyObject*)Py_None);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":778
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":813
  *     def join_PDB_lines(self, list topology, np.ndarray[float, ndim=2] frame):
  *         cdef basestring prevLine = None
  *         cdef basestring temp = u"%.3f"             # <<<<<<<<<<<<<<
@@ -15815,19 +16325,19 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF(__pyx_kp_u_3f);
   __pyx_v_temp = ((PyObject*)__pyx_kp_u_3f);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":779
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":814
  *         cdef basestring prevLine = None
  *         cdef basestring temp = u"%.3f"
  *         cdef list pdb = []             # <<<<<<<<<<<<<<
  *         cdef basestring line
  *         cdef unsigned int natoms = len(topology)
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 779, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 814, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_pdb = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":781
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":816
  *         cdef list pdb = []
  *         cdef basestring line
  *         cdef unsigned int natoms = len(topology)             # <<<<<<<<<<<<<<
@@ -15836,44 +16346,44 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   if (unlikely(__pyx_v_topology == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 781, __pyx_L1_error)
+    __PYX_ERR(0, 816, __pyx_L1_error)
   }
-  __pyx_t_2 = PyList_GET_SIZE(__pyx_v_topology); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 781, __pyx_L1_error)
+  __pyx_t_2 = PyList_GET_SIZE(__pyx_v_topology); if (unlikely(__pyx_t_2 == ((Py_ssize_t)-1))) __PYX_ERR(0, 816, __pyx_L1_error)
   __pyx_v_natoms = __pyx_t_2;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":783
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":818
  *         cdef unsigned int natoms = len(topology)
  *         cdef unsigned int i
  *         for i in range(natoms):             # <<<<<<<<<<<<<<
  *             line = topology[i]
- *             if prevLine is not None and (prevLine[21] != line[21] or (prevLine[22:26] != line[22:26] and (u"HOH" == line[17:20] or u"HOH" == prevLine[17:20])) or (prevLine[0:4] == "ATOM" and line[0:6] == "HETATM") or (prevLine[0:6] == "HETATM" and line[0:6] == "HETATM" and (prevLine[22:26] != line[22:26]))):
+ *             if prevLine is not None and (prevLine[21] != line[21] or check_add_TER(prevLine, line)):
  */
   __pyx_t_3 = __pyx_v_natoms;
   __pyx_t_4 = __pyx_t_3;
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":784
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":819
  *         cdef unsigned int i
  *         for i in range(natoms):
  *             line = topology[i]             # <<<<<<<<<<<<<<
- *             if prevLine is not None and (prevLine[21] != line[21] or (prevLine[22:26] != line[22:26] and (u"HOH" == line[17:20] or u"HOH" == prevLine[17:20])) or (prevLine[0:4] == "ATOM" and line[0:6] == "HETATM") or (prevLine[0:6] == "HETATM" and line[0:6] == "HETATM" and (prevLine[22:26] != line[22:26]))):
+ *             if prevLine is not None and (prevLine[21] != line[21] or check_add_TER(prevLine, line)):
  *                 pdb.append(u"TER\n")
  */
     if (unlikely(__pyx_v_topology == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 784, __pyx_L1_error)
+      __PYX_ERR(0, 819, __pyx_L1_error)
     }
-    if (!(likely(__Pyx_PyBaseString_CheckExact(PyList_GET_ITEM(__pyx_v_topology, __pyx_v_i)))||((PyList_GET_ITEM(__pyx_v_topology, __pyx_v_i)) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(PyList_GET_ITEM(__pyx_v_topology, __pyx_v_i))->tp_name), 0))) __PYX_ERR(0, 784, __pyx_L1_error)
+    if (!(likely(__Pyx_PyBaseString_CheckExact(PyList_GET_ITEM(__pyx_v_topology, __pyx_v_i)))||((PyList_GET_ITEM(__pyx_v_topology, __pyx_v_i)) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(PyList_GET_ITEM(__pyx_v_topology, __pyx_v_i))->tp_name), 0))) __PYX_ERR(0, 819, __pyx_L1_error)
     __pyx_t_1 = PyList_GET_ITEM(__pyx_v_topology, __pyx_v_i);
     __Pyx_INCREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_1));
     __pyx_t_1 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":785
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":820
  *         for i in range(natoms):
  *             line = topology[i]
- *             if prevLine is not None and (prevLine[21] != line[21] or (prevLine[22:26] != line[22:26] and (u"HOH" == line[17:20] or u"HOH" == prevLine[17:20])) or (prevLine[0:4] == "ATOM" and line[0:6] == "HETATM") or (prevLine[0:6] == "HETATM" and line[0:6] == "HETATM" and (prevLine[22:26] != line[22:26]))):             # <<<<<<<<<<<<<<
+ *             if prevLine is not None and (prevLine[21] != line[21] or check_add_TER(prevLine, line)):             # <<<<<<<<<<<<<<
  *                 pdb.append(u"TER\n")
  *             x = (temp % frame[i, 0]).rjust(8)
  */
@@ -15884,165 +16394,45 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_t_6 = __pyx_t_8;
       goto __pyx_L6_bool_binop_done;
     }
-    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_prevLine, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 785, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_prevLine, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 820, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_line, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_GetItemInt(__pyx_v_line, 21, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 820, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_10 = PyObject_RichCompare(__pyx_t_1, __pyx_t_9, Py_NE); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 785, __pyx_L1_error)
+    __pyx_t_10 = PyObject_RichCompare(__pyx_t_1, __pyx_t_9, Py_NE); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 820, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 820, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     if (!__pyx_t_8) {
     } else {
       __pyx_t_6 = __pyx_t_8;
       goto __pyx_L6_bool_binop_done;
     }
-    if (unlikely(__pyx_v_prevLine == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_10 = PySequence_GetSlice(__pyx_v_prevLine, 22, 26); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_10);
-    if (unlikely(__pyx_v_line == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_9 = PySequence_GetSlice(__pyx_v_line, 22, 26); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = (__Pyx_PyUnicode_Equals(__pyx_t_10, __pyx_t_9, Py_NE)); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_7 = (__pyx_t_8 != 0);
-    if (!__pyx_t_7) {
-      goto __pyx_L9_next_or;
-    } else {
-    }
-    if (unlikely(__pyx_v_line == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_9 = PySequence_GetSlice(__pyx_v_line, 17, 20); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_n_u_HOH, __pyx_t_9, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_8 = (__pyx_t_7 != 0);
-    if (!__pyx_t_8) {
-    } else {
-      __pyx_t_6 = __pyx_t_8;
-      goto __pyx_L6_bool_binop_done;
-    }
-    if (unlikely(__pyx_v_prevLine == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_9 = PySequence_GetSlice(__pyx_v_prevLine, 17, 20); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = (__Pyx_PyUnicode_Equals(__pyx_n_u_HOH, __pyx_t_9, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_7 = (__pyx_t_8 != 0);
-    if (!__pyx_t_7) {
-    } else {
-      __pyx_t_6 = __pyx_t_7;
-      goto __pyx_L6_bool_binop_done;
-    }
-    __pyx_L9_next_or:;
-    if (unlikely(__pyx_v_prevLine == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_9 = PySequence_GetSlice(__pyx_v_prevLine, 0, 4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_t_9, __pyx_n_u_ATOM, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_8 = (__pyx_t_7 != 0);
-    if (!__pyx_t_8) {
-      goto __pyx_L12_next_or;
-    } else {
-    }
-    if (unlikely(__pyx_v_line == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_9 = PySequence_GetSlice(__pyx_v_line, 0, 6); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = (__Pyx_PyUnicode_Equals(__pyx_t_9, __pyx_n_u_HETATM, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_7 = (__pyx_t_8 != 0);
-    if (!__pyx_t_7) {
-    } else {
-      __pyx_t_6 = __pyx_t_7;
-      goto __pyx_L6_bool_binop_done;
-    }
-    __pyx_L12_next_or:;
-    if (unlikely(__pyx_v_prevLine == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_9 = PySequence_GetSlice(__pyx_v_prevLine, 0, 6); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_t_9, __pyx_n_u_HETATM, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_8 = (__pyx_t_7 != 0);
-    if (__pyx_t_8) {
-    } else {
-      __pyx_t_6 = __pyx_t_8;
-      goto __pyx_L6_bool_binop_done;
-    }
-    if (unlikely(__pyx_v_line == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_9 = PySequence_GetSlice(__pyx_v_line, 0, 6); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_8 = (__Pyx_PyUnicode_Equals(__pyx_t_9, __pyx_n_u_HETATM, Py_EQ)); if (unlikely(__pyx_t_8 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_7 = (__pyx_t_8 != 0);
-    if (__pyx_t_7) {
-    } else {
-      __pyx_t_6 = __pyx_t_7;
-      goto __pyx_L6_bool_binop_done;
-    }
-    if (unlikely(__pyx_v_prevLine == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_9 = PySequence_GetSlice(__pyx_v_prevLine, 22, 26); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    if (unlikely(__pyx_v_line == Py_None)) {
-      PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 785, __pyx_L1_error)
-    }
-    __pyx_t_10 = PySequence_GetSlice(__pyx_v_line, 22, 26); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_10);
-    __pyx_t_7 = (__Pyx_PyUnicode_Equals(__pyx_t_9, __pyx_t_10, Py_NE)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 785, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_8 = (__pyx_t_7 != 0);
+    __pyx_t_8 = (__pyx_f_13pele_platform_12AdaptivePELE_7atomset_7atomset_check_add_TER(__pyx_v_prevLine, __pyx_v_line) != 0);
     __pyx_t_6 = __pyx_t_8;
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_6) {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":786
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":821
  *             line = topology[i]
- *             if prevLine is not None and (prevLine[21] != line[21] or (prevLine[22:26] != line[22:26] and (u"HOH" == line[17:20] or u"HOH" == prevLine[17:20])) or (prevLine[0:4] == "ATOM" and line[0:6] == "HETATM") or (prevLine[0:6] == "HETATM" and line[0:6] == "HETATM" and (prevLine[22:26] != line[22:26]))):
+ *             if prevLine is not None and (prevLine[21] != line[21] or check_add_TER(prevLine, line)):
  *                 pdb.append(u"TER\n")             # <<<<<<<<<<<<<<
  *             x = (temp % frame[i, 0]).rjust(8)
  *             y = (temp % frame[i, 1]).rjust(8)
  */
-      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_pdb, __pyx_n_u_TER); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 786, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_pdb, __pyx_n_u_TER); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 821, __pyx_L1_error)
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":785
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":820
  *         for i in range(natoms):
  *             line = topology[i]
- *             if prevLine is not None and (prevLine[21] != line[21] or (prevLine[22:26] != line[22:26] and (u"HOH" == line[17:20] or u"HOH" == prevLine[17:20])) or (prevLine[0:4] == "ATOM" and line[0:6] == "HETATM") or (prevLine[0:6] == "HETATM" and line[0:6] == "HETATM" and (prevLine[22:26] != line[22:26]))):             # <<<<<<<<<<<<<<
+ *             if prevLine is not None and (prevLine[21] != line[21] or check_add_TER(prevLine, line)):             # <<<<<<<<<<<<<<
  *                 pdb.append(u"TER\n")
  *             x = (temp % frame[i, 0]).rjust(8)
  */
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":787
- *             if prevLine is not None and (prevLine[21] != line[21] or (prevLine[22:26] != line[22:26] and (u"HOH" == line[17:20] or u"HOH" == prevLine[17:20])) or (prevLine[0:4] == "ATOM" and line[0:6] == "HETATM") or (prevLine[0:6] == "HETATM" and line[0:6] == "HETATM" and (prevLine[22:26] != line[22:26]))):
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":822
+ *             if prevLine is not None and (prevLine[21] != line[21] or check_add_TER(prevLine, line)):
  *                 pdb.append(u"TER\n")
  *             x = (temp % frame[i, 0]).rjust(8)             # <<<<<<<<<<<<<<
  *             y = (temp % frame[i, 1]).rjust(8)
@@ -16050,12 +16440,12 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     __pyx_t_12 = __pyx_v_i;
     __pyx_t_13 = 0;
-    __pyx_t_9 = PyFloat_FromDouble((*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_frame.diminfo[1].strides))); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 787, __pyx_L1_error)
+    __pyx_t_9 = PyFloat_FromDouble((*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_12, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_13, __pyx_pybuffernd_frame.diminfo[1].strides))); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 822, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_1 = PyNumber_Remainder(__pyx_v_temp, __pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 787, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Remainder(__pyx_v_temp, __pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 822, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_rjust); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 787, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_rjust); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 822, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
@@ -16070,13 +16460,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_10 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_1, __pyx_int_8) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_int_8);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 787, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 822, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_XDECREF_SET(__pyx_v_x, __pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":788
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":823
  *                 pdb.append(u"TER\n")
  *             x = (temp % frame[i, 0]).rjust(8)
  *             y = (temp % frame[i, 1]).rjust(8)             # <<<<<<<<<<<<<<
@@ -16085,12 +16475,12 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     __pyx_t_14 = __pyx_v_i;
     __pyx_t_15 = 1;
-    __pyx_t_9 = PyFloat_FromDouble((*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_15, __pyx_pybuffernd_frame.diminfo[1].strides))); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 788, __pyx_L1_error)
+    __pyx_t_9 = PyFloat_FromDouble((*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_14, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_15, __pyx_pybuffernd_frame.diminfo[1].strides))); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 823, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_1 = PyNumber_Remainder(__pyx_v_temp, __pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 788, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Remainder(__pyx_v_temp, __pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 823, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_rjust); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 788, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_rjust); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 823, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
@@ -16105,13 +16495,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_10 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_1, __pyx_int_8) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_int_8);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 788, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 823, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_XDECREF_SET(__pyx_v_y, __pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":789
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":824
  *             x = (temp % frame[i, 0]).rjust(8)
  *             y = (temp % frame[i, 1]).rjust(8)
  *             z = (temp % frame[i, 2]).rjust(8)             # <<<<<<<<<<<<<<
@@ -16120,12 +16510,12 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     __pyx_t_16 = __pyx_v_i;
     __pyx_t_17 = 2;
-    __pyx_t_9 = PyFloat_FromDouble((*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_17, __pyx_pybuffernd_frame.diminfo[1].strides))); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 789, __pyx_L1_error)
+    __pyx_t_9 = PyFloat_FromDouble((*__Pyx_BufPtrStrided2d(float *, __pyx_pybuffernd_frame.rcbuffer->pybuffer.buf, __pyx_t_16, __pyx_pybuffernd_frame.diminfo[0].strides, __pyx_t_17, __pyx_pybuffernd_frame.diminfo[1].strides))); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 824, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    __pyx_t_1 = PyNumber_Remainder(__pyx_v_temp, __pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 789, __pyx_L1_error)
+    __pyx_t_1 = PyNumber_Remainder(__pyx_v_temp, __pyx_t_9); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 824, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
-    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_rjust); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 789, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_rjust); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 824, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
@@ -16140,13 +16530,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_t_10 = (__pyx_t_1) ? __Pyx_PyObject_Call2Args(__pyx_t_9, __pyx_t_1, __pyx_int_8) : __Pyx_PyObject_CallOneArg(__pyx_t_9, __pyx_int_8);
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 789, __pyx_L1_error)
+    if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 824, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     __Pyx_XDECREF_SET(__pyx_v_z, __pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":790
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":825
  *             y = (temp % frame[i, 1]).rjust(8)
  *             z = (temp % frame[i, 2]).rjust(8)
  *             prevLine = line             # <<<<<<<<<<<<<<
@@ -16156,14 +16546,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_INCREF(__pyx_v_line);
     __Pyx_DECREF_SET(__pyx_v_prevLine, __pyx_v_line);
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":791
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":826
  *             z = (temp % frame[i, 2]).rjust(8)
  *             prevLine = line
  *             pdb.append(line % (x, y, z))             # <<<<<<<<<<<<<<
  *         return "".join(pdb)
  * 
  */
-    __pyx_t_10 = PyTuple_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 791, __pyx_L1_error)
+    __pyx_t_10 = PyTuple_New(3); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 826, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_10);
     __Pyx_INCREF(__pyx_v_x);
     __Pyx_GIVEREF(__pyx_v_x);
@@ -16174,14 +16564,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_INCREF(__pyx_v_z);
     __Pyx_GIVEREF(__pyx_v_z);
     PyTuple_SET_ITEM(__pyx_t_10, 2, __pyx_v_z);
-    __pyx_t_9 = PyNumber_Remainder(__pyx_v_line, __pyx_t_10); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 791, __pyx_L1_error)
+    __pyx_t_9 = PyNumber_Remainder(__pyx_v_line, __pyx_t_10); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 826, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-    __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_pdb, __pyx_t_9); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 791, __pyx_L1_error)
+    __pyx_t_11 = __Pyx_PyList_Append(__pyx_v_pdb, __pyx_t_9); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 826, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":792
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":827
  *             prevLine = line
  *             pdb.append(line % (x, y, z))
  *         return "".join(pdb)             # <<<<<<<<<<<<<<
@@ -16189,13 +16579,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  *     def get_pdb_string(self, int model_num=1):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_9 = PyUnicode_Join(__pyx_kp_u_, __pyx_v_pdb); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 792, __pyx_L1_error)
+  __pyx_t_9 = PyUnicode_Join(__pyx_kp_u_, __pyx_v_pdb); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 827, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __pyx_r = __pyx_t_9;
   __pyx_t_9 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":776
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":811
  *     @cython.boundscheck(False)
  *     @cython.wraparound(False)
  *     def join_PDB_lines(self, list topology, np.ndarray[float, ndim=2] frame):             # <<<<<<<<<<<<<<
@@ -16232,7 +16622,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":794
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":829
  *         return "".join(pdb)
  * 
  *     def get_pdb_string(self, int model_num=1):             # <<<<<<<<<<<<<<
@@ -16268,7 +16658,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_pdb_string") < 0)) __PYX_ERR(0, 794, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "get_pdb_string") < 0)) __PYX_ERR(0, 829, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -16279,14 +16669,14 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
     }
     if (values[0]) {
-      __pyx_v_model_num = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_model_num == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 794, __pyx_L3_error)
+      __pyx_v_model_num = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_model_num == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 829, __pyx_L3_error)
     } else {
       __pyx_v_model_num = ((int)1);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("get_pdb_string", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 794, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("get_pdb_string", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 829, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB.get_pdb_string", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -16307,7 +16697,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("get_pdb_string", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":795
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":830
  * 
  *     def get_pdb_string(self, int model_num=1):
  *         if self.ispdb:             # <<<<<<<<<<<<<<
@@ -16317,19 +16707,19 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __pyx_t_1 = (__pyx_v_self->ispdb != 0);
   if (__pyx_t_1) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":796
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":831
  *     def get_pdb_string(self, int model_num=1):
  *         if self.ispdb:
  *             return self.pdb             # <<<<<<<<<<<<<<
  *         else:
- *             return "".join([u"MODEL %d\n" % model_num, self.pdb, u"ENDMDL\n", u"END\n"])
+ *             return "".join([u"MODEL    %4d\n" % model_num, self.pdb, u"ENDMDL\n", u"END\n"])
  */
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(__pyx_v_self->pdb);
     __pyx_r = __pyx_v_self->pdb;
     goto __pyx_L0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":795
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":830
  * 
  *     def get_pdb_string(self, int model_num=1):
  *         if self.ispdb:             # <<<<<<<<<<<<<<
@@ -16338,21 +16728,21 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":798
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":833
  *             return self.pdb
  *         else:
- *             return "".join([u"MODEL %d\n" % model_num, self.pdb, u"ENDMDL\n", u"END\n"])             # <<<<<<<<<<<<<<
+ *             return "".join([u"MODEL    %4d\n" % model_num, self.pdb, u"ENDMDL\n", u"END\n"])             # <<<<<<<<<<<<<<
  * 
  *     def writePDB(self, basestring path, int model_num=1):
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_model_num); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 798, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_model_num); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 833, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyUnicode_Format(__pyx_kp_u_MODEL_d, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 798, __pyx_L1_error)
+    __pyx_t_3 = PyUnicode_Format(__pyx_kp_u_MODEL_4d, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 833, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyList_New(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 798, __pyx_L1_error)
+    __pyx_t_2 = PyList_New(4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 833, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_GIVEREF(__pyx_t_3);
     PyList_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
@@ -16366,7 +16756,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_GIVEREF(__pyx_n_u_END);
     PyList_SET_ITEM(__pyx_t_2, 3, __pyx_n_u_END);
     __pyx_t_3 = 0;
-    __pyx_t_3 = PyUnicode_Join(__pyx_kp_u_, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 798, __pyx_L1_error)
+    __pyx_t_3 = PyUnicode_Join(__pyx_kp_u_, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 833, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = __pyx_t_3;
@@ -16374,7 +16764,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     goto __pyx_L0;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":794
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":829
  *         return "".join(pdb)
  * 
  *     def get_pdb_string(self, int model_num=1):             # <<<<<<<<<<<<<<
@@ -16394,8 +16784,8 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":800
- *             return "".join([u"MODEL %d\n" % model_num, self.pdb, u"ENDMDL\n", u"END\n"])
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":835
+ *             return "".join([u"MODEL    %4d\n" % model_num, self.pdb, u"ENDMDL\n", u"END\n"])
  * 
  *     def writePDB(self, basestring path, int model_num=1):             # <<<<<<<<<<<<<<
  *         """
@@ -16438,7 +16828,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePDB") < 0)) __PYX_ERR(0, 800, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "writePDB") < 0)) __PYX_ERR(0, 835, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -16451,20 +16841,20 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
     __pyx_v_path = ((PyObject*)values[0]);
     if (values[1]) {
-      __pyx_v_model_num = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_model_num == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 800, __pyx_L3_error)
+      __pyx_v_model_num = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_model_num == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 835, __pyx_L3_error)
     } else {
       __pyx_v_model_num = ((int)1);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("writePDB", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 800, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("writePDB", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 835, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB.writePDB", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_path), (&PyBaseString_Type), 1, "path", 1))) __PYX_ERR(0, 800, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_path), (&PyBaseString_Type), 1, "path", 1))) __PYX_ERR(0, 835, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_49writePDB(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_path, __pyx_v_model_num);
 
   /* function exit code */
@@ -16493,27 +16883,27 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   int __pyx_t_11;
   __Pyx_RefNannySetupContext("writePDB", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":809
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":844
  *         """
  *         cdef object fileHandle, atom
  *         if self.ispdb:             # <<<<<<<<<<<<<<
  *             with open(path, 'w', encoding="utf-8") as fileHandle:
- *                 fileHandle.write(self.pdb)
+ *                 # in old simulations it will fail without the unicode
  */
   __pyx_t_1 = (__pyx_v_self->ispdb != 0);
   if (__pyx_t_1) {
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":810
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":845
  *         cdef object fileHandle, atom
  *         if self.ispdb:
  *             with open(path, 'w', encoding="utf-8") as fileHandle:             # <<<<<<<<<<<<<<
- *                 fileHandle.write(self.pdb)
- *         else:
+ *                 # in old simulations it will fail without the unicode
+ *                 fileHandle.write(unicode(self.pdb))
  */
     /*with:*/ {
-      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_open); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 810, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_open); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 845, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 810, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 845, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_v_path);
       __Pyx_GIVEREF(__pyx_v_path);
@@ -16521,17 +16911,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_INCREF(__pyx_n_u_w);
       __Pyx_GIVEREF(__pyx_n_u_w);
       PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_n_u_w);
-      __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 810, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 845, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_encoding, __pyx_kp_u_utf_8) < 0) __PYX_ERR(0, 810, __pyx_L1_error)
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 810, __pyx_L1_error)
+      if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_encoding, __pyx_kp_u_utf_8) < 0) __PYX_ERR(0, 845, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 845, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_5, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 810, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_5, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 845, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_5, __pyx_n_s_enter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 810, __pyx_L4_error)
+      __pyx_t_3 = __Pyx_PyObject_LookupSpecial(__pyx_t_5, __pyx_n_s_enter); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 845, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_2 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -16545,7 +16935,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_4 = (__pyx_t_2) ? __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2) : __Pyx_PyObject_CallNoArg(__pyx_t_3);
       __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 810, __pyx_L4_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 845, __pyx_L4_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_3 = __pyx_t_4;
@@ -16563,38 +16953,41 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             __pyx_v_fileHandle = __pyx_t_3;
             __pyx_t_3 = 0;
 
-            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":811
- *         if self.ispdb:
+            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":847
  *             with open(path, 'w', encoding="utf-8") as fileHandle:
- *                 fileHandle.write(self.pdb)             # <<<<<<<<<<<<<<
+ *                 # in old simulations it will fail without the unicode
+ *                 fileHandle.write(unicode(self.pdb))             # <<<<<<<<<<<<<<
  *         else:
  *             with open(path, 'w', encoding="utf-8") as fileHandle:
  */
-            __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 811, __pyx_L8_error)
+            __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 847, __pyx_L8_error)
             __Pyx_GOTREF(__pyx_t_5);
-            __pyx_t_4 = NULL;
+            __pyx_t_4 = __Pyx_PyObject_Unicode(__pyx_v_self->pdb); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 847, __pyx_L8_error)
+            __Pyx_GOTREF(__pyx_t_4);
+            __pyx_t_2 = NULL;
             if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
-              __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_5);
-              if (likely(__pyx_t_4)) {
+              __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_5);
+              if (likely(__pyx_t_2)) {
                 PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_5);
-                __Pyx_INCREF(__pyx_t_4);
+                __Pyx_INCREF(__pyx_t_2);
                 __Pyx_INCREF(function);
                 __Pyx_DECREF_SET(__pyx_t_5, function);
               }
             }
-            __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_4, __pyx_v_self->pdb) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_self->pdb);
-            __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 811, __pyx_L8_error)
+            __pyx_t_3 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_5, __pyx_t_2, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4);
+            __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+            __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+            if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 847, __pyx_L8_error)
             __Pyx_GOTREF(__pyx_t_3);
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
             __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":810
+            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":845
  *         cdef object fileHandle, atom
  *         if self.ispdb:
  *             with open(path, 'w', encoding="utf-8") as fileHandle:             # <<<<<<<<<<<<<<
- *                 fileHandle.write(self.pdb)
- *         else:
+ *                 # in old simulations it will fail without the unicode
+ *                 fileHandle.write(unicode(self.pdb))
  */
           }
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -16608,20 +17001,20 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           /*except:*/ {
             __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB.writePDB", __pyx_clineno, __pyx_lineno, __pyx_filename);
-            if (__Pyx_GetException(&__pyx_t_3, &__pyx_t_5, &__pyx_t_4) < 0) __PYX_ERR(0, 810, __pyx_L10_except_error)
+            if (__Pyx_GetException(&__pyx_t_3, &__pyx_t_5, &__pyx_t_4) < 0) __PYX_ERR(0, 845, __pyx_L10_except_error)
             __Pyx_GOTREF(__pyx_t_3);
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_2 = PyTuple_Pack(3, __pyx_t_3, __pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 810, __pyx_L10_except_error)
+            __pyx_t_2 = PyTuple_Pack(3, __pyx_t_3, __pyx_t_5, __pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 845, __pyx_L10_except_error)
             __Pyx_GOTREF(__pyx_t_2);
             __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_2, NULL);
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 810, __pyx_L10_except_error)
+            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 845, __pyx_L10_except_error)
             __Pyx_GOTREF(__pyx_t_10);
             __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_10);
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-            if (__pyx_t_1 < 0) __PYX_ERR(0, 810, __pyx_L10_except_error)
+            if (__pyx_t_1 < 0) __PYX_ERR(0, 845, __pyx_L10_except_error)
             __pyx_t_11 = ((!(__pyx_t_1 != 0)) != 0);
             if (__pyx_t_11) {
               __Pyx_GIVEREF(__pyx_t_3);
@@ -16629,7 +17022,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
               __Pyx_XGIVEREF(__pyx_t_4);
               __Pyx_ErrRestoreWithState(__pyx_t_3, __pyx_t_5, __pyx_t_4);
               __pyx_t_3 = 0; __pyx_t_5 = 0; __pyx_t_4 = 0; 
-              __PYX_ERR(0, 810, __pyx_L10_except_error)
+              __PYX_ERR(0, 845, __pyx_L10_except_error)
             }
             __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
             __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -16653,9 +17046,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       /*finally:*/ {
         /*normal exit:*/{
           if (__pyx_t_6) {
-            __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__11, NULL);
+            __pyx_t_9 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__17, NULL);
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 810, __pyx_L1_error)
+            if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 845, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_9);
             __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
           }
@@ -16670,28 +17063,28 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_L17:;
     }
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":809
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":844
  *         """
  *         cdef object fileHandle, atom
  *         if self.ispdb:             # <<<<<<<<<<<<<<
  *             with open(path, 'w', encoding="utf-8") as fileHandle:
- *                 fileHandle.write(self.pdb)
+ *                 # in old simulations it will fail without the unicode
  */
     goto __pyx_L3;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":813
- *                 fileHandle.write(self.pdb)
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":849
+ *                 fileHandle.write(unicode(self.pdb))
  *         else:
  *             with open(path, 'w', encoding="utf-8") as fileHandle:             # <<<<<<<<<<<<<<
- *                 fileHandle.write(u"MODEL %d\n" % model_num)
+ *                 fileHandle.write(u"MODEL    %4d\n" % model_num)
  *                 fileHandle.write(self.pdb)
  */
   /*else*/ {
     /*with:*/ {
-      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_open); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 813, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_open); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 849, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 813, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 849, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_INCREF(__pyx_v_path);
       __Pyx_GIVEREF(__pyx_v_path);
@@ -16699,17 +17092,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __Pyx_INCREF(__pyx_n_u_w);
       __Pyx_GIVEREF(__pyx_n_u_w);
       PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_n_u_w);
-      __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 813, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 849, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_encoding, __pyx_kp_u_utf_8) < 0) __PYX_ERR(0, 813, __pyx_L1_error)
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 813, __pyx_L1_error)
+      if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_encoding, __pyx_kp_u_utf_8) < 0) __PYX_ERR(0, 849, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 849, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 813, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_exit); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 849, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_5 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_enter); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 813, __pyx_L18_error)
+      __pyx_t_5 = __Pyx_PyObject_LookupSpecial(__pyx_t_2, __pyx_n_s_enter); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 849, __pyx_L18_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -16723,7 +17116,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_3 = (__pyx_t_4) ? __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_t_4) : __Pyx_PyObject_CallNoArg(__pyx_t_5);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 813, __pyx_L18_error)
+      if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 849, __pyx_L18_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_5 = __pyx_t_3;
@@ -16741,18 +17134,18 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             __pyx_v_fileHandle = __pyx_t_5;
             __pyx_t_5 = 0;
 
-            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":814
+            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":850
  *         else:
  *             with open(path, 'w', encoding="utf-8") as fileHandle:
- *                 fileHandle.write(u"MODEL %d\n" % model_num)             # <<<<<<<<<<<<<<
+ *                 fileHandle.write(u"MODEL    %4d\n" % model_num)             # <<<<<<<<<<<<<<
  *                 fileHandle.write(self.pdb)
  *                 fileHandle.write(u"ENDMDL\n")
  */
-            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 814, __pyx_L22_error)
+            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 850, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_2);
-            __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_model_num); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 814, __pyx_L22_error)
+            __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_model_num); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 850, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_3);
-            __pyx_t_4 = PyUnicode_Format(__pyx_kp_u_MODEL_d, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 814, __pyx_L22_error)
+            __pyx_t_4 = PyUnicode_Format(__pyx_kp_u_MODEL_4d, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 850, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_4);
             __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
             __pyx_t_3 = NULL;
@@ -16768,19 +17161,19 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             __pyx_t_5 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_t_4) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4);
             __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 814, __pyx_L22_error)
+            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 850, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":815
+            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":851
  *             with open(path, 'w', encoding="utf-8") as fileHandle:
- *                 fileHandle.write(u"MODEL %d\n" % model_num)
+ *                 fileHandle.write(u"MODEL    %4d\n" % model_num)
  *                 fileHandle.write(self.pdb)             # <<<<<<<<<<<<<<
  *                 fileHandle.write(u"ENDMDL\n")
  *                 fileHandle.write(u"END\n")
  */
-            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 815, __pyx_L22_error)
+            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 851, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_2);
             __pyx_t_4 = NULL;
             if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -16794,19 +17187,19 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             }
             __pyx_t_5 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_v_self->pdb) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_self->pdb);
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 815, __pyx_L22_error)
+            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 851, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":816
- *                 fileHandle.write(u"MODEL %d\n" % model_num)
+            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":852
+ *                 fileHandle.write(u"MODEL    %4d\n" % model_num)
  *                 fileHandle.write(self.pdb)
  *                 fileHandle.write(u"ENDMDL\n")             # <<<<<<<<<<<<<<
  *                 fileHandle.write(u"END\n")
  * 
  */
-            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 816, __pyx_L22_error)
+            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 852, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_2);
             __pyx_t_4 = NULL;
             if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -16820,19 +17213,19 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             }
             __pyx_t_5 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_n_u_ENDMDL) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_u_ENDMDL);
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 816, __pyx_L22_error)
+            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 852, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":817
+            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":853
  *                 fileHandle.write(self.pdb)
  *                 fileHandle.write(u"ENDMDL\n")
  *                 fileHandle.write(u"END\n")             # <<<<<<<<<<<<<<
  * 
  *     def countContacts(self, basestring ligandResname, int contactThresholdDistance, int ligandResnum=0, basestring ligandChain=u""):
  */
-            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 817, __pyx_L22_error)
+            __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_fileHandle, __pyx_n_s_write); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 853, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_2);
             __pyx_t_4 = NULL;
             if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -16846,16 +17239,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
             }
             __pyx_t_5 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_n_u_END) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_n_u_END);
             __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 817, __pyx_L22_error)
+            if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 853, __pyx_L22_error)
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
             __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":813
- *                 fileHandle.write(self.pdb)
+            /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":849
+ *                 fileHandle.write(unicode(self.pdb))
  *         else:
  *             with open(path, 'w', encoding="utf-8") as fileHandle:             # <<<<<<<<<<<<<<
- *                 fileHandle.write(u"MODEL %d\n" % model_num)
+ *                 fileHandle.write(u"MODEL    %4d\n" % model_num)
  *                 fileHandle.write(self.pdb)
  */
           }
@@ -16870,20 +17263,20 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
           __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
           /*except:*/ {
             __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB.writePDB", __pyx_clineno, __pyx_lineno, __pyx_filename);
-            if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_2, &__pyx_t_4) < 0) __PYX_ERR(0, 813, __pyx_L24_except_error)
+            if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_2, &__pyx_t_4) < 0) __PYX_ERR(0, 849, __pyx_L24_except_error)
             __Pyx_GOTREF(__pyx_t_5);
             __Pyx_GOTREF(__pyx_t_2);
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_3 = PyTuple_Pack(3, __pyx_t_5, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 813, __pyx_L24_except_error)
+            __pyx_t_3 = PyTuple_Pack(3, __pyx_t_5, __pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 849, __pyx_L24_except_error)
             __Pyx_GOTREF(__pyx_t_3);
             __pyx_t_10 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_3, NULL);
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
             __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 813, __pyx_L24_except_error)
+            if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 849, __pyx_L24_except_error)
             __Pyx_GOTREF(__pyx_t_10);
             __pyx_t_11 = __Pyx_PyObject_IsTrue(__pyx_t_10);
             __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-            if (__pyx_t_11 < 0) __PYX_ERR(0, 813, __pyx_L24_except_error)
+            if (__pyx_t_11 < 0) __PYX_ERR(0, 849, __pyx_L24_except_error)
             __pyx_t_1 = ((!(__pyx_t_11 != 0)) != 0);
             if (__pyx_t_1) {
               __Pyx_GIVEREF(__pyx_t_5);
@@ -16891,7 +17284,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
               __Pyx_XGIVEREF(__pyx_t_4);
               __Pyx_ErrRestoreWithState(__pyx_t_5, __pyx_t_2, __pyx_t_4);
               __pyx_t_5 = 0; __pyx_t_2 = 0; __pyx_t_4 = 0; 
-              __PYX_ERR(0, 813, __pyx_L24_except_error)
+              __PYX_ERR(0, 849, __pyx_L24_except_error)
             }
             __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
             __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -16915,9 +17308,9 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       /*finally:*/ {
         /*normal exit:*/{
           if (__pyx_t_6) {
-            __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__11, NULL);
+            __pyx_t_7 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_tuple__17, NULL);
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-            if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 813, __pyx_L1_error)
+            if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 849, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_7);
             __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
           }
@@ -16934,8 +17327,8 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   __pyx_L3:;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":800
- *             return "".join([u"MODEL %d\n" % model_num, self.pdb, u"ENDMDL\n", u"END\n"])
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":835
+ *             return "".join([u"MODEL    %4d\n" % model_num, self.pdb, u"ENDMDL\n", u"END\n"])
  * 
  *     def writePDB(self, basestring path, int model_num=1):             # <<<<<<<<<<<<<<
  *         """
@@ -16959,7 +17352,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":819
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":855
  *                 fileHandle.write(u"END\n")
  * 
  *     def countContacts(self, basestring ligandResname, int contactThresholdDistance, int ligandResnum=0, basestring ligandChain=u""):             # <<<<<<<<<<<<<<
@@ -17006,7 +17399,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_contactThresholdDistance)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("countContacts", 0, 2, 4, 1); __PYX_ERR(0, 819, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("countContacts", 0, 2, 4, 1); __PYX_ERR(0, 855, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -17022,7 +17415,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "countContacts") < 0)) __PYX_ERR(0, 819, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "countContacts") < 0)) __PYX_ERR(0, 855, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -17037,9 +17430,9 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
     }
     __pyx_v_ligandResname = ((PyObject*)values[0]);
-    __pyx_v_contactThresholdDistance = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_contactThresholdDistance == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 819, __pyx_L3_error)
+    __pyx_v_contactThresholdDistance = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_contactThresholdDistance == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 855, __pyx_L3_error)
     if (values[2]) {
-      __pyx_v_ligandResnum = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_ligandResnum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 819, __pyx_L3_error)
+      __pyx_v_ligandResnum = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_ligandResnum == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 855, __pyx_L3_error)
     } else {
       __pyx_v_ligandResnum = ((int)0);
     }
@@ -17047,14 +17440,14 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("countContacts", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 819, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("countContacts", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 855, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.PDB.countContacts", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ligandResname), (&PyBaseString_Type), 1, "ligandResname", 1))) __PYX_ERR(0, 819, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ligandChain), (&PyBaseString_Type), 1, "ligandChain", 1))) __PYX_ERR(0, 819, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ligandResname), (&PyBaseString_Type), 1, "ligandResname", 1))) __PYX_ERR(0, 855, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ligandChain), (&PyBaseString_Type), 1, "ligandChain", 1))) __PYX_ERR(0, 855, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_51countContacts(((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_v_self), __pyx_v_ligandResname, __pyx_v_contactThresholdDistance, __pyx_v_ligandResnum, __pyx_v_ligandChain);
 
   /* function exit code */
@@ -17093,7 +17486,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   int __pyx_t_12;
   __Pyx_RefNannySetupContext("countContacts", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":831
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":867
  *         """
  *         cdef double contactThresholdDistance2,dist2
  *         contactThresholdDistance2= contactThresholdDistance**2             # <<<<<<<<<<<<<<
@@ -17102,98 +17495,98 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
   __pyx_v_contactThresholdDistance2 = __Pyx_pow_long(((long)__pyx_v_contactThresholdDistance), 2);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":835
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":871
  *         cdef PDB ligandPDB, alphaCarbonsPDB
  * 
  *         ligandPDB = PDB()             # <<<<<<<<<<<<<<
  *         ligandPDB.initialise(self.pdb, resname=ligandResname, resnum=ligandResnum, chain=ligandChain, heavyAtoms=True)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 835, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 871, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_ligandPDB = ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":836
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":872
  * 
  *         ligandPDB = PDB()
  *         ligandPDB.initialise(self.pdb, resname=ligandResname, resnum=ligandResnum, chain=ligandChain, heavyAtoms=True)             # <<<<<<<<<<<<<<
  * 
  *         alphaCarbonsPDB = PDB()
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_ligandPDB), __pyx_n_s_initialise); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 836, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_ligandPDB), __pyx_n_s_initialise); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 836, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_self->pdb);
   __Pyx_GIVEREF(__pyx_v_self->pdb);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_self->pdb);
-  __pyx_t_3 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 836, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_resname, __pyx_v_ligandResname) < 0) __PYX_ERR(0, 836, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_ligandResnum); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 836, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_resname, __pyx_v_ligandResname) < 0) __PYX_ERR(0, 872, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_ligandResnum); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_resnum, __pyx_t_4) < 0) __PYX_ERR(0, 836, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_resnum, __pyx_t_4) < 0) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_chain, __pyx_v_ligandChain) < 0) __PYX_ERR(0, 836, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_heavyAtoms, Py_True) < 0) __PYX_ERR(0, 836, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 836, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_chain, __pyx_v_ligandChain) < 0) __PYX_ERR(0, 872, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_heavyAtoms, Py_True) < 0) __PYX_ERR(0, 872, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 872, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":838
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":874
  *         ligandPDB.initialise(self.pdb, resname=ligandResname, resnum=ligandResnum, chain=ligandChain, heavyAtoms=True)
  * 
  *         alphaCarbonsPDB = PDB()             # <<<<<<<<<<<<<<
  *         alphaCarbonsPDB.initialise(self.pdb, element=u"C",
  *                                    atomname=u"CA")
  */
-  __pyx_t_4 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 838, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 874, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_v_alphaCarbonsPDB = ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB *)__pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":839
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":875
  * 
  *         alphaCarbonsPDB = PDB()
  *         alphaCarbonsPDB.initialise(self.pdb, element=u"C",             # <<<<<<<<<<<<<<
  *                                    atomname=u"CA")
  *         # count contacts
  */
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_alphaCarbonsPDB), __pyx_n_s_initialise); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 839, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_alphaCarbonsPDB), __pyx_n_s_initialise); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 875, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 839, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 875, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(__pyx_v_self->pdb);
   __Pyx_GIVEREF(__pyx_v_self->pdb);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_self->pdb);
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 839, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 875, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_element, __pyx_n_u_C) < 0) __PYX_ERR(0, 839, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_atomname, __pyx_n_u_CA) < 0) __PYX_ERR(0, 839, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 839, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_element, __pyx_n_u_C) < 0) __PYX_ERR(0, 875, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_atomname, __pyx_n_u_CA) < 0) __PYX_ERR(0, 875, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 875, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":842
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":878
  *                                    atomname=u"CA")
  *         # count contacts
  *         cdef set contacts = set([])             # <<<<<<<<<<<<<<
  *         cdef int rowind, colind
  *         cdef basestring proteinAtomId
  */
-  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 842, __pyx_L1_error)
+  __pyx_t_1 = PySet_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 878, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_contacts = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":846
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":882
  *         cdef basestring proteinAtomId
  *         cdef Atom ligandAtom, proteinAtom
  *         for rowind in range(len(ligandPDB.atomList)):             # <<<<<<<<<<<<<<
@@ -17204,15 +17597,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   __Pyx_INCREF(__pyx_t_1);
   if (unlikely(__pyx_t_1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-    __PYX_ERR(0, 846, __pyx_L1_error)
+    __PYX_ERR(0, 882, __pyx_L1_error)
   }
-  __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 846, __pyx_L1_error)
+  __pyx_t_5 = PyList_GET_SIZE(__pyx_t_1); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 882, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_6 = __pyx_t_5;
   for (__pyx_t_7 = 0; __pyx_t_7 < __pyx_t_6; __pyx_t_7+=1) {
     __pyx_v_rowind = __pyx_t_7;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":848
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":884
  *         for rowind in range(len(ligandPDB.atomList)):
  *         # can be optimised with cell list
  *             ligandAtom = ligandPDB.atoms[ligandPDB.atomList[rowind]]             # <<<<<<<<<<<<<<
@@ -17221,22 +17614,22 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
     if (unlikely(__pyx_v_ligandPDB->atoms == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 848, __pyx_L1_error)
+      __PYX_ERR(0, 884, __pyx_L1_error)
     }
     if (unlikely(__pyx_v_ligandPDB->atomList == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-      __PYX_ERR(0, 848, __pyx_L1_error)
+      __PYX_ERR(0, 884, __pyx_L1_error)
     }
-    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_ligandPDB->atomList, __pyx_v_rowind, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 848, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_ligandPDB->atomList, __pyx_v_rowind, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 884, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_ligandPDB->atoms, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 848, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_ligandPDB->atoms, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 884, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom))))) __PYX_ERR(0, 848, __pyx_L1_error)
+    if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom))))) __PYX_ERR(0, 884, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_ligandAtom, ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":849
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":885
  *         # can be optimised with cell list
  *             ligandAtom = ligandPDB.atoms[ligandPDB.atomList[rowind]]
  *             for colind in range(len(alphaCarbonsPDB.atomList)):             # <<<<<<<<<<<<<<
@@ -17247,15 +17640,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     __Pyx_INCREF(__pyx_t_2);
     if (unlikely(__pyx_t_2 == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
-      __PYX_ERR(0, 849, __pyx_L1_error)
+      __PYX_ERR(0, 885, __pyx_L1_error)
     }
-    __pyx_t_8 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 849, __pyx_L1_error)
+    __pyx_t_8 = PyList_GET_SIZE(__pyx_t_2); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(0, 885, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_9 = __pyx_t_8;
     for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_9; __pyx_t_10+=1) {
       __pyx_v_colind = __pyx_t_10;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":850
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":886
  *             ligandAtom = ligandPDB.atoms[ligandPDB.atomList[rowind]]
  *             for colind in range(len(alphaCarbonsPDB.atomList)):
  *                 proteinAtomId = alphaCarbonsPDB.atomList[colind]             # <<<<<<<<<<<<<<
@@ -17264,15 +17657,15 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       if (unlikely(__pyx_v_alphaCarbonsPDB->atomList == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 850, __pyx_L1_error)
+        __PYX_ERR(0, 886, __pyx_L1_error)
       }
-      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_alphaCarbonsPDB->atomList, __pyx_v_colind, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 850, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_alphaCarbonsPDB->atomList, __pyx_v_colind, int, 1, __Pyx_PyInt_From_int, 1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 886, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 850, __pyx_L1_error)
+      if (!(likely(__Pyx_PyBaseString_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", (PY_MAJOR_VERSION < 3 ? "basestring" : "str"), Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 886, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_proteinAtomId, ((PyObject*)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":851
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":887
  *             for colind in range(len(alphaCarbonsPDB.atomList)):
  *                 proteinAtomId = alphaCarbonsPDB.atomList[colind]
  *                 proteinAtom = alphaCarbonsPDB.atoms[proteinAtomId]             # <<<<<<<<<<<<<<
@@ -17281,22 +17674,22 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  */
       if (unlikely(__pyx_v_alphaCarbonsPDB->atoms == Py_None)) {
         PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-        __PYX_ERR(0, 851, __pyx_L1_error)
+        __PYX_ERR(0, 887, __pyx_L1_error)
       }
-      __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_alphaCarbonsPDB->atoms, __pyx_v_proteinAtomId); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 851, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyDict_GetItem(__pyx_v_alphaCarbonsPDB->atoms, __pyx_v_proteinAtomId); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 887, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom))))) __PYX_ERR(0, 851, __pyx_L1_error)
+      if (!(likely(((__pyx_t_2) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_2, __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom))))) __PYX_ERR(0, 887, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_proteinAtom, ((struct __pyx_obj_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom *)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":852
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":888
  *                 proteinAtomId = alphaCarbonsPDB.atomList[colind]
  *                 proteinAtom = alphaCarbonsPDB.atoms[proteinAtomId]
  *                 dist2 = ligandAtom.squaredDistance(proteinAtom)             # <<<<<<<<<<<<<<
  *                 if (dist2 - contactThresholdDistance2) < 0.1:
  *                     contacts.update([proteinAtomId])
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_ligandAtom), __pyx_n_s_squaredDistance); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 852, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_ligandAtom), __pyx_n_s_squaredDistance); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 888, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __pyx_t_3 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -17310,14 +17703,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       }
       __pyx_t_2 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_1, __pyx_t_3, ((PyObject *)__pyx_v_proteinAtom)) : __Pyx_PyObject_CallOneArg(__pyx_t_1, ((PyObject *)__pyx_v_proteinAtom));
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 852, __pyx_L1_error)
+      if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 888, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 852, __pyx_L1_error)
+      __pyx_t_11 = __pyx_PyFloat_AsDouble(__pyx_t_2); if (unlikely((__pyx_t_11 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 888, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __pyx_v_dist2 = __pyx_t_11;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":853
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":889
  *                 proteinAtom = alphaCarbonsPDB.atoms[proteinAtomId]
  *                 dist2 = ligandAtom.squaredDistance(proteinAtom)
  *                 if (dist2 - contactThresholdDistance2) < 0.1:             # <<<<<<<<<<<<<<
@@ -17327,24 +17720,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
       __pyx_t_12 = (((__pyx_v_dist2 - __pyx_v_contactThresholdDistance2) < 0.1) != 0);
       if (__pyx_t_12) {
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":854
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":890
  *                 dist2 = ligandAtom.squaredDistance(proteinAtom)
  *                 if (dist2 - contactThresholdDistance2) < 0.1:
  *                     contacts.update([proteinAtomId])             # <<<<<<<<<<<<<<
  * 
  *         return len(contacts)
  */
-        __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 854, __pyx_L1_error)
+        __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 890, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_INCREF(__pyx_v_proteinAtomId);
         __Pyx_GIVEREF(__pyx_v_proteinAtomId);
         PyList_SET_ITEM(__pyx_t_2, 0, __pyx_v_proteinAtomId);
-        __pyx_t_1 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PySet_Type_update, __pyx_v_contacts, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 854, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_CallUnboundCMethod1(&__pyx_umethod_PySet_Type_update, __pyx_v_contacts, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 890, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":853
+        /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":889
  *                 proteinAtom = alphaCarbonsPDB.atoms[proteinAtomId]
  *                 dist2 = ligandAtom.squaredDistance(proteinAtom)
  *                 if (dist2 - contactThresholdDistance2) < 0.1:             # <<<<<<<<<<<<<<
@@ -17355,7 +17748,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
     }
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":856
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":892
  *                     contacts.update([proteinAtomId])
  * 
  *         return len(contacts)             # <<<<<<<<<<<<<<
@@ -17363,14 +17756,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = PySet_GET_SIZE(__pyx_v_contacts); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 856, __pyx_L1_error)
-  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 856, __pyx_L1_error)
+  __pyx_t_5 = PySet_GET_SIZE(__pyx_v_contacts); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(0, 892, __pyx_L1_error)
+  __pyx_t_1 = PyInt_FromSsize_t(__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 892, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":819
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":855
  *                 fileHandle.write(u"END\n")
  * 
  *     def countContacts(self, basestring ligandResname, int contactThresholdDistance, int ligandResnum=0, basestring ligandChain=u""):             # <<<<<<<<<<<<<<
@@ -18387,7 +18780,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB_
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":859
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":895
  * 
  * 
  * def computeCOMDifference(PDB1, PDB2):             # <<<<<<<<<<<<<<
@@ -18428,11 +18821,11 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_1comp
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PDB2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("computeCOMDifference", 1, 2, 2, 1); __PYX_ERR(0, 859, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("computeCOMDifference", 1, 2, 2, 1); __PYX_ERR(0, 895, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "computeCOMDifference") < 0)) __PYX_ERR(0, 859, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "computeCOMDifference") < 0)) __PYX_ERR(0, 895, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -18445,7 +18838,7 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_1comp
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("computeCOMDifference", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 859, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("computeCOMDifference", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 895, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.computeCOMDifference", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -18470,7 +18863,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_compu
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("computeCOMDifference", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":869
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":905
  *         :returns: float -- The distance between the centers of mass between two PDB
  *     """
  *     return np.sqrt(computeCOMSquaredDifference(PDB1, PDB2))             # <<<<<<<<<<<<<<
@@ -18478,12 +18871,12 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_compu
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 869, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 905, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_sqrt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 869, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_sqrt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 905, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_computeCOMSquaredDifference); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 869, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_computeCOMSquaredDifference); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 905, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
   __pyx_t_6 = 0;
@@ -18500,7 +18893,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_compu
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_v_PDB1, __pyx_v_PDB2};
-    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 905, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_2);
   } else
@@ -18508,13 +18901,13 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_compu
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
     PyObject *__pyx_temp[3] = {__pyx_t_5, __pyx_v_PDB1, __pyx_v_PDB2};
-    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 905, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_GOTREF(__pyx_t_2);
   } else
   #endif
   {
-    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 905, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     if (__pyx_t_5) {
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_5); __pyx_t_5 = NULL;
@@ -18525,7 +18918,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_compu
     __Pyx_INCREF(__pyx_v_PDB2);
     __Pyx_GIVEREF(__pyx_v_PDB2);
     PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_v_PDB2);
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 869, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 905, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   }
@@ -18543,14 +18936,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_compu
   __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_t_2) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2);
   __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 869, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 905, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":859
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":895
  * 
  * 
  * def computeCOMDifference(PDB1, PDB2):             # <<<<<<<<<<<<<<
@@ -18574,7 +18967,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_compu
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":872
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":908
  * 
  * 
  * def computeCOMSquaredDifference(PDB PDB1, PDB PDB2):             # <<<<<<<<<<<<<<
@@ -18615,11 +19008,11 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3comp
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PDB2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("computeCOMSquaredDifference", 1, 2, 2, 1); __PYX_ERR(0, 872, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("computeCOMSquaredDifference", 1, 2, 2, 1); __PYX_ERR(0, 908, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "computeCOMSquaredDifference") < 0)) __PYX_ERR(0, 872, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "computeCOMSquaredDifference") < 0)) __PYX_ERR(0, 908, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -18632,14 +19025,14 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_3comp
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("computeCOMSquaredDifference", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 872, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("computeCOMSquaredDifference", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 908, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.computeCOMSquaredDifference", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDB1), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, 1, "PDB1", 0))) __PYX_ERR(0, 872, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDB2), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, 1, "PDB2", 0))) __PYX_ERR(0, 872, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDB1), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, 1, "PDB1", 0))) __PYX_ERR(0, 908, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDB2), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, 1, "PDB2", 0))) __PYX_ERR(0, 908, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2computeCOMSquaredDifference(__pyx_self, __pyx_v_PDB1, __pyx_v_PDB2);
 
   /* function exit code */
@@ -18664,14 +19057,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("computeCOMSquaredDifference", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":883
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":919
  *     """
  *     cdef list COM1, COM2
  *     COM1 = PDB1.getCOM()             # <<<<<<<<<<<<<<
  *     COM2 = PDB2.getCOM()
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB1), __pyx_n_s_getCOM); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 883, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB1), __pyx_n_s_getCOM); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 919, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -18685,21 +19078,21 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 883, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 919, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 883, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 919, __pyx_L1_error)
   __pyx_v_COM1 = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":884
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":920
  *     cdef list COM1, COM2
  *     COM1 = PDB1.getCOM()
  *     COM2 = PDB2.getCOM()             # <<<<<<<<<<<<<<
  * 
  *     dx = COM1[0] - COM2[0]
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB2), __pyx_n_s_getCOM); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 884, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB2), __pyx_n_s_getCOM); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 920, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -18713,14 +19106,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 884, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 920, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 884, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 920, __pyx_L1_error)
   __pyx_v_COM2 = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":886
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":922
  *     COM2 = PDB2.getCOM()
  * 
  *     dx = COM1[0] - COM2[0]             # <<<<<<<<<<<<<<
@@ -18729,24 +19122,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
  */
   if (unlikely(__pyx_v_COM1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 886, __pyx_L1_error)
+    __PYX_ERR(0, 922, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_COM1, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 886, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_COM1, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_v_COM2 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 886, __pyx_L1_error)
+    __PYX_ERR(0, 922, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM2, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 886, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM2, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 886, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 922, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_dx = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":887
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":923
  * 
  *     dx = COM1[0] - COM2[0]
  *     dy = COM1[1] - COM2[1]             # <<<<<<<<<<<<<<
@@ -18755,24 +19148,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
  */
   if (unlikely(__pyx_v_COM1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 887, __pyx_L1_error)
+    __PYX_ERR(0, 923, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_COM1, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 887, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_COM1, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (unlikely(__pyx_v_COM2 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 887, __pyx_L1_error)
+    __PYX_ERR(0, 923, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM2, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 887, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM2, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyNumber_Subtract(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 887, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Subtract(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 923, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_dy = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":888
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":924
  *     dx = COM1[0] - COM2[0]
  *     dy = COM1[1] - COM2[1]
  *     dz = COM1[2] - COM2[2]             # <<<<<<<<<<<<<<
@@ -18781,24 +19174,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
  */
   if (unlikely(__pyx_v_COM1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 888, __pyx_L1_error)
+    __PYX_ERR(0, 924, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_COM1, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 888, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_COM1, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 924, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_v_COM2 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 888, __pyx_L1_error)
+    __PYX_ERR(0, 924, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM2, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 888, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_COM2, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 924, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 888, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 924, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_dz = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":890
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":926
  *     dz = COM1[2] - COM2[2]
  * 
  *     return dx*dx + dy*dy + dz*dz             # <<<<<<<<<<<<<<
@@ -18806,17 +19199,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = PyNumber_Multiply(__pyx_v_dx, __pyx_v_dx); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 890, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Multiply(__pyx_v_dx, __pyx_v_dx); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyNumber_Multiply(__pyx_v_dy, __pyx_v_dy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 890, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Multiply(__pyx_v_dy, __pyx_v_dy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 890, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Multiply(__pyx_v_dz, __pyx_v_dz); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 890, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Multiply(__pyx_v_dz, __pyx_v_dz); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 890, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 926, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -18824,7 +19217,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":872
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":908
  * 
  * 
  * def computeCOMSquaredDifference(PDB PDB1, PDB PDB2):             # <<<<<<<<<<<<<<
@@ -18850,7 +19243,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_2comp
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":893
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":929
  * 
  * 
  * def computeSquaredCentroidDifference(PDB PDB1, PDB PDB2):             # <<<<<<<<<<<<<<
@@ -18891,11 +19284,11 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_5comp
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_PDB2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("computeSquaredCentroidDifference", 1, 2, 2, 1); __PYX_ERR(0, 893, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("computeSquaredCentroidDifference", 1, 2, 2, 1); __PYX_ERR(0, 929, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "computeSquaredCentroidDifference") < 0)) __PYX_ERR(0, 893, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "computeSquaredCentroidDifference") < 0)) __PYX_ERR(0, 929, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -18908,14 +19301,14 @@ static PyObject *__pyx_pw_13pele_platform_12AdaptivePELE_7atomset_7atomset_5comp
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("computeSquaredCentroidDifference", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 893, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("computeSquaredCentroidDifference", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 929, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.computeSquaredCentroidDifference", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDB1), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, 1, "PDB1", 0))) __PYX_ERR(0, 893, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDB2), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, 1, "PDB2", 0))) __PYX_ERR(0, 893, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDB1), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, 1, "PDB1", 0))) __PYX_ERR(0, 929, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_PDB2), __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, 1, "PDB2", 0))) __PYX_ERR(0, 929, __pyx_L1_error)
   __pyx_r = __pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4computeSquaredCentroidDifference(__pyx_self, __pyx_v_PDB1, __pyx_v_PDB2);
 
   /* function exit code */
@@ -18940,14 +19333,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("computeSquaredCentroidDifference", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":904
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":940
  *     """
  *     cdef list centroid1, centroid2
  *     centroid1 = PDB1.getCentroid()             # <<<<<<<<<<<<<<
  *     centroid2 = PDB2.getCentroid()
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB1), __pyx_n_s_getCentroid); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 904, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB1), __pyx_n_s_getCentroid); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 940, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -18961,21 +19354,21 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 904, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 940, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 904, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 940, __pyx_L1_error)
   __pyx_v_centroid1 = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":905
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":941
  *     cdef list centroid1, centroid2
  *     centroid1 = PDB1.getCentroid()
  *     centroid2 = PDB2.getCentroid()             # <<<<<<<<<<<<<<
  * 
  *     dx = centroid1[0] - centroid2[0]
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB2), __pyx_n_s_getCentroid); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 905, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB2), __pyx_n_s_getCentroid); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 941, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -18989,14 +19382,14 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 905, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 941, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 905, __pyx_L1_error)
+  if (!(likely(PyList_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "list", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 941, __pyx_L1_error)
   __pyx_v_centroid2 = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":907
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":943
  *     centroid2 = PDB2.getCentroid()
  * 
  *     dx = centroid1[0] - centroid2[0]             # <<<<<<<<<<<<<<
@@ -19005,24 +19398,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
  */
   if (unlikely(__pyx_v_centroid1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 907, __pyx_L1_error)
+    __PYX_ERR(0, 943, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_centroid1, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 907, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_centroid1, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 943, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_v_centroid2 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 907, __pyx_L1_error)
+    __PYX_ERR(0, 943, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_centroid2, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 907, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_centroid2, 0, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 943, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 907, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 943, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_dx = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":908
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":944
  * 
  *     dx = centroid1[0] - centroid2[0]
  *     dy = centroid1[1] - centroid2[1]             # <<<<<<<<<<<<<<
@@ -19031,24 +19424,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
  */
   if (unlikely(__pyx_v_centroid1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 908, __pyx_L1_error)
+    __PYX_ERR(0, 944, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_centroid1, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 908, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetItemInt_List(__pyx_v_centroid1, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 944, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (unlikely(__pyx_v_centroid2 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 908, __pyx_L1_error)
+    __PYX_ERR(0, 944, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_centroid2, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 908, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_centroid2, 1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 944, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyNumber_Subtract(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 908, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Subtract(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 944, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_dy = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":909
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":945
  *     dx = centroid1[0] - centroid2[0]
  *     dy = centroid1[1] - centroid2[1]
  *     dz = centroid1[2] - centroid2[2]             # <<<<<<<<<<<<<<
@@ -19057,24 +19450,24 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
  */
   if (unlikely(__pyx_v_centroid1 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 909, __pyx_L1_error)
+    __PYX_ERR(0, 945, __pyx_L1_error)
   }
-  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_centroid1, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 909, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt_List(__pyx_v_centroid1, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(__pyx_v_centroid2 == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
-    __PYX_ERR(0, 909, __pyx_L1_error)
+    __PYX_ERR(0, 945, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_centroid2, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 909, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetItemInt_List(__pyx_v_centroid2, 2, long, 1, __Pyx_PyInt_From_long, 1, 0, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 909, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Subtract(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 945, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_dz = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":911
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":947
  *     dz = centroid1[2] - centroid2[2]
  * 
  *     return dx*dx + dy*dy + dz*dz             # <<<<<<<<<<<<<<
@@ -19082,17 +19475,17 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
  * def readPDB(pdbfile):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = PyNumber_Multiply(__pyx_v_dx, __pyx_v_dx); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 911, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Multiply(__pyx_v_dx, __pyx_v_dx); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 947, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyNumber_Multiply(__pyx_v_dy, __pyx_v_dy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 911, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Multiply(__pyx_v_dy, __pyx_v_dy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 947, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 911, __pyx_L1_error)
+  __pyx_t_1 = PyNumber_Add(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 947, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyNumber_Multiply(__pyx_v_dz, __pyx_v_dz); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 911, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Multiply(__pyx_v_dz, __pyx_v_dz); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 947, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 911, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Add(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 947, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -19100,7 +19493,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":893
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":929
  * 
  * 
  * def computeSquaredCentroidDifference(PDB PDB1, PDB PDB2):             # <<<<<<<<<<<<<<
@@ -19126,7 +19519,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_4comp
   return __pyx_r;
 }
 
-/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":913
+/* "pele_platform/AdaptivePELE/atomset/atomset.pyx":949
  *     return dx*dx + dy*dy + dz*dz
  * 
  * def readPDB(pdbfile):             # <<<<<<<<<<<<<<
@@ -19159,15 +19552,16 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_6read
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   PyObject *__pyx_t_7 = NULL;
-  int __pyx_t_8;
-  PyObject *__pyx_t_9 = NULL;
+  PyObject *__pyx_t_8 = NULL;
+  int __pyx_t_9;
+  PyObject *__pyx_t_10 = NULL;
   __Pyx_RefNannySetupContext("readPDB", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":921
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":957
  *         :returns: basestring -- A string with PDB content
  *     """
  *     try:             # <<<<<<<<<<<<<<
- *         return open(pdbfile, "rt").read()
+ *         return open(str(pdbfile), "rt").read()
  *     except IOError:
  */
   {
@@ -19179,62 +19573,66 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_6read
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":922
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":958
  *     """
  *     try:
- *         return open(pdbfile, "rt").read()             # <<<<<<<<<<<<<<
+ *         return open(str(pdbfile), "rt").read()             # <<<<<<<<<<<<<<
  *     except IOError:
  *         return pdbfile
  */
       __Pyx_XDECREF(__pyx_r);
-      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_open); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 922, __pyx_L3_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_open); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 958, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_7 = NULL;
-      __pyx_t_8 = 0;
+      __pyx_t_7 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_pdbfile); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 958, __pyx_L3_error)
+      __Pyx_GOTREF(__pyx_t_7);
+      __pyx_t_8 = NULL;
+      __pyx_t_9 = 0;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_6))) {
-        __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_6);
-        if (likely(__pyx_t_7)) {
+        __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_6);
+        if (likely(__pyx_t_8)) {
           PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_6);
-          __Pyx_INCREF(__pyx_t_7);
+          __Pyx_INCREF(__pyx_t_8);
           __Pyx_INCREF(function);
           __Pyx_DECREF_SET(__pyx_t_6, function);
-          __pyx_t_8 = 1;
+          __pyx_t_9 = 1;
         }
       }
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_6)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_pdbfile, __pyx_n_u_rt};
-        __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 922, __pyx_L3_error)
-        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_t_7, __pyx_n_u_rt};
+        __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 958, __pyx_L3_error)
+        __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       } else
       #endif
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
-        PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_v_pdbfile, __pyx_n_u_rt};
-        __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_8, 2+__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 922, __pyx_L3_error)
-        __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+        PyObject *__pyx_temp[3] = {__pyx_t_8, __pyx_t_7, __pyx_n_u_rt};
+        __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_9, 2+__pyx_t_9); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 958, __pyx_L3_error)
+        __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_GOTREF(__pyx_t_5);
+        __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       } else
       #endif
       {
-        __pyx_t_9 = PyTuple_New(2+__pyx_t_8); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 922, __pyx_L3_error)
-        __Pyx_GOTREF(__pyx_t_9);
-        if (__pyx_t_7) {
-          __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
+        __pyx_t_10 = PyTuple_New(2+__pyx_t_9); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 958, __pyx_L3_error)
+        __Pyx_GOTREF(__pyx_t_10);
+        if (__pyx_t_8) {
+          __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_8); __pyx_t_8 = NULL;
         }
-        __Pyx_INCREF(__pyx_v_pdbfile);
-        __Pyx_GIVEREF(__pyx_v_pdbfile);
-        PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_8, __pyx_v_pdbfile);
+        __Pyx_GIVEREF(__pyx_t_7);
+        PyTuple_SET_ITEM(__pyx_t_10, 0+__pyx_t_9, __pyx_t_7);
         __Pyx_INCREF(__pyx_n_u_rt);
         __Pyx_GIVEREF(__pyx_n_u_rt);
-        PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_8, __pyx_n_u_rt);
-        __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_9, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 922, __pyx_L3_error)
+        PyTuple_SET_ITEM(__pyx_t_10, 1+__pyx_t_9, __pyx_n_u_rt);
+        __pyx_t_7 = 0;
+        __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_10, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 958, __pyx_L3_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+        __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_read); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 922, __pyx_L3_error)
+      __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_read); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 958, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_t_5 = NULL;
@@ -19249,44 +19647,45 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_6read
       }
       __pyx_t_4 = (__pyx_t_5) ? __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_5) : __Pyx_PyObject_CallNoArg(__pyx_t_6);
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 922, __pyx_L3_error)
+      if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 958, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       __pyx_r = __pyx_t_4;
       __pyx_t_4 = 0;
       goto __pyx_L7_try_return;
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":921
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":957
  *         :returns: basestring -- A string with PDB content
  *     """
  *     try:             # <<<<<<<<<<<<<<
- *         return open(pdbfile, "rt").read()
+ *         return open(str(pdbfile), "rt").read()
  *     except IOError:
  */
     }
     __pyx_L3_error:;
+    __Pyx_XDECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":923
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":959
  *     try:
- *         return open(pdbfile, "rt").read()
+ *         return open(str(pdbfile), "rt").read()
  *     except IOError:             # <<<<<<<<<<<<<<
  *         return pdbfile
  */
-    __pyx_t_8 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_IOError);
-    if (__pyx_t_8) {
+    __pyx_t_9 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_IOError);
+    if (__pyx_t_9) {
       __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.readPDB", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5) < 0) __PYX_ERR(0, 923, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_4, &__pyx_t_6, &__pyx_t_5) < 0) __PYX_ERR(0, 959, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_5);
 
-      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":924
- *         return open(pdbfile, "rt").read()
+      /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":960
+ *         return open(str(pdbfile), "rt").read()
  *     except IOError:
  *         return pdbfile             # <<<<<<<<<<<<<<
  */
@@ -19301,11 +19700,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_6read
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":921
+    /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":957
  *         :returns: basestring -- A string with PDB content
  *     """
  *     try:             # <<<<<<<<<<<<<<
- *         return open(pdbfile, "rt").read()
+ *         return open(str(pdbfile), "rt").read()
  *     except IOError:
  */
     __Pyx_XGIVEREF(__pyx_t_1);
@@ -19327,7 +19726,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_6read
     goto __pyx_L0;
   }
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":913
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":949
  *     return dx*dx + dy*dy + dz*dz
  * 
  * def readPDB(pdbfile):             # <<<<<<<<<<<<<<
@@ -19341,7 +19740,8 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_7atomset_6read
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_XDECREF(__pyx_t_9);
+  __Pyx_XDECREF(__pyx_t_8);
+  __Pyx_XDECREF(__pyx_t_10);
   __Pyx_AddTraceback("pele_platform.AdaptivePELE.atomset.atomset.readPDB", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -20429,7 +20829,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 272, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -20485,7 +20885,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  * 
  *             info.buf = PyArray_DATA(self)
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 276, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -20743,7 +21143,7 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 306, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 306, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -21623,7 +22023,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  * 
  *         if ((child.byteorder == c'>' and little_endian) or
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 856, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 856, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -21691,7 +22091,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  *             # One could encode it in the format string and have Cython
  *             # complain instead, BUT: < and > in format strings also imply
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 860, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(3, 860, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -21800,7 +22200,7 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
  * 
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  */
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 880, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(3, 880, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_Raise(__pyx_t_4, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -22428,7 +22828,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(3, 1038, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(3, 1038, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -22557,7 +22957,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(3, 1044, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(3, 1044, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -22683,7 +23083,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  *     except Exception:
  *         raise ImportError("numpy.core.umath failed to import")             # <<<<<<<<<<<<<<
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(3, 1050, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(3, 1050, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -23987,6 +24387,9 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ImportError, __pyx_k_ImportError, sizeof(__pyx_k_ImportError), 0, 0, 1, 1},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0x0d, __pyx_k_Incompatible_checksums_s_vs_0x0d, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x0d), 0, 0, 1, 0},
   {&__pyx_kp_s_Incompatible_checksums_s_vs_0x73, __pyx_k_Incompatible_checksums_s_vs_0x73, sizeof(__pyx_k_Incompatible_checksums_s_vs_0x73), 0, 0, 1, 0},
+  {&__pyx_kp_u_Input_coordinates_and_topology_d, __pyx_k_Input_coordinates_and_topology_d, sizeof(__pyx_k_Input_coordinates_and_topology_d), 0, 1, 0, 0},
+  {&__pyx_kp_u_Input_file_not_found, __pyx_k_Input_file_not_found, sizeof(__pyx_k_Input_file_not_found), 0, 1, 0, 0},
+  {&__pyx_kp_u_Input_pdb_was_malformed_or_empty, __pyx_k_Input_pdb_was_malformed_or_empty, sizeof(__pyx_k_Input_pdb_was_malformed_or_empty), 0, 1, 0, 0},
   {&__pyx_n_u_JJJ, __pyx_k_JJJ, sizeof(__pyx_k_JJJ), 0, 1, 0, 1},
   {&__pyx_n_u_JJK, __pyx_k_JJK, sizeof(__pyx_k_JJK), 0, 1, 0, 1},
   {&__pyx_n_u_JJL, __pyx_k_JJL, sizeof(__pyx_k_JJL), 0, 1, 0, 1},
@@ -24093,7 +24496,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_MNV, __pyx_k_MNV, sizeof(__pyx_k_MNV), 0, 1, 0, 1},
   {&__pyx_n_u_MO, __pyx_k_MO, sizeof(__pyx_k_MO), 0, 1, 0, 1},
   {&__pyx_n_u_MOD, __pyx_k_MOD, sizeof(__pyx_k_MOD), 0, 1, 0, 1},
-  {&__pyx_kp_u_MODEL_d, __pyx_k_MODEL_d, sizeof(__pyx_k_MODEL_d), 0, 1, 0, 0},
+  {&__pyx_kp_u_MODEL_4d, __pyx_k_MODEL_4d, sizeof(__pyx_k_MODEL_4d), 0, 1, 0, 0},
   {&__pyx_n_u_MP8, __pyx_k_MP8, sizeof(__pyx_k_MP8), 0, 1, 0, 1},
   {&__pyx_n_u_MPH, __pyx_k_MPH, sizeof(__pyx_k_MPH), 0, 1, 0, 1},
   {&__pyx_n_u_MPJ, __pyx_k_MPJ, sizeof(__pyx_k_MPJ), 0, 1, 0, 1},
@@ -24150,6 +24553,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_NZH, __pyx_k_NZH, sizeof(__pyx_k_NZH), 0, 1, 0, 1},
   {&__pyx_kp_u_No_boolean_operator_available_fo, __pyx_k_No_boolean_operator_available_fo, sizeof(__pyx_k_No_boolean_operator_available_fo), 0, 1, 0, 0},
   {&__pyx_kp_u_Non_native_byte_order_not_suppor, __pyx_k_Non_native_byte_order_not_suppor, sizeof(__pyx_k_Non_native_byte_order_not_suppor), 0, 1, 0, 0},
+  {&__pyx_kp_u_Nothing_found_in_the_input_coord, __pyx_k_Nothing_found_in_the_input_coord, sizeof(__pyx_k_Nothing_found_in_the_input_coord), 0, 1, 0, 0},
   {&__pyx_n_u_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 1, 0, 1},
   {&__pyx_n_u_O12, __pyx_k_O12, sizeof(__pyx_k_O12), 0, 1, 0, 1},
   {&__pyx_n_u_OAR, __pyx_k_OAR, sizeof(__pyx_k_OAR), 0, 1, 0, 1},
@@ -24375,7 +24779,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_u_TYY, __pyx_k_TYY, sizeof(__pyx_k_TYY), 0, 1, 0, 1},
   {&__pyx_n_u_TZB, __pyx_k_TZB, sizeof(__pyx_k_TZB), 0, 1, 0, 1},
   {&__pyx_n_u_TZO, __pyx_k_TZO, sizeof(__pyx_k_TZO), 0, 1, 0, 1},
-  {&__pyx_kp_u_The_input_pdb_file_string_was_em, __pyx_k_The_input_pdb_file_string_was_em, sizeof(__pyx_k_The_input_pdb_file_string_was_em), 0, 1, 0, 0},
   {&__pyx_n_u_U, __pyx_k_U, sizeof(__pyx_k_U), 0, 1, 0, 1},
   {&__pyx_n_u_UMA, __pyx_k_UMA, sizeof(__pyx_k_UMA), 0, 1, 0, 1},
   {&__pyx_n_u_UN1, __pyx_k_UN1, sizeof(__pyx_k_UN1), 0, 1, 0, 1},
@@ -24466,6 +24869,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_enter, __pyx_k_enter, sizeof(__pyx_k_enter), 0, 0, 1, 1},
   {&__pyx_n_s_equivalentResname, __pyx_k_equivalentResname, sizeof(__pyx_k_equivalentResname), 0, 0, 1, 1},
   {&__pyx_n_s_exit, __pyx_k_exit, sizeof(__pyx_k_exit), 0, 0, 1, 1},
+  {&__pyx_n_s_extra_atoms, __pyx_k_extra_atoms, sizeof(__pyx_k_extra_atoms), 0, 0, 1, 1},
   {&__pyx_n_s_extractCOM, __pyx_k_extractCOM, sizeof(__pyx_k_extractCOM), 0, 0, 1, 1},
   {&__pyx_n_s_extractCentroid, __pyx_k_extractCentroid, sizeof(__pyx_k_extractCentroid), 0, 0, 1, 1},
   {&__pyx_n_u_f, __pyx_k_f, sizeof(__pyx_k_f), 0, 1, 0, 1},
@@ -24495,8 +24899,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_mass, __pyx_k_mass, sizeof(__pyx_k_mass), 0, 0, 1, 1},
   {&__pyx_n_u_mass, __pyx_k_mass, sizeof(__pyx_k_mass), 0, 1, 0, 1},
-  {&__pyx_n_s_md, __pyx_k_md, sizeof(__pyx_k_md), 0, 0, 1, 1},
-  {&__pyx_n_s_mdtraj, __pyx_k_mdtraj, sizeof(__pyx_k_mdtraj), 0, 0, 1, 1},
   {&__pyx_n_s_model_num, __pyx_k_model_num, sizeof(__pyx_k_model_num), 0, 0, 1, 1},
   {&__pyx_n_u_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 1, 0, 1},
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
@@ -24583,10 +24985,10 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 445, __pyx_L1_error)
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 554, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 587, __pyx_L1_error)
-  __pyx_builtin_IOError = __Pyx_GetBuiltinName(__pyx_n_s_IOError); if (!__pyx_builtin_IOError) __PYX_ERR(0, 923, __pyx_L1_error)
+  __pyx_builtin_zip = __Pyx_GetBuiltinName(__pyx_n_s_zip); if (!__pyx_builtin_zip) __PYX_ERR(0, 462, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 544, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 622, __pyx_L1_error)
+  __pyx_builtin_IOError = __Pyx_GetBuiltinName(__pyx_n_s_IOError); if (!__pyx_builtin_IOError) __PYX_ERR(0, 959, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(3, 856, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(3, 1038, __pyx_L1_error)
   return 0;
@@ -24598,38 +25000,71 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":479
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":495
  *         self.totalMass = state[u'totalMass']
  *         self.pdb = state[u'pdb']
  *         self.ispdb = state.get(u'ispdb', True)             # <<<<<<<<<<<<<<
  * 
  *     def isfromPDBFile(self):
  */
-  __pyx_tuple__9 = PyTuple_Pack(2, __pyx_n_u_ispdb, Py_True); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 479, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(2, __pyx_n_u_ispdb, Py_True); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 495, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":554
- *                 pass
- *         if self.atoms == {}:
- *             raise ValueError('The input pdb file/string was empty, no atoms loaded!')             # <<<<<<<<<<<<<<
- * 
- *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None):
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":544
+ *             # If the string got here and only contains one line means that is a
+ *             # path which does not exist
+ *             raise ValueError("Input file not found!!")             # <<<<<<<<<<<<<<
+ *         pdb_lines = 0
+ *         for atomLine in stringWithPDBContent:
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_u_The_input_pdb_file_string_was_em); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 554, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__10);
-  __Pyx_GIVEREF(__pyx_tuple__10);
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_u_Input_file_not_found); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 544, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":810
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":581
+ *                 pass
+ *         if pdb_lines == 0:
+ *             raise ValueError("Input pdb was malformed or empty!!")             # <<<<<<<<<<<<<<
+ *         if self.atoms == {}:
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
+ */
+  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_u_Input_pdb_was_malformed_or_empty); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 581, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__12);
+  __Pyx_GIVEREF(__pyx_tuple__12);
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":583
+ *             raise ValueError("Input pdb was malformed or empty!!")
+ *         if self.atoms == {}:
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')             # <<<<<<<<<<<<<<
+ * 
+ *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):
+ */
+  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_u_Nothing_found_in_the_input_coord); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 583, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":617
+ *         self.pdb = self.join_PDB_lines(topology, frame)  # in case one wants to write it
+ *         if len(frame) != len(topology):
+ *             raise ValueError("Input coordinates and topology do not match!!!")             # <<<<<<<<<<<<<<
+ *         if extra_atoms != {}:
+ *             CMAtoms = extra_atoms
+ */
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_u_Input_coordinates_and_topology_d); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 617, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":845
  *         cdef object fileHandle, atom
  *         if self.ispdb:
  *             with open(path, 'w', encoding="utf-8") as fileHandle:             # <<<<<<<<<<<<<<
- *                 fileHandle.write(self.pdb)
- *         else:
+ *                 # in old simulations it will fail without the unicode
+ *                 fileHandle.write(unicode(self.pdb))
  */
-  __pyx_tuple__11 = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 810, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
+  __pyx_tuple__17 = PyTuple_Pack(3, Py_None, Py_None, Py_None); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 845, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__17);
+  __Pyx_GIVEREF(__pyx_tuple__17);
 
   /* "../../.local/lib/python3.5/site-packages/Cython/Includes/numpy/__init__.pxd":272
  *             if ((flags & pybuf.PyBUF_C_CONTIGUOUS == pybuf.PyBUF_C_CONTIGUOUS)
@@ -24638,9 +25073,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
  */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(3, 272, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__12);
-  __Pyx_GIVEREF(__pyx_tuple__12);
+  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(3, 272, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
+  __Pyx_GIVEREF(__pyx_tuple__18);
 
   /* "../../.local/lib/python3.5/site-packages/Cython/Includes/numpy/__init__.pxd":276
  *             if ((flags & pybuf.PyBUF_F_CONTIGUOUS == pybuf.PyBUF_F_CONTIGUOUS)
@@ -24649,9 +25084,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             info.buf = PyArray_DATA(self)
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(3, 276, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__13);
-  __Pyx_GIVEREF(__pyx_tuple__13);
+  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(3, 276, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__19);
+  __Pyx_GIVEREF(__pyx_tuple__19);
 
   /* "../../.local/lib/python3.5/site-packages/Cython/Includes/numpy/__init__.pxd":306
  *                 if ((descr.byteorder == c'>' and little_endian) or
@@ -24660,9 +25095,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *                 if   t == NPY_BYTE:        f = "b"
  *                 elif t == NPY_UBYTE:       f = "B"
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(3, 306, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(3, 306, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
 
   /* "../../.local/lib/python3.5/site-packages/Cython/Includes/numpy/__init__.pxd":856
  * 
@@ -24671,9 +25106,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if ((child.byteorder == c'>' and little_endian) or
  */
-  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(3, 856, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(3, 856, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__21);
+  __Pyx_GIVEREF(__pyx_tuple__21);
 
   /* "../../.local/lib/python3.5/site-packages/Cython/Includes/numpy/__init__.pxd":880
  *             t = child.type_num
@@ -24682,9 +25117,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             # Until ticket #99 is fixed, use integers to avoid warnings
  */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(3, 880, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__16);
-  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(3, 880, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
 
   /* "../../.local/lib/python3.5/site-packages/Cython/Includes/numpy/__init__.pxd":1038
  *         _import_array()
@@ -24693,9 +25128,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(3, 1038, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__17);
-  __Pyx_GIVEREF(__pyx_tuple__17);
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(3, 1038, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
 
   /* "../../.local/lib/python3.5/site-packages/Cython/Includes/numpy/__init__.pxd":1044
  *         _import_umath()
@@ -24704,82 +25139,82 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(3, 1044, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__18);
-  __Pyx_GIVEREF(__pyx_tuple__18);
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(3, 1044, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":145
- * 'ZZJ': 'A'}
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":162
+ *     return False
  * 
  * REGEX_PATTERN = re.compile("[0-9]|\+|\-")             # <<<<<<<<<<<<<<
  * 
  * cdef class Atom:
  */
-  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_u_0_9); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 145, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__19);
-  __Pyx_GIVEREF(__pyx_tuple__19);
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_u_0_9); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__25);
+  __Pyx_GIVEREF(__pyx_tuple__25);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":859
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":895
  * 
  * 
  * def computeCOMDifference(PDB1, PDB2):             # <<<<<<<<<<<<<<
  *     """
  *         Compute the difference between the center of mass of two PDB
  */
-  __pyx_tuple__20 = PyTuple_Pack(2, __pyx_n_s_PDB1, __pyx_n_s_PDB2); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 859, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
-  __pyx_codeobj__21 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__20, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pele_platform_AdaptivePELE_atoms_2, __pyx_n_s_computeCOMDifference, 859, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__21)) __PYX_ERR(0, 859, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(2, __pyx_n_s_PDB1, __pyx_n_s_PDB2); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 895, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pele_platform_AdaptivePELE_atoms_2, __pyx_n_s_computeCOMDifference, 895, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 895, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":872
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":908
  * 
  * 
  * def computeCOMSquaredDifference(PDB PDB1, PDB PDB2):             # <<<<<<<<<<<<<<
  *     """
  *         Compute the squared difference between the center of mass of two PDB
  */
-  __pyx_tuple__22 = PyTuple_Pack(7, __pyx_n_s_PDB1, __pyx_n_s_PDB2, __pyx_n_s_COM1, __pyx_n_s_COM2, __pyx_n_s_dx, __pyx_n_s_dy, __pyx_n_s_dz); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(0, 872, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
-  __pyx_codeobj__23 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__22, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pele_platform_AdaptivePELE_atoms_2, __pyx_n_s_computeCOMSquaredDifference, 872, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__23)) __PYX_ERR(0, 872, __pyx_L1_error)
+  __pyx_tuple__28 = PyTuple_Pack(7, __pyx_n_s_PDB1, __pyx_n_s_PDB2, __pyx_n_s_COM1, __pyx_n_s_COM2, __pyx_n_s_dx, __pyx_n_s_dy, __pyx_n_s_dz); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 908, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__28);
+  __Pyx_GIVEREF(__pyx_tuple__28);
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pele_platform_AdaptivePELE_atoms_2, __pyx_n_s_computeCOMSquaredDifference, 908, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 908, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":893
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":929
  * 
  * 
  * def computeSquaredCentroidDifference(PDB PDB1, PDB PDB2):             # <<<<<<<<<<<<<<
  *     """
  *         Compute the centroid squared difference between two PDBs
  */
-  __pyx_tuple__24 = PyTuple_Pack(7, __pyx_n_s_PDB1, __pyx_n_s_PDB2, __pyx_n_s_centroid1, __pyx_n_s_centroid2, __pyx_n_s_dx, __pyx_n_s_dy, __pyx_n_s_dz); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 893, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pele_platform_AdaptivePELE_atoms_2, __pyx_n_s_computeSquaredCentroidDifference, 893, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 893, __pyx_L1_error)
+  __pyx_tuple__30 = PyTuple_Pack(7, __pyx_n_s_PDB1, __pyx_n_s_PDB2, __pyx_n_s_centroid1, __pyx_n_s_centroid2, __pyx_n_s_dx, __pyx_n_s_dy, __pyx_n_s_dz); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 929, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__30);
+  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(2, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pele_platform_AdaptivePELE_atoms_2, __pyx_n_s_computeSquaredCentroidDifference, 929, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 929, __pyx_L1_error)
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":913
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":949
  *     return dx*dx + dy*dy + dz*dz
  * 
  * def readPDB(pdbfile):             # <<<<<<<<<<<<<<
  *     """
  *         Helper function, parses a string with PDB content or the path of a pdb file into a string
  */
-  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_n_s_pdbfile); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 913, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__26);
-  __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pele_platform_AdaptivePELE_atoms_2, __pyx_n_s_readPDB, 913, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 913, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_n_s_pdbfile); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 949, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_pele_platform_AdaptivePELE_atoms_2, __pyx_n_s_readPDB, 949, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 949, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Atom(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_tuple__28 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__28);
-  __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Atom, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __pyx_tuple__30 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_PDB, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__34);
+  __Pyx_GIVEREF(__pyx_tuple__34);
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Atom, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__36);
+  __Pyx_GIVEREF(__pyx_tuple__36);
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_PDB, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -24904,7 +25339,7 @@ static int __Pyx_modinit_type_init_code(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_modinit_type_init_code", 0);
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom) < 0) __PYX_ERR(0, 164, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom.tp_print = 0;
   #endif
@@ -24913,7 +25348,7 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 147, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 164, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
       __pyx_wrapperbase_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___init__.doc = __pyx_doc_13pele_platform_12AdaptivePELE_7atomset_7atomset_4Atom___init__;
@@ -24921,10 +25356,10 @@ static int __Pyx_modinit_type_init_code(void) {
     }
   }
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Atom, (PyObject *)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom) < 0) __PYX_ERR(0, 147, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_Atom, (PyObject *)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom) < 0) __PYX_ERR(0, 164, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom) < 0) __PYX_ERR(0, 164, __pyx_L1_error)
   __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom = &__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom;
-  if (PyType_Ready(&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB) < 0) __PYX_ERR(0, 400, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB) < 0) __PYX_ERR(0, 417, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB.tp_print = 0;
   #endif
@@ -24933,7 +25368,7 @@ static int __Pyx_modinit_type_init_code(void) {
   }
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 400, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB, "__init__"); if (unlikely(!wrapper)) __PYX_ERR(0, 417, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
       __pyx_wrapperbase_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init__.doc = __pyx_doc_13pele_platform_12AdaptivePELE_7atomset_7atomset_3PDB___init__;
@@ -24941,10 +25376,10 @@ static int __Pyx_modinit_type_init_code(void) {
     }
   }
   #endif
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PDB, (PyObject *)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB) < 0) __PYX_ERR(0, 400, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB) < 0) __PYX_ERR(0, 400, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_PDB, (PyObject *)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB) < 0) __PYX_ERR(0, 417, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB) < 0) __PYX_ERR(0, 417, __pyx_L1_error)
   __pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB = &__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB;
-  if (PyType_Ready(&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset___pyx_scope_struct____iter__) < 0) __PYX_ERR(0, 694, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset___pyx_scope_struct____iter__) < 0) __PYX_ERR(0, 729, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_13pele_platform_12AdaptivePELE_7atomset_7atomset___pyx_scope_struct____iter__.tp_print = 0;
   #endif
@@ -25214,7 +25649,7 @@ if (!__Pyx_RefNanny) {
  * from __future__ import unicode_literals
  * import numpy as np             # <<<<<<<<<<<<<<
  * import re
- * import mdtraj as md
+ * from io import StringIO, open
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -25225,8 +25660,8 @@ if (!__Pyx_RefNanny) {
  * from __future__ import unicode_literals
  * import numpy as np
  * import re             # <<<<<<<<<<<<<<
- * import mdtraj as md
  * from io import StringIO, open
+ * cimport cython
  */
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_re, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -25236,23 +25671,11 @@ if (!__Pyx_RefNanny) {
   /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":4
  * import numpy as np
  * import re
- * import mdtraj as md             # <<<<<<<<<<<<<<
- * from io import StringIO, open
- * cimport cython
- */
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_mdtraj, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_md, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":5
- * import re
- * import mdtraj as md
  * from io import StringIO, open             # <<<<<<<<<<<<<<
  * cimport cython
  * cimport numpy as np
  */
-  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_StringIO);
   __Pyx_GIVEREF(__pyx_n_s_StringIO);
@@ -25260,16 +25683,16 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_open);
   __Pyx_GIVEREF(__pyx_n_s_open);
   PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_open);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_io, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_io, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_StringIO); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_StringIO); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_StringIO, __pyx_t_1) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_StringIO, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_open); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_open); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_open, __pyx_t_1) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_open, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
@@ -26105,250 +26528,289 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_AMINO_ACID_CODES, __pyx_t_2) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":145
- * 'ZZJ': 'A'}
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":162
+ *     return False
  * 
  * REGEX_PATTERN = re.compile("[0-9]|\+|\-")             # <<<<<<<<<<<<<<
  * 
  * cdef class Atom:
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_re); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_re); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_compile); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_compile); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 145, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_REGEX_PATTERN, __pyx_t_2) < 0) __PYX_ERR(0, 145, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_REGEX_PATTERN, __pyx_t_2) < 0) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":148
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":165
  * 
  * cdef class Atom:
  *     _chargePattern = REGEX_PATTERN             # <<<<<<<<<<<<<<
  *     _ATOM_WEIGHTS = {u"H": 1.00794,
  *                     u"D": 2.01410178,  # deuterium
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_REGEX_PATTERN); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 148, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_REGEX_PATTERN); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom->tp_dict, __pyx_n_s_chargePattern, __pyx_t_2) < 0) __PYX_ERR(0, 148, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom->tp_dict, __pyx_n_s_chargePattern, __pyx_t_2) < 0) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":149
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":166
  * cdef class Atom:
  *     _chargePattern = REGEX_PATTERN
  *     _ATOM_WEIGHTS = {u"H": 1.00794,             # <<<<<<<<<<<<<<
  *                     u"D": 2.01410178,  # deuterium
  *                     u"HE": 4.00,
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(68); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(68); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_H, __pyx_float_1_00794) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_D, __pyx_float_2_01410178) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HE, __pyx_float_4_00) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_LI, __pyx_float_6_941) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_BE, __pyx_float_9_01) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_B, __pyx_float_10_811) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_C, __pyx_float_12_0107) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_N, __pyx_float_14_0067) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_O, __pyx_float_15_9994) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_F, __pyx_float_18_998403) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_NE, __pyx_float_20_18) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_NA, __pyx_float_22_989769) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_MG, __pyx_float_24_305) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AL, __pyx_float_26_98) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SI, __pyx_float_28_09) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_P, __pyx_float_30_973762) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_S, __pyx_float_32_065) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CL, __pyx_float_35_453) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AR, __pyx_float_39_95) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_K, __pyx_float_39_0983) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CA, __pyx_float_40_078) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SC, __pyx_float_44_96) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TI, __pyx_float_47_87) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_V, __pyx_float_50_94) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CR, __pyx_float_51_9961) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_MN, __pyx_float_54_938045) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_FE, __pyx_float_55_845) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CO, __pyx_float_58_93) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_NI, __pyx_float_58_6934) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CU, __pyx_float_63_546) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ZN, __pyx_float_65_409) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GA, __pyx_float_69_72) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GE, __pyx_float_72_64) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AS, __pyx_float_74_9216) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SE, __pyx_float_78_96) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_BR, __pyx_float_79_90) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_KR, __pyx_float_83_80) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_RB, __pyx_float_85_47) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SR, __pyx_float_87_62) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_Y, __pyx_float_88_91) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ZR, __pyx_float_91_22) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_NB, __pyx_float_92_91) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_W, __pyx_float_95_94) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_MO, __pyx_float_95_94) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TC, __pyx_float_98_0) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_RU, __pyx_float_101_07) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_RH, __pyx_float_102_91) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PD, __pyx_float_106_42) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AG, __pyx_float_107_8682) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CD, __pyx_float_112_411) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_IN, __pyx_float_114_82) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SN, __pyx_float_118_71) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SB, __pyx_float_121_76) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TE, __pyx_float_127_60) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_I, __pyx_float_126_90447) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_XE, __pyx_float_131_29) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CS, __pyx_float_132_91) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_BA, __pyx_float_137_33) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PR, __pyx_float_140_91) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_EU, __pyx_float_151_96) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GD, __pyx_float_157_25) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TB, __pyx_float_158_93) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_IR, __pyx_float_192_22) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PT, __pyx_float_195_084) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AU, __pyx_float_196_96657) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HG, __pyx_float_200_59) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PB, __pyx_float_207_2) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_U, __pyx_float_238_03) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom->tp_dict, __pyx_n_s_ATOM_WEIGHTS, __pyx_t_2) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_H, __pyx_float_1_00794) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_D, __pyx_float_2_01410178) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HE, __pyx_float_4_00) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_LI, __pyx_float_6_941) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_BE, __pyx_float_9_01) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_B, __pyx_float_10_811) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_C, __pyx_float_12_0107) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_N, __pyx_float_14_0067) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_O, __pyx_float_15_9994) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_F, __pyx_float_18_998403) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_NE, __pyx_float_20_18) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_NA, __pyx_float_22_989769) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_MG, __pyx_float_24_305) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AL, __pyx_float_26_98) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SI, __pyx_float_28_09) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_P, __pyx_float_30_973762) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_S, __pyx_float_32_065) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CL, __pyx_float_35_453) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AR, __pyx_float_39_95) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_K, __pyx_float_39_0983) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CA, __pyx_float_40_078) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SC, __pyx_float_44_96) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TI, __pyx_float_47_87) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_V, __pyx_float_50_94) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CR, __pyx_float_51_9961) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_MN, __pyx_float_54_938045) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_FE, __pyx_float_55_845) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CO, __pyx_float_58_93) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_NI, __pyx_float_58_6934) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CU, __pyx_float_63_546) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ZN, __pyx_float_65_409) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GA, __pyx_float_69_72) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GE, __pyx_float_72_64) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AS, __pyx_float_74_9216) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SE, __pyx_float_78_96) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_BR, __pyx_float_79_90) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_KR, __pyx_float_83_80) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_RB, __pyx_float_85_47) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SR, __pyx_float_87_62) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_Y, __pyx_float_88_91) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ZR, __pyx_float_91_22) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_NB, __pyx_float_92_91) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_W, __pyx_float_95_94) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_MO, __pyx_float_95_94) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TC, __pyx_float_98_0) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_RU, __pyx_float_101_07) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_RH, __pyx_float_102_91) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PD, __pyx_float_106_42) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AG, __pyx_float_107_8682) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CD, __pyx_float_112_411) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_IN, __pyx_float_114_82) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SN, __pyx_float_118_71) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SB, __pyx_float_121_76) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TE, __pyx_float_127_60) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_I, __pyx_float_126_90447) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_XE, __pyx_float_131_29) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CS, __pyx_float_132_91) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_BA, __pyx_float_137_33) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PR, __pyx_float_140_91) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_EU, __pyx_float_151_96) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GD, __pyx_float_157_25) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TB, __pyx_float_158_93) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_IR, __pyx_float_192_22) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PT, __pyx_float_195_084) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_AU, __pyx_float_196_96657) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HG, __pyx_float_200_59) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PB, __pyx_float_207_2) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_U, __pyx_float_238_03) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom->tp_dict, __pyx_n_s_ATOM_WEIGHTS, __pyx_t_2) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_Atom);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":401
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":418
  * 
  * cdef class PDB:
  *     _typeProtein = u"PROTEIN"             # <<<<<<<<<<<<<<
  *     _typeHetero = u"HETERO"
  *     _typeAll = u"ALL"
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_typeProtein, __pyx_n_u_PROTEIN) < 0) __PYX_ERR(0, 401, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_typeProtein, __pyx_n_u_PROTEIN) < 0) __PYX_ERR(0, 418, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":402
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":419
  * cdef class PDB:
  *     _typeProtein = u"PROTEIN"
  *     _typeHetero = u"HETERO"             # <<<<<<<<<<<<<<
  *     _typeAll = u"ALL"
  *     _typeCM = u"CM"
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_typeHetero, __pyx_n_u_HETERO) < 0) __PYX_ERR(0, 402, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_typeHetero, __pyx_n_u_HETERO) < 0) __PYX_ERR(0, 419, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":403
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":420
  *     _typeProtein = u"PROTEIN"
  *     _typeHetero = u"HETERO"
  *     _typeAll = u"ALL"             # <<<<<<<<<<<<<<
  *     _typeCM = u"CM"
  * 
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_typeAll, __pyx_n_u_ALL) < 0) __PYX_ERR(0, 403, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_typeAll, __pyx_n_u_ALL) < 0) __PYX_ERR(0, 420, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":404
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":421
  *     _typeHetero = u"HETERO"
  *     _typeAll = u"ALL"
  *     _typeCM = u"CM"             # <<<<<<<<<<<<<<
  * 
  *     #Atoms to be used in the contact map
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_typeCM, __pyx_n_u_CM) < 0) __PYX_ERR(0, 404, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_typeCM, __pyx_n_u_CM) < 0) __PYX_ERR(0, 421, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":407
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":424
  * 
  *     #Atoms to be used in the contact map
  *     CMAtoms = {u"ALA": u"empty", u"VAL": u"empty", u"LEU": u"empty", u"ILE": u"empty",             # <<<<<<<<<<<<<<
  *                u"MET": u"empty", u"PRO": u"empty", u"PHE": u"CZ", u"TYR": u"OH",
  *                u"TRP": u"CH2", u"SER": u"empty", u"THR": u"empty", u"CYS": u"empty",
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(23); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 407, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(23); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 424, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ALA, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_VAL, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_LEU, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ILE, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_MET, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PRO, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PHE, __pyx_n_u_CZ) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TYR, __pyx_n_u_OH) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TRP, __pyx_n_u_CH2) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SER, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_THR, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CYS, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ASN, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GLN, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_LYS, __pyx_n_u_NZ) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HIS, __pyx_n_u_CE1) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HIE, __pyx_n_u_CE1) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HID, __pyx_n_u_CE1) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HIP, __pyx_n_u_CE1) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ARG, __pyx_n_u_NE) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ASP, __pyx_n_u_OD1) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GLU, __pyx_n_u_OE1) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GLY, __pyx_n_u_empty) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_CMAtoms, __pyx_t_2) < 0) __PYX_ERR(0, 407, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ALA, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_VAL, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_LEU, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ILE, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_MET, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PRO, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_PHE, __pyx_n_u_CZ) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TYR, __pyx_n_u_OH) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_TRP, __pyx_n_u_CH2) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_SER, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_THR, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_CYS, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ASN, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GLN, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_LYS, __pyx_n_u_NZ) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HIS, __pyx_n_u_CE1) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HIE, __pyx_n_u_CE1) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HID, __pyx_n_u_CE1) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_HIP, __pyx_n_u_CE1) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ARG, __pyx_n_u_NE) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_ASP, __pyx_n_u_OD1) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GLU, __pyx_n_u_OE1) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_2, __pyx_n_u_GLY, __pyx_n_u_empty) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_CMAtoms, __pyx_t_2) < 0) __PYX_ERR(0, 424, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":413
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":430
  *                u"HIE": u"CE1", u"HID": u"CE1", u"HIP": u"CE1", u"ARG": u"NE",
  *                u"ASP": u"OD1", u"GLU": u"OE1", u"GLY": u"empty"}
  *     ATOM_LINE_TEMPLATE = u"%s%s %s %s %s%s%s   %.3f%.3f%.3f%.2f%.2f          %s   "             # <<<<<<<<<<<<<<
  * 
  *     def __init__(self):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_ATOM_LINE_TEMPLATE, __pyx_kp_u_s_s_s_s_s_s_s_3f_3f_3f_2f_2f_s) < 0) __PYX_ERR(0, 413, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB->tp_dict, __pyx_n_s_ATOM_LINE_TEMPLATE, __pyx_kp_u_s_s_s_s_s_s_s_3f_3f_3f_2f_2f_s) < 0) __PYX_ERR(0, 430, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_13pele_platform_12AdaptivePELE_7atomset_7atomset_PDB);
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":859
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":500
+ *         return self.ispdb
+ * 
+ *     def _initialisePDB(self, basestring PDBstr, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element="", dict extra_atoms={}):             # <<<<<<<<<<<<<<
+ *         """
+ *             Load the information from a PDB file or a string with the PDB
+ */
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 500, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_k__10 = ((PyObject*)__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":585
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
+ * 
+ *     def _initialiseXTC(self, np.ndarray[float, ndim=2] frame, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):             # <<<<<<<<<<<<<<
+ *         """
+ *             Load the information from a loaded XTC file into a  mdtraj Trajectory
+ */
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 585, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_k__14 = ((PyObject*)__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":667
+ *             raise ValueError('Nothing found in the input coordinates, please check your selection!')
+ * 
+ *     def initialise(self, object coordinates, bint heavyAtoms=True, basestring resname=u"", basestring atomname=u"", basestring type=u"ALL", basestring chain=u"", int resnum = 0, basestring element=u"", list topology=None, dict extra_atoms={}):             # <<<<<<<<<<<<<<
+ *         """
+ *             Wrapper function
+ */
+  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 667, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_k__16 = ((PyObject*)__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":895
  * 
  * 
  * def computeCOMDifference(PDB1, PDB2):             # <<<<<<<<<<<<<<
  *     """
  *         Compute the difference between the center of mass of two PDB
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_13pele_platform_12AdaptivePELE_7atomset_7atomset_1computeCOMDifference, NULL, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 859, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_13pele_platform_12AdaptivePELE_7atomset_7atomset_1computeCOMDifference, NULL, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 895, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_computeCOMDifference, __pyx_t_2) < 0) __PYX_ERR(0, 859, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_computeCOMDifference, __pyx_t_2) < 0) __PYX_ERR(0, 895, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":872
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":908
  * 
  * 
  * def computeCOMSquaredDifference(PDB PDB1, PDB PDB2):             # <<<<<<<<<<<<<<
  *     """
  *         Compute the squared difference between the center of mass of two PDB
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_13pele_platform_12AdaptivePELE_7atomset_7atomset_3computeCOMSquaredDifference, NULL, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 872, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_13pele_platform_12AdaptivePELE_7atomset_7atomset_3computeCOMSquaredDifference, NULL, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 908, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_computeCOMSquaredDifference, __pyx_t_2) < 0) __PYX_ERR(0, 872, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_computeCOMSquaredDifference, __pyx_t_2) < 0) __PYX_ERR(0, 908, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":893
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":929
  * 
  * 
  * def computeSquaredCentroidDifference(PDB PDB1, PDB PDB2):             # <<<<<<<<<<<<<<
  *     """
  *         Compute the centroid squared difference between two PDBs
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_13pele_platform_12AdaptivePELE_7atomset_7atomset_5computeSquaredCentroidDifference, NULL, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 893, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_13pele_platform_12AdaptivePELE_7atomset_7atomset_5computeSquaredCentroidDifference, NULL, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 929, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_computeSquaredCentroidDifference, __pyx_t_2) < 0) __PYX_ERR(0, 893, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_computeSquaredCentroidDifference, __pyx_t_2) < 0) __PYX_ERR(0, 929, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":913
+  /* "pele_platform/AdaptivePELE/atomset/atomset.pyx":949
  *     return dx*dx + dy*dy + dz*dz
  * 
  * def readPDB(pdbfile):             # <<<<<<<<<<<<<<
  *     """
  *         Helper function, parses a string with PDB content or the path of a pdb file into a string
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_13pele_platform_12AdaptivePELE_7atomset_7atomset_7readPDB, NULL, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 913, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_13pele_platform_12AdaptivePELE_7atomset_7atomset_7readPDB, NULL, __pyx_n_s_pele_platform_AdaptivePELE_atoms); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 949, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPDB, __pyx_t_2) < 0) __PYX_ERR(0, 913, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_readPDB, __pyx_t_2) < 0) __PYX_ERR(0, 949, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "(tree fragment)":1
@@ -26460,6 +26922,221 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name) {
 #endif
     }
     return result;
+}
+
+/* BytesEquals */
+static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
+#if CYTHON_COMPILING_IN_PYPY
+    return PyObject_RichCompareBool(s1, s2, equals);
+#else
+    if (s1 == s2) {
+        return (equals == Py_EQ);
+    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
+        const char *ps1, *ps2;
+        Py_ssize_t length = PyBytes_GET_SIZE(s1);
+        if (length != PyBytes_GET_SIZE(s2))
+            return (equals == Py_NE);
+        ps1 = PyBytes_AS_STRING(s1);
+        ps2 = PyBytes_AS_STRING(s2);
+        if (ps1[0] != ps2[0]) {
+            return (equals == Py_NE);
+        } else if (length == 1) {
+            return (equals == Py_EQ);
+        } else {
+            int result;
+#if CYTHON_USE_UNICODE_INTERNALS
+            Py_hash_t hash1, hash2;
+            hash1 = ((PyBytesObject*)s1)->ob_shash;
+            hash2 = ((PyBytesObject*)s2)->ob_shash;
+            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
+                return (equals == Py_NE);
+            }
+#endif
+            result = memcmp(ps1, ps2, (size_t)length);
+            return (equals == Py_EQ) ? (result == 0) : (result != 0);
+        }
+    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
+        return (equals == Py_NE);
+    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
+        return (equals == Py_NE);
+    } else {
+        int result;
+        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
+        if (!py_result)
+            return -1;
+        result = __Pyx_PyObject_IsTrue(py_result);
+        Py_DECREF(py_result);
+        return result;
+    }
+#endif
+}
+
+/* UnicodeEquals */
+static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals) {
+#if CYTHON_COMPILING_IN_PYPY
+    return PyObject_RichCompareBool(s1, s2, equals);
+#else
+#if PY_MAJOR_VERSION < 3
+    PyObject* owned_ref = NULL;
+#endif
+    int s1_is_unicode, s2_is_unicode;
+    if (s1 == s2) {
+        goto return_eq;
+    }
+    s1_is_unicode = PyUnicode_CheckExact(s1);
+    s2_is_unicode = PyUnicode_CheckExact(s2);
+#if PY_MAJOR_VERSION < 3
+    if ((s1_is_unicode & (!s2_is_unicode)) && PyString_CheckExact(s2)) {
+        owned_ref = PyUnicode_FromObject(s2);
+        if (unlikely(!owned_ref))
+            return -1;
+        s2 = owned_ref;
+        s2_is_unicode = 1;
+    } else if ((s2_is_unicode & (!s1_is_unicode)) && PyString_CheckExact(s1)) {
+        owned_ref = PyUnicode_FromObject(s1);
+        if (unlikely(!owned_ref))
+            return -1;
+        s1 = owned_ref;
+        s1_is_unicode = 1;
+    } else if (((!s2_is_unicode) & (!s1_is_unicode))) {
+        return __Pyx_PyBytes_Equals(s1, s2, equals);
+    }
+#endif
+    if (s1_is_unicode & s2_is_unicode) {
+        Py_ssize_t length;
+        int kind;
+        void *data1, *data2;
+        if (unlikely(__Pyx_PyUnicode_READY(s1) < 0) || unlikely(__Pyx_PyUnicode_READY(s2) < 0))
+            return -1;
+        length = __Pyx_PyUnicode_GET_LENGTH(s1);
+        if (length != __Pyx_PyUnicode_GET_LENGTH(s2)) {
+            goto return_ne;
+        }
+#if CYTHON_USE_UNICODE_INTERNALS
+        {
+            Py_hash_t hash1, hash2;
+        #if CYTHON_PEP393_ENABLED
+            hash1 = ((PyASCIIObject*)s1)->hash;
+            hash2 = ((PyASCIIObject*)s2)->hash;
+        #else
+            hash1 = ((PyUnicodeObject*)s1)->hash;
+            hash2 = ((PyUnicodeObject*)s2)->hash;
+        #endif
+            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
+                goto return_ne;
+            }
+        }
+#endif
+        kind = __Pyx_PyUnicode_KIND(s1);
+        if (kind != __Pyx_PyUnicode_KIND(s2)) {
+            goto return_ne;
+        }
+        data1 = __Pyx_PyUnicode_DATA(s1);
+        data2 = __Pyx_PyUnicode_DATA(s2);
+        if (__Pyx_PyUnicode_READ(kind, data1, 0) != __Pyx_PyUnicode_READ(kind, data2, 0)) {
+            goto return_ne;
+        } else if (length == 1) {
+            goto return_eq;
+        } else {
+            int result = memcmp(data1, data2, (size_t)(length * kind));
+            #if PY_MAJOR_VERSION < 3
+            Py_XDECREF(owned_ref);
+            #endif
+            return (equals == Py_EQ) ? (result == 0) : (result != 0);
+        }
+    } else if ((s1 == Py_None) & s2_is_unicode) {
+        goto return_ne;
+    } else if ((s2 == Py_None) & s1_is_unicode) {
+        goto return_ne;
+    } else {
+        int result;
+        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
+        #if PY_MAJOR_VERSION < 3
+        Py_XDECREF(owned_ref);
+        #endif
+        if (!py_result)
+            return -1;
+        result = __Pyx_PyObject_IsTrue(py_result);
+        Py_DECREF(py_result);
+        return result;
+    }
+return_eq:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(owned_ref);
+    #endif
+    return (equals == Py_EQ);
+return_ne:
+    #if PY_MAJOR_VERSION < 3
+    Py_XDECREF(owned_ref);
+    #endif
+    return (equals == Py_NE);
+#endif
+}
+
+/* PyErrFetchRestore */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    tmp_type = tstate->curexc_type;
+    tmp_value = tstate->curexc_value;
+    tmp_tb = tstate->curexc_traceback;
+    tstate->curexc_type = type;
+    tstate->curexc_value = value;
+    tstate->curexc_traceback = tb;
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
+}
+static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    *type = tstate->curexc_type;
+    *value = tstate->curexc_value;
+    *tb = tstate->curexc_traceback;
+    tstate->curexc_type = 0;
+    tstate->curexc_value = 0;
+    tstate->curexc_traceback = 0;
+}
+#endif
+
+/* WriteUnraisableException */
+static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+                                  CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
+                                  int full_traceback, CYTHON_UNUSED int nogil) {
+    PyObject *old_exc, *old_val, *old_tb;
+    PyObject *ctx;
+    __Pyx_PyThreadState_declare
+#ifdef WITH_THREAD
+    PyGILState_STATE state;
+    if (nogil)
+        state = PyGILState_Ensure();
+#ifdef _MSC_VER
+    else state = (PyGILState_STATE)-1;
+#endif
+#endif
+    __Pyx_PyThreadState_assign
+    __Pyx_ErrFetch(&old_exc, &old_val, &old_tb);
+    if (full_traceback) {
+        Py_XINCREF(old_exc);
+        Py_XINCREF(old_val);
+        Py_XINCREF(old_tb);
+        __Pyx_ErrRestore(old_exc, old_val, old_tb);
+        PyErr_PrintEx(1);
+    }
+    #if PY_MAJOR_VERSION < 3
+    ctx = PyString_FromString(name);
+    #else
+    ctx = PyUnicode_FromString(name);
+    #endif
+    __Pyx_ErrRestore(old_exc, old_val, old_tb);
+    if (!ctx) {
+        PyErr_WriteUnraisable(Py_None);
+    } else {
+        PyErr_WriteUnraisable(ctx);
+        Py_DECREF(ctx);
+    }
+#ifdef WITH_THREAD
+    if (nogil)
+        PyGILState_Release(state);
+#endif
 }
 
 /* RaiseDoubleKeywords */
@@ -26623,155 +27300,6 @@ static int __Pyx__ArgTypeTest(PyObject *obj, PyTypeObject *type, const char *nam
         "Argument '%.200s' has incorrect type (expected %.200s, got %.200s)",
         name, type->tp_name, Py_TYPE(obj)->tp_name);
     return 0;
-}
-
-/* BytesEquals */
-static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-    if (s1 == s2) {
-        return (equals == Py_EQ);
-    } else if (PyBytes_CheckExact(s1) & PyBytes_CheckExact(s2)) {
-        const char *ps1, *ps2;
-        Py_ssize_t length = PyBytes_GET_SIZE(s1);
-        if (length != PyBytes_GET_SIZE(s2))
-            return (equals == Py_NE);
-        ps1 = PyBytes_AS_STRING(s1);
-        ps2 = PyBytes_AS_STRING(s2);
-        if (ps1[0] != ps2[0]) {
-            return (equals == Py_NE);
-        } else if (length == 1) {
-            return (equals == Py_EQ);
-        } else {
-            int result;
-#if CYTHON_USE_UNICODE_INTERNALS
-            Py_hash_t hash1, hash2;
-            hash1 = ((PyBytesObject*)s1)->ob_shash;
-            hash2 = ((PyBytesObject*)s2)->ob_shash;
-            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
-                return (equals == Py_NE);
-            }
-#endif
-            result = memcmp(ps1, ps2, (size_t)length);
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
-        }
-    } else if ((s1 == Py_None) & PyBytes_CheckExact(s2)) {
-        return (equals == Py_NE);
-    } else if ((s2 == Py_None) & PyBytes_CheckExact(s1)) {
-        return (equals == Py_NE);
-    } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
-    }
-#endif
-}
-
-/* UnicodeEquals */
-static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals) {
-#if CYTHON_COMPILING_IN_PYPY
-    return PyObject_RichCompareBool(s1, s2, equals);
-#else
-#if PY_MAJOR_VERSION < 3
-    PyObject* owned_ref = NULL;
-#endif
-    int s1_is_unicode, s2_is_unicode;
-    if (s1 == s2) {
-        goto return_eq;
-    }
-    s1_is_unicode = PyUnicode_CheckExact(s1);
-    s2_is_unicode = PyUnicode_CheckExact(s2);
-#if PY_MAJOR_VERSION < 3
-    if ((s1_is_unicode & (!s2_is_unicode)) && PyString_CheckExact(s2)) {
-        owned_ref = PyUnicode_FromObject(s2);
-        if (unlikely(!owned_ref))
-            return -1;
-        s2 = owned_ref;
-        s2_is_unicode = 1;
-    } else if ((s2_is_unicode & (!s1_is_unicode)) && PyString_CheckExact(s1)) {
-        owned_ref = PyUnicode_FromObject(s1);
-        if (unlikely(!owned_ref))
-            return -1;
-        s1 = owned_ref;
-        s1_is_unicode = 1;
-    } else if (((!s2_is_unicode) & (!s1_is_unicode))) {
-        return __Pyx_PyBytes_Equals(s1, s2, equals);
-    }
-#endif
-    if (s1_is_unicode & s2_is_unicode) {
-        Py_ssize_t length;
-        int kind;
-        void *data1, *data2;
-        if (unlikely(__Pyx_PyUnicode_READY(s1) < 0) || unlikely(__Pyx_PyUnicode_READY(s2) < 0))
-            return -1;
-        length = __Pyx_PyUnicode_GET_LENGTH(s1);
-        if (length != __Pyx_PyUnicode_GET_LENGTH(s2)) {
-            goto return_ne;
-        }
-#if CYTHON_USE_UNICODE_INTERNALS
-        {
-            Py_hash_t hash1, hash2;
-        #if CYTHON_PEP393_ENABLED
-            hash1 = ((PyASCIIObject*)s1)->hash;
-            hash2 = ((PyASCIIObject*)s2)->hash;
-        #else
-            hash1 = ((PyUnicodeObject*)s1)->hash;
-            hash2 = ((PyUnicodeObject*)s2)->hash;
-        #endif
-            if (hash1 != hash2 && hash1 != -1 && hash2 != -1) {
-                goto return_ne;
-            }
-        }
-#endif
-        kind = __Pyx_PyUnicode_KIND(s1);
-        if (kind != __Pyx_PyUnicode_KIND(s2)) {
-            goto return_ne;
-        }
-        data1 = __Pyx_PyUnicode_DATA(s1);
-        data2 = __Pyx_PyUnicode_DATA(s2);
-        if (__Pyx_PyUnicode_READ(kind, data1, 0) != __Pyx_PyUnicode_READ(kind, data2, 0)) {
-            goto return_ne;
-        } else if (length == 1) {
-            goto return_eq;
-        } else {
-            int result = memcmp(data1, data2, (size_t)(length * kind));
-            #if PY_MAJOR_VERSION < 3
-            Py_XDECREF(owned_ref);
-            #endif
-            return (equals == Py_EQ) ? (result == 0) : (result != 0);
-        }
-    } else if ((s1 == Py_None) & s2_is_unicode) {
-        goto return_ne;
-    } else if ((s2 == Py_None) & s1_is_unicode) {
-        goto return_ne;
-    } else {
-        int result;
-        PyObject* py_result = PyObject_RichCompare(s1, s2, equals);
-        #if PY_MAJOR_VERSION < 3
-        Py_XDECREF(owned_ref);
-        #endif
-        if (!py_result)
-            return -1;
-        result = __Pyx_PyObject_IsTrue(py_result);
-        Py_DECREF(py_result);
-        return result;
-    }
-return_eq:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(owned_ref);
-    #endif
-    return (equals == Py_EQ);
-return_ne:
-    #if PY_MAJOR_VERSION < 3
-    Py_XDECREF(owned_ref);
-    #endif
-    return (equals == Py_NE);
-#endif
 }
 
 /* PyFunctionFastCall */
@@ -27430,30 +27958,6 @@ static CYTHON_INLINE int __Pyx_PyErr_ExceptionMatchesInState(PyThreadState* tsta
 }
 #endif
 
-/* PyErrFetchRestore */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx_ErrRestoreInState(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->curexc_type;
-    tmp_value = tstate->curexc_value;
-    tmp_tb = tstate->curexc_traceback;
-    tstate->curexc_type = type;
-    tstate->curexc_value = value;
-    tstate->curexc_traceback = tb;
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    *type = tstate->curexc_type;
-    *value = tstate->curexc_value;
-    *tb = tstate->curexc_traceback;
-    tstate->curexc_type = 0;
-    tstate->curexc_value = 0;
-    tstate->curexc_traceback = 0;
-}
-#endif
-
 /* GetAttr */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
 #if CYTHON_USE_TYPE_SLOTS
@@ -27581,62 +28085,6 @@ static int __Pyx_IternextUnpackEndCheck(PyObject *retval, Py_ssize_t expected) {
     }
     return 0;
 }
-
-/* GetTopmostException */
-#if CYTHON_USE_EXC_INFO_STACK
-static _PyErr_StackItem *
-__Pyx_PyErr_GetTopmostException(PyThreadState *tstate)
-{
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    while ((exc_info->exc_type == NULL || exc_info->exc_type == Py_None) &&
-           exc_info->previous_item != NULL)
-    {
-        exc_info = exc_info->previous_item;
-    }
-    return exc_info;
-}
-#endif
-
-/* SaveResetException */
-#if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    #if CYTHON_USE_EXC_INFO_STACK
-    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
-    *type = exc_info->exc_type;
-    *value = exc_info->exc_value;
-    *tb = exc_info->exc_traceback;
-    #else
-    *type = tstate->exc_type;
-    *value = tstate->exc_value;
-    *tb = tstate->exc_traceback;
-    #endif
-    Py_XINCREF(*type);
-    Py_XINCREF(*value);
-    Py_XINCREF(*tb);
-}
-static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    #if CYTHON_USE_EXC_INFO_STACK
-    _PyErr_StackItem *exc_info = tstate->exc_info;
-    tmp_type = exc_info->exc_type;
-    tmp_value = exc_info->exc_value;
-    tmp_tb = exc_info->exc_traceback;
-    exc_info->exc_type = type;
-    exc_info->exc_value = value;
-    exc_info->exc_traceback = tb;
-    #else
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = type;
-    tstate->exc_value = value;
-    tstate->exc_traceback = tb;
-    #endif
-    Py_XDECREF(tmp_type);
-    Py_XDECREF(tmp_value);
-    Py_XDECREF(tmp_tb);
-}
-#endif
 
 /* RaiseException */
 #if PY_MAJOR_VERSION < 3
@@ -27794,6 +28242,62 @@ static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject 
 bad:
     Py_XDECREF(owned_instance);
     return;
+}
+#endif
+
+/* GetTopmostException */
+#if CYTHON_USE_EXC_INFO_STACK
+static _PyErr_StackItem *
+__Pyx_PyErr_GetTopmostException(PyThreadState *tstate)
+{
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    while ((exc_info->exc_type == NULL || exc_info->exc_type == Py_None) &&
+           exc_info->previous_item != NULL)
+    {
+        exc_info = exc_info->previous_item;
+    }
+    return exc_info;
+}
+#endif
+
+/* SaveResetException */
+#if CYTHON_FAST_THREAD_STATE
+static CYTHON_INLINE void __Pyx__ExceptionSave(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
+    #if CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = __Pyx_PyErr_GetTopmostException(tstate);
+    *type = exc_info->exc_type;
+    *value = exc_info->exc_value;
+    *tb = exc_info->exc_traceback;
+    #else
+    *type = tstate->exc_type;
+    *value = tstate->exc_value;
+    *tb = tstate->exc_traceback;
+    #endif
+    Py_XINCREF(*type);
+    Py_XINCREF(*value);
+    Py_XINCREF(*tb);
+}
+static CYTHON_INLINE void __Pyx__ExceptionReset(PyThreadState *tstate, PyObject *type, PyObject *value, PyObject *tb) {
+    PyObject *tmp_type, *tmp_value, *tmp_tb;
+    #if CYTHON_USE_EXC_INFO_STACK
+    _PyErr_StackItem *exc_info = tstate->exc_info;
+    tmp_type = exc_info->exc_type;
+    tmp_value = exc_info->exc_value;
+    tmp_tb = exc_info->exc_traceback;
+    exc_info->exc_type = type;
+    exc_info->exc_value = value;
+    exc_info->exc_traceback = tb;
+    #else
+    tmp_type = tstate->exc_type;
+    tmp_value = tstate->exc_value;
+    tmp_tb = tstate->exc_traceback;
+    tstate->exc_type = type;
+    tstate->exc_value = value;
+    tstate->exc_traceback = tb;
+    #endif
+    Py_XDECREF(tmp_type);
+    Py_XDECREF(tmp_value);
+    Py_XDECREF(tmp_tb);
 }
 #endif
 

@@ -1815,7 +1815,6 @@ static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_values[] = "values";
 static const char __pyx_k_getAtom[] = "getAtom";
-static const char __pyx_k_message[] = "message";
 static const char __pyx_k_KeyError[] = "KeyError";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
@@ -1876,7 +1875,6 @@ static PyObject *__pyx_n_s_items;
 static PyObject *__pyx_n_s_iteritems;
 static PyObject *__pyx_n_s_keys;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_message;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
 static PyObject *__pyx_kp_u_ndarray_is_not_Fortran_contiguou;
@@ -2793,7 +2791,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
  *                     atom21 = PDB2.getAtom(atom1Id)
  *                     atom22 = PDB2.getAtom(atom2Id)             # <<<<<<<<<<<<<<
  *                 except KeyError as err:
- *                     raise KeyError("Atom %s not found in PDB" % err.message)
+ *                     raise KeyError("Atom %s not found in PDB" % str(err))
  */
           __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB2), __pyx_n_s_getAtom); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 61, __pyx_L8_error)
           __Pyx_GOTREF(__pyx_t_5);
@@ -2837,7 +2835,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
  *                     atom21 = PDB2.getAtom(atom1Id)
  *                     atom22 = PDB2.getAtom(atom2Id)
  *                 except KeyError as err:             # <<<<<<<<<<<<<<
- *                     raise KeyError("Atom %s not found in PDB" % err.message)
+ *                     raise KeyError("Atom %s not found in PDB" % str(err))
  *                 d2 += atom11.squaredDistance(atom21) + atom12.squaredDistance(atom22)
  */
         __pyx_t_11 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
@@ -2853,11 +2851,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
           /* "pele_platform/AdaptivePELE/atomset/RMSDCalculator.pyx":63
  *                     atom22 = PDB2.getAtom(atom2Id)
  *                 except KeyError as err:
- *                     raise KeyError("Atom %s not found in PDB" % err.message)             # <<<<<<<<<<<<<<
+ *                     raise KeyError("Atom %s not found in PDB" % str(err))             # <<<<<<<<<<<<<<
  *                 d2 += atom11.squaredDistance(atom21) + atom12.squaredDistance(atom22)
  *                 d2sm += atom12.squaredDistance(atom21) + atom11.squaredDistance(atom22)
  */
-          __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_v_err, __pyx_n_s_message); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 63, __pyx_L10_except_error)
+          __pyx_t_16 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_err); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 63, __pyx_L10_except_error)
           __Pyx_GOTREF(__pyx_t_16);
           __pyx_t_17 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_Atom_s_not_found_in_PDB, __pyx_t_16); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 63, __pyx_L10_except_error)
           __Pyx_GOTREF(__pyx_t_17);
@@ -2889,7 +2887,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
 
       /* "pele_platform/AdaptivePELE/atomset/RMSDCalculator.pyx":64
  *                 except KeyError as err:
- *                     raise KeyError("Atom %s not found in PDB" % err.message)
+ *                     raise KeyError("Atom %s not found in PDB" % str(err))
  *                 d2 += atom11.squaredDistance(atom21) + atom12.squaredDistance(atom22)             # <<<<<<<<<<<<<<
  *                 d2sm += atom12.squaredDistance(atom21) + atom11.squaredDistance(atom22)
  *             rmsd += min(d2, d2sm)
@@ -2943,7 +2941,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
       __pyx_v_d2 = __pyx_t_18;
 
       /* "pele_platform/AdaptivePELE/atomset/RMSDCalculator.pyx":65
- *                     raise KeyError("Atom %s not found in PDB" % err.message)
+ *                     raise KeyError("Atom %s not found in PDB" % str(err))
  *                 d2 += atom11.squaredDistance(atom21) + atom12.squaredDistance(atom22)
  *                 d2sm += atom12.squaredDistance(atom21) + atom11.squaredDistance(atom22)             # <<<<<<<<<<<<<<
  *             rmsd += min(d2, d2sm)
@@ -3096,7 +3094,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
  *                 atom1 = PDB1.getAtom(atomId)
  *                 atom2 = PDB2.getAtom(atomId)             # <<<<<<<<<<<<<<
  *             except KeyError as err:
- *                 raise KeyError("Atom %s not found in PDB" % err.message)
+ *                 raise KeyError("Atom %s not found in PDB" % str(err))
  */
         __pyx_t_15 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_PDB2), __pyx_n_s_getAtom); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 70, __pyx_L20_error)
         __Pyx_GOTREF(__pyx_t_15);
@@ -3143,7 +3141,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
  *                 atom1 = PDB1.getAtom(atomId)
  *                 atom2 = PDB2.getAtom(atomId)
  *             except KeyError as err:             # <<<<<<<<<<<<<<
- *                 raise KeyError("Atom %s not found in PDB" % err.message)
+ *                 raise KeyError("Atom %s not found in PDB" % str(err))
  *             rmsd += atom1.squaredDistance(atom2)
  */
       __pyx_t_11 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
@@ -3159,11 +3157,11 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
         /* "pele_platform/AdaptivePELE/atomset/RMSDCalculator.pyx":72
  *                 atom2 = PDB2.getAtom(atomId)
  *             except KeyError as err:
- *                 raise KeyError("Atom %s not found in PDB" % err.message)             # <<<<<<<<<<<<<<
+ *                 raise KeyError("Atom %s not found in PDB" % str(err))             # <<<<<<<<<<<<<<
  *             rmsd += atom1.squaredDistance(atom2)
  *         n = len(PDB1.atoms.items())
  */
-        __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_err, __pyx_n_s_message); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 72, __pyx_L22_except_error)
+        __pyx_t_10 = __Pyx_PyObject_CallOneArg(((PyObject *)(&PyString_Type)), __pyx_v_err); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 72, __pyx_L22_except_error)
         __Pyx_GOTREF(__pyx_t_10);
         __pyx_t_16 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_Atom_s_not_found_in_PDB, __pyx_t_10); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 72, __pyx_L22_except_error)
         __Pyx_GOTREF(__pyx_t_16);
@@ -3195,7 +3193,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
 
     /* "pele_platform/AdaptivePELE/atomset/RMSDCalculator.pyx":73
  *             except KeyError as err:
- *                 raise KeyError("Atom %s not found in PDB" % err.message)
+ *                 raise KeyError("Atom %s not found in PDB" % str(err))
  *             rmsd += atom1.squaredDistance(atom2)             # <<<<<<<<<<<<<<
  *         n = len(PDB1.atoms.items())
  *         return rmsd/n
@@ -3230,7 +3228,7 @@ static PyObject *__pyx_pf_13pele_platform_12AdaptivePELE_7atomset_14RMSDCalculat
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
   /* "pele_platform/AdaptivePELE/atomset/RMSDCalculator.pyx":74
- *                 raise KeyError("Atom %s not found in PDB" % err.message)
+ *                 raise KeyError("Atom %s not found in PDB" % str(err))
  *             rmsd += atom1.squaredDistance(atom2)
  *         n = len(PDB1.atoms.items())             # <<<<<<<<<<<<<<
  *         return rmsd/n
@@ -7042,7 +7040,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_iteritems, __pyx_k_iteritems, sizeof(__pyx_k_iteritems), 0, 0, 1, 1},
   {&__pyx_n_s_keys, __pyx_k_keys, sizeof(__pyx_k_keys), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_message, __pyx_k_message, sizeof(__pyx_k_message), 0, 0, 1, 1},
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_kp_u_ndarray_is_not_C_contiguous, __pyx_k_ndarray_is_not_C_contiguous, sizeof(__pyx_k_ndarray_is_not_C_contiguous), 0, 1, 0, 0},
   {&__pyx_kp_u_ndarray_is_not_Fortran_contiguou, __pyx_k_ndarray_is_not_Fortran_contiguou, sizeof(__pyx_k_ndarray_is_not_Fortran_contiguou), 0, 1, 0, 0},
