@@ -4,6 +4,7 @@ import pele_platform.constants as cs
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
+from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
 import pele_platform.Utilities.Helpers.helpers as hp
 
 
@@ -25,6 +26,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         msm_params.MSMParams.__init__(self, args)
         glide_params.GlideParams.__init__(self, args)
         bias_params.BiasParams.__init__(self, args)
+        inout_params.InOutParams.__init__(self, args)
 
 
     def simulation_type(self, args):
@@ -38,6 +40,13 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.system = args.system
         self.residue = args.residue
         self.chain = args.chain
+        self.spawning = args.spawning if args.spawning else self.simulation_params["spawning_type"]
+        self.density = args.density if args.density else self.simulation_params["density"]
+        self.simulation_type = args.simulation_type if args.simulation_type else self.simulation_params["simulation_type"]
+        self.iterations = args.iterations if args.iterations else self.simulation_params["iterations"]
+        self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params["pele_steps"]
+        self.cluster_values = args.cluster_values if args.cluster_values else self.simulation_params["cluster_values"]
+        self.cluster_conditions = args.cluster_conditions if args.cluster_conditions else self.simulation_params["cluster_conditions"]
         self.adapt_conf = args.adapt_conf
         self.confile = args.confile
         self.seed = random.randrange(1, 70000)
@@ -47,15 +56,13 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
     def optative_params(self, args):
         self.input = args.input
         self.forcefield = args.forcefield
-        self.iterations = args.iterations
-        self.pele_steps = args.pele_steps
         self.solvent = args.solvent
         self.cpus = args.cpus = args.cpus if not args.test else 4
-        self.restart = False
+        self.restart = args.restart
         self.test = args.test
-        self.equil_steps = 1 if self.test else int(cs.EQ_STEPS/self.cpus) + 1 #+1 to avoid being 0
-        self.equilibration = "true" if args.noeq else "false"
-        self.adaptive_restart = args.adaptive_restart
+        self.equil_steps = 1 if self.test else int(args.eq_steps/self.cpus) + 1 #+1 to avoid being 0
+        self.equilibration = "true" if args.equilibration else "false"
+        self.adaptive_restart = "true" if args.adaptive_restart else "false"
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep
@@ -94,6 +101,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
     def output_params(self, args):
         self.folder = args.folder
+        self.output = args.output
         self.report_name = args.report_name
         self.traj_name = args.traj_name
         self.xtc = args.traj_name.endswith(".xtc")

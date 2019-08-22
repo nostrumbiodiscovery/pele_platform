@@ -103,6 +103,22 @@ WATER_ENERGY =             '''
                             "tag": "water{0}"\n\
                             }},\n\
                            '''
+
+
+UNBINDING = '''
+            "modeMovingBox" : "unbinding",
+            "exitCondition" : {{
+                "type" : "metricMultipleTrajectories",
+                "params" : {{
+                       "metricCol" : {},
+                       "exitValue" : {},
+                       "condition" : "{}",
+                       "numberTrajectories" : {}
+            }}
+            }}
+            '''
+
+
 DISTANCE_ATOMS =     '''
                      {{
                      "type":"com_distance",

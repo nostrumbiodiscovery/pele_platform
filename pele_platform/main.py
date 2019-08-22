@@ -64,20 +64,29 @@ def parseargs(args=[]):
     parser.add_argument("--user_center", "-c", nargs='+', type=str, help='center of the box', default=None)
     parser.add_argument("--box_radius", "-r", type=float,  help="Radius of the box", default=None)
     parser.add_argument("--folder", "-wf", type=str,  help="Folder to apply the restart to", default=None)
+    parser.add_argument("--output", "-o", type=str,  help="Name of the adaptive output", default="output")
     parser.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default= [None, None] )
     parser.add_argument("--msm", action="store_true",  help="Launch MSM")
-    parser.add_argument("--out_in", action="store_true",  help="Launch outside inside adaptive")
     parser.add_argument("--full", action="store_true",  help="Launch ful ful binding site exploration")
-    parser.add_argument("--in_out", action="store_true",  help="Launch inside outside soft adaptive")
-    parser.add_argument("--in_out_soft", action="store_true",  help="Launch inside outside adaptive")
+    parser.add_argument("--in_out", action="store_true",  help="Launch dissotiation path adaptive")
+    parser.add_argument("--in_out_soft", action="store_true",  help="Launch soft dissotiation path adaptive")
+    parser.add_argument("--spawning", type=str,  help="Adaptive Spawning type. [epsilon, inverselyProportional]", default=None)
+    parser.add_argument("--density", type=str,  help="Adaptive Density type. [null, continuous]", default=None)
+    parser.add_argument("--cluster_values", type=str,  help="Cluster values", default=None)
+    parser.add_argument("--cluster_conditions", type=str,  help="Cluster conditions", default=None)
+    parser.add_argument("--simulation_type", type=str,  help="Type of simulation [pele, md]", default=None)
+    parser.add_argument("--exit", action="store_true",  help="Exit simulation given certain condition")
+    parser.add_argument("--exit_value", type=float,  help="Value of the metric used to exit simulation", default=0.95)
+    parser.add_argument("--exit_condition", type=str,  help="Selects wether to exit the simulation when being over o below the exit value", default=">")
+    parser.add_argument("--exit_trajnum", type=str,  help="Number of trajectories to accomplished the condition to exit the simulation", default=4)
     parser.add_argument("--water_exp", type=str,  help="Launch water exploration adaptive PELE", default=None)
     parser.add_argument("--water_lig", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
     parser.add_argument("--bias", action="store_true",  help="Launch biased simulation")
-    parser.add_argument("--epsilon", type=float,  help="From 0 to 1 how bias do you want the simulation", default=0.25)
-    parser.add_argument("--bias_column", type=int,  help="Column of the report starting by 1 towards where to bias simulation", default=5)
+    parser.add_argument("--epsilon", type=float,  help="From 0 to 1 how bias do you want the simulation", default=None)
+    parser.add_argument("--bias_column", type=int,  help="Column of the report starting by 1 towards where to bias simulation", default=None)
     parser.add_argument("--iterations", type=int,  help="PELE iterations", default=50)
     parser.add_argument("--no_ppp", action="store_true",  help="Do not run experimental PPP")
-    parser.add_argument("--pele_steps", type=int,  help="PELE steps", default=8)
+    parser.add_argument("--pele_steps", type=int,  help="PELE steps", default=None)
     parser.add_argument("--water_center", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
     parser.add_argument("--induce_fit", action="store_true",  help="Launch induce fit adaptive")
     parser.add_argument("--adaptive", type=str,  help="Adaptive control_file", default=None)
@@ -90,7 +99,8 @@ def parseargs(args=[]):
     parser.add_argument("--frag", type=str,  help="Fragment pdb")
     parser.add_argument("--ca", type=str,  help="Core Atom")
     parser.add_argument("--fa", type=str,  help="Fragment Atom")
-    parser.add_argument("--noeq", action="store_false",  help="Whether to do a initial equilibration or not")
+    parser.add_argument("--equilibration", action="store_true",  help="Whether to do a initial equilibration or not")
+    parser.add_argument("--eq_steps", type=float,  help="Number of equilibration steps", default=cs.EQ_STEPS)
     parser.add_argument("--skip_prep", action="store_true",  help="Whether to do the initial preprocessing or not")
     parser.add_argument("--adaptive_restart", action="store_true",  help="Whether to set restart true to adaptive")
     parser.add_argument("--nonstandard", nargs="+",  help="Mid Chain non standard residues to be treated as ATOM not HETATOM", default = [])
@@ -113,14 +123,16 @@ def set_software_to_use(arguments):
     """
     if arguments.hbond[0]:
         setattr(arguments, "software", "glide")
-    elif arguments.out_in or arguments.water_lig or arguments.full or arguments.water_exp or arguments.in_out_soft or arguments.in_out or arguments.induce_fit or  (arguments.adaptive and arguments.pele) or arguments.bias:
+    elif arguments.water_lig or arguments.full or arguments.water_exp or arguments.in_out_soft or arguments.in_out or arguments.induce_fit or  (arguments.adaptive and arguments.pele) or arguments.bias:
         setattr(arguments, "software", "adaptive")
     elif arguments.msm:
         setattr(arguments, "software", "msm")
     elif arguments.frag and arguments.ca and arguments.fa:
         setattr(arguments, "software", "frag")
     else:
-        raise ValueError("Not specified action. Choose an option between msm/adaptive/out_in/induce_fit/hbond")
+        #Standard Option
+        setattr(arguments, "software", "adaptive")
+
 
 def main(arguments):
     """

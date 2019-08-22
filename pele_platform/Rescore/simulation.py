@@ -88,7 +88,7 @@ def run_adaptive(args):
             if res != args.residue:
                 env.logger.info("Creating template for residue {}".format(res))
                 with hp.cd(env.pele_dir):
-                    mr.create_template(args, env)
+                    mr.create_template(args, env, res)
                 env.logger.info("Template {}z created\n\n".format(res))
 
         #########Parametrize solvent parameters if need it##############

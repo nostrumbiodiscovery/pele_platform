@@ -20,12 +20,21 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         self.build_variables(args)
 
     def build_variables(self, args):
-        simulation_params.SimulationParams.__init__(self, args)
-        simulation_folders.SimulationPaths.__init__(self, args)
-        #####Define files and folders "HIDING VARIABLES " --> CHANGE#########
+        #DEFINE MAIN PATH
+        pele_dir = os.path.abspath("{}_Pele".format(args.residue))
+        if not args.folder:
+            self.pele_dir = hp.is_repited(pele_dir) if args.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
+        else:
+            self.pele_dir = os.path.abspath(args.folder)
+        #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
         for key, value in fs.retrieve_software_settings(args, self.pele_dir).items():
             setattr(self, key, value)
-
+        #####Initialize all variables by combining default and user input######
+        simulation_params.SimulationParams.__init__(self, args)
+        simulation_folders.SimulationPaths.__init__(self, args)
+        for key, value in fs.retrieve_software_settings(args, self.pele_dir).items():
+            setattr(self, key, value)
+        
     @classmethod
     def build_env(cls, args):
         env = cls(args)

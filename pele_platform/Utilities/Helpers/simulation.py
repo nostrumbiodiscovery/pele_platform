@@ -25,9 +25,12 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
     def fill_adaptive_template(self, env):
-        self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.adap_ex_output, "INPUT":env.adap_ex_input,
+        self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.output, "INPUT":env.adap_ex_input,
                 "CPUS":env.cpus, "PELE_CFILE": self.pele_file, "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,
-                "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, "PELE_STEPS": env.pele_steps, "REPORT_NAME": env.report_name}
+                "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, 
+                "PELE_STEPS": env.pele_steps, "REPORT_NAME": env.report_name, "SPAWNING_TYPE": env.spawning, "DENSITY": env.density,
+                "SIMULATION_TYPE": env.simulation_type, "CLUSTER_VALUES": env.cluster_values, "CLUSTER_CONDITION": env.cluster_conditions,
+                "UNBINDING": env.unbinding_block }
         super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)
 
 
