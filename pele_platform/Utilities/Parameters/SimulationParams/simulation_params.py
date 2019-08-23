@@ -9,7 +9,8 @@ from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterex
 import pele_platform.Utilities.Helpers.helpers as hp
 
 
-class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams):
+class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
+    inout_params.InOutParams,  waterexp_params.WaterExp):
 
 
     def __init__(self, args):
