@@ -54,7 +54,7 @@ def test_out_in(ext_args):
     main.Launcher(arguments).launch()
 
 #python -m PELE_Platform.main /work/NBD_Utilities/PELE/PELE_Softwares/PELE_Platform/Examples/Kinase/1_3ZON_complex.pdb IK1 Z --full --cpus 11
-GLOBAL_ARGS = [os.path.join(test_path, "Kinase/1_3ZON_complex.pdb"), "IK1", "Z", "--full", "--cpus", "11"]
+GLOBAL_ARGS = [os.path.join(test_path, "Kinase/1_3ZON_complex.pdb"), "IK1", "Z", "--full", "--cpus", "11", "--poses", "40"]
 @pytest.mark.parametrize("ext_args", [
                          (GLOBAL_ARGS),
                          ])
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     #test_bias(BIAS_ARGS)
     #test_external_confiles(EXTERNAL_CONFILES_ARGS)
     #test_out_in(OUT_IN_ARGS)
-    #test_global(GLOBAL_ARGS)
+    test_global(GLOBAL_ARGS)
     #test_induce_fit(INDUCE_FIT_ARGS)
     #test_exit(EXIT_ARGS)
     #NOT WORKING WITH NEW

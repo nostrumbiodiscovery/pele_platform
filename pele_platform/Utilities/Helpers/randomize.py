@@ -3,7 +3,7 @@ from string import *
 import glob
 from math import sqrt
 
-def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_file, rec_com, lig_com, env):
+def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_file, rec_com, lig_com, env, poses=40):
     ### Randomize ligand starting position for outside-inside
     import pymol
     import numpy
@@ -40,7 +40,7 @@ def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_fil
         sphere_cent = COM
 
     output = []
-    while (n < 10) :
+    while (n < poses) :
         n0 += 1
         phi = numpy.random.uniform(0,2*numpy.pi)
         costheta = numpy.random.uniform(-1,1)

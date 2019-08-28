@@ -116,6 +116,7 @@ def parseargs(args=[]):
     parser.add_argument("--temperature", type=int,  help="Temperature to perform PELE simulation", default=1500)
     parser.add_argument("--sidechain_resolution", type=int,  help="Every how many degrees the sidechains will be rotated [10, 30...]", default=10)
     parser.add_argument("--steric_trials", type=int,  help="Number fo steric trials on sidechain sampling", default=None)
+    parser.add_argument("--poses", type=int,  help="Number of ligand poses for global exploration", default=40)
     parser.add_argument("--overlap_factor", type=float,  help="Relaxation of vanderwals clashes from 0 to 1", default=None)
     parser.add_argument("--prepwizard", action="store_true",  help="Run protein preparation wizard from schrodinger")
     args = parser.parse_args(args) if args else parser.parse_args()
