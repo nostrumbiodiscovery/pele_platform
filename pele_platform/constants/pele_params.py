@@ -105,8 +105,6 @@ GLOBAL = '''
                      "otherwise": {  }
                  }
               ]
-        }
-     ]
 '''
 
 WATER_BS = ""
