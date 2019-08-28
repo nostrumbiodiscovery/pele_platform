@@ -1,6 +1,6 @@
 import pytest
 import os
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 import pele_platform.main as main
 
 test_path = os.path.join(cs.DIR, "Examples")
@@ -133,6 +133,16 @@ def test_msm_mae(ext_args):
     main.Launcher(arguments).launch()
 
 
+PREPWIZARD_ARGS = [os.path.join(test_path, "Bias/complex.pdb"), "LIG", "L", "--test", "--bias", "--atom_dist", "L:275:N", "C:89:CA", 
+    "--pele_steps", "1", "--iterations", "1", "--prepwizard"] 
+@pytest.mark.parametrize("ext_args", [
+                         (PREPWIZARD_ARGS),
+                         ])
+def test_prepwizard(ext_args):
+    arguments = main.parseargs(ext_args)
+    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
+
 if __name__ == "__main__":
     #test_kinases(KINASE_ARGS)
     #test_bias(BIAS_ARGS)
@@ -145,5 +155,6 @@ if __name__ == "__main__":
     #test_water(WATER_ARGS)
     #NOT WORKING WITH NEW
     #test_lig_water(LIG_WATER_ARGS)
+    test_prepwizard(PREPWIZARD_ARGS)
     #test_msm_pdb(MSM_PDB_ARGS)
     #test_msm_mae(MSM_MAE_ARGS)
