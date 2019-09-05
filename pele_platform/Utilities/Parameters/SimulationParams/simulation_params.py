@@ -61,10 +61,9 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.iterations = args.iterations if args.iterations else self.simulation_params["iterations"]
         self.cluster_values = args.cluster_values if args.cluster_values else self.simulation_params["cluster_values"]
         self.cluster_conditions = args.cluster_conditions if args.cluster_conditions else self.simulation_params["cluster_conditions"]
-        self.adapt_conf = args.adapt_conf
-        self.confile = args.confile
         self.seed = random.randrange(1, 70000)
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
+        self.usesrun = "true" if args.usesrun else "false"
 
     def optative_params(self, args):
         self.input = args.input
@@ -75,7 +74,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.test = args.test
         self.equil_steps = 1 if self.test else int(args.eq_steps/self.cpus) + 1 #+1 to avoid being 0
         self.equilibration = "true" if args.equilibration else "false"
-        self.adaptive_restart = "true" if args.adaptive_restart else "false"
+        self.adaptive_restart = args.adaptive_restart
         self.poses = args.poses
 
     def system_preparation_params(self, args):
@@ -94,8 +93,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
             self.water_energy = args.water_exp[0].split(":")[0]
             self.water = args.water_exp
         elif args.water_lig:
-            for water in args.water_lig:
-                print(water.split(":")[0])
             self.water_energy = "\n".join([ cs.WATER_ENERGY.format(water.split(":")[0]) for water in args.water_lig ])
             self.water = ",".join(['"'+water+'"' for water in args.water_lig])
         else:
@@ -112,6 +109,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.metrics = None
         self.native = cs.NATIVE.format(os.path.abspath(args.native), self.chain) if args.native else ""
         self.atom_dist = args.atom_dist
+        #self.atom_dist = [[args.atom_dist[i], args.atom_dist[i+1]] for i, atom in enumerate(args.atom_dist) if i % 2 == 0] if args.atom_dist else None
+        #self.tags = ["distance_{}_to_{}".format(atom1, atom2) for (atom1, atom2) in self.atom_dist] if self.atom_dist else None
 
     def output_params(self, args):
         self.folder = args.folder

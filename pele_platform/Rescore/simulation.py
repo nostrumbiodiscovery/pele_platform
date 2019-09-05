@@ -78,14 +78,14 @@ def run_adaptive(args):
         env.logger.info("Metrics set\n\n")
 
         ############Parametrize Ligand###############
-        if not env.external_template and not env.external_rotamers:
-            env.logger.info("Creating template for residue {}".format(args.residue))
-            with hp.cd(env.pele_dir):
-                plop.parametrize_miss_residues(args, env, syst)
-            env.logger.info("Template {}z created\n\n".format(args.residue.lower()))
-        else:
+        env.logger.info("Creating template for residue {}".format(args.residue))
+        with hp.cd(env.pele_dir):
+            plop.parametrize_miss_residues(args, env, syst)
+        env.logger.info("Template {}z created\n\n".format(args.residue.lower()))
+        if env.external_template:
             cmd_to_move_template = "cp {} {}".format(env.external_template,  env.template_folder)
             subprocess.call(cmd_to_move_template.split())
+        if env.external_rotamers:
             cmd_to_move_rotamer_file = "cp {} {}".format(env.external_rotamers, env.rotamers_folder)
             subprocess.call(cmd_to_move_rotamer_file.split())
 
@@ -113,12 +113,13 @@ def run_adaptive(args):
             env.logger.info("Box {} generated\n\n".format(env.box_center))
         else:
             env.logger.info("Box {} generated\n\n".format(env.box_center))
+        env.box = cs.BOX.format(env.box_radius, env.box_center) if  env.box_radius else ""
         
         ############Fill in Simulation Templates############
         env.logger.info("Running Simulation")
-        if env.adapt_conf:
+        if env.adaptive:
             ext.external_adaptive_file(env)
-        if env.confile:
+        if env.pele:
             ext.external_pele_file(env)
         adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
         adaptive.run()

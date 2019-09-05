@@ -111,7 +111,7 @@ def retrieve_software_settings(args, pele_dir):
                                       "simulation_type": "pele", "iterations": 50, "pele_steps": 12, 
                                       "cluster_values": "[2.5, 5, 7]", "cluster_conditions": "[1, 0.6, 0.0]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.GLOBAL,
-                                      "box_radius": 10},
+                                      "box_radius":None},
                              "induce_fit" : {"spawning_type": "inverselyProportional", "bias_column": 5, "epsilon":0.25, "density": "null",
                                       "simulation_type": "pele", "iterations": 50, "pele_steps": 12, 
                                       "cluster_values": "[1.75, 2.5, 4, 6]", "cluster_conditions": "[1, 0.6, 0.4, 0.0]",
@@ -141,8 +141,12 @@ def retrieve_software_settings(args, pele_dir):
                                       "simulation_type": "pele", "iterations": 50, "pele_steps": 8, 
                                       "cluster_values": "[1.5, 2, 5]", "cluster_conditions": "[0.6, 0.4, 0.0]",
                                       "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.BIAS,
-                                      "box_radius": 30
-                                      } 
+                                      "box_radius": 30},
+                             "anm": {"spawning_type": "independent", "bias_column": 5, "epsilon":0.15, "density": "null",
+                                      "simulation_type": "pele", "iterations": 50, "pele_steps": 8, 
+                                      "cluster_values": "[1.5, 2, 5]", "cluster_conditions": "[0.6, 0.4, 0.0]",
+                                      "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.BIAS,
+                                      "box_radius": 30}
                     }
 
              }

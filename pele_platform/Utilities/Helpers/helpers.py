@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import logging
 
@@ -113,10 +114,13 @@ def retrieve_atom_info(atom, pdb):
     chain and residue number
     """
     with open(pdb, "r") as f:
-        chain, resnum, atomname = atom.split(":")
         for line in f:
             try:
-                if line[21].strip() == chain and line[22:26].strip() == resnum and line[12:16].strip() == atomname:
-                    return chain + ":" + resnum + ":" + line[12:16].replace(" ", "_")
+                if line[6:11].strip() == atom:
+                    chain = line[21].strip() 
+                    resnum = line[22:26].strip()
+                    atomname = line[12:16]
+                    return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
             except IndexError:
                 pass
+        sys.exit("Check the atoms given to calculate the distance metric")

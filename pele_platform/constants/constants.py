@@ -42,11 +42,11 @@ elif "bsccv" in machine:
     ACCEPTED_STEPS_NAME = "AcceptedSteps"
     CRITERIA = "SASA"
 else:
-    SCHRODINGER = "/opt/schrodinger2018-1/"
-    PELE = "/opt/PELE/"
-    PELE_BIN = "/opt/PELE/bin/PELE-1.5" 
-    MPIRUN = "/usr/lib64/openmpi/bin/"
-    LICENSE = "/home/ywest/"
+    SCHRODINGER = "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
+    PELE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524-intel-2018a/"
+    PELE_BIN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524-intel-2018a/bin/Pele_mpi" 
+    MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/impi/2018.1.163-iccifort-2018.1.163-GCC-6.4.0-2.28/bin64/"
+    LICENSE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/licenses/"
     MMSHARE = None
     # Provisional workaround until best_struct.py is fixed
     ACCEPTED_STEPS_NAME = "numberOfAcceptedPeleSteps"
@@ -131,6 +131,14 @@ DISTANCE_ATOMS =     '''
                      }}
                      }},
                      '''
+BOX = '''
+
+                "Box": {
+                    "type": "sphericalBox",
+                    "radius": {{}},
+                    "fixedCenter": {{}}
+                },
+'''                     
 
 
 

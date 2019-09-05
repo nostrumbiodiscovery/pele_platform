@@ -189,8 +189,8 @@ def CheckStructure(initial_structure, gaps={}, no_gaps={}, charge_terminals=Fals
     residues2fix = {}
     crosslinked_cysteines, charged_cysteines = CheckCysteines(initial_structure)
     residues2remove = {}
-    metals2coordinate = {}
-    #metals2coordinate = CheckMetalsCoordination(initial_structure)
+    #metals2coordinate = {}
+    metals2coordinate = CheckMetalsCoordination(initial_structure)
     residues_without_template = []
     for chain in initial_structure.iterChains():
         if chain.getChid() in gaps.keys():

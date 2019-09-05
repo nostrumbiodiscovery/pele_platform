@@ -24,6 +24,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         pele_dir = os.path.abspath("{}_Pele".format(args.residue))
         if not args.folder:
             self.pele_dir = hp.is_repited(pele_dir) if args.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
+            self.pele_dir = hp.is_repited(pele_dir) if not args.adaptive_restart else hp.is_last(pele_dir)
         else:
             self.pele_dir = os.path.abspath(args.folder)
         #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
@@ -42,7 +43,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         return env
 
     def create(self):
-        if self.restart in cs.FIRST_RESTART:
+        if self.restart in cs.FIRST_RESTART and not self.adaptive_restart:
             self.create_folders()
             self.create_files()
             self.create_logger()

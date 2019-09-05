@@ -22,7 +22,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "WATER_ENERGY": env.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, "TRAJ_NAME": env.traj_name,
                         "SOLVENT": env.solvent, "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
                         "OVERLAP": env.overlap_factor, "STERIC_TRIALS": env.steric_trials, "TEMPERATURE": env.temperature, 
-                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq }
+                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box}
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
@@ -32,7 +32,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                 "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, 
                 "PELE_STEPS": env.pele_steps, "REPORT_NAME": env.report_name, "SPAWNING_TYPE": env.spawning, "DENSITY": env.density,
                 "SIMULATION_TYPE": env.simulation_type, "CLUSTER_VALUES": env.cluster_values, "CLUSTER_CONDITION": env.cluster_conditions,
-                "UNBINDING": env.unbinding_block }
+                "UNBINDING": env.unbinding_block, "USESRUN": env.usesrun }
         super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)
 
 
