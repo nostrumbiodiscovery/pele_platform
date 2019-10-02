@@ -71,7 +71,7 @@ def run_adaptive(args):
 
         ############Build metrics##################
         env.logger.info("Setting metrics")
-        metrics = mt.Metrics_Builder(env.system_fix)
+        metrics = mt.Metrics_Builder(syst.system)
         if env.atom_dist:
             metrics.distance_to_atom(args.atom_dist)
         env.metrics = "\n".join(metrics.get_metrics()) if metrics.get_metrics() else None

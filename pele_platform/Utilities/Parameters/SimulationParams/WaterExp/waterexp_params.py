@@ -4,4 +4,5 @@ class WaterExp(object):
 
 
     def __init__(self, args):
-        self.solvent = "VDGBNP"
+        if args.water_exp:
+            self.solvent = "VDGBNP"

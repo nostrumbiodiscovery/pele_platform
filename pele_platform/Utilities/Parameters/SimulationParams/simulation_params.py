@@ -89,6 +89,9 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.external_rotamers = args.rotamers
 
     def water_params(self, args):
+        self.water_temp = args.water_temp
+        self.water_constr = args.water_constr
+        self.water_trials = args.water_trials
         if args.water_exp:
             self.water_energy = args.water_exp[0].split(":")[0]
             self.water = args.water_exp
@@ -100,6 +103,11 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
             self.water = None
         self.water_radius = 5 if  self.water else None
         self.water_center =  ("[" + ",".join([coord for coord in args.water_center]) + "]") if args.water_center else None
+        if self.water:
+            self.water = cs.WATER.format(self.water_radius, self.water_center, self.water, self.water_temp, 
+            self.water_trials, self.water_constr)
+        else:
+           self.water = ""
 
     def box_params(self, args):
         self.box_radius = args.box_radius if args.box_radius else self.simulation_params["box_radius"]

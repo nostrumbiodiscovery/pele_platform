@@ -63,7 +63,7 @@ def parseargs(args=[]):
     pele_info.add_argument("--sidechain_resolution", type=int,  help="Every how many degrees the sidechains will be rotated [10, 30...]", default=10)
     pele_info.add_argument("--steric_trials", type=int,  help="Number fo steric trials on sidechain sampling", default=None)
     pele_info.add_argument("--overlap_factor", type=float,  help="Relaxation of vanderwals clashes from 0 to 1", default=None)
-    pele_info.add_argument('--solvent', type=str, help='Type of implicit solvent (OBC/VDGBNP). default [OBC]. i.e. --solvent VDGBNP', default="OBC")
+    pele_info.add_argument('--solvent', type=str, help='Type of implicit solvent (OBC/VDGBNP). default [OBC]. i.e. --solvent VDGBNP', default="VDGBNP")
 
     # Adaptive info
     adaptive_info = parser.add_argument_group('\nAdaptive Parameters') 
@@ -164,6 +164,9 @@ def parseargs(args=[]):
     water_info.add_argument("--water_exp", type=str,  help="Launch water exploration adaptive PELE", default=None)
     water_info.add_argument("--water_lig", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
     water_info.add_argument("--water_center", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
+    water_info.add_argument("--water_temp",  type=int, help="Temperature of water MC. i.e --water_temp 1000 default=500", default=500)
+    water_info.add_argument("--water_constr",  type=float, help="Constraint on the waters MC. i.e ----water_const 0.5 default=0.2", default=0.2)
+    water_info.add_argument("--water_trials",  type=int, help="Steric trials on the waters MC. i.e --water_trials 2000 default=1000", default=1000)
 
 
     #Bias simulation
