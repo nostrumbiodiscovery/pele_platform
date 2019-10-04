@@ -191,7 +191,7 @@ def set_software_to_use(arguments):
     which will be use to handle differences 
     between PELE features along the program
     """
-    if arguments.hbond:
+    if arguments.hbond[0]:
         setattr(arguments, "software", "glide")
     elif arguments.water_lig or arguments.full or arguments.water_exp or arguments.in_out_soft or arguments.in_out or arguments.induce_fit or  (arguments.adaptive and arguments.pele) or arguments.bias:
         setattr(arguments, "software", "adaptive")
@@ -240,7 +240,7 @@ class YamlParser(object):
     def parse(self):
         data = self.parse_yaml()
         self.system = data.get("system", None)
-        self.residue = data.get("residue", None)
+        self.residue = data.get("resname", None)
         self.chain = data.get("chain", None)
         self.hbond = data.get("hbond", [None, None])
         self.test = data.get("test", None)
@@ -254,7 +254,7 @@ class YamlParser(object):
         self.sidechain_resolution = data.get("sidechain_res", 10)
         self.steric_trials = data.get("steric_trials", 250)
         self.overlap_factor = data.get("overlap_factor", 0.65)
-        self.solvent = data.get("solvent", "VDGNP")
+        self.solvent = data.get("solvent", "VDGBNP")
         self.usesrun = data.get("usesrun", False)
         self.iterations = data.get("iterations", 30)
         self.pele_steps = data.get("steps", 12)
@@ -280,7 +280,7 @@ class YamlParser(object):
         self.template = data.get("template", None)
         self.rotamers = data.get("rotamers", None)
         self.mae_lig = data.get("mae_lig", None)
-        self.no_ppp = data.get("preprocess", False)
+        self.skip_prep = self.no_ppp = data.get("preprocess", False)
         self.gaps_ter = data.get("TERs", False)
         self.charge_ter = data.get("charge_ters", False)
         self.nonstandard = data.get("nonstandard", [])
@@ -291,8 +291,8 @@ class YamlParser(object):
         self.native = data.get("rmsd_pdb", "")
         self.atom_dist = data.get("atom_dist", None)
         self.folder = data.get("working_folder", None)
-        self.output = data.get("output", None)
-        self.randomize = data.get("randomize", True)
+        self.output = data.get("output", "output")
+        self.randomize = data.get("randomize", False)
         self.full = data.get("global", False)
         self.poses = data.get("poses", 40)
         self.precision_glide = data.get("precision_glide", "SP") 
@@ -315,6 +315,7 @@ class YamlParser(object):
         self.water_trials = data.get("water_trials", 1000)
         self.bias = data.get("bias_sim", False)
         self.induce_fit = data.get("induced_fit", False)
+        self.frag = data.get("frag", False)
 
 
 
