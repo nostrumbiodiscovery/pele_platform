@@ -62,7 +62,7 @@ setup(
     package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd'], "pele_platform/AdaptivePELE/freeEnergies/": ['*.pyx']},
     include_package_data=True,
     include_dirs=[numpy.get_include()],
-    install_requires=['cython', 'numpy', 'pillow', 'scipy', 'matplotlib', 'biopython ', 'pandas', 'pyemma', 'prody', 'six', 'future', 'fpdf', 'pytest', 'mdtraj'],
+    install_requires=['cython', 'numpy', 'pillow', 'scipy', 'matplotlib', 'biopython ', 'pandas', 'pyemma', 'prody', 'six', 'future', 'fpdf', 'pytest'],
     cmdclass=cmdclass,
     ext_modules=cythonize(ext_modules)  # accepts a glob pattern
 )

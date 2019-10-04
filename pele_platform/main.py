@@ -1,5 +1,6 @@
 import matplotlib
 matplotlib.use("Agg")
+import yaml
 import sys
 import pele_platform.constants.constants as cs
 sys.path.append(cs.DIR)
@@ -133,7 +134,7 @@ def parseargs(args=[]):
 
     #Kinase simulation
     kinase_info = parser.add_argument_group('\nFull Simulation') 
-    kinase_info.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default= [None, None] )
+    kinase_info.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default="" )
     kinase_info.add_argument("--precision_glide", type=str,  help="Glide precision.. Options = [SP, XP]", default="SP")
 
     #MSM simulation
@@ -190,7 +191,7 @@ def set_software_to_use(arguments):
     which will be use to handle differences 
     between PELE features along the program
     """
-    if arguments.hbond[0]:
+    if arguments.hbond:
         setattr(arguments, "software", "glide")
     elif arguments.water_lig or arguments.full or arguments.water_exp or arguments.in_out_soft or arguments.in_out or arguments.induce_fit or  (arguments.adaptive and arguments.pele) or arguments.bias:
         setattr(arguments, "software", "adaptive")
@@ -202,19 +203,147 @@ def set_software_to_use(arguments):
         #Standard Option
         setattr(arguments, "software", "adaptive")
 
-
+def parseargs_yaml(args=[]):
+    parser = argparse.ArgumentParser(description='Run PELE Platform', formatter_class=SortingHelpFormatter)
+    parser.add_argument('input_file', type=str, help='Yaml input file')
+    args = parser.parse_args(args) if args else parser.parse_args()
+    return args
+    
 def main(arguments):
     """
     Main function that sets the functionality
     of the software that will be used [Pele, Adaptive, glide...]
     and launch the respective job
     """
+    #arguments = YamlParser(arguments.input_file)
     set_software_to_use(arguments)
     job = Launcher(arguments)
     job.launch()
     return job
 
 
+def parse_yaml(yamlfile):
+    with open(yamlfile, 'r') as stream:
+        try:
+            data = yaml.safe_load(stream)
+        except yaml.YAMLError as exc:
+            print(exc)
+    return data
+
+def build_command(yamlfile):
+    data = parse_yaml(yamlfile)
+    system = data.get("system", None)
+    residue = data.get("residue", None)
+    chain = data.get("chain", None)
+    hbond = data.get("hbond", [None, None])
+    test = data.get("test", None)
+    pele = data.get("pele", None)
+    forcefield = data.get("forcefield", "OPLS2005")
+    anm_freq = data.get("anm_freq", 4)
+    sidechain_freq = data.get("sidechain_freq", 2)
+    min_freq = data.get("min_freq", 1)
+    water_freq = data.get("water_freq", 1)
+    temperature = data.get("temperature", 1500)
+    sidechain_resolution = data.get("sidechain_res", 10)
+    steric_trials = data.get("steric_trials", 250)
+    overlap_factor = data.get("overlap_factor", 0.65)
+    solvent = data.get("solvent", "VDGNP")
+    usesrun = data.get("usesrun", False)
+    iterations = data.get("iterations", 30)
+    pele_steps = data.get("steps", 12)
+    cpus = data.get("cpus", 1)
+    spawning = data.get("spawning", None)
+    density = data.get("density", None)
+    cluster_values = data.get("cluster_values", None)
+    cluster_conditions = data.get("cluster_conditions", None)
+    simulation_type = data.get("simulation_type", None)
+    equilibration = data.get("equilibration", False)
+    eq_steps = data.get("eq_steps", 2)
+    adaptive_restart = data.get("restart", False)
+    input = data.get("input", [])
+    report_name = data.get("report", "report")
+    traj_name = data.get("traj", "trajectory.xtc")
+    adaptive = data.get("adaptive", None)
+    epsilon = data.get("epsilon", None)
+    bias_column = data.get("bias", None)
+    gridres = data.get("gridres", 10)
+    core = data.get("core", -1)
+    mtor = data.get("maxtorsion", 4)
+    n = data.get("n", 100000)
+    template = data.get("template", None)
+    rotamers = data.get("rotamers", None)
+    mae_lig = data.get("mae_lig", None)
+    no_ppp = data.get("preprocess", False)
+    gaps_ter = data.get("TERs", False)
+    charge_ter = data.get("charge_ters", False)
+    nonstandard = data.get("nonstandard", [])
+    prepwizard = data.get("prepwizard", False)
+    user_center = data.get("box_center", None)
+    box_radius = data.get("box_radius", None)
+    box = data.get("box", None)
+    native = data.get("rmsd_pdb", "")
+    atom_dist = data.get("atom_dist", None)
+    folder = data.get("working_folder", None)
+    output = data.get("output", None)
+    randomize = data.get("randomize", True)
+
+    #Full simulation
+    full_info = parser.add_argument_group('\nFull Simulation') 
+    full_info.add_argument('--randomize', action="store_true", help='Randomize ligand position around protein')
+    full_info.add_argument("--full", action="store_true",  help="Launch ful ful binding site exploration")
+    full_info.add_argument("--poses", type=int,  help="Number of ligand poses for global exploration", default=40)
+
+    #Kinase simulation
+    kinase_info = parser.add_argument_group('\nFull Simulation') 
+    kinase_info.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default="" )
+    kinase_info.add_argument("--precision_glide", type=str,  help="Glide precision.. Options = [SP, XP]", default="SP")
+
+    #MSM simulation
+    msm_info = parser.add_argument_group('\nMSM Simulation') 
+    msm_info.add_argument("--msm", action="store_true",  help="Launch MSM")
+    msm_info.add_argument("--clust", type=int, help="Numbers of clusters to start PELE's exploration with", default=cs.CLUSTERS)
+    msm_info.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=cs.PLATFORM_RESTART)
+    msm_info.add_argument("--precision", action='store_true', help="Use a more agressive control file to achieve better convergence")
+    msm_info.add_argument("--lagtime", type=int,  help="MSM Lagtime", default=100)
+    msm_info.add_argument("--msm_clust", type=int,  help="MSM cluster number", default=200)
+
+
+    #in_out simulation
+    dissociation_info = parser.add_argument_group('\nDissociation path Simulation') 
+    dissociation_info.add_argument("--in_out", action="store_true",  help="Launch dissotiation path adaptive")
+    dissociation_info.add_argument("--in_out_soft", action="store_true",  help="Launch soft dissotiation path adaptive")
+
+
+    #Exit simulation
+    exit_info = parser.add_argument_group('\nExit Simulation') 
+    exit_info.add_argument("--exit", action="store_true",  help="Exit simulation given certain condition")
+    exit_info.add_argument("--exit_value", type=float,  help="Value of the metric used to exit simulation", default=0.95)
+    exit_info.add_argument("--exit_condition", type=str,  help="Selects wether to exit the simulation when being over o below the exit value", default=">")
+    exit_info.add_argument("--exit_trajnum", type=str,  help="Number of trajectories to accomplished the condition to exit the simulation", default=4)
+
+    #Water simulation
+    water_info = parser.add_argument_group('\nWater Simulation') 
+    water_info.add_argument("--water_exp", type=str,  help="Launch water exploration adaptive PELE", default=None)
+    water_info.add_argument("--water_lig", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
+    water_info.add_argument("--water_center", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
+    water_info.add_argument("--water_temp",  type=int, help="Temperature of water MC. i.e --water_temp 1000 default=500", default=500)
+    water_info.add_argument("--water_constr",  type=float, help="Constraint on the waters MC. i.e ----water_const 0.5 default=0.2", default=0.2)
+    water_info.add_argument("--water_trials",  type=int, help="Steric trials on the waters MC. i.e --water_trials 2000 default=1000", default=1000)
+
+
+    #Bias simulation
+    bias_info = parser.add_argument_group('\nBias Simulation') 
+    bias_info.add_argument("--bias", action="store_true",  help="Launch biased simulation")
+
+    
+    #Induced fit simulation
+    induced_fit_info = parser.add_argument_group('\nInduced fit simulation') 
+    induced_fit_info.add_argument("--induce_fit", action="store_true",  help="Launch induce fit adaptive")
+
+
+
+
 if __name__ == "__main__":
-    arguments = parseargs()
+    arguments = parseargs_yaml()
+    command = build_command(arguments.input_file)
     job = main(arguments)
