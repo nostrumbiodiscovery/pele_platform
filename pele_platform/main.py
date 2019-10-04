@@ -222,128 +222,104 @@ def main(arguments):
     return job
 
 
-def parse_yaml(yamlfile):
-    with open(yamlfile, 'r') as stream:
-        try:
-            data = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            print(exc)
-    return data
 
-def build_command(yamlfile):
-    data = parse_yaml(yamlfile)
-    system = data.get("system", None)
-    residue = data.get("residue", None)
-    chain = data.get("chain", None)
-    hbond = data.get("hbond", [None, None])
-    test = data.get("test", None)
-    pele = data.get("pele", None)
-    forcefield = data.get("forcefield", "OPLS2005")
-    anm_freq = data.get("anm_freq", 4)
-    sidechain_freq = data.get("sidechain_freq", 2)
-    min_freq = data.get("min_freq", 1)
-    water_freq = data.get("water_freq", 1)
-    temperature = data.get("temperature", 1500)
-    sidechain_resolution = data.get("sidechain_res", 10)
-    steric_trials = data.get("steric_trials", 250)
-    overlap_factor = data.get("overlap_factor", 0.65)
-    solvent = data.get("solvent", "VDGNP")
-    usesrun = data.get("usesrun", False)
-    iterations = data.get("iterations", 30)
-    pele_steps = data.get("steps", 12)
-    cpus = data.get("cpus", 1)
-    spawning = data.get("spawning", None)
-    density = data.get("density", None)
-    cluster_values = data.get("cluster_values", None)
-    cluster_conditions = data.get("cluster_conditions", None)
-    simulation_type = data.get("simulation_type", None)
-    equilibration = data.get("equilibration", False)
-    eq_steps = data.get("eq_steps", 2)
-    adaptive_restart = data.get("restart", False)
-    input = data.get("input", [])
-    report_name = data.get("report", "report")
-    traj_name = data.get("traj", "trajectory.xtc")
-    adaptive = data.get("adaptive", None)
-    epsilon = data.get("epsilon", None)
-    bias_column = data.get("bias", None)
-    gridres = data.get("gridres", 10)
-    core = data.get("core", -1)
-    mtor = data.get("maxtorsion", 4)
-    n = data.get("n", 100000)
-    template = data.get("template", None)
-    rotamers = data.get("rotamers", None)
-    mae_lig = data.get("mae_lig", None)
-    no_ppp = data.get("preprocess", False)
-    gaps_ter = data.get("TERs", False)
-    charge_ter = data.get("charge_ters", False)
-    nonstandard = data.get("nonstandard", [])
-    prepwizard = data.get("prepwizard", False)
-    user_center = data.get("box_center", None)
-    box_radius = data.get("box_radius", None)
-    box = data.get("box", None)
-    native = data.get("rmsd_pdb", "")
-    atom_dist = data.get("atom_dist", None)
-    folder = data.get("working_folder", None)
-    output = data.get("output", None)
-    randomize = data.get("randomize", True)
+class YamlParser(object):
 
-    #Full simulation
-    full_info = parser.add_argument_group('\nFull Simulation') 
-    full_info.add_argument('--randomize', action="store_true", help='Randomize ligand position around protein')
-    full_info.add_argument("--full", action="store_true",  help="Launch ful ful binding site exploration")
-    full_info.add_argument("--poses", type=int,  help="Number of ligand poses for global exploration", default=40)
+    def __init__(self, yamlfile):
+        self.yamlfile = yamlfile
+        self.parse()
 
-    #Kinase simulation
-    kinase_info = parser.add_argument_group('\nFull Simulation') 
-    kinase_info.add_argument("--hbond", nargs='+',  help="Definition of kinase hbond", default="" )
-    kinase_info.add_argument("--precision_glide", type=str,  help="Glide precision.. Options = [SP, XP]", default="SP")
-
-    #MSM simulation
-    msm_info = parser.add_argument_group('\nMSM Simulation') 
-    msm_info.add_argument("--msm", action="store_true",  help="Launch MSM")
-    msm_info.add_argument("--clust", type=int, help="Numbers of clusters to start PELE's exploration with", default=cs.CLUSTERS)
-    msm_info.add_argument("--restart", type=str, help="Restart the platform from [all, pele, msm] with these keywords", default=cs.PLATFORM_RESTART)
-    msm_info.add_argument("--precision", action='store_true', help="Use a more agressive control file to achieve better convergence")
-    msm_info.add_argument("--lagtime", type=int,  help="MSM Lagtime", default=100)
-    msm_info.add_argument("--msm_clust", type=int,  help="MSM cluster number", default=200)
-
-
-    #in_out simulation
-    dissociation_info = parser.add_argument_group('\nDissociation path Simulation') 
-    dissociation_info.add_argument("--in_out", action="store_true",  help="Launch dissotiation path adaptive")
-    dissociation_info.add_argument("--in_out_soft", action="store_true",  help="Launch soft dissotiation path adaptive")
-
-
-    #Exit simulation
-    exit_info = parser.add_argument_group('\nExit Simulation') 
-    exit_info.add_argument("--exit", action="store_true",  help="Exit simulation given certain condition")
-    exit_info.add_argument("--exit_value", type=float,  help="Value of the metric used to exit simulation", default=0.95)
-    exit_info.add_argument("--exit_condition", type=str,  help="Selects wether to exit the simulation when being over o below the exit value", default=">")
-    exit_info.add_argument("--exit_trajnum", type=str,  help="Number of trajectories to accomplished the condition to exit the simulation", default=4)
-
-    #Water simulation
-    water_info = parser.add_argument_group('\nWater Simulation') 
-    water_info.add_argument("--water_exp", type=str,  help="Launch water exploration adaptive PELE", default=None)
-    water_info.add_argument("--water_lig", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
-    water_info.add_argument("--water_center", nargs="+",  help="Launch ligand-water exploration adaptive PELE", default=None)
-    water_info.add_argument("--water_temp",  type=int, help="Temperature of water MC. i.e --water_temp 1000 default=500", default=500)
-    water_info.add_argument("--water_constr",  type=float, help="Constraint on the waters MC. i.e ----water_const 0.5 default=0.2", default=0.2)
-    water_info.add_argument("--water_trials",  type=int, help="Steric trials on the waters MC. i.e --water_trials 2000 default=1000", default=1000)
-
-
-    #Bias simulation
-    bias_info = parser.add_argument_group('\nBias Simulation') 
-    bias_info.add_argument("--bias", action="store_true",  help="Launch biased simulation")
-
+    def parse_yaml(self):
+        with open(self.yamlfile, 'r') as stream:
+            try:
+                data = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                print(exc)
+        return data
     
-    #Induced fit simulation
-    induced_fit_info = parser.add_argument_group('\nInduced fit simulation') 
-    induced_fit_info.add_argument("--induce_fit", action="store_true",  help="Launch induce fit adaptive")
+    def parse(self):
+        data = self.parse_yaml()
+        self.system = data.get("system", None)
+        self.residue = data.get("residue", None)
+        self.chain = data.get("chain", None)
+        self.hbond = data.get("hbond", [None, None])
+        self.test = data.get("test", None)
+        self.pele = data.get("pele", None)
+        self.forcefield = data.get("forcefield", "OPLS2005")
+        self.anm_freq = data.get("anm_freq", 4)
+        self.sidechain_freq = data.get("sidechain_freq", 2)
+        self.min_freq = data.get("min_freq", 1)
+        self.water_freq = data.get("water_freq", 1)
+        self.temperature = data.get("temperature", 1500)
+        self.sidechain_resolution = data.get("sidechain_res", 10)
+        self.steric_trials = data.get("steric_trials", 250)
+        self.overlap_factor = data.get("overlap_factor", 0.65)
+        self.solvent = data.get("solvent", "VDGNP")
+        self.usesrun = data.get("usesrun", False)
+        self.iterations = data.get("iterations", 30)
+        self.pele_steps = data.get("steps", 12)
+        self.cpus = data.get("cpus", 1)
+        self.spawning = data.get("spawning", None)
+        self.density = data.get("density", None)
+        self.cluster_values = data.get("cluster_values", None)
+        self.cluster_conditions = data.get("cluster_conditions", None)
+        self.simulation_type = data.get("simulation_type", None)
+        self.equilibration = data.get("equilibration", False)
+        self.eq_steps = data.get("eq_steps", 2)
+        self.adaptive_restart = data.get("restart", False)
+        self.input = data.get("input", [])
+        self.report_name = data.get("report", "report")
+        self.traj_name = data.get("traj", "trajectory.xtc")
+        self.adaptive = data.get("adaptive", None)
+        self.epsilon = data.get("epsilon", None)
+        self.bias_column = data.get("bias", None)
+        self.gridres = data.get("gridres", 10)
+        self.core = data.get("core", -1)
+        self.mtor = data.get("maxtorsion", 4)
+        self.n = data.get("n", 100000)
+        self.template = data.get("template", None)
+        self.rotamers = data.get("rotamers", None)
+        self.mae_lig = data.get("mae_lig", None)
+        self.no_ppp = data.get("preprocess", False)
+        self.gaps_ter = data.get("TERs", False)
+        self.charge_ter = data.get("charge_ters", False)
+        self.nonstandard = data.get("nonstandard", [])
+        self.prepwizard = data.get("prepwizard", False)
+        self.user_center = data.get("box_center", None)
+        self.box_radius = data.get("box_radius", None)
+        self.box = data.get("box", None)
+        self.native = data.get("rmsd_pdb", "")
+        self.atom_dist = data.get("atom_dist", None)
+        self.folder = data.get("working_folder", None)
+        self.output = data.get("output", None)
+        self.randomize = data.get("randomize", True)
+        self.full = data.get("global", False)
+        self.poses = data.get("poses", 40)
+        self.precision_glide = data.get("precision_glide", "SP") 
+        self.msm = data.get("msm", False)
+        self.clust = data.get("exit_clust", 40)
+        self.restart = data.get("msm_restart", "all")
+        self.lagtime = data.get("lagtime", 100)
+        self.msm_clust = data.get("msm_clust", 200)
+        self.in_out = data.get("in_out", False)
+        self.in_out_soft = data.get("in_out_soft", False)
+        self.exit = data.get("exit", False)
+        self.exit_value = data.get("exit_value", 0.9)
+        self.exit_condition = data.get("exit_condition", ">")
+        self.exit_trajnum = data.get("exit_trajnum", 4)
+        self.water_exp = data.get("water_bs", None)
+        self.water_lig = data.get("water_lig", None)
+        self.water_center = data.get("box_water", None)
+        self.water_temp = data.get("water_temp", 2000)
+        self.water_constr = data.get("water_constr", 0.2)
+        self.water_trials = data.get("water_trials", 1000)
+        self.bias = data.get("bias_sim", False)
+        self.induce_fit = data.get("induced_fit", False)
 
 
 
 
 if __name__ == "__main__":
     arguments = parseargs_yaml()
-    command = build_command(arguments.input_file)
+    arguments = YamlParser(arguments.input_file)
     job = main(arguments)
