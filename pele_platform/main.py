@@ -8,7 +8,7 @@ from argparse import HelpFormatter
 from operator import attrgetter
 import argparse
 import os
-import pele_platform.MSM.main as msm
+import pele_platform.msm_pele.main as msm
 import pele_platform.Rescore.main as gl
 import pele_platform.Rescore.simulation as ad
 
@@ -239,7 +239,7 @@ class YamlParser(object):
     
     def parse(self):
         data = self.parse_yaml()
-        self.system = data.get("system", None)
+        self.system = os.path.abspath(data.get("system", None))
         self.residue = data.get("resname", None)
         self.chain = data.get("chain", None)
         self.hbond = data.get("hbond", [None, None])
@@ -250,15 +250,15 @@ class YamlParser(object):
         self.sidechain_freq = data.get("sidechain_freq", 2)
         self.min_freq = data.get("min_freq", 1)
         self.water_freq = data.get("water_freq", 1)
-        self.temperature = data.get("temperature", 1500)
+        self.temperature = self.temp = data.get("temperature", 1500)
         self.sidechain_resolution = data.get("sidechain_res", 10)
         self.steric_trials = data.get("steric_trials", 250)
         self.overlap_factor = data.get("overlap_factor", 0.65)
         self.solvent = data.get("solvent", "VDGBNP")
         self.usesrun = data.get("usesrun", False)
         self.iterations = data.get("iterations", 30)
-        self.pele_steps = data.get("steps", 12)
-        self.cpus = data.get("cpus", 1)
+        self.pele_steps = self.steps = data.get("steps", 12)
+        self.cpus = data.get("cpus", 2)
         self.spawning = data.get("spawning", None)
         self.density = data.get("density", None)
         self.cluster_values = data.get("cluster_values", None)
@@ -269,7 +269,7 @@ class YamlParser(object):
         self.adaptive_restart = data.get("restart", False)
         self.input = data.get("input", [])
         self.report_name = data.get("report", "report")
-        self.traj_name = data.get("traj", "trajectory.xtc")
+        self.traj_name = data.get("traj", "trajectory.pdb")
         self.adaptive = data.get("adaptive", None)
         self.epsilon = data.get("epsilon", None)
         self.bias_column = data.get("bias", None)
@@ -277,7 +277,8 @@ class YamlParser(object):
         self.core = data.get("core", -1)
         self.mtor = data.get("maxtorsion", 4)
         self.n = data.get("n", 100000)
-        self.template = data.get("template", None)
+        self.template = data.get("template", [])
+        self.ext_temp = self.template
         self.rotamers = data.get("rotamers", None)
         self.mae_lig = data.get("mae_lig", None)
         self.skip_prep = self.no_ppp = data.get("preprocess", False)
@@ -297,6 +298,7 @@ class YamlParser(object):
         self.poses = data.get("poses", 40)
         self.precision_glide = data.get("precision_glide", "SP") 
         self.msm = data.get("msm", False)
+        self.precision = data.get("precision", False)
         self.clust = data.get("exit_clust", 40)
         self.restart = data.get("msm_restart", "all")
         self.lagtime = data.get("lagtime", 100)
@@ -309,15 +311,36 @@ class YamlParser(object):
         self.exit_trajnum = data.get("exit_trajnum", 4)
         self.water_exp = data.get("water_bs", None)
         self.water_lig = data.get("water_lig", None)
+        self.water = data.get("water", None)
         self.water_center = data.get("box_water", None)
         self.water_temp = data.get("water_temp", 2000)
         self.water_constr = data.get("water_constr", 0.2)
         self.water_trials = data.get("water_trials", 1000)
+        self.water_radius = data.get("water_radius", None)
         self.bias = data.get("bias_sim", False)
         self.induce_fit = data.get("induced_fit", False)
         self.frag = data.get("frag", False)
+        self.ca_constr=data.get("ca_constr", 0.5)
+        self.one_exit=data.get("one_exit", False)
+        self.box_type=data.get("box_type", "fixed")
+        self.box_metric = data.get("box_metric", None)
+        self.time = data.get("time", False)
+        self.nosasa = data.get("nosasa", False)
+        self.sasa = data.get("sasa", False)
+        self.perc_sasa = data.get("perc_sasa", [0.25, 0.5, 0.25])
+        self.seed=data.get("seed", None)
+        self.pdb = data.get("pdb", False)
+        self.log = data.get("log", False)
+        self.nonrenum = data.get("nonrenum", False)
 
-
+        if self.test:
+            self.cpus = 2 if not self.full else 5
+            self.pele_steps = self.steps = 1
+            self.iterations = 1
+            self.min_freq = 0
+            self.anm_freq = 0
+            self.sidechain_freq = 0
+            self.temperature = self.temp = 10000
 
 
 if __name__ == "__main__":

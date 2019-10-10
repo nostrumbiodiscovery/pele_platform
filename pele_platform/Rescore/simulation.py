@@ -62,10 +62,10 @@ def run_adaptive(args):
             missing_residues = []
             gaps = {}
             metals = {}
-            env.constraints = ct.retrieve_constraints(system_fix, gaps, metals)
+            env.constraints = ct.retrieve_constraints(system_fix, gaps, metals, back_constr=env.ca_constr)
             shutil.copy(env.adap_ex_input, env.pele_dir)
         else:
-            system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep)
+            system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr)
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
         env.logger.info("Complex {} prepared\n\n".format(system_fix))
 

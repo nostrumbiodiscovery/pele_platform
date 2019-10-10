@@ -1,0 +1,9 @@
+system: '../pele_platform/Examples/bias/complex.pdb'
+chain: 'L'
+resname: 'LIG'
+box_radius: 30.0
+restart: false
+seed: 12345
+bias_sim: true
+usesrun: true
+test: true

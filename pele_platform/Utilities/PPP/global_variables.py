@@ -72,7 +72,7 @@ protein_atomnames_dictionary = {
             ['CG', 'CG', 'CG', 'CG', 'CG', 'CG', 'CG'], ['CD', 'CD', 'CD', 'CD', 'CD', 'CD', 'CD'],
             ['N', 'N', 'N', 'N', 'N', 'N', 'N'], ['NE2', 'NE2', 'NE2', 'NE2', 'NE2', 'NE2', 'NE2'],
             ['O', 'O', 'O', 'O', 'O', 'O', 'O'], ['OE1', 'OE1', 'OE1', 'OE1', 'OE1', 'OE1', 'OE1']],
-    "GLY": [['H', 'H', 'HN', 'H2', 'HN', 'H', 'HN'], ['HA2', '1HA', '2HA', 'HA1', 'HA2', 'HA2', 'HA1', 'HA'],
+    "GLY": [['H', 'H', 'HN', 'H2', 'HN', 'H', 'HN'], ['HA2', '1HA', '2HA', 'HA1', 'HA2', 'HA2', 'HA1'],
             ['HA3', '2HA', 'HA2', 'HA2', 'HA1', 'HA1', 'HA2'], ['C', 'C', 'C', 'C', 'C', 'C', 'C'],
             ['CA', 'CA', 'CA', 'CA', 'CA', 'CA', 'CA'], ['N', 'N', 'N', 'N', 'N', 'N', 'N'],
             ['O', 'O', 'O', 'O', 'O', 'O', 'O']],
@@ -230,7 +230,7 @@ protein_atomnames_dictionary = {
             ['N', 'N', 'N', 'N', 'N', 'N', 'N'], ['O', 'O', 'O', 'O', 'O', 'O', 'O'],
             ['OH', 'OH', 'OH', 'OH', 'OH', 'OH', 'OH']],
     "VAL": [['H', 'H', 'HN', 'H2', 'HN', 'H', 'HN'], ['HA', 'HA', 'HA', 'HA', 'HA', 'HA', 'HA'],
-            ['HB', 'HB', 'HB', 'HB', 'HB', 'HB', 'HB'], ['HG11', '1HG1', 'HG11', 'HG11', 'HG11', 'HG11', 'HG11'],
+            ['HB', 'HB', 'HB', 'HB', 'HB', 'HB3', 'HB'], ['HG11', '1HG1', 'HG11', 'HG11', 'HG11', 'HG11', 'HG11'],
             ['HG12', '2HG1', 'HG12', 'HG12', 'HG12', 'HG12', 'HG12'],
             ['HG13', '3HG1', 'HG13', 'HG13', 'HG13', 'HG13', 'HG13'],
             ['HG21', '1HG2', 'HG21', 'HG21', 'HG21', 'HG21', 'HG21'],
@@ -245,7 +245,7 @@ protein_atomnames_dictionary = {
     "NMA": [['HH31', '1HA', 'HA1'], ['HH32', '2HA', 'HA2'], ['HH33', '3HA', 'HA3'], ['CA', 'C'], ['H', 'H'], ['N']],
 }
 
-supported_metals = ["MN", "MG", "ZN", "CA", "CU", "FE", "NI", "CO", "PB", "NA"]
+supported_metals = ["MN", "MG", "ZN", "CA", "CU", "FE", "NI", "CO", "PB"]
 
 coordination_geometries = {
     'octahedric': [[90, 180], 6],

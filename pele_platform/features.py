@@ -41,7 +41,8 @@ def retrieve_software_settings(args, pele_dir):
                                  os.path.join(cs.DIR, "Templates/adaptive_exit_test.conf"),
                                  os.path.join(cs.DIR, "Templates/adaptive_long_test.conf"),
                                  os.path.join(cs.DIR, "Templates/pele_exit.conf")]
-                                 }
+                                 },
+                 "simulation_params" : {}
                  },
             
              "glide": {
@@ -117,17 +118,17 @@ def retrieve_software_settings(args, pele_dir):
                                       "cluster_values": "[1.75, 2.5, 4, 6]", "cluster_conditions": "[1, 0.6, 0.4, 0.0]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.INDUCED_FIT,
                                       "box_radius": 10},
-                             "in_out" : {"spawning_type": "epsilon", "bias_column": 7, "epsilon":0.75, "density": "exitContinuous",
+                             "in_out" : {"spawning_type": "epsilon", "bias_column": 6, "epsilon":0.75, "density": "exitContinuous",
                                       "simulation_type": "pele", "iterations": 1000, "pele_steps": 2, 
                                       "cluster_values": "[1, 2.5]", "cluster_conditions": "[1.1]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.IN_OUT,
                                       "box_radius": 10},
-                             "in_out_soft" : {"spawning_type": "independentMetric", "bias_column": 7, "epsilon":0.75, "density": "exitContinuous",
+                             "in_out_soft" : {"spawning_type": "independentMetric", "bias_column": 6, "epsilon":0.75, "density": "exitContinuous",
                                       "simulation_type": "pele", "iterations": 1000, "pele_steps": 2, 
                                       "cluster_values": "[1, 2.5]", "cluster_conditions": "[1.1]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.IN_OUT,
                                       "box_radius": 10},
-                             "water_exp": {"spawning_type": "independent", "bias_column": 7, "epsilon":0.75, "density": "null",
+                             "water_exp": {"spawning_type": "independent", "bias_column": 6, "epsilon":0.75, "density": "null",
                                       "simulation_type": "pele", "iterations": 50, "pele_steps": 12, 
                                       "cluster_values": "[1.75, 2.5, 3.5, 5]", "cluster_conditions": "[1.6, 1.2, 1, 0.0]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.WATER_BS,
