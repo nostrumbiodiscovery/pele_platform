@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import logging
+import warnings
 
 def silentremove(*args, **kwargs):
     for files in args:

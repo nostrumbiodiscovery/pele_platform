@@ -15,8 +15,9 @@ class SystemBuilder(object):
 
     @classmethod
     def build_system(cls, receptor, ligand, residue, pele_dir, output=False):
-        print(ligand)
         SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
+        if not os.path.exists(SPYTHON):
+            SPYTHON = os.path.join(cs.SCHRODINGER, "run")
         if ligand:
             system = cls(receptor, ligand, residue, pele_dir)
             system.lig_ref = os.path.join(pele_dir, "ligand.pdb")

@@ -18,12 +18,6 @@ MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
 
 
 
-def test_out_in(ext_args=OUT_IN_ARGS):
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
-    main.Launcher(arguments).launch()
-
 def test_induced(ext_args=INDUCED_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)

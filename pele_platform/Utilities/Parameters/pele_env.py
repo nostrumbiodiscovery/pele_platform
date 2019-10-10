@@ -56,7 +56,6 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         """
             Create pele folders
         """
-
         for folder in self.folders:
             hp.create_dir(self.pele_dir, folder)
 

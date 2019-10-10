@@ -265,7 +265,7 @@ class YamlParser(object):
         self.cluster_conditions = data.get("cluster_conditions", None)
         self.simulation_type = data.get("simulation_type", None)
         self.equilibration = data.get("equilibration", False)
-        self.eq_steps = data.get("eq_steps", 2)
+        self.eq_steps = data.get("eq_steps", 2.0)
         self.adaptive_restart = data.get("restart", False)
         self.input = data.get("input", [])
         self.report_name = data.get("report", "report")
