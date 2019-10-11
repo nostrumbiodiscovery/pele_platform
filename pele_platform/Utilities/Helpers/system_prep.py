@@ -11,24 +11,18 @@ class SystemBuilder(object):
         self.ligand = ligand
         self.residue = residue
         self.pele_dir = pele_dir
-        self.system = None if self.ligand else self.receptor
+        self.system = self.receptor
 
     @classmethod
     def build_system(cls, receptor, ligand, residue, pele_dir, output=False):
         SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
         if not os.path.exists(SPYTHON):
             SPYTHON = os.path.join(cs.SCHRODINGER, "run")
-        if ligand:
-            system = cls(receptor, ligand, residue, pele_dir)
-            system.lig_ref = os.path.join(pele_dir, "ligand.pdb")
-            subprocess.call("{} {} {} {} --mae".format(SPYTHON, __file__, system.ligand, system.lig_ref).split())
-            system.system = system.build_complex()
-        else:
-            system = cls(receptor, ligand, residue, pele_dir)
-            system.receptor, system.lig_ref = system.retrieve_receptor(output=output)
-            subprocess.call("{} {} {} {}".format(SPYTHON, __file__, system.lig_ref, pele_dir).split())
-            system.lig = "{}.mae".format(residue)
-            system.residue = residue
+        system = cls(receptor, ligand, residue, pele_dir)
+        system.receptor, system.lig_ref = system.retrieve_receptor(output=output)
+        system.lig = ligand if ligand else "{}.mae".format(residue)
+        subprocess.call("{} {} {} {}".format(SPYTHON, __file__, system.lig_ref, pele_dir).split())
+        system.residue = residue
         return system
 
     def build_complex(self):

@@ -16,8 +16,5 @@ export PYTHONPATH=/sNow/easybuild/centos/7.4.1708/Skylake/software/PyMOL/2.2.0_0
 #export PYTHONPATH=/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform/:/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform/pele_platform/:$PYTHONPATH
 export PYTHONPATH=/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform/:/home/ssaenoon/AdaptivePELE/:$PYTHONPATH
 
-
-
 ############################CHANGE##########################
-
-python -m pytest -k test_bias -vv
+python -m pele_platform.main input.yaml

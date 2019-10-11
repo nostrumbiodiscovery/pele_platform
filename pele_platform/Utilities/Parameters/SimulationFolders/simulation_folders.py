@@ -24,10 +24,7 @@ class SimulationPaths(msm_folders.MSMPaths, glide_folders.GlidePaths):
 
     def working_folder_paths(self, args):
 
-        if self.mae_lig:
-            self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.splitext(os.path.basename(self.system))[0]))
-        else:
-            self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.splitext(os.path.basename(self.system))[0]))
+        self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.splitext(os.path.basename(self.system))[0]))
 
         self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
         self.pele_temp = os.path.join(self.pele_dir, "pele.conf")

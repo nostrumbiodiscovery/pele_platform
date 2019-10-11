@@ -15,6 +15,7 @@ EXITSOFT_ARGS = [os.path.join(test_path, "exit_soft/input.yaml")]
 WATER_ARGS = [os.path.join(test_path, "water/input_bs.yaml")]
 WATERLIG_ARGS = [os.path.join(test_path, "water/input_lig.yaml")]
 MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
+MAE_ARGS = [os.path.join(test_path, "induced_fit/input_mae.yaml")]
 
 
 
@@ -55,6 +56,12 @@ def test_bias(ext_args=BIAS_ARGS):
     main.Launcher(arguments).launch()
 
 def test_msm(ext_args=MSM_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
+
+def test_mae(ext_args=MAE_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
     main.set_software_to_use(arguments)

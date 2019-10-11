@@ -234,7 +234,7 @@ class YamlParser(object):
             try:
                 data = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
-                print(exc)
+                raise(exc)
         return data
     
     def parse(self):
@@ -281,6 +281,7 @@ class YamlParser(object):
         self.ext_temp = self.template
         self.rotamers = data.get("rotamers", None)
         self.mae_lig = data.get("mae_lig", None)
+        self.mae_lig = os.path.abspath(self.mae_lig) if self.mae_lig else None
         self.skip_prep = self.no_ppp = data.get("preprocess", False)
         self.gaps_ter = data.get("TERs", False)
         self.charge_ter = data.get("charge_ters", False)

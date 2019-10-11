@@ -18,18 +18,11 @@ def parametrize_miss_residues(args, env, syst, resname=None):
     options = retrieve_options(args, env)
     templatedir = os.path.join(env.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms")
     rotamerdir = os.path.join(env.pele_dir, "DataLocal/LigandRotamerLibs")  
-    if args.mae_lig:
-        mae_charges = True
-        print("Running Plop from mae")
-        print("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, env.mae_lig, resname, templatedir, rotamerdir))
-        subprocess.call("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, env.mae_lig, resname, templatedir, rotamerdir).split())
-        hp.silentremove([syst.system])
-    else:
-        mae_charges = False
-        print("Running Plop from pdb")
-        print("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir))
-        subprocess.call("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir).split())
-        hp.silentremove([syst.lig])
+    mae_cahrges = True if args.mae_lig else False
+    print("Running Plop")
+    print("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir))
+    subprocess.call("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir).split())
+    #hp.silentremove([syst.lig])
 
 
 def retrieve_options(args, env):
