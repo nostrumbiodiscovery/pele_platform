@@ -1,4 +1,222 @@
 Input Documentation
 ######################
 
+Compulsory flags
+--------------------
+
+- **system**: Path to the input pdb file cointaining ligand and receptor in your desired initial conformation (except for a global exploration)
+
+ 
+- **residue**: Residue name of the ligand to be perturbed
+
+
+- **chain**: Chain of the ligand to be perturbed
+
+..  code-block:: yaml
+
+    system: "/home/daniel/PR_complex.pdb"
+    residue: "LIG"
+    chain: "L"
+
+
+Optative flags
+-------------------
+
+Job parameters
+=================
+
+Configure the main important parameters for the job
+
+- **cpus**: Cpus to use
+
+- **iterations**: Adaptive epochs to run. Set to 1 by default if using PELE
+
+- **steps**: Pele steps in each iteration
+
+- **test**: Run a quick test to check the simulation works (~2 min)
+
+
+..  code-block:: yaml
+
+  cpus: 200
+  iterations: 30
+  steps: 12
+  test: true
+
+Receptor preparation
+=======================
+
+Configure the parameters of the PPP (Protein Pele Preparation)
+
+- **preprocess_receptor**: Skip protein pele preparation. Default: False
+
+- **noTERs**: Don't include TERs on preparation. Used if PPP gets confuse with insertion codes or other. Default: False
+
+- **charge_ters**: Charge terminals of the protein. Default: False
+
+- **nonstandard**: List of names of nonstandard residues that will be omitted in protein pele preparation. Default=[]
+
+- **prepwizard**: Run Prepwizard (Still on testing version). Default: False
+
+..  code-block:: yaml
+
+  preprocess_receptor: true
+  noTERs: false
+  charge_ters: false
+  nonstandard:
+    - TPO
+  prepwizard: false
+
+Ligand preparation
+======================
+
+Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.
+
+- **gridres**: Resolution of the rotamers when sampling. Default: 10 degrees
+
+- **core**: Atomnumber of the atom that will be included as part of the rigid core. Default=None
+
+- **maxtorsion**: Maximum number of rotamers per flexible sidechain. Default: 4
+
+- **n**: Maximum number of flexible sidechains in a molecule, Default: None
+
+- **mae_lig**: Mae file to extract the cuantum charges from. Default: None
+
+
+..  code-block:: yaml
+
+  gridres: 10
+  core: -1
+  maxtorsion: 4
+  n: 5
+  mae_lig: "/home/dsoler/lig.mae"
+
+Box parameters
+=================
+
+Parameters to set the exploration Box:
+
+- **box_radius**: Radius of the box. Default=[induced_fit (10), local_exploration (30), global_exploration (50)]
+
+- **box_center**: Center of the box. Default=[indeuced_fit&local_exploration (CM of the ligand), global (calculater center)]
+
+
+..  code-block:: yaml
+
+  box_radius: 30
+  box_center: 
+    - 20
+    - 30
+    - 50
+
+
+PELE params
+================
+
+- **anm_freq**: Every how many steps to perform anm. Default=4
+
+- **sidechain_freq**: Every how many steps to perform sidechain sampling. Default=2
+
+- **min_freq**: Every how many steps to perform minimization. Default=1
+
+- **water_freq**: Every how many steps to perform water perturbation. Default=1
+
+- **temperature**: Temperature of the simulation. Default: 1500
+
+- **solvent**: Solvent of the simulation. (OBC or VDGBNP). Default: VDGBNP
+
+- **overlap_factor**: Vanderwals overlap factor (More in PELE docs). Default: 0.65
+
+- **steric_trials**: Number of steric trials (More in PELE docs). Default:250
+
+..  code-block:: yaml
+
+  anm_freq: 4
+  sidechain_freq: 2
+  min_freq: 1
+  water_freq: 1
+  temperature: 1500
+  solvent: "VDGBNP"
+  overlap_factor: 0.65
+  steric_trials: 250
+
+
+
+Adaptive params
+===================
+
+- **spawning**: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional
+
+- **density**: Density type ([null, exitContinuous...]. More in AdaptivePELE docs). Default: null
+
+- **cluster_values**: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type
+
+- **cluster_conditions**: Clusterization condition. More in AdaptivePELE. Default: Depending on simulation type
+
+- **equilibration**: Whether to run initial equilibration or not. Default: false
+
+- **equilibration_steps**: Equilibration steps. Default: 2
+  
+- **adaptive_restart**: Use adaptive restart with the working folder option to restart the simulation. Default: false
+
+- **report**: Change the name of the report file. Default: report
+
+- **traj**: Change the name of the trajectory file. Default: trajectory.pdb
+
+..  code-block:: yaml
+
+    spawning: "epsilon"
+    density: "exitContinuous"
+    cluster_values: [2,3,4]
+    cluster_conditions: [0.8, 0.6, 0.2]
+    equilibration: false
+    equilibration_steps: 10
+    adaptive_restart: true
+    report: report
+    traj: trajectory.xtc
+
+
+Automatic Modes
+==================
+
+Automatically configures all control file options to a standard job chosen beween
+induce fit, local exploration, bias exploration, exit path and global exploration
+
+- **induced_fit**: Run induced fit simulation paramaters by setting the center of the box in the
+  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
+  steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
+  new conformations within the same binding site.
+
+..  code-block:: yaml
+
+  induced_fit: true
+
+- **out_in**: Local exploration to move the ligand from the bulk to the binding site. The box center set on the 
+  center of mass of the ligand with a radius of 30A, steering 1 50% of the times, and a slight bias towards binding energies.
+  Useful when no docking is possible in the binding site and you need to open up the pocket.
+
+..  code-block:: yaml
+
+  out_in: true
+
+- **bias**: Bias exploration towards the indicated bias column. The box center is set on the center of mass of the ligand with
+  a radius of 30A, and a bias towards the chosen metric is set. An epsilon fraction of processors are distributed proportionally to the value of a metric, and the rest are inverselyProportional distributed. Therefore, the **epsilon** value controls fraction of the processors that will be assigned according to the selected metric in **biascolumn**
+
+
+..  code-block:: yaml
+
+  bias: true
+  epsilon: 0.5
+  bias_column: 5 (starting by 1 on the reports)
+
+- **in_out**: Explore the dissociative path of a molecule. At each step the box is center on the most exterior cluster
+  and there is a bias towards higher values of SASA. This type accepts a **exit_metric** which represents a column in the report file, an **exit_value** which represents a value for the metric and a **exit_condition** parameter which can be either “<” or “>”, default value is “<”. The simulation will terminate after the metric written in the metricCol reaches a value smaller or greater than exitValue, depending on the condition specified. An example of the exit condition block that would terminate the program after 4 trajectories reaches a value of more than 0.9 for the sixth column (6th starting to count from 1) of the report file would look like:
+
+
+..  code-block:: yaml
+
+  in_out: true
+  exit_value: 0.9
+  exit_condition: ">"
+  exit_trajnum: 4
 
