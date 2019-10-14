@@ -266,7 +266,7 @@ class YamlParser(object):
         self.simulation_type = data.get("simulation_type", None)
         self.equilibration = data.get("equilibration", False)
         self.eq_steps = data.get("eq_steps", 2.0)
-        self.adaptive_restart = data.get("restart", False)
+        self.adaptive_restart = data.get("adaptive_restart", False)
         self.input = data.get("input", [])
         self.report_name = data.get("report", "report")
         self.traj_name = data.get("traj", "trajectory.pdb")

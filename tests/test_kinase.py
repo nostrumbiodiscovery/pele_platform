@@ -14,6 +14,7 @@ EXIT_ARGS = [os.path.join(test_path, "exit/input.yaml")]
 EXITSOFT_ARGS = [os.path.join(test_path, "exit_soft/input.yaml")]
 WATER_ARGS = [os.path.join(test_path, "water/input_bs.yaml")]
 WATERLIG_ARGS = [os.path.join(test_path, "water/input_lig.yaml")]
+RESTART_ARGS = [os.path.join(test_path, "restart/input.yaml")]
 MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
 MAE_ARGS = [os.path.join(test_path, "induced_fit/input_mae.yaml")]
 
@@ -50,6 +51,12 @@ def test_water_lig(ext_args=WATERLIG_ARGS):
     main.Launcher(arguments).launch()
 
 def test_bias(ext_args=BIAS_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
+
+def test_restart(ext_args=RESTART_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
     main.set_software_to_use(arguments)

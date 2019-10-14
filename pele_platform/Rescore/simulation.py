@@ -2,6 +2,7 @@ import subprocess
 import os
 import shutil
 import glob
+from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
 import pele_platform.constants.constants as cs
@@ -17,6 +18,7 @@ import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
 import pele_platform.Utilities.Helpers.external_files as ext
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
+import AdaptivePELE.adaptiveSampling as adt
 
 
 
@@ -25,7 +27,12 @@ def run_adaptive(args):
     #all main  attributes of the simulation
     env = pele.EnviroBuilder.build_env(args)
 
-    if args.restart == "all":
+    if env.adaptive_restart:
+        with helpers.cd(env.pele_dir):
+            adt.main(env.ad_ex_temp)
+            env.logger.info("Simulation run succesfully (:\n\n")
+
+    else:
 
         ##PREPWIZARD##
         if args.prepwizard:
