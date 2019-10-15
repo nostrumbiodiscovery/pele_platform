@@ -1,6 +1,6 @@
 import random
 import os
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationFolders.MSMFolders import msm_folders
 from pele_platform.Utilities.Parameters.SimulationFolders.GlideFolders import glide_folders
 import pele_platform.Utilities.Helpers.helpers as hp
@@ -23,17 +23,8 @@ class SimulationPaths(msm_folders.MSMPaths, glide_folders.GlidePaths):
 
 
     def working_folder_paths(self, args):
-        pele_dir = os.path.abspath("{}_Pele".format(self.residue))
 
-        if not self.folder:
-            self.pele_dir = hp.is_repited(pele_dir) if self.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
-        else:
-            self.pele_dir = os.path.abspath(self.folder)
-
-        if self.mae_lig:
-            self.system_fix = os.path.join(self.pele_dir, "{}_complex_processed.pdb".format(os.path.splitext(os.path.basename(self.system))[0]))
-        else:
-            self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.splitext(os.path.basename(self.system))[0]))
+        self.system_fix = os.path.join(self.pele_dir, "{}_processed.pdb".format(os.path.splitext(os.path.basename(self.system))[0]))
 
         self.adap_ex_input = os.path.join(self.pele_dir, os.path.basename(self.system_fix))
         self.pele_temp = os.path.join(self.pele_dir, "pele.conf")

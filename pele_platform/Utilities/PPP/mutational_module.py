@@ -2,10 +2,10 @@ import sys
 
 import numpy as np
 from prody import writePDB, parsePDB, AtomGroup
-from checks_module import CheckMapAndZmatrix
-from coordinates_module import GenerateCoordinatesFromZmatrix, ModifyCoords, ModifyCoordinatesPRO
-from global_variables import default_mutations_maps
-from program_own_classes import ZMATRIX
+from pele_platform.Utilities.PPP.checks_module import CheckMapAndZmatrix
+from pele_platform.Utilities.PPP.coordinates_module import GenerateCoordinatesFromZmatrix, ModifyCoords, ModifyCoordinatesPRO
+from pele_platform.Utilities.PPP.global_variables import default_mutations_maps
+from pele_platform.Utilities.PPP.program_own_classes import ZMATRIX
 
 __author__ = 'jelisa'
 
@@ -20,7 +20,7 @@ def Readmaps(mutation):
     try:
         mutation_map = default_mutations_maps[mutation_maps_key]
     except KeyError:
-        print "Something is wrong, the mutation you're asking for is not present in the mutations maps."
+        print("Something is wrong, the mutation you're asking for is not present in the mutations maps.")
         sys.exit()
     return mutation_maps_key, mutation_map
 
@@ -46,11 +46,11 @@ def AddAtoms(initial_residue, atoms2add, atomnames_of_2_letters, residue_data, z
     :param verbose: 
     """
     if verbose:
-        print 'Adding new atoms:'
+        print('Adding new atoms:')
     new_atoms_elements = []
     for atom in atoms2add:
         if verbose:
-            print " # {}".format(atom)
+            print(" # {}".format(atom))
         if atom[:2] in atomnames_of_2_letters:
             new_atoms_elements.append(atom[:2])
         else:
@@ -78,18 +78,18 @@ def AddAtoms(initial_residue, atoms2add, atomnames_of_2_letters, residue_data, z
         atom.setCoords(atom_new_coordinates)
         incomplete_residue = initial_residue + new_atoms
     if verbose:
-        print 'Done'
+        print('Done')
     return initial_residue + new_atoms
 
 
 def ModifyExistingAtoms(initial_residue, atoms2change, atomnames_of_2_letters, initial_atoms_index, final_atoms_index,
                         zmatrix):
     residue2modify = initial_residue.copy()
-    print "    * Modifying the atoms:"
+    print("    * Modifying the atoms:")
     for at_pair in atoms2change:
         ini_atomname = at_pair[initial_atoms_index]
         fin_atomname = at_pair[final_atoms_index]
-        print "      # {} -> {}".format(at_pair[initial_atoms_index], at_pair[final_atoms_index])
+        print("      # {} -> {}".format(at_pair[initial_atoms_index], at_pair[final_atoms_index]))
         element = fin_atomname[:2]
         if element not in atomnames_of_2_letters:
             element = at_pair[final_atoms_index][0]
@@ -101,21 +101,21 @@ def ModifyExistingAtoms(initial_residue, atoms2change, atomnames_of_2_letters, i
         else:
             atom_coords = GenerateCoordinatesFromZmatrix(residue2modify, [fin_atomname], zmatrix)
         atom2modify.setCoords(atom_coords)
-    print "      Done"
+    print("      Done")
     return residue2modify
 
 
 def ModifyFromToGLY(initial_residue, zmatrix, resname, atoms2change, initial_atoms_index, final_atoms_index, atomnames_of_2_letters):
     modified_residue = initial_residue.copy()
     initial_atoms, final_atoms = [], []
-    print "Modifying the atoms:"
+    print("Modifying the atoms:")
     for at_pair in atoms2change:
         initial_atoms.append(at_pair[initial_atoms_index])
         final_atoms.append(at_pair[final_atoms_index])
     for at_pair in atoms2change:
         initial_name = at_pair[initial_atoms_index]
         final_name = at_pair[final_atoms_index]
-        print " # {} -> {}".format(initial_name, final_name)
+        print(" # {} -> {}".format(initial_name, final_name))
         atom2modify = modified_residue.select("name {}".format(initial_name))
         atom2modify.setNames([final_name])
         if final_name == "H":
@@ -182,7 +182,7 @@ def Mutate(wt_structure, mutation):
 
     zmatrix = ZMATRIX(mutation['fin_resname'])
     if zmatrix.Name is None:
-        print "The template for the final residue doesn't exist. Check your environment parameters."
+        print("The template for the final residue doesn't exist. Check your environment parameters.")
         sys.exit()
     CheckMapAndZmatrix(zmatrix.AtomNames, mutation_map, mutation, initial_residue)
     atoms2check_for_clashes = [atom_pair[final_atoms_index] for atom_pair in changing_atoms]
@@ -203,12 +203,12 @@ def Mutate(wt_structure, mutation):
         elif volatile_atoms_behaviour == '' and volatile_atoms == []:
             pass
         else:
-            print "Something is wrong with the appearing/disappearing value in the file with the maps. Check it!"
-            print "The problem is in the entry for the mutation {} it has the value {}. It should be appear or disappear.".format(
-                mutation_maps_key, volatile_atoms_behaviour)
+            print("Something is wrong with the appearing/disappearing value in the file with the maps. Check it!")
+            print("The problem is in the entry for the mutation {} it has the value {}. It should be appear or disappear.".format(
+                mutation_maps_key, volatile_atoms_behaviour))
             sys.exit()
         if mutation["fin_resname"] == "PRO":
-            print 'here'
+            print('here')
             atoms2replace = ["CD", "HD2", "HD3"]
             for atom_name in atoms2replace:
                 atom = mutated_residue.select('name {}'.format(atom_name))
@@ -234,9 +234,9 @@ def Mutate(wt_structure, mutation):
         elif volatile_atoms_behaviour == '' and volatile_atoms == []:
             mutated_residue = residue2mutate
         else:
-            print "Something is wrong with the appearing/disappearing value in the file with the maps. Check it!"
-            print "The problem is in the entry for the mutation {} it has the value {}. It should be appear or disappear.".format(
-                mutation_maps_key, volatile_atoms_behaviour)
+            print("Something is wrong with the appearing/disappearing value in the file with the maps. Check it!")
+            print("The problem is in the entry for the mutation {} it has the value {}. It should be appear or disappear.".format(
+                mutation_maps_key, volatile_atoms_behaviour))
             sys.exit()
     if rest_of_the_structure:
         mutated_structure = initial_part_of_the_protein + mutated_residue + final_part_of_the_protein + rest_of_the_structure

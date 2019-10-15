@@ -1,0 +1,16 @@
+system: '../pele_platform/Examples/Msm/PR_1A28_protein.pdb'
+mae_lig: '../pele_platform/Examples/Msm/AS4_INIT.mae'
+chain: 'L'
+resname: 'AS4'
+restart: false
+seed: 12345
+atom_dist:
+- 32
+- 33
+usesrun: true
+cpus: 200
+iterations: 1
+steps: 1000 
+induced_fit: true
+
+

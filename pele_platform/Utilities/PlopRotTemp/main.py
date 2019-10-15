@@ -57,15 +57,15 @@ HELP: $SCHRODINGER/utilities/python main.py --help
 import argparse
 import sys
 import os
+import re
 import shutil
-import subprocess
-import pele_platform.constants as cs
 import PlopRotTemp as pl
 from template.templateBuilder import TemplateBuilder
-import pele_platform.Utilities.Helpers.helpers as hp
+import Utilities.non_standard_res  as nstdres
 
 
-def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=1000, user_core_atom=-1, mae_charges = False, clean = False, gridres = "10.0"):
+
+def main(mae_file, templatedir=None, rotamerdir=None, outputname=None, max_tors=4, nrot=10000, user_core_atom=-1, mae_charges = False, clean = False, gridres = "10.0", nstd=None):
 
     #Defaults
     nrot = nrot
@@ -132,9 +132,12 @@ def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=10
     print("TEMPLATE GENERATION")
 
     resname=pl.find_resnames_in_mae(mae_file)
-    template_output = "{}z".format(residue.lower())
+    if outputname:
+        template_output = "{}z".format(outputname.lower()) 
+    else:
+        template_output = "{}z".format(resname[0].lower())
 
-    template_builder = TemplateBuilder(mae_file, template_output, residue)
+    template_builder = TemplateBuilder(mae_file, template_output)
 
     [template_file, output_template_file, mae_file_hetgrp_ffgen, files, resname] = \
         template_builder.build_template(mae_charges)
@@ -277,7 +280,7 @@ def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=10
         
         else:
             if (len(zmat_atoms) > 0):
-                ring_libs = pl.build_ring_libs(mae_min_file, root, residue, tors, \
+                ring_libs = pl.build_ring_libs(mae_min_file, root, resname, tors, \
                                             tors_ring_num, names, rank, parent, old_atom_num, mae2temp, gridres,
                                             files2clean, debug)
      
@@ -285,7 +288,7 @@ def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=10
                 ring_libs = []
                 print("No rotatable sidechains found")
             
-            rotamers_file = pl.find_build_lib(residue, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
+            rotamers_file = pl.find_build_lib(resname, mae_min_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib,
                                   tors_ring_num, ring_libs, debug)
             print("\n")
             print("CREATE ROTAMER LIBRARY")
@@ -300,72 +303,48 @@ def main(mae_file, residue, pele_dir, forcefield="OPLS2005", max_tors=4, nrot=10
             print('Removing Intermediate File: {}'.format(file))
             os.remove(file)
 
-    template_dir = os.path.join(pele_dir, "DataLocal/Templates/{}/HeteroAtoms/{}".format(forcefield, output_template_file))
-    rotamers_dir = os.path.join(pele_dir, "DataLocal/LigandRotamerLibs/{}".format(rotamers_file))
-    shutil.move(output_template_file, template_dir)
-    shutil.move(rotamers_file, rotamers_dir)
+    if nstd:
+    	nstdres.remove_capping_hidrogens(output_template_file, nstd)
+
+    if templatedir:
+        shutil.move(output_template_file, templatedir)
+    if rotamerdir:
+        shutil.move(rotamers_file, rotamerdir)
 
 
-def parametrize_miss_residues(args, env, syst):
-    SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
-    options = retrieve_options(args, env)
-    if args.mae_lig:
-        mae_charges = True
-        print("{} {} {} {} {} {}".format(SPYTHON, __file__, options, args.mae_lig, args.residue, env.pele_dir)) 
-        subprocess.call("{} {} {} {} {} {}".format(SPYTHON, __file__, options, args.mae_lig, args.residue, env.pele_dir).split())
-        #template, rotamers_file = main(args.mae_lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)
-        hp.silentremove([syst.system])
-    else:
-        mae_charges = False
-        subprocess.call("{} {} {} {} {} {}".format(SPYTHON, __file__, options, syst.lig, args.residue, env.pele_dir).split())
-        #template, rotamers_file = main(syst.lig, args.residue, env.pele_dir, args.forcefield, args.mtor, args.n, args.core, mae_charges, args.clean, args.gridres)     
-        hp.silentremove([syst.lig])
+    return output_template_file, rotamers_file
 
-
-def retrieve_options(args, env):
-    """
-    Retrieve PlopRotTemp options from input arguments
-    """
-
-    options = []
-
-    if args.core != -1:
-        options.extend(["--core {}".format(args.core)])
-    if args.mtor != 4:
-        options.extend(["--mtor {}".format(args.mtor)])
-    if args.n != 1000:
-        options.extend(["--n {}".format(args.n)])
-    if args.forcefield != "OPLS2005":
-        options.extend(["--force {}".format(args.forcefield)])
-    if args.mae_lig:
-        options.extend(["--mae_charges"])
-    if args.gridres != 10:
-        options.extend(["--gridres {}".format(args.gridres)])
-
-    return " ".join(options)
 
 
 def parse_args():
 
     parser = argparse.ArgumentParser()
     parser.add_argument("mae_file", type=str, help="ligand maestro mae file")
-    parser.add_argument("residue", type=str, help="ligand residue")
-    parser.add_argument("output", type=str, help="output folder")
+    parser.add_argument("--outputname", type=str, help="Output file name", default=None)
+    parser.add_argument("--rotamerdir", type=str, help="Output folder for rotamer file", default=None)
+    parser.add_argument("--templatedir", type=str, help="Output folder for rotamer file", default=None)
     parser.add_argument("--core", type=int, help="Give one atom of the core section", default=-1)
     parser.add_argument("--mtor", type=int, help="Gives the maximum number of torsions allowed in each group.  Will freeze bonds to extend the core if necessary.", default=4)
     parser.add_argument("--n", type=int, help="Maximum Number of Entries in Rotamer File", default=1000)
     parser.add_argument("--mae_charges", help="Use charges in mae", action='store_true')
+    parser.add_argument("--gridres", type=str, help="Rotamers angle resolution", default='10.0')
+    parser.add_argument("--nstd", nargs="+", help="Capping hidrogens", default=None)
     parser.add_argument("--clean", help="Whether to clean up all the intermediate files", action='store_true')
-    parser.add_argument("--gridres", help="Rotamer resolution", type=str, default="10")
-    parser.add_argument("--force",  help="Rotamer resolution", type=str, default="OPLS2005")
     args = parser.parse_args()
 
     
-    return args.mae_file, args.residue, args.output, args.mtor, args.n, args.core, args.mae_charges, args.clean, args.gridres, args.force
+    return args.mae_file, args.templatedir, args.rotamerdir, args.outputname, args.mtor, args.n, args.core, args.mae_charges, args.gridres, args.clean, args.nstd
 
 if __name__ == "__main__":
-    mae_file, residue, output, mtor, n, core, mae_charge, clean, gridres, forcefield = parse_args() 
-    main(mae_file, residue, output, forcefield, mtor, n, core, mae_charge, clean, gridres)
+
+    mae_file, templatedir, rotamerdir, outputname, mtor, n, core, mae_charge, gridres, clean, nstd = parse_args() 
+    template, rotamers_file = main(mae_file, templatedir, rotamerdir, outputname, mtor, n, core, mae_charge, clean, gridres, nstd)
+    
+
+    print("########################################################################")
+    print("\n{} template and {} rotamer library has been successfully created in {}\n".format(
+        template,rotamers_file, os.getcwd()))
+    print("########################################################################")
 
 
     

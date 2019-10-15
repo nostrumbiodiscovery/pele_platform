@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Input Documentation &mdash; pele platform 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="changelog" href="../changelog/index.html" />
+    <link rel="prev" title="Launch your first job" href="../tutorial/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Launch your first job</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#compulsory-flags">Compulsory flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optative-flags">Optative flags</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#job-parameters">Job parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#receptor-preparation">Receptor preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">Ligand preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#box-parameters">Box parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-params">PELE params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adaptive-params">Adaptive params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#automatic-modes">Automatic Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#induced-fit">Induced fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#local-exploration">Local Exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#biased">Biased</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exit-path">Exit path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-exploration">Global exploration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">changelog</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Input Documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/documentation/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="input-documentation">
+<h1>Input Documentation<a class="headerlink" href="#input-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="compulsory-flags">
+<h2>Compulsory flags<a class="headerlink" href="#compulsory-flags" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>system</strong>: Path to the input pdb file cointaining ligand and receptor in your desired initial conformation (except for a global exploration)</p></li>
+<li><p><strong>residue</strong>: Residue name of the ligand to be perturbed</p></li>
+<li><p><strong>chain</strong>: Chain of the ligand to be perturbed</p></li>
+<li><p><strong>cpus</strong>: Cpus to use</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_complex.pdb&quot;</span>
+<span class="nt">residue</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="optative-flags">
+<h2>Optative flags<a class="headerlink" href="#optative-flags" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="job-parameters">
+<h3>Job parameters<a class="headerlink" href="#job-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Configure the main important parameters for the job</p>
+<ul class="simple">
+<li><p><strong>iterations</strong>: Adaptive epochs to run. Set to 1 by default if using PELE</p></li>
+<li><p><strong>steps</strong>: Pele steps in each iteration</p></li>
+<li><p><strong>test</strong>: Run a quick test to check the simulation works (~2 min)</p></li>
+<li><p><strong>usesrun</strong>: Use srun binary to run PELE. Only when using intel processors.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">usesrun</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="receptor-preparation">
+<h3>Receptor preparation<a class="headerlink" href="#receptor-preparation" title="Permalink to this headline">¶</a></h3>
+<p>Configure the parameters of the PPP (Protein Pele Preparation)</p>
+<ul class="simple">
+<li><p><strong>preprocess_receptor</strong>: Skip protein pele preparation. Default: False</p></li>
+<li><p><strong>noTERs</strong>: Don’t include TERs on preparation. Used if PPP gets confuse with insertion codes or other. Default: False</p></li>
+<li><p><strong>charge_ters</strong>: Charge terminals of the protein. Default: False</p></li>
+<li><p><strong>nonstandard</strong>: List of names of nonstandard residues that will be omitted in protein pele preparation. Default=[]</p></li>
+<li><p><strong>prepwizard</strong>: Run Prepwizard (Still on testing version). Default: False</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">preprocess_receptor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">noTERs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">charge_ters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">nonstandard</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">TPO</span>
+<span class="nt">prepwizard</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ligand-preparation">
+<h3>Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h3>
+<p>Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.</p>
+<ul class="simple">
+<li><p><strong>gridres</strong>: Resolution of the rotamers when sampling. Default: 10 degrees</p></li>
+<li><p><strong>core</strong>: Atomnumber of the atom that will be included as part of the rigid core. Default=None</p></li>
+<li><p><strong>maxtorsion</strong>: Maximum number of rotamers per flexible sidechain. Default: 4</p></li>
+<li><p><strong>n</strong>: Maximum number of flexible sidechains in a molecule, Default: None</p></li>
+<li><p><strong>mae_lig</strong>: Mae file to extract the cuantum charges from. Default: None</p></li>
+<li><p><strong>template</strong>: External forcefield templaters</p></li>
+<li><p><strong>rotamers</strong>: External rotamer libraries</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">gridres</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">core</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">-1</span>
+<span class="nt">maxtorsion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="nt">n</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">mae_lig</span><span class="p">:</span> <span class="s">&quot;/home/dsoler/lig.mae&quot;</span>
+<span class="nt">templates</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/mgz&quot;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/ligz&quot;</span>
+<span class="nt">rotamers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/MG.rot.assign&quot;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/LIG.rot.assign&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="box-parameters">
+<h3>Box parameters<a class="headerlink" href="#box-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Parameters to set the exploration Box:</p>
+<ul class="simple">
+<li><p><strong>box_radius</strong>: Radius of the box. Default=[induced_fit (10), local_exploration (30), global_exploration (50)]</p></li>
+<li><p><strong>box_center</strong>: Center of the box. Default=[indeuced_fit&amp;local_exploration (CM of the ligand), global (calculater center)]</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">box_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">box_center</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pele-params">
+<h3>PELE params<a class="headerlink" href="#pele-params" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>anm_freq</strong>: Every how many steps to perform anm. Default=4</p></li>
+<li><p><strong>sidechain_freq</strong>: Every how many steps to perform sidechain sampling. Default=2</p></li>
+<li><p><strong>min_freq</strong>: Every how many steps to perform minimization. Default=1</p></li>
+<li><p><strong>water_freq</strong>: Every how many steps to perform water perturbation. Default=1</p></li>
+<li><p><strong>temperature</strong>: Temperature of the simulation. Default=1500</p></li>
+<li><p><strong>solvent</strong>: Solvent of the simulation. (OBC or VDGBNP). Default=VDGBNP</p></li>
+<li><p><strong>sidechain_res</strong>: Receptor sidechain resolution. Default=10</p></li>
+<li><p><strong>overlap_factor</strong>: Vanderwals overlap factor (More in PELE docs). Default=0.65</p></li>
+<li><p><strong>steric_trials</strong>: Number of steric trials (More in PELE docs). Default=250</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">anm_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="nt">sidechain_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="nt">min_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">water_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">temperature</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1500</span>
+<span class="nt">solvent</span><span class="p">:</span> <span class="s">&quot;VDGBNP&quot;</span>
+<span class="nt">sidechain_res</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">overlap_factor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.65</span>
+<span class="nt">steric_trials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">250</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adaptive-params">
+<h3>Adaptive params<a class="headerlink" href="#adaptive-params" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>spawning</strong>: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional</p></li>
+<li><p><strong>density</strong>: Density type ([null, exitContinuous…]. More in AdaptivePELE docs). Default: null</p></li>
+<li><p><strong>cluster_values</strong>: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type</p></li>
+<li><p><strong>cluster_conditions</strong>: Clusterization condition. More in AdaptivePELE. Default: Depending on simulation type</p></li>
+<li><p><strong>equilibration</strong>: Whether to run initial equilibration or not. Default: false</p></li>
+<li><p><strong>equilibration_steps</strong>: Equilibration steps. Default: 2</p></li>
+<li><p><strong>adaptive_restart</strong>: Use adaptive restart with the working folder option to restart the simulation. Default: false</p></li>
+<li><p><strong>report</strong>: Change the name of the report file. Default: report</p></li>
+<li><p><strong>traj</strong>: Change the name of the trajectory file. Default: trajectory.pdb</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">spawning</span><span class="p">:</span> <span class="s">&quot;epsilon&quot;</span>
+<span class="nt">density</span><span class="p">:</span> <span class="s">&quot;exitContinuous&quot;</span>
+<span class="nt">cluster_values</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="nv">3</span><span class="p p-Indicator">,</span><span class="nv">4</span><span class="p p-Indicator">]</span>
+<span class="nt">cluster_conditions</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">0.8</span><span class="p p-Indicator">,</span> <span class="nv">0.6</span><span class="p p-Indicator">,</span> <span class="nv">0.2</span><span class="p p-Indicator">]</span>
+<span class="nt">equilibration</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">equilibration_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">adaptive_restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">report</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">report</span>
+<span class="nt">traj</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trajectory.xtc</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="constraints">
+<h3>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h3>
+<p>This section allows the user to change the constraint values.</p>
+<ul class="simple">
+<li><p><strong>ca_constr</strong>: Carbon alpha constraints. Default=0.5</p></li>
+<li><p><strong>interval_constr</strong>: Every how many carbon alphas to apply the constraints. Default:10</p></li>
+<li><p><strong>metal_constr</strong>: Metal constraints. Default=200</p></li>
+<li><p><strong>water_constr</strong>: Water constraints. Default=5</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ca_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="nt">interval_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">metal_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="nt">water_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="metrics">
+<h3>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h3>
+<p>Metrics to track along the simulation</p>
+<ul class="simple">
+<li><p><strong>atom_dist</strong>: Calculate distance between two atomnumbers. Default=None</p></li>
+<li><p><strong>rmsd_pdb</strong>: Calculate rmsd of the ligand to a native pdb structure</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">atom_dist</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">1960</span>
+<span class="nt">rmsd_pdb</span><span class="p">:</span> <span class="s">&quot;/home/dsoler/native.pdb&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="output">
+<h3>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<p>Configure the output</p>
+<ul class="simple">
+<li><p><strong>working_folder</strong>: Name of the main working folder where to store the processed input, control files and the simulation folder. Default=”resname_Pele_X” where X is a number.</p></li>
+<li><p><strong>output</strong>: Output folder of the simulation. Default=output</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;NOR_solvent_OBC&quot;</span>
+<span class="nt">output</span><span class="p">:</span> <span class="s">&quot;output_sim&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="automatic-modes">
+<h2>Automatic Modes<a class="headerlink" href="#automatic-modes" title="Permalink to this headline">¶</a></h2>
+<p>Automatically configures all control file options to a standard job chosen beween
+induce fit, local exploration, bias exploration, exit path and global exploration</p>
+<div class="section" id="induced-fit">
+<h3>Induced fit<a class="headerlink" href="#induced-fit" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>induced_fit</strong>: Run induced fit simulation paramaters by setting the center of the box in the
+cm of the ligand, a box radius of 10A, small rotations and translations and a high number of
+steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
+new conformations within the same binding site.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="local-exploration">
+<h3>Local Exploration<a class="headerlink" href="#local-exploration" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>out_in</strong>: Local exploration to move the ligand from the bulk to the binding site. The box center set on the
+center of mass of the ligand with a radius of 30A, steering 1 50% of the times, and a slight bias towards binding energies.
+Useful when no docking is possible in the binding site and you need to open up the pocket.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="biased">
+<h3>Biased<a class="headerlink" href="#biased" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>bias</strong>: Bias exploration towards the indicated bias column. The box center is set on the center of mass of the ligand with
+a radius of 30A, and a bias towards the chosen metric is set. An epsilon fraction of processors are distributed proportionally to the value of a metric, and the rest are inverselyProportional distributed. Therefore, the <strong>epsilon</strong> value controls fraction of the processors that will be assigned according to the selected metric in <strong>biascolumn</strong></p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bias</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5 (starting by 1 on the reports)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exit-path">
+<h3>Exit path<a class="headerlink" href="#exit-path" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>in_out</strong>: Explore the dissociative path of a molecule. At each step the box is center on the most exterior cluster
+and there is a bias towards higher values of SASA. This type accepts a <strong>exit_metric</strong> which represents a column in the report file, an <strong>exit_value</strong> which represents a value for the metric and a <strong>exit_condition</strong> parameter which can be either “&lt;” or “&gt;”, default value is “&lt;”. The simulation will terminate after the metric written in the metricCol reaches a value smaller or greater than exitValue, depending on the condition specified. An example of the exit condition block that would terminate the program after 4 trajectories reaches a value of more than 0.9 for the sixth column (6th starting to count from 1) of the report file would look like:</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">in_out</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">exit_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.9</span>
+<span class="nt">exit_condition</span><span class="p">:</span> <span class="s">&quot;&gt;&quot;</span>
+<span class="nt">exit_trajnum</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="global-exploration">
+<h3>Global exploration<a class="headerlink" href="#global-exploration" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>global</strong>: Configure a global exploration by randomizing the ligand all around the protein. Then the simulation will start from all configurationsof the system at the same time. The number of configurations (ligand-protein systems) can be chosen thorugh the <strong>poses</strong> flag.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">global</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">poses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../changelog/index.html" class="btn btn-neutral float-right" title="changelog" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../tutorial/index.html" class="btn btn-neutral float-left" title="Launch your first job" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Daniel Soler Viladrich
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

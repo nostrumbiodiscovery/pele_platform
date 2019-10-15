@@ -1,0 +1,14 @@
+system: '../pele_platform/Examples/Msm/PR_AS4.pdb'
+mae_lig: '../pele_platform/Examples/Msm/AS4_INIT.mae'
+chain: 'L'
+resname: 'AS4'
+restart: false
+seed: 12345
+induced_fit: true
+usesrun: true
+atom_dist:
+- 4165
+- 1
+test: true
+
+

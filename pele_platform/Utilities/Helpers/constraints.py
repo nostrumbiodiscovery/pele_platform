@@ -54,7 +54,7 @@ class ConstraintBuilder(object):
 
         init_constr = ['''"constraints":[''', ]
 
-        back_constr = [CONSTR_CALPHA.format(chain, resnum, BACK_CONSTR) for resnum, chain in residues.iteritems() if resnum.isdigit()]
+        back_constr = [CONSTR_CALPHA.format(chain, resnum, BACK_CONSTR) for resnum, chain in residues.items() if resnum.isdigit()]
 
         gaps_constr = self.gaps_constraints()
 
@@ -71,14 +71,14 @@ class ConstraintBuilder(object):
     def gaps_constraints(self):
         #self.gaps = {}
         gaps_constr = []
-        for chain, residues in self.gaps.iteritems():
+        for chain, residues in self.gaps.items():
             gaps_constr = [CONSTR_ATOM.format(TER_CONSTR, chain, terminal, "_CA_") for terminals in residues for terminal in terminals]
         return gaps_constr
 
     def metal_constraints(self):
 
         metal_constr = []
-        for metal, ligands in self.metals.iteritems():
+        for metal, ligands in self.metals.items():
             metal_name, chain, metnum = metal.split(" ")
             for ligand in ligands:
                 ligand_info, bond_lenght = ligand

@@ -195,7 +195,7 @@ def find_tors_in_rings(tors, maefile):
     # are double bonds.  In constrained rings we easily see changes of +/- 30 deg which has a BIG effect
     # downstream and will often prevent ring closure. Ideally we could determine which torsions change in
     # the output file, but that is for another day.   
-    st1 = structure.StructureReader(maefile).next()
+    st1 = next(structure.StructureReader(maefile))
     cur_ring_num = 0
     out_tors = []
     out_ring = []
@@ -428,11 +428,11 @@ def replace_vdwr_from_library(rotamer_library):
     epsilon = float(NBOND_info[2])
     
     if(rdw == 0):
-      warnings.warn("Van der Waals of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
+      #warnings.warn("Van der Waals of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
       NBOND_info[1] = DEFAULT_RADIUS_VDW
       found = True
     if(epsilon == 0):
-      warnings.warn("Epsilon of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
+      #warnings.warn("Epsilon of atom {} = 0 changed to default 0.5".format(NBOND_info[0]))
       NBOND_info[2] = DEFAULT_EPSILON
       found = True
     lines.append(NBOND_info)
@@ -612,8 +612,8 @@ def assign_ligand_groups(tors, all_bonds, n_atoms):
     bonds = remove_tors(all_bonds, tors)  # fixed bonds
     n_assign = 0
     c_group = 0
-    assign = range(n_atoms)
-    for i in range(n_atoms):
+    assign = list(range(n_atoms))
+    for i in list(range(n_atoms)):
         assign[i] = 0
     done = 0
     while (done == 0):
@@ -1630,7 +1630,7 @@ def FindCore(mae_file, user_fixed_bonds, use_rings, residue_name,
 
 def get_torsions_from_mae(mae_file, residue_name):
   pdb_file = residue_name + "_torsions.pdb"
-  struct = structure.StructureReader(mae_file).next()
+  struct = next(structure.StructureReader(mae_file))
   struct.write(pdb_file)
   torsions = [[bond.atom1.index, bond.atom2.index] for bond in struct.bond if is_bond_rotatable(bond)]
   final_torsions = remove_amide_bonds(struct, torsions)
@@ -1705,7 +1705,7 @@ def ReorderTemplate(ordering, new_parent, rank, in_file, out_file, mae_file, R_g
     #  zmat.insert(0,[0,0,0]);zmat.insert(0,[0,0,0]);zmat.insert(0,[0,0,0])
     #Convert to cart
     # cart = int2xyz(zmat, old_parent)
-    str1 = structure.StructureReader(mae_file).next()
+    str1 = next(structure.StructureReader(mae_file))
     cart = [atom.xyz for atom in str1.atom]
      # print 'cartesian(xyz)'
      # for i in range(len(old_parent)):
@@ -1889,29 +1889,29 @@ def negative_torsions_for_pele(phis, tors, bonded):
     atom1 = phi[0]
     atom4 = phi[3]
     for phi_to_compare in phis[0:i]:
-      if(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi_to_compare[2]<0):
+      if(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and int(phi_to_compare[2])<0):
         break
       elif(phi[0:4] == phi_to_compare[0:4]):
         pass
-      elif(phi_to_compare[2]<0):
+      elif(float(phi_to_compare[2])<0):
         pass
       elif(atom1 == phi_to_compare[0] and atom4 == phi_to_compare[3] and phi!=phi_to_compare):
-        if phi[2]>0:
+        if float(phi[2])>0:
           phi[2] = -int(phi[2])
       elif(atom4 == phi_to_compare[0] and atom1 == phi_to_compare[3] and phi!=phi_to_compare):
-        if phi[2]>0:
+        if float(phi[2])>0:
           phi[2] = -int(phi[2])
 
     for tors_to_compare in tors:
       atom1_atom3_tors = [tors_to_compare[0], tors_to_compare[2]]
       if(atom1 in atom1_atom3_tors and  atom4 in atom1_atom3_tors):
-        if phi[2]>0:
+        if float(phi[2])>0:
           phi[2] = -int(phi[2])
 
     for bonded_to_compare in bonded:
       bond = [bonded_to_compare[0], bonded_to_compare[1]]
       if(atom1 in bond and atom4 in bond):
-        if phi[2]>0:
+        if float(phi[2])>0:
           phi[2] = -int(phi[2])
 
     if(float(phi[6]) in [1.0,3.0]):
@@ -2362,8 +2362,7 @@ def find_resnames_in_mae(filename):
       return list(set([atom['s_m_pdb_residue_name'].strip() for atom in mae.atoms()]))
     except KeyError:
       #Default name
-      warnings.warn("NO RESIDUE NAME FOUND IN MAE."\
-                    " USING RESIDUE NAME [{}].".format(STANDARD_RESIDUE_NAME))
+      #warnings.warn("NO RESIDUE NAME FOUND IN MAE. USING RESIDUE NAME [{}].".format(STANDARD_RESIDUE_NAME))
       return [STANDARD_RESIDUE_NAME]
 
 
@@ -2542,7 +2541,7 @@ def make_lib_from_mae(lib_name, lib_type, conf_file, tors, names, parent, orderi
 
     # Read in File
     ###############################CHANGE SCHRODINGER########################
-    st1 = structure.StructureReader(conf_file).next()
+    st1 = next(structure.StructureReader(conf_file))
     tors_values = []
     for st in structure.StructureReader(conf_file):
         # Read in the xyz coordinates into cart
@@ -2753,7 +2752,7 @@ def check_oh_tors(mae_file, tors, names):
     # larger atom number (farther from core) is bound to only one atom
     # which is in turn bound to no atoms
     natoms = len(names)
-    st1 = structure.StructureReader(mae_file).next()
+    st1 = next(structure.StructureReader(mae_file))
     is_oh = []
     for tor in tors:
         atom_name0 = names[tor[0]].replace("_", " ");
@@ -2793,79 +2792,150 @@ def check_oh_tors(mae_file, tors, names):
 ################################################################################
 
 def find_build_lib(resname, mae_file, root, tors, names, group, gridres, gridres_oh, use_rings, back_lib, tors_ring_num,
+
                    ring_libs, debug):
+
     #Make a filename with this data
+
     assign_filename = resname.upper() + ".rot.assign";
+
     f = open(assign_filename, "w")
+
     lib_name_nom = convert_gridres(gridres)
+
     lib_name_oh = convert_gridres(gridres_oh)
+
     is_oh = check_oh_tors(mae_file, tors, names)
 
 
+
+
+
     #  if(use_rings):
+
     #    print "Libraries must be corrected for rings"
+
     written_ring = []
+
     if (tors_ring_num != []):
+
         for i in range(max(tors_ring_num) + 1): written_ring.append(0)
+
     f.write("rot assign res " + resname.upper() + ' &\n')
+
     if (back_lib != ""):
+
         f.write(" backlib " + back_lib + " &\n");
+
     
+
     max_rotatable_bonds = check_max_rotatable_bonds(group, tors, tors_ring_num)
 
+
+
     for grp, max_rotatable in zip(range(max(group) + 1), max_rotatable_bonds):
+
         rotatable_bonds = 0
+
         for i in range(len(tors)):
+
             if ( group[tors[i][0]] == grp or group[tors[i][1]] == grp):
+
                 if (tors_ring_num[i] == 0):
+
                     rotatable_bonds
+
                     if (is_oh[i] == 1):
+
                         lib_name = lib_name_oh
+
                     else:
+
                         lib_name = lib_name_nom
+
                     if max_rotatable:
+
                         lib_name = convert_gridres("30.0")
+
                     if(len(names[tors[i][0]]) < 4 and len(names[tors[i][1]])<4):
+
                       f.write("   sidelib {0} _{1:_^3} _{2:_^3} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
+
                     elif(len(names[tors[i][0]] < 4) and len(names[tors[i][1]]>4)):
+
                       f.write("   sidelib {0} _{1:_^3} {2:_^4} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
+
                     elif(len(names[tors[i][0]] < 4) and len(names[tors[i][1]]>4)):
+
                       f.write("   sidelib {0} {1:_^4} _{2:_^3} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
+
                     else:
+
                       f.write("   sidelib {0} {1:_^4} {2:_^4} &\n".format(lib_name, names[tors[i][0]], names[tors[i][1]]))
 
+
+
                 else:
+
                     ring_num = tors_ring_num[i]
+
                     if (written_ring[ring_num] == 0):
+
                         f.write("   sidelib " + ring_libs[ring_num - 1] + "  default &\n")
+
                         written_ring[ring_num] = 1
+
         if (grp != max(group)):
+
             f.write("     newgrp &\n")
+
     f.close();
+
     return assign_filename
 
+
+
 def check_max_rotatable_bonds(group, tors, tors_ring_num):
+
     """
+
         Check if some sidechain has more
+
         than 2 rotatable bonds to lower
+
         its resolution
+
     """
+
+
 
     LIMIT_ROTATABLE_BONDS = 2
 
-    max_rotatable_bonds = []
-    for grp in range(max(group) + 1):
-        count = 0
-        for i in range(len(tors)):
-            if ( group[tors[i][0]] == grp or group[tors[i][1]] == grp):
-                if (tors_ring_num[i] == 0):
-                    count += 1
-        if count > LIMIT_ROTATABLE_BONDS:
-            max_rotatable_bonds.append(True)
-        else:
-            max_rotatable_bonds.append(False)
-    return max_rotatable_bonds
 
+
+    max_rotatable_bonds = []
+
+    for grp in range(max(group) + 1):
+
+        count = 0
+
+        for i in range(len(tors)):
+
+            if ( group[tors[i][0]] == grp or group[tors[i][1]] == grp):
+
+                if (tors_ring_num[i] == 0):
+
+                    count += 1
+
+        if count > LIMIT_ROTATABLE_BONDS:
+
+            max_rotatable_bonds.append(True)
+
+        else:
+
+            max_rotatable_bonds.append(False)
+
+    return max_rotatable_bonds
 
 #################################################
 
@@ -3058,7 +3128,7 @@ def build_ring_libs(mae_min_file, root, resname, tors, tors_ring_num, \
         mcu_conf.MINI[1] = 1  # PRCG
         mcu_conf.MINI[3] = 50  # iterations of minimze
         #Read in the mae file
-        st1 = structure.StructureReader(mae_min_file).next()
+        st1 = next(structure.StructureReader(mae_min_file))
         com_file = mcu_conf.mcmm(mae_min_file, conf_root + '.com')
         conf_file = conf_root + '-out.mae'
         #Put constraints on all bonds 

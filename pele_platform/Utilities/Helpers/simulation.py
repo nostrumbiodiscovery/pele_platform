@@ -1,7 +1,7 @@
 import os
 import AdaptivePELE.adaptiveSampling as ad
 from pele_platform.Utilities.Helpers import helpers, template_builder
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.center_of_mass as cm 
 
 class SimulationBuilder(template_builder.TemplateBuilder):
@@ -19,14 +19,20 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "LICENSES": cs.LICENSE, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center, "HBOND1": env.hbond_donor, 
                         "HBOND2": env.hbond_acceptor, "SASA_min": env.sasa_min, "SASA_max": env.sasa_max,
                         "WATER_RADIUS": env.water_radius, "WATER_CENTER": env.water_center, "WATER": env.water,
-                        "WATER_ENERGY": env.water_energy, "METRICS": env.metrics}
+                        "WATER_ENERGY": env.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, "TRAJ_NAME": env.traj_name,
+                        "SOLVENT": env.solvent, "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
+                        "OVERLAP": env.overlap_factor, "STERIC_TRIALS": env.steric_trials, "TEMPERATURE": env.temperature, 
+                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box}
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
     def fill_adaptive_template(self, env):
-        self.adaptive_keywords = { "RESTART": cs.RESTART, "OUTPUT": env.adap_ex_output, "INPUT":env.adap_ex_input,
+        self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.output, "INPUT":env.adap_ex_input,
                 "CPUS":env.cpus, "PELE_CFILE": self.pele_file, "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,
-                "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, "PELE_STEPS": env.pele_steps}
+                "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, 
+                "PELE_STEPS": env.pele_steps, "REPORT_NAME": env.report_name, "SPAWNING_TYPE": env.spawning, "DENSITY": env.density,
+                "SIMULATION_TYPE": env.simulation_type, "CLUSTER_VALUES": env.cluster_values, "CLUSTER_CONDITION": env.cluster_conditions,
+                "UNBINDING": env.unbinding_block, "USESRUN": env.usesrun }
         super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)
 
 
@@ -34,9 +40,9 @@ class SimulationBuilder(template_builder.TemplateBuilder):
     def run(self, hook=False):
         with helpers.cd(os.path.dirname(self.adaptive_file)):
             if hook:
-		ad.main(self.adaptive_file, clusteringHook=self.interactive_clustering)
+                ad.main(self.adaptive_file, clusteringHook=self.interactive_clustering)
             else:
-		ad.main(self.adaptive_file)
+                ad.main(self.adaptive_file)
 
     def interactive_clustering(self, cluster_object, paths, simulationRunner, epoch_number):
         initial_rmsd_cluster_values = cluster_object.thresholdCalculator.values

@@ -14,8 +14,8 @@ def split_pdb(pdb_filename, output_path, prefix):
         pattern = re.search(r"\w+/(\d+)/(\w+)_trajectory_(\d+)\.pdb", pdb_filename)
         # pattern = re.search(r"\w+/(\d+)/trajectory_(\d+)\.pdb", pdb_filename)
         if pattern is None:
-            print "The file {} doesn't match the naming convention".format(pdb_filename)
-            print "It won't be processed."
+            print("The file {} doesn't match the naming convention".format(pdb_filename))
+            print("It won't be processed.")
             continue
         else:
             system_id = "{0[1]}_epoch_{0[0]}_processor_{0[2]}_model_{1}".format(pattern.groups(), i+1)
@@ -31,15 +31,15 @@ def main(input_folder, output_path, output_prefix):
         os.mkdir(output_path)
     for f in input_folder:
         if not os.path.isdir(f):
-            print "The input {} isn't a folder it won't be used.".format(f)
+            print("The input {} isn't a folder it won't be used.".format(f))
             continue
         files_to_read = glob.glob(f + "*/*trajectory*.pdb")
         if len(files_to_read) == 0:
             files_to_read = glob.glob(f + "*/*trajectory*.xtc")
             if len(files_to_read) == 0:
-                print "No file in a valid format (.pdn or .xtc) found. \nDiscontinuing the folder {}".format(f)
+                print("No file in a valid format (.pdn or .xtc) found. \nDiscontinuing the folder {}".format(f))
             else:
-                print "No treatment for .xtc files implemented yet"
+                print("No treatment for .xtc files implemented yet")
         else:
             for pdb_file in files_to_read:
                 split_pdb(pdb_file, output_path, output_prefix)

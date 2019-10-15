@@ -1,9 +1,9 @@
 from prody import AtomGroup
 
-from mutational_module import AddAtoms, ModifyExistingAtoms
-from program_own_classes import ZMATRIX
-from coordinates_module import ComputeCartesianCoordinates, ComputeDihedral
-from global_processes import FindInitialAndFinalResidues
+from pele_platform.Utilities.PPP.mutational_module import AddAtoms, ModifyExistingAtoms
+from pele_platform.Utilities.PPP.program_own_classes import ZMATRIX
+from pele_platform.Utilities.PPP.coordinates_module import ComputeCartesianCoordinates, ComputeDihedral
+from pele_platform.Utilities.PPP.global_processes import FindInitialAndFinalResidues
 
 __author__ = 'jelisa'
 
@@ -100,7 +100,6 @@ def PlaceSpecialAtoms(old_residue, atom_name, structure, resnum, zmatrix, verbos
         fi = 60 + 120 * (int(atom_name[1]) - 1)  # dihedral between C-Calpha-N-hydrogens in maestro
         deta = 109.53580  # Angle between Calpha-N-Hydrogens in maestro.
     else:
-        print "How did you get here??"
         return old_residue
     coords = ComputeCartesianCoordinates(at1, at2, at3, r, deta, fi)
     new_atom = DefineNewAtom(atom_name, element, coords, current_residue.getResnames()[:1],
@@ -172,52 +171,51 @@ def FixStructure(initial_structure, residues2fix, gaps, charge_terminals, debug=
                     zmatrix = ZMATRIX(resname)
                     atoms2add = residues2fix[res_id]['add']
                 if residues2fix[res_id]['delete']:
-                    print "  * Removing the charge from the terminal residue {0:3} {1:1} {2:3}. " \
+                    print("  * Removing the charge from the terminal residue {0:3} {1:1} {2:3}. " \
                           "The removed atoms are : {3}".format(residue.getResname(),
                                                                residue.getChid(), residue.getResnum(),
-                                                               " ".join(residues2fix[res_id]['delete']))
+                                                               " ".join(residues2fix[res_id]['delete'])))
                     new_residue = residue.select('not name {}'.format(" ".join(residues2fix[res_id]['delete']))).copy()
                     old_res = new_residue
                 if residues2fix[res_id]['modify']:
                     atomnames_of_2_letters = ["FE"]
-                    print "  * Modifying the residue {0:3} {1:1} {2:3}:".format(residue.getResname(),
+                    print("  * Modifying the residue {0:3} {1:1} {2:3}:".format(residue.getResname(),
                                                                                 residue.getChid(),
                                                                                 residue.getResnum(),
-                                        " ".join(residues2fix[res_id]['add']))
+                                        " ".join(residues2fix[res_id]['add'])))
                     new_residue = ModifyExistingAtoms(old_res, residues2fix[res_id]['modify'],
                                                       atomnames_of_2_letters, 0, 1, zmatrix)
                     old_res = new_residue
                 if residues2fix[res_id]['add']:
-                    print "  * Adding to the residue {0:3} {1:1} {2:3} the atoms:" \
+                    print("  * Adding to the residue {0:3} {1:1} {2:3} the atoms:" \
                           " {3}".format(residue.getResname(), residue.getChid(), residue.getResnum(),
-                                        " ".join(residues2fix[res_id]['add']))
+                                        " ".join(residues2fix[res_id]['add'])))
                     # print " Adding to the residue '{}' the following atoms\n  {}".format(res_id, residues2fix[res_id])
                     if zmatrix.Name is None:
-                        print "  ** The residue {} {} doesn't have a template, so it cannot be fixed.\n" \
-                              "  ** PELE won't work! Check it!".format(residue.getResname(), residue.getResnum())
+                        print("  ** The residue {} {} doesn't have a template, so it cannot be fixed.\n" \
+                              "  ** PELE won't work! Check it!".format(residue.getResname(), residue.getResnum()))
                         continue
                     if debug:
-                        print "ZMATRIX used:", zmatrix.Name
-                        print 'atoms to add:', atoms2add
-                        print 'residues2fix:', residues2fix[res_id]
+                        print("ZMATRIX used:", zmatrix.Name)
+                        print('atoms to add:', atoms2add)
+                        print('residues2fix:', residues2fix[res_id])
                     residue_info = {"fin_resname": resname, "resnum": resnum, "chain": residue.getChid()}
                     if resname == "HOH":
-                        print "  ** The water {0:3} {1:1} {2:3} is missing the atoms: {3}.\n" \
+                        print("  ** The water {0:3} {1:1} {2:3} is missing the atoms: {3}.\n" \
                               "  ** The program won't place them. \n" \
                               "  ** PELE will crash".format(resname, residue.getChid(), resnum,
-                                                            ", ".join(residues2fix[res_id]['add']))
+                                                            ", ".join(residues2fix[res_id]['add'])))
                         new_residue = current_structure.select('resnum {}'.format(resnum)).copy()
                     else:
                         try:
                             zmatrix.ComputeDeltaFi()
                         except ValueError:
-                            print "Something went wrong computing the delta phi for the residue {} {}.\n" \
-                                  "Check the template ZMATRIX".format(resname, resnum)
+                            print("Something went wrong computing the delta phi for the residue {} {}.\n" \
+                                  "Check the template ZMATRIX".format(resname, resnum))
                         for name in zmatrix.AtomNames:
                             if name in atoms2add:
                                 if name in ["H", "HA2", "HA", "HA3", "CB", "OXT", "H1", "H2", "H3"]:
                                     if debug:
-                                        print '000'
                                         new_residue = PlaceSpecialAtoms(old_res, name, current_structure,
                                                                         residue.getResnum(), zmatrix, True)
                                     else:
@@ -225,11 +223,8 @@ def FixStructure(initial_structure, residues2fix, gaps, charge_terminals, debug=
                                                                         residue.getResnum(), zmatrix)
                                     old_res = new_residue
                                 elif name[0] == "H" and zmatrix.DeltaFi[zmatrix.AtomNames.index(name)] != 0:
-                                    try:
-                                        new_residue = PlaceHydrogen(old_res, name, zmatrix)
-                                        old_res = new_residue
-                                    except AttributeError:
-                                        pass
+                                    new_residue = PlaceHydrogen(old_res, name, zmatrix)
+                                    old_res = new_residue
                                 else:
                                     new_residue = AddAtoms(old_res, [name], ["FE"], residue_info, zmatrix, False)
                                     old_res = new_residue
@@ -241,9 +236,9 @@ def FixStructure(initial_structure, residues2fix, gaps, charge_terminals, debug=
                 new_anisous.resize(new_residue.numAtoms(), 6)
                 new_residue.setAnisous(new_anisous)
                 if debug:
-                    print "checking the concordance between the anisou and the number of atoms"
-                    print "len anisous: {}, number of atoms: {}".format(len(new_residue.getAnisous()),
-                                                                        new_residue.numAtoms())
+                    print("checking the concordance between the anisou and the number of atoms")
+                    print("len anisous: {}, number of atoms: {}".format(len(new_residue.getAnisous()),
+                                                                        new_residue.numAtoms()))
             if new_chain is None:
                 new_chain = new_residue
             else:

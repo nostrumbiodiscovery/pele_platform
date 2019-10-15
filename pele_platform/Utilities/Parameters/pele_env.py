@@ -3,7 +3,7 @@ import shutil
 import warnings
 import random
 import logging
-import pele_platform.constants as cs
+import pele_platform.constants.constants as cs
 import pele_platform.features as fs
 import pele_platform.Utilities.Helpers.helpers as hp
 from pele_platform.Utilities.Parameters.SimulationParams import simulation_params
@@ -20,12 +20,22 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         self.build_variables(args)
 
     def build_variables(self, args):
-        simulation_params.SimulationParams.__init__(self, args)
-        simulation_folders.SimulationPaths.__init__(self, args)
-        #####Define files and folders "HIDING VARIABLES " --> CHANGE#########
+        #DEFINE MAIN PATH
+        pele_dir = os.path.abspath("{}_Pele".format(args.residue))
+        if not args.folder:
+            self.pele_dir = hp.is_repited(pele_dir) if args.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
+            self.pele_dir = hp.is_repited(pele_dir) if not args.adaptive_restart else hp.is_last(pele_dir)
+        else:
+            self.pele_dir = os.path.abspath(args.folder)
+        #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
         for key, value in fs.retrieve_software_settings(args, self.pele_dir).items():
             setattr(self, key, value)
-
+        #####Initialize all variables by combining default and user input######
+        simulation_params.SimulationParams.__init__(self, args)
+        simulation_folders.SimulationPaths.__init__(self, args)
+        for key, value in fs.retrieve_software_settings(args, self.pele_dir).items():
+            setattr(self, key, value)
+        
     @classmethod
     def build_env(cls, args):
         env = cls(args)
@@ -33,7 +43,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         return env
 
     def create(self):
-        if self.restart in cs.FIRST_RESTART:
+        if self.restart in cs.FIRST_RESTART and not self.adaptive_restart:
             self.create_folders()
             self.create_files()
             self.create_logger()
@@ -46,7 +56,6 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         """
             Create pele folders
         """
-
         for folder in self.folders:
             hp.create_dir(self.pele_dir, folder)
 
@@ -66,8 +75,8 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         self.logger.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
         if self.restart in ["all", "glide" ]:
-			file_handler = logging.FileHandler(log_name, mode='w')
+            file_handler = logging.FileHandler(log_name, mode='w')
         else:
-			file_handler = logging.FileHandler(log_name, mode='a')
+            file_handler = logging.FileHandler(log_name, mode='a')
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)

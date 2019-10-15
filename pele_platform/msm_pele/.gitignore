@@ -1,0 +1,15 @@
+*/*.pyc
+*.pyc
+*/*.pyo
+*.pyo
+*.sw[op]
+*/*.sw[op]
+*.swn
+*.swl
+*.swm
+msm_pele/AdaptivePELE/freeEnergies/*.c
+msm_pele/AdaptivePELE/freeEnergies/*.so
+msm_pele/AdaptivePELE/atomset/*.c
+msm_pele/AdaptivePELE/atomset/*.so
+build/
+makeReleasePlatform_nord
