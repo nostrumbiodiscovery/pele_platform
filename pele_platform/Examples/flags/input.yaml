@@ -1,0 +1,57 @@
+system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
+chain: 'Z'
+resname: 'STR'
+cpus: 3
+seed: 3000
+iterations: 1
+steps: 1
+preprocess_receptor: true
+gridres: 60
+maxtorsion: 2
+templates:
+  - "data/mgz"
+  - "data/ligz"
+rotamers:
+  - "data/MG.rot.assign"
+  - "data/LIG.rot.assign"
+box_radius: 3000
+box_center:
+  - 30
+  - 30
+  - 30
+anm_freq: 3
+sidechain_freq: 3
+min_freq: 3
+water_freq: 3
+temperature: 3000
+solvent: "OBC"
+sidechain_res: 30
+overlap_factor: 0.3
+steric_trials: 300
+spawning: "epsilon"
+density: "exitContinuous"
+cluster_values: [1,2,3]
+cluster_conditions: [0.1, 0.2, 0.3]
+equilibration: true
+equilibration_steps: 300
+report: rep
+traj: traj.xtc
+ca_constr: 3
+interval_constr: 3
+metal_constr: 300
+water_constr: 20
+rmsd_pdb: "native.pdb"
+working_folder: "NOR_solvent_OBC"
+output: "output_sim"
+epsilon: 0.3
+bias_column: 3
+exit_value: 0.3
+exit_condition: ">"
+exit_trajnum: 3
+atom_dist:
+- 30
+- 31
+in_out: true
+debug: true
+
+
