@@ -3,6 +3,5 @@ chain: 'Z'
 resname: 'IK1'
 restart: false
 seed: 12345
-usesrun: true
 out_in: true
 test: true

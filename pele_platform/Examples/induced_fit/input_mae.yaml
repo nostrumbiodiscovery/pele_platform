@@ -5,7 +5,6 @@ resname: 'AS4'
 restart: false
 seed: 12345
 induced_fit: true
-usesrun: true
 atom_dist:
 - 4165
 - 1
