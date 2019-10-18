@@ -307,9 +307,11 @@ def main(mae_file, templatedir=None, rotamerdir=None, outputname=None, max_tors=
     	nstdres.remove_capping_hidrogens(output_template_file, nstd)
 
     if templatedir:
-        shutil.move(output_template_file, templatedir)
+        filename = os.path.basename(output_template_file)
+        shutil.move(output_template_file, os.path.join(templatedir, filename))
     if rotamerdir:
-        shutil.move(rotamers_file, rotamerdir)
+        filename = os.path.basename(rotamers_file)
+        shutil.move(rotamers_file, os.path.join(rotamerdir, filename))
 
 
     return output_template_file, rotamers_file
