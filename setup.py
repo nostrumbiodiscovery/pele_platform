@@ -1,4 +1,5 @@
 import numpy
+import pele_platform
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
@@ -56,14 +57,9 @@ else:
     ]
 
 
-
-def load_requirements(fname):
-    reqs = parse_requirements(fname, session="test")
-    return [str(ir.req) for ir in reqs]
-
 setup(
     name="pele_platform",
-    version="1.0.0.3",
+    version=pele_platform.__version__,
     description='Automatic platform to launch PELE',
     long_description=long_description,
     url="https://github.com/NostrumBioDiscovery/pele_platform",
@@ -73,7 +69,8 @@ setup(
     package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd'], "pele_platform/AdaptivePELE/freeEnergies/": ['*.pyx']},
     include_package_data=True,
     include_dirs=[numpy.get_include()],
-    install_requires=load_requirements("requirements.txt"),    
+    install_requires=["pillow", "scipy", "matplotlib", 
+       "biopython", "pandas", "pyemma", "prody", "six", "future", "fpdf", "pytest"],    
     cmdclass=cmdclass,
     ext_modules=cythonize(ext_modules)  # accepts a glob pattern
 )
