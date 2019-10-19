@@ -3,7 +3,6 @@ chain: 'M'
 resname: 'HOH'
 restart: false
 seed: 12345
-usesrun: true
 test: true
 water_bs:
 - M:1

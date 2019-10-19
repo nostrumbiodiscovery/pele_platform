@@ -90,11 +90,13 @@ def run_adaptive(args):
             plop.parametrize_miss_residues(args, env, syst)
         env.logger.info("Template {}z created\n\n".format(args.residue.lower()))
         if env.external_template:
-            cmd_to_move_template = "cp {} {}".format(env.external_template,  env.template_folder)
-            subprocess.call(cmd_to_move_template.split())
+            for template_file in env.external_template:
+                cmd_to_move_template = "cp {} {}".format(template_file,  env.template_folder)
+                subprocess.call(cmd_to_move_template.split())
         if env.external_rotamers:
-            cmd_to_move_rotamer_file = "cp {} {}".format(env.external_rotamers, env.rotamers_folder)
-            subprocess.call(cmd_to_move_rotamer_file.split())
+            for rotamer_file in env.external_rotamers:
+                cmd_to_move_rotamer_file = "cp {} {}".format(rotamer_file, env.rotamers_folder)
+                subprocess.call(cmd_to_move_rotamer_file.split())
 
         ###########Parametrize missing residues#################
         for res, __, _ in missing_residues:
@@ -129,7 +131,8 @@ def run_adaptive(args):
         if env.pele:
             ext.external_pele_file(env)
         adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
-        adaptive.run()
+        if not env.debug:
+            adaptive.run()
         env.logger.info("Simulation run succesfully (:\n\n")
         
     return env

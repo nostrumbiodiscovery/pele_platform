@@ -1,4 +1,5 @@
 import numpy
+import pele_platform
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
@@ -11,7 +12,12 @@ except ImportError:
     use_cython = False
 else:
     use_cython = True
-    print(use_cython)
+try:
+    # for pip >= 10
+    from pip._internal.req import parse_requirements
+except ImportError:
+    # for pip <= 9.0.3
+    from pip.req import parse_requirements
 from distutils.command.sdist import sdist as _sdist
 
 # Run the following line to compile atomset package
@@ -50,9 +56,10 @@ else:
         Extension("pele_platform.AdaptivePELE.freeEnergies.utils", ["pele_platform/AdaptivePELE/freeEnergies/utils.c"], include_dirs=["pele_platform/AdaptivePELE", "pele_platform/AdaptivePELE/freeEnergies"])
     ]
 
+
 setup(
     name="pele_platform",
-    version="1.0.0.3",
+    version=pele_platform.__version__,
     description='Automatic platform to launch PELE',
     long_description=long_description,
     url="https://github.com/NostrumBioDiscovery/pele_platform",
@@ -62,7 +69,8 @@ setup(
     package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd'], "pele_platform/AdaptivePELE/freeEnergies/": ['*.pyx']},
     include_package_data=True,
     include_dirs=[numpy.get_include()],
-    install_requires=['cython', 'numpy', 'pillow', 'scipy', 'matplotlib', 'biopython ', 'pandas', 'pyemma', 'prody', 'six', 'future', 'fpdf', 'pytest'],
+    install_requires=["pillow", "scipy", "matplotlib", 
+       "biopython", "pandas", "pyemma", "prody", "six", "future", "fpdf", "pytest"],    
     cmdclass=cmdclass,
     ext_modules=cythonize(ext_modules)  # accepts a glob pattern
 )

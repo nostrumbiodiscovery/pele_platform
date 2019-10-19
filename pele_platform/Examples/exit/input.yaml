@@ -4,7 +4,6 @@ resname: 'STR'
 restart: false
 seed: 12345
 induced_fit: true
-usesrun: true
 test: true
 in_out: true
 
