@@ -1,5 +1,5 @@
 PELE_Platform
-##################3
+##################
 
 |MIT license| |GitHub release| |PyPI release| |Conda release|
 
