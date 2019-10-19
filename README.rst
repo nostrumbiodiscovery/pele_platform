@@ -24,9 +24,9 @@ pip install pele_platform
 .. |GitHub release| image:: https://img.shields.io/github/release/NostrumBioDiscovery/pele_platform.svg
     :target: https://github.com/NostrumBioDiscovery/pele_platform/releases/
 
-.. |PyPI release| image:: https://img.shields.io/pypi/NostrumBioDiscovery/pele_platform.svg
+.. |PyPI release| image:: https://img.shields.io/pypi/v/pele_platform.svg
     :target: https://pypi.org/project/pele_platform/
 
-.. |Conda release| .. image:: https://anaconda.org/nostrumbiodiscovery/pele_platform/badges/version.svg
+.. |Conda release| image:: https://anaconda.org/nostrumbiodiscovery/pele_platform/badges/version.svg
     :target: https://anaconda.org/nostrumbiodiscovery/pele_platform
 
