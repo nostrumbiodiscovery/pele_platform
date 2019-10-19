@@ -3,8 +3,8 @@ What's new?
 
 Here we report the main changes for each version
 
-v1.0
-=====
+v1.1
+=======================
 
 - Automatic Platform to automatically launch PELE&adaptivePELE. It creates the forcefield parameters, the control files, the PELE input.pdb and finally launch the simulation.
 
