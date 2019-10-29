@@ -56,12 +56,12 @@ def run_adaptive(args):
             env.adap_ex_input = ", ".join(['"' + input +  '"' for input in env.inputs_simulation])
         elif args.full or args.randomize:
             ligand_positions = rd.randomize_starting_position(env.ligand_ref, "input_ligand.pdb", env.residue, env.receptor, None, None, env, poses=env.poses)
-            inputs = rd.join(env.receptor, ligand_positions, env)
+            receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
+                            charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0]
+            inputs = rd.join(receptor, ligand_positions, env)
+            env.adap_ex_input = ", ".join(['"' + input + '"' for input in inputs]).strip('"')
             hp.silentremove(ligand_positions)
             #Parsing input for errors and saving them as inputs
-            env.adap_ex_input = ", ".join([ '"' + ppp.main(input, env.pele_dir, output_pdb=["" , ], 
-                charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0]  + '"' for input in inputs ]).strip('"')
-            hp.silentremove(inputs)
 
         ##########Prepare System################
         if env.no_ppp:

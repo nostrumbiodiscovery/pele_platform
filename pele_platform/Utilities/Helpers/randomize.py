@@ -89,14 +89,19 @@ def join(receptor, ligands, env, output="input{}.pdb"):
     """
     
     with open(receptor, "r") as f:
-        receptor_content = f.readlines()
-        initial_atomnum = max([ int(line[6:11]) for line in receptor_content if line.startswith("ATOM") or line.startswith("HETATM")])
+        lines = f.readlines()
+        receptor_content = [line for line in lines if line[17:20] != env.residue]
+        ligand_content_without_coords = [line[0:27] + "{}" + line[56:] for line in lines if line[17:20] == env.residue]
+        initial_atomnum = max([ int(line[6:11]) for line in lines if line.startswith("ATOM") or line.startswith("HETATM")])
 
     outputs = []
     for i, ligand in enumerate(ligands):
         with open(ligand, "r") as fin:
-            #exclude connects
-            ligand_content = [line for line in fin if line.startswith("ATOM") or line.startswith("HETATM")]
+            #exclude connects but keep initial atomnames (CL problem)
+            ligand_coords = [line[27:56] for line in fin if line.startswith("ATOM") or line.startswith("HETATM")]
+            assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part send an issue to github"
+
+            ligand_content = [pdb_block.format(coord) for coord, pdb_block in zip(ligand_coords, ligand_content_without_coords)]
             
             current_atomnum = initial_atomnum +1
             for j, line in enumerate(ligand_content):

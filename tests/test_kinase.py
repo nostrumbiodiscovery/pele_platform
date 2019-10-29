@@ -27,6 +27,12 @@ def test_induced(ext_args=INDUCED_ARGS):
     main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
+def test_global(ext_args=GLOBAL_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
+
 def test_exit(ext_args=EXIT_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
@@ -68,12 +74,6 @@ def test_restart(ext_args=RESTART_ARGS):
 #    arguments = main.YamlParser(arguments.input_file)
 #    main.set_software_to_use(arguments)
 #    main.Launcher(arguments).launch()
-
-def test_mae(ext_args=MAE_ARGS):
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
-    main.Launcher(arguments).launch()
 
 def test_mae(ext_args=MAE_ARGS):
     arguments = main.parseargs_yaml(ext_args)

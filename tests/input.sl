@@ -20,4 +20,4 @@ export PYTHONPATH=/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform/:/home/s
 
 ############################CHANGE##########################
 
-python -m pytest -k test_bias -vv
+python -m pytest
