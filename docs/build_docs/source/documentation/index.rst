@@ -128,6 +128,10 @@ Parameters to set the exploration Box:
 PELE params
 ================
 
+- **seed**: Seed of the job for reproducibility. Default=12345
+
+- **log**: Retrieve PELE logfiles during simulation. Default=False
+
 - **anm_freq**: Every how many steps to perform anm. Default=4
 
 - **sidechain_freq**: Every how many steps to perform sidechain sampling. Default=2
@@ -148,6 +152,8 @@ PELE params
 
 ..  code-block:: yaml
 
+  seed: 312312
+  log: true
   anm_freq: 4
   sidechain_freq: 2
   min_freq: 1
@@ -215,6 +221,52 @@ This section allows the user to change the constraint values.
     water_constr: 5
 
 
+WaterPerturbation
+======================
+
+- Water modes:
+
+    - **water_exp**: Exploration of the hydratation sites of a binding site by perturbing and clusterizing a single water. More advance features will be later implemented to discriminate between "happy" and "unhappy" waters.
+
+    - **water_lig**: Perturb one or several water molecules while exploring the conformational space of the ligand.
+
+Example water exploration:
+
+..  code-block:: yaml
+
+  residue: HOH
+  water_exp: true
+
+Example water ligand:
+
+..  code-block:: yaml
+
+    residue: LIG
+    water_exp:
+    - M:1
+    - M:2
+
+- **box_water**: Center of the box for the waters
+
+- **water_radius**: Radius of the water box
+
+- **water_trials**: Numerical trials on water perturbation
+
+- **water_constr**: COM constraint applied to th water molecule after perturbation
+
+- **water_temp**: Temperature of the water perturbation step
+
+
+..  code-block:: yaml
+
+    box_water:
+    - 20
+    - 30
+    - 20
+    water_radius: 8
+    water_trials: 500
+    water_constr: 0.5
+    water_tamp: 2000
 
 
 Metrics
