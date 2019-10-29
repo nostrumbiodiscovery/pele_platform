@@ -49,8 +49,8 @@ def run_adaptive(args):
             for input in env.input:
                 input_path  = os.path.join(env.pele_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
-                input_proc = ppp.main(input_path, env.pele_dir, output_pdb=["" , ],
-                                charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0]
+                input_proc = os.path.basename(ppp.main(input_path, env.pele_dir, output_pdb=["" , ],
+                                charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0])
                 env.inputs_simulation.append(input_proc)
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input +  '"' for input in env.inputs_simulation])
@@ -59,7 +59,7 @@ def run_adaptive(args):
             receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
                             charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0]
             inputs = rd.join(receptor, ligand_positions, env)
-            env.adap_ex_input = ", ".join(['"' + input + '"' for input in inputs]).strip('"')
+            env.adap_ex_input = ", ".join(['"' + os.path.basename(input) + '"' for input in inputs]).strip('"')
             hp.silentremove(ligand_positions)
             #Parsing input for errors and saving them as inputs
 
