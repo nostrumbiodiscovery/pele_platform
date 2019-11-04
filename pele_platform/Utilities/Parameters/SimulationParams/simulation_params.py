@@ -8,6 +8,8 @@ from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inou
 from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
 import pele_platform.Utilities.Helpers.helpers as hp
 
+LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
+
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
     inout_params.InOutParams,  waterexp_params.WaterExp):
@@ -45,6 +47,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.chain = args.chain
         self.debug = True if args.debug else False
         self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params.get("pele_steps", None)
+        self.logfile =  LOGFILE if args.log else ""
         self.license = '''"{}"'''.format(cs.LICENSE)
         self.anm_freq = args.anm_freq
         self.sidechain_freq = args.sidechain_freq
@@ -123,7 +126,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
     def box_params(self, args):
         self.box_radius = args.box_radius if args.box_radius else self.simulation_params.get("box_radius", None)
-        self.box_center = "["+ ",".join(str(args.user_center)) + "]" if args.user_center else None
+        self.box_center = "["+ ",".join([str(coord) for coord in args.user_center]) + "]" if args.user_center else None
 
     def metrics_params(self, args):
         self.metrics = None

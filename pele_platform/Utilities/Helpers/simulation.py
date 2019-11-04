@@ -14,7 +14,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         self.fill_adaptive_template(env)
 
     def fill_pele_template(self, env):
-        self.pele_keywords = { "NATIVE": env.native, "FORCEFIELD": env.forcefield, "CHAIN": env.chain, 
+        self.pele_keywords = { "LOGFILE": env.logfile, "NATIVE": env.native, "FORCEFIELD": env.forcefield, "CHAIN": env.chain, 
                         "CONSTRAINTS": "\n".join(env.constraints), "CPUS":env.cpus,
                         "LICENSES": cs.LICENSE, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center, "HBOND1": env.hbond_donor, 
                         "HBOND2": env.hbond_acceptor, "SASA_min": env.sasa_min, "SASA_max": env.sasa_max,
