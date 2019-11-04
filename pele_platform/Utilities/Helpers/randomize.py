@@ -79,7 +79,7 @@ def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_fil
                 output.append(rand_lig_pdb)
                 n += 1
 
-    return output
+    return output, sphere_cent, D
 
 def join(receptor, ligands, env, output="input{}.pdb"):
 
@@ -108,7 +108,7 @@ def join(receptor, ligands, env, output="input{}.pdb"):
                 ligand_content[j] = line[:6] + "{:>5}".format(current_atomnum) + line[11:]
                 current_atomnum += 1
                 
-        content_join_file = receptor_content + ligand_content + ["END"]
+        content_join_file = receptor_content + ligand_content + ["TER"]
         if env:
             output_path = os.path.join(env.pele_dir, output.format(i))
         else:
@@ -129,7 +129,7 @@ def parse_args():
 
 if __name__ == "__main__":
    ligand, receptor, resname  = parse_args()
-   output = randomize_starting_position(ligand, "ligand_input.pdb", resname,
+   output, sphere_cent, D = randomize_starting_position(ligand, "ligand_input.pdb", resname,
            receptor, None, None, None)
    join(receptor, output, None)
 

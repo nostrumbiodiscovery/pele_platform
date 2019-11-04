@@ -55,7 +55,7 @@ def run_adaptive(args):
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input +  '"' for input in env.inputs_simulation])
         elif args.full or args.randomize:
-            ligand_positions = rd.randomize_starting_position(env.ligand_ref, "input_ligand.pdb", env.residue, env.receptor, None, None, env, poses=env.poses)
+            ligand_positions, env.box_center, env.box_radius = rd.randomize_starting_position(env.ligand_ref, "input_ligand.pdb", env.residue, env.receptor, None, None, env, poses=env.poses)
             receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
                             charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0]
             inputs = rd.join(receptor, ligand_positions, env)
