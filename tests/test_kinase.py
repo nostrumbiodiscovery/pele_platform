@@ -36,7 +36,8 @@ PELE_VALUES = ['"reportPath": "$OUTPUT_PATH/rep",', '"trajectoryPath": "$OUTPUT_
                 'tests/native.pdb"',
                 '"atoms": { "ids":["A:2:_HB3"]}',
                 '"atoms": { "ids":["A:2:_HB2"]}',
-                'simulationLogPath'
+                'simulationLogPath',
+                '"activateProximityDetection": false'
               ]
 
 

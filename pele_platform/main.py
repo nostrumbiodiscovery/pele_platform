@@ -299,6 +299,7 @@ class YamlParser(object):
         self.output = data.get("output", "output")
         self.randomize = data.get("randomize", False)
         self.full = data.get("global", False)
+        self.proximityDetection = data.get("proximityDetection", True)
         self.poses = data.get("poses", 40)
         self.precision_glide = data.get("precision_glide", "SP") 
         self.msm = data.get("msm", False)

@@ -54,6 +54,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.min_freq = args.min_freq
         self.temperature = args.temperature
         self.sidechain_resolution = args.sidechain_resolution
+        print("A", args.proximityDetection)
+        self.proximityDetection = "false" if not args.proximityDetection else "true"
         self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", None)
         self.ca_constr = args.ca_constr
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", None)
