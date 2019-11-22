@@ -1,6 +1,8 @@
 #Clean after build
+pip uninstall -r requirements.txt --yes
 pip uninstall pele_platform --yes
-pip install --index-url https://test.pypi.org/simple/ pele_platform
+pip install numpy cython
+pip install pele_platform
 cd tests
 pytest
 

@@ -8,7 +8,6 @@ from argparse import HelpFormatter
 from operator import attrgetter
 import argparse
 import os
-import pele_platform.msm_pele.main as msm
 import pele_platform.Rescore.main as gl
 import pele_platform.Rescore.simulation as ad
 
