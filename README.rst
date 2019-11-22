@@ -1,5 +1,5 @@
 PELE_Platform
-====================
+##################
 
 |MIT license| |GitHub release| |PyPI release| |Conda release|
 
@@ -13,7 +13,23 @@ Automatically prepare and launch PELE&AdaptivePELE input
 Install
 =====================
 
-pip install pele_platform
+https://nostrumbiodiscovery.github.io/pele_platform/installation/index.html
+
+
+Get Started
+===============
+
+https://nostrumbiodiscovery.github.io/pele_platform/tutorial/index.html#
+
+Documentation of the input parameters
+=======================================
+
+https://nostrumbiodiscovery.github.io/pele_platform/documentation/index.html
+
+What's new
+============
+
+https://nostrumbiodiscovery.github.io/pele_platform/changelog/index.html
 
 
 .. |MIT license| image:: https://img.shields.io/badge/License-MIT-blue.svg
