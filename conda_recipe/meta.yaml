@@ -1,7 +1,7 @@
 # must do conda install -c NostrumBioDiscovery pele_platform 
 package:
   name: pele_platform
-  version: "1.0.0"
+  version: "1.2.0"
 
 about:
   home: https://github.com/nostrumbiodiscovery/pele_platform
@@ -36,6 +36,7 @@ requirements:
     - fpdf
     - pillow
     - pytest
+    - adaptive_pele
 
 test:
   imports:
