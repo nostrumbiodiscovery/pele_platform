@@ -1,9 +1,11 @@
 system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
 chain: 'Z'
 resname: 'STR'
+log: true
 cpus: 3
 seed: 3000
 iterations: 1
+usesrun: true
 steps: 1
 preprocess_receptor: true
 gridres: 60
@@ -33,7 +35,7 @@ density: "exitContinuous"
 cluster_values: [1,2,3]
 cluster_conditions: [0.1, 0.2, 0.3]
 equilibration: true
-equilibration_steps: 300
+equilibration_steps: 30
 report: rep
 traj: traj.xtc
 ca_constr: 3
@@ -51,7 +53,7 @@ exit_trajnum: 3
 atom_dist:
 - 30
 - 31
-in_out: true
 debug: true
+proximityDetection: false
 
 

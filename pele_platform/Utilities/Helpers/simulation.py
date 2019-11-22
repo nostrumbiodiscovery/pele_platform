@@ -14,7 +14,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         self.fill_adaptive_template(env)
 
     def fill_pele_template(self, env):
-        self.pele_keywords = { "NATIVE": env.native, "FORCEFIELD": env.forcefield, "CHAIN": env.chain, 
+        self.pele_keywords = { "LOGFILE": env.logfile, "NATIVE": env.native, "FORCEFIELD": env.forcefield, "CHAIN": env.chain, 
                         "CONSTRAINTS": "\n".join(env.constraints), "CPUS":env.cpus,
                         "LICENSES": cs.LICENSE, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center, "HBOND1": env.hbond_donor, 
                         "HBOND2": env.hbond_acceptor, "SASA_min": env.sasa_min, "SASA_max": env.sasa_max,
@@ -22,13 +22,13 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "WATER_ENERGY": env.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, "TRAJ_NAME": env.traj_name,
                         "SOLVENT": env.solvent, "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
                         "OVERLAP": env.overlap_factor, "STERIC_TRIALS": env.steric_trials, "TEMPERATURE": env.temperature, 
-                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box}
+                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box, "PROXIMITY": env.proximityDetection}
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
     def fill_adaptive_template(self, env):
         self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.output, "INPUT":env.adap_ex_input,
-                "CPUS":env.cpus, "PELE_CFILE": self.pele_file, "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,
+                "CPUS":env.cpus, "PELE_CFILE": os.path.basename(self.pele_file), "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,
                 "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, 
                 "PELE_STEPS": env.pele_steps, "REPORT_NAME": env.report_name, "SPAWNING_TYPE": env.spawning, "DENSITY": env.density,
                 "SIMULATION_TYPE": env.simulation_type, "CLUSTER_VALUES": env.cluster_values, "CLUSTER_CONDITION": env.cluster_conditions,
