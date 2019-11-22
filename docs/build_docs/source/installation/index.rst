@@ -4,7 +4,11 @@ Installation
 Conda (recomended)
 --------------------
 
-on going
+.. code-block:: bash
+
+    conda install numpy cython
+
+    conda install -c nostrumbiodiscovery -c conda-forge pele_platform
 
 
 Pypi
