@@ -8,8 +8,8 @@ from argparse import HelpFormatter
 from operator import attrgetter
 import argparse
 import os
-import pele_platform.Rescore.main as gl
-import pele_platform.Rescore.simulation as ad
+import pele_platform.Adaptive.main as gl
+import pele_platform.Adaptive.simulation as ad
 
 
 class Launcher():

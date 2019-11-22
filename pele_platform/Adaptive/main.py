@@ -5,7 +5,7 @@ import glob
 import AdaptivePELE.analysis.splitTrajectory as st
 import pele_platform.constants as cs
 import pele_platform.Utilities.Helpers.template_builder as tb
-import pele_platform.Rescore.simulation as sim
+import pele_platform.Adaptive.simulation as sim
 
 def run(args):
     env = sim.run_adaptive(args) 
