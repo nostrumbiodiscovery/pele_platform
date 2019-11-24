@@ -42,6 +42,5 @@ https://nostrumbiodiscovery.github.io/pele_platform/changelog/index.html
 .. |PyPI release| image:: https://img.shields.io/pypi/v/pele_platform.svg
     :target: https://pypi.org/project/pele_platform/
 
-.. |Conda release| image:: https://anaconda.org/nostrumbiodiscovery/pele_platform/badges/version.svg
+.. |Conda release| image:: https://anaconda.org/nostrumbiodiscovery/pele_platform/badges/version.svg 
     :target: https://anaconda.org/nostrumbiodiscovery/pele_platform
-
