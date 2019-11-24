@@ -8,7 +8,7 @@ Conda (recomended)
 
     conda install numpy cython
 
-    conda install -c nostrumbiodiscovery -c conda-forge pele_platform
+    conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
 
 
 Pypi
