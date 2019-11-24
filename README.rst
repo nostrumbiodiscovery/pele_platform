@@ -19,7 +19,7 @@ https://nostrumbiodiscovery.github.io/pele_platform/installation/index.html
 Get Started
 ===============
 
-https://nostrumbiodiscovery.github.io/pele_platform/tutorial/index.html#
+https://nostrumbiodiscovery.github.io/pele_platform/tutorial/index.html
 
 Documentation of the input parameters
 =======================================
