@@ -3,6 +3,15 @@ What's new?
 
 Here we report the main changes for each version
 
+v1.2
+=======================
+
+- Conda installation
+
+- Insert AdaptivePELE as external dependencie
+
+- Fix minor bugs
+
 v1.1
 =======================
 

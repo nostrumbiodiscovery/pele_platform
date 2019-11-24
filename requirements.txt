@@ -10,3 +10,4 @@ six
 future
 fpdf
 pytest
+AdaptivePELE
