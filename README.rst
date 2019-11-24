@@ -1,7 +1,7 @@
 PELE_Platform
 ##################
 
-|MIT license| |GitHub release| |PyPI release| |Conda release|
+|MIT license| |GitHub release| |PyPI release| 
 
 Pele platform is a python module to automatically launch PELE, AdaptivePELE, MSMPELE and FragPELE. It is built as a python layer on top of all PELE functionalities that can be used as a backend for a potential future GUI.
 
