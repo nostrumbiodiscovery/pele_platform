@@ -10,6 +10,8 @@ Conda (recomended)
 
     conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
 
+    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+
 
 Pypi
 ------
@@ -19,6 +21,8 @@ Pypi
     pip install numpy cython
 
     pip install pele_platform
+    
+    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
 
 
 Source Code
@@ -30,9 +34,9 @@ Source Code
     
     cd pele_platform
     
-    vim pele_platform/constants/constants.py #(change paths under else statement)
-    
     pip install pele_platform
+    
+    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
 
 
 

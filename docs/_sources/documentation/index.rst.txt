@@ -1,4 +1,4 @@
-Input Documentation
+Input Parameters
 ######################
 
 Compulsory flags
