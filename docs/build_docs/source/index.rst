@@ -20,9 +20,6 @@ Documentation
 .. toctree::
    installation/index.rst
 
-#.. toctree::
-#   tutorial/index.rst
-
 .. toctree::
    cheatsheet/index.rst
 
