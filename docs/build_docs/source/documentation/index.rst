@@ -49,6 +49,7 @@ Configure the main important parameters for the job
   steps: 12
   test: true
   usesrun: false
+  debug: true
 
 Receptor preparation
 =======================
