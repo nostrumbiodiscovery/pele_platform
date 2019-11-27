@@ -40,6 +40,8 @@ Configure the main important parameters for the job
  
 - **usesrun**: Use srun binary to run PELE. Only when using intel processors.
 
+- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)
+
 
 ..  code-block:: yaml
 
@@ -196,6 +198,7 @@ Adaptive params
     equilibration: false
     equilibration_steps: 10
     adaptive_restart: true
+    working_folder: "folder_to_restart"
     report: report
     traj: trajectory.xtc
 

@@ -210,6 +210,7 @@
 <li><p><strong>steps</strong>: Pele steps in each iteration</p></li>
 <li><p><strong>test</strong>: Run a quick test to check the simulation works (~2 min)</p></li>
 <li><p><strong>usesrun</strong>: Use srun binary to run PELE. Only when using intel processors.</p></li>
+<li><p><strong>debug</strong>: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
 <span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
@@ -327,6 +328,7 @@
 <span class="nt">equilibration</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">equilibration_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
 <span class="nt">adaptive_restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;folder_to_restart&quot;</span>
 <span class="nt">report</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">report</span>
 <span class="nt">traj</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trajectory.xtc</span>
 </pre></div>
