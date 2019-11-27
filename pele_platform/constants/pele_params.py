@@ -80,7 +80,11 @@ INDUCED_FIT = '''
      { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
          "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.5, "numberOfTrials" : 8 } },
          "otherwise": { "Perturbation::parameters": { "translationRange": 1.0, "numberOfTrials" : 8 } }
-     }
+     },
+     {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
+            "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 30 } },
+            "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 1 , "numberOfTrials": 10  }}
+    }
 ]
 '''
 

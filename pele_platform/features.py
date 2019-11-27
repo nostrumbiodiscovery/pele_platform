@@ -117,7 +117,7 @@ def retrieve_software_settings(args, pele_dir):
                                       "simulation_type": "pele", "iterations": 50, "pele_steps": 12, 
                                       "cluster_values": "[1.75, 2.5, 4, 6]", "cluster_conditions": "[1, 0.6, 0.4, 0.0]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.INDUCED_FIT,
-                                      "box_radius": 10},
+                                      "box_radius": 6},
                              "in_out" : {"spawning_type": "epsilon", "bias_column": 6, "epsilon":0.75, "density": "exitContinuous",
                                       "simulation_type": "pele", "iterations": 1000, "pele_steps": 2, 
                                       "cluster_values": "[1, 2.5]", "cluster_conditions": "[1.1]",
