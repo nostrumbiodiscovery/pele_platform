@@ -55,5 +55,8 @@ atom_dist:
 - 31
 debug: true
 proximityDetection: false
+pele_exec: "done"
+pele_data: "done"
+pele_documents: "done"
 
 

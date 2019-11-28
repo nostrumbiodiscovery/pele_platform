@@ -336,6 +336,9 @@ class YamlParser(object):
         self.pdb = data.get("pdb", False)
         self.log = data.get("log", False)
         self.nonrenum = data.get("nonrenum", False)
+        self.pele_exec = data.get("pele_exec", "")
+        self.pele_data = data.get("pele_data", "")
+        self.pele_documents = data.get("pele_documents", "")
 
         if self.test:
             print("##############################")

@@ -32,7 +32,8 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                 "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, 
                 "PELE_STEPS": env.pele_steps, "REPORT_NAME": env.report_name, "SPAWNING_TYPE": env.spawning, "DENSITY": env.density,
                 "SIMULATION_TYPE": env.simulation_type, "CLUSTER_VALUES": env.cluster_values, "CLUSTER_CONDITION": env.cluster_conditions,
-                "UNBINDING": env.unbinding_block, "USESRUN": env.usesrun }
+                "UNBINDING": env.unbinding_block, "USESRUN": env.usesrun,
+                "PELE_BIN": env.pele_exec, "PELE_DATA": env.pele_data, "PELE_DOCUMENTS": env.pele_documents}
         super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)
 
 

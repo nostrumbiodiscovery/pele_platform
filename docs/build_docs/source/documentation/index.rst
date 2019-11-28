@@ -42,6 +42,12 @@ Configure the main important parameters for the job
 
 - **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)
 
+- **pele_exec**: Use a pele executable that is not the default one. **Needs to be used with pele_data and pele_documents**
+
+- **pele_data**: Use a pele data folder that is not the default one.
+
+- **pele_documents**: Use a pele documents folder that is not the default one.
+
 
 ..  code-block:: yaml
 
@@ -49,7 +55,13 @@ Configure the main important parameters for the job
   steps: 12
   test: true
   usesrun: false
+<<<<<<< HEAD
   debug: true
+=======
+  pele_exec: "/home/pele/bin/Pele_mpi"
+  pele_data: "/home/pele/Data/"
+  pele_documents: "/home/pele/Documents/"
+>>>>>>> 6c87c629e918d98602e246a4bfb1ba468f9ba28f
 
 Receptor preparation
 =======================
