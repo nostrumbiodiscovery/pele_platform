@@ -208,7 +208,7 @@
 <ul class="simple">
 <li><p><strong>iterations</strong>: Adaptive epochs to run. Set to 1 by default if using PELE</p></li>
 <li><p><strong>steps</strong>: Pele steps in each iteration</p></li>
-<li><p><strong>test</strong>: Run a quick test to check the simulation works (~2 min)</p></li>
+<li><p><strong>test</strong>: Run a quick test to check the simulation works (~2 min). <strong>Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to made the simulation faster!!!!</strong></p></li>
 <li><p><strong>usesrun</strong>: Use srun binary to run PELE. Only when using intel processors.</p></li>
 <li><p><strong>debug</strong>: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)</p></li>
 </ul>
@@ -216,6 +216,7 @@
 <span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
 <span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">usesrun</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
 </div>

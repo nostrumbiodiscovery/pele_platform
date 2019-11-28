@@ -36,7 +36,7 @@ Configure the main important parameters for the job
 
 - **steps**: Pele steps in each iteration
 
-- **test**: Run a quick test to check the simulation works (~2 min)
+- **test**: Run a quick test to check the simulation works (~2 min). **Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to made the simulation faster!!!!**
  
 - **usesrun**: Use srun binary to run PELE. Only when using intel processors.
 
@@ -49,6 +49,7 @@ Configure the main important parameters for the job
   steps: 12
   test: true
   usesrun: false
+  debug: true
 
 Receptor preparation
 =======================
