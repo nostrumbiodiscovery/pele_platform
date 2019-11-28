@@ -336,8 +336,14 @@ class YamlParser(object):
         self.pdb = data.get("pdb", False)
         self.log = data.get("log", False)
         self.nonrenum = data.get("nonrenum", False)
+        self.pele_exec = data.get("pele_exec", "")
+        self.pele_data = data.get("pele_data", "")
+        self.pele_documents = data.get("pele_documents", "")
 
         if self.test:
+            print("##############################")
+            print("WARNING: This simulation is a test do not use the input files to run production simulations")
+            print("##############################")
             self.cpus = 2 if not self.full else 5
             self.pele_steps = self.steps = 1
             self.iterations = 1

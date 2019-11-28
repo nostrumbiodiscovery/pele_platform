@@ -83,6 +83,9 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.equilibration = "true" if args.equilibration else "false"
         self.adaptive_restart = args.adaptive_restart
         self.poses = args.poses
+        self.pele_exec = args.pele_exec if args.pele_exec else cs.PELE_BIN
+        self.pele_data = args.pele_data if args.pele_data else os.path.join(cs.PELE, "Data")
+        self.pele_documents = args.pele_documents if args.pele_documents else os.path.join(cs.PELE, "Documents")
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep

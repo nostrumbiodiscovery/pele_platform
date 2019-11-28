@@ -26,6 +26,7 @@ def run_adaptive(args):
     # Build Folders and Logging and env variable that will containt
     #all main  attributes of the simulation
     env = pele.EnviroBuilder.build_env(args)
+    shutil.copy(args.yamlfile, env.pele_dir) 
 
     if env.adaptive_restart:
         with helpers.cd(env.pele_dir):

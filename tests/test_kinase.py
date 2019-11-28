@@ -25,7 +25,7 @@ ADAPTIVE_VALUES = ["PR_1A28_xray_-_minimized_processed.pdb", "STR", '"outputPath
     '"equilibrationLength" : 11,', '"seed": 3000', '"useSrun": true', 
     '"values" : [1, 2, 3],', '"conditions": [0.1, 0.2, 0.3]', '"epsilon": 0.3', 
     '"metricColumnInReport" : 3,', '"metricColumnInReport" : 3,', '"type" : "epsilon"',
-    'exitContinuous']
+    'exitContinuous', '"data": "done"', '"executable": "done"', '"documents": "done"']
 
 PELE_VALUES = ['"reportPath": "$OUTPUT_PATH/rep",', '"trajectoryPath": "$OUTPUT_PATH/traj.xtc"',
                 'OBC', '"anmFrequency" : 3,', '"sideChainPredictionFrequency" : 3,',
