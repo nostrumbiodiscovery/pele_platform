@@ -101,7 +101,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#pele-params">PELE params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adaptive-params">Adaptive params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#waterperturbation">WaterPerturbation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#waterperturbation">WaterPerturbation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#water-modes">Water modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#simulation-parameters">Simulation Parameters</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
 </ul>
@@ -291,6 +295,7 @@
 <ul class="simple">
 <li><p><strong>seed</strong>: Seed of the job for reproducibility. Default=12345</p></li>
 <li><p><strong>log</strong>: Retrieve PELE logfiles during simulation. Default=False</p></li>
+<li><p><strong>verbose</strong>: Set to true to activate verbose mode in PELE. DEfault=False</p></li>
 <li><p><strong>anm_freq</strong>: Every how many steps to perform anm. Default=4</p></li>
 <li><p><strong>sidechain_freq</strong>: Every how many steps to perform sidechain sampling. Default=2</p></li>
 <li><p><strong>min_freq</strong>: Every how many steps to perform minimization. Default=1</p></li>
@@ -303,6 +308,7 @@
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">312312</span>
 <span class="nt">log</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">verbose</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">anm_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
 <span class="nt">sidechain_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="nt">min_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -359,34 +365,36 @@
 </div>
 <div class="section" id="waterperturbation">
 <h3>WaterPerturbation<a class="headerlink" href="#waterperturbation" title="Permalink to this headline">¶</a></h3>
-<ul>
-<li><p>Water modes:</p>
+<div class="section" id="water-modes">
+<h4>Water modes<a class="headerlink" href="#water-modes" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ul class="simple">
 <li><p><strong>water_exp</strong>: Exploration of the hydratation sites of a binding site by perturbing and clusterizing a single water. More advance features will be later implemented to discriminate between “happy” and “unhappy” waters.</p></li>
 <li><p><strong>water_lig</strong>: Perturb one or several water molecules while exploring the conformational space of the ligand.</p></li>
 </ul>
 </div></blockquote>
-</li>
-</ul>
 <p>Example water exploration:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">residue</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HOH</span>
-<span class="nt">water_exp</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">water_exp</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:1</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:2</span>
 </pre></div>
 </div>
 <p>Example water ligand:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">residue</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LIG</span>
-<span class="nt">water_exp</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">water_lig</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:1</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:2</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="simulation-parameters">
+<h4>Simulation Parameters<a class="headerlink" href="#simulation-parameters" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p><strong>box_water</strong>: Center of the box for the waters</p></li>
-<li><p><strong>water_radius</strong>: Radius of the water box</p></li>
-<li><p><strong>water_trials</strong>: Numerical trials on water perturbation</p></li>
-<li><p><strong>water_constr</strong>: COM constraint applied to th water molecule after perturbation</p></li>
-<li><p><strong>water_temp</strong>: Temperature of the water perturbation step</p></li>
+<li><p><strong>box_water</strong>: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.</p></li>
+<li><p><strong>water_radius</strong>: Radius of the water box. Default=7</p></li>
+<li><p><strong>water_trials</strong>: Numerical trials on water perturbation. Default=10000</p></li>
+<li><p><strong>water_constr</strong>: COM constraint applied to th water molecule after perturbation. Default=0</p></li>
+<li><p><strong>water_temp</strong>: Temperature of the water perturbation step. Default=5000</p></li>
+<li><p><strong>water_overlap</strong>: Overlap factor of water. Default=0.78</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">box_water</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
@@ -395,8 +403,10 @@
 <span class="nt">water_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
 <span class="nt">water_trials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">500</span>
 <span class="nt">water_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<span class="nt">water_tamp</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2000</span>
+<span class="nt">water_temp</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2000</span>
+<span class="nt">water_overlap</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="metrics">

@@ -52,6 +52,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.anm_freq = args.anm_freq
         self.sidechain_freq = args.sidechain_freq
         self.min_freq = args.min_freq
+        self.water_freq = args.water_freq
         self.temperature = args.temperature
         self.sidechain_resolution = args.sidechain_resolution
         print("A", args.proximityDetection)
@@ -76,6 +77,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.input = args.input
         self.forcefield = args.forcefield
         self.solvent = args.solvent
+        self.verbose = "true" if args.verbose else "false"
         self.cpus = args.cpus = args.cpus 
         self.restart = args.restart
         self.test = args.test
@@ -100,6 +102,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
     def water_params(self, args):
         self.water_temp = args.water_temp
+        self.water_overlap = args.water_overlap
         self.water_constr = args.water_constr
         self.water_trials = args.water_trials
         if args.water_lig or args.water_exp:
@@ -120,7 +123,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
                 self.water_radius = 10 if  self.water else None
             self.waters = ",".join([ '"' + water + '"' for water in water_arg] )
             self.water = cs.WATER.format(self.water_radius, self.water_center, self.waters, self.water_temp, 
-            self.water_trials, self.water_constr)
+            self.water_trials, self.water_overlap, self.water_constr)
         else:
             self.water_energy = None
             self.water = None
