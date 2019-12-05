@@ -122,7 +122,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
                 self.water_center = cm
                 self.water_radius = 10 if  self.water else None
             self.waters = ",".join([ '"' + water + '"' for water in water_arg] )
-            import pdb; pdb.set_trace()
             self.water = cs.WATER.format(self.water_radius, self.water_center, self.waters, self.water_temp, 
             self.water_trials, self.water_overlap, self.water_constr)
         else:
