@@ -161,6 +161,7 @@ WATER = '''
              {{
                  "temperature": {},
                  "numberOfStericTrials": {},
+                 "overlapFactor": {},
                  "COMConstraintConstant": {}
              }}
          }}, 

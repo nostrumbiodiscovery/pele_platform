@@ -22,7 +22,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "WATER_ENERGY": env.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, "TRAJ_NAME": env.traj_name,
                         "SOLVENT": env.solvent, "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
                         "OVERLAP": env.overlap_factor, "STERIC_TRIALS": env.steric_trials, "TEMPERATURE": env.temperature, 
-                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box, "PROXIMITY": env.proximityDetection}
+                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box, "PROXIMITY": env.proximityDetection, "WATER_FREQ": env.water_freq, "VERBOSE": env.verbose}
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 

@@ -114,37 +114,28 @@ GLOBAL = '''
 WATER_BS = ""
 
 WATER_LIG = '''
-          ,
-          "parametersChanges" :
-          [
-            {
-              "ifAnyIsTrue": [ "rand >= .5" ],
-              "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } },
-              "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.10 } }
-            },
-            {
-              "ifAnyIsTrue": [ "rand1 >= 0.50" ],
-              "doThesechanges": { "Perturbation::parameters": { "translationRange": 2.5 } },
-              "otherwise": { "Perturbation::parameters": { "translationRange": 1.25} }
-            },
-            {
-              "ifAnyIsTrue": [ "rand3 >= 0.80" ],
-              "doThesechanges": { "Perturbation::parameters": { "steeringUpdateFrequency": 1 ,"numberOfTrials": 10} },
-              "otherwise": { "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 20} }
-            },
-            {
-              "ifAnyIsTrue": [ "SASA >= 0.85" ],
-              "doThesechanges": { "Perturbation::parameters": { "translationRange": 4.0, "numberOfTrials" : 40 } },
-              "otherwise": { }
-            },
-            {
-              "ifAnyIsTrue": [ "SASA <= 0.15" ],
-              "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.5, "rotationScalingFactor": 0.05, "steeringUpdateFrequency": 0} },
-              "otherwise": { }
-            }
-          ]
+                 ,
+                 "parametersChanges" :
+                 [
+                     { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+                         "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.01 } },
+                         "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.025 } }
+                     },
+                     {
+                       "ifAnyIsTrue": [ "rand2 >= 0.5" ],
+                         "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.75 } },
+                         "otherwise": { "Perturbation::parameters": { "translationRange": 0.5} }
+                     },
+                     { "ifAnyIsTrue": [ "rand3 <= 0.5 " ],
+                         "doThesechanges": { "WaterPerturbation::parameters": { "translationRange": 3, "temperature": 5000 } },
+                         "otherwise": { "WaterPerturbation::parameters": { "translationRange": 4, "temperature": 7500 } }
+                     },
+                     { "ifAnyIsTrue": [ "rand3 > 0.85 " ],
+                         "doThesechanges": { "WaterPerturbation::parameters": { "translationRange": 5, "temperature": 10000 } },
+                         "otherwise": {}
+                     }
+                  ]
 '''
-
 
 GLIDE = '''
             ,

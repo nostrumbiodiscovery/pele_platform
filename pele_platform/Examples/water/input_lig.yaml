@@ -6,5 +6,7 @@ seed: 12345
 test: true
 water_lig:
 - M:1
+anm_freq: 1
+sidechain_freq: 1
 
 
