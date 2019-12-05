@@ -132,8 +132,8 @@ WATER_LIG = '''
                      },
                      { "ifAnyIsTrue": [ "rand3 > 0.85 " ],
                          "doThesechanges": { "WaterPerturbation::parameters": { "translationRange": 5, "temperature": 10000 } },
-                     "otherwise": {}
-                     },
+                         "otherwise": {}
+                     }
                   ]
 '''
 
