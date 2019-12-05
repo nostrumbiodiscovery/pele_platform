@@ -55,13 +55,10 @@ Configure the main important parameters for the job
   steps: 12
   test: true
   usesrun: false
-<<<<<<< HEAD
   debug: true
-=======
   pele_exec: "/home/pele/bin/Pele_mpi"
   pele_data: "/home/pele/Data/"
   pele_documents: "/home/pele/Documents/"
->>>>>>> 6c87c629e918d98602e246a4bfb1ba468f9ba28f
 
 Receptor preparation
 =======================
@@ -147,6 +144,8 @@ PELE params
 
 - **log**: Retrieve PELE logfiles during simulation. Default=False
 
+- **verbose**: Set to true to activate verbose mode in PELE. DEfault=False
+
 - **anm_freq**: Every how many steps to perform anm. Default=4
 
 - **sidechain_freq**: Every how many steps to perform sidechain sampling. Default=2
@@ -169,6 +168,7 @@ PELE params
 
   seed: 312312
   log: true
+  verbose: true
   anm_freq: 4
   sidechain_freq: 2
   min_freq: 1
@@ -240,7 +240,8 @@ This section allows the user to change the constraint values.
 WaterPerturbation
 ======================
 
-- Water modes:
+Water modes
++++++++++++++++++
 
     - **water_exp**: Exploration of the hydratation sites of a binding site by perturbing and clusterizing a single water. More advance features will be later implemented to discriminate between "happy" and "unhappy" waters.
 
@@ -250,27 +251,32 @@ Example water exploration:
 
 ..  code-block:: yaml
 
-  residue: HOH
-  water_exp: true
+  water_exp:
+    - M:1
+    - M:2
 
 Example water ligand:
 
 ..  code-block:: yaml
 
-    residue: LIG
-    water_exp:
+    water_lig:
     - M:1
     - M:2
 
-- **box_water**: Center of the box for the waters
+Simulation Parameters
+++++++++++++++++++++++++
 
-- **water_radius**: Radius of the water box
+- **box_water**: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.
 
-- **water_trials**: Numerical trials on water perturbation
+- **water_radius**: Radius of the water box. Default=7
 
-- **water_constr**: COM constraint applied to th water molecule after perturbation
+- **water_trials**: Numerical trials on water perturbation. Default=10000
 
-- **water_temp**: Temperature of the water perturbation step
+- **water_constr**: COM constraint applied to th water molecule after perturbation. Default=0
+
+- **water_temp**: Temperature of the water perturbation step. Default=5000
+
+- **water_overlap**: Overlap factor of water. Default=0.78
 
 
 ..  code-block:: yaml
@@ -282,7 +288,8 @@ Example water ligand:
     water_radius: 8
     water_trials: 500
     water_constr: 0.5
-    water_tamp: 2000
+    water_temp: 2000
+    water_overlap: 0.5
 
 
 Metrics
