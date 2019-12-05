@@ -55,13 +55,10 @@ Configure the main important parameters for the job
   steps: 12
   test: true
   usesrun: false
-<<<<<<< HEAD
   debug: true
-=======
   pele_exec: "/home/pele/bin/Pele_mpi"
   pele_data: "/home/pele/Data/"
   pele_documents: "/home/pele/Documents/"
->>>>>>> 6c87c629e918d98602e246a4bfb1ba468f9ba28f
 
 Receptor preparation
 =======================
