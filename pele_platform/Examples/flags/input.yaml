@@ -12,10 +12,10 @@ gridres: 60
 maxtorsion: 2
 templates:
   - "data/mgz"
-  - "data/ligz"
+  - "data/strz"
 rotamers:
   - "data/MG.rot.assign"
-  - "data/LIG.rot.assign"
+  - "data/STR.rot.assign"
 box_radius: 3000
 box_center:
   - 30
