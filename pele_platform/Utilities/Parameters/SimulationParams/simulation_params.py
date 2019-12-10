@@ -112,7 +112,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
             self.water_radius = 5
             # If there is no given center look for it
             if args.water_center:
-                self.water_center =  ("[" + ",".join([coord for coord in args.water_center]) + "]")
+                self.water_center =  ("[" + ",".join([str(coord) for coord in args.water_center]) + "]")
             else:
                 cms = [ hp.find_coords(self.system, water.split(":")[1], water.split(":")[0]) for water in water_arg]
                 try:
