@@ -1,4 +1,5 @@
 system: '../pele_platform/Examples/out_in/1_3ZON_complex.pdb'
+usesrun: true
 chain: 'Z'
 resname: 'IK1'
 restart: false
@@ -6,5 +7,6 @@ seed: 12345
 global: true
 poses: 4
 test: true
+usesrun: true
 
 

@@ -6,5 +6,6 @@ seed: 12345
 test: true
 water_bs:
 - M:1
+usesrun: true
 
 
