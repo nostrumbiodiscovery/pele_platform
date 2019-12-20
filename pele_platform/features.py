@@ -99,6 +99,8 @@ def retrieve_software_settings(args, pele_dir):
                                            os.path.join(cs.DIR, "Templates/pele_template.conf") ],
                               "water_lig":  [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
                                            os.path.join(cs.DIR, "Templates/pele_template.conf") ],
+                              "rescoring":  [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
+                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ],
                               "bias":  [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
                                            os.path.join(cs.DIR, "Templates/pele_template.conf") ]
                             },
@@ -139,6 +141,12 @@ def retrieve_software_settings(args, pele_dir):
                                       "cluster_values": "[1.75, 2.5, 3.5, 5]", "cluster_conditions": "[1.6, 1.2, 1, 0.0]",
                                       "steric_trials": 100, "overlap_factor": 0.5, "params": pcs.WATER_LIG,
                                       "box_radius": 10},
+                             "rescoring" : {"spawning_type": "independent", "bias_column": 5, "epsilon":0.25, "density": "null",
+                                      "simulation_type": "pele", "iterations": 20, "pele_steps": 12,
+                                      "cluster_values": "[1.75, 2.5, 4, 6]", "cluster_conditions": "[1, 0.6, 0.4, 0.0]",
+                                      "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.RESCORING,
+                                      "box_radius": 6, "anm_freq": 6, "sidechain_freq": 3, "min_freq": 1, "temperature": 1000,
+                                      "anm_displacement": 0.5, "anm_modes_change": 3},
                              "bias": {"spawning_type": "epsilon", "bias_column": 5, "epsilon":0.15, "density": "null",
                                       "simulation_type": "pele", "iterations": 50, "pele_steps": 8, 
                                       "cluster_values": "[1.5, 2, 5]", "cluster_conditions": "[0.6, 0.4, 0.0]",
@@ -178,6 +186,9 @@ def retrieve_software_settings(args, pele_dir):
             elif args.induce_fit:
                 software_setings["files"] = software_setings["files"].get("induce_fit")
                 software_setings["simulation_params"] = software_setings["simulation_params"].get("induce_fit")
+            elif args.rescoring:
+                software_setings["files"] = software_setings["files"].get("rescoring")
+                software_setings["simulation_params"] = software_setings["simulation_params"].get("rescoring")
             elif args.water_exp:
                 software_setings["files"] = software_setings["files"].get("water_exp")
                 software_setings["simulation_params"] = software_setings["simulation_params"].get("water_exp")

@@ -49,13 +49,14 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params.get("pele_steps", None)
         self.logfile =  LOGFILE if args.log else ""
         self.license = '''"{}"'''.format(cs.LICENSE)
-        self.anm_freq = args.anm_freq
-        self.sidechain_freq = args.sidechain_freq
-        self.min_freq = args.min_freq
+        self.anm_freq = self.simulation_params.get("anm_freq", args.anm_freq)
+        self.anm_displacement = self.simulation_params.get("anm_displacement", args.anm_displacement)
+        self.anm_modes_change = self.simulation_params.get("anm_modes_change", args.anm_modes_change)
+        self.sidechain_freq = self.simulation_params.get("sidechain_freq", args.sidechain_freq)
+        self.min_freq = self.simulation_params.get("min_freq", args.min_freq)
         self.water_freq = args.water_freq
-        self.temperature = args.temperature
+        self.temperature = self.simulation_params.get("temperature", args.temperature)
         self.sidechain_resolution = args.sidechain_resolution
-        print("A", args.proximityDetection)
         self.proximityDetection = "false" if not args.proximityDetection else "true"
         self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", None)
         self.ca_constr = args.ca_constr
