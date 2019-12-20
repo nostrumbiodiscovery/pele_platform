@@ -4,6 +4,7 @@ resname: 'STR'
 restart: false
 seed: 12345
 test: true
+usesrun: true
 in_out_soft: true
 equilibration: false
 

@@ -69,6 +69,38 @@ IN_OUT = '''
 
 '''
 
+RESCORING = '''
+             ,
+             "parametersChanges" : [
+             
+                  { "ifAnyIsTrue": [ "rand >= .5" ],
+             
+                      "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
+             
+                      "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } }
+             
+                  },
+             
+                  { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+             
+                      "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.25} },
+             
+                      "otherwise": { "Perturbation::parameters": { "translationRange": 0.5} }
+             
+                  },
+             
+                  {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
+             
+                         "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 10 } },
+             
+                         "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 10  }}
+             
+                 }
+             
+             ]
+'''
+
+
 
 INDUCED_FIT = '''
              ,

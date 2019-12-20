@@ -5,3 +5,4 @@ restart: false
 seed: 12345
 out_in: true
 test: true
+usesrun: true

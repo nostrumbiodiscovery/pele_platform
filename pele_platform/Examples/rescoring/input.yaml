@@ -4,7 +4,7 @@ resname: 'STR'
 restart: false
 seed: 12345
 usesrun: true
-induced_fit: true
+rescoring: true
 atom_dist:
 - 32
 - 33

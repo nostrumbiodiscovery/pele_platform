@@ -1,8 +1,6 @@
-import pytest
 import os
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
-import shutil
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -19,6 +17,7 @@ RESTART_ARGS = [os.path.join(test_path, "restart/input.yaml")]
 MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
 MAE_ARGS = [os.path.join(test_path, "induced_fit/input_mae.yaml")]
 FLAGS_ARGS = [os.path.join(test_path, "flags/input.yaml")]
+RESCORING_ARGS = [os.path.join(test_path, "rescoring/input.yaml")]
 
 ADAPTIVE_VALUES = ["hit1_complex_processed_processed.pdb", "LIG", '"outputPath": "output_sim"',
     '"processors" : 3', '"peleSteps" : 1,', '"iterations" : 1,', '"runEquilibration" : true,',
@@ -39,7 +38,9 @@ PELE_VALUES = ['"reportPath": "$OUTPUT_PATH/rep",', '"trajectoryPath": "$OUTPUT_
                 'simulationLogPath',
                 '"activateProximityDetection": false',
                 '"overlapFactor": 3,',
-                '"verboseMode": true,'
+                '"verboseMode": true,',
+                '"displacementFactor" : 3',
+                '"modesChangeFrequency" : 3,'
               ]
 
 
@@ -97,6 +98,12 @@ def test_restart(ext_args=RESTART_ARGS):
 #    arguments = main.YamlParser(arguments.input_file)
 #    main.set_software_to_use(arguments)
 #    main.Launcher(arguments).launch()
+
+def test_rescoring(ext_args=RESCORING_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
 
 def test_mae(ext_args=MAE_ARGS):
     arguments = main.parseargs_yaml(ext_args)

@@ -61,6 +61,8 @@ pele_documents: "done"
 verbose: true
 water_freq: 3
 water_overlap: 3
+anm_displacement: 3
+anm_modes_change: 3
 water_lig:
 - M:1
 
