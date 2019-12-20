@@ -317,6 +317,7 @@ class YamlParser(object):
         self.water_exp = data.get("water_bs", None)
         self.water_lig = data.get("water_lig", None)
         self.water = data.get("water", None)
+        self.water_expl = data.get("water_expl", False)
         self.water_freq = data.get("water_freq", 1)
         self.water_center = data.get("box_water", None)
         self.water_temp = data.get("water_temp", 5000)

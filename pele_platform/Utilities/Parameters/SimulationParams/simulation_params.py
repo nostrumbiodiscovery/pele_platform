@@ -109,7 +109,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
             water_arg = args.water_lig if args.water_lig else args.water_exp
             self.water_energy = "\n".join([ cs.WATER_ENERGY.format(water.split(":")[0]) for water in water_arg ])
             self.water = ",".join(['"'+water+'"' for water in water_arg])
-            self.water_radius = 5
+            self.water_radius = 6
             # If there is no given center look for it
             if args.water_center:
                 self.water_center =  ("[" + ",".join([str(coord) for coord in args.water_center]) + "]")
@@ -120,7 +120,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
                 except TypeError:
                     raise TypeError("Check the specified waters exist")
                 self.water_center = cm
-                self.water_radius = 10 if  self.water else None
+                self.water_radius = 6 if  self.water else None
             self.waters = ",".join([ '"' + water + '"' for water in water_arg] )
             self.water = cs.WATER.format(self.water_radius, self.water_center, self.waters, self.water_temp, 
             self.water_trials, self.water_overlap, self.water_constr)
