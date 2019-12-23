@@ -41,6 +41,15 @@ elif "bsccv" in machine:
     # Provisional workaround until best_struct.py is fixed
     ACCEPTED_STEPS_NAME = "AcceptedSteps"
     CRITERIA = "SASA"
+elif "nbdcalc" in machine:
+    SCHRODINGER = "/opt/schrodinger2019-1/"
+    PELE = "/home/dsoler/local_deps/PELE-repo/"
+    PELE_BIN = "/home/dsoler/local_deps/PELE-repo/build/PELE-1.6"
+    MPIRUN = "/usr/lib64/openmpi/bin/"
+    LICENSE = "/home/dsoler"
+    MMSHARE = None
+    # Provisional workaround until best_struct.py is fixed
+    ACCEPTED_STEPS_NAME = "numberOfAcceptedPeleSteps"
 else:
     SCHRODINGER = "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
     PELE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524/"
