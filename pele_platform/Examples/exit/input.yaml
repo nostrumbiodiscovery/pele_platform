@@ -5,6 +5,7 @@ restart: false
 seed: 12345
 induced_fit: true
 test: true
+usesrun: true
 in_out: true
 
 

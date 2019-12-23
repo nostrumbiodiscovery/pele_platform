@@ -69,6 +69,38 @@ IN_OUT = '''
 
 '''
 
+RESCORING = '''
+             ,
+             "parametersChanges" : [
+             
+                  { "ifAnyIsTrue": [ "rand >= .5" ],
+             
+                      "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
+             
+                      "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } }
+             
+                  },
+             
+                  { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+             
+                      "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.25} },
+             
+                      "otherwise": { "Perturbation::parameters": { "translationRange": 0.5} }
+             
+                  },
+             
+                  {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
+             
+                         "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 10 } },
+             
+                         "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 10  }}
+             
+                 }
+             
+             ]
+'''
+
+
 
 INDUCED_FIT = '''
              ,
@@ -133,6 +165,30 @@ WATER_LIG = '''
                      { "ifAnyIsTrue": [ "rand3 > 0.85 " ],
                          "doThesechanges": { "WaterPerturbation::parameters": { "translationRange": 5, "temperature": 10000 } },
                          "otherwise": {}
+                     }
+                  ]
+'''
+
+WATER_LIG_EXPL = '''
+                 ,
+                 "parametersChanges" : [
+                     { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+                         "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.025 } },
+                         "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } }
+                     },
+                     {
+                       "ifAnyIsTrue": [ "rand2 >= 0.5" ],
+                         "doThesechanges": { "Perturbation::parameters": { "translationRange": 1.0 } },
+                         "otherwise": { "Perturbation::parameters": { "translationRange": 0.5} }
+                     },
+                     {
+                         "ifAnyIsTrue": [ "rand3 <= 0.4" ],
+                         "doThesechanges": { "WaterPerturbation::parameters": { "translationRange": 4.0 } },
+                         "otherwise": { "WaterPerturbation::parameters": { "translationRange": 3.0} }
+                     },
+                     {
+                         "ifAnyIsTrue": [ "rand3 >= 0.85" ],
+                         "doThesechanges": { "WaterPerturbation::parameters": { "translationRange": 2.0 } }
                      }
                   ]
 '''

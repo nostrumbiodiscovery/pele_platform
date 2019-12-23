@@ -112,6 +112,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#automatic-modes">Automatic Modes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#induced-fit">Induced fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rescoring">Rescoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#local-exploration">Local Exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#biased">Biased</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#exit-path">Exit path</a></li>
@@ -297,6 +298,8 @@
 <li><p><strong>log</strong>: Retrieve PELE logfiles during simulation. Default=False</p></li>
 <li><p><strong>verbose</strong>: Set to true to activate verbose mode in PELE. DEfault=False</p></li>
 <li><p><strong>anm_freq</strong>: Every how many steps to perform anm. Default=4</p></li>
+<li><p><strong>anm_displacement</strong>: Angstrom to displace carbon alphas in each ANM movement. Default=0.75</p></li>
+<li><p><strong>anm_modes_change</strong>: Number of steps before we change to a new normal mode movement. Default=4</p></li>
 <li><p><strong>sidechain_freq</strong>: Every how many steps to perform sidechain sampling. Default=2</p></li>
 <li><p><strong>min_freq</strong>: Every how many steps to perform minimization. Default=1</p></li>
 <li><p><strong>water_freq</strong>: Every how many steps to perform water perturbation. Default=1</p></li>
@@ -310,6 +313,8 @@
 <span class="nt">log</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">verbose</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">anm_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="nt">anm_displacement</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="nt">anm_modes_change</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
 <span class="nt">sidechain_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="nt">min_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="nt">water_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
@@ -449,6 +454,14 @@ steric clashes and sidechain predition frequency. Usefull to refine docking pose
 new conformations within the same binding site.</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rescoring">
+<h3>Rescoring<a class="headerlink" href="#rescoring" title="Permalink to this headline">¶</a></h3>
+<p>Simulation to refine around an initial conformation. Not looking to find a new binding mode but to minimize
+the actual one.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">rescoring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
 </div>

@@ -148,6 +148,10 @@ PELE params
 
 - **anm_freq**: Every how many steps to perform anm. Default=4
 
+- **anm_displacement**: Angstrom to displace carbon alphas in each ANM movement. Default=0.75
+
+- **anm_modes_change**: Number of steps before we change to a new normal mode movement. Default=4
+
 - **sidechain_freq**: Every how many steps to perform sidechain sampling. Default=2
 
 - **min_freq**: Every how many steps to perform minimization. Default=1
@@ -170,6 +174,8 @@ PELE params
   log: true
   verbose: true
   anm_freq: 4
+  anm_displacement: 0.5
+  anm_modes_change: 3
   sidechain_freq: 2
   min_freq: 1
   water_freq: 1
@@ -344,6 +350,15 @@ Induced fit
 
   induced_fit: true
 
+Rescoring
+============
+
+Simulation to refine around an initial conformation. Not looking to find a new binding mode but to minimize
+the actual one.
+
+..  code-block:: yaml
+
+  rescoring: true
 
 Local Exploration
 =====================
