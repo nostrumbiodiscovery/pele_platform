@@ -3,12 +3,23 @@ Versions
 
 Here we report the main changes for each version
 
-v1.2
+v1.2.1
+=======================
+
+- Add verboseMode
+
+- Add waterPELE and set defaults as we did on WaterMC paper
+
+- Include executable path, data and documents overwriting all constants.py
+
+- Minor fixes
+
+v1.2.0
 =======================
 
 - Conda installation
 
-- Insert AdaptivePELE as external dependencie
+- Insert AdaptivePELE as external dependency
 
 - Fix minor bugs
 
