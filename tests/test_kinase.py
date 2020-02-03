@@ -16,6 +16,7 @@ WATERLIG_ARGS = [os.path.join(test_path, "water/input_lig.yaml")]
 RESTART_ARGS = [os.path.join(test_path, "restart/input.yaml")]
 MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
 MAE_ARGS = [os.path.join(test_path, "induced_fit/input_mae.yaml")]
+PCA_ARGS = [os.path.join(test_path, "pca/input.yaml")]
 FLAGS_ARGS = [os.path.join(test_path, "flags/input.yaml")]
 RESCORING_ARGS = [os.path.join(test_path, "rescoring/input.yaml")]
 
@@ -40,9 +41,24 @@ PELE_VALUES = ['"reportPath": "$OUTPUT_PATH/rep",', '"trajectoryPath": "$OUTPUT_
                 '"overlapFactor": 3,',
                 '"verboseMode": true,',
                 '"displacementFactor" : 3',
-                '"modesChangeFrequency" : 3,'
+                '"modesChangeFrequency" : 3,',
+                '"directionGeneration" : "steered",',
+                '"modesMixingOption" : "DontMixModes",',
+                '"pickingCase" : "random"',
+                '"numberOfModes": 3',
+                '"prelodadedModesIn" : "modes.nmd",',
+                '"relaxationSpringConstant" : 3'
               ]
 
+PCA_VALUES = [
+                '"displacementFactor" : 1.75',
+                '"modesChangeFrequency" : 8,',
+                '"directionGeneration" : "oscillate",',
+                '"modesMixingOption" : "doNotMixModes",',
+                '"pickingCase" : "LOWEST_MODE"',
+                '"numberOfModes": 1',
+                '"relaxationSpringConstant" : 2'
+             ]  
 
 
 def test_induced(ext_args=INDUCED_ARGS):
@@ -127,6 +143,18 @@ def test_flags(ext_args=FLAGS_ARGS):
     errors = check_file(folder, "adaptive.conf", ADAPTIVE_VALUES, errors)
     errors = check_file(folder, "pele.conf", PELE_VALUES, errors)
     errors = check_file(folder, "DataLocal/LigandRotamerLibs/LIG.rot.assign", "60", errors)
+    assert not errors
+
+
+def test_pca(ext_args=PCA_ARGS):
+    errors = []
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
+    folder = arguments.folder
+    print(folder, "pele.conf", PCA_VALUES, errors)
+    errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
 
 

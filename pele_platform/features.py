@@ -45,39 +45,10 @@ def retrieve_software_settings(args, pele_dir):
                  "simulation_params" : {}
                  },
             
-             "glide": {
-                 "adap_ex_output" : os.path.join( pele_dir, "output_adaptive"),
-                 "ad_ex_temp" : os.path.join( pele_dir, "adaptive.conf"),
-                 "pele_exit_temp" : os.path.join( pele_dir, "pele.conf"),
-                 "folders": [ "",
-                    "DataLocal/Templates/OPLS2005/HeteroAtoms/",
-                    "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
-                    "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-                    "DataLocal/LigandRotamerLibs",
-                    "DataLocal/OBC",
-                    "output_adaptive",
-                    "output_clustering",
-                    "glide_calculations/structures"
-                    ],
-                  "file_names" : ["glide.in", "adaptive.conf", "pele.conf"],
-                  "files" : { "glide" : [os.path.join(cs.DIR, "Templates/glide.in"),
-                                         os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-                                         os.path.join(cs.DIR, "Templates/pele_template.conf") ]
-                            },
-                 "simulation_params" : {
-                             "glide": {"spawning_type": "epsilon", "bias_column": 6, "epsilon":0.75, "density": "null",
-                                      "simulation_type": "pele", "iterations": 30, "pele_steps": 12, 
-                                      "cluster_values": "[2, 3, 4, 5]", "cluster_conditions": "[1.25, 0.75, 0.5]",
-                                      "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.GLIDE,
-                                      "box_radius": 10},
-                            }
-
-                 },
-            
              "adaptive" :  {
                  "adap_ex_output" : None,
-                 "ad_ex_temp" : os.path.join( pele_dir, "adaptive.conf"),
-                 "pele_exit_temp" : os.path.join( pele_dir, "pele.conf"),
+                 "ad_ex_temp" : os.path.join(pele_dir, "adaptive.conf"),
+                 "pele_exit_temp" : os.path.join(pele_dir, "pele.conf"),
                  "folders" : [ "",
                     "DataLocal/Templates/OPLS2005/HeteroAtoms/",
                     "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
@@ -86,24 +57,8 @@ def retrieve_software_settings(args, pele_dir):
                     "DataLocal/OBC"
                     ],
                   "file_names" : ["adaptive.conf", "pele.conf" ],
-                  "files" : { "adaptive" : [ args.adaptive, args.pele ],
-                              "full" : [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"), 
-                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ],
-                              "induce_fit" : [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ],
-                              "in_out" : [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ],
-                              "in_out_soft" : [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ],
-                              "water_exp":  [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ],
-                              "water_lig":  [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ],
-                              "rescoring":  [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ],
-                              "bias":  [ os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-                                           os.path.join(cs.DIR, "Templates/pele_template.conf") ]
-                            },
+                  "files" : [os.path.join(cs.DIR, "Templates/template_adaptive.conf"), 
+                             os.path.join(cs.DIR, "Templates/pele_template.conf") ],
                  "simulation_params" : {
                              "adaptive": {"spawning_type": "epsilon", "bias_column": 5, "epsilon":0.15, "density": "continuous",
                                       "simulation_type": "pele", "iterations": 100, "pele_steps": 4, 
@@ -170,40 +125,29 @@ def retrieve_software_settings(args, pele_dir):
                 software_setings["files"] = software_setings["files"].get("test")
             else:
                 software_setings["files"] = software_setings["files"].get("SP")
-        if args.software == "glide":
-                software_setings["files"] = software_setings["files"].get("glide")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("glide")
         if args.software == "adaptive" :
             if args.full:
-                software_setings["files"] = software_setings["files"].get("full")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("full")
+                type_simulation = "full"
             elif args.in_out:
-                software_setings["files"] = software_setings["files"].get("in_out")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("in_out")
+                type_simulation = "in_out"
             elif args.in_out_soft:
-                software_setings["files"] = software_setings["files"].get("in_out_soft")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("in_out_soft")
+                type_simulation = "in_out_soft"
             elif args.induce_fit:
-                software_setings["files"] = software_setings["files"].get("induce_fit")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("induce_fit")
+                type_simulation = "induce_fit"
             elif args.rescoring:
-                software_setings["files"] = software_setings["files"].get("rescoring")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("rescoring")
+                type_simulation = "rescoring"
             elif args.water_exp:
-                software_setings["files"] = software_setings["files"].get("water_exp")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("water_exp")
+                type_simulation = "water_exp"
             elif args.water_lig:
-                software_setings["files"] = software_setings["files"].get("water_lig")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("water_lig")
+                type_simulation = "water_lig"
             elif args.bias:
-                software_setings["files"] = software_setings["files"].get("bias")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("bias")
+                type_simulation = "bias"
             elif args.adaptive and args.pele:
-                software_setings["files"] = software_setings["files"].get("adaptive")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("adaptive")
+                type_simulation = "adaptive"
             else:
                 #Standard file (user will change the parameters)
-                software_setings["files"] = software_setings["files"].get("bias")
-                software_setings["simulation_params"] = software_setings["simulation_params"].get("bias")
-        
+                type_simulation = "bias"
+
+            software_setings["files"] = software_setings["files"]
+            software_setings["simulation_params"] = software_setings["simulation_params"].get(type_simulation)
         return software_setings

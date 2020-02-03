@@ -61,9 +61,17 @@ pele_documents: "done"
 verbose: true
 water_freq: 3
 water_overlap: 3
-anm_displacement: 3
-anm_modes_change: 3
 water_lig:
 - M:1
+pca: "modes.nmd"
+anm_direction: "steered"
+anm_mix_modes: "DontMixModes"
+anm_picking_mode: "random"
+anm_displacement: 3
+anm_modes_change: 3
+anm_num_of_modes: 3
+anm_relaxation_constr: 3
+remove_constraints: false
+
 
 

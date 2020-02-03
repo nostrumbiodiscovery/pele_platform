@@ -1,0 +1,26 @@
+system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
+chain: 'Z'
+resname: 'STR'
+restart: false
+seed: 12345
+usesrun: true
+induced_fit: true
+atom_dist:
+- 32
+- 33
+test: true
+ca_constr: 3
+pca_traj:
+- "../pele_platform/Examples/pca/1.pdb"
+- "../pele_platform/Examples/pca/2.pdb"
+- "../pele_platform/Examples/pca/3.pdb"
+selection_to_perturb: false
+perturbation: false
+binding_energy: false
+remove_constraints: true
+parameters: false
+sasa: false
+working_folder: "PCA_result"
+
+
+
