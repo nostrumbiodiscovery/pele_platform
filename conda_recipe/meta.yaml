@@ -1,7 +1,7 @@
 # must do conda install -c NostrumBioDiscovery pele_platform 
 package:
   name: pele_platform
-  version: "1.2.2"
+  version: "1.2.3"
 
 about:
   home: https://github.com/nostrumbiodiscovery/pele_platform
@@ -19,25 +19,18 @@ build:
 requirements:
   host:
     - python
-    - numpy
-    - cython
 
   run:
     # Base dependencies
     - python
     - numpy
-    - cython
+    - matplotlib
     - scipy
-    - prody
-    - six
     - pandas
-    - mdtraj
-    - pyemma
-    - fpdf
-    - pillow
     - pytest
     - adaptive_pele
     - pyyaml
+    - pppele
 
 test:
   imports:
