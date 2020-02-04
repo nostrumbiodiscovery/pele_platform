@@ -2,6 +2,8 @@ import subprocess
 import os
 import shutil
 import glob
+import AdaptivePELE.adaptiveSampling as adt
+import PPP.main as ppp
 from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
@@ -9,7 +11,6 @@ import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.prepwizard as pp
 import pele_platform.Utilities.PlopRotTemp.launcher as plop
-import pele_platform.Utilities.PPP.main as ppp
 import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.center_of_mass as cm
@@ -18,7 +19,6 @@ import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
 import pele_platform.Utilities.Helpers.external_files as ext
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
-import AdaptivePELE.adaptiveSampling as adt
 
 
 
@@ -41,7 +41,11 @@ def run_adaptive(args):
 
 
         env.logger.info("System: {}; Platform Functionality: {}\n\n".format(env.residue, env.software))
-        syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
+        
+        if env.perturbation:
+            syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
+        else:
+            syst = sp.SystemBuilder(args.system, None, None, env.pele_dir)
         
         env.logger.info("Prepare complex {}".format(syst.system))
         ########Choose your own input####################
@@ -91,44 +95,49 @@ def run_adaptive(args):
         env.logger.info("Metrics set\n\n")
 
         ############Parametrize Ligand###############
-        env.logger.info("Creating template for residue {}".format(args.residue))
-        with hp.cd(env.pele_dir):
-            plop.parametrize_miss_residues(args, env, syst)
-        env.logger.info("Template {}z created\n\n".format(args.residue.lower()))
-        if env.external_template:
-            for template_file in env.external_template:
-                cmd_to_move_template = "cp {} {}".format(template_file,  env.template_folder)
-                subprocess.call(cmd_to_move_template.split())
-        if env.external_rotamers:
-            for rotamer_file in env.external_rotamers:
-                cmd_to_move_rotamer_file = "cp {} {}".format(rotamer_file, env.rotamers_folder)
-                subprocess.call(cmd_to_move_rotamer_file.split())
+        if env.perturbation:
+            env.logger.info("Creating template for residue {}".format(args.residue))
+            with hp.cd(env.pele_dir):
+                plop.parametrize_miss_residues(args, env, syst)
+            env.logger.info("Template {}z created\n\n".format(args.residue.lower()))
+            if env.external_template:
+                for template_file in env.external_template:
+                    cmd_to_move_template = "cp {} {}".format(template_file,  env.template_folder)
+                    subprocess.call(cmd_to_move_template.split())
+            if env.external_rotamers:
+                for rotamer_file in env.external_rotamers:
+                    cmd_to_move_rotamer_file = "cp {} {}".format(rotamer_file, env.rotamers_folder)
+                    subprocess.call(cmd_to_move_rotamer_file.split())
 
-        ###########Parametrize missing residues#################
-        for res, __, _ in missing_residues:
-            if res != args.residue:
-                env.logger.info("Creating template for residue {}".format(res))
-                with hp.cd(env.pele_dir):
-                    mr.create_template(args, env, res)
-                env.logger.info("Template {}z created\n\n".format(res))
+            ###########Parametrize missing residues#################
+            for res, __, _ in missing_residues:
+                if res != args.residue:
+                    env.logger.info("Creating template for residue {}".format(res))
+                    with hp.cd(env.pele_dir):
+                        mr.create_template(args, env, res)
+                    env.logger.info("Template {}z created\n\n".format(res))
 
-        #########Parametrize solvent parameters if need it##############
-        env.logger.info("Setting implicit solvent: {}".format(env.solvent))
-        if env.solvent == "OBC":
-            shutil.copy(env.obc_tmp, env.obc_file)
-            for template in glob.glob(os.path.join(env.template_folder, "*")):
-                obc.main(template, env.obc_file)
-        env.logger.info("Implicit solvent set\n\n".format(env.solvent))
+            #########Parametrize solvent parameters if need it##############
+            env.logger.info("Setting implicit solvent: {}".format(env.solvent))
+            if env.solvent == "OBC":
+                shutil.copy(env.obc_tmp, env.obc_file)
+                for template in glob.glob(os.path.join(env.template_folder, "*")):
+                    obc.main(template, env.obc_file)
+            env.logger.info("Implicit solvent set\n\n".format(env.solvent))
 
 
-        #################Set Box###################
-        env.logger.info("Generating exploration box")
-        if not env.box_center:
-            env.box_center = cm.center_of_mass(env.ligand_ref)
-            env.logger.info("Box {} generated\n\n".format(env.box_center))
+            #################Set Box###################
+            env.logger.info("Generating exploration box")
+            if not env.box_center:
+                env.box_center = cm.center_of_mass(env.ligand_ref)
+                env.logger.info("Box {} generated\n\n".format(env.box_center))
+            else:
+                env.logger.info("Box {} generated\n\n".format(env.box_center))
+            env.box = cs.BOX.format(env.box_radius, env.box_center) if  env.box_radius else ""
+
         else:
-            env.logger.info("Box {} generated\n\n".format(env.box_center))
-        env.box = cs.BOX.format(env.box_radius, env.box_center) if  env.box_radius else ""
+            env.box=""
+        
 
 
         #####Build PCA#######
@@ -138,7 +147,7 @@ def run_adaptive(args):
            elif isinstance(env.pca_traj, list):
                pdbs = env.pca_traj
            pdbs_full_path = [os.path.abspath(pdb) for pdb in pdbs]
-           output = os.path.basename(pdbs[0])[:-4] + "ca_pca_modes.nmd"
+           output = os.path.basename(pdbs[0])[:-4] + "_ca_pca_modes.nmd"
            pca_script = os.path.join(cs.DIR, "Utilities/Helpers/calculatePCA4PELE.py")
            command = 'python {} --pdb "{}"'.format(pca_script, " ".join(pdbs_full_path))
            with helpers.cd(env.pele_dir):

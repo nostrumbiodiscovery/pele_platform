@@ -6,3 +6,4 @@ matplotlib
 pandas
 pytest
 AdaptivePELE
+PPPele

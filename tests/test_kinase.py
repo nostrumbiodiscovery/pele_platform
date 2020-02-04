@@ -46,7 +46,7 @@ PELE_VALUES = ['"reportPath": "$OUTPUT_PATH/rep",', '"trajectoryPath": "$OUTPUT_
                 '"modesMixingOption" : "DontMixModes",',
                 '"pickingCase" : "random"',
                 '"numberOfModes": 3',
-                '"prelodadedModesIn" : "modes.nmd",',
+                '"preloadedModesIn" : "modes.nmd",',
                 '"relaxationSpringConstant" : 3'
               ]
 
