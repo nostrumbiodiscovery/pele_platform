@@ -1,13 +1,9 @@
 numpy
+PyYAML
 pillow
 scipy 
 matplotlib
-biopython
 pandas
-pyemma
-prody
-six
-future
-fpdf
 pytest
 AdaptivePELE
+PPPele

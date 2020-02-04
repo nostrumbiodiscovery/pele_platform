@@ -65,6 +65,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", None)
         self.parameters = self.simulation_params.get("params", "") if args.parameters else ""
         self.perturbation = args.perturbation if args.perturbation else ""
+        self.ligand = cs.LIGAND if self.perturbation else ""
         self.binding_energy = args.binding_energy if args.binding_energy else ""
         self.sasa = args.sasa if args.sasa else ""
         self.selection_to_perturb = args.selection_to_perturb if args.selection_to_perturb else ""
