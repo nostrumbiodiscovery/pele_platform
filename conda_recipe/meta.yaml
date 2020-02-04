@@ -38,6 +38,7 @@ requirements:
     - pytest
     - adaptive_pele
     - pyyaml
+    - pppele
 
 test:
   imports:
