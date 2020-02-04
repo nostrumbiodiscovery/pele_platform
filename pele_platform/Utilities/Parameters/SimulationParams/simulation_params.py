@@ -6,13 +6,14 @@ from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glid
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
 from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
+from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
 import pele_platform.Utilities.Helpers.helpers as hp
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams,  waterexp_params.WaterExp):
+    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams):
 
 
     def __init__(self, args):
@@ -33,6 +34,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         bias_params.BiasParams.__init__(self, args)
         inout_params.InOutParams.__init__(self, args)
         waterexp_params.WaterExp.__init__(self, args)
+        pca.PCAParams.__init__(self, args)
 
 
     def simulation_type(self, args):
@@ -61,7 +63,11 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", None)
         self.ca_constr = args.ca_constr
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", None)
-        self.parameters = self.simulation_params.get("params", None)
+        self.parameters = self.simulation_params.get("params", "") if args.parameters else ""
+        self.perturbation = args.perturbation if args.perturbation else ""
+        self.binding_energy = args.binding_energy if args.binding_energy else ""
+        self.sasa = args.sasa if args.sasa else ""
+        self.selection_to_perturb = args.selection_to_perturb if args.selection_to_perturb else ""
 
     def main_adaptive_params(self, args):
         self.spawning = args.spawning if args.spawning else self.simulation_params.get("spawning_type", None)

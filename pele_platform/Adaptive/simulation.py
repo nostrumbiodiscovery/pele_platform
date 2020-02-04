@@ -77,6 +77,8 @@ def run_adaptive(args):
             shutil.copy(env.adap_ex_input, env.pele_dir)
         else:
             system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr)
+        if env.remove_constraints:
+            env.constraints = ""
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
         env.logger.info("Complex {} prepared\n\n".format(system_fix))
 
@@ -127,6 +129,22 @@ def run_adaptive(args):
         else:
             env.logger.info("Box {} generated\n\n".format(env.box_center))
         env.box = cs.BOX.format(env.box_radius, env.box_center) if  env.box_radius else ""
+
+
+        #####Build PCA#######
+        if env.pca_traj:
+           if isinstance(env.pca_traj, str):
+               pdbs = glob.glob(env.pca_traj)
+           elif isinstance(env.pca_traj, list):
+               pdbs = env.pca_traj
+           pdbs_full_path = [os.path.abspath(pdb) for pdb in pdbs]
+           output = os.path.basename(pdbs[0])[:-4] + "ca_pca_modes.nmd"
+           pca_script = os.path.join(cs.DIR, "Utilities/Helpers/calculatePCA4PELE.py")
+           command = 'python {} --pdb "{}"'.format(pca_script, " ".join(pdbs_full_path))
+           with helpers.cd(env.pele_dir):
+               os.system(command)
+           env.pca = cs.PCA.format(output)
+
         
         ############Fill in Simulation Templates############
         env.logger.info("Running Simulation")

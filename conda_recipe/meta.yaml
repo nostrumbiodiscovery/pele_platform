@@ -37,6 +37,7 @@ requirements:
     - pillow
     - pytest
     - adaptive_pele
+    - pyyaml
 
 test:
   imports:
