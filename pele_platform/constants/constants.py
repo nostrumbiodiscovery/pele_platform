@@ -170,7 +170,7 @@ WATER = '''
 '''
 
 
-PCA = '''"prelodadedModesIn" : "{}",'''
+PCA = '''"preloadedModesIn" : "{}",'''
 
 
 SELECTION_TO_PERTURB = '"selectionToPerturb" : { "chains" : { "names" : [ "$CHAIN" ] } },'
@@ -208,6 +208,7 @@ SASA='''
 
 
 
+LIGAND = '"ligandResname" : "$LIG_RES",'
 
 
 
