@@ -3,6 +3,28 @@ Versions
 
 Here we report the main changes for each version
 
+
+v1.2.3
+=======================
+
+- Automatic PCA mode
+
+- Fix minor bug on global exploration
+
+- Set PPP as external dependence
+
+v1.2.2
+=======================
+
+- Fix global exploration bug when joining ligand & receptor
+
+- Add rescoring feature to local a single minimum
+
+- Add induce_fit mode and exploration mode within water_lig parameters to explore hydration sites without moving the ligand or while making the entrance of the ligand.
+
+- Some minor fixes
+
+
 v1.2.1
 =======================
 
