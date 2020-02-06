@@ -24,9 +24,9 @@ a) **Induce fit**:
     seed: 12345
     induced_fit: true
     atom_dist:
-    - 4059
-    - 4556
-    spawning: independent
+    - 4059 #atomnumber1
+    - 4556 #atomnumber2
+    spawning: independent #usePELEnotAdaptivePELE
     cpus: 200
     iterations: 1
     steps: 1000
@@ -40,6 +40,7 @@ b) **Global exploration**:
     resname: 'THC'
     seed: 12345
     global: true
+    poses: 120
     atom_dist:
     - 4059
     - 4556
