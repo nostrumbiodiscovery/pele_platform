@@ -13,6 +13,23 @@ a backend for a potential future GUI.
 
 Github : https://github.com/NostrumBioDiscovery/pele_platform
 
+Requirements
+===================
+
+- Academic Schordinger
+
+- Pymol Python
+
+  .. code-block:: bash
+
+    yum install gcc gcc-c++ kernel-devel python-devel tkinter python-pmw glew-devel freeglut-devel libpng-devel freetype-devel libxml2-devel glm-devel
+
+    git clone https://github.com/schrodinger/pymol-open-source.git
+
+    cd pymol-open-source
+
+    python setup.py install (with same python you will use later)
+
 
 Documentation
 ===================
