@@ -7,6 +7,8 @@ def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_fil
     ### Randomize ligand starting position for outside-inside
     import pymol
     import numpy
+    pymol.pymol_argv = ['pymol','-qc'] + sys.argv[1:]
+    pymol.finish_launching()
     contact = -1
     n = 0
     n0 = 0
