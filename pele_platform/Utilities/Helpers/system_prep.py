@@ -21,7 +21,10 @@ class SystemBuilder(object):
         system = cls(receptor, ligand, residue, pele_dir)
         system.receptor, system.lig_ref = system.retrieve_receptor(output=output)
         system.lig = ligand if ligand else "{}.mae".format(residue)
-        subprocess.call("{} {} {} {}".format(SPYTHON, __file__, system.lig_ref, pele_dir).split())
+        my_env = os.environ.copy()
+        my_env["SCHRODINGER_PYTHONPATH"]=os.path.join(cs.SCHRODINGER, "internal/lib/python2.7/site-packages/")
+        my_env["SCHRODINGER"]=cs.SCHRODINGER
+        subprocess.call("{} {} {} {}".format(SPYTHON, __file__, system.lig_ref, pele_dir).split(), env=my_env)
         system.residue = residue
         return system
 
