@@ -88,7 +88,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Prepare your own simulation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Prepare your own simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#induce-fit">Induce fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#global-exploration">Global exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#water-ligand-exploration">Water+ligand exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#out-in-local-exploration">Out_in local exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#biased-exploration">Biased exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#receptor-sampling-simulation">Receptor sampling simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
+</ul>
+</li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input Parameters</a></li>
@@ -161,7 +174,9 @@
             
   <div class="section" id="prepare-your-own-simulation">
 <h1>Prepare your own simulation<a class="headerlink" href="#prepare-your-own-simulation" title="Permalink to this headline">¶</a></h1>
-<p>0. Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
+<div class="section" id="complex-preparation">
+<h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
 and output a complex.pdb.</p>
 <p>Make sure the ligand has:</p>
 <blockquote>
@@ -171,13 +186,13 @@ and output a complex.pdb.</p>
 <li><p>Any residuename except UNK</p></li>
 </ul>
 </div></blockquote>
-<ol class="arabic simple">
-<li><p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p></li>
-</ol>
+</div>
+<div class="section" id="input-preparation">
+<h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
 <p>To run different modes prepare different control files</p>
-<ol class="loweralpha simple">
-<li><p><strong>Induce fit</strong>:</p></li>
-</ol>
+<div class="section" id="induce-fit">
+<h3>Induce fit<a class="headerlink" href="#induce-fit" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
@@ -192,9 +207,9 @@ and output a complex.pdb.</p>
 <span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
 </pre></div>
 </div>
-<ol class="loweralpha simple" start="2">
-<li><p><strong>Global exploration</strong>:</p></li>
-</ol>
+</div>
+<div class="section" id="global-exploration">
+<h3>Global exploration<a class="headerlink" href="#global-exploration" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
@@ -207,9 +222,9 @@ and output a complex.pdb.</p>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">250</span>
 </pre></div>
 </div>
-<ol class="loweralpha simple" start="3">
-<li><p><strong>Water+ligand exploration</strong>:</p></li>
-</ol>
+</div>
+<div class="section" id="water-ligand-exploration">
+<h3>Water+ligand exploration<a class="headerlink" href="#water-ligand-exploration" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
@@ -223,9 +238,9 @@ and output a complex.pdb.</p>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">128</span>
 </pre></div>
 </div>
-<ol class="loweralpha simple" start="4">
-<li><p><strong>Out_in local exploration</strong>:</p></li>
-</ol>
+</div>
+<div class="section" id="out-in-local-exploration">
+<h3>Out_in local exploration<a class="headerlink" href="#out-in-local-exploration" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
@@ -237,9 +252,9 @@ and output a complex.pdb.</p>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
 </pre></div>
 </div>
-<ol class="loweralpha simple" start="5">
-<li><p><strong>Biased exploration</strong>:</p></li>
-</ol>
+</div>
+<div class="section" id="biased-exploration">
+<h3>Biased exploration<a class="headerlink" href="#biased-exploration" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
@@ -253,10 +268,38 @@ and output a complex.pdb.</p>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="2">
-<li><p>Run simulation</p></li>
-</ol>
+</div>
+<div class="section" id="receptor-sampling-simulation">
+<h3>Receptor sampling simulation<a class="headerlink" href="#receptor-sampling-simulation" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
+<span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<span class="nt">spawning</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">independent</span>
+<span class="nt">ca_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="nt">pca_traj</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/1.pdb&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/2.pdb&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/3.pdb&quot;</span>
+<span class="nt">selection_to_perturb</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">perturbation</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">binding_energy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">parameters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">sasa</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="run-simulation">
+<h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
+<p>To run the system launch the simulation with the next command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
+</div>
 </div>
 
 

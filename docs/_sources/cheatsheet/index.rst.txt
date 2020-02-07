@@ -1,7 +1,10 @@
 Prepare your own simulation
 ####################################
 
-0. Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
+1. Complex Preparation
+======================
+   
+Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
 and output a complex.pdb.
 
 Make sure the ligand has:
@@ -10,11 +13,15 @@ Make sure the ligand has:
  - No atomnames with spaces or single letter
  - Any residuename except UNK
 
-1. Prepare the input file ``input.yml``:
+2. Input Preparation
+=====================
+ 
+Prepare the input file ``input.yml``:
 
 To run different modes prepare different control files
 
-a) **Induce fit**:
+Induce fit
++++++++++++++++++++++++
 
 ..  code-block:: yaml
 
@@ -31,7 +38,8 @@ a) **Induce fit**:
     iterations: 1
     steps: 1000
 
-b) **Global exploration**:
+Global exploration
+++++++++++++++++++++++++++++
 
 ..  code-block:: yaml
 
@@ -46,7 +54,8 @@ b) **Global exploration**:
     - 4556
     cpus: 250
 
-c) **Water+ligand exploration**:
+Water+ligand exploration
+++++++++++++++++++++++++++++++++++++
 
 ..  code-block:: yaml
 
@@ -62,7 +71,8 @@ c) **Water+ligand exploration**:
     - 4556
     cpus: 128
     
-d) **Out_in local exploration**:
+Out_in local exploration
+++++++++++++++++++++++++++++++++++++
 
 ..  code-block:: yaml
 
@@ -76,7 +86,8 @@ d) **Out_in local exploration**:
     - 4556
     cpus: 200
 
-e) **Biased exploration**:
+Biased exploration
+++++++++++++++++++++++++++
 
 ..  code-block:: yaml
 
@@ -92,8 +103,38 @@ e) **Biased exploration**:
     - 4556
     cpus: 200
 
+Receptor sampling simulation
++++++++++++++++++++++++++++++++++++++
 
-2. Run simulation
+..  code-block:: yaml
+
+   system: 'docking2grid6n4b_thc.pdb'
+   chain: 'L'
+   resname: 'THC'
+   restart: false
+   seed: 12345
+   spawning: independent
+   ca_constr: 3
+   pca_traj:
+   - "pele_platform/Examples/pca/1.pdb"
+   - "pele_platform/Examples/pca/2.pdb"
+   - "pele_platform/Examples/pca/3.pdb"
+   selection_to_perturb: false
+   perturbation: false
+   binding_energy: false
+   remove_constraints: true
+   parameters: false
+   sasa: false
+   cpus: 20
+   iterations: 1
+   steps: 20
+
+
+
+3. Run simulation
+====================
+
+To run the system launch the simulation with the next command:
 
 ``python -m pele_platform.main input.yml``
 

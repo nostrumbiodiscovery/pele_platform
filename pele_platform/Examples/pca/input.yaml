@@ -1,10 +1,10 @@
-system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
+system: '../pele_platform/Examples/pca/1.pdb'
 chain: 'Z'
 resname: 'STR'
 restart: false
 seed: 12345
-usesrun: true
 induced_fit: true
+usesrun: false
 atom_dist:
 - 32
 - 33
