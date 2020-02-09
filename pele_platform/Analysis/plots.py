@@ -48,7 +48,7 @@ class PostProcessor():
 
     def plot_two_metrics(self, column_to_x, column_to_y, column_to_z=False, output_name=None, output_folder="."):
         if not os.path.exists(output_folder):
-            os.mkdir(output_folder)
+            os.makedirs(output_folder)
 
         column_to_x = column_to_x if not str(column_to_x).isdigit() else self._get_column_name(self.data, column_to_x)
         column_to_y = column_to_y if not str(column_to_y).isdigit() else self._get_column_name(self.data, column_to_y)
@@ -163,17 +163,17 @@ def analyse_simulation(report_name, traj_name, simulation_path):
     # Plot metrics
     while current_metric <= metrics-1:
         try:
-            analysis.plot_two_metrics(be, total_energy, current_metric, output_folder="Plots")
-            analysis.plot_two_metrics(be, current_metric, output_folder="Plots")
+            analysis.plot_two_metrics(be, total_energy, current_metric, output_folder="results/Plots")
+            analysis.plot_two_metrics(be, current_metric, output_folder="results/Plots")
         except ValueError:
             break
         current_metric += 1
 
     #Retrieve 100 best structures
-    analysis.top_poses(be, 100, "BestStructs")
+    analysis.top_poses(be, 100, "results/BestStructs")
 
     #Clustering of best 2000 best structures
-    analysis.cluster_poses(2000, be, "clusters")
+    analysis.cluster_poses(2000, be, "results/clusters")
 
 
 
