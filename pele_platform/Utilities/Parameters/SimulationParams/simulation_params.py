@@ -27,6 +27,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.box_params(args)
         self.metrics_params(args)
         self.output_params(args)
+        self.analysis_params(args)
 
         #Create all simulation types (could be more efficient --> chnage in future) 
         msm_params.MSMParams.__init__(self, args)
@@ -158,4 +159,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.traj_name = args.traj_name
         self.xtc = args.traj_name.endswith(".xtc")
         self.pdb = args.traj_name.endswith(".pdb")
+
+    def analysis_params(self, args):
+        self.analyse = args.analyse
 

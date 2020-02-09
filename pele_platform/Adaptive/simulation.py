@@ -19,6 +19,7 @@ import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
 import pele_platform.Utilities.Helpers.external_files as ext
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
+import pele_platform.Analysis.plots as pt
 
 
 
@@ -165,5 +166,9 @@ def run_adaptive(args):
         if not env.debug:
             adaptive.run()
         env.logger.info("Simulation run succesfully (:\n\n")
+
+    if env.analyse:
+        pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", os.path.join(env.pele_dir, env.output), env.residue)
         
+
     return env

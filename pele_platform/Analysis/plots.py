@@ -140,7 +140,11 @@ class PostProcessor():
                 bs.extract_snapshot_from_xtc(max_traj, input_traj, output, self.topology, max_snapshot, out_freq, output_traj)
             all_metrics.append(cluster_metrics)
         fig, ax = plt.subplots()
-        ax.boxplot(all_metrics)
+        try:
+            ax.boxplot(all_metrics)
+        except IndexError:
+            print("Samples to disperse to produce a cluster")
+            return
         ax.set_xlabel(metric)
         plt.savefig(os.path.join(output, "clusters_{}_boxplot.png".format(metric)))
 
@@ -151,8 +155,8 @@ class PostProcessor():
         return list(df)[int(column_digit)-1]
 
 
-def analyse_simulation(report_name, traj_name, simulation_path):
-    analysis = PostProcessor(report_name, traj_name, simulation_path, 15, residue="BEN")
+def analyse_simulation(report_name, traj_name, simulation_path, residue):
+    analysis = PostProcessor(report_name, traj_name, simulation_path, 15, residue=residue)
 
     metrics = len(list(analysis.data)) - 1 #Discard epoch as metric
     sasa = 6

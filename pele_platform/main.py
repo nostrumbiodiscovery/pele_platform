@@ -358,6 +358,7 @@ class YamlParser(object):
         self.binding_energy = data.get("binding_energy", cs.BE)
         self.sasa = data.get("sasa", cs.SASA)
         self.parameters = data.get("parameters", True)
+        self.analyse = data.get("analyse", True)
         self.selection_to_perturb = data.get("selection_to_perturb", cs.SELECTION_TO_PERTURB)
 
         if self.test:
