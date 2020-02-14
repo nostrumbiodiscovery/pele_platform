@@ -39,7 +39,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
 
     def simulation_type(self, args):
-        self.software = args.software
         self.pele = args.pele if args.adaptive else None
         self.adaptive = args.adaptive if args.adaptive else None
         self.hbond_donor, self.hbond_acceptor = args.hbond

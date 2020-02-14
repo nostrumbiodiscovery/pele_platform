@@ -27,6 +27,8 @@ def run_adaptive(args):
     # Build Folders and Logging and env variable that will containt
     #all main  attributes of the simulation
     env = pele.EnviroBuilder.build_env(args)
+    env.software = "Adaptive"
+
     shutil.copy(args.yamlfile, env.pele_dir) 
 
     if env.adaptive_restart:
@@ -166,7 +168,9 @@ def run_adaptive(args):
         env.logger.info("Simulation run succesfully (:\n\n")
 
     if env.analyse and not env.debug:
-        pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus)
+        pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
+            os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
+            output_folder=env.pele_dir, clustering=env.perturbation)
         
 
     return env

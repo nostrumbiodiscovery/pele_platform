@@ -16,11 +16,6 @@ class SimulationPaths(msm_folders.MSMPaths, glide_folders.GlidePaths):
         self.solvent_paths(args)
         self.box_paths(args)
 
-        if self.software == "msm":
-            msm_folders.MSMPaths.__init__(self, args)
-        elif self.software == "glide":
-            glide_folders.GlidePaths.__init__(self, args)
-
 
     def working_folder_paths(self, args):
 

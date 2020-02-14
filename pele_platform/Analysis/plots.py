@@ -159,7 +159,7 @@ class PostProcessor():
         return list(df)[int(column_digit)-1]
 
 
-def analyse_simulation(report_name, traj_name, simulation_path, residue, cpus=5):
+def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True):
     analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue)
 
     metrics = len(list(analysis.data)) - 1 #Discard epoch as metric
@@ -167,23 +167,27 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, cpus=5)
     be = 5
     total_energy = 4
     current_metric = sasa
+    plots_folder = os.path.join(output_folder, "results/Plots")
+    top_poses_folder = os.path.join(output_folder, "results/BestStructs")
+    clusters_folder = os.path.join(output_folder, "results/clusters")
 
     # Plot metrics
     while current_metric <= metrics-1:
         try:
-            analysis.plot_two_metrics(be, total_energy, current_metric, output_folder="results/Plots")
-            analysis.plot_two_metrics(be, current_metric, output_folder="results/Plots")
+            analysis.plot_two_metrics(be, total_energy, current_metric, output_folder=plots_folder)
+            analysis.plot_two_metrics(be, current_metric, output_folder=plots_folder)
         except ValueError:
             break
         current_metric += 1
 
     #Retrieve 100 best structures
     print("Retrieve 100 Best Poses")
-    analysis.top_poses(be, 100, "results/BestStructs")
+    analysis.top_poses(be, 100, top_poses_folder)
 
     #Clustering of best 2000 best structures
     print("Retrieve 10 best cluster poses")
-    analysis.cluster_poses(250, be, "results/clusters")
+    if clustering:
+        analysis.cluster_poses(250, be, clusters_folder)
 
 
 
