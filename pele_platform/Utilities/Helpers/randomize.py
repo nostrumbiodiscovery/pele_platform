@@ -7,8 +7,11 @@ def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_fil
     ### Randomize ligand starting position for outside-inside
     import pymol
     import numpy
-    pymol.pymol_argv = ['pymol','-qc'] + sys.argv[1:]
-    pymol.finish_launching()
+    if float(pymol.cmd.get_version()[0][0:2]) < 1.7:
+        pymol.pymol_argv = ['pymol','-qc'] + sys.argv[1:]
+        pymol.finish_launching()
+    else:
+        pass
     contact = -1
     n = 0
     n0 = 0
@@ -32,6 +35,7 @@ def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_fil
         pymol.cmd.create('rec_zero','receptor') 
         pymol.cmd.translate((-1*COM[0],-1*COM[1],-1*COM[2]),'rec_zero') # Move rec to the origin
         rec_min_max = pymol.cmd.get_extent('rec_zero')
+        print("REC", rec_min_max)
         maxdist1 = numpy.sqrt(rec_min_max[0][0]**2 + rec_min_max[0][1]**2 + rec_min_max[0][2]**2)
         maxdist2 = numpy.sqrt(rec_min_max[1][0]**2 + rec_min_max[1][0]**2 + rec_min_max[1][0]**2)
         maxdist = numpy.maximum(maxdist1,maxdist2)

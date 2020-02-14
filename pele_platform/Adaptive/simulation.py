@@ -167,8 +167,8 @@ def run_adaptive(args):
             adaptive.run()
         env.logger.info("Simulation run succesfully (:\n\n")
 
-    if env.analyse:
-        pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", os.path.join(env.pele_dir, env.output), env.residue)
+    if env.analyse and not env.debug:
+        pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus)
         
 
     return env
