@@ -64,12 +64,24 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", None)
         self.ca_constr = args.ca_constr
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", None)
-        self.parameters = self.simulation_params.get("params", "") if args.parameters else ""
         self.perturbation = args.perturbation if args.perturbation else ""
-        self.ligand = cs.LIGAND if self.perturbation else ""
-        self.binding_energy = args.binding_energy if args.binding_energy else ""
-        self.sasa = args.sasa if args.sasa else ""
-        self.selection_to_perturb = args.selection_to_perturb if args.selection_to_perturb else ""
+        self.perturbation_params(args)
+
+
+    def perturbation_params(self, args):
+        if self.perturbation:
+            self.selection_to_perturb = args.selection_to_perturb if args.selection_to_perturb else ""
+            self.parameters = self.simulation_params.get("params", "") if args.parameters else ""
+            self.ligand = cs.LIGAND if self.perturbation else ""
+            self.binding_energy = args.binding_energy if args.binding_energy else ""
+            self.sasa = args.sasa if args.sasa else ""
+        else:
+            self.selection_to_perturb = ""
+            self.parameters = ""
+            self.ligand = ""
+            self.binding_energy = ""
+            self.sasa = ""
+
 
     def main_adaptive_params(self, args):
         self.spawning = args.spawning if args.spawning else self.simulation_params.get("spawning_type", None)
@@ -116,7 +128,10 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_trials = args.water_trials
         if args.water_lig or args.water_exp:
             water_arg = args.water_lig if args.water_lig else args.water_exp
+            if "all_waters" in [args.water_lig, args.water_exp]:
+                water_arg = hp.retrieve_all_waters(self.system)
             self.water_energy = "\n".join([ cs.WATER_ENERGY.format(water.split(":")[0]) for water in water_arg ])
+            self.water_energy = None
             self.water = ",".join(['"'+water+'"' for water in water_arg])
             self.water_radius = 6
             # If there is no given center look for it

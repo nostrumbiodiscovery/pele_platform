@@ -14,12 +14,7 @@ pca_traj:
 - "../pele_platform/Examples/pca/1.pdb"
 - "../pele_platform/Examples/pca/2.pdb"
 - "../pele_platform/Examples/pca/3.pdb"
-selection_to_perturb: false
 perturbation: false
-binding_energy: false
-remove_constraints: true
-parameters: false
-sasa: false
 working_folder: "PCA_result"
 
 

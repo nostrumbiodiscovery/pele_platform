@@ -85,7 +85,7 @@ def retrieve_software_settings(args, pele_dir):
                                       "cluster_values": "[1, 2.5]", "cluster_conditions": "[1.1]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.IN_OUT,
                                       "box_radius": 10},
-                             "water_exp": {"spawning_type": "independent", "bias_column": 6, "epsilon":0.75, "density": "null",
+                             "water_exp": {"spawning_type": "independent", "bias_column": 4, "epsilon":0.75, "density": "null",
                                       "simulation_type": "pele", "iterations": 50, "pele_steps": 12, 
                                       "cluster_values": "[1.75, 2.5, 3.5, 5]", "cluster_conditions": "[1.6, 1.2, 1, 0.0]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.WATER_BS,

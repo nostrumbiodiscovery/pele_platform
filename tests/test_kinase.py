@@ -12,6 +12,7 @@ GLOBAL_ARGS = [os.path.join(test_path, "global/input.yaml")]
 EXIT_ARGS = [os.path.join(test_path, "exit/input.yaml")]
 EXITSOFT_ARGS = [os.path.join(test_path, "exit_soft/input.yaml")]
 WATER_ARGS = [os.path.join(test_path, "water/input_bs.yaml")]
+ALL_WATER_ARGS = [os.path.join(test_path, "water/input_all.yaml")]
 WATERLIG_ARGS = [os.path.join(test_path, "water/input_lig.yaml")]
 RESTART_ARGS = [os.path.join(test_path, "restart/input.yaml")]
 MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
@@ -86,6 +87,12 @@ def test_exitsoft(ext_args=EXITSOFT_ARGS):
     main.Launcher(arguments).launch()
 
 def test_water(ext_args=WATER_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
+
+def test_all_waters(ext_args=ALL_WATER_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
     main.set_software_to_use(arguments)

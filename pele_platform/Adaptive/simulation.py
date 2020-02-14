@@ -110,23 +110,6 @@ def run_adaptive(args):
                     cmd_to_move_rotamer_file = "cp {} {}".format(rotamer_file, env.rotamers_folder)
                     subprocess.call(cmd_to_move_rotamer_file.split())
 
-            ###########Parametrize missing residues#################
-            for res, __, _ in missing_residues:
-                if res != args.residue:
-                    env.logger.info("Creating template for residue {}".format(res))
-                    with hp.cd(env.pele_dir):
-                        mr.create_template(args, env, res)
-                    env.logger.info("Template {}z created\n\n".format(res))
-
-            #########Parametrize solvent parameters if need it##############
-            env.logger.info("Setting implicit solvent: {}".format(env.solvent))
-            if env.solvent == "OBC":
-                shutil.copy(env.obc_tmp, env.obc_file)
-                for template in glob.glob(os.path.join(env.template_folder, "*")):
-                    obc.main(template, env.obc_file)
-            env.logger.info("Implicit solvent set\n\n".format(env.solvent))
-
-
             #################Set Box###################
             env.logger.info("Generating exploration box")
             if not env.box_center:
@@ -135,9 +118,24 @@ def run_adaptive(args):
             else:
                 env.logger.info("Box {} generated\n\n".format(env.box_center))
             env.box = cs.BOX.format(env.box_radius, env.box_center) if  env.box_radius else ""
-
         else:
             env.box=""
+
+        ###########Parametrize missing residues#################
+        for res, __, _ in missing_residues:
+            if res != args.residue:
+                env.logger.info("Creating template for residue {}".format(res))
+                with hp.cd(env.pele_dir):
+                    mr.create_template(args, env, res)
+                env.logger.info("Template {}z created\n\n".format(res))
+    
+        #########Parametrize solvent parameters if need it##############
+        env.logger.info("Setting implicit solvent: {}".format(env.solvent))
+        if env.solvent == "OBC":
+            shutil.copy(env.obc_tmp, env.obc_file)
+            for template in glob.glob(os.path.join(env.template_folder, "*")):
+                obc.main(template, env.obc_file)
+        env.logger.info("Implicit solvent set\n\n".format(env.solvent))
         
 
 
