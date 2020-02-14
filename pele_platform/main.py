@@ -326,6 +326,7 @@ class YamlParser(object):
         self.parameters = data.get("parameters", True)
         self.analyse = data.get("analyse", True)
         self.selection_to_perturb = data.get("selection_to_perturb", cs.SELECTION_TO_PERTURB)
+        self.mae = data.get("mae", False)
 
         if self.test:
             print("##############################")

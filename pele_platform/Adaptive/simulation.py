@@ -170,7 +170,7 @@ def run_adaptive(args):
     if env.analyse and not env.debug:
         pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
             os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
-            output_folder=env.pele_dir, clustering=env.perturbation)
+            output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae)
         
 
     return env

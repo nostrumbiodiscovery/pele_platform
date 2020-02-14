@@ -1,4 +1,6 @@
 import os
+import glob
+import subprocess
 import mdtraj
 import numpy as np
 import pandas as pd
@@ -7,16 +9,18 @@ from multiprocessing import Pool
 import matplotlib.pyplot as plt
 import AdaptivePELE.analysis.selectOnPlot as sp
 import AdaptivePELE.analysis.bestStructs as bs
+from pele_platform.constants import constants as cs
 
 EPOCH = "epoch"
 STEPS = 3
 TRAJECTORY = "trajectory"
 
+
 def _extract_coords(info):
     p, v, resname = info
     # Most time consuming step 0.1
     traj = mdtraj.load_frame(p, v, top="topology.pdb")
-    atoms_info  = traj.topology.to_dataframe()[0]
+    atoms_info = traj.topology.to_dataframe()[0]
     condition = atoms_info['resName'] == resname
     atom_numbers_ligand = atoms_info[condition].index.tolist()
     coords = []
@@ -26,6 +30,7 @@ def _extract_coords(info):
         except IndexError:
             continue
     return np.array(coords).ravel()
+
 
 class PostProcessor():
 
@@ -159,7 +164,7 @@ class PostProcessor():
         return list(df)[int(column_digit)-1]
 
 
-def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True):
+def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False):
     analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue)
 
     metrics = len(list(analysis.data)) - 1 #Discard epoch as metric
@@ -189,10 +194,20 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     if clustering:
         analysis.cluster_poses(250, be, clusters_folder)
 
+    if mae:
+        sch_python = os.path.join(cs.SCHRODINGER, "utilities/python")
+        if not os.path.exists(sch_python):
+            sch_python = os.path.join(cs.SCHRODINGER, "run")
+        top_poses = glob.glob(os.path.join(top_poses_folder, "*"))
+        python_file = os.path.join(cs.DIR, "Analysis/to_mae.py")
+        for poses in top_poses:
+            command = "{} {} {} --schr {} {}".format(sch_python, python_file, poses,  cs.SCHRODINGER, "--remove") 
+            print(command)
+            subprocess.call(command.split())
+       
+
 
 
 
 if __name__ == "__main__":
     analyse_simulation("report_", "trajectory_", "/scratch/jobs/dsoler/water/trypsin/BEN_Pele_36/output/", residue="BEN")
-
-
