@@ -1,0 +1,2 @@
+#cluster size degeneracy contacts threshold density metric
+0 1 1 1.48 1.7500 1.0 -51.307
