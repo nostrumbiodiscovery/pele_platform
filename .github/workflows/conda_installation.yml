@@ -24,4 +24,6 @@ jobs:
         conda install -c conda-forge -c nostrumbiodiscovery -c anaconda pele_platform --yes
     - name: Test with pytest
       run: |
+        mkdir test_conda
+        cd test_conda
         python -m pele_platform.main -h
