@@ -20,4 +20,6 @@ jobs:
         python -m pip install pele_platform
     - name: Test import 
       run: |
+          mkdir test_pypi
+          cd test_pypi
           python -m pele_platform.main -h
