@@ -17,7 +17,7 @@ jobs:
         python -m pip install numpy cython
     - name: Install via Pypi
       run: |
-        python setup.py install
+        pip intall .
     - name: Test import 
       run: |
           mkdir test_pypi
