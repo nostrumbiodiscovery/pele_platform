@@ -74,6 +74,8 @@ class PostProcessor():
             output_name = output_name if output_name else "{}_{}_plot.png".format(column_to_x, column_to_y)
             output_name = os.path.join(output_folder,output_name).replace(" ", "_")
             pts = ax.scatter(self.data[column_to_x], self.data[column_to_y], s=20)
+            ax.set_xlabel(column_to_x)
+            ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
             print("Plotted {} vs {}".format(column_to_x, column_to_y))
         return output_name
@@ -179,8 +181,8 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     # Plot metrics
     while current_metric <= metrics-1:
         try:
-            analysis.plot_two_metrics(be, total_energy, current_metric, output_folder=plots_folder)
-            analysis.plot_two_metrics(be, current_metric, output_folder=plots_folder)
+            analysis.plot_two_metrics(total_energy, be, current_metric, output_folder=plots_folder)
+            analysis.plot_two_metrics(current_metric, be, output_folder=plots_folder)
         except ValueError:
             break
         current_metric += 1
@@ -204,6 +206,10 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
             command = "{} {} {} --schr {} {}".format(sch_python, python_file, poses,  cs.SCHRODINGER, "--remove") 
             print(command)
             subprocess.call(command.split())
+    plots = glob.glob(os.path.join(plots_folder, "*.png"))
+    poses = glob.glob(os.path.join(top_poses_folder, "*"))
+    clusters = glob.glob(os.path.join(clusters_folder, "*.png"))
+    return plots, poses, clusters
        
 
 

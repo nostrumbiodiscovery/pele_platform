@@ -20,6 +20,8 @@ import pele_platform.Utilities.Helpers.metrics as mt
 import pele_platform.Utilities.Helpers.external_files as ext
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 import pele_platform.Analysis.plots as pt
+import pele_platform.Analysis.pdf_report as pr
+
 
 
 
@@ -168,9 +170,9 @@ def run_adaptive(args):
         env.logger.info("Simulation run succesfully (:\n\n")
 
     if env.analyse and not env.debug:
-        pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
+        plots, poses, clusters = pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
             os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
             output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae)
-        
+        pr.create_report(plots, clusters, poses, output=os.path.join(env.pele_dir, "summary_results.pdf"))
 
     return env
