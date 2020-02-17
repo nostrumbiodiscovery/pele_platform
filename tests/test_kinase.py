@@ -146,7 +146,9 @@ def test_flags(ext_args=FLAGS_ARGS):
     assert not errors
 
 
-def test_pca(ext_args=PCA_ARGS):
+def test_pca(ext_args=PCA_ARGS, output="PCA_results"):
+    if os.path.exists(output):
+        shutil.rmtree(output)
     errors = []
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
