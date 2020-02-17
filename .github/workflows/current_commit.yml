@@ -1,4 +1,4 @@
-name: PELEPlatform from Pypi
+name: PELEPlatform currentCommit
 on: [push]
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
         python -m pip install numpy cython
     - name: Install via Pypi
       run: |
-        python -m pip install pele_platform
+        pip install .
     - name: Test import 
       run: |
           mkdir test_pypi

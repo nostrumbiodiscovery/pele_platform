@@ -142,3 +142,7 @@ def find_centroid(points):
     n_points = len(points)
     centroid = (sum(x) / n_points, sum(y) / n_points, sum(z) / n_points)
     return centroid
+
+def retrieve_all_waters(pdb):
+    with open(pdb, 'r') as f:
+        return list(set(["{}:{}".format(line[21:22], line[23:26].strip()) for line in f if line and "HOH" in line]))

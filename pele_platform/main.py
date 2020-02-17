@@ -17,28 +17,12 @@ class Launcher():
 
     def __init__(self, arguments):
         self.cpus = arguments.cpus
-        self.software = arguments.software
         self.restart = arguments.restart
         self.test = arguments.test
         self._args = arguments
 
     def launch(self):
-        if self._args.software == "msm":
-            if(self._args.clust > self.cpus and self.restart != "msm" and not self.test):
-                raise ValueError(cs.CLUSTER_ERROR.format(self.cpus, self._args.clust))
-            else:
-                msm.run(self._args)
-                
-
-        elif self.software == "adaptive":
-            ad.run_adaptive(self._args)
-
-        elif self.software in ["glide", "induce_fit"]:
-            gl.run(self._args)
-
-        elif self.software == "frag":
-            main = os.path.join(cs.DIR, "LigandGrowing/grow.py")
-            "{} {} -cp {} -fp {} -ca {} -fa {}".format(cs.PYTHON3, main, self._args.system, self._args.frag, self._args.ca, self._args.fa)
+        ad.run_adaptive(self._args)
 
 class SortingHelpFormatter(HelpFormatter):
     def add_arguments(self, actions):
@@ -184,23 +168,6 @@ def parseargs(args=[]):
 
     return args
 
-def set_software_to_use(arguments):
-    """
-    Auxiliar Function to set low variable software
-    which will be use to handle differences 
-    between PELE features along the program
-    """
-    if arguments.hbond[0]:
-        setattr(arguments, "software", "glide")
-    elif arguments.water_lig or arguments.full or arguments.water_exp or arguments.in_out_soft or arguments.in_out or arguments.induce_fit or  (arguments.adaptive and arguments.pele) or arguments.bias:
-        setattr(arguments, "software", "adaptive")
-    elif arguments.msm:
-        setattr(arguments, "software", "msm")
-    elif arguments.frag and arguments.ca and arguments.fa:
-        setattr(arguments, "software", "frag")
-    else:
-        #Standard Option
-        setattr(arguments, "software", "adaptive")
 
 def parseargs_yaml(args=[]):
     parser = argparse.ArgumentParser(description='Run PELE Platform', formatter_class=SortingHelpFormatter)
@@ -214,8 +181,6 @@ def main(arguments):
     of the software that will be used [Pele, Adaptive, glide...]
     and launch the respective job
     """
-    #arguments = YamlParser(arguments.input_file)
-    set_software_to_use(arguments)
     job = Launcher(arguments)
     job.launch()
     return job
@@ -327,7 +292,8 @@ class YamlParser(object):
         self.water_trials = data.get("water_trials", 10000)
         self.water_radius = data.get("water_radius", None)
         self.bias = data.get("bias", False)
-        self.induce_fit = data.get("induced_fit", False)
+        self.induced_fit_exhaustive = data.get("induced_fit_exhaustive", False)
+        self.induced_fit_fast = data.get("induced_fit_fast", False)
         self.frag = data.get("frag", False)
         self.ca_constr=data.get("ca_constr", 0.5)
         self.one_exit=data.get("one_exit", False)
@@ -358,7 +324,10 @@ class YamlParser(object):
         self.binding_energy = data.get("binding_energy", cs.BE)
         self.sasa = data.get("sasa", cs.SASA)
         self.parameters = data.get("parameters", True)
+        self.analyse = data.get("analyse", True)
         self.selection_to_perturb = data.get("selection_to_perturb", cs.SELECTION_TO_PERTURB)
+        self.mae = data.get("mae", False)
+        self.constrain_smiles = data.get("constrain_smiles", False)
 
         if self.test:
             print("##############################")
