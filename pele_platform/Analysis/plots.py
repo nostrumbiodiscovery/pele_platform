@@ -178,6 +178,11 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     top_poses_folder = os.path.join(output_folder, "results/BestStructs")
     clusters_folder = os.path.join(output_folder, "results/clusters")
 
+    os.makedirs(plots_folder, exist_ok=True)
+    os.makedirs(top_poses_folder, exist_ok=True)
+    os.makedirs(clusters_folder, exist_ok=True)
+
+
     # Plot metrics
     while current_metric <= metrics-1:
         try:
