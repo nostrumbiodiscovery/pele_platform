@@ -83,7 +83,7 @@ def test_exit(ext_args=EXIT_ARGS):
     arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
 
-def test_exitsoft(ext_args=EXITSOFT_ARGS):
+def test_softexit(ext_args=EXITSOFT_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()

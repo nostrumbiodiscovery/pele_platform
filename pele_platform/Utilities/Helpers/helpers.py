@@ -117,11 +117,17 @@ def retrieve_atom_info(atom, pdb):
     with open(pdb, "r") as f:
         for line in f:
             try:
-                if line[6:11].strip() == str(atom):
-                    chain = line[21].strip() 
-                    resnum = line[22:26].strip()
-                    atomname = line[12:16]
-                    return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
+                if len(atom.split(":")) > 1:
+                    chain, resnum, atomname = atom.split(":")
+                    if line[21].strip() == chain and line[22:26].strip() == resnum and line[12:16].strip() == atomname:
+                        atomname = line[12:16]
+                        return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
+                else:
+                    if line[6:11].strip() == str(atom):
+                        chain = line[21].strip() 
+                        resnum = line[22:26].strip()
+                        atomname = line[12:16]
+                        return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
             except IndexError:
                 pass
         sys.exit("Check the atoms given to calculate the distance metric")

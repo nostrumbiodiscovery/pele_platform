@@ -11,7 +11,6 @@ class Metrics_Builder():
 
     def distance_to_atom(self, atom_dist):
         for i in range(1, len(atom_dist), 2):
-            print(atom_dist[i-1])
             atom1 = hp.retrieve_atom_info(atom_dist[i-1], self.pdb)
             atom2 = hp.retrieve_atom_info(atom_dist[i], self.pdb)
             self.metrics.append(cs.DISTANCE_ATOMS.format(atom1, atom2, i/2))
