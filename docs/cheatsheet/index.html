@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Prepare your own simulation &mdash; pele platform 1.2.3 documentation</title>
+  <title>Prepare your own simulation &mdash; pele platform 1.2.4 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.2.3
+                1.2
               </div>
             
           
@@ -91,7 +91,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Prepare your own simulation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#induce-fit">Induce fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adaptivepele-induced-fit">AdaptivePELE Induced fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-induced-fit-slow-but-exhaustive">PELE Induced fit (Slow but exhaustive)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#minimization-exploration">Minimization exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#global-exploration">Global exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#water-ligand-exploration">Water+ligand exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#out-in-local-exploration">Out_in local exploration</a></li>
@@ -190,21 +192,47 @@ and output a complex.pdb.</p>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<p>To run different modes prepare different control files</p>
-<div class="section" id="induce-fit">
-<h3>Induce fit<a class="headerlink" href="#induce-fit" title="Permalink to this headline">¶</a></h3>
+<p>To run different modes prepare different control files.
+For more explanation on the modes please refer to <a class="reference external" href="../documentation/index.html">here</a></p>
+<div class="section" id="adaptivepele-induced-fit">
+<h3>AdaptivePELE Induced fit<a class="headerlink" href="#adaptivepele-induced-fit" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">induced_fit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span> <span class="c1">#atomnumber1</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span> <span class="c1">#atomnumber2</span>
-<span class="nt">spawning</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">independent</span> <span class="c1">#usePELEnotAdaptivePELE</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
-<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1000</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pele-induced-fit-slow-but-exhaustive">
+<h3>PELE Induced fit (Slow but exhaustive)<a class="headerlink" href="#pele-induced-fit-slow-but-exhaustive" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<span class="nt">induced_fit_exhaustive</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">atom_dist</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span> <span class="c1">#atomnumber1</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span> <span class="c1">#atomnumber2</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="minimization-exploration">
+<h3>Minimization exploration<a class="headerlink" href="#minimization-exploration" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<span class="nt">rescoring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">atom_dist</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
+<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
 </pre></div>
 </div>
 </div>
@@ -284,10 +312,7 @@ and output a complex.pdb.</p>
 <span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/3.pdb&quot;</span>
 <span class="nt">selection_to_perturb</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">perturbation</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">binding_energy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">parameters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">sasa</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
 <span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>

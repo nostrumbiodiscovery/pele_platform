@@ -18,10 +18,11 @@ Make sure the ligand has:
  
 Prepare the input file ``input.yml``:
 
-To run different modes prepare different control files
+To run different modes prepare different control files.
+For more explanation on the modes please refer to `here <../documentation/index.html>`__
 
-Induce fit
-+++++++++++++++++++++++
+AdaptivePELE Induced fit
++++++++++++++++++++++++++++++++++++++++++
 
 ..  code-block:: yaml
 
@@ -29,14 +30,42 @@ Induce fit
     chain: 'L'
     resname: 'THC'
     seed: 12345
-    induced_fit: true
+    induced_fit_fast: true
     atom_dist:
     - 4059 #atomnumber1
     - 4556 #atomnumber2
-    spawning: independent #usePELEnotAdaptivePELE
-    cpus: 200
-    iterations: 1
-    steps: 1000
+    cpus: 60
+
+PELE Induced fit (Slow but exhaustive)
++++++++++++++++++++++++++++++++++++++++++
+
+..  code-block:: yaml
+
+    system: 'docking2grid6n4b_thc.pdb'
+    chain: 'L'
+    resname: 'THC'
+    seed: 12345
+    induced_fit_exhaustive: true
+    atom_dist:
+    - 4059 #atomnumber1
+    - 4556 #atomnumber2
+    cpus: 60
+
+Minimization exploration
++++++++++++++++++++++++++++
+
+..  code-block:: yaml
+
+    system: 'docking2grid6n4b_thc.pdb'
+    chain: 'L'
+    resname: 'THC'
+    seed: 12345
+    rescoring: true
+    atom_dist:
+    - 4059
+    - 4556
+    cpus: 60
+
 
 Global exploration
 ++++++++++++++++++++++++++++
@@ -121,10 +150,7 @@ Receptor sampling simulation
    - "pele_platform/Examples/pca/3.pdb"
    selection_to_perturb: false
    perturbation: false
-   binding_energy: false
    remove_constraints: true
-   parameters: false
-   sasa: false
    cpus: 20
    iterations: 1
    steps: 20

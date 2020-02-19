@@ -103,6 +103,8 @@ Configure the parameters of the PlopRotTemp to extract the ligand forcefield par
 
 - **rotamers**: External rotamer libraries
 
+- **skip_ligand_prep**: Skip preparation of that resiude. This could be usefull to bypass problems with PlopRotTemp when creating the ligand parameters.
+
 
 ..  code-block:: yaml
 
@@ -117,6 +119,8 @@ Configure the parameters of the PlopRotTemp to extract the ligand forcefield par
   rotamers:
     - "/home/dsoler/MG.rot.assign"
     - "/home/dsoler/LIG.rot.assign"
+  skip_ligand_prep:
+    - "LIG"
 
 Box parameters
 =================
@@ -235,12 +239,18 @@ This section allows the user to change the constraint values.
 
 - **water_constr**: Water constraints. Default=5
 
+- **constrain_smiles**: SMILES string to indicate what part of the molecule to constraint. Default=None
+
+- **smiles_constr**: Numeric value of the SMILES constraints. Default=10
+
 ..  code-block:: yaml
 
     ca_constr: 2
     interval_constr: 10
     metal_constr: 100
     water_constr: 5
+    constrain_smiles: "C2CCC1CCCCC1C2"
+    smiles_constr: 5
 
 
 WaterPerturbation
@@ -316,6 +326,20 @@ Metrics to track along the simulation
     rmsd_pdb: "/home/dsoler/native.pdb"
 
 
+Analysis
+=============
+
+Run a post simulation analysis to extract plots, top poses and clusters.
+
+- **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
+
+- **mae**: To extract the best energy poses as .mae files with the metrics as properties (schrodinger need it). Default: false
+
+..  code-block:: yaml
+
+    analysis: false
+    mae: true
+
 Output
 ==========
 
@@ -338,17 +362,30 @@ Automatically configures all control file options to a standard job chosen bewee
 induce fit, local exploration, bias exploration, exit path and global exploration
 
 
-Induced fit
-==============
+Induced fit_fast
+==================
 
-- **induced_fit**: Run induced fit simulation paramaters by setting the center of the box in the
+- **induced_fit_fast**: Run a short induced fit AdaptivePELE simulation paramaters by setting the center of the box in the
   cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
   steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
   new conformations within the same binding site.
 
 ..  code-block:: yaml
 
-  induced_fit: true
+  induced_fit_fast: true
+
+Induced fit_exhaustive
+========================
+
+- **induced_fit_exhaustive**: Run a long induced fit PELE simulation paramaters by setting the center of the box in the
+  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
+  steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
+  new conformations within the same binding site.
+
+..  code-block:: yaml
+
+  induced_fit_exhaustive: true
+
 
 Rescoring
 ============

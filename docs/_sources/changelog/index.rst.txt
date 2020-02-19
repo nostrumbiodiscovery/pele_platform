@@ -4,6 +4,23 @@ Versions
 Here we report the main changes for each version
 
 
+v1.2.4
+=======================
+
+- Set constraints by smiles
+
+- Include a default posprocessing module with plots, top poses and clusters
+  
+- Separate between AdaptivePELE induced fit (induced_fit_fast) and PELE indeced fit (induced_fit_exhaustive)
+
+- Include skip_ligand_prep option to jump PlopRotTemp missing residue
+
+- Give option ot the user to specify the atom_dist by chain:resname:atomname (A:125:CA)
+
+- Give option mae to transform the best structures to mae files with the metrics as properties
+
+- Fix minor bugs
+
 v1.2.3
 =======================
 
