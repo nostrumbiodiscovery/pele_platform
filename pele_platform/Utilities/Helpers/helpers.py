@@ -117,7 +117,7 @@ def retrieve_atom_info(atom, pdb):
     with open(pdb, "r") as f:
         for line in f:
             try:
-                if len(atom.split(":")) > 1:
+                if ":" in atom:
                     chain, resnum, atomname = atom.split(":")
                     if line[21].strip() == chain and line[22:26].strip() == resnum and line[12:16].strip() == atomname:
                         atomname = line[12:16]
