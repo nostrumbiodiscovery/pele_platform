@@ -44,5 +44,8 @@ Documentation
    documentation/index.rst
 
 .. toctree::
+   developers/index.rst
+
+.. toctree::
    changelog/index.rst
 

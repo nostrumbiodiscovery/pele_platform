@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; pele platform 1.2.3 documentation</title>
+  <title>Installation &mdash; pele platform 1.2.4 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.2.3
+                1.2
               </div>
             
           
@@ -88,7 +88,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#conda-recomended">Conda (recomended)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pypi">Pypi</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#source-code">Source Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#last-stable-release-from-source-code">Last stable release from source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#latest-devel-version">Latest devel version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#test-it-works">Test it works</a></li>
 </ul>
 </li>
@@ -187,13 +188,27 @@ vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">
 </pre></div>
 </div>
 </div>
-<div class="section" id="source-code">
-<h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="last-stable-release-from-source-code">
+<h2>Last stable release from source code<a class="headerlink" href="#last-stable-release-from-source-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
 
 <span class="nb">cd</span> pele_platform
 
-pip install pele_platform
+pip install .
+
+vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="latest-devel-version">
+<h2>Latest devel version<a class="headerlink" href="#latest-devel-version" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
+
+<span class="nb">cd</span> pele_platform
+
+git checkout devel
+
+pip install .
 
 vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
 </pre></div>
