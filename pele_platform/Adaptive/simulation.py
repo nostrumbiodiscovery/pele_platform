@@ -60,18 +60,28 @@ def run_adaptive(args):
                 input_path  = os.path.join(env.pele_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
                 input_proc = os.path.basename(ppp.main(input_path, env.pele_dir, output_pdb=["" , ],
-                                charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0])
+                                charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter,
+                                constrain_smiles=env.constrain_smiles)[0], ligand_pdb=env.ligand_ref)
                 env.inputs_simulation.append(input_proc)
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input +  '"' for input in env.inputs_simulation])
         elif args.full or args.randomize:
-            ligand_positions, box_center, box_radius = rd.randomize_starting_position(env.ligand_ref, "input_ligand.pdb", env.residue, env.receptor, None, None, env, poses=env.poses)
+            command = "{} {} --ligand {} --receptor {} --resname {} --poses {} --output_folder {}".format(
+            cs.PYMOL_PYTHON, os.path.join(cs.DIR, "Utilities/Helpers/randomize.py"), env.ligand_ref,
+            env.receptor, env.residue, env.poses, env.pele_dir)
+            print(command)
+            outputs = subprocess.check_output(command.split())
+            #Get stdout as variables (specific format decided by me)
+            ligand_positions = [l.strip().strip("'") for l in str(outputs).split(";")[-3].strip(" ['").strip("']").split(",")]
+            box_radius = float(str(outputs).split(";")[-1].strip('\\n"').strip())
+            box_center = [float(c) for c in str(outputs).split(";")[-2].strip(" [").strip("]").split(",")]
             # Use choice stays as first priority
             env.box_center = box_center if not env.box_center else env.box_center
             env.box_radius = box_radius if not env.box_radius else env.box_radius
             receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
-                            charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0]
-            inputs = rd.join(receptor, ligand_positions, env)
+                            charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter,
+                            constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)[0]
+            inputs = rd.join(receptor, ligand_positions, env.residue, output_folder=env.pele_dir)
             env.adap_ex_input = ", ".join(['"' + os.path.basename(input) + '"' for input in inputs]).strip('"')
             hp.silentremove(ligand_positions)
             #Parsing input for errors and saving them as inputs
@@ -85,7 +95,7 @@ def run_adaptive(args):
             env.constraints = ct.retrieve_constraints(system_fix, gaps, metals, back_constr=env.ca_constr)
             shutil.copy(env.adap_ex_input, env.pele_dir)
         else:
-            system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr)
+            system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
         if env.remove_constraints:
             env.constraints = ""
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
@@ -127,7 +137,7 @@ def run_adaptive(args):
 
         ###########Parametrize missing residues#################
         for res, __, _ in missing_residues:
-            if res != args.residue:
+            if res != args.residue and res not in env.skip_ligand_prep:
                 env.logger.info("Creating template for residue {}".format(res))
                 with hp.cd(env.pele_dir):
                     mr.create_template(args, env, res)

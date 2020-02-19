@@ -222,8 +222,8 @@ class YamlParser(object):
         self.solvent = data.get("solvent", "VDGBNP")
         self.usesrun = data.get("usesrun", False)
         self.spawning = data.get("spawning", None)
-        self.iterations = data.get("iterations", 1) if self.spawning == "independent" else data.get("iterations", 30)
-        self.pele_steps = self.steps = data.get("steps", 12)
+        self.iterations = data.get("iterations", None)
+        self.pele_steps = self.steps = data.get("steps", None)
         self.cpus = data.get("cpus", 2)
         self.density = data.get("density", None)
         self.cluster_values = data.get("cluster_values", None)
@@ -327,6 +327,8 @@ class YamlParser(object):
         self.analyse = data.get("analyse", True)
         self.selection_to_perturb = data.get("selection_to_perturb", cs.SELECTION_TO_PERTURB)
         self.mae = data.get("mae", False)
+        self.constrain_smiles = data.get("constrain_smiles", False)
+        self.skip_ligand_prep = data.get("skip_ligand_prep", [])
 
         if self.test:
             print("##############################")

@@ -14,5 +14,5 @@ module load intel Python/2.7.14-intel-2018a
 export I_MPI_PMI_LIBRARY=/usr/lib64/libpmi.so
 export PYTHONPATH=/sNow/easybuild/centos/7.4.1708/Skylake/software/PyMOL/2.2.0_0/lib/python2.7/site-packages/:$PYTHONPATH
 #export PYTHONPATH=/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform/:/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform/pele_platform/:$PYTHONPATH
-export PYTHONPATH=/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform/:/home/ssaenoon/AdaptivePELE/:$PYTHONPATH
+export PYTHONPATH=/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform_devel/:/home/ssaenoon/AdaptivePELE/:$PYTHONPATH
 

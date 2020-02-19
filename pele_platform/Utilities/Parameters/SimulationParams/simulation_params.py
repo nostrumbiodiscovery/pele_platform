@@ -113,12 +113,14 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.skip_prep = args.skip_prep
         self.nonstandard = args.nonstandard
         self.constraints = None
+        self.constrain_smiles = args.constrain_smiles
         self.no_ppp = args.no_ppp
 
     def ligand_params(self, args):
         self.mae_lig = args.mae_lig
         self.external_template = args.template
         self.external_rotamers = args.rotamers
+        self.skip_ligand_prep = args.skip_ligand_prep
 
     def water_params(self, args):
         self.water_temp = args.water_temp

@@ -16,8 +16,13 @@ elif args.induced_fit_fast:
     type_simulation = "induced_fit_fast"
 
 
-Go to main.py and set your input.yaml option under the class class YamlParser(object):
+3) Go to main.py and set your input.yaml option under the class class YamlParser(object).
+Set the default to false so it will get activated when the user specifies induced_fit_fast: true.
 
+self.induced_fit_fast = data.get("induced_fit_fast", False)
+
+
+That's it!
 
 
 
