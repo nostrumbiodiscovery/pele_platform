@@ -328,6 +328,7 @@ class YamlParser(object):
         self.selection_to_perturb = data.get("selection_to_perturb", cs.SELECTION_TO_PERTURB)
         self.mae = data.get("mae", False)
         self.constrain_smiles = data.get("constrain_smiles", False)
+        self.skip_ligand_prep = data.get("skip_ligand_prep", [])
 
         if self.test:
             print("##############################")

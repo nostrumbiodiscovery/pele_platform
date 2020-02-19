@@ -120,6 +120,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.mae_lig = args.mae_lig
         self.external_template = args.template
         self.external_rotamers = args.rotamers
+        self.skip_ligand_prep = args.skip_ligand_prep
 
     def water_params(self, args):
         self.water_temp = args.water_temp

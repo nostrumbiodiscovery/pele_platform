@@ -137,7 +137,7 @@ def run_adaptive(args):
 
         ###########Parametrize missing residues#################
         for res, __, _ in missing_residues:
-            if res != args.residue:
+            if res != args.residue and res not in env.skip_ligand_prep:
                 env.logger.info("Creating template for residue {}".format(res))
                 with hp.cd(env.pele_dir):
                     mr.create_template(args, env, res)
