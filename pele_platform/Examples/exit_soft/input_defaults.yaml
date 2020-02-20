@@ -1,0 +1,12 @@
+system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
+chain: 'Z'
+resname: 'STR'
+restart: false
+seed: 12345
+usesrun: true
+cpus: 25
+in_out_soft: true
+equilibration: false
+debug: true
+
+

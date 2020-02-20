@@ -23,6 +23,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.optative_params(args)
         self.system_preparation_params(args)
         self.ligand_params(args)
+        self.anm_params(args)
         self.water_params(args)
         self.box_params(args)
         self.metrics_params(args)
@@ -52,8 +53,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.logfile =  LOGFILE if args.log else ""
         self.license = '''"{}"'''.format(cs.LICENSE)
         self.anm_freq = self.simulation_params.get("anm_freq", args.anm_freq)
-        self.anm_displacement = self.simulation_params.get("anm_displacement", args.anm_displacement)
-        self.anm_modes_change = self.simulation_params.get("anm_modes_change", args.anm_modes_change)
         self.sidechain_freq = self.simulation_params.get("sidechain_freq", args.sidechain_freq)
         self.min_freq = self.simulation_params.get("min_freq", args.min_freq)
         self.water_freq = args.water_freq
@@ -66,6 +65,17 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.perturbation = args.perturbation if args.perturbation else ""
         self.perturbation_params(args)
 
+    def anm_params(self, args):
+        self.anm_displacement = self.simulation_params.get("anm_displacement", args.anm_displacement)
+        self.anm_modes_change = self.simulation_params.get("anm_modes_change", args.anm_modes_change)
+        self.anm_direction = self.simulation_params.get("anm_direction", args.anm_direction)
+        self.anm_mix_modes = self.simulation_params.get("anm_mix_modes", args.anm_mix_modes)
+        self.anm_picking_mode = self.simulation_params.get("anm_picking_mode", args.anm_picking_mode)
+        self.anm_displacement = self.simulation_params.get("anm_displacement", args.anm_displacement)
+        self.anm_modes_change = self.simulation_params.get("anm_modes_change", args.anm_modes_change)
+        self.anm_num_of_modes = self.simulation_params.get("anm_num_of_modes", args.anm_num_of_modes)
+        self.anm_relaxation_constr = self.simulation_params.get("anm_relaxation_constr", args.anm_relaxation_constr)
+        self.remove_constraints = self.simulation_params.get("remove_constraints", args.remove_constraints)
 
     def perturbation_params(self, args):
         if self.perturbation:
@@ -84,6 +94,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
     def main_adaptive_params(self, args):
         self.spawning = args.spawning if args.spawning else self.simulation_params.get("spawning_type", None)
+        self.spawning_condition = self.simulation_params.get("spawning_condition", args.spawning_condition)
+        self.spawning_condition = '"condition": "{}",'.format(self.spawning_condition) if self.spawning_condition else ""
         self.density = args.density if args.density else self.simulation_params.get("density", None)
         self.simulation_type = args.simulation_type if args.simulation_type else self.simulation_params.get("simulation_type", None)
         self.iterations = args.iterations if args.iterations else self.simulation_params.get("iterations", None)

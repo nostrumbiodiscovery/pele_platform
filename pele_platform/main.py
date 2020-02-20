@@ -22,7 +22,8 @@ class Launcher():
         self._args = arguments
 
     def launch(self):
-        ad.run_adaptive(self._args)
+        job_variables = ad.run_adaptive(self._args)
+        return job_variables
 
 class SortingHelpFormatter(HelpFormatter):
     def add_arguments(self, actions):
@@ -217,7 +218,7 @@ class YamlParser(object):
         self.water_freq = data.get("water_freq", 1)
         self.temperature = self.temp = data.get("temperature", 1500)
         self.sidechain_resolution = data.get("sidechain_res", 10)
-        self.steric_trials = data.get("steric_trials", 250)
+        self.steric_trials = data.get("steric_trials", None)
         self.overlap_factor = data.get("overlap_factor", 0.65)
         self.solvent = data.get("solvent", "VDGBNP")
         self.usesrun = data.get("usesrun", False)
@@ -311,13 +312,13 @@ class YamlParser(object):
         self.pele_data = data.get("pele_data", "")
         self.pele_documents = data.get("pele_documents", "")
         self.pca = data.get("pca", "")
-        self.anm_direction = data.get("anm_direction", None)
-        self.anm_mix_modes = data.get("anm_mix_modes", None)
-        self.anm_picking_mode = data.get("anm_picking_mode", None)
-        self.anm_displacement = data.get("anm_displacement", None)
-        self.anm_modes_change = data.get("anm_modes_change", None)
-        self.anm_num_of_modes = data.get("anm_num_of_modes", None)
-        self.anm_relaxation_constr = data.get("anm_relaxation_constr", None)
+        self.anm_direction = data.get("anm_direction", "random")
+        self.anm_mix_modes = data.get("anm_mix_modes", "mixMainModeWithOthersModes")
+        self.anm_picking_mode = data.get("anm_picking_mode", "RANDOM_MODE")
+        self.anm_displacement = data.get("anm_displacement", 0.75)
+        self.anm_modes_change = data.get("anm_modes_change", 4)
+        self.anm_num_of_modes = data.get("anm_num_of_modes", 6)
+        self.anm_relaxation_constr = data.get("anm_relaxation_constr", 0.5)
         self.remove_constraints = data.get("remove_constraints", False)
         self.pca_traj = data.get("pca_traj", None)
         self.perturbation = data.get("perturbation", cs.PERTURBATION)
@@ -329,6 +330,7 @@ class YamlParser(object):
         self.mae = data.get("mae", False)
         self.constrain_smiles = data.get("constrain_smiles", False)
         self.skip_ligand_prep = data.get("skip_ligand_prep", [])
+        self.spawning_condition = data.get("spawning_condition", "")
 
         if self.test:
             print("##############################")
