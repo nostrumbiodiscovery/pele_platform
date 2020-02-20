@@ -22,7 +22,7 @@ PCA_ARGS = [os.path.join(test_path, "pca/input.yaml")]
 FLAGS_ARGS = [os.path.join(test_path, "flags/input.yaml")]
 RESCORING_ARGS = [os.path.join(test_path, "rescoring/input.yaml")]
 
-ADAPTIVE_VALUES = ["hit1_complex_processed_processed.pdb", "LIG", '"outputPath": "output_sim"',
+ADAPTIVE_VALUES = ["water_processed_processed.pdb", "SB4", '"outputPath": "output_sim"',
     '"processors" : 3', '"peleSteps" : 1,', '"iterations" : 1,', '"runEquilibration" : true,',
     '"equilibrationLength" : 11,', '"seed": 3000', '"useSrun": true', 
     '"values" : [1, 2, 3],', '"conditions": [0.1, 0.2, 0.3]', '"epsilon": 0.3', 
@@ -142,7 +142,7 @@ def test_flags(ext_args=FLAGS_ARGS):
         errors.append("Debug flag not working")
     errors = check_file(folder, "adaptive.conf", ADAPTIVE_VALUES, errors)
     errors = check_file(folder, "pele.conf", PELE_VALUES, errors)
-    errors = check_file(folder, "DataLocal/LigandRotamerLibs/LIG.rot.assign", "60", errors)
+    errors = check_file(folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors)
     assert not errors
 
 
