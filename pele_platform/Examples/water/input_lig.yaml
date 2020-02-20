@@ -1,6 +1,6 @@
-system: '../pele_platform/Examples/water/hit1_complex_processed.pdb'
-chain: 'L'
-resname: 'LIG'
+system: '../pele_platform/Examples/water/water_processed.pdb'
+chain: 'J'
+resname: 'SB4'
 restart: false
 seed: 12345
 test: true
