@@ -4,7 +4,7 @@ import shutil
 import pele_platform.constants.constants as cs
 import pele_platform.Analysis.plots as pt
 
-simulation_path = os.path.join(os.path.dirname(cs.DIR), "tests/data/output")
+simulation_path = "data/output"
 REPORT_NAME = "report_"
 TRAJ_NAME = "trajectory_"
 

@@ -7,7 +7,6 @@ seed: 12345
 atom_dist:
 - 32
 - 33
-usesrun: true
 cpus: 200
 iterations: 1
 steps: 1000 
