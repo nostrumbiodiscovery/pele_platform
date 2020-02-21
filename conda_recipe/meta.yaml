@@ -33,6 +33,7 @@ requirements:
     - pppele
     - fpdf
     - scikit-learn
+    - rdkit
 
 test:
   imports:
