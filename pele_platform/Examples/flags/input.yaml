@@ -5,7 +5,6 @@ log: true
 cpus: 3
 seed: 3000
 iterations: 1
-usesrun: true
 steps: 1
 preprocess_receptor: true
 gridres: 60
