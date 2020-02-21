@@ -3,6 +3,5 @@ chain: 'Z'
 resname: 'STR'
 restart: false
 seed: 12345
-usesrun: true
 test: true
 msm: true

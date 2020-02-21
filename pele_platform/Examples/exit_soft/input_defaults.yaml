@@ -3,7 +3,6 @@ chain: 'Z'
 resname: 'STR'
 restart: false
 seed: 12345
-usesrun: true
 cpus: 25
 in_out_soft: true
 equilibration: false

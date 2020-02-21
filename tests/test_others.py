@@ -3,7 +3,7 @@ import glob
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
-import test_kinase as tk
+import tests.test_kinase as tk
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = [os.path.join(test_path, "induced_fit/input_external_constraints.yaml")]

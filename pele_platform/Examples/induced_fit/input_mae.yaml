@@ -1,5 +1,4 @@
 system: '../pele_platform/Examples/Msm/PR_AS4.pdb'
-usesrun: true
 mae_lig: '../pele_platform/Examples/Msm/AS4_INIT.mae'
 chain: 'L'
 resname: 'AS4'
