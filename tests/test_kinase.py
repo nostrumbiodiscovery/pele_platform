@@ -25,7 +25,7 @@ RESCORING_ARGS = [os.path.join(test_path, "rescoring/input.yaml")]
 
 ADAPTIVE_VALUES = ["water_processed_processed.pdb", "SB4", '"outputPath": "output_sim"',
     '"processors" : 3', '"peleSteps" : 1,', '"iterations" : 1,', '"runEquilibration" : true,',
-    '"equilibrationLength" : 11,', '"seed": 3000', '"useSrun": true', 
+    '"equilibrationLength" : 11,', '"seed": 3000',
     '"values" : [1, 2, 3],', '"conditions": [0.1, 0.2, 0.3]', '"epsilon": 0.3', 
     '"metricColumnInReport" : 3,', '"metricColumnInReport" : 3,', '"type" : "epsilon"',
     'exitContinuous', '"data": "done"', '"executable": "done"', '"documents": "done"']
