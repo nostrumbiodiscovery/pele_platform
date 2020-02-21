@@ -96,6 +96,9 @@ def run_adaptive(args):
             shutil.copy(env.adap_ex_input, env.pele_dir)
         else:
             system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
+        if env.external_constraints:
+            # Keep Json ordered by having first title and then constraints
+            env.constraints = env.constraints[0:1] + env.external_constraints + env.constraints[1:]
         if env.remove_constraints:
             env.constraints = ""
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))

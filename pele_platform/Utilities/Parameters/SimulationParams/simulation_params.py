@@ -126,6 +126,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
         self.nonstandard = args.nonstandard if args.nonstandard else self.simulation_params.get("nonstandard", [])
         self.constraints = None
+        self.external_constraints = hp.retrieve_constraints_for_pele(args.external_constraints, self.system) if args.external_constraints else None
         self.constrain_smiles = args.constrain_smiles if args.constrain_smiles else self.simulation_params.get("constrain_smiles", None)
         self.no_ppp = args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
 
