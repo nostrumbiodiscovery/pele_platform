@@ -43,7 +43,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         return env
 
     def create(self):
-        if self.restart in cs.FIRST_RESTART and not self.adaptive_restart:
+        if not self.adaptive_restart:
             self.create_folders()
             self.create_files()
             self.create_logger()

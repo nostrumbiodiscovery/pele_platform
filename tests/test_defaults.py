@@ -14,9 +14,9 @@ INDUCED_FAST_ARGS = [os.path.join(test_path, "induced_fit/input_fast_defaults.ya
 GLOBAL_ARGS = [os.path.join(test_path, "global/input_defaults.yaml")]
 EXIT_ARGS = [os.path.join(test_path, "exit/input_defaults.yaml")]
 EXITSOFT_ARGS = [os.path.join(test_path, "exit_soft/input_defaults.yaml")]
-WATER_ARGS = [os.path.join(test_path, "water/input_bs.yaml")]
+WATER_ARGS = [os.path.join(test_path, "water/input_bs_defaults.yaml")]
 ALL_WATER_ARGS = [os.path.join(test_path, "water/input_all.yaml")]
-WATERLIG_ARGS = [os.path.join(test_path, "water/input_lig.yaml")]
+WATERLIG_ARGS = [os.path.join(test_path, "water/input_lig_defaults.yaml")]
 RESTART_ARGS = [os.path.join(test_path, "restart/input.yaml")]
 MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
 MAE_ARGS = [os.path.join(test_path, "induced_fit/input_mae.yaml")]
@@ -124,6 +124,31 @@ EXIT_DEFAULTS_PELE = [
 
 ]
 
+WATER_LIG_DEFAULTS_ADAPTIVE = [
+    '[1.75, 2.5, 3.5, 5]',
+    '"type" : "inverselyProportional"',
+    '"peleSteps" : 12,',
+    '"iterations" : 50',
+    '[1.6, 1.2, 1, 0.0]'
+]
+
+WATER_DEFAULTS_ADAPTIVE = [
+    '"type" : "independent"',
+    '"peleSteps" : 12,',
+    '"iterations" : 50',
+    '"processors" : 128,'
+]
+
+WATER_LIG_DEFAULTS_PELE = [
+    '"numberOfStericTrials": 100',
+    '"overlapFactor": 0.5',
+    '"radius": 10',
+    pp.WATER_LIG
+]
+
+WATER_DEFAULTS_PELE = [
+    pp.WATER_BS
+]
 
 def test_induced_exhaustive_defaults(ext_args=INDUCED_EX_ARGS):
     errors = []
@@ -171,15 +196,23 @@ def test_softexit_defaults(ext_args=EXITSOFT_ARGS):
     errors = check_file(job.pele_dir, "pele.conf", EXIT_DEFAULTS_PELE, errors)
     assert not errors
 
-def test_water(ext_args=WATER_ARGS):
+def test_water_defaults(ext_args=WATER_ARGS):
+    errors = []
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.Launcher(arguments).launch()
+    job = main.Launcher(arguments).launch()
+    errors = check_file(job.pele_dir, "adaptive.conf", WATER_DEFAULTS_ADAPTIVE, errors)
+    errors = check_file(job.pele_dir, "pele.conf", WATER_DEFAULTS_PELE, errors)
+    assert not errors
 
-def test_water_lig(ext_args=WATERLIG_ARGS):
+def test_water_lig_defaults(ext_args=WATERLIG_ARGS):
+    errors = []
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.Launcher(arguments).launch()
+    job = main.Launcher(arguments).launch()
+    errors = check_file(job.pele_dir, "adaptive.conf", WATER_LIG_DEFAULTS_ADAPTIVE, errors)
+    errors = check_file(job.pele_dir, "pele.conf", WATER_LIG_DEFAULTS_PELE, errors)
+    assert not errors
 
 def test_bias_defaults(ext_args=BIAS_ARGS):
     errors = []

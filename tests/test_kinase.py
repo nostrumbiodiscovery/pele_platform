@@ -1,4 +1,5 @@
 import os
+import shutil
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
 
@@ -128,8 +129,9 @@ def test_mae(ext_args=MAE_ARGS):
     arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
 
-def test_flags(ext_args=FLAGS_ARGS):
+def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     errors = []
+    if os.path.exists(output): shutil.rmtree(output)
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
@@ -154,7 +156,6 @@ def test_pca(ext_args=PCA_ARGS, output="PCA_results"):
     arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
     folder = arguments.folder
-    print(folder, "pele.conf", PCA_VALUES, errors)
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
 

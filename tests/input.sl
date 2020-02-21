@@ -19,4 +19,4 @@ export PYTHONPATH=/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform_devel/:/
 
 ############################CHANGE##########################
 
-python -m pytest -s 
+python -m pytest -s test*
