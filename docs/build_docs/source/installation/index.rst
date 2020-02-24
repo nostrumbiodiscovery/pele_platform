@@ -24,6 +24,8 @@ Pypi
     
     vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
 
+    conda install rdkit (if you want to have the possibility to build constraints by SMILES)
+
 
 Last stable release from source code
 --------------------------------------------
@@ -37,6 +39,8 @@ Last stable release from source code
     pip install .
     
     vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+
+    conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
 
 Latest devel version

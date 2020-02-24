@@ -7,5 +7,4 @@ atom_dist:
 - "A:2:HG"
 - "A:3:CA"
 test: true
-usesrun: true
 in_out: true

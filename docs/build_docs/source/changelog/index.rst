@@ -4,7 +4,7 @@ Versions
 Here we report the main changes for each version
 
 
-v1.2.4
+v1.3
 =======================
 
 - Set constraints by smiles

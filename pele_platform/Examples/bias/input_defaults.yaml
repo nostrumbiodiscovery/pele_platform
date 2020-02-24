@@ -3,7 +3,6 @@ chain: 'L'
 resname: 'LIG'
 restart: false
 seed: 12345
-usesrun: true
 bias_sim: true
 bias_column: 6
 cpus: 100

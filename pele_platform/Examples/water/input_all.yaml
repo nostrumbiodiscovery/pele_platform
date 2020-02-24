@@ -5,6 +5,5 @@ restart: false
 seed: 12345
 test: true
 water_bs: "all_waters"
-usesrun: true
 
 
