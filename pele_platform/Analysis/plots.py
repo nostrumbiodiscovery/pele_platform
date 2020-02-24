@@ -178,9 +178,12 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     top_poses_folder = os.path.join(output_folder, "results/BestStructs")
     clusters_folder = os.path.join(output_folder, "results/clusters")
 
-    os.makedirs(plots_folder, exist_ok=True)
-    os.makedirs(top_poses_folder, exist_ok=True)
-    os.makedirs(clusters_folder, exist_ok=True)
+    if not os.path.exists(plots_folder):
+        os.makedirs(plots_folder)
+    if not os.path.exists(top_poses_folder):
+        os.makedirs(top_poses_folder)
+    if not os.path.exists(clusters_folder):
+        os.makedirs(clusters_folder)
 
 
     # Plot metrics
