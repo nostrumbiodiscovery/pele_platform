@@ -10,6 +10,7 @@ import argparse
 import os
 import pele_platform.Adaptive.main as gl
 import pele_platform.Adaptive.simulation as ad
+import pele_platform.Frag.simulation as fr
 
 
 class Launcher():
@@ -20,9 +21,14 @@ class Launcher():
         self.restart = arguments.restart
         self.test = arguments.test
         self._args = arguments
+        self.pele_feature = "frag" if arguments.frag_input  else "adaptive"
 
     def launch(self):
-        job_variables = ad.run_adaptive(self._args)
+        if self.pele_feature == "adaptive":
+            job_variables = ad.run_adaptive(self._args)
+        else:
+            job_variables = fr.FragRunner(self._args.frag_core, self._args.frag_input, self._args.cpus)
+            job_variables.run()
         return job_variables
 
 class SortingHelpFormatter(HelpFormatter):
@@ -65,7 +71,8 @@ class YamlParser(object):
     
     def parse(self):
         data = self.parse_yaml()
-        self.system = os.path.abspath(data.get("system", None))
+        self.system = data.get("system", None)
+        self.system = os.path.abspath(self.system) if self.system else None
         self.residue = data.get("resname", None)
         self.chain = data.get("chain", None)
         self.hbond = data.get("hbond", [None, None])
@@ -196,6 +203,10 @@ class YamlParser(object):
         self.only_analysis = data.get("only_analysis", False)
         self.analysis_nclust = data.get("analysis_nclust", 10)
         self.overwrite = data.get("overwrite_analysis", False)
+
+        #Frag
+        self.frag_core = data.get("frag_core", False)
+        self.frag_input = data.get("frag_input", False)
 
         if self.test:
             print("##############################")
