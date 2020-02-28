@@ -148,7 +148,7 @@ def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     assert not errors
 
 
-def test_pca(ext_args=PCA_ARGS, output="PCA_results"):
+def test_pca(ext_args=PCA_ARGS, output="PCA_result"):
     if os.path.exists(output):
         shutil.rmtree(output)
     errors = []
