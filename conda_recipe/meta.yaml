@@ -29,6 +29,7 @@ requirements:
     - pandas
     - pytest
     - adaptive_pele
+    - ploprottemp
     - pyyaml
     - pppele
     - fpdf

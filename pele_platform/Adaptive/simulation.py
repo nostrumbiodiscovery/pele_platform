@@ -4,13 +4,13 @@ import shutil
 import glob
 import AdaptivePELE.adaptiveSampling as adt
 import PPP.main as ppp
+import pele_platform.Utilities.Helpers.plop_launcher as plop
 from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.prepwizard as pp
-import pele_platform.Utilities.PlopRotTemp.launcher as plop
 import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.center_of_mass as cm

@@ -1,4 +1,5 @@
 import os
+import PlopRotTemp as plop
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.helpers as hp
 
@@ -14,7 +15,7 @@ def parametrize_miss_residues(args, env, syst, resname=None):
     SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
     if not os.path.exists(SPYTHON):
         SPYTHON = os.path.join(cs.SCHRODINGER, "run")
-    file_path = os.path.abspath(os.path.join(cs.DIR, "Utilities/PlopRotTemp/main.py"))
+    file_path = os.path.join(os.path.dirname(plop.__file__), "main.py")
     options = retrieve_options(args, env)
     templatedir = os.path.join(env.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms")
     rotamerdir = os.path.join(env.pele_dir, "DataLocal/LigandRotamerLibs")  

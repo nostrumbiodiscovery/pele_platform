@@ -7,5 +7,6 @@ pandas
 pytest
 AdaptivePELE
 PPPele
-scikit-learn
+ploprottemp
+scikit-learn>0.20
 fpdf
