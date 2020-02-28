@@ -44,3 +44,6 @@ https://nostrumbiodiscovery.github.io/pele_platform/changelog/index.html
 
 .. |Conda release| image:: https://anaconda.org/nostrumbiodiscovery/pele_platform/badges/version.svg 
     :target: https://anaconda.org/nostrumbiodiscovery/pele_platform
+
+.. |Code Coverage| image:: https://codecov.io/gh/NostrumBioDiscovery/pele_platform/branch/devel/graph/badge.svg
+    :target: https://codecov.io/gh/NostrumBioDiscovery/pele_platform/branch/devel/
