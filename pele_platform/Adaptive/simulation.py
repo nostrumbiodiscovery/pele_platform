@@ -28,7 +28,9 @@ import pele_platform.Analysis.pdf_report as pr
 def run_adaptive(args):
     # Build Folders and Logging and env variable that will containt
     #all main  attributes of the simulation
-    env = pele.EnviroBuilder.build_env(args)
+    env = pele.EnviroBuilder()
+    env.build_adaptive_variables(args)
+    env.create_files_and_folders()
     env.software = "Adaptive"
 
     shutil.copy(args.yamlfile, env.pele_dir) 

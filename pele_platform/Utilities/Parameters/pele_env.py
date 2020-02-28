@@ -4,7 +4,8 @@ import warnings
 import random
 import logging
 import pele_platform.constants.constants as cs
-import pele_platform.features as fs
+import pele_platform.features.adaptive as adfs
+import pele_platform.features.frag as frfs
 import pele_platform.Utilities.Helpers.helpers as hp
 from pele_platform.Utilities.Parameters.SimulationParams import simulation_params
 from pele_platform.Utilities.Parameters.SimulationFolders import simulation_folders
@@ -16,10 +17,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         is build by creating folders and files
     """
 
-    def __init__(self, args):
-        self.build_variables(args)
-
-    def build_variables(self, args):
+    def build_adaptive_variables(self, args):
         #DEFINE MAIN PATH
         pele_dir = os.path.abspath("{}_Pele".format(args.residue))
         if not args.folder:
@@ -28,21 +26,25 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         else:
             self.pele_dir = os.path.abspath(args.folder)
         #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
-        for key, value in fs.retrieve_software_settings(args, self.pele_dir).items():
+        for key, value in adfs.retrieve_software_settings(args, self.pele_dir).items():
             setattr(self, key, value)
         #####Initialize all variables by combining default and user input######
         simulation_params.SimulationParams.__init__(self, args)
         simulation_folders.SimulationPaths.__init__(self, args)
-        for key, value in fs.retrieve_software_settings(args, self.pele_dir).items():
+        for key, value in adfs.retrieve_software_settings(args, self.pele_dir).items():
+            setattr(self, key, value)
+
+    def build_frag_variables(self, args):
+        #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
+        for key, value in frfs.retrieve_software_settings(args).items():
+            setattr(self, key, value)
+        #####Initialize all variables by combining default and user input######
+        simulation_params.SimulationParams.__init__(self, args)
+        for key, value in frfs.retrieve_software_settings(args).items():
             setattr(self, key, value)
         
-    @classmethod
-    def build_env(cls, args):
-        env = cls(args)
-        env.create()
-        return env
 
-    def create(self):
+    def create_files_and_folders(self):
         if not self.adaptive_restart:
             self.create_folders()
             self.create_files()

@@ -40,15 +40,15 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
 
     def simulation_type(self, args):
-        self.pele = args.pele if args.adaptive else None
-        self.adaptive = args.adaptive if args.adaptive else None
-        self.hbond_donor, self.hbond_acceptor = args.hbond
+        self.adaptive = True if args.system else None
+        self.frag_pele = True if args.frag_input else None
 
     def main_pele_params(self,args):
         self.system = args.system
         self.residue = args.residue
         self.chain = args.chain
-        assert self.system and self.residue and self.chain, "User must define input, residue and chain"
+        if self.adaptive:
+            assert self.system and self.residue and self.chain, "User must define input, residue and chain"
         self.debug = args.debug if args.debug else False
         self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params.get("pele_steps", 8)
         self.logfile =  LOGFILE if args.log else ""
@@ -131,6 +131,9 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.no_ppp = args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
 
     def ligand_params(self, args):
+        self.spython = os.path.join(cs.SCHRODINGER, "utilities/python")
+        if not os.path.exists(self.spython):
+            self.spython = os.path.join(cs.SCHRODINGER, "run")
         self.mae_lig = args.mae_lig if args.mae_lig else self.simulation_params.get("mae_lig", None)
         self.external_template = args.template if args.template else self.simulation_params.get("template", [])
         self.external_rotamers = args.rotamers if args.rotamers else self.simulation_params.get("rotamers", [])
