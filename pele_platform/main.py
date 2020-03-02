@@ -8,7 +8,6 @@ from argparse import HelpFormatter
 from operator import attrgetter
 import argparse
 import os
-import pele_platform.Adaptive.main as gl
 import pele_platform.Adaptive.simulation as ad
 import pele_platform.Frag.simulation as fr
 
@@ -213,7 +212,7 @@ class YamlParser(object):
         self.frag_input = data.get("frag_input", False)
         self.growing_steps = data.get("growing_steps", False)
         self.steps = data.get("steps_in_gs", False)
-        self.eq_steps = data.get("eq_steps", False)
+        self.frag_eq_steps = data.get("sampling_steps", False)
         self.protocol = data.get("protocol", None)
 
         if self.test:

@@ -119,7 +119,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.restart = args.restart if args.restart else self.simulation_params.get("restart", "all")
         self.test = args.test 
         #+1 to avoid being 0 
-        self.equil_steps = int(args.eq_steps/self.cpus) + 1 if args.eq_steps else self.simulation_params.get(".eq_steps", 1)
+        self.equil_steps = int(args.eq_steps/self.cpus) + 1 if args.eq_steps else self.simulation_params.get("equilibration_steps", 1)
         self.equilibration = "true" if args.equilibration else self.simulation_params.get("equilibration", "false")
         self.adaptive_restart = args.adaptive_restart
         self.poses = args.poses if args.poses else self.simulation_params.get("poses", 40)
