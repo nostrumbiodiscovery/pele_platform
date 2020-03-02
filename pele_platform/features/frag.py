@@ -12,10 +12,11 @@ def retrieve_software_settings(args):
 
         SOFTWARE_CONSTANTS = {
                  "simulation_params" : {
+                 "standard": {"params": pcs.FRAG, "COMligandConstraint": 1}
         }
         }
         
         software_setings = SOFTWARE_CONSTANTS
-        type_simulation = ""
+        type_simulation = "standard"
         software_setings["simulation_params"] = software_setings["simulation_params"].get(type_simulation, {})
         return software_setings

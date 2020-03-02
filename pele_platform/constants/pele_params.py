@@ -238,3 +238,17 @@ GLIDE = '''
 				} 
 			] 
 '''
+
+FRAG = '''
+,
+                 "parametersChanges" : [
+                     { "ifAnyIsTrue": [ "rand >= 0.5" ],
+                         "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": $ROTATION_HIGH } },
+                         "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": $ROTATION_LOW } }
+                     },
+                     { "ifAnyIsTrue": [ "rand1 <= 0.5 " ],
+                         "doThesechanges": { "Perturbation::parameters": { "translationRange": $TRANSLATION_LOW } },
+                         "otherwise": { "Perturbation::parameters": { "translationRange": $TRANSLATION_HIGH } }
+                     }
+                  ]
+'''

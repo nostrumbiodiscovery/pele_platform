@@ -28,6 +28,7 @@ class Launcher():
             job_variables = ad.run_adaptive(self._args)
         elif self.pele_feature == "frag":
             job_variables = fr.FragRunner(self._args)
+            job_variables.prepare_control_file()
             if self.test:
                 job_variables.set_test_variables()
             job_variables.run()
@@ -205,6 +206,7 @@ class YamlParser(object):
         self.only_analysis = data.get("only_analysis", False)
         self.analysis_nclust = data.get("analysis_nclust", 10)
         self.overwrite = data.get("overwrite_analysis", False)
+        self.com = data.get("COMligandConstraint", False)
 
         #Frag
         self.frag_core = data.get("frag_core", False)
@@ -212,6 +214,7 @@ class YamlParser(object):
         self.growing_steps = data.get("growing_steps", False)
         self.steps = data.get("steps_in_gs", False)
         self.eq_steps = data.get("eq_steps", False)
+        self.protocol = data.get("protocol", None)
 
         if self.test:
             print("##############################")

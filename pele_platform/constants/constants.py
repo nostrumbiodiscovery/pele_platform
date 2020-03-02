@@ -45,6 +45,7 @@ elif "nbdcalc" in machine:
     SCHRODINGER = "/opt/schrodinger2019-1/"
     PELE = "/home/dsoler/local_deps/PELE-repo/"
     PELE_BIN = "/home/dsoler/local_deps/PELE-repo/build/PELE-1.6"
+    PYMOL_PYTHON = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PyMOL/2.2.0_0/bin/python"
     MPIRUN = "/usr/lib64/openmpi/bin/"
     LICENSE = "/home/dsoler"
     MMSHARE = None

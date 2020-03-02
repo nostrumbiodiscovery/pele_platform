@@ -29,9 +29,9 @@ def run_adaptive(args):
     # Build Folders and Logging and env variable that will containt
     #all main  attributes of the simulation
     env = pele.EnviroBuilder()
+    env.software = "Adaptive"
     env.build_adaptive_variables(args)
     env.create_files_and_folders()
-    env.software = "Adaptive"
 
     shutil.copy(args.yamlfile, env.pele_dir) 
 
@@ -175,11 +175,16 @@ def run_adaptive(args):
         
         ############Fill in Simulation Templates############
         env.logger.info("Running Simulation")
-        if env.adaptive:
-            ext.external_adaptive_file(env)
-        if env.pele:
-            ext.external_pele_file(env)
+        #if env.adaptive:
+        #    ext.external_adaptive_file(env)
+        #if env.pele:
+        #    ext.external_pele_file(env)
         adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
+        # Fill to time because we have flags inside flags
+        adaptive.fill_pele_template(env)
+        adaptive.fill_pele_template(env)
+        adaptive.fill_adaptive_template(env)
+        adaptive.fill_adaptive_template(env)
         if not env.debug:
             adaptive.run()
         env.logger.info("Simulation run succesfully (:\n\n")

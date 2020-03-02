@@ -42,6 +42,10 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
     def simulation_type(self, args):
         self.adaptive = True if args.system else None
         self.frag_pele = True if args.frag_input else None
+        # Trick to let frag handle control fodler parameters --> Improve
+        self.complexes = "$PDB" if self.software == "Frag" else "$COMPLEXES"
+        self.pele_steps = "$STEPS" if self.software == "Frag" else "$PELE_STEPS"
+        self.output_path = "$RESULTS_PATH" if self.software == "Frag" else "$OUTPUT_PATH"
 
     def main_pele_params(self,args):
         self.system = args.system
@@ -65,6 +69,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", 0.65)
         self.perturbation = "" if args.perturbation is False else self.simulation_params.get("perturbation", cs.PERTURBATION)
         self.perturbation_params(args)
+        self.com = args.com if args.com else self.simulation_params.get("COMligandConstraint", 0)
 
     def anm_params(self, args):
         self.anm_displacement = args.anm_displacement if args.anm_displacement else self.simulation_params.get("anm_displacement", 0.75)
@@ -179,7 +184,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.box_center = "["+ ",".join([str(coord) for coord in args.user_center]) + "]" if args.user_center else self.simulation_params.get("box_center", None)
 
     def metrics_params(self, args):
-        self.metrics = None
+        self.metrics = ""
         self.native = cs.NATIVE.format(os.path.abspath(args.native), self.chain) if args.native else ""
         self.atom_dist = args.atom_dist
 

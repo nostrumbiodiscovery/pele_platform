@@ -16,6 +16,8 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         Base class wher the needed pele environment
         is build by creating folders and files
     """
+    def __init__(self):
+        pass
 
     def build_adaptive_variables(self, args):
         #DEFINE MAIN PATH
