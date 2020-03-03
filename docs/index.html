@@ -90,7 +90,10 @@
 <li class="toctree-l1"><a class="reference internal" href="cheatsheet/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Input Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_adaptive/index.html">Adaptive Parameters</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation_frag/index.html">FragPELE Parameters</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="developers/index.html">Add your own new simulation mode</a></li>
@@ -164,7 +167,7 @@
   <div class="section" id="pele-platform">
 <h1>Pele Platform<a class="headerlink" href="#pele-platform" title="Permalink to this headline">¶</a></h1>
 <p>Pele platform is a python module to automatically
-launch PELE and AdaptivePELE. We will support  MSMPELE and FragPELE in next releases.
+launch PELE, AdaptivePELE and FragPELE. We will support  MSMPELE in next releases.
 It is built as a python layer on top of all PELE functionalities that can be used as
 a backend for a potential future GUI.</p>
 <p>Github : <a class="reference external" href="https://github.com/NostrumBioDiscovery/pele_platform">https://github.com/NostrumBioDiscovery/pele_platform</a></p>
@@ -172,8 +175,8 @@ a backend for a potential future GUI.</p>
 <div class="section" id="requirements">
 <h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
 <ul>
-<li><p>Academic Schordinger</p></li>
-<li><p>Pymol Python</p>
+<li><p>Academic Schordinger (any version)</p></li>
+<li><p>Pymol Python (any version)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yum install gcc gcc-c++ kernel-devel python-devel tkinter python-pmw glew-devel freeglut-devel libpng-devel freetype-devel libxml2-devel glm-devel
 
 git clone https://github.com/schrodinger/pymol-open-source.git
@@ -213,6 +216,7 @@ python setup.py install <span class="o">(</span>with same python you will use la
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#out-in-local-exploration">Out_in local exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#biased-exploration">Biased exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#receptor-sampling-simulation">Receptor sampling simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#fragpele-simulation">FragPELE simulation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="cheatsheet/index.html#run-simulation">3. Run simulation</a></li>
@@ -222,36 +226,45 @@ python setup.py install <span class="o">(</span>with same python you will use la
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Input Parameters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="documentation/index.html#compulsory-flags">Compulsory flags</a></li>
-<li class="toctree-l2"><a class="reference internal" href="documentation/index.html#optative-flags">Optative flags</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#job-parameters">Job parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#receptor-preparation">Receptor preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#ligand-preparation">Ligand preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#box-parameters">Box parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#pele-params">PELE params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#adaptive-params">Adaptive params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#constraints">Constraints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#waterperturbation">WaterPerturbation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="documentation/index.html#water-modes">Water modes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="documentation/index.html#simulation-parameters">Simulation Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_adaptive/index.html">Adaptive Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation_adaptive/index.html#compulsory-flags">Compulsory flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation_adaptive/index.html#optative-flags">Optative flags</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#job-parameters">Job parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#receptor-preparation">Receptor preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#ligand-preparation">Ligand preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#box-parameters">Box parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#pele-params">PELE params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#adaptive-params">Adaptive params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#constraints">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#waterperturbation">WaterPerturbation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="documentation_adaptive/index.html#water-modes">Water modes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="documentation_adaptive/index.html#simulation-parameters">Simulation Parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#metrics">Metrics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#analysis">Analysis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#metrics">Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#analysis">Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#output">Output</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="documentation/index.html#automatic-modes">Automatic Modes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#induced-fit-fast">Induced fit_fast</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#induced-fit-exhaustive">Induced fit_exhaustive</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#rescoring">Rescoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#local-exploration">Local Exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#biased">Biased</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#exit-path">Exit path</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#global-exploration">Global exploration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation_adaptive/index.html#automatic-modes">Automatic Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#induced-fit-fast">Induced fit_fast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#induced-fit-exhaustive">Induced fit_exhaustive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#rescoring">Rescoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#local-exploration">Local Exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#biased">Biased</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#exit-path">Exit path</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation_adaptive/index.html#global-exploration">Global exploration</a></li>
 </ul>
 </li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation_frag/index.html">FragPELE Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation_frag/index.html#compulsory-flags">Compulsory flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="documentation_frag/index.html#optative-flags">Optative flags</a></li>
 </ul>
 </li>
 </ul>
@@ -270,6 +283,7 @@ python setup.py install <span class="o">(</span>with same python you will use la
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Versions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-4">v1.4</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3">v1.3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-3">v1.2.3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-2">v1.2.2</a></li>

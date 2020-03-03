@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Input Parameters" href="../documentation/index.html" />
+    <link rel="next" title="Adaptive Parameters" href="../documentation_adaptive/index.html" />
     <link rel="prev" title="Installation" href="../installation/index.html" /> 
 </head>
 
@@ -99,6 +99,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#out-in-local-exploration">Out_in local exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#biased-exploration">Biased exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#receptor-sampling-simulation">Receptor sampling simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fragpele-simulation">FragPELE simulation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
@@ -106,7 +107,10 @@
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation_adaptive/index.html">Adaptive Parameters</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation_frag/index.html">FragPELE Parameters</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
@@ -322,6 +326,14 @@ For more explanation on the modes please refer to <a class="reference external" 
 </pre></div>
 </div>
 </div>
+<div class="section" id="fragpele-simulation">
+<h3>FragPELE simulation<a class="headerlink" href="#fragpele-simulation" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb&quot;</span>
+<span class="nt">frag_input</span><span class="p">:</span> <span class="s">&quot;../pele_platform/Examples/frag/sequential.conf&quot;</span>
+<span class="nt">protocol</span><span class="p">:</span> <span class="s">&quot;HT&quot;</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
@@ -338,7 +350,7 @@ For more explanation on the modes please refer to <a class="reference external" 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../documentation/index.html" class="btn btn-neutral float-right" title="Input Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../documentation_adaptive/index.html" class="btn btn-neutral float-right" title="Adaptive Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../installation/index.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

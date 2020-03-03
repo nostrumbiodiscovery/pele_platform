@@ -1,4 +1,4 @@
-Input Parameters
+Adaptive Parameters
 ######################
 
 Compulsory flags
