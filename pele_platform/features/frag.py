@@ -12,7 +12,9 @@ def retrieve_software_settings(args):
 
         SOFTWARE_CONSTANTS = {
                  "simulation_params" : {
-                 "standard": {"params": pcs.FRAG, "COMligandConstraint": 1}
+                 "standard": {"params": pcs.FRAG, "COMligandConstraint": 1, 
+                 "steric_trials": 100, "overlap_factor": 0.5,
+                 "sidechain_freq": 1, "anm_freq": 2}
         }
         }
         

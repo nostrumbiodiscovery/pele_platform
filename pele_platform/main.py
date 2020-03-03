@@ -211,7 +211,7 @@ class YamlParser(object):
         self.frag_core = data.get("frag_core", False)
         self.frag_input = data.get("frag_input", False)
         self.growing_steps = data.get("growing_steps", False)
-        self.steps = data.get("steps_in_gs", False)
+        self.frag_steps = data.get("steps_in_gs", False)
         self.frag_eq_steps = data.get("sampling_steps", False)
         self.protocol = data.get("protocol", None)
 

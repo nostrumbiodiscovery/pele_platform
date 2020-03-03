@@ -44,7 +44,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.frag_pele = True if args.frag_input else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.software == "Frag" else "$COMPLEXES"
-        self.pele_steps = "$STEPS" if self.software == "Frag" else "$PELE_STEPS"
+        self.frag_pele_steps = "$STEPS" if self.software == "Frag" else "$PELE_STEPS"
         self.output_path = "$RESULTS_PATH" if self.software == "Frag" else "$OUTPUT_PATH"
 
     def main_pele_params(self,args):
