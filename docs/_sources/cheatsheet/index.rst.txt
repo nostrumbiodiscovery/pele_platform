@@ -155,6 +155,14 @@ Receptor sampling simulation
    iterations: 1
    steps: 20
 
+FragPELE simulation
++++++++++++++++++++++++++++++++++++++
+
+..  code-block:: yaml
+
+    frag_core: "../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb"
+    frag_input: "../pele_platform/Examples/frag/sequential.conf"
+    protocol: "HT"
 
 
 3. Run simulation

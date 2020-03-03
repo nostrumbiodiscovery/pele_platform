@@ -1,4 +1,4 @@
-Input Parameters
+Adaptive Parameters
 ######################
 
 Compulsory flags
@@ -463,3 +463,4 @@ Global exploration
 
   global: true
   poses: 40
+

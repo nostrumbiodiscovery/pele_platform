@@ -4,6 +4,13 @@ Versions
 Here we report the main changes for each version
 
 
+v1.4
+=======================
+
+- FragPELE supported
+
+- Better coverage
+
 v1.3
 =======================
 
