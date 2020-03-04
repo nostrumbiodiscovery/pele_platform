@@ -20,7 +20,7 @@ class Launcher():
         self.restart = arguments.restart
         self.test = arguments.test
         self._args = arguments
-        self.pele_feature = "frag" if arguments.frag_input  else "adaptive"
+        self.pele_feature = "frag" if arguments.frag_core  else "adaptive"
 
     def launch(self):
         if self.pele_feature == "adaptive":
@@ -30,6 +30,8 @@ class Launcher():
             job_variables.prepare_control_file()
             if self.test:
                 job_variables.set_test_variables()
+            if job_variables.ligands:
+                job_variables.prepare_input_file()
             job_variables.run()
         return job_variables
 
@@ -210,6 +212,7 @@ class YamlParser(object):
         #Frag
         self.frag_core = data.get("frag_core", False)
         self.frag_input = data.get("frag_input", False)
+        self.frag_ligands = data.get("frag_ligands", False)
         self.growing_steps = data.get("growing_steps", False)
         self.frag_steps = data.get("steps_in_gs", False)
         self.frag_eq_steps = data.get("sampling_steps", False)
