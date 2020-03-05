@@ -26,13 +26,21 @@ class Launcher():
         if self.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
         elif self.pele_feature == "frag":
+            #Set variables and input ready 
             job_variables = fr.FragRunner(self._args)
             job_variables.prepare_control_file()
+            #Set test variables if desired
             if self.test:
                 job_variables.set_test_variables()
-            if job_variables.ligands:
+            #Depending on input different methdo
+            if job_variables.ligands: #Full ligands as sdf
                 job_variables.prepare_input_file()
-            job_variables.run()
+                job_variables.run()
+            elif job_variables.ai:
+                job_variables.grow_ai()
+            else:
+                job_variables.run()
+            # Execute job
         return job_variables
 
 class SortingHelpFormatter(HelpFormatter):
@@ -217,6 +225,8 @@ class YamlParser(object):
         self.frag_steps = data.get("steps_in_gs", False)
         self.frag_eq_steps = data.get("sampling_steps", False)
         self.protocol = data.get("protocol", None)
+        self.frag_ai = data.get("frag_ai", False)
+        self.frag_ai_iterations = data.get("frag_ai_iterations", False)
 
         if self.test:
             print("##############################")

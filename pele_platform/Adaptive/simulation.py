@@ -193,7 +193,7 @@ def run_adaptive(args):
         plots, poses, clusters = pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
             os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
             output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae,
-            nclusts=env.analysis_nclust, overwrite=env.overwrite)
+            nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology)
         pr.create_report(plots, clusters, poses, output=os.path.join(env.pele_dir, "summary_results.pdf"))
 
     return env

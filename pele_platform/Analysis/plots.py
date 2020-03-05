@@ -18,9 +18,9 @@ TRAJECTORY = "trajectory"
 
 
 def _extract_coords(info):
-    p, v, resname = info
+    p, v, resname, topology = info
     # Most time consuming step 0.1
-    traj = mdtraj.load_frame(p, v, top="topology.pdb")
+    traj = mdtraj.load_frame(p, v, top=topology)
     atoms_info = traj.topology.to_dataframe()[0]
     condition = atoms_info['resName'] == resname
     atom_numbers_ligand = atoms_info[condition].index.tolist()
@@ -122,7 +122,7 @@ class PostProcessor():
         # Extract coords 
         all_coords = []
         pool = Pool(processes=self.cpus)
-        input_pool = [[p,v,self.residue] for p, v in zip(paths, snapshots)]
+        input_pool = [[p,v,self.residue, self.topology] for p, v in zip(paths, snapshots)]
         all_coords = pool.map(_extract_coords, input_pool)
         # Clusterize
         assert all_coords[0][0], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
@@ -168,14 +168,14 @@ class PostProcessor():
 
 
 def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False,
-nclusts=10, overwrite=False):
+nclusts=10, overwrite=False, topology=False):
     results_folder = os.path.join(output_folder, "results")
     if os.path.exists(results_folder):
         if not overwrite:
             raise ValueError("Analysis folder {} already exists. Use the option overwrite_analysis: true".format(results_folder))
         else:
             shutil.rmtree(os.path.join(output_folder, "results"))
-    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue)
+    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology)
 
     metrics = len(list(analysis.data)) - 1 #Discard epoch as metric
     sasa = 6
