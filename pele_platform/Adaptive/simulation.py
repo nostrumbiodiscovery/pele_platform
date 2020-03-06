@@ -32,12 +32,12 @@ def run_adaptive(args):
 
     shutil.copy(args.yamlfile, env.pele_dir) 
 
-    if env.adaptive_restart:
+    if env.adaptive_restart and not env.only_analysis:
         with helpers.cd(env.pele_dir):
-            #adt.main(env.ad_ex_temp)
+            adt.main(env.ad_ex_temp)
             env.logger.info("Simulation run succesfully (:\n\n")
 
-    else:
+    elif not env.only_analysis:
 
         ##PREPWIZARD##
         if args.prepwizard:

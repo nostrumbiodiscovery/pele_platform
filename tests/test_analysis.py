@@ -2,11 +2,14 @@ import os
 import glob
 import shutil
 import pele_platform.constants.constants as cs
+import pele_platform.main as main
 import pele_platform.Analysis.plots as pt
 
+test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "data/output"
 REPORT_NAME = "report_"
 TRAJ_NAME = "trajectory_"
+ANALYSIS_ARGS = [os.path.join(test_path, "analysis/input.yaml")]
 
 
 def test_plot_two_metrics(simulation_path=simulation_path, report_name=REPORT_NAME, traj_name=TRAJ_NAME):
@@ -36,4 +39,7 @@ def test_best_structs(simulation_path=simulation_path, report_name=REPORT_NAME, 
     shutil.rmtree("tmp")
 
 
-
+def test_analysis(ext_args=ANALYSIS_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.Launcher(arguments).launch()

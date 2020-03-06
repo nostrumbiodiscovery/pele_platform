@@ -1,0 +1,5 @@
+working_folder: 'data'
+system: 'your_system'
+chain: 'Z'
+resname: 'STR'
+only_analysis: true

@@ -191,4 +191,4 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
     def analysis_params(self, args):
         self.analyse = args.analyse if args.analyse else True
         self.mae = args.mae if args.mae else False
-
+        self.only_analysis = args.only_analysis
