@@ -17,9 +17,9 @@ TRAJECTORY = "trajectory"
 
 
 def _extract_coords(info):
-    p, v, resname = info
+    p, v, resname, topology = info
     # Most time consuming step 0.1
-    traj = mdtraj.load_frame(p, v, top="topology.pdb")
+    traj = mdtraj.load_frame(p, v, top=topology)
     atoms_info = traj.topology.to_dataframe()[0]
     condition = atoms_info['resName'] == resname
     atom_numbers_ligand = atoms_info[condition].index.tolist()
@@ -121,7 +121,7 @@ class PostProcessor():
         # Extract coords 
         all_coords = []
         pool = Pool(processes=self.cpus)
-        input_pool = [[p,v,self.residue] for p, v in zip(paths, snapshots)]
+        input_pool = [[p,v,self.residue, self.topology] for p, v in zip(paths, snapshots)]
         all_coords = pool.map(_extract_coords, input_pool)
         # Clusterize
         assert all_coords[0][0], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
@@ -166,8 +166,9 @@ class PostProcessor():
         return list(df)[int(column_digit)-1]
 
 
-def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False):
-    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue)
+def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False,
+    topology=False):
+    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology)
 
     metrics = len(list(analysis.data)) - 1 #Discard epoch as metric
     sasa = 6

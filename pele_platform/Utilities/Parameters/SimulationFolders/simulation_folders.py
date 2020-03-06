@@ -34,7 +34,7 @@ class SimulationPaths(msm_folders.MSMPaths, glide_folders.GlidePaths):
 
     def complex_paths(self, args):
         self.receptor = os.path.join(self.pele_dir, "receptor.pdb")
-        self.topology = None if self.pdb else os.path.join("output_pele", "topology.pdb")
+        self.topology = None if self.pdb else os.path.join(self.pele_dir, self.output, "topologies/topology_0.pdb")
 
     def solvent_paths(self, args):
         self.obc_tmp = os.path.join(cs.DIR, "Templates/solventParamsHCTOBC.txt")

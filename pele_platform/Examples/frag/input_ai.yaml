@@ -1,0 +1,7 @@
+frag_core: "../pele_platform/Examples/frag/1w7h_preparation_structure_2w_processed.pdb"
+frag_ai: true
+frag_ai_iterations: 3
+resname: "3IP"
+test: true
+debug: true
+
