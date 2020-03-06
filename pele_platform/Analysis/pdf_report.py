@@ -1,9 +1,10 @@
 from fpdf import FPDF
 import glob
 import os
+import numpy as np
 
 
-def create_report(plots, clusters, top_poses, output="simulation_summary.pdf"):
+def create_report(plots, clusters, top_poses, best_energies, output="simulation_summary.pdf"):
 
 
     pdf = FPDF()
@@ -11,7 +12,9 @@ def create_report(plots, clusters, top_poses, output="simulation_summary.pdf"):
 
     # Title
     pdf.set_font('Arial', 'B', 15)
-    pdf.cell(0, 10, "Score {} kcal/mol", align='C')
+    idx_25 = int(len(best_energies)*0.25)+1
+    mean_25_quartile = np.mean(sorted(best_energies)[:idx_25])
+    pdf.cell(0, 10, "Score {} kcal/mol".format(mean_25_quartile), align='C')
 
     pdf.ln(40) #4 linebreaks
 
@@ -36,7 +39,8 @@ def create_report(plots, clusters, top_poses, output="simulation_summary.pdf"):
     pdf.set_font('Arial', 'B', size=12)
     pdf.cell(0, 10, "Top poses", align='C')
     pdf.set_font('Arial', size=10)
-    for i, poses in enumerate(top_poses[0:10]):
+    top_poses_ordered = np.array(top_poses)[np.argsort(best_energies)]
+    for i, poses in enumerate(top_poses_ordered[0:20]):
         if i == 0:
             pdf.ln(10)
         pdf.cell(0, 50, os.path.basename(poses), align='C')
@@ -59,6 +63,7 @@ def create_report(plots, clusters, top_poses, output="simulation_summary.pdf"):
 
     #Output report    
     pdf.output(output, 'F')
+    return output
 
 if __name__ == "__main__":
     plots = glob.glob("/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform_devel/pele_platform/results/Plots/*")

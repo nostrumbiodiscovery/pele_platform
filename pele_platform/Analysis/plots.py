@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import AdaptivePELE.analysis.selectOnPlot as sp
 import AdaptivePELE.analysis.bestStructs as bs
 from pele_platform.constants import constants as cs
+import pele_platform.Analysis.pdf_report as pr
 
 EPOCH = "epoch"
 STEPS = 3
@@ -89,6 +90,7 @@ class PostProcessor():
     def _extract_poses(self, poses, metric, output):
         #Process data to be outputted
         values = poses[metric].tolist()
+        self.best_energies = values
         paths = poses[TRAJECTORY].tolist()
         epochs = poses[EPOCH].tolist()
         file_ids = [traj[:-4].split("_")[-1] for traj in paths]
@@ -225,7 +227,8 @@ nclusts=10, overwrite=False, topology=False):
     plots = glob.glob(os.path.join(plots_folder, "*.png"))
     poses = glob.glob(os.path.join(top_poses_folder, "*"))
     clusters = glob.glob(os.path.join(clusters_folder, "*.png"))
-    return plots, poses, clusters
+    report = pr.create_report(plots, clusters, poses, analysis.best_energies, output=os.path.join(output_folder, "summary_results.pdf"))
+    return report
        
 
 

@@ -190,7 +190,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
     def output_params(self, args):
         self.folder = args.folder
-        self.output = args.output if args.output else "output"
+        self.output = args.output if args.output is not None else "output"
         self.report_name = args.report_name if args.report_name else "report"
         self.traj_name = args.traj_name if args.traj_name else "trajectory.pdb"
         self.xtc = self.traj_name.endswith(".xtc")

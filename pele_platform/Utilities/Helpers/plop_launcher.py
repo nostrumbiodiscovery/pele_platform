@@ -20,9 +20,12 @@ def parametrize_miss_residues(args, env, syst, resname=None):
     templatedir = os.path.join(env.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms")
     rotamerdir = os.path.join(env.pele_dir, "DataLocal/LigandRotamerLibs")  
     mae_cahrges = True if args.mae_lig else False
+    my_env = os.environ.copy()
+    my_env["SCHRODINGER_PYTHONPATH"]=os.path.join(cs.SCHRODINGER, "internal/lib/python2.7/site-packages/")
+    my_env["SCHRODINGER"]=cs.SCHRODINGER
     print("Running Plop")
     print("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir))
-    subprocess.call("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir).split())
+    subprocess.call("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir).split(), env=my_env)
     #hp.silentremove([syst.lig])
 
 
