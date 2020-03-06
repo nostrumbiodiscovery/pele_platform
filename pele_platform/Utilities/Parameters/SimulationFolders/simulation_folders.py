@@ -35,11 +35,6 @@ class SimulationPaths(msm_folders.MSMPaths, glide_folders.GlidePaths):
     def complex_paths(self, args):
         self.receptor = os.path.join(self.pele_dir, "receptor.pdb")
         self.topology = None if self.pdb else os.path.join(self.pele_dir, self.output, "topologies/topology_0.pdb")
-        if not self.pdb:
-            if not os.path.exists(self.topology):
-                self.topology = os.path.join(self.pele_dir, self.output, "topology.pdb")
-            print(self.topology)
-            assert  os.path.exists(self.topology), "Topology not found please make sure you are in Adaptive's result folder"
 
     def solvent_paths(self, args):
         self.obc_tmp = os.path.join(cs.DIR, "Templates/solventParamsHCTOBC.txt")
