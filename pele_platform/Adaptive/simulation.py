@@ -186,6 +186,6 @@ def run_adaptive(args):
             os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
             output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae,
             nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology,
-            be_column=env.be_column, sasa_column=env.sasa_column, te_column=env.te_column)
+            be_column=env.be_column, limit_column=env.limit_column, te_column=env.te_column)
         print("Pdf summary report succesfully writen to: {}".format(report))
     return env

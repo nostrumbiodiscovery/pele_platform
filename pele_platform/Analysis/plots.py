@@ -37,7 +37,7 @@ def _extract_coords(info):
 class PostProcessor():
 
     def __init__(self, report_name, traj_name, simulation_path, cpus, topology=False, residue=False,
-        be_column=4, sasa_column=6, te_column=3):
+        be_column=4, limit_column=6, te_column=3):
         self.report_name = report_name
         self.traj_name = traj_name
         self.simulation_path = simulation_path
@@ -45,7 +45,7 @@ class PostProcessor():
         self.topology = topology
         self.residue = residue
         self.be_column = be_column
-        self.sasa_column = sasa_column
+        self.limit_column = limit_column
         self.te_column = te_column
         self.cpus = cpus
 
@@ -177,7 +177,7 @@ class PostProcessor():
 
 
 def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False,
-nclusts=10, overwrite=False, topology=False, be_column=4, sasa_column=6, te_column=3):
+nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_column=3):
     results_folder = os.path.join(output_folder, "results")
     if os.path.exists(results_folder):
         if not overwrite:
@@ -185,13 +185,12 @@ nclusts=10, overwrite=False, topology=False, be_column=4, sasa_column=6, te_colu
         else:
             shutil.rmtree(os.path.join(output_folder, "results"))
     analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology,
-        be_column=be_column, sasa_column=sasa_column, te_column=te_column)
+        be_column=be_column, limit_column=limit_column, te_column=te_column)
 
     metrics = len(list(analysis.data)) - 1 #Discard epoch as metric
-    sasa = analysis.sasa_column
     be = analysis.be_column
     total_energy = analysis.te_column
-    current_metric = sasa
+    current_metric = analysis.limit_column
     plots_folder = os.path.join(output_folder, "results/Plots")
     top_poses_folder = os.path.join(output_folder, "results/BestStructs")
     clusters_folder = os.path.join(output_folder, "results/clusters")

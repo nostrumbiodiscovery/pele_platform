@@ -337,7 +337,7 @@ class YamlParser(object):
         self.analysis_nclust = data.get("analysis_nclust", 10)
         self.te_column = data.get("te_column", 4)
         self.be_column = data.get("be_column", 5)
-        self.sasa_column = data.get("sasa_column", 6)
+        self.limit_column = data.get("limit_column", 6)
 
         if self.test:
             print("##############################")
