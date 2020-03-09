@@ -119,7 +119,6 @@ class PostProcessor():
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
         clusters = self._cluster(best_poses, metric, output, nclusts)
-        import pdb; pdb.set_trace()
         return clusters
 
     def _cluster(self, poses, metric, output, nclusts=10):
