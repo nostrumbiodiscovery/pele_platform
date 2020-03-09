@@ -4,6 +4,36 @@ Versions
 Here we report the main changes for each version
 
 
+v1.3.4
+=======================
+
+- Make mae flag convert clusters as well as top poses to mae
+
+- Let user choose number of clusters through analysis_nclust flag
+
+- Allow user to specify the columns of the report via be_column, te_column and limit_column.
+
+v1.3.3
+=======================
+
+- Include only analysis flag
+
+v1.3.2
+=======================
+
+- Automatically score the simulation by making the average of the 25% best energy structures.
+
+- Reorder top energy structures
+
+- Support conda deployment for python 3.8
+
+v1.3.1
+=======================
+
+- Fixed bug in xtc analysis
+
+- Renew environment on SCHRODINGER subprocess
+
 v1.3
 =======================
 
