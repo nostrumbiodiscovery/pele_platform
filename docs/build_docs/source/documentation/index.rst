@@ -350,13 +350,26 @@ Analysis
 
 Run a post simulation analysis to extract plots, top poses and clusters.
 
-- **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
+- **only_analysis**: Analyse PELE simulation without running it.
 
-- **mae**: To extract the best energy poses as .mae files with the metrics as properties (schrodinger need it). Default: false
+- **analysis_nclust**: Numbers of clusters out of the simulation. Default: 10
+
+- **be_column**: Column of the binding energy in the reports starting by 1. Default: 5
+
+- **te_column**: Column of the total energy in the reports starting by 1. Default: 4
+
+- **limit_column**: Specify the column where your external metrics start. Default: 6
+
+- **mae**: To extract the best energy and cluster poses as .mae files with the metrics as properties (schrodinger need it). Default: false
+
+- **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
 
 ..  code-block:: yaml
 
-    analysis: false
+    only_analysis: true
+    be_column: 5
+    te_column: 4
+    limit_column: 6
     mae: true
 
 Output
