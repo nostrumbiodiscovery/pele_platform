@@ -192,3 +192,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.analyse = args.analyse if args.analyse else True
         self.mae = args.mae if args.mae else False
         self.only_analysis = args.only_analysis
+        self.analysis_nclust = args.analysis_nclust
+        self.overwrite = args.overwrite
+        self.be_column = args.be_column
+        self.te_column = args.te_column
+        self.sasa_column = args.sasa_column

@@ -1,4 +1,5 @@
 import os
+import shutil
 import glob
 import subprocess
 import mdtraj
@@ -35,13 +36,17 @@ def _extract_coords(info):
 
 class PostProcessor():
 
-    def __init__(self, report_name, traj_name, simulation_path, cpus, topology=False, residue=False):
+    def __init__(self, report_name, traj_name, simulation_path, cpus, topology=False, residue=False,
+        be_column=4, sasa_column=6, te_column=3):
         self.report_name = report_name
         self.traj_name = traj_name
         self.simulation_path = simulation_path
         self.data = self.retrive_data()
         self.topology = topology
         self.residue = residue
+        self.be_column = be_column
+        self.sasa_column = sasa_column
+        self.te_column = te_column
         self.cpus = cpus
 
     def retrive_data(self, separator=","):
@@ -102,17 +107,20 @@ class PostProcessor():
         #Read traj and output sanpshot
         for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
             if not self.topology:
-                bs.extract_snapshot_from_pdb(path, f_id, output, self.topology, step, out_freq, f_out)
+                try:
+                    bs.extract_snapshot_from_pdb(path, f_id, output, self.topology, step, out_freq, f_out)
+                except UnicodeDecodeError:
+                    raise Exception("Xtc output being treated as pdb. Please specify xtc with the next flag. traj: 'trajectory_name.xtc' in the input.yaml")
             else:
                 bs.extract_snapshot_from_xtc(path, f_id, output, self.topology, step, out_freq, f_out)
 
-    def cluster_poses(self, n_structs, metric, output):
+    def cluster_poses(self, n_structs, metric, output, nclusts=10):
         assert self.residue, "Set residue ligand name to clusterize"
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
-        self._cluster(best_poses, metric, output)
+        self._cluster(best_poses, metric, output, nclusts)
 
-    def _cluster(self, poses, metric, output):
+    def _cluster(self, poses, metric, output, nclusts=10):
         # Extract metric values
         values = poses[metric].tolist()
         epochs = poses[EPOCH].tolist()
@@ -128,7 +136,7 @@ class PostProcessor():
         # Clusterize
         assert all_coords[0][0], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
         try:
-            clf = mixture.GaussianMixture(n_components=10, covariance_type='full')
+            clf = mixture.GaussianMixture(n_components=nclusts, covariance_type='full')
             labels = clf.fit_predict(all_coords)
             indexes = labels
         except ValueError:
@@ -169,21 +177,31 @@ class PostProcessor():
 
 
 def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False,
-    topology=False):
-    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology)
+nclusts=10, overwrite=False, topology=False, be_column=4, sasa_column=6, te_column=3):
+    results_folder = os.path.join(output_folder, "results")
+    if os.path.exists(results_folder):
+        if not overwrite:
+            raise ValueError("Analysis folder {} already exists. Use the option overwrite_analysis: true".format(results_folder))
+        else:
+            shutil.rmtree(os.path.join(output_folder, "results"))
+    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology,
+        be_column=be_column, sasa_column=sasa_column, te_column=te_column)
 
     metrics = len(list(analysis.data)) - 1 #Discard epoch as metric
-    sasa = 6
-    be = 5
-    total_energy = 4
+    sasa = analysis.sasa_column
+    be = analysis.be_column
+    total_energy = analysis.te_column
     current_metric = sasa
     plots_folder = os.path.join(output_folder, "results/Plots")
     top_poses_folder = os.path.join(output_folder, "results/BestStructs")
     clusters_folder = os.path.join(output_folder, "results/clusters")
 
-    os.makedirs(plots_folder, exist_ok=True)
-    os.makedirs(top_poses_folder, exist_ok=True)
-    os.makedirs(clusters_folder, exist_ok=True)
+    if not os.path.exists(plots_folder):
+        os.makedirs(plots_folder)
+    if not os.path.exists(top_poses_folder):
+        os.makedirs(top_poses_folder)
+    if not os.path.exists(clusters_folder):
+        os.makedirs(clusters_folder)
 
 
     # Plot metrics
@@ -202,7 +220,7 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     #Clustering of best 2000 best structures
     print("Retrieve 10 best cluster poses")
     if clustering:
-        analysis.cluster_poses(250, be, clusters_folder)
+        analysis.cluster_poses(250, be, clusters_folder, nclusts)
 
     if mae:
         sch_python = os.path.join(cs.SCHRODINGER, "utilities/python")
@@ -213,7 +231,10 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
         for poses in top_poses:
             command = "{} {} {} --schr {} {}".format(sch_python, python_file, poses,  cs.SCHRODINGER, "--remove") 
             print(command)
-            subprocess.call(command.split())
+            try:
+                subprocess.check_call(command.split())
+            except ValueError:
+                raise ValueError("Binding energy is not in the default report column (4). Please specify the column by means of the next flag. be_column: N")
     plots = glob.glob(os.path.join(plots_folder, "*.png"))
     poses = glob.glob(os.path.join(top_poses_folder, "*"))
     clusters = glob.glob(os.path.join(clusters_folder, "*.png"))

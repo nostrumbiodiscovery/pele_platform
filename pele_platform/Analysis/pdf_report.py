@@ -39,7 +39,7 @@ def create_report(plots, clusters, top_poses, best_energies, output="simulation_
     pdf.set_font('Arial', 'B', size=12)
     pdf.cell(0, 10, "Top poses", align='C')
     pdf.set_font('Arial', size=10)
-    top_poses_ordered = np.array(top_poses)[np.argsort(best_energies)]
+    top_poses_ordered = np.array(top_poses)[np.argsort(best_energies)[:len(top_poses)]]
     for i, poses in enumerate(top_poses_ordered[0:20]):
         if i == 0:
             pdf.ln(10)

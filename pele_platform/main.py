@@ -333,6 +333,11 @@ class YamlParser(object):
         self.spawning_condition = data.get("spawning_condition", None)
         self.external_constraints = data.get("external_constraints", None)
         self.only_analysis = data.get("only_analysis", False)
+        self.overwrite = data.get("overwrite_analysis", True)
+        self.analysis_nclust = data.get("analysis_nclust", 10)
+        self.te_column = data.get("te_column", 4)
+        self.be_column = data.get("be_column", 5)
+        self.sasa_column = data.get("sasa_column", 6)
 
         if self.test:
             print("##############################")
