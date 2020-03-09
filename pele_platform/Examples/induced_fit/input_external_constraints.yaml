@@ -1,0 +1,14 @@
+system: '../pele_platform/Examples/Msm/PR_AS4.pdb'
+chain: 'L'
+resname: 'AS4'
+restart: false
+seed: 12345
+induced_fit: true
+test: true
+external_constraints:
+- "10-17" #constraint of 10 at atomnumber 17 
+- "5-A:1:H" ##constraint of 10 at atom with chain A residuenumber 1 and atomname H
+- "50-2.34-17-4159" #constraint of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 & 4159
+- "50-2.34-A:1:H-L:1:C21" #constraint of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
+
+

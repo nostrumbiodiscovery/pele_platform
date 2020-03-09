@@ -24,9 +24,11 @@ Pypi
     
     vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
 
+    conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
-Source Code
--------------
+
+Last stable release from source code
+--------------------------------------------
 
 .. code-block:: bash
 
@@ -34,12 +36,28 @@ Source Code
     
     cd pele_platform
     
-    pip install pele_platform
+    pip install .
     
     vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
 
+    conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
 
+Latest devel version
+----------------------
+
+.. code-block:: bash
+
+    git clone https://github.com/NostrumBioDiscovery/pele_platform.git
+    
+    cd pele_platform
+
+    git checkout devel
+    
+    pip install .
+
+    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+    
 Test it works
 ----------------
 

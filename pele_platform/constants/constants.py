@@ -52,6 +52,7 @@ elif "nbdcalc" in machine:
     ACCEPTED_STEPS_NAME = "numberOfAcceptedPeleSteps"
 else:
     SCHRODINGER = "/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
+    PYMOL_PYTHON = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PyMOL/2.2.0_0/bin/python"
     PELE = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524/"
     PELE_BIN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524-intel-2018a/bin/Pele_mpi"
     MPIRUN = "/sNow/easybuild/centos/7.4.1708/Skylake/software/OpenMPI/2.1.2-GCC-6.4.0-2.28/bin/"

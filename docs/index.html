@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Pele Platform &mdash; pele platform 1.2.3 documentation</title>
+  <title>Pele Platform &mdash; pele platform 1.3.0 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.2.3
+                1.3
               </div>
             
           
@@ -91,6 +91,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Input Parameters</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="developers/index.html">Add your own new simulation mode</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Versions</a></li>
@@ -190,7 +193,8 @@ python setup.py install <span class="o">(</span>with same python you will use la
 <li class="toctree-l1"><a class="reference internal" href="installation/index.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation/index.html#conda-recomended">Conda (recomended)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation/index.html#pypi">Pypi</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation/index.html#source-code">Source Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/index.html#last-stable-release-from-source-code">Last stable release from source code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/index.html#latest-devel-version">Latest devel version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation/index.html#test-it-works">Test it works</a></li>
 </ul>
 </li>
@@ -201,7 +205,9 @@ python setup.py install <span class="o">(</span>with same python you will use la
 <li class="toctree-l1"><a class="reference internal" href="cheatsheet/index.html">Prepare your own simulation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cheatsheet/index.html#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cheatsheet/index.html#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#induce-fit">Induce fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#adaptivepele-induced-fit">AdaptivePELE Induced fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#pele-induced-fit-slow-but-exhaustive">PELE Induced fit (Slow but exhaustive)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#minimization-exploration">Minimization exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#global-exploration">Global exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#water-ligand-exploration">Water+ligand exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/index.html#out-in-local-exploration">Out_in local exploration</a></li>
@@ -232,11 +238,13 @@ python setup.py install <span class="o">(</span>with same python you will use la
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#metrics">Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#analysis">Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#output">Output</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="documentation/index.html#automatic-modes">Automatic Modes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#induced-fit">Induced fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#induced-fit-fast">Induced fit_fast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#induced-fit-exhaustive">Induced fit_exhaustive</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#rescoring">Rescoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#local-exploration">Local Exploration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#biased">Biased</a></li>
@@ -250,7 +258,19 @@ python setup.py install <span class="o">(</span>with same python you will use la
 </div>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="developers/index.html">Add your own new simulation mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="developers/index.html#generate-your-own-mode">1) Generate your own mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developers/index.html#include-your-mode-into-the-pipeline">2) Include your mode into the pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developers/index.html#create-your-mode-s-input-option">3) Create your mode’s input option</a></li>
+<li class="toctree-l2"><a class="reference internal" href="developers/index.html#run-your-mode">4) Run your mode</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Versions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3">v1.3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-3">v1.2.3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-2">v1.2.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-1">v1.2.1</a></li>

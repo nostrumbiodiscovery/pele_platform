@@ -1,0 +1,9 @@
+system: '../pele_platform/Examples/water/water_processed.pdb'
+chain: 'M'
+resname: 'HOH'
+restart: false
+seed: 12345
+test: true
+water_bs: "all_waters"
+
+

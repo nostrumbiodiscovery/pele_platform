@@ -1,0 +1,4 @@
+#Task,Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,Binding Energy.1,sasaLig,epoch,trajectory
+1,0,0,-3221.43,1.26468,-46.1113,0.197483,0,/home/dsoler/repos/pele_platform/tests/data/xtc/0/trajectory_1.xtc
+1,0,0,-3218.59,0.644256,-47.9486,0.145026,0,/home/dsoler/repos/pele_platform/tests/data/xtc/0/trajectory_2.xtc
+1,1,1,-3232.63,1.84474,-31.8921,0.20546,0,/home/dsoler/repos/pele_platform/tests/data/xtc/0/trajectory_2.xtc

@@ -1,4 +1,5 @@
 import os
+import shutil
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
 
@@ -7,11 +8,13 @@ test_path = os.path.join(cs.DIR, "Examples")
 
 BIAS_ARGS = [os.path.join(test_path, "bias/input.yaml")]
 OUT_IN_ARGS = [os.path.join(test_path, "out_in/input.yaml")]
-INDUCED_ARGS = [os.path.join(test_path, "induced_fit/input.yaml")]
+INDUCED_EX_ARGS = [os.path.join(test_path, "induced_fit/input_exhaustive.yaml")]
+INDUCED_FAST_ARGS = [os.path.join(test_path, "induced_fit/input_fast.yaml")]
 GLOBAL_ARGS = [os.path.join(test_path, "global/input.yaml")]
 EXIT_ARGS = [os.path.join(test_path, "exit/input.yaml")]
 EXITSOFT_ARGS = [os.path.join(test_path, "exit_soft/input.yaml")]
 WATER_ARGS = [os.path.join(test_path, "water/input_bs.yaml")]
+ALL_WATER_ARGS = [os.path.join(test_path, "water/input_all.yaml")]
 WATERLIG_ARGS = [os.path.join(test_path, "water/input_lig.yaml")]
 RESTART_ARGS = [os.path.join(test_path, "restart/input.yaml")]
 MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
@@ -20,9 +23,9 @@ PCA_ARGS = [os.path.join(test_path, "pca/input.yaml")]
 FLAGS_ARGS = [os.path.join(test_path, "flags/input.yaml")]
 RESCORING_ARGS = [os.path.join(test_path, "rescoring/input.yaml")]
 
-ADAPTIVE_VALUES = ["hit1_complex_processed_processed.pdb", "LIG", '"outputPath": "output_sim"',
+ADAPTIVE_VALUES = ["water_processed_processed.pdb", "SB4", '"outputPath": "output_sim"',
     '"processors" : 3', '"peleSteps" : 1,', '"iterations" : 1,', '"runEquilibration" : true,',
-    '"equilibrationLength" : 11,', '"seed": 3000', '"useSrun": true', 
+    '"equilibrationLength" : 11,', '"seed": 3000',
     '"values" : [1, 2, 3],', '"conditions": [0.1, 0.2, 0.3]', '"epsilon": 0.3', 
     '"metricColumnInReport" : 3,', '"metricColumnInReport" : 3,', '"type" : "epsilon"',
     'exitContinuous', '"data": "done"', '"executable": "done"', '"documents": "done"']
@@ -61,77 +64,76 @@ PCA_VALUES = [
              ]  
 
 
-def test_induced(ext_args=INDUCED_ARGS):
+def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
+
+def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
 
 def test_global(ext_args=GLOBAL_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
 def test_exit(ext_args=EXIT_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
-def test_exitsoft(ext_args=EXITSOFT_ARGS):
+def test_softexit(ext_args=EXITSOFT_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
 def test_water(ext_args=WATER_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
+    main.Launcher(arguments).launch()
+
+def test_all_waters(ext_args=ALL_WATER_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
 
 def test_water_lig(ext_args=WATERLIG_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
 def test_bias(ext_args=BIAS_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
 def test_restart(ext_args=RESTART_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
 #def test_msm(ext_args=MSM_ARGS):
 #    arguments = main.parseargs_yaml(ext_args)
 #    arguments = main.YamlParser(arguments.input_file)
-#    main.set_software_to_use(arguments)
 #    main.Launcher(arguments).launch()
 
 def test_rescoring(ext_args=RESCORING_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
 def test_mae(ext_args=MAE_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
 
-def test_flags(ext_args=FLAGS_ARGS):
+def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     errors = []
+    if os.path.exists(output): shutil.rmtree(output)
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
     folder = arguments.folder
     if not os.path.exists(os.path.join(folder, "DataLocal/LigandRotamerLibs/STR.rot.assign")) or not os.path.exists(os.path.join(folder, "DataLocal/LigandRotamerLibs/MG.rot.assign")):
@@ -142,18 +144,18 @@ def test_flags(ext_args=FLAGS_ARGS):
         errors.append("Debug flag not working")
     errors = check_file(folder, "adaptive.conf", ADAPTIVE_VALUES, errors)
     errors = check_file(folder, "pele.conf", PELE_VALUES, errors)
-    errors = check_file(folder, "DataLocal/LigandRotamerLibs/LIG.rot.assign", "60", errors)
+    errors = check_file(folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors)
     assert not errors
 
 
-def test_pca(ext_args=PCA_ARGS):
+def test_pca(ext_args=PCA_ARGS, output="PCA_results"):
+    if os.path.exists(output):
+        shutil.rmtree(output)
     errors = []
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
-    main.set_software_to_use(arguments)
     main.Launcher(arguments).launch()
     folder = arguments.folder
-    print(folder, "pele.conf", PCA_VALUES, errors)
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
 

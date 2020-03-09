@@ -1,11 +1,10 @@
-system: '../pele_platform/Examples/water/hit1_complex_processed.pdb'
-chain: 'L'
-resname: 'LIG'
+system: '../pele_platform/Examples/water/water_processed.pdb'
+chain: 'J'
+resname: 'SB4'
 log: true
 cpus: 3
 seed: 3000
 iterations: 1
-usesrun: true
 steps: 1
 preprocess_receptor: true
 gridres: 60

@@ -117,11 +117,17 @@ def retrieve_atom_info(atom, pdb):
     with open(pdb, "r") as f:
         for line in f:
             try:
-                if line[6:11].strip() == str(atom):
-                    chain = line[21].strip() 
-                    resnum = line[22:26].strip()
-                    atomname = line[12:16]
-                    return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
+                if not isinstance(atom, int) and not atom.isdigit():
+                    chain, resnum, atomname = atom.split(":")
+                    if line[21].strip() == chain and line[22:26].strip() == resnum and line[12:16].strip() == atomname:
+                        atomname = line[12:16]
+                        return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
+                else:
+                    if line[6:11].strip() == str(atom):
+                        chain = line[21].strip() 
+                        resnum = line[22:26].strip()
+                        atomname = line[12:16]
+                        return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
             except IndexError:
                 pass
         sys.exit("Check the atoms given to calculate the distance metric")
@@ -142,3 +148,27 @@ def find_centroid(points):
     n_points = len(points)
     centroid = (sum(x) / n_points, sum(y) / n_points, sum(z) / n_points)
     return centroid
+
+def retrieve_all_waters(pdb):
+    with open(pdb, 'r') as f:
+        return list(set(["{}:{}".format(line[21:22], line[23:26].strip()) for line in f if line and "HOH" in line]))
+
+def retrieve_constraints_for_pele(constraints, pdb):
+    CONSTR_ATOM_POINT = '{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
+    CONSTR_ATOM_ATOM = '{{"type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom":  "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}"}},'
+    final_constraints = []
+    for constraint in constraints:
+        #Atom to point constraint: 2.2-A:123:2 or 2.2-1986
+        if len(constraint.split("-")) == 2:
+            spring_constant, atom_info = constraint.split("-")
+            chain, residue, atom_name = retrieve_atom_info(atom_info, pdb).split(":")
+            constraint = CONSTR_ATOM_POINT.format(spring_constant, chain, residue, atom_name)
+        #Atom to atom constraint: 2.2-2.75-A:123:2-B:2:7 or 2.2-2.74-1985-1962
+        elif len(constraint.split("-")) == 4:
+            spring_constant, eq_distance, atom1_info, atom2_info = constraint.split("-")
+            chain1, residue1, atom_name1 = retrieve_atom_info(atom1_info, pdb).split(":")
+            chain2, residue2, atom_name2 = retrieve_atom_info(atom2_info, pdb).split(":")
+            constraint =  CONSTR_ATOM_ATOM.format(spring_constant, eq_distance, chain1, residue1, atom_name1, chain2, residue2, atom_name2)
+        final_constraints.append(constraint)
+    return final_constraints
+        

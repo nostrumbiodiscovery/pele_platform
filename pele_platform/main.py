@@ -17,28 +17,13 @@ class Launcher():
 
     def __init__(self, arguments):
         self.cpus = arguments.cpus
-        self.software = arguments.software
         self.restart = arguments.restart
         self.test = arguments.test
         self._args = arguments
 
     def launch(self):
-        if self._args.software == "msm":
-            if(self._args.clust > self.cpus and self.restart != "msm" and not self.test):
-                raise ValueError(cs.CLUSTER_ERROR.format(self.cpus, self._args.clust))
-            else:
-                msm.run(self._args)
-                
-
-        elif self.software == "adaptive":
-            ad.run_adaptive(self._args)
-
-        elif self.software in ["glide", "induce_fit"]:
-            gl.run(self._args)
-
-        elif self.software == "frag":
-            main = os.path.join(cs.DIR, "LigandGrowing/grow.py")
-            "{} {} -cp {} -fp {} -ca {} -fa {}".format(cs.PYTHON3, main, self._args.system, self._args.frag, self._args.ca, self._args.fa)
+        job_variables = ad.run_adaptive(self._args)
+        return job_variables
 
 class SortingHelpFormatter(HelpFormatter):
     def add_arguments(self, actions):
@@ -184,23 +169,6 @@ def parseargs(args=[]):
 
     return args
 
-def set_software_to_use(arguments):
-    """
-    Auxiliar Function to set low variable software
-    which will be use to handle differences 
-    between PELE features along the program
-    """
-    if arguments.hbond[0]:
-        setattr(arguments, "software", "glide")
-    elif arguments.water_lig or arguments.full or arguments.water_exp or arguments.in_out_soft or arguments.in_out or arguments.induce_fit or  (arguments.adaptive and arguments.pele) or arguments.bias:
-        setattr(arguments, "software", "adaptive")
-    elif arguments.msm:
-        setattr(arguments, "software", "msm")
-    elif arguments.frag and arguments.ca and arguments.fa:
-        setattr(arguments, "software", "frag")
-    else:
-        #Standard Option
-        setattr(arguments, "software", "adaptive")
 
 def parseargs_yaml(args=[]):
     parser = argparse.ArgumentParser(description='Run PELE Platform', formatter_class=SortingHelpFormatter)
@@ -214,8 +182,6 @@ def main(arguments):
     of the software that will be used [Pele, Adaptive, glide...]
     and launch the respective job
     """
-    #arguments = YamlParser(arguments.input_file)
-    set_software_to_use(arguments)
     job = Launcher(arguments)
     job.launch()
     return job
@@ -245,106 +211,107 @@ class YamlParser(object):
         self.test = data.get("test", None)
         self.pele = data.get("pele", None)
         self.forcefield = data.get("forcefield", "OPLS2005")
-        self.verbose = data.get("verbose", False)
-        self.anm_freq = data.get("anm_freq", 4)
-        self.sidechain_freq = data.get("sidechain_freq", 2)
-        self.min_freq = data.get("min_freq", 1)
-        self.water_freq = data.get("water_freq", 1)
-        self.temperature = self.temp = data.get("temperature", 1500)
-        self.sidechain_resolution = data.get("sidechain_res", 10)
-        self.steric_trials = data.get("steric_trials", 250)
-        self.overlap_factor = data.get("overlap_factor", 0.65)
-        self.solvent = data.get("solvent", "VDGBNP")
-        self.usesrun = data.get("usesrun", False)
-        self.iterations = data.get("iterations", 30)
-        self.pele_steps = self.steps = data.get("steps", 12)
-        self.cpus = data.get("cpus", 2)
+        self.verbose = data.get("verbose", None)
+        self.anm_freq = data.get("anm_freq", None)
+        self.sidechain_freq = data.get("sidechain_freq", None)
+        self.min_freq = data.get("min_freq", None)
+        self.water_freq = data.get("water_freq", None)
+        self.temperature = self.temp = data.get("temperature", None)
+        self.sidechain_resolution = data.get("sidechain_res", None)
+        self.steric_trials = data.get("steric_trials", None)
+        self.overlap_factor = data.get("overlap_factor", None)
+        self.solvent = data.get("solvent", None)
+        self.usesrun = data.get("usesrun", None)
         self.spawning = data.get("spawning", None)
+        self.iterations = data.get("iterations", None)
+        self.pele_steps = self.steps = data.get("steps", None)
+        self.cpus = data.get("cpus", None)
         self.density = data.get("density", None)
         self.cluster_values = data.get("cluster_values", None)
         self.cluster_conditions = data.get("cluster_conditions", None)
         self.simulation_type = data.get("simulation_type", None)
-        self.equilibration = data.get("equilibration", False)
-        self.eq_steps = data.get("equilibration_steps", 2.0)
-        self.adaptive_restart = data.get("adaptive_restart", False)
-        self.input = data.get("input", [])
-        self.report_name = data.get("report", "report")
-        self.traj_name = data.get("traj", "trajectory.pdb")
+        self.equilibration = data.get("equilibration", None)
+        self.eq_steps = data.get("equilibration_steps", None)
+        self.adaptive_restart = data.get("adaptive_restart", None)
+        self.input = data.get("input", None)
+        self.report_name = data.get("report", None)
+        self.traj_name = data.get("traj", None)
         self.adaptive = data.get("adaptive", None)
         self.epsilon = data.get("epsilon", None)
         self.bias_column = data.get("bias_column", None)
         self.gridres = data.get("gridres", 10)
         self.core = data.get("core", -1)
         self.mtor = data.get("maxtorsion", 4)
-        self.n = data.get("n", 100000)
-        self.template = data.get("templates", [])
+        self.n = data.get("n", 10000)
+        self.template = data.get("templates", None)
         self.ext_temp = self.template
-        self.rotamers = data.get("rotamers", [])
+        self.rotamers = data.get("rotamers", None)
         self.ext_rotamers = self.rotamers
         self.mae_lig = data.get("mae_lig", None)
         self.mae_lig = os.path.abspath(self.mae_lig) if self.mae_lig else None
-        self.skip_prep = self.no_ppp = data.get("preprocess", False)
-        self.gaps_ter = data.get("TERs", False)
-        self.charge_ter = data.get("charge_ters", False)
-        self.nonstandard = data.get("nonstandard", [])
-        self.prepwizard = data.get("prepwizard", False)
+        self.skip_prep = self.no_ppp = data.get("preprocess", None)
+        self.gaps_ter = data.get("TERs", None)
+        self.charge_ter = data.get("charge_ters", None)
+        self.nonstandard = data.get("nonstandard", None)
+        self.prepwizard = data.get("prepwizard", None)
         self.user_center = data.get("box_center", None)
         self.user_center = [str(x) for x in self.user_center] if self.user_center else None
         self.box_radius = data.get("box_radius", None)
         self.box = data.get("box", None)
         self.native = data.get("rmsd_pdb", "")
         self.atom_dist = data.get("atom_dist", None)
-        self.debug = data.get("debug", False)
+        self.debug = data.get("debug", None)
         self.folder = data.get("working_folder", None)
-        self.output = data.get("output", "output")
-        self.randomize = data.get("randomize", False)
-        self.full = data.get("global", False)
-        self.proximityDetection = data.get("proximityDetection", True)
-        self.poses = data.get("poses", 40)
-        self.precision_glide = data.get("precision_glide", "SP") 
-        self.msm = data.get("msm", False)
-        self.precision = data.get("precision", False)
-        self.clust = data.get("exit_clust", 40)
-        self.restart = data.get("msm_restart", "all")
-        self.lagtime = data.get("lagtime", 100)
-        self.msm_clust = data.get("msm_clust", 200)
-        self.rescoring = data.get("rescoring", False)
-        self.in_out = data.get("in_out", False)
-        self.in_out_soft = data.get("in_out_soft", False)
-        self.exit = data.get("exit", False)
-        self.exit_value = data.get("exit_value", 0.9)
-        self.exit_condition = data.get("exit_condition", ">")
-        self.exit_trajnum = data.get("exit_trajnum", 4)
+        self.output = data.get("output", None)
+        self.randomize = data.get("randomize", None)
+        self.full = data.get("global", None)
+        self.proximityDetection = data.get("proximityDetection", None)
+        self.poses = data.get("poses", None)
+        self.precision_glide = data.get("precision_glide", None) 
+        self.msm = data.get("msm", None)
+        self.precision = data.get("precision", None)
+        self.clust = data.get("exit_clust", None)
+        self.restart = data.get("msm_restart", None)
+        self.lagtime = data.get("lagtime", None)
+        self.msm_clust = data.get("msm_clust", None)
+        self.rescoring = data.get("rescoring", None)
+        self.in_out = data.get("in_out", None)
+        self.in_out_soft = data.get("in_out_soft", None)
+        self.exit = data.get("exit", None)
+        self.exit_value = data.get("exit_value", None)
+        self.exit_condition = data.get("exit_condition", None)
+        self.exit_trajnum = data.get("exit_trajnum", None)
         self.water_exp = data.get("water_bs", None)
         self.water_lig = data.get("water_lig", None)
         self.water = data.get("water", None)
-        self.water_expl = data.get("water_expl", False)
-        self.water_freq = data.get("water_freq", 1)
+        self.water_expl = data.get("water_expl", None)
+        self.water_freq = data.get("water_freq", None)
         self.water_center = data.get("box_water", None)
-        self.water_temp = data.get("water_temp", 5000)
-        self.water_overlap = data.get("water_overlap", 0.78)
-        self.water_constr = data.get("water_constr", 0)
-        self.water_trials = data.get("water_trials", 10000)
+        self.water_temp = data.get("water_temp", None)
+        self.water_overlap = data.get("water_overlap", None)
+        self.water_constr = data.get("water_constr", None)
+        self.water_trials = data.get("water_trials", None)
         self.water_radius = data.get("water_radius", None)
-        self.bias = data.get("bias", False)
-        self.induce_fit = data.get("induced_fit", False)
-        self.frag = data.get("frag", False)
-        self.ca_constr=data.get("ca_constr", 0.5)
-        self.one_exit=data.get("one_exit", False)
-        self.box_type=data.get("box_type", "fixed")
+        self.bias = data.get("bias", None)
+        self.induced_fit_exhaustive = data.get("induced_fit_exhaustive", None)
+        self.induced_fit_fast = data.get("induced_fit_fast", None)
+        self.frag = data.get("frag", None)
+        self.ca_constr=data.get("ca_constr", None)
+        self.one_exit=data.get("one_exit", None)
+        self.box_type=data.get("box_type", None)
         self.box_metric = data.get("box_metric", None)
-        self.time = data.get("time", False)
-        self.nosasa = data.get("nosasa", False)
-        self.sasa = data.get("sasa", False)
-        self.perc_sasa = data.get("perc_sasa", [0.25, 0.5, 0.25])
+        self.time = data.get("time", None)
+        self.nosasa = data.get("nosasa", None)
+        self.sasa = data.get("sasa", None)
+        self.perc_sasa = data.get("perc_sasa", None)
         self.seed=data.get("seed", None)
-        self.pdb = data.get("pdb", False)
-        self.log = data.get("log", False)
-        self.nonrenum = data.get("nonrenum", False)
-        self.pele_exec = data.get("pele_exec", "")
-        self.pele_data = data.get("pele_data", "")
-        self.pele_documents = data.get("pele_documents", "")
-        self.pca = data.get("pca", "")
+        self.pdb = data.get("pdb", None)
+        self.log = data.get("log", None)
+        self.nonrenum = data.get("nonrenum", None)
+        self.pele_exec = data.get("pele_exec", None)
+        self.pele_data = data.get("pele_data", None)
+        self.pele_documents = data.get("pele_documents", None)
+        self.pca = data.get("pca", None)
         self.anm_direction = data.get("anm_direction", None)
         self.anm_mix_modes = data.get("anm_mix_modes", None)
         self.anm_picking_mode = data.get("anm_picking_mode", None)
@@ -352,13 +319,25 @@ class YamlParser(object):
         self.anm_modes_change = data.get("anm_modes_change", None)
         self.anm_num_of_modes = data.get("anm_num_of_modes", None)
         self.anm_relaxation_constr = data.get("anm_relaxation_constr", None)
-        self.remove_constraints = data.get("remove_constraints", False)
+        self.remove_constraints = data.get("remove_constraints", None)
         self.pca_traj = data.get("pca_traj", None)
-        self.perturbation = data.get("perturbation", cs.PERTURBATION)
-        self.binding_energy = data.get("binding_energy", cs.BE)
-        self.sasa = data.get("sasa", cs.SASA)
-        self.parameters = data.get("parameters", True)
-        self.selection_to_perturb = data.get("selection_to_perturb", cs.SELECTION_TO_PERTURB)
+        self.perturbation = data.get("perturbation", None)
+        self.binding_energy = data.get("binding_energy", None)
+        self.sasa = data.get("sasa", None)
+        self.parameters = data.get("parameters", None)
+        self.analyse = data.get("analyse", None)
+        self.selection_to_perturb = data.get("selection_to_perturb", None)
+        self.mae = data.get("mae", None)
+        self.constrain_smiles = data.get("constrain_smiles", None)
+        self.skip_ligand_prep = data.get("skip_ligand_prep", None)
+        self.spawning_condition = data.get("spawning_condition", None)
+        self.external_constraints = data.get("external_constraints", None)
+        self.only_analysis = data.get("only_analysis", False)
+        self.overwrite = data.get("overwrite_analysis", True)
+        self.analysis_nclust = data.get("analysis_nclust", 10)
+        self.te_column = data.get("te_column", 4)
+        self.be_column = data.get("be_column", 5)
+        self.limit_column = data.get("limit_column", 6)
 
         if self.test:
             print("##############################")

@@ -1,0 +1,25 @@
+name: PELEPlatform currentCommit
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install dependencies
+      run: |
+        python -m pip install numpy cython
+    - name: Install via Pypi
+      run: |
+        pip install .
+    - name: Test import 
+      run: |
+          mkdir test_pypi
+          cd test_pypi
+          python -m pele_platform.main -h

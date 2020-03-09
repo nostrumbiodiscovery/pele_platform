@@ -1,0 +1,29 @@
+
+Go to features.py and:
+
+1) Add the default of your features
+
+
+ "induced_fit_exhaustive" : {"spawning_type": "independent", "bias_column": 5, "epsilon":0.25, "density": "null",
+          "simulation_type": "pele", "iterations": 1, "pele_steps": 1000,
+          "cluster_values": "[1.75, 2.5, 4, 6]", "cluster_conditions": "[1, 0.6, 0.4, 0.0]",
+          "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.INDUCED_FIT,
+          "box_radius": 6},
+
+2) Set the type of simulation
+
+elif args.induced_fit_fast:
+    type_simulation = "induced_fit_fast"
+
+
+3) Go to main.py and set your input.yaml option under the class class YamlParser(object).
+Set the default to false so it will get activated when the user specifies induced_fit_fast: true.
+
+self.induced_fit_fast = data.get("induced_fit_fast", False)
+
+
+That's it!
+
+
+
+

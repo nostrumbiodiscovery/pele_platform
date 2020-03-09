@@ -1,0 +1,11 @@
+system: '../pele_platform/Examples/water/water_processed.pdb'
+chain: 'M'
+resname: 'HOH'
+restart: false
+seed: 12345
+water_bs:
+- M:1
+cpus: 128
+debug: true
+
+

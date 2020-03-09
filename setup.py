@@ -20,10 +20,10 @@ setup(
     url="https://github.com/NostrumBioDiscovery/pele_platform",
     author='Daniel Soler',
     author_email='daniel.soler@nostrumbiodiscovery.com',
-    packages=find_packages(exclude=['docs', 'tests']),
+    packages=find_packages(exclude=['docs', 'tests', 'tests.data']),
     package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd'], "pele_platform/AdaptivePELE/freeEnergies/": ['*.pyx']},
     include_package_data=True,
-    install_requires=["AdaptivePELE", "PPPele", "PyYAML", "pillow", "scipy", "matplotlib", 
+    install_requires=["AdaptivePELE", "PPPele", "PyYAML", "fpdf", "scikit-learn", "pillow", "scipy", "matplotlib", 
        "biopython", "pandas", "pytest", "cython", "numpy"],    
     cmdclass=cmdclass,
     ext_modules=ext_modules  # accepts a glob pattern

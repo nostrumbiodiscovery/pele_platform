@@ -103,6 +103,8 @@ Configure the parameters of the PlopRotTemp to extract the ligand forcefield par
 
 - **rotamers**: External rotamer libraries
 
+- **skip_ligand_prep**: Skip preparation of that resiude. This could be usefull to bypass problems with PlopRotTemp when creating the ligand parameters.
+
 
 ..  code-block:: yaml
 
@@ -117,6 +119,8 @@ Configure the parameters of the PlopRotTemp to extract the ligand forcefield par
   rotamers:
     - "/home/dsoler/MG.rot.assign"
     - "/home/dsoler/LIG.rot.assign"
+  skip_ligand_prep:
+    - "LIG"
 
 Box parameters
 =================
@@ -235,12 +239,33 @@ This section allows the user to change the constraint values.
 
 - **water_constr**: Water constraints. Default=5
 
+- **constrain_smiles**: SMILES string to indicate what part of the molecule to constraint. Default=None
+
+- **smiles_constr**: Numeric value of the SMILES constraints. Default=10
+
+- **external_constraints**: You can specify 2 types of constraints. Positional constraints or atom-atom constraint. (Example below)
+
+  - The positional constraints are given either by: 
+        - springConstant-atomnumber. i.e. "10-17"
+        - springConstant-chain:resnum:atomname. i.e. "5-A:1:H"
+
+  - The atom-atom constraints are specified either by: 
+        - springConstant-equilibriumDistance-atomnumber1-atomnumber2. i.e. "50-2.34-17-4159"
+        - springConstant-equilibriumDistance-chain1:resnum1:atomname1-chain2:resnum2:atomname2. i.e. "50-2.34-A:1:H-L:1:C21"
+
 ..  code-block:: yaml
 
     ca_constr: 2
     interval_constr: 10
     metal_constr: 100
     water_constr: 5
+    constrain_smiles: "C2CCC1CCCCC1C2"
+    smiles_constr: 5
+    external_constraints:
+    - "10-17" #constraint of 10kcal/mol at atomnumber 17
+    - "5-A:1:H" ##constraint of 10kcal/mol at atom with chain A residuenumber 1 and atomname H
+    - "50-2.34-17-4159" #constraint of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 & 4159
+    - "50-2.34-A:1:H-L:1:C21" #constraint of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
 
 
 WaterPerturbation
@@ -303,7 +328,9 @@ Metrics
 
 Metrics to track along the simulation
 
-- **atom_dist**: Calculate distance between two atomnumbers. Default=None
+- **atom_dist**: Calculate distance between two atomnumbers. To calculate more than one append them in column as the example below. Default=None
+
+    - The atomdist can be specified via atomnumber i.e. 1960 or via chain:resnum:atomname i.e. A:2:CA
 
 - **rmsd_pdb**: Calculate rmsd of the ligand to a native pdb structure
 
@@ -313,8 +340,24 @@ Metrics to track along the simulation
     atom_dist:
         - 40
         - 1960
+        - "A:2:CA"
+        - "B:3:CG"
     rmsd_pdb: "/home/dsoler/native.pdb"
 
+
+Analysis
+=============
+
+Run a post simulation analysis to extract plots, top poses and clusters.
+
+- **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
+
+- **mae**: To extract the best energy poses as .mae files with the metrics as properties (schrodinger need it). Default: false
+
+..  code-block:: yaml
+
+    analysis: false
+    mae: true
 
 Output
 ==========
@@ -338,17 +381,30 @@ Automatically configures all control file options to a standard job chosen bewee
 induce fit, local exploration, bias exploration, exit path and global exploration
 
 
-Induced fit
-==============
+Induced fit_fast
+==================
 
-- **induced_fit**: Run induced fit simulation paramaters by setting the center of the box in the
+- **induced_fit_fast**: Run a short induced fit AdaptivePELE simulation paramaters by setting the center of the box in the
   cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
   steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
   new conformations within the same binding site.
 
 ..  code-block:: yaml
 
-  induced_fit: true
+  induced_fit_fast: true
+
+Induced fit_exhaustive
+========================
+
+- **induced_fit_exhaustive**: Run a long induced fit PELE simulation paramaters by setting the center of the box in the
+  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
+  steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
+  new conformations within the same binding site.
+
+..  code-block:: yaml
+
+  induced_fit_exhaustive: true
+
 
 Rescoring
 ============

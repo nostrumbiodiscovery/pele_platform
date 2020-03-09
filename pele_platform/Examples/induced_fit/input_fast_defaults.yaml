@@ -1,0 +1,13 @@
+system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
+chain: 'Z'
+resname: 'STR'
+restart: false
+seed: 12345
+induced_fit_fast: true
+atom_dist:
+- 32
+- 33
+cpus: 60
+debug: true
+
+

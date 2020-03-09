@@ -1,0 +1,11 @@
+system: '../pele_platform/Examples/water/water_processed.pdb'
+chain: 'J'
+resname: 'SB4'
+restart: false
+seed: 12345
+water_lig:
+- M:1
+anm_freq: 1
+sidechain_freq: 1
+cpus: 128
+debug: true
