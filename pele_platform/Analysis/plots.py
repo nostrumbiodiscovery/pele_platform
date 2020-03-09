@@ -118,7 +118,9 @@ class PostProcessor():
         assert self.residue, "Set residue ligand name to clusterize"
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
-        self._cluster(best_poses, metric, output, nclusts)
+        clusters = self._cluster(best_poses, metric, output, nclusts)
+        import pdb; pdb.set_trace()
+        return clusters
 
     def _cluster(self, poses, metric, output, nclusts=10):
         # Extract metric values
@@ -145,6 +147,7 @@ class PostProcessor():
         files_out = ["cluster{}_epoch{}_trajectory_{}.{}_{}{}.pdb".format(cluster, epoch, report, int(step), metric.replace(" ",""), value) \
            for epoch, step, report, value, cluster in zip(epochs, snapshots, file_ids, values, indexes)]
         all_metrics = []
+        output_clusters = []
         for n_cluster in range(n_clusters-1):
             metrics = {value:idx for idx, (value, cluster) in enumerate(zip(values, indexes)) if n_cluster == cluster}
             out_freq = 1
@@ -159,6 +162,7 @@ class PostProcessor():
             else:
                 bs.extract_snapshot_from_xtc(max_traj, input_traj, output, self.topology, max_snapshot, out_freq, output_traj)
             all_metrics.append(cluster_metrics)
+            output_clusters.append(os.path.join(output, output_traj))
         fig, ax = plt.subplots()
         try:
             ax.boxplot(all_metrics)
@@ -168,6 +172,7 @@ class PostProcessor():
         ax.set_ylabel(metric)
         ax.set_xlabel("Cluster number")
         plt.savefig(os.path.join(output, "clusters_{}_boxplot.png".format(metric)))
+        return output_clusters
 
 
 
@@ -219,7 +224,7 @@ nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_col
     #Clustering of best 2000 best structures
     print("Retrieve 10 best cluster poses")
     if clustering:
-        analysis.cluster_poses(250, be, clusters_folder, nclusts)
+        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts)
 
     if mae:
         sch_python = os.path.join(cs.SCHRODINGER, "utilities/python")
@@ -227,7 +232,7 @@ nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_col
             sch_python = os.path.join(cs.SCHRODINGER, "run")
         top_poses = glob.glob(os.path.join(top_poses_folder, "*"))
         python_file = os.path.join(cs.DIR, "Analysis/to_mae.py")
-        for poses in top_poses:
+        for poses in top_poses+clusters:
             command = "{} {} {} --schr {} {}".format(sch_python, python_file, poses,  cs.SCHRODINGER, "--remove") 
             print(command)
             try:
