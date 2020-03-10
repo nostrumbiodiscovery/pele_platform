@@ -8,7 +8,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
+<<<<<<< HEAD
   <title>FragPELE Parameters &mdash; pele platform 1.3.0 documentation</title>
+=======
+  <title>FragPELE Parameters &mdash; pele platform 1.4.0 documentation</title>
+>>>>>>> master
   
 
   
@@ -34,7 +38,13 @@
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
+<<<<<<< HEAD
     <link rel="search" title="Search" href="../search.html" /> 
+=======
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Add your own new simulation mode" href="../developers/index.html" />
+    <link rel="prev" title="Adaptive Parameters" href="../documentation_adaptive/index.html" /> 
+>>>>>>> master
 </head>
 
 <body class="wy-body-for-nav">
@@ -58,7 +68,11 @@
             
             
               <div class="version">
+<<<<<<< HEAD
                 1.3
+=======
+                1.4
+>>>>>>> master
               </div>
             
           
@@ -89,6 +103,25 @@
 <li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul>
+<<<<<<< HEAD
+=======
+<li class="toctree-l1"><a class="reference internal" href="../documentation_adaptive/index.html">Adaptive Parameters</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FragPELE Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#compulsory-flags">Compulsory flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optative-flags">Optative flags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#low-thrughput">Low-thrughput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#high-throughput">High-throughput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#high-throughput-ai">High-throughput AI</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+>>>>>>> master
 <li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
 </ul>
 <ul>
@@ -165,7 +198,10 @@
 Afterwards a final sampling simulation is run to fully explore the ligand-protein conformational space.</p>
 <ul class="simple">
 <li><p><strong>frag_core</strong>: Core of the molecule we want to add fragments to. Required parameter</p></li>
+<<<<<<< HEAD
 <li><p><strong>fag_input</strong>: Frag pele input. For more please check here</p></li>
+=======
+>>>>>>> master
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
 <span class="nt">fag_input</span><span class="p">:</span> <span class="s">&quot;/home/daniel/serie_file.conf&quot;</span>
@@ -189,6 +225,49 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 </pre></div>
 </div>
 </div>
+<<<<<<< HEAD
+=======
+<div class="section" id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="low-thrughput">
+<h3>Low-thrughput<a class="headerlink" href="#low-thrughput" title="Permalink to this headline">¶</a></h3>
+<p>Ideal when performing lead optimization. Only a few but very well thought changes into the core.
+Here you must manually specify what and where to grow into the serie_file. For more information
+about the input file please refere here.</p>
+<ul class="simple">
+<li><p><strong>fag_input</strong>: Frag pele input. For more please check here</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
+<span class="nt">fag_input</span><span class="p">:</span> <span class="s">&quot;/home/daniel/serie_file.conf&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="high-throughput">
+<h3>High-throughput<a class="headerlink" href="#high-throughput" title="Permalink to this headline">¶</a></h3>
+<p>Ideal when running many fragments onto one core. Need a complex.pdb with protein and core
+and a sdf with a list of fully grown ligands. The input file will be generated automatically.</p>
+<ul class="simple">
+<li><p><strong>frag_ligands</strong>: full_ligands.sdf</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/complex_and_core.pdb&quot;</span>
+<span class="nt">frag_ligands</span><span class="p">:</span> <span class="s">&quot;/home/daniel/ligands.sdf&quot;</span>
+<span class="nt">protocol</span><span class="p">:</span> <span class="s">&quot;HT&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="high-throughput-ai">
+<h3>High-throughput AI<a class="headerlink" href="#high-throughput-ai" title="Permalink to this headline">¶</a></h3>
+<p>Ideal when exploring new option in a highthroughput manner. The RNN will
+first create the ligands. Then fragPele will dinamically grow and rank them.
+Reinforcement learning may be implemented in future versions.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/complex_and_core.pdb&quot;</span>
+<span class="nt">frag_ai</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">protocol</span><span class="p">:</span> <span class="s">&quot;HT&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+>>>>>>> master
 </div>
 
 
@@ -197,6 +276,18 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
           </div>
           <footer>
   
+<<<<<<< HEAD
+=======
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Add your own new simulation mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../documentation_adaptive/index.html" class="btn btn-neutral float-left" title="Adaptive Parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+>>>>>>> master
 
   <hr/>
 

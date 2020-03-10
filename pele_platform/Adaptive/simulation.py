@@ -36,7 +36,7 @@ def run_adaptive(args):
 
     if env.adaptive_restart and not env.only_analysis:
         with helpers.cd(env.pele_dir):
-            #adt.main(env.ad_ex_temp)
+            adt.main(env.ad_ex_temp)
             env.logger.info("Simulation run succesfully (:\n\n")
 
     elif not env.only_analysis:
@@ -192,7 +192,8 @@ def run_adaptive(args):
         report = pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
             os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
             output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae,
-            nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology)
+            nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology
+            be_column=env.be_column, limit_column=env.limit_column, te_column=env.te_column)
         pr.create_report(plots, clusters, poses, output=os.path.join(env.pele_dir, "summary_results.pdf"))
         print("Pdf summary report succesfully writen to: {}".format(report))
     return env

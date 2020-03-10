@@ -202,4 +202,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.only_analysis = args.only_analysis
         self.analysis_nclust = args.analysis_nclust
         self.overwrite = args.overwrite
-
+        self.be_column = args.be_column
+        self.te_column = args.te_column
+        self.limit_column = args.limit_column

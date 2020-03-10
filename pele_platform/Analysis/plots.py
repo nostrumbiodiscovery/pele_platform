@@ -36,13 +36,17 @@ def _extract_coords(info):
 
 class PostProcessor():
 
-    def __init__(self, report_name, traj_name, simulation_path, cpus, topology=False, residue=False):
+    def __init__(self, report_name, traj_name, simulation_path, cpus, topology=False, residue=False,
+        be_column=4, limit_column=6, te_column=3):
         self.report_name = report_name
         self.traj_name = traj_name
         self.simulation_path = simulation_path
         self.data = self.retrive_data()
         self.topology = topology
         self.residue = residue
+        self.be_column = be_column
+        self.limit_column = limit_column
+        self.te_column = te_column
         self.cpus = cpus
 
     def retrive_data(self, separator=","):
@@ -103,7 +107,10 @@ class PostProcessor():
         #Read traj and output sanpshot
         for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
             if not self.topology:
-                bs.extract_snapshot_from_pdb(path, f_id, output, self.topology, step, out_freq, f_out)
+                try:
+                    bs.extract_snapshot_from_pdb(path, f_id, output, self.topology, step, out_freq, f_out)
+                except UnicodeDecodeError:
+                    raise Exception("Xtc output being treated as pdb. Please specify xtc with the next flag. traj: 'trajectory_name.xtc' in the input.yaml")
             else:
                 bs.extract_snapshot_from_xtc(path, f_id, output, self.topology, step, out_freq, f_out)
 
@@ -111,7 +118,8 @@ class PostProcessor():
         assert self.residue, "Set residue ligand name to clusterize"
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
-        self._cluster(best_poses, metric, output, nclusts)
+        clusters = self._cluster(best_poses, metric, output, nclusts)
+        return clusters
 
     def _cluster(self, poses, metric, output, nclusts=10):
         # Extract metric values
@@ -138,6 +146,7 @@ class PostProcessor():
         files_out = ["cluster{}_epoch{}_trajectory_{}.{}_{}{}.pdb".format(cluster, epoch, report, int(step), metric.replace(" ",""), value) \
            for epoch, step, report, value, cluster in zip(epochs, snapshots, file_ids, values, indexes)]
         all_metrics = []
+        output_clusters = []
         for n_cluster in range(n_clusters-1):
             metrics = {value:idx for idx, (value, cluster) in enumerate(zip(values, indexes)) if n_cluster == cluster}
             out_freq = 1
@@ -152,6 +161,7 @@ class PostProcessor():
             else:
                 bs.extract_snapshot_from_xtc(max_traj, input_traj, output, self.topology, max_snapshot, out_freq, output_traj)
             all_metrics.append(cluster_metrics)
+            output_clusters.append(os.path.join(output, output_traj))
         fig, ax = plt.subplots()
         try:
             ax.boxplot(all_metrics)
@@ -161,6 +171,7 @@ class PostProcessor():
         ax.set_ylabel(metric)
         ax.set_xlabel("Cluster number")
         plt.savefig(os.path.join(output, "clusters_{}_boxplot.png".format(metric)))
+        return output_clusters
 
 
 
@@ -169,21 +180,20 @@ class PostProcessor():
         return list(df)[int(column_digit)-1]
 
 
-def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False,
-nclusts=10, overwrite=False, topology=False):
+def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False, nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_column=3):
     results_folder = os.path.join(output_folder, "results")
     if os.path.exists(results_folder):
         if not overwrite:
             raise ValueError("Analysis folder {} already exists. Use the option overwrite_analysis: true".format(results_folder))
         else:
             shutil.rmtree(os.path.join(output_folder, "results"))
-    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology)
+    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology,
+        be_column=be_column, limit_column=limit_column, te_column=te_column)
 
     metrics = len(list(analysis.data)) - 1 #Discard epoch as metric
-    sasa = 6
-    be = 5
-    total_energy = 4
-    current_metric = sasa
+    be = analysis.be_column
+    total_energy = analysis.te_column
+    current_metric = analysis.limit_column
     plots_folder = os.path.join(output_folder, "results/Plots")
     top_poses_folder = os.path.join(output_folder, "results/BestStructs")
     clusters_folder = os.path.join(output_folder, "results/clusters")
@@ -212,7 +222,7 @@ nclusts=10, overwrite=False, topology=False):
     #Clustering of best 2000 best structures
     print("Retrieve 10 best cluster poses")
     if clustering:
-        analysis.cluster_poses(250, be, clusters_folder, nclusts)
+        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts)
 
     if mae:
         sch_python = os.path.join(cs.SCHRODINGER, "utilities/python")
@@ -220,10 +230,13 @@ nclusts=10, overwrite=False, topology=False):
             sch_python = os.path.join(cs.SCHRODINGER, "run")
         top_poses = glob.glob(os.path.join(top_poses_folder, "*"))
         python_file = os.path.join(cs.DIR, "Analysis/to_mae.py")
-        for poses in top_poses:
+        for poses in top_poses+clusters:
             command = "{} {} {} --schr {} {}".format(sch_python, python_file, poses,  cs.SCHRODINGER, "--remove") 
             print(command)
-            subprocess.call(command.split())
+            try:
+                subprocess.check_call(command.split())
+            except ValueError:
+                raise ValueError("Binding energy is not in the default report column (4). Please specify the column by means of the next flag. be_column: N")
     plots = glob.glob(os.path.join(plots_folder, "*.png"))
     poses = glob.glob(os.path.join(top_poses_folder, "*"))
     clusters = glob.glob(os.path.join(clusters_folder, "*.png"))

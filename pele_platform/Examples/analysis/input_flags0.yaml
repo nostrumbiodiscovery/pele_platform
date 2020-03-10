@@ -1,0 +1,9 @@
+usesrun: true
+working_folder: 'data'
+system: 'your_system.pdb'
+chain: 'Z'
+resname: 'STR'
+only_analysis: true
+te_column: 3
+be_column: 4
+limit_column: 6

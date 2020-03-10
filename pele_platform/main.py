@@ -213,9 +213,11 @@ class YamlParser(object):
         self.spawning_condition = data.get("spawning_condition", None)
         self.external_constraints = data.get("external_constraints", None)
         self.only_analysis = data.get("only_analysis", False)
+        self.overwrite = data.get("overwrite_analysis", True)
         self.analysis_nclust = data.get("analysis_nclust", 10)
-        self.overwrite = data.get("overwrite_analysis", False)
-        self.com = data.get("COMligandConstraint", False)
+        self.te_column = data.get("te_column", 4)
+        self.be_column = data.get("be_column", 5)
+        self.limit_column = data.get("limit_column", 6)
 
         #Frag
         self.frag_core = data.get("frag_core", False)

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Input Parameters &mdash; pele platform 1.3.0 documentation</title>
+  <title>Input Parameters &mdash; pele platform 1.3.4 documentation</title>
   
 
   
@@ -441,10 +441,18 @@
 <h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
 <p>Run a post simulation analysis to extract plots, top poses and clusters.</p>
 <ul class="simple">
+<li><p><strong>only_analysis</strong>: Analyse PELE simulation without running it.</p></li>
+<li><p><strong>analysis_nclust</strong>: Numbers of clusters out of the simulation. Default: 10</p></li>
+<li><p><strong>be_column</strong>: Column of the binding energy in the reports starting by 1. Default: 5</p></li>
+<li><p><strong>te_column</strong>: Column of the total energy in the reports starting by 1. Default: 4</p></li>
+<li><p><strong>limit_column</strong>: Specify the column where your external metrics start. Default: 6</p></li>
+<li><p><strong>mae</strong>: To extract the best energy and cluster poses as .mae files with the metrics as properties (schrodinger need it). Default: false</p></li>
 <li><p><strong>analysis</strong>: Whether to run or not the analysis at the end of the simulation. Default: true</p></li>
-<li><p><strong>mae</strong>: To extract the best energy poses as .mae files with the metrics as properties (schrodinger need it). Default: false</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">be_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">te_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="nt">limit_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
 <span class="nt">mae</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>

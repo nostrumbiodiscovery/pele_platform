@@ -50,7 +50,7 @@ def pdb_to_mae(pdb_inputfile, schr_path, mae_output_file=None, remove=False):
     file_info = pdb_inputfile.split("_")
     if not mae_output_file:
         dirpath = os.path.join(os.path.dirname(pdb_inputfile))
-        filename = "{}_{}.mae".format(file_info[-3], file_info[-2])
+        filename = os.path.basename(pdb_inputfile).rsplit(".", 1)[0] + ".mae"
         mae_output_file = os.path.join(dirpath, filename)
 
     # Get properties from name
