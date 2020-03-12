@@ -1,113 +1,159 @@
-import argparse, os, sys
-from string import *
-import glob
-from math import sqrt
+from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection
+from Bio.PDB.vectors import Vector
+import numpy as np
+import os, argparse
 
-def randomize_starting_position(clean_ligand_pdb, input_ligand, ligname, rec_file, rec_com, lig_com, output_folder=".", poses=40):
-    ### Randomize ligand starting position for outside-inside
-    import pymol
-    import numpy
-    try:
-        import cmd as cmd
-    except pymol.CmdException:
-        from pymol import cmd as cmd
+def randomize_starting_position(ligand_file, complex_file, nposes=200):
+    """
+    Randomize initial ligand position around the receptor.
+    Default number of poses = 200.
+    :param ligand_file:
+    :param complex_file:
+    :param nposes:
+    :return:
+    """
 
-    if float(cmd.get_version()[0][0:2]) < 1.7:
-        pymol.pymol_argv = ['pymol','-qc'] + sys.argv[1:]
-        pymol.finish_launching()
-    else:
-        pass
-    contact = -1
-    n = 0
-    n0 = 0
-    if not lig_com :
-        rec_com = True
-    cmd.load(clean_ligand_pdb, 'ligand') 
-    cmd.save(input_ligand,'ligand')
-    #clean_ligand_pdb, origin = clean_lig_pdb(input_ligand) ## Do this step again in case Pymol changes PDB names (maybe not needed?)
-    #cmd.delete('ligand')
-    #cmd.load(, 'ligand') #Reload ligand
-    COM_lig=cmd.centerofmass('ligand')
-    if lig_com :
-        print("Ligand COM is %s" %COM_lig)
-        print("Sampling 25A spherical box centered around ligand")
-        D = 25.0
-        sphere_cent = COM_lig
+    # read in files
 
-    cmd.load(rec_file, 'receptor') 
-    if rec_com :
-        COM=cmd.centerofmass('receptor')
-        cmd.create('rec_zero','receptor') 
-        cmd.translate((-1*COM[0],-1*COM[1],-1*COM[2]),'rec_zero') # Move rec to the origin
-        rec_min_max = cmd.get_extent('rec_zero')
-        print("REC", rec_min_max)
-        maxdist1 = numpy.sqrt(rec_min_max[0][0]**2 + rec_min_max[0][1]**2 + rec_min_max[0][2]**2)
-        maxdist2 = numpy.sqrt(rec_min_max[1][0]**2 + rec_min_max[1][0]**2 + rec_min_max[1][0]**2)
-        maxdist = numpy.maximum(maxdist1,maxdist2)
-        print("Receptor COM is %s" %COM)
-        print("Receptor max sphere radius is %s" %maxdist)
-        D=numpy.ceil(6.0+maxdist) #radius of the sphere from the origin
-        print("Sampling %sA spherical box centered around receptor COM" %D)
-        sphere_cent = COM
-
+    parser = PDBParser()
     output = []
-    while (n < poses) :
-        n0 += 1
-        phi = numpy.random.uniform(0,2*numpy.pi)
-        costheta = numpy.random.uniform(-1,1)
-        u = numpy.random.uniform(0,1)
+    structure = parser.get_structure('protein', complex_file)
+    ligand = parser.get_structure('ligand', ligand_file)
 
-        theta = numpy.arccos( costheta )
-        r = D * numpy.cbrt( u )
-        x = r * numpy.sin( theta) * numpy.cos( phi )
-        y = r * numpy.sin( theta) * numpy.sin( phi )
-        z = r * numpy.cos( theta )
-                
-        translation = (x,y,z)
-        cmd.delete('ligand')
-        cmd.load(clean_ligand_pdb, 'ligand') #Reload ligand
-        cmd.translate((-1*COM_lig[0],-1*COM_lig[1],-1*COM_lig[2]),'ligand') # Move ligand to the origin
-        cmd.translate(translation,'ligand')
+    # calculate protein COM
+    structure_mass = 0.0
+    com_protein = np.zeros(3)
+    for atom in structure.get_atoms():
+        com_protein = com_protein + np.array(list(atom.get_vector())) * atom.mass
+        structure_mass += atom.mass
+    com_protein = com_protein / structure_mass
 
-        # Make sure new ligand position is at least 5A but not more than 8A from any protein atom
-        # Also make sure it is within the sampling sphere 
-        cmd.translate((sphere_cent[0],sphere_cent[1],sphere_cent[2]),'ligand') # Move ligand back to the original frame
-        COM_lig_new=cmd.centerofmass('ligand')
-        dist = numpy.sqrt( ((COM_lig_new[0] - sphere_cent[0])**2) + ((COM_lig_new[1] - sphere_cent[1])**2)  + ((COM_lig_new[2] - sphere_cent[2])**2) )
-        if dist < D :
-            rotation = (numpy.random.uniform(0,360),numpy.random.uniform(0,360),numpy.random.uniform(0,360)) #add a random rotation
-            cmd.rotate('x',rotation[0],'ligand') #add a random rotation
-            cmd.rotate('y',rotation[1],'ligand') #add a random rotation
-            cmd.rotate('z',rotation[2],'ligand') #add a random rotation
-            contact_near=cmd.select('contact','(receptor and (ligand around 5))')
-            contact_far=cmd.select('contact','(receptor and (ligand around 8))')
-            if int(contact_near) == 0 and int(contact_far) > 0:
-                rand_lig_pdb = os.path.join(output_folder, '%s_rand_position0%d.pdb' %(ligname,n))
-                cmd.save(rand_lig_pdb,'ligand')
-                output.append(rand_lig_pdb)
-                n += 1
+    # calculate ligand COM
+    ligand_mass = 0.0
+    com_ligand = np.zeros(3)
+    for atom in ligand.get_atoms():
+        com_ligand = com_ligand + np.array(list(atom.get_vector())) * atom.mass
+        ligand_mass += atom.mass
+    com_ligand = com_ligand / ligand_mass
 
-    return output, sphere_cent, D
+    # calculating the maximum d of the ligand
+    coor_ligand = []
+    for atom in ligand.get_atoms():
+        coor_ligand.append(list(atom.get_vector() - com_ligand))
+
+    coor_ligand = np.array(coor_ligand)
+    coor_ligand_max = np.amax(coor_ligand, axis=0)
+
+    d_ligand = np.sqrt(np.sum(coor_ligand_max ** 2))
+
+    # set threshold for near and far contacts based on ligand d
+    if d_ligand < 5.0:
+        d5_ligand = 5.0
+    else:
+        d5_ligand = d_ligand / 2
+
+    if d_ligand > 8.0:
+        d8_ligand = d_ligand / 2 + 3
+    else:
+        d8_ligand = 8.0
+
+    # calculate vector to move the ligand
+    move_vector = com_ligand - com_protein
+
+    # translate the ligand to the protein COM
+    original_coords = []
+    for atom in ligand.get_atoms():
+        ligand_origin = np.array(list(atom.get_vector())) - move_vector
+        original_coords.append(ligand_origin)
+        atom.set_coord(ligand_origin)
+
+    # calculating the maximum radius of the protein from the origin
+    coor = []
+    for atom in structure.get_atoms():
+        coor.append(list(atom.get_vector() - com_protein))
+    coor = np.array(coor)
+    coor_max = np.amax(coor, axis=0)
+    d = np.sqrt(np.sum(coor_max ** 2))
+
+    # radius of the sphere from the origin
+    D = np.ceil(6.0 + d)
+    print("Sampling {}A spherical box around the centre of the receptor".format(D))
+    sphere_cent = com_protein
+
+    j = 0
+    print("Generating {} poses...".format(nposes))
+    while (j < nposes):
+
+        # generate random coordinates
+        phi = np.random.uniform(0, 2 * np.pi)
+        costheta = np.random.uniform(-1, 1)
+        u = np.random.uniform(0, 1)
+        theta = np.arccos(costheta)
+
+        r = D * np.cbrt(u)
+        x = r * np.sin(theta) * np.cos(phi)
+        y = r * np.sin(theta) * np.sin(phi)
+        z = r * np.cos(theta)
+
+        # move ligand to the starting point (protein COM)
+        for atom, coord in zip(ligand.get_atoms(), original_coords):
+            atom.set_coord(coord)
+
+        # translate ligand to a random position
+        translation = (x, y, z)
+        for atom in ligand.get_atoms():
+            new_pos_lig_trans = np.array(list(atom.get_vector())) - translation
+            atom.set_coord(new_pos_lig_trans)
+
+        # calculate ligand COM in the new position
+        new_ligand_COM = np.zeros(3)
+        ligand_mass = 0
+        for atom in ligand.get_atoms():
+            new_ligand_COM = new_ligand_COM + np.array(list(atom.get_vector())) * atom.mass
+            ligand_mass += atom.mass
+        new_ligand_COM = new_ligand_COM / ligand_mass
+
+        # check if it's inside the sampling sphere
+        dist = np.sqrt((new_ligand_COM[0] - sphere_cent[0]) ** 2 + (new_ligand_COM[1] - sphere_cent[1]) ** 2 + (
+                new_ligand_COM[2] - sphere_cent[2]) ** 2)
+
+        if dist < D:
+
+            # check contacts at: 5A (no contacts) and 8A (needs contacts)
+            protein_list = Selection.unfold_entities(structure, "A")
+            contacts5 = []
+            contacts5 = NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "A")
+            contacts8 = []
+            contacts8 = NeighborSearch(protein_list).search(new_ligand_COM, d8_ligand, "A")
+
+            if contacts8 and not contacts5:
+                j += 1
+                io = PDBIO()
+                io.set_structure(ligand)
+                output.append(io.save('correct_ligand{}.pdb'.format(j)))
+    print("{} poses created successfully.".format(j))
+    return output
+
 
 def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
+    """
+    Join receptor and ligand PDB files into one, conserving old formatting
+    and not repeating atom numbers.
+    """
 
-    """
-    Join receptor&ligand pdb in one conserving old formatting
-    and not repiting atomnumbers
-    """
-    
     with open(receptor, "r") as f:
         lines = f.readlines()
-        receptor_content = [line for line in lines if line[17:20] != residue]
+        receptor_content = [line for line in lines if (line[17:20] != residue and line[0:3] != "TER")]
         ligand_content_without_coords = [line[0:27] + "{}" + line[56:] for line in lines if line[17:20] == residue]
-        initial_atomnum = max([ int(line[6:11]) for line in lines if line.startswith("ATOM") or line.startswith("HETATM")])
+        atom_nums = [line[6:11] for line in lines if line[17:20] == residue]
 
     outputs = []
     for i, ligand in enumerate(ligands):
         with open(ligand, "r") as fin:
-            #exclude connects but keep initial atomnames (CL problem)
-            ligand_coords = {line[12:16].strip():line[27:56] for line in fin if line.startswith("ATOM") or line.startswith("HETATM")}
-            assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part send an issue to github"
+            # exclude connects but keep initial atom names (CL problem)
+            ligand_coords = {line[12:16].strip(): line[27:56] for line in fin if
+                             line.startswith("ATOM") or line.startswith("HETATM")}
+            assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part - send an issue to github"
 
             ligand_content = []
             for pdb_block in ligand_content_without_coords:
@@ -115,19 +161,18 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
                 coord = ligand_coords[atom_name]
                 ligand_pdb_line = pdb_block.format(coord)
                 ligand_content.append(ligand_pdb_line)
-            
-            current_atomnum = initial_atomnum +1
+
+
             for j, line in enumerate(ligand_content):
-                ligand_content[j] = line[:6] + "{:>5}".format(current_atomnum) + line[11:]
-                current_atomnum += 1
-                
-        content_join_file = receptor_content + ligand_content + ["TER"]
+                ligand_content[j] = line[:6] + "{:>5}".format(atom_nums[j]) + line[11:]
+        content_join_file = receptor_content + ["TER\n"] + ligand_content + ["TER"]
         output_path = os.path.join(output_folder, output.format(i))
         with open(output_path, "w") as fout:
             fout.write("".join(content_join_file))
-        outputs.append( output_path )
+        outputs.append(output_path)
 
     return outputs
+
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -139,9 +184,10 @@ def parse_args():
     args = parser.parse_args()
     return os.path.abspath(args.ligand), os.path.abspath(args.receptor), args.resname, args.poses, args.output_folder
 
-if __name__ == "__main__":
-   ligand, receptor, resname, poses, output_folder = parse_args()
-   output, sphere_cent, D = randomize_starting_position(ligand, "input_ligand.pdb", resname, receptor, None, None, output_folder, poses=poses)
-   #Make format ready to be captured"
-   print("OUTPUT; {}; {}; {}".format(output, sphere_cent, D))
 
+if __name__ == "__main__":
+    ligand, receptor, resname, poses, output_folder = parse_args()
+    output, sphere_cent, D = randomize_starting_position(ligand, "input_ligand.pdb", resname, receptor, None, None,
+                                                         output_folder, poses=poses)
+    # Make format ready to be captured"
+    print("OUTPUT; {}; {}; {}".format(output, sphere_cent, D))
