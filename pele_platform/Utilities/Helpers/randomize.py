@@ -154,7 +154,7 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
         with open(ligand, "r") as fin:
             #exclude connects but keep initial atomnames (CL problem)
             ligand_coords = {line[12:16].strip():line[27:56] for line in fin if line.startswith("ATOM") or line.startswith("HETATM")}
-            assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part send an issue to github"
+            assert len(ligand_coords) == len(ligand_content_without_coords), "Check for repited atom names in ligand"
 
             ligand_content = []
             for pdb_block in ligand_content_without_coords:
