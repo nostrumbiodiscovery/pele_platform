@@ -3,7 +3,7 @@ from Bio.PDB.vectors import Vector
 import numpy as np
 import os, argparse
 
-def randomize_starting_position(ligand_file, complex_file, nposes=200):
+def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200):
     """
     Randomize initial ligand position around the receptor.
     Default number of poses = 200.
@@ -130,30 +130,31 @@ def randomize_starting_position(ligand_file, complex_file, nposes=200):
                 j += 1
                 io = PDBIO()
                 io.set_structure(ligand)
-                output.append(io.save('correct_ligand{}.pdb'.format(j)))
+                output_name = os.path.join(outputfolder, 'ligand{}.pdb'.format(j))
+                io.save(output_name)
+                output.append(output_name)
     print("{} poses created successfully.".format(j))
-    return output
-
+    return output,  D, list(sphere_cent)
 
 def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
-    """
-    Join receptor and ligand PDB files into one, conserving old formatting
-    and not repeating atom numbers.
-    """
 
+    """
+    Join receptor&ligand pdb in one conserving old formatting
+    and not repiting atomnumbers
+    """
+    
     with open(receptor, "r") as f:
         lines = f.readlines()
-        receptor_content = [line for line in lines if (line[17:20] != residue and line[0:3] != "TER")]
+        receptor_content = [line for line in lines if line[17:20] != residue]
         ligand_content_without_coords = [line[0:27] + "{}" + line[56:] for line in lines if line[17:20] == residue]
-        atom_nums = [line[6:11] for line in lines if line[17:20] == residue]
+        initial_atomnum = max([ int(line[6:11]) for line in lines if line.startswith("ATOM") or line.startswith("HETATM")])
 
     outputs = []
     for i, ligand in enumerate(ligands):
         with open(ligand, "r") as fin:
-            # exclude connects but keep initial atom names (CL problem)
-            ligand_coords = {line[12:16].strip(): line[27:56] for line in fin if
-                             line.startswith("ATOM") or line.startswith("HETATM")}
-            assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part - send an issue to github"
+            #exclude connects but keep initial atomnames (CL problem)
+            ligand_coords = {line[12:16].strip():line[27:56] for line in fin if line.startswith("ATOM") or line.startswith("HETATM")}
+            assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part send an issue to github"
 
             ligand_content = []
             for pdb_block in ligand_content_without_coords:
@@ -161,15 +162,17 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
                 coord = ligand_coords[atom_name]
                 ligand_pdb_line = pdb_block.format(coord)
                 ligand_content.append(ligand_pdb_line)
-
-
+            
+            current_atomnum = initial_atomnum +1
             for j, line in enumerate(ligand_content):
-                ligand_content[j] = line[:6] + "{:>5}".format(atom_nums[j]) + line[11:]
-        content_join_file = receptor_content + ["TER\n"] + ligand_content + ["TER"]
+                ligand_content[j] = line[:6] + "{:>5}".format(current_atomnum) + line[11:]
+                current_atomnum += 1
+                
+        content_join_file = receptor_content + ligand_content + ["TER"]
         output_path = os.path.join(output_folder, output.format(i))
         with open(output_path, "w") as fout:
             fout.write("".join(content_join_file))
-        outputs.append(output_path)
+        outputs.append( output_path )
 
     return outputs
 
