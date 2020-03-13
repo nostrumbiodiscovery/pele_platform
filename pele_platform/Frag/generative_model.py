@@ -1,4 +1,3 @@
-from growai import grow
 
 
 
@@ -12,5 +11,6 @@ class GenerativeModel():
         self.resname = resname
 
     def run(self):
+        from growai import grow
         return grow.main(self.core, self.resname, self.only_grow, self.only_rank, self.iterations)
         
