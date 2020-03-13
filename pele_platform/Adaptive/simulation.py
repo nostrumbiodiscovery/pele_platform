@@ -19,6 +19,7 @@ import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
 import pele_platform.Utilities.Helpers.external_files as ext
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
+import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
 import pele_platform.Analysis.plots as pt
 
 
@@ -156,12 +157,9 @@ def run_adaptive(args):
            elif isinstance(env.pca_traj, list):
                pdbs = env.pca_traj
            pdbs_full_path = [os.path.abspath(pdb) for pdb in pdbs]
-           output = os.path.basename(pdbs[0])[:-4] + "_ca_pca_modes.nmd"
-           pca_script = os.path.join(cs.DIR, "Utilities/Helpers/calculatePCA4PELE.py")
-           command = 'python {} --pdb "{}"'.format(pca_script, " ".join(pdbs_full_path))
            with helpers.cd(env.pele_dir):
-               os.system(command)
-           env.pca = cs.PCA.format(output)
+               pca = pc.main(pdbs_full_path)
+           env.pca = cs.PCA.format(pca)
 
         
         ############Fill in Simulation Templates############
@@ -184,8 +182,7 @@ def run_adaptive(args):
         report = pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
             os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
             output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae,
-            nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology
+            nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology,
             be_column=env.be_column, limit_column=env.limit_column, te_column=env.te_column)
-        pr.create_report(plots, clusters, poses, output=os.path.join(env.pele_dir, "summary_results.pdf"))
         print("Pdf summary report succesfully writen to: {}".format(report))
     return env
