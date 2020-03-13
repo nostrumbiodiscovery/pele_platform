@@ -218,6 +218,7 @@ class YamlParser(object):
         self.te_column = data.get("te_column", 4)
         self.be_column = data.get("be_column", 5)
         self.limit_column = data.get("limit_column", 6)
+        self.com = data.get("COMligandConstraint", None)
 
         #Frag
         self.frag_core = data.get("frag_core", False)
