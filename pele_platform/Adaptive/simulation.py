@@ -67,16 +67,8 @@ def run_adaptive(args):
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input +  '"' for input in env.inputs_simulation])
         elif args.full or args.randomize:
-            command = "{} {} --ligand {} --receptor {} --resname {} --poses {} --output_folder {}".format(
-            cs.PYMOL_PYTHON, os.path.join(cs.DIR, "Utilities/Helpers/randomize.py"), env.ligand_ref,
-            env.receptor, env.residue, env.poses, env.pele_dir)
-            print(command)
-            outputs = subprocess.check_output(command.split())
-            #Get stdout as variables (specific format decided by me)
-            ligand_positions = [l.strip().strip("'") for l in str(outputs).split(";")[-3].strip(" ['").strip("']").split(",")]
-            box_radius = float(str(outputs).split(";")[-1].strip('\\n"').strip())
-            box_center = [float(c) for c in str(outputs).split(";")[-2].strip(" [").strip("]").split(",")]
-            # Use choice stays as first priority
+            ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, syst.system,
+                outputfolder=env.pele_dir, nposes=env.poses)
             env.box_center = box_center if not env.box_center else env.box_center
             env.box_radius = box_radius if not env.box_radius else env.box_radius
             receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
