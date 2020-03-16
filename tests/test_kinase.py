@@ -12,6 +12,7 @@ INDUCED_EX_ARGS = [os.path.join(test_path, "induced_fit/input_exhaustive.yaml")]
 INDUCED_FAST_ARGS = [os.path.join(test_path, "induced_fit/input_fast.yaml")]
 GLOBAL_ARGS = [os.path.join(test_path, "global/input.yaml")]
 INPUTS_GLOBAL_ARGS = [os.path.join(test_path, "global/input_inputs.yaml")]
+INPUTS_AST_ARGS = [os.path.join(test_path, "global/input_inputs_asterisc.yaml")]
 EXIT_ARGS = [os.path.join(test_path, "exit/input.yaml")]
 EXITSOFT_ARGS = [os.path.join(test_path, "exit_soft/input.yaml")]
 WATER_ARGS = [os.path.join(test_path, "water/input_bs.yaml")]
@@ -136,9 +137,14 @@ def test_mae(ext_args=MAE_ARGS):
     arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
 
+def test_asterisc_inputs(ext_args=INPUTS_AST_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.Launcher(arguments).launch()
+
 def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     errors = []
-    if os.path.exists(output): shutil.rmtree(output)
+    if os.path.exists(output): shutil.rmtree(output, ignore_errors=True)
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
@@ -157,7 +163,7 @@ def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
 
 def test_pca(ext_args=PCA_ARGS, output="PCA_result"):
     if os.path.exists(output):
-        shutil.rmtree(output)
+        shutil.rmtree(output, ignore_errors=True)
     errors = []
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
@@ -168,7 +174,7 @@ def test_pca(ext_args=PCA_ARGS, output="PCA_result"):
 
 def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     if os.path.exists(output):
-        shutil.rmtree(output)
+        shutil.rmtree(output, ignore_errors=True)
     errors = []
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)

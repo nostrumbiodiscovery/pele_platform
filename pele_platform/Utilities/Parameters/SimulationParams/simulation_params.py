@@ -1,5 +1,6 @@
 import random
 import os
+import glob
 import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
@@ -48,7 +49,11 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.output_path = "$RESULTS_PATH" if self.software == "Frag" else "$OUTPUT_PATH"
 
     def main_pele_params(self,args):
-        self.system = args.system
+        if "*" in args.system:
+            self.system = glob.glob(args.system)[0]
+            args.input = glob.glob(args.system)
+        else:
+            self.system = args.system
         self.residue = args.residue
         self.chain = args.chain
         if self.adaptive:

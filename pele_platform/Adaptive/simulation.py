@@ -32,7 +32,6 @@ def run_adaptive(args):
     env.software = "Adaptive"
     env.build_adaptive_variables(args)
     env.create_files_and_folders()
-
     shutil.copy(args.yamlfile, env.pele_dir) 
 
     if env.adaptive_restart and not env.only_analysis:
@@ -44,29 +43,34 @@ def run_adaptive(args):
 
         ##PREPWIZARD##
         if args.prepwizard:
-            args.system = pp.run_prepwizard(args.system) 
+            env.system = pp.run_prepwizard(env.system) 
 
 
         env.logger.info("System: {}; Platform Functionality: {}\n\n".format(env.residue, env.software))
         
         if env.perturbation:
-            syst = sp.SystemBuilder.build_system(args.system, args.mae_lig, args.residue, env.pele_dir)
+            syst = sp.SystemBuilder.build_system(env.system, args.mae_lig, args.residue, env.pele_dir)
         else:
-            syst = sp.SystemBuilder(args.system, None, None, env.pele_dir)
+            syst = sp.SystemBuilder(env.system, None, None, env.pele_dir)
         
         env.logger.info("Prepare complex {}".format(syst.system))
         ########Choose your own input####################
-        if args.input:
+        # User specifies more than one input
+        if env.input:
             env.inputs_simulation = []
             for input in env.input:
                 input_path  = os.path.join(env.pele_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
-                input_proc = os.path.basename(ppp.main(input_path, env.pele_dir, output_pdb=["" , ],
+                if env.no_ppp:
+                    input_proc = input
+                else:
+                    input_proc = os.path.basename(ppp.main(input_path, env.pele_dir, output_pdb=["" , ],
                                 charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter,
                                 constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)[0])
                 env.inputs_simulation.append(input_proc)
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input + '"' for input in env.inputs_simulation]).strip('"')
+        # Global exploration mode: Create inputs around protein
         elif args.full or args.randomize:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, syst.system,
                 outputfolder=env.pele_dir, nposes=env.poses)
@@ -82,21 +86,24 @@ def run_adaptive(args):
 
         ##########Prepare System################
         if env.no_ppp:
-            env.adap_ex_input = system_fix = syst.system
             missing_residues = []
             gaps = {}
             metals = {}
-            env.constraints = ct.retrieve_constraints(system_fix, gaps, metals, back_constr=env.ca_constr)
-            shutil.copy(env.adap_ex_input, env.pele_dir)
+            env.constraints = ct.retrieve_constraints(env.system, gaps, metals, back_constr=env.ca_constr)
+            if env.input:
+                # If we have more than one input
+                for input in env.input: shutil.copy(input, env.pele_dir)
+            else:
+                shutil.copy(env.system, env.pele_dir)
         else:
-            system_fix, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
+            env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
         if env.external_constraints:
             # Keep Json ordered by having first title and then constraints
             env.constraints = env.constraints[0:1] + env.external_constraints + env.constraints[1:]
         if env.remove_constraints:
             env.constraints = ""
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
-        env.logger.info("Complex {} prepared\n\n".format(system_fix))
+        env.logger.info("Complex {} prepared\n\n".format(env.system))
 
         ############Build metrics##################
         env.logger.info("Setting metrics")
