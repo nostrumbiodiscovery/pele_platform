@@ -113,7 +113,7 @@ class YamlParser(object):
         self.equilibration = data.get("equilibration", None)
         self.eq_steps = data.get("equilibration_steps", None)
         self.adaptive_restart = data.get("adaptive_restart", None)
-        self.input = data.get("input", None)
+        self.input = data.get("global_inputs", None)
         self.report_name = data.get("report", None)
         self.traj_name = data.get("traj", None)
         self.adaptive = data.get("adaptive", None)
@@ -129,7 +129,7 @@ class YamlParser(object):
         self.ext_rotamers = self.rotamers
         self.mae_lig = data.get("mae_lig", None)
         self.mae_lig = os.path.abspath(self.mae_lig) if self.mae_lig else None
-        self.skip_prep = self.no_ppp = data.get("preprocess", None)
+        self.skip_prep = self.no_ppp = data.get("skip_preprocess", None)
         self.gaps_ter = data.get("TERs", None)
         self.charge_ter = data.get("charge_ters", None)
         self.nonstandard = data.get("nonstandard", None)

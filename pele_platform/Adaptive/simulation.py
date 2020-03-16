@@ -63,10 +63,10 @@ def run_adaptive(args):
                 shutil.copy(input, input_path)
                 input_proc = os.path.basename(ppp.main(input_path, env.pele_dir, output_pdb=["" , ],
                                 charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter,
-                                constrain_smiles=env.constrain_smiles)[0], ligand_pdb=env.ligand_ref)
+                                constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)[0])
                 env.inputs_simulation.append(input_proc)
                 hp.silentremove([input_path])
-            env.adap_ex_input = ", ".join(['"' + input +  '"' for input in env.inputs_simulation])
+            env.adap_ex_input = ", ".join(['"' + input + '"' for input in env.inputs_simulation]).strip('"')
         elif args.full or args.randomize:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, syst.system,
                 outputfolder=env.pele_dir, nposes=env.poses)

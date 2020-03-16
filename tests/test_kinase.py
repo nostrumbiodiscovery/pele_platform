@@ -11,6 +11,7 @@ OUT_IN_ARGS = [os.path.join(test_path, "out_in/input.yaml")]
 INDUCED_EX_ARGS = [os.path.join(test_path, "induced_fit/input_exhaustive.yaml")]
 INDUCED_FAST_ARGS = [os.path.join(test_path, "induced_fit/input_fast.yaml")]
 GLOBAL_ARGS = [os.path.join(test_path, "global/input.yaml")]
+INPUTS_GLOBAL_ARGS = [os.path.join(test_path, "global/input_inputs.yaml")]
 EXIT_ARGS = [os.path.join(test_path, "exit/input.yaml")]
 EXITSOFT_ARGS = [os.path.join(test_path, "exit_soft/input.yaml")]
 WATER_ARGS = [os.path.join(test_path, "water/input_bs.yaml")]
@@ -20,6 +21,7 @@ RESTART_ARGS = [os.path.join(test_path, "restart/input.yaml")]
 MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
 MAE_ARGS = [os.path.join(test_path, "induced_fit/input_mae.yaml")]
 PCA_ARGS = [os.path.join(test_path, "pca/input.yaml")]
+PCA2_ARGS = [os.path.join(test_path, "pca/input_str.yaml")]
 FLAGS_ARGS = [os.path.join(test_path, "flags/input.yaml")]
 RESCORING_ARGS = [os.path.join(test_path, "rescoring/input.yaml")]
 
@@ -75,6 +77,11 @@ def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
     main.Launcher(arguments).launch()
 
 def test_global(ext_args=GLOBAL_ARGS):
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.Launcher(arguments).launch()
+
+def test_inputs_global(ext_args=INPUTS_GLOBAL_ARGS):
     arguments = main.parseargs_yaml(ext_args)
     arguments = main.YamlParser(arguments.input_file)
     main.Launcher(arguments).launch()
@@ -159,6 +166,16 @@ def test_pca(ext_args=PCA_ARGS, output="PCA_result"):
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
 
+def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
+    if os.path.exists(output):
+        shutil.rmtree(output)
+    errors = []
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    main.Launcher(arguments).launch()
+    folder = arguments.folder
+    errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
+    assert not errors
 
 def check_file(folder, filename, values, errors):
    filename = os.path.join(folder, filename)
