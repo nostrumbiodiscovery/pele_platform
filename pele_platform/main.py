@@ -83,8 +83,8 @@ class YamlParser(object):
     
     def parse(self):
         data = self.parse_yaml()
-        self.system = data.get("system", None)
-        self.system = os.path.abspath(self.system) if self.system else None
+        self.system = data.get("system", "")
+        self.system = os.path.abspath(self.system) if self.system else ""
         self.residue = data.get("resname", None)
         self.chain = data.get("chain", None)
         self.hbond = data.get("hbond", [None, None])
