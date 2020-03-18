@@ -31,7 +31,7 @@ requirements:
     - adaptive_pele
     - ploprottemp==1.0.1
     - pyyaml
-    - pppele==1.0.2
+    - pppele==1.0.3
     - fpdf
     - scikit-learn
     - rdkit

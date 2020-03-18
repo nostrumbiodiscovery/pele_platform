@@ -6,7 +6,8 @@ import pele_platform.main as main
 import test_kinase as tk
 
 test_path = os.path.join(cs.DIR, "Examples")
-EXTERNAL_CONSTR_ARGS = [os.path.join(test_path, "induced_fit/input_external_constraints.yaml")]
+EXTERNAL_CONSTR_ARGS = [os.path.join(test_path, "constraints/input_external_constraints.yaml")]
+PPP_CONSTR_ARGS = [os.path.join(test_path, "constraints/input_ppp.yaml")]
 
 
 EXT_CONSTR = [
@@ -15,6 +16,13 @@ EXT_CONSTR = [
     '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"},',
     '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"}'
 ]
+
+PPP_CONSTR = [
+    '"constrainThisAtom": "B:207:_CA_" }',
+    '"constrainThisAtom": "A:1:_CA_" }',
+    '"constrainThisAtom": "B:247:_CA_" }'
+]
+
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
     arguments = main.parseargs_yaml(ext_args)
@@ -23,3 +31,10 @@ def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = tk.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
     assert not errors
 
+def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
+    errors = []
+    arguments = main.parseargs_yaml(ext_args)
+    arguments = main.YamlParser(arguments.input_file)
+    job = main.Launcher(arguments).launch()
+    errors = tk.check_file(job.pele_dir, "pele.conf", PPP_CONSTR, errors)
+    assert not errors
