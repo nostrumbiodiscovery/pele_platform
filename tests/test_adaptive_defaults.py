@@ -7,22 +7,22 @@ import pele_platform.main as main
 test_path = os.path.join(cs.DIR, "Examples")
 
 
-BIAS_ARGS = [os.path.join(test_path, "bias/input_defaults.yaml")]
-OUT_IN_ARGS = [os.path.join(test_path, "out_in/input.yaml")]
-INDUCED_EX_ARGS = [os.path.join(test_path, "induced_fit/input_exhaustive_defaults.yaml")]
-INDUCED_FAST_ARGS = [os.path.join(test_path, "induced_fit/input_fast_defaults.yaml")]
-GLOBAL_ARGS = [os.path.join(test_path, "global/input_defaults.yaml")]
-EXIT_ARGS = [os.path.join(test_path, "exit/input_defaults.yaml")]
-EXITSOFT_ARGS = [os.path.join(test_path, "exit_soft/input_defaults.yaml")]
-WATER_ARGS = [os.path.join(test_path, "water/input_bs_defaults.yaml")]
-ALL_WATER_ARGS = [os.path.join(test_path, "water/input_all.yaml")]
-WATERLIG_ARGS = [os.path.join(test_path, "water/input_lig_defaults.yaml")]
-RESTART_ARGS = [os.path.join(test_path, "restart/input.yaml")]
-MSM_ARGS = [os.path.join(test_path, "Msm/input.yaml")]
-MAE_ARGS = [os.path.join(test_path, "induced_fit/input_mae.yaml")]
-PCA_ARGS = [os.path.join(test_path, "pca/input.yaml")]
-FLAGS_ARGS = [os.path.join(test_path, "flags/input.yaml")]
-RESCORING_ARGS = [os.path.join(test_path, "rescoring/input_defaults.yaml")]
+BIAS_ARGS = os.path.join(test_path, "bias/input_defaults.yaml")
+OUT_IN_ARGS = os.path.join(test_path, "out_in/input.yaml")
+INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive_defaults.yaml")
+INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast_defaults.yaml")
+GLOBAL_ARGS = os.path.join(test_path, "global/input_defaults.yaml")
+EXIT_ARGS = os.path.join(test_path, "exit/input_defaults.yaml")
+EXITSOFT_ARGS = os.path.join(test_path, "exit_soft/input_defaults.yaml")
+WATER_ARGS = os.path.join(test_path, "water/input_bs_defaults.yaml")
+ALL_WATER_ARGS = os.path.join(test_path, "water/input_all.yaml")
+WATERLIG_ARGS = os.path.join(test_path, "water/input_lig_defaults.yaml")
+RESTART_ARGS = os.path.join(test_path, "restart/input.yaml")
+MSM_ARGS = os.path.join(test_path, "Msm/input.yaml")
+MAE_ARGS = os.path.join(test_path, "induced_fit/input_mae.yaml")
+PCA_ARGS = os.path.join(test_path, "pca/input.yaml")
+FLAGS_ARGS = os.path.join(test_path, "flags/input.yaml")
+RESCORING_ARGS = os.path.join(test_path, "rescoring/input_defaults.yaml")
 
 INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE = [
     '"type" : "independent"',
@@ -152,27 +152,21 @@ WATER_DEFAULTS_PELE = [
 
 def test_induced_exhaustive_defaults(ext_args=INDUCED_EX_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", INDUCE_FIT_PELE, errors)
     assert not errors
 
 def test_induced_fast_defaults(ext_args=INDUCED_FAST_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", INDUCE_FIT_FAST_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", INDUCE_FIT_PELE, errors)
     assert not errors
 
 def test_global_defaults(ext_args=GLOBAL_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GLOBAL_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GLOBAL_DEFAULTS_PELE, errors)
     assert len(glob.glob(os.path.join(job.pele_dir, "input*.pdb"))) == 40
@@ -180,45 +174,35 @@ def test_global_defaults(ext_args=GLOBAL_ARGS):
 
 def test_exit_defaults(ext_args=EXIT_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", EXIT_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", EXIT_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_softexit_defaults(ext_args=EXITSOFT_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", EXIT_SOFT_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", EXIT_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_water_defaults(ext_args=WATER_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", WATER_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", WATER_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_water_lig_defaults(ext_args=WATERLIG_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", WATER_LIG_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", WATER_LIG_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_bias_defaults(ext_args=BIAS_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", BIAS_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", BIAS_DEFAULTS_PELE, errors)
     assert not errors
@@ -231,9 +215,7 @@ def out_in():
 
 def test_rescoring_defaults(ext_args=RESCORING_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", REF_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", REF_DEFAULTS_PELE, errors)
     assert not errors

@@ -6,8 +6,8 @@ import pele_platform.main as main
 import test_kinase as tk
 
 test_path = os.path.join(cs.DIR, "Examples")
-EXTERNAL_CONSTR_ARGS = [os.path.join(test_path, "constraints/input_external_constraints.yaml")]
-PPP_CONSTR_ARGS = [os.path.join(test_path, "constraints/input_ppp.yaml")]
+EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
+PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
 
 
 EXT_CONSTR = [
@@ -25,16 +25,12 @@ PPP_CONSTR = [
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
     assert not errors
 
 def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
     errors = []
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    job = main.Launcher(arguments).launch()
+    job = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", PPP_CONSTR, errors)
     assert not errors

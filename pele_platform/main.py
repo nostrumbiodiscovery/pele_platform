@@ -244,7 +244,14 @@ class YamlParser(object):
             self.temperature = self.temp = 10000
 
 
-if __name__ == "__main__":
-    arguments = parseargs_yaml()
+def run_platform(input_yaml):
+    arguments = parseargs_yaml([input_yaml,])
     arguments = YamlParser(arguments.input_file)
-    job = main(arguments)
+    job_params = Launcher(arguments).launch()
+    return job_params
+
+
+if __name__ == "__main__":
+    arguments = parseargs_yaml(["input.yaml",])
+    arguments = YamlParser(arguments.input_file)
+    job_params = Launcher(arguments).launch()
