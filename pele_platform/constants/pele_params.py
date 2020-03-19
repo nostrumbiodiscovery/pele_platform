@@ -91,9 +91,9 @@ RESCORING = '''
              
                   {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
              
-                         "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 10 } },
+                         "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 25 } },
              
-                         "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 10  }}
+                         "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 25  }}
              
                  }
              
