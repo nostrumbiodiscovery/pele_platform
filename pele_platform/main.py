@@ -252,6 +252,6 @@ def run_platform(input_yaml):
 
 
 if __name__ == "__main__":
-    arguments = parseargs_yaml(["input.yaml",])
+    arguments = parseargs_yaml()
     arguments = YamlParser(arguments.input_file)
     job_params = Launcher(arguments).launch()
