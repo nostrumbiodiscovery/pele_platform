@@ -1,5 +1,4 @@
 import os
-import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.fragments as fr
 import pele_platform.Frag.atoms as at
 
@@ -26,7 +25,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
     import rdkit.Chem.AllChem as rp
 
     #Retrieve atom core linking fragment
-    atom_core_idx, atoms_core, _ = hp._search_core_fragment_linker(ligand, ligand_core, result)
+    atom_core_idx, atoms_core, _ = _search_core_fragment_linker(ligand, ligand_core, result)
     atom_core = at.Atom(ligand_core, atom_core_idx)
     mol = Chem.MolFromPDBFile(complex, removeHs=False)
 
