@@ -79,7 +79,15 @@ class FragRunner(pele.EnviroBuilder):
         self.fragments = []
         lines = []
         for ligand in ligands_grown:
-            line, fragment = self._create_fragment_from_ligand(ligand, ligand_core)
+            try:
+                line, fragment = self._create_fragment_from_ligand(ligand, ligand_core)
+            except (ValueError, AttributeError):
+                try:
+                    line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
+                except (IndexError):
+                    print("LIGAND SKIPPED")
+                    continue
+            
             lines.append(line)
             self.fragments.append(fragment)
         with open(self.input, "w") as fout:
@@ -93,26 +101,9 @@ class FragRunner(pele.EnviroBuilder):
         import rdkit.Chem.AllChem as rp
         fragment, old_atoms, hydrogen_core, atom_core = hp._build_fragment_from_complex(
             self.core, self.residue, ligand, ligand_core, result, substructure)
-        try:
-            #Give 3D to molecule
-            rp.EmbedMolecule(fragment)
-        except ValueError:
-            #If error look for a second substructure option
-            result += 1
-            line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=result, substructure=False)
-            fragment.sanitize_file()
-            return line, fragment
-        #Save fragment and retrive idx for added_hydrogen and attached atom
-        try:
-            # Set fragment object
-            fragment = hp._retrieve_fragment(
-                fragment, old_atoms, atom_core, hydrogen_core)
-        except AttributeError:
-            # If error try another substructre search result
-            result += 1
-            line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=result, substructure=False)
-            fragment.sanitize_file()
-            return line, fragment
+        rp.EmbedMolecule(fragment)
+        fragment = hp._retrieve_fragment(
+            fragment, old_atoms, atom_core, hydrogen_core)
         line = fragment.get_inputfile_line()
         fragment.sanitize_file()
         return line, fragment
