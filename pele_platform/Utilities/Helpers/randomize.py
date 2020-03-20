@@ -3,7 +3,7 @@ from Bio.PDB.vectors import Vector
 import numpy as np
 import os, argparse
 
-def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200):
+def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200, test=False):
     """
     Randomize initial ligand position around the receptor.
     Default number of poses = 200.
@@ -12,6 +12,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     :param nposes:
     :return:
     """
+    if test:  np.random.seed(42)
 
     # read in files
 

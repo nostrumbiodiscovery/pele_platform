@@ -73,7 +73,7 @@ def run_adaptive(args):
         # Global exploration mode: Create inputs around protein
         elif args.full or args.randomize:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, syst.system,
-                outputfolder=env.pele_dir, nposes=env.poses)
+                outputfolder=env.pele_dir, nposes=env.poses, test=env.test)
             env.box_center = box_center if not env.box_center else env.box_center
             env.box_radius = box_radius if not env.box_radius else env.box_radius
             receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
