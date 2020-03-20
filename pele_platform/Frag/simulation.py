@@ -1,4 +1,5 @@
 import os
+import tempfile
 import shutil
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Parameters.pele_env as pele
@@ -31,28 +32,34 @@ class FragRunner(pele.EnviroBuilder):
         
 
     def prepare_control_file(self):
-        tmp_control_file = os.path.join("/tmp/", os.path.basename(self.control_file))
+        # Create tmp folder with frag control_file 
+        tmp_dir = tempfile.mkdtemp()
+        tmp_control_file = os.path.join(tmp_dir, os.path.basename(self.control_file))
         shutil.copy(self.control_file, tmp_control_file)
         adaptive = ad.SimulationBuilder("", tmp_control_file, self)
         # Fill to time because we have flags inside flags
         adaptive.fill_pele_template(self)
         adaptive.fill_pele_template(self)
         self.control_file = tmp_control_file
+        return self.control_file
 
     def run(self):
+        # If protocol let frag handle all flags
         if self.protocol:
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} -{}".format(
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -d {} -dat {} -doc {} --license {} --cpus {} -{}".format(
                 self.core, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
                 self.cpus, self.protocol)
         else:
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {}".format(
+            # Pass all possible flags
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -d {} -dat {} -doc {} --license {} --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {}".format(
                 self.core, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
                 self.cpus, self.gr_steps, self.frag_steps, self.frag_eq_steps, self.temperature)
         print(command)
         if not self.debug:
             os.system(command)
+
     def prepare_input_file(self):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
@@ -72,103 +79,45 @@ class FragRunner(pele.EnviroBuilder):
         self.fragments = []
         lines = []
         for ligand in ligands_grown:
-            atom_core_idx,_,_ = hp.search_core_fragment_linker(ligand, ligand_core)
-            atom_name_core = ligand_core.GetAtomWithIdx(atom_core_idx).GetMonomerInfo().GetName()
-            mol = Chem.MolFromPDBFile(self.core, removeHs=False)
-            original = rd.SplitMolByPDBResidues(mol)[self.residue]
-            hydrogen_core_name = [atom.GetMonomerInfo().GetName() for atom in original.GetAtomWithIdx(atom_core_idx).GetNeighbors() if atom.GetAtomicNum() == 1][0]
-            
-            # Delete core for full ligand
-            fragment = rd.DeleteSubstructs(ligand, ligand_core)
-            Chem.MolToPDBFile(fragment, "int.pdb")
-            
-            new_mol = rc.EditableMol(fragment)
-            for atom in reversed(fragment.GetAtoms()): 
-                neighbours = atom.GetNeighbors()
-                if len(neighbours) == 0: new_mol.RemoveAtom(atom.GetIdx())
-            #Add missing hydrogen to full ligand and create pdb
-            fragment = new_mol.GetMol()
-            Chem.MolToPDBFile(fragment, "int2.pdb")
-            old_atoms = [atom.GetIdx() for atom in fragment.GetAtoms()]
-            fragment = Chem.AddHs(fragment, False, True)
-            try:
-                rp.EmbedMolecule(fragment)
-            except:
-                fragment, line = self.prepare_input_file2(ligand)
-                self.fragments.append(fragment)
-                lines.append(line)
-                continue
-            
-            Chem.MolToPDBFile(fragment, "int3.pdb")
-            added_hydrogen_idx = [atom.GetIdx() for atom in fragment.GetAtoms() if atom.GetIdx() not in old_atoms][0]
-            atom_fragment_idx = fragment.GetAtomWithIdx(added_hydrogen_idx).GetNeighbors()[0].GetIdx()
-            fragment_filename = fragment.GetProp("_Name")+".pdb"
-            Chem.MolToPDBFile(fragment, fragment_filename)
-            try:
-                fragment = fr.Fragment(fragment_filename, atom_fragment_idx, added_hydrogen_idx, atom_name_core, hydrogen_core_name, False)
-            except AttributeError:
-                fragment, line = self.prepare_input_file2(ligand)
-                self.fragments.append(fragment)
-                lines.append(line)
-                continue
+            line, fragment = self._create_fragment_from_ligand(ligand, ligand_core)
+            lines.append(line)
             self.fragments.append(fragment)
-            lines.append(fragment.get_inputfile_line())
-            fragment.santize_file()
         with open(self.input, "w") as fout:
             fout.write(("\n").join(lines))
-        
 
-    def prepare_input_file2(self, ligand):
+
+    def _create_fragment_from_ligand(self, ligand, ligand_core, result=0, substructure=True):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
         import rdkit.Chem.rdchem as rc
         import rdkit.Chem.AllChem as rp
-
-        #Get core of the ligand
-        mol = Chem.MolFromPDBFile(self.core)
-        ligand_core = rd.SplitMolByPDBResidues(mol)[self.residue]
-            
-        atom_core_idx, atoms_core, substructures = hp.search_core_fragment_linker(ligand, ligand_core, result=1)
-        atom_name_core = ligand_core.GetAtomWithIdx(atom_core_idx).GetMonomerInfo().GetName()
-        mol = Chem.MolFromPDBFile(self.core, removeHs=False)
-        original = rd.SplitMolByPDBResidues(mol)[self.residue]
-        hydrogen_core_name = [atom.GetMonomerInfo().GetName() for atom in original.GetAtomWithIdx(atom_core_idx).GetNeighbors() if atom.GetAtomicNum() == 1][0]
-        
-        # Delete core for full ligand
-        #fragment = rd.DeleteSubstructs(ligand, ligand_core)
-        new_mol = rc.EditableMol(ligand)
-        Chem.MolToPDBFile(ligand, "int1.pdb")
-        for atom in atoms_core:
-            new_mol.RemoveAtom(atom)
-        for atom in reversed(new_mol.GetMol().GetAtoms()): 
-            neighbours = atom.GetNeighbors()
-            if len(neighbours) == 0: new_mol.RemoveAtom(atom.GetIdx())
-
-        #Add missing hydrogen to full ligand and create pdb
-        fragment = new_mol.GetMol()
-        Chem.MolToPDBFile(fragment, "int2.pdb")
-        old_atoms = [atom.GetIdx() for atom in fragment.GetAtoms()]
-        res = rp.EmbedMolecule(fragment)
-        fragment = Chem.AddHs(fragment, False, True)
-        res = rp.EmbedMolecule(fragment)
-        Chem.MolToPDBFile(fragment, "int3.pdb")
+        fragment, old_atoms, hydrogen_core, atom_core = hp._build_fragment_from_complex(
+            self.core, self.residue, ligand, ligand_core, result, substructure)
         try:
-            added_hydrogen_idx = [atom.GetIdx() for atom in fragment.GetAtoms() if atom.GetIdx() not in old_atoms][0]
-            no_hydrogens = False
-        except IndexError:
-            print("Hydrogen detection failed won't have into account steriochemistry")
-            added_hydrogen_idx = 0
-            no_hydrogens = True
-        atom_fragment_idx = fragment.GetAtomWithIdx(added_hydrogen_idx).GetNeighbors()[0].GetIdx()
-        fragment_filename = fragment.GetProp("_Name")+".pdb"
-        Chem.MolToPDBFile(fragment, fragment_filename)
-        fragment = fr.Fragment(fragment_filename, atom_fragment_idx, added_hydrogen_idx,
-                   atom_name_core, hydrogen_core_name,
-                   no_hydrogens)
+            #Give 3D to molecule
+            rp.EmbedMolecule(fragment)
+        except ValueError:
+            #If error look for a second substructure option
+            result += 1
+            line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=result, substructure=False)
+            fragment.sanitize_file()
+            return line, fragment
+        #Save fragment and retrive idx for added_hydrogen and attached atom
+        try:
+            # Set fragment object
+            fragment = hp._retrieve_fragment(
+                fragment, old_atoms, atom_core, hydrogen_core)
+        except AttributeError:
+            # If error try another substructre search result
+            result += 1
+            line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=result, substructure=False)
+            fragment.sanitize_file()
+            return line, fragment
         line = fragment.get_inputfile_line()
-        fragment.santize_file()
-        return fragment, line
-    
+        fragment.sanitize_file()
+        return line, fragment
+        
+
     def grow_ai(self):
         with open(self.core, "r") as fin:
             ligand_lines = [line for line in fin if line[17:20] == self.residue or line.startswith("CONECT")]
