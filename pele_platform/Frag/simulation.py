@@ -46,13 +46,13 @@ class FragRunner(pele.EnviroBuilder):
     def run(self):
         # If protocol let frag handle all flags
         if self.protocol:
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -d {} -dat {} -doc {} --license {} --cpus {} -{}".format(
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} -{}".format(
                 self.core, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
                 self.cpus, self.protocol)
         else:
             # Pass all possible flags
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -d {} -dat {} -doc {} --license {} --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {}".format(
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {}".format(
                 self.core, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
                 self.cpus, self.gr_steps, self.frag_steps, self.frag_eq_steps, self.temperature)
