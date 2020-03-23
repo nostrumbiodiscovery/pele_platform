@@ -23,7 +23,8 @@ class Launcher():
         self.pele_feature = "frag" if arguments.frag_core  else "adaptive"
 
     def launch(self):
-        self._check_variables()
+        if not self._args.no_check:
+            self._check_variables()
         if self.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
         elif self.pele_feature == "frag":
@@ -89,17 +90,6 @@ def parseargs_yaml(args=[]):
     args = parser.parse_args(args) if args else parser.parse_args()
     return args
     
-def main(arguments):
-    """
-    Main function that sets the functionality
-    of the software that will be used [Pele, Adaptive, glide...]
-    and launch the respective job
-    """
-    job = Launcher(arguments)
-    job.launch()
-    return job
-
-
 
 class YamlParser(object):
 
@@ -255,6 +245,7 @@ class YamlParser(object):
         self.com = data.get("COMligandConstraint", None)
         self.pele_license = data.get("pele_license", None)
         self.schrodinger = data.get("schrodinger", None)
+        self.no_check = data.get("no_check", False)
 
         #Frag
         self.frag_core = data.get("frag_core", False)
