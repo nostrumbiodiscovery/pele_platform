@@ -61,7 +61,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.debug = args.debug if args.debug else False
         self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params.get("pele_steps", 8)
         self.logfile =  LOGFILE if args.log else ""
-        self.license = '''"{}"'''.format(cs.LICENSE)
+        self.license = args.pele_license if args.pele_license else os.path.join(cs.PELE, "licenses")
         self.anm_freq = args.anm_freq if args.anm_freq is not None else self.simulation_params.get("anm_freq", 4)
         self.sidechain_freq = args.sidechain_freq if args.sidechain_freq is not None else self.simulation_params.get("sidechain_freq", 2)
         self.min_freq = args.min_freq if args.min_freq is not None else self.simulation_params.get("min_freq", 1)
@@ -128,7 +128,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.equilibration = "true" if args.equilibration else self.simulation_params.get("equilibration", "false")
         self.adaptive_restart = args.adaptive_restart
         self.poses = args.poses if args.poses else self.simulation_params.get("poses", 40)
-        self.pele_exec = args.pele_exec if args.pele_exec else cs.PELE_BIN
+        self.pele_exec = args.pele_exec if args.pele_exec else os.path.join(cs.PELE, "bin/Pele_mpi")
         self.pele_data = args.pele_data if args.pele_data else os.path.join(cs.PELE, "Data")
         self.pele_documents = args.pele_documents if args.pele_documents else os.path.join(cs.PELE, "Documents")
 

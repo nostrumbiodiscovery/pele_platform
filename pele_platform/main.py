@@ -23,6 +23,7 @@ class Launcher():
         self.pele_feature = "frag" if arguments.frag_core  else "adaptive"
 
     def launch(self):
+        self._check_variables()
         if self.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
         elif self.pele_feature == "frag":
@@ -42,6 +43,39 @@ class Launcher():
                 job_variables.run()
             # Execute job
         return job_variables
+
+    def _check_variables(self):
+        variables = [ 
+        EnvVariable("pele_data", self._args.pele_data, os.path.join(cs.PELE, "Data"), "--pele_data /path/to/data/folder/", "export PELE=/path/to/PELE-1.X/"),
+        EnvVariable("pele_documents", self._args.pele_documents, os.path.join(cs.PELE, "Documents"), "--pele_documents /path/to/documents/folder", "export PELE=/path/to/PELE-1.X/"),
+        EnvVariable("pele_exec", self._args.pele_exec, os.path.join(cs.PELE, "bin/Pele_mpi"), "--pele_exec /path/to/PELE_exec", "export PELE=/path/to/PELE-1.X/"),
+        EnvVariable("pele_license", self._args.pele_license, os.path.join(cs.PELE, "licenses"), "--pele_license /path/to/licenses", "export PELE=/path/to/PELE-1.X/"),
+        EnvVariable("schrodinger", self._args.schrodinger, cs.SCHRODINGER, "--schrodinger /path/to/schrodinger-20XX/", "export SCHRODINGER=/path/to/schrodinger-20XX/")
+        ]
+        for variable in variables:
+            variable.is_valid() 
+
+
+class EnvVariable():
+
+    def __init__(self, name, variable, default, flag, env_var):
+        self.name = name
+        self.variable = variable
+        self.default = default
+        self.flag = flag
+        self.env_var = env_var
+        
+    def is_valid(self):
+        if self.variable:
+            if os.path.exists(self.variable):
+                return True
+        elif self.default:
+           if os.path.exists(self.default):
+               return True
+
+        raise ValueError("{} not found. If you have the standard installation \
+export the environment variable by doing: {}.\
+ Else define the location of the library via the flag: {}".format(self.name, self.env_var, self.flag))
 
 class SortingHelpFormatter(HelpFormatter):
     def add_arguments(self, actions):
@@ -219,6 +253,8 @@ class YamlParser(object):
         self.be_column = data.get("be_column", 5)
         self.limit_column = data.get("limit_column", 6)
         self.com = data.get("COMligandConstraint", None)
+        self.pele_license = data.get("pele_license", None)
+        self.schrodinger = data.get("schrodinger", None)
 
         #Frag
         self.frag_core = data.get("frag_core", False)

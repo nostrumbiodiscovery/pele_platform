@@ -16,7 +16,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "BE": env.binding_energy, "SASA": env.sasa,
                         "LOGFILE": env.logfile, "NATIVE": env.native, "FORCEFIELD": env.forcefield, "CHAIN": env.chain, 
                         "CONSTRAINTS": "\n".join(env.constraints), "CPUS":env.cpus,
-                        "LICENSES": cs.LICENSE, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center,
+                        "LICENSES": env.license, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center,
                         "SASA_min": env.sasa_min, "SASA_max": env.sasa_max,
                         "WATER_RADIUS": env.water_radius, "WATER_CENTER": env.water_center, "WATER": env.water,
                         "WATER_ENERGY": env.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, "TRAJ_NAME": env.traj_name,
