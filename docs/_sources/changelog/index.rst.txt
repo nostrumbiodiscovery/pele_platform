@@ -9,6 +9,8 @@ v1.4
 
 - FragPELE supported
 
+- Make Platform work through SCHRODINGER and PELE variables
+
 - Get rid of PyMol as external dependency
 
 - Define several inputs with asterics. i.e. "complex*.pdb"

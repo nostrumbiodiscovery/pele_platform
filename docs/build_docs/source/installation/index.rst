@@ -9,8 +9,11 @@ Conda (recomended)
     conda install numpy cython
 
     conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
+    
+    export PELE=/path/to/PELE-1.X/
 
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+    export SCHRODINGER=/path/to/schoringer/20XX/
+
 
 
 Pypi
@@ -21,9 +24,11 @@ Pypi
     pip install numpy cython
 
     pip install pele_platform
-    
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
 
+    export PELE=/path/to/PELE-1.X/
+
+    export SCHRODINGER=/path/to/schoringer/20XX/
+    
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
 
@@ -38,7 +43,9 @@ Last stable release from source code
     
     pip install .
     
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+    export PELE=/path/to/PELE-1.X/
+
+    export SCHRODINGER=/path/to/schoringer/20XX/
 
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
@@ -56,8 +63,11 @@ Latest devel version
     
     pip install .
 
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
-    
+    export PELE=/path/to/PELE-1.X/
+
+    export SCHRODINGER=/path/to/schoringer/20XX/
+
+
 Test it works
 ----------------
 
