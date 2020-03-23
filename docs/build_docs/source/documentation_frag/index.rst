@@ -1,40 +1,64 @@
-FragPELE Parameters
+FragPELE Modes
 ######################
 
-Compulsory flags
---------------------
 
-Frag PELE grows an atom onto a core in N growing steps while moving protein and ligand.
-Afterwards a final sampling simulation is run to fully explore the ligand-protein conformational space.
+
+Summary of all FragPele growing methods
+
+
+Standard
+--------------
+
+This method works by specifying the inicial receptor-core pdb and
+an input file that contains information of the where and what to grow
 
 - **frag_core**: Core of the molecule we want to add fragments to. Required parameter
 
-- **fag_input**: Frag pele input. For more please check here
+- **frag_input**: Serie file with growing instructions. For more please refer here.
 
 ..  code-block:: yaml
 
     frag_core: "/home/daniel/PR_core.pdb"
     fag_input: "/home/daniel/serie_file.conf"
 
-Optative flags
--------------------
 
-- **growing_steps**: Number of steps to grow the fragment with.
 
-- **steps_in_gs**: Number of pele steps within each growing step
 
-- **sampling_steps**: Number of pele steps in the final sampling simulation
 
-- **protocol**: Type of protocol. options = [HT, ES]. For more info please refere here.
 
-- **cpus**: Cpus to use
+Sdf with full ligands
+------------------------
 
+
+This method works by specifying the inicial receptor-core pdb and
+a sdf file with the full ligand. **All ligands must have molecule name**
+
+- **frag_core**: Core of the molecule we want to add fragments to. Required parameter
+
+- **frag_ligands**: Sdf with the aimed grown ligands
 
 ..  code-block:: yaml
 
-    growing_steps: 6
-    steps_in_gs: 6
-    sampling_steps: 20
-    protocol: HT
-    cpus: 24
+    frag_core: "/home/daniel/PR_core.pdb"
+    frag_ligands: "/home/daniel/grown_ligands.sdf"
 
+
+AI
+-----------
+
+This method works by specifying the inicial receptor-core. Then a RNN 
+generative model will grow fragments with as many atoms as iterations
+the user set. i.e iterations: 3 will grow fragments up to 3 atoms all around
+the molecule.
+
+- **frag_core**: Core of the molecule we want to add fragments to. Required parameter
+
+- **frag_ai**: Whether to use AI method or not
+
+- **iterations**: Maximum number of atoms of your fragment
+
+..  code-block:: yaml
+
+    frag_core: "/home/daniel/PR_core.pdb"
+    frag_ai: true 
+    iterations: 7 

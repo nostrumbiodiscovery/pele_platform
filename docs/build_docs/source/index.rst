@@ -18,18 +18,6 @@ Requirements
 
 - Academic Schordinger (any version)
 
-- Pymol Python (any version)
-
-  .. code-block:: bash
-
-    yum install gcc gcc-c++ kernel-devel python-devel tkinter python-pmw glew-devel freeglut-devel libpng-devel freetype-devel libxml2-devel glm-devel
-
-    git clone https://github.com/schrodinger/pymol-open-source.git
-
-    cd pymol-open-source
-
-    python setup.py install (with same python you will use later)
-
 
 Documentation
 ===================
@@ -45,6 +33,9 @@ Documentation
 
 .. toctree::
    documentation_frag/index.rst
+
+.. toctree::
+   documentation/index.rst
 
 .. toctree::
    developers/index.rst
