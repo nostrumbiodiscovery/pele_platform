@@ -127,7 +127,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.equil_steps = int(args.eq_steps/self.cpus) + 1 if args.eq_steps else self.simulation_params.get("equilibration_steps", 1)
         self.equilibration = "true" if args.equilibration else self.simulation_params.get("equilibration", "false")
         self.adaptive_restart = args.adaptive_restart
-        self.poses = args.poses if args.poses else self.simulation_params.get("poses", 40)
+        self.poses = args.poses if args.poses else self.simulation_params.get("poses", self.cpus-1)
         self.pele_exec = args.pele_exec if args.pele_exec else os.path.join(cs.PELE, "bin/Pele_mpi")
         self.pele_data = args.pele_data if args.pele_data else os.path.join(cs.PELE, "Data")
         self.pele_documents = args.pele_documents if args.pele_documents else os.path.join(cs.PELE, "Documents")
@@ -186,7 +186,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
     def box_params(self, args):
         self.box_radius = args.box_radius if args.box_radius else self.simulation_params.get("box_radius", None)
-        self.box_center = "["+ ",".join([str(coord) for coord in args.user_center]) + "]" if args.user_center else self.simulation_params.get("box_center", None)
+        self.box_center = "["+ ",".join([str(coord) for coord in args.box_center]) + "]" if args.box_center else self.simulation_params.get("box_center", None)
 
     def metrics_params(self, args):
         self.metrics = ""
