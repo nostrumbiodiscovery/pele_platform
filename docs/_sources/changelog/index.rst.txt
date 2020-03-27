@@ -7,7 +7,9 @@ Here we report the main changes for each version
 v1.4
 =======================
 
-- FragPELE supported
+- FragPELE supported (Beta-version)
+
+- Change global exploration to PPI simulation (Beta-version)
 
 - Make Platform work through SCHRODINGER and PELE variables
 

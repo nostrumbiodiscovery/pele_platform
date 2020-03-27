@@ -1,13 +1,18 @@
 Adaptive Modes
 ######################
 
-Automatically configures all control file and defaults accordin to the chosen methodology.
+Automatic Modes
+--------------------
+
+Automatically configures all control file options to a standard job chosen beween
+induce fit, local exploration, bias exploration, exit path and global exploration
+
 
 Induced fit_fast
 ==================
 
 - **induced_fit_fast**: Run a short induced fit AdaptivePELE simulation paramaters by setting the center of the box in the
-  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
+  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of
   steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
   new conformations within the same binding site.
 
@@ -19,7 +24,7 @@ Induced fit_exhaustive
 ========================
 
 - **induced_fit_exhaustive**: Run a long induced fit PELE simulation paramaters by setting the center of the box in the
-  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
+  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of
   steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
   new conformations within the same binding site.
 
@@ -41,7 +46,7 @@ the actual one.
 Local Exploration
 =====================
 
-- **out_in**: Local exploration to move the ligand from the bulk to the binding site. The box center set on the 
+- **out_in**: Local exploration to move the ligand from the bulk to the binding site. The box center set on the
   center of mass of the ligand with a radius of 30A, steering 1 50% of the times, and a slight bias towards binding energies.
   Useful when no docking is possible in the binding site and you need to open up the pocket.
 
@@ -76,13 +81,13 @@ Exit path
   exit_condition: ">"
   exit_trajnum: 4
 
-Global exploration
+Pocket Exploration
 =====================
 
-- **global**: Configure a global exploration by randomizing the ligand all around the protein. Then the simulation will start from all configurationsof the system at the same time. The number of configurations (ligand-protein systems) can be chosen thorugh the **poses** flag.
+- **ppi**: Configure a global exploration by randomizing the ligand all around the protein. Then the simulation will start from all configurationsof the system at the same time. The number of configurations (ligand-protein systems) can be chosen thorugh the **poses** flag by default will be cpus-1. Once finished, an exhaustive induced fit exploration will follow to retrieve all best identified pockets and putative binding modes.
 
 ..  code-block:: yaml
 
-  global: true
-  poses: 40
+  ppi: true
+
 

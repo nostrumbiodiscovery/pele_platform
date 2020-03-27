@@ -7,7 +7,7 @@ Pele Platform
 ===========================================
 
 Pele platform is a python module to automatically
-launch PELE, AdaptivePELE and FragPELE. We will support  MSMPELE in next releases. 
+launch PELE, Adaptive-PELE, Frag-PELE (beta-testing) and PPI-PELE (beta-testing). 
 It is built as a python layer on top of all PELE functionalities that can be used as
 a backend for a potential future GUI.
 
@@ -29,10 +29,7 @@ Documentation
    cheatsheet/index.rst
 
 .. toctree::
-   documentation_adaptive/index.rst
-
-.. toctree::
-   documentation_frag/index.rst
+   modes/index.rst
 
 .. toctree::
    documentation/index.rst

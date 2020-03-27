@@ -14,6 +14,9 @@ Conda (recomended)
 
     export SCHRODINGER=/path/to/schoringer/20XX/
 
+    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
+
 
 
 Pypi
@@ -30,6 +33,9 @@ Pypi
     export SCHRODINGER=/path/to/schoringer/20XX/
     
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
+
+    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 
 
 Last stable release from source code
@@ -49,6 +55,8 @@ Last stable release from source code
 
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
+    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 
 Latest devel version
 ----------------------
@@ -66,6 +74,9 @@ Latest devel version
     export PELE=/path/to/PELE-1.X/
 
     export SCHRODINGER=/path/to/schoringer/20XX/
+
+    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 
 
 Test it works
