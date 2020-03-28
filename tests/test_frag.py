@@ -28,10 +28,3 @@ def test_frag_core(ext_args=FRAG_CORE_ARGS, output="1w7h_preparation_structure_2
     if os.path.exists(output):
         shutil.rmtree(output)
     job = main.run_platform(ext_args)
-
-def test_frag_ai(ext_args=FRAG_AI_ARGS, output="round*/"):
-    folders = glob.glob(output)
-    for folder in folders:
-        if os.path.exists(folder):
-            shutil.rmtree(folder)
-    job = main.run_platform(ext_args)
