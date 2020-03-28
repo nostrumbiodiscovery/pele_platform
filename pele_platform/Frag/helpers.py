@@ -7,7 +7,11 @@ import pele_platform.Frag.atoms as at
 def _search_core_fragment_linker(ligand, ligand_core, result=0):
     """ Given mol1 and mol2 return the linker atoms"""
     substructure_results = ligand.GetSubstructMatches(ligand_core)
-    core_atoms = substructure_results[result]
+    try:
+        core_atoms = substructure_results[result]
+    except IndexError:
+        raise IndexError("Make sure core from pdb and full fragment are the same. Be carefull \
+that either core and fragment have corectly define aromatic bonds!")
     for atom in ligand.GetAtoms():
         if atom.GetIdx() in core_atoms:
             continue
@@ -36,7 +40,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
 
     # Delete core for full ligand with substructure 
     # and if it fails manually
-    Chem.MolToPDBFile(ligand, "int0.pdb")
+    #Chem.MolToPDBFile(ligand, "int0.pdb")
     if substructure:
         fragment = rd.DeleteSubstructs(ligand, ligand_core)
         new_mol = rc.EditableMol(fragment)
@@ -47,7 +51,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
         new_mol = rc.EditableMol(ligand)
         for atom in atoms_core:
             new_mol.RemoveAtom(atom)
-        Chem.MolToPDBFile(new_mol.GetMol(), "int1.pdb")
+        #Chem.MolToPDBFile(new_mol.GetMol(), "int1.pdb")
         for atom in reversed(new_mol.GetMol().GetAtoms()): 
             neighbours = atom.GetNeighbors()
             if len(neighbours) == 0: new_mol.RemoveAtom(atom.GetIdx())
@@ -56,7 +60,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
     #Add missing hydrogen to full ligand and create pdb differently
     #depending on the previous step
     fragment = new_mol.GetMol()
-    Chem.MolToPDBFile(fragment, "int2.pdb")
+    #Chem.MolToPDBFile(fragment, "int2.pdb")
     old_atoms = [atom.GetIdx() for atom in fragment.GetAtoms()]
     if substructure:
         fragment = Chem.AddHs(fragment, False, True)

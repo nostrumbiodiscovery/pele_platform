@@ -650,5 +650,5 @@ def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=Fa
 if __name__ == '__main__':
     #parse command line options and create help
     args = parse_Arguments()
-    main(args.selection, args.vmd, args.compare, args.ref, args.debug, args.pdb)
+    main(args.pdb, args.selection, args.vmd, args.compare, args.ref, args.debug)
 

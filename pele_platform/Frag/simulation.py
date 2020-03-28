@@ -8,6 +8,7 @@ import pele_platform.Utilities.Helpers.constraints as cst
 import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.fragments as fr
 import pele_platform.Frag.generative_model as gm
+import PPP.main as ppp
 
 class FragRunner(pele.EnviroBuilder):
 
@@ -16,6 +17,9 @@ class FragRunner(pele.EnviroBuilder):
         self.software = "Frag"
         self.build_frag_variables(args)
         self.core = args.frag_core
+        #Prepare complex
+        self.core_process = os.path.basename(ppp.main(self.core, ".", output_pdb=["" , ],
+            charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0]) 
         self.ligands = args.frag_ligands
         self.ai = args.frag_ai
         self.ai_iterations = args.frag_ai_iterations
@@ -28,7 +32,10 @@ class FragRunner(pele.EnviroBuilder):
         self.protocol = args.protocol if args.protocol else self.simulation_params.get("protocol", "")
         self.topology = None if self.pdb else os.path.join("output_pele", "topology.pdb")
         self.constraints = cst.retrieve_constraints(self.core, {}, {}, 5)
+        self.chain_core = args.chain_core if args.chain_core else self.simulation_params.get("chain_core", "L")
         self.box = cs.BOX.format(self.box_radius, self.box_center) if  self.box_radius else ""
+        self.gridres = args.gridres
+        self.args = args
         
 
     def prepare_control_file(self):
@@ -46,16 +53,17 @@ class FragRunner(pele.EnviroBuilder):
     def run(self):
         # If protocol let frag handle all flags
         if self.protocol:
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} -{}".format(
-                self.core, self.input, self.spython, self.control_file,
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} -rst --cpus {} -{} --c_chain {} --rotamers {}".format(
+                self.core_process, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
-                self.cpus, self.protocol)
+                self.cpus, self.protocol, self.chain_core, self.gridres)
         else:
             # Pass all possible flags
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {}".format(
-                self.core, self.input, self.spython, self.control_file,
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} -rst --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {} --rotamers {}".format(
+                self.core_process, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
-                self.cpus, self.gr_steps, self.frag_steps, self.frag_eq_steps, self.temperature)
+                self.cpus, self.gr_steps, self.frag_steps, self.frag_eq_steps, self.temperature,
+                self.gridres)
         print(command)
         if not self.debug:
             os.system(command)
@@ -127,7 +135,7 @@ class FragRunner(pele.EnviroBuilder):
 
     def set_test_variables(self):
         self.gr_steps = 1
-        self.frag_steps = 1
+        self.frag_steps = 2
         self.frag_eq_steps = 1
         self.temperature = 100000
         self.cpus = 4

@@ -146,7 +146,7 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
 
     with open(receptor, "r") as f:
         lines = f.readlines()
-        receptor_content = [line for line in lines if (line[17:20] != residue and line[0:3] != "TER")]
+        receptor_content = [line for line in lines if line[17:20] != residue]
         ligand_content_without_coords = [line[0:27] + "{}" + line[56:] for line in lines if line[17:20] == residue]
         atom_nums = [line[6:11] for line in lines if line[17:20] == residue]
 

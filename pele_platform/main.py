@@ -264,6 +264,9 @@ class YamlParser(object):
         self.protocol = data.get("protocol", None)
         self.frag_ai = data.get("frag_ai", False)
         self.frag_ai_iterations = data.get("frag_ai_iterations", False)
+        self.chain_core = data.get("chain_core", False)
+
+        #PPI
         self.n_components = data.get("n_components", 10)
         self.ppi = data.get("ppi", None)
 
