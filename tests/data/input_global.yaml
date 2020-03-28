@@ -1,4 +1,3 @@
-pele_license: "/work/NBD_Utilities/PELE/licenses"
 system: 'data/complex.pdb'
 chain: 'Z'
 resname: 'LIG'
@@ -8,7 +7,6 @@ poses: 3
 atom_dist:
 - 4555
 - 10
-usesrun: true
 test: true
 working_folder: "global_simulation"
 

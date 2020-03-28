@@ -169,7 +169,7 @@ def test_global_defaults(ext_args=GLOBAL_ARGS):
     job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GLOBAL_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GLOBAL_DEFAULTS_PELE, errors)
-    assert len(glob.glob(os.path.join(job.pele_dir, "input*.pdb"))) == 40
+    assert len(glob.glob(os.path.join(job.pele_dir, "input*.pdb"))) == (job.cpus-1)
     assert not errors
 
 def test_exit_defaults(ext_args=EXIT_ARGS):
