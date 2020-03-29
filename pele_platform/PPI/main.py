@@ -16,7 +16,8 @@ def run_ppi(parsed_yaml):
     with cd(simulation_path):
         # NEED ALGORITHM TO CHOOSE OPTIMUM NUMBERS OF CLUSTERS!!!!
         #cluster_best_structures("5", n_components = parsed_yaml.cpus-1)
-        cluster_best_structures("5", n_components = parsed_yaml.n_components)
+        cluster_best_structures("5", n_components=simulation.n_components,
+            residue=simulation.residue, topology=simulation.topology)
     
     # adjust original input.yaml
     parsed_yaml.system = os.path.join(simulation_path, "refinement_input/*.pdb")
