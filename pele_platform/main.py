@@ -289,6 +289,16 @@ def run_platform(input_yaml):
     job_params = Launcher(arguments).launch()
     return job_params
 
+        # ppi package make classes!
+        self.ppi = data.get("ppi", None)
+
+
+def run_platform(input_yaml):
+    arguments = parseargs_yaml([input_yaml,])
+    arguments = YamlParser(arguments.input_file)
+    job_params = Launcher(arguments).launch()
+    return job_params
+
 
 if __name__ == "__main__":
     arguments = parseargs_yaml()

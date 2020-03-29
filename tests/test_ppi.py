@@ -4,8 +4,8 @@ import pandas as pd
 import glob
 import os
 
-def test_PPI(energy_result=-3.87):
 
+def test_PPI(energy_result=-3.87):
     # parse input.yaml
     original_yaml = os.path.join(os.getcwd(), "data/input_global.yaml")
     arguments = parseargs_yaml([original_yaml,])

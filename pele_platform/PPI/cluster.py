@@ -7,6 +7,7 @@ from multiprocessing import Pool
 
 def cluster_best_structures(be_column, residue="LIG", topology=None, cpus=20, n_components=10, n_structs=1000):
 
+
     files_out, _, _, _, output_energy = bs.main(be_column, n_structs=n_structs, path = ".")
     files = []
 

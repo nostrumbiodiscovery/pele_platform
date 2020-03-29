@@ -7,6 +7,7 @@ import os
 def run_ppi(parsed_yaml):
 
     # start initial simulation
+
     parsed_yaml.full = True
     simulation = launch_global_exploration(parsed_yaml)
     simulation_path = os.path.join(simulation.pele_dir, simulation.output)
@@ -22,7 +23,6 @@ def run_ppi(parsed_yaml):
     parsed_yaml.folder = "refinement_simulation"
     parsed_yaml.full = None
     parsed_yaml.poses = None
-    parsed_yaml.log = True
     parsed_yaml.induced_fit_exhaustive = True
     parsed_yaml.box_center = simulation.box_center
     parsed_yaml.box_radius = simulation.box_radius
