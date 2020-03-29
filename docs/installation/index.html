@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; pele platform 1.3.4 documentation</title>
+  <title>Installation &mdash; pele platform 1.4.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.3
+                1.4
               </div>
             
           
@@ -98,7 +98,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation_adaptive/index.html">Adaptive Modes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation_frag/index.html">FragPELE Modes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">All Parameters</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
@@ -177,7 +183,12 @@
 
 conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
 
-vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+<span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
+
+<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
+
+Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>
@@ -187,9 +198,14 @@ vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">
 
 pip install pele_platform
 
-vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+<span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
+
+<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
 
 conda install rdkit <span class="o">(</span><span class="k">if</span> you want to have the possibility to build constraints by SMILES<span class="o">)</span>
+
+Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>
@@ -201,9 +217,14 @@ conda install rdkit <span class="o">(</span><span class="k">if</span> you want t
 
 pip install .
 
-vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+<span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
+
+<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
 
 conda install rdkit <span class="o">(</span><span class="k">if</span> you want to have the possibility to build constraints by SMILES<span class="o">)</span>
+
+Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>
@@ -217,7 +238,12 @@ git checkout devel
 
 pip install .
 
-vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+<span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
+
+<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
+
+Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>

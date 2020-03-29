@@ -1,0 +1,126 @@
+1W7H_ligand_01
+                    3D
+ Structure written by MMmdl.
+ 18 18  0  0  1  0            999 V2000
+   21.6090   33.9190   30.4610 C   0  0  0  0  0  0
+   22.6860   34.6450   30.1030 N   0  0  0  0  0  0
+   23.5460   34.1040   29.2200 C   0  0  0  0  0  0
+   23.3540   32.8410   28.6440 C   0  0  3  0  0  0
+   22.2270   32.0940   29.0190 C   0  0  0  0  0  0
+   21.3150   32.6440   29.9480 C   0  0  3  0  0  0
+   20.1620   32.0270   30.3830 O   0  0  0  0  0  0
+   19.8840   30.7170   29.9140 C   0  0  0  0  0  0
+   24.4030   34.7030   28.9540 H   0  0  0  0  0  0
+   24.3716   32.2772   27.6349 C   0  0  0  0  0  0
+   22.0770   31.1190   28.5820 H   0  0  0  0  0  0
+   20.6790   30.0210   30.1850 H   0  0  0  0  0  0
+   19.7380   30.7050   28.8350 H   0  0  0  0  0  0
+   20.9440   34.3820   31.1740 H   0  0  0  0  0  0
+   18.9630   30.3580   30.3730 H   0  0  0  0  0  0
+   24.0474   31.2907   27.3038 H   0  0  0  0  0  0
+   24.4396   32.9442   26.7755 H   0  0  0  0  0  0
+   25.3493   32.1972   28.1103 H   0  0  0  0  0  0
+  1  2  1  0  0  0
+  1  6  1  0  0  0
+  1 14  1  0  0  0
+  2  3  1  0  0  0
+  3  4  1  0  0  0
+  3  9  1  0  0  0
+  4  5  1  0  0  0
+  4 10  1  0  0  0
+  5  6  1  0  0  0
+  5 11  1  0  0  0
+  6  7  1  0  0  0
+  7  8  1  0  0  0
+  8 12  1  0  0  0
+  8 13  1  0  0  0
+  8 15  1  0  0  0
+ 10 16  1  0  0  0
+ 10 17  1  0  0  0
+ 10 18  1  0  0  0
+M  END
+> <s_m_entry_id>
+7
+
+> <s_m_entry_name>
+1w7h_preparation_structure_2w.1_ligand
+
+> <s_m_Source_Path>
+/home/dsoler/repos/pele_platform/pele_platform/Examples/frag
+
+> <s_m_Source_File>
+1w7h_preparation_structure_2w.pdb
+
+> <i_m_Source_File_Index>
+1
+
+> <s_pdb_PDB_TITLE>
+P38 KINASE CRYSTAL STRUCTURE IN COMPLEX WITH SMALL MOLECULE INHIBITOR
+
+> <s_pdb_PDB_ID>
+1W7H
+
+> <i_pdb_PDB_Model>
+1
+
+> <r_pdb_PDB_CRYST1_a>
+45.771
+
+> <r_pdb_PDB_CRYST1_b>
+87.101
+
+> <r_pdb_PDB_CRYST1_c>
+126.337
+
+> <r_pdb_PDB_CRYST1_alpha>
+90
+
+> <r_pdb_PDB_CRYST1_beta>
+90
+
+> <r_pdb_PDB_CRYST1_gamma>
+90
+
+> <s_pdb_PDB_CRYST1_Space_Group>
+P 21 21 21
+
+> <i_pdb_PDB_CRYST1_z>
+4
+
+> <s_pdb_PDB_CLASSIFICATION>
+TRANSFERASE
+
+> <s_pdb_PDB_DEPOSITION_DATE>
+02-SEP-04
+
+> <s_pdb_PDB_format_version>
+3.0
+
+> <r_pdb_PDB_RESOLUTION>
+2.21
+
+> <s_pdb_PDB_EXPDTA>
+X-RAY DIFFRACTION
+
+> <r_pdb_PDB_EXPDTA_TEMPERATURE>
+100
+
+> <r_pdb_PDB_EXPDTA_PH>
+7
+
+> <s_pdb_PDB_REMARK_350_Biomolecule_1_Transform_1_Chains>
+A
+
+> <s_pdb_PDB_REMARK_350_Biomolecule_1_Transform_1_Matrix_1>
+1.000000 0.000000 0.000000   0.000000;0.000000 1.000000 0.000000   0.000000;0.000000 0.000000 1.000000   0.000000
+
+> <s_m_subgroup_title>
+1W7H_split_by_structure
+
+> <s_m_subgroupid>
+1W7H_split_by_structure
+
+> <b_m_subgroup_collapsed>
+0
+
+$$$$

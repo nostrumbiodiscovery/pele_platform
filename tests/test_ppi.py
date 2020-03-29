@@ -4,8 +4,8 @@ import pandas as pd
 import glob
 import os
 
-def test_PPI(energy_result=-0.16):
 
+def test_PPI(energy_result=-3.87):
     # parse input.yaml
     original_yaml = os.path.join(os.getcwd(), "data/input_global.yaml")
     arguments = parseargs_yaml([original_yaml,])
@@ -21,6 +21,6 @@ def test_PPI(energy_result=-0.16):
     nfiles_refinement = len(glob.glob("global_simulation/refinement_simulation/results/BestStructs/epoch*"))
 
     # test
-    assert nfiles == arguments.cpus-1 
+    assert nfiles == arguments.n_components 
     assert best_energy == energy_result
     assert nfiles_refinement

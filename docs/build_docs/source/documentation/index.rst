@@ -1,8 +1,8 @@
-Input Parameters
+All Parameters
 ######################
 
-Compulsory flags
---------------------
+Compulsory flags Adaptive
+--------------------------------
 
 - **system**: Path to the input pdb file cointaining ligand and receptor in your desired initial conformation (except for a global exploration)
 
@@ -23,8 +23,25 @@ Compulsory flags
     cpus: 200
 
 
+Compulsory flags FragPele
+-----------------------------
+
+Frag PELE grows an atom onto a core in N growing steps while moving protein and ligand.
+Afterwards a final sampling simulation is run to fully explore the ligand-protein conformational space.
+
+- **frag_core**: Core of the molecule we want to add fragments to. Required parameter
+
+- **Method to use**: Choose on of the available methos. For more please refer here.
+
+..  code-block:: yaml
+
+    frag_core: "/home/daniel/PR_core.pdb"
+    fag_input: "/home/daniel/serie_file.conf"
+
+
 Optative flags
 -------------------
+
 
 Job parameters
 =================
@@ -42,11 +59,15 @@ Configure the main important parameters for the job
 
 - **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)
 
-- **pele_exec**: Use a pele executable that is not the default one. **Needs to be used with pele_data and pele_documents**
+- **pele_exec**: Use a pele executable that is not the default one. **Needs to be used with pele_data and pele_documents**. default: $PELE/bin/Pele_mpi
 
-- **pele_data**: Use a pele data folder that is not the default one.
+- **pele_data**: Use a pele data folder that is not the default one. default: $PELE/Data
 
-- **pele_documents**: Use a pele documents folder that is not the default one.
+- **pele_documents**: Use a pele documents folder that is not the default one. default: $PELE/Documents 
+
+- **pele_license**: Use a pele_license path that is not the default one. default: $PELE/licenses
+
+- **schrodinger**: Use a schrodinger path that is not the default one. default: $SCHRODINGER
 
 
 ..  code-block:: yaml
@@ -59,6 +80,8 @@ Configure the main important parameters for the job
   pele_exec: "/home/pele/bin/Pele_mpi"
   pele_data: "/home/pele/Data/"
   pele_documents: "/home/pele/Documents/"
+  pele_license: "/home/pele/licenses"
+  schrodinger: "/home/pele/schrodinger2020-1/"
 
 Receptor preparation
 =======================
@@ -141,8 +164,8 @@ Parameters to set the exploration Box:
     - 50
 
 
-PELE params
-================
+Simulation params
+====================
 
 - **seed**: Seed of the job for reproducibility. Default=12345
 
@@ -194,6 +217,8 @@ PELE params
 Adaptive params
 ===================
 
+**This flags are exclusive of the adaptivePele mode**
+
 - **spawning**: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional
 
 - **density**: Density type ([null, exitContinuous...]. More in AdaptivePELE docs). Default: null
@@ -224,6 +249,30 @@ Adaptive params
     working_folder: "folder_to_restart"
     report: report
     traj: trajectory.xtc
+
+FragPELE params
+===================
+
+**This flags are exclusive of the FragPele mode**
+
+- **growing_steps**: Number of steps to grow the fragment with.
+
+- **steps_in_gs**: Number of pele steps within each growing step
+
+- **sampling_steps**: Number of pele steps in the final sampling simulation
+
+- **protocol**: Type of protocol. options = [HT, ES]. For more info please refere here.
+
+- **cpus**: Cpus to use
+
+
+..  code-block:: yaml
+
+    growing_steps: 6
+    steps_in_gs: 6
+    sampling_steps: 20
+    protocol: HT
+    cpus: 24
 
 
 Constraints
@@ -385,94 +434,3 @@ Configure the output
 
     working_folder: "NOR_solvent_OBC"
     output: "output_sim"
-
-
-Automatic Modes
---------------------
-
-Automatically configures all control file options to a standard job chosen beween
-induce fit, local exploration, bias exploration, exit path and global exploration
-
-
-Induced fit_fast
-==================
-
-- **induced_fit_fast**: Run a short induced fit AdaptivePELE simulation paramaters by setting the center of the box in the
-  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
-  steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
-  new conformations within the same binding site.
-
-..  code-block:: yaml
-
-  induced_fit_fast: true
-
-Induced fit_exhaustive
-========================
-
-- **induced_fit_exhaustive**: Run a long induced fit PELE simulation paramaters by setting the center of the box in the
-  cm of the ligand, a box radius of 10A, small rotations and translations and a high number of 
-  steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
-  new conformations within the same binding site.
-
-..  code-block:: yaml
-
-  induced_fit_exhaustive: true
-
-
-Rescoring
-============
-
-Simulation to refine around an initial conformation. Not looking to find a new binding mode but to minimize
-the actual one.
-
-..  code-block:: yaml
-
-  rescoring: true
-
-Local Exploration
-=====================
-
-- **out_in**: Local exploration to move the ligand from the bulk to the binding site. The box center set on the 
-  center of mass of the ligand with a radius of 30A, steering 1 50% of the times, and a slight bias towards binding energies.
-  Useful when no docking is possible in the binding site and you need to open up the pocket.
-
-..  code-block:: yaml
-
-  out_in: true
-
-Biased
-=========
-
-- **bias**: Bias exploration towards the indicated bias column. The box center is set on the center of mass of the ligand with
-  a radius of 30A, and a bias towards the chosen metric is set. An epsilon fraction of processors are distributed proportionally to the value of a metric, and the rest are inverselyProportional distributed. Therefore, the **epsilon** value controls fraction of the processors that will be assigned according to the selected metric in **biascolumn**
-
-
-..  code-block:: yaml
-
-  bias: true
-  epsilon: 0.5
-  bias_column: 5 (starting by 1 on the reports)
-
-Exit path
-==============
-
-- **in_out**: Explore the dissociative path of a molecule. At each step the box is center on the most exterior cluster
-  and there is a bias towards higher values of SASA. This type accepts a **exit_metric** which represents a column in the report file, an **exit_value** which represents a value for the metric and a **exit_condition** parameter which can be either “<” or “>”, default value is “<”. The simulation will terminate after the metric written in the metricCol reaches a value smaller or greater than exitValue, depending on the condition specified. An example of the exit condition block that would terminate the program after 4 trajectories reaches a value of more than 0.9 for the sixth column (6th starting to count from 1) of the report file would look like:
-
-
-..  code-block:: yaml
-
-  in_out: true
-  exit_value: 0.9
-  exit_condition: ">"
-  exit_trajnum: 4
-
-Global exploration
-=====================
-
-- **global**: Configure a global exploration by randomizing the ligand all around the protein. Then the simulation will start from all configurationsof the system at the same time. The number of configurations (ligand-protein systems) can be chosen thorugh the **poses** flag.
-
-..  code-block:: yaml
-
-  global: true
-  poses: 40

@@ -33,7 +33,7 @@ class Launcher():
         if self.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
         elif self.pele_feature == "PPI":
-            job_variables = run_ppi(self._args, self._args.nclusters)
+            job_variables = run_ppi(self._args)
         elif self.pele_feature == "frag":
             #Set variables and input ready 
             job_variables = fr.FragRunner(self._args)
@@ -165,8 +165,8 @@ class YamlParser(object):
         self.charge_ter = data.get("charge_ters", None)
         self.nonstandard = data.get("nonstandard", None)
         self.prepwizard = data.get("prepwizard", None)
-        self.user_center = data.get("box_center", None)
-        self.user_center = [str(x) for x in self.user_center] if self.user_center else None
+        self.box_center = data.get("box_center", None)
+        self.box_center = [str(x) for x in self.box_center] if self.box_center else None
         self.box_radius = data.get("box_radius", None)
         self.box = data.get("box", None)
         self.native = data.get("rmsd_pdb", "")
@@ -264,6 +264,11 @@ class YamlParser(object):
         self.protocol = data.get("protocol", None)
         self.frag_ai = data.get("frag_ai", False)
         self.frag_ai_iterations = data.get("frag_ai_iterations", False)
+        self.chain_core = data.get("chain_core", False)
+
+        #PPI
+        self.n_components = data.get("n_components", 10)
+        self.ppi = data.get("ppi", None)
 
         if self.test:
             print("##############################")
@@ -276,6 +281,13 @@ class YamlParser(object):
             self.anm_freq = 0
             self.sidechain_freq = 0
             self.temperature = self.temp = 10000
+            self.n_components = 3
+
+def run_platform(input_yaml):
+    arguments = parseargs_yaml([input_yaml,])
+    arguments = YamlParser(arguments.input_file)
+    job_params = Launcher(arguments).launch()
+    return job_params
 
         # ppi package make classes!
         self.ppi = data.get("ppi", None)

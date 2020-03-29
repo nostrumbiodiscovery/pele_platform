@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Input Parameters &mdash; pele platform 1.3.4 documentation</title>
+  <title>All Parameters &mdash; pele platform 1.4.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Add your own new simulation mode" href="../developers/index.html" />
-    <link rel="prev" title="Prepare your own simulation" href="../cheatsheet/index.html" /> 
+    <link rel="prev" title="FragPELE Modes" href="../modes/frag/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.3
+                1.4
               </div>
             
           
@@ -90,16 +90,21 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modes/index.html">Platform Modes</a></li>
+</ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Input Parameters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#compulsory-flags">Compulsory flags</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">All Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#compulsory-flags-adaptive">Compulsory flags Adaptive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#compulsory-flags-fragpele">Compulsory flags FragPele</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optative-flags">Optative flags</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#job-parameters">Job parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#receptor-preparation">Receptor preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">Ligand preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#box-parameters">Box parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pele-params">PELE params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simulation-params">Simulation params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#adaptive-params">Adaptive params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fragpele-params">FragPELE params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#waterperturbation">WaterPerturbation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#water-modes">Water modes</a></li>
@@ -109,16 +114,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#automatic-modes">Automatic Modes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#induced-fit-fast">Induced fit_fast</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#induced-fit-exhaustive">Induced fit_exhaustive</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rescoring">Rescoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#local-exploration">Local Exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#biased">Biased</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#exit-path">Exit path</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#global-exploration">Global exploration</a></li>
 </ul>
 </li>
 </ul>
@@ -174,7 +169,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Input Parameters</li>
+      <li>All Parameters</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -193,10 +188,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="input-parameters">
-<h1>Input Parameters<a class="headerlink" href="#input-parameters" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="compulsory-flags">
-<h2>Compulsory flags<a class="headerlink" href="#compulsory-flags" title="Permalink to this headline">¶</a></h2>
+  <div class="section" id="all-parameters">
+<h1>All Parameters<a class="headerlink" href="#all-parameters" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="compulsory-flags-adaptive">
+<h2>Compulsory flags Adaptive<a class="headerlink" href="#compulsory-flags-adaptive" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>system</strong>: Path to the input pdb file cointaining ligand and receptor in your desired initial conformation (except for a global exploration)</p></li>
 <li><p><strong>residue</strong>: Residue name of the ligand to be perturbed</p></li>
@@ -207,6 +202,19 @@
 <span class="nt">residue</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="compulsory-flags-fragpele">
+<h2>Compulsory flags FragPele<a class="headerlink" href="#compulsory-flags-fragpele" title="Permalink to this headline">¶</a></h2>
+<p>Frag PELE grows an atom onto a core in N growing steps while moving protein and ligand.
+Afterwards a final sampling simulation is run to fully explore the ligand-protein conformational space.</p>
+<ul class="simple">
+<li><p><strong>frag_core</strong>: Core of the molecule we want to add fragments to. Required parameter</p></li>
+<li><p><strong>Method to use</strong>: Choose on of the available methos. For more please refer here.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
+<span class="nt">fag_input</span><span class="p">:</span> <span class="s">&quot;/home/daniel/serie_file.conf&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -221,9 +229,11 @@
 <li><p><strong>test</strong>: Run a quick test to check the simulation works (~2 min). <strong>Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to made the simulation faster!!!!</strong></p></li>
 <li><p><strong>usesrun</strong>: Use srun binary to run PELE. Only when using intel processors.</p></li>
 <li><p><strong>debug</strong>: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)</p></li>
-<li><p><strong>pele_exec</strong>: Use a pele executable that is not the default one. <strong>Needs to be used with pele_data and pele_documents</strong></p></li>
-<li><p><strong>pele_data</strong>: Use a pele data folder that is not the default one.</p></li>
-<li><p><strong>pele_documents</strong>: Use a pele documents folder that is not the default one.</p></li>
+<li><p><strong>pele_exec</strong>: Use a pele executable that is not the default one. <strong>Needs to be used with pele_data and pele_documents</strong>. default: $PELE/bin/Pele_mpi</p></li>
+<li><p><strong>pele_data</strong>: Use a pele data folder that is not the default one. default: $PELE/Data</p></li>
+<li><p><strong>pele_documents</strong>: Use a pele documents folder that is not the default one. default: $PELE/Documents</p></li>
+<li><p><strong>pele_license</strong>: Use a pele_license path that is not the default one. default: $PELE/licenses</p></li>
+<li><p><strong>schrodinger</strong>: Use a schrodinger path that is not the default one. default: $SCHRODINGER</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
 <span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
@@ -233,6 +243,8 @@
 <span class="nt">pele_exec</span><span class="p">:</span> <span class="s">&quot;/home/pele/bin/Pele_mpi&quot;</span>
 <span class="nt">pele_data</span><span class="p">:</span> <span class="s">&quot;/home/pele/Data/&quot;</span>
 <span class="nt">pele_documents</span><span class="p">:</span> <span class="s">&quot;/home/pele/Documents/&quot;</span>
+<span class="nt">pele_license</span><span class="p">:</span> <span class="s">&quot;/home/pele/licenses&quot;</span>
+<span class="nt">schrodinger</span><span class="p">:</span> <span class="s">&quot;/home/pele/schrodinger2020-1/&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -299,8 +311,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="pele-params">
-<h3>PELE params<a class="headerlink" href="#pele-params" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="simulation-params">
+<h3>Simulation params<a class="headerlink" href="#simulation-params" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><strong>seed</strong>: Seed of the job for reproducibility. Default=12345</p></li>
 <li><p><strong>log</strong>: Retrieve PELE logfiles during simulation. Default=False</p></li>
@@ -336,6 +348,7 @@
 </div>
 <div class="section" id="adaptive-params">
 <h3>Adaptive params<a class="headerlink" href="#adaptive-params" title="Permalink to this headline">¶</a></h3>
+<p><strong>This flags are exclusive of the adaptivePele mode</strong></p>
 <ul class="simple">
 <li><p><strong>spawning</strong>: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional</p></li>
 <li><p><strong>density</strong>: Density type ([null, exitContinuous…]. More in AdaptivePELE docs). Default: null</p></li>
@@ -357,6 +370,24 @@
 <span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;folder_to_restart&quot;</span>
 <span class="nt">report</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">report</span>
 <span class="nt">traj</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trajectory.xtc</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fragpele-params">
+<h3>FragPELE params<a class="headerlink" href="#fragpele-params" title="Permalink to this headline">¶</a></h3>
+<p><strong>This flags are exclusive of the FragPele mode</strong></p>
+<ul class="simple">
+<li><p><strong>growing_steps</strong>: Number of steps to grow the fragment with.</p></li>
+<li><p><strong>steps_in_gs</strong>: Number of pele steps within each growing step</p></li>
+<li><p><strong>sampling_steps</strong>: Number of pele steps in the final sampling simulation</p></li>
+<li><p><strong>protocol</strong>: Type of protocol. options = [HT, ES]. For more info please refere here.</p></li>
+<li><p><strong>cpus</strong>: Cpus to use</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">growing_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="nt">steps_in_gs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="nt">sampling_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HT</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">24</span>
 </pre></div>
 </div>
 </div>
@@ -506,89 +537,6 @@
 </div>
 </div>
 </div>
-<div class="section" id="automatic-modes">
-<h2>Automatic Modes<a class="headerlink" href="#automatic-modes" title="Permalink to this headline">¶</a></h2>
-<p>Automatically configures all control file options to a standard job chosen beween
-induce fit, local exploration, bias exploration, exit path and global exploration</p>
-<div class="section" id="induced-fit-fast">
-<h3>Induced fit_fast<a class="headerlink" href="#induced-fit-fast" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><strong>induced_fit_fast</strong>: Run a short induced fit AdaptivePELE simulation paramaters by setting the center of the box in the
-cm of the ligand, a box radius of 10A, small rotations and translations and a high number of
-steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
-new conformations within the same binding site.</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="induced-fit-exhaustive">
-<h3>Induced fit_exhaustive<a class="headerlink" href="#induced-fit-exhaustive" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><strong>induced_fit_exhaustive</strong>: Run a long induced fit PELE simulation paramaters by setting the center of the box in the
-cm of the ligand, a box radius of 10A, small rotations and translations and a high number of
-steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
-new conformations within the same binding site.</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit_exhaustive</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="rescoring">
-<h3>Rescoring<a class="headerlink" href="#rescoring" title="Permalink to this headline">¶</a></h3>
-<p>Simulation to refine around an initial conformation. Not looking to find a new binding mode but to minimize
-the actual one.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">rescoring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="local-exploration">
-<h3>Local Exploration<a class="headerlink" href="#local-exploration" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><strong>out_in</strong>: Local exploration to move the ligand from the bulk to the binding site. The box center set on the
-center of mass of the ligand with a radius of 30A, steering 1 50% of the times, and a slight bias towards binding energies.
-Useful when no docking is possible in the binding site and you need to open up the pocket.</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="biased">
-<h3>Biased<a class="headerlink" href="#biased" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><strong>bias</strong>: Bias exploration towards the indicated bias column. The box center is set on the center of mass of the ligand with
-a radius of 30A, and a bias towards the chosen metric is set. An epsilon fraction of processors are distributed proportionally to the value of a metric, and the rest are inverselyProportional distributed. Therefore, the <strong>epsilon</strong> value controls fraction of the processors that will be assigned according to the selected metric in <strong>biascolumn</strong></p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bias</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5 (starting by 1 on the reports)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="exit-path">
-<h3>Exit path<a class="headerlink" href="#exit-path" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><strong>in_out</strong>: Explore the dissociative path of a molecule. At each step the box is center on the most exterior cluster
-and there is a bias towards higher values of SASA. This type accepts a <strong>exit_metric</strong> which represents a column in the report file, an <strong>exit_value</strong> which represents a value for the metric and a <strong>exit_condition</strong> parameter which can be either “&lt;” or “&gt;”, default value is “&lt;”. The simulation will terminate after the metric written in the metricCol reaches a value smaller or greater than exitValue, depending on the condition specified. An example of the exit condition block that would terminate the program after 4 trajectories reaches a value of more than 0.9 for the sixth column (6th starting to count from 1) of the report file would look like:</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">in_out</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">exit_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.9</span>
-<span class="nt">exit_condition</span><span class="p">:</span> <span class="s">&quot;&gt;&quot;</span>
-<span class="nt">exit_trajnum</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="global-exploration">
-<h3>Global exploration<a class="headerlink" href="#global-exploration" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><strong>global</strong>: Configure a global exploration by randomizing the ligand all around the protein. Then the simulation will start from all configurationsof the system at the same time. The number of configurations (ligand-protein systems) can be chosen thorugh the <strong>poses</strong> flag.</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">global</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">poses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
-</pre></div>
-</div>
-</div>
-</div>
 </div>
 
 
@@ -602,7 +550,7 @@ and there is a bias towards higher values of SASA. This type accepts a <strong>e
         <a href="../developers/index.html" class="btn btn-neutral float-right" title="Add your own new simulation mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../cheatsheet/index.html" class="btn btn-neutral float-left" title="Prepare your own simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../modes/frag/index.html" class="btn btn-neutral float-left" title="FragPELE Modes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -9,10 +9,10 @@ test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "data/output"
 REPORT_NAME = "report_"
 TRAJ_NAME = "trajectory_"
-ANALYSIS_ARGS = [os.path.join(test_path, "analysis/input.yaml")]
-ANALYSIS_FLAGS0 = [os.path.join(test_path, "analysis/input_flags0.yaml")]
-ANALYSIS_FLAGS = [os.path.join(test_path, "analysis/input_flags.yaml")]
-ANALYSIS_MAE_ARGS = [os.path.join(test_path, "analysis/input_mae.yaml")]
+ANALYSIS_ARGS = os.path.join(test_path, "analysis/input.yaml")
+ANALYSIS_FLAGS0 = os.path.join(test_path, "analysis/input_flags0.yaml")
+ANALYSIS_FLAGS = os.path.join(test_path, "analysis/input_flags.yaml")
+ANALYSIS_MAE_ARGS = os.path.join(test_path, "analysis/input_mae.yaml")
 
 
 def test_plot_two_metrics(simulation_path=simulation_path, report_name=REPORT_NAME, traj_name=TRAJ_NAME):
@@ -35,9 +35,7 @@ def test_best_structs(simulation_path=simulation_path, report_name=REPORT_NAME, 
     assert len(files) == 1
 
 def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    main.Launcher(arguments).launch()
+    main.run_platform(ext_args)
     assert os.path.exists("data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_distance0_plot.png")
     assert os.path.exists("data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_sasaLig_plot.png")
     assert os.path.exists("data/results/Plots/distance0_currentEnergy_plot.png")
@@ -45,19 +43,13 @@ def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
     assert len(glob.glob("data/results/Plots/*.png")) == 4
 
 def test_analysis_flag(ext_args=ANALYSIS_FLAGS):
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    main.Launcher(arguments).launch()
+    main.run_platform(ext_args)
     assert os.path.exists("data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_distance0_plot.png")
     assert os.path.exists("data/results/Plots/distance0_currentEnergy_plot.png")
     assert len(glob.glob("data/results/Plots/*.png")) == 2
 
 def test_analysis(ext_args=ANALYSIS_ARGS):
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    main.Launcher(arguments).launch()
+    main.run_platform(ext_args)
 
 def test_analysis_mae(ext_args=ANALYSIS_MAE_ARGS):
-    arguments = main.parseargs_yaml(ext_args)
-    arguments = main.YamlParser(arguments.input_file)
-    main.Launcher(arguments).launch()
+    main.run_platform(ext_args)

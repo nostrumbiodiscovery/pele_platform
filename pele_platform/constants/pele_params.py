@@ -91,9 +91,9 @@ RESCORING = '''
              
                   {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
              
-                         "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 10 } },
+                         "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 25 } },
              
-                         "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 10  }}
+                         "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 25  }}
              
                  }
              
@@ -237,4 +237,18 @@ GLIDE = '''
                     "otherwise": {} 
 				} 
 			] 
+'''
+
+FRAG = '''
+,
+                 "parametersChanges" : [
+                     { "ifAnyIsTrue": [ "rand >= 0.5" ],
+                         "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": $ROTATION_HIGH } },
+                         "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": $ROTATION_LOW } }
+                     },
+                     { "ifAnyIsTrue": [ "rand1 <= 0.5 " ],
+                         "doThesechanges": { "Perturbation::parameters": { "translationRange": $TRANSLATION_LOW } },
+                         "otherwise": { "Perturbation::parameters": { "translationRange": $TRANSLATION_HIGH } }
+                     }
+                  ]
 '''

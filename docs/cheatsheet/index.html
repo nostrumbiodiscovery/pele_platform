@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Prepare your own simulation &mdash; pele platform 1.3.4 documentation</title>
+  <title>Prepare your own simulation &mdash; pele platform 1.4.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Input Parameters" href="../documentation/index.html" />
+    <link rel="next" title="Prepare your own PELE simulation" href="pele/index.html" />
     <link rel="prev" title="Installation" href="../installation/index.html" /> 
 </head>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.3
+                1.4
               </div>
             
           
@@ -89,24 +89,16 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Prepare your own simulation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#adaptivepele-induced-fit">AdaptivePELE Induced fit</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pele-induced-fit-slow-but-exhaustive">PELE Induced fit (Slow but exhaustive)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#minimization-exploration">Minimization exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#global-exploration">Global exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#water-ligand-exploration">Water+ligand exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#out-in-local-exploration">Out_in local exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#biased-exploration">Biased exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#receptor-sampling-simulation">Receptor sampling simulation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pele/index.html">Prepare your own PELE simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frag/index.html">Prepare your own FragPELE simulation</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modes/index.html">Platform Modes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">All Parameters</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
@@ -179,154 +171,42 @@
             
   <div class="section" id="prepare-your-own-simulation">
 <h1>Prepare your own simulation<a class="headerlink" href="#prepare-your-own-simulation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="complex-preparation">
-<h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
-and output a complex.pdb.</p>
-<p>Make sure the ligand has:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Unique chain</p></li>
-<li><p>No atomnames with spaces or single letter</p></li>
-<li><p>Any residuename except UNK</p></li>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pele/index.html">Prepare your own PELE simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pele/index.html#complex-preparation">1. Complex Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pele/index.html#input-preparation">2. Input Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pele/index.html#adaptivepele-induced-fit">AdaptivePELE Induced fit</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pele/index.html#pele-induced-fit-slow-but-exhaustive">PELE Induced fit (Slow but exhaustive)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pele/index.html#minimization-exploration">Minimization exploration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pele/index.html#pocket-exploration">Pocket Exploration</a></li>
 </ul>
-</div></blockquote>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pele/index.html#water-ligand-exploration">Water+ligand exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pele/index.html#out-in-local-exploration">Out_in local exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pele/index.html#biased-exploration">Biased exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pele/index.html#receptor-sampling-simulation">Receptor sampling simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pele/index.html#run-simulation">3. Run simulation</a></li>
+</ul>
+</li>
+</ul>
 </div>
-<div class="section" id="input-preparation">
-<h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<p>To run different modes prepare different control files.
-For more explanation on the modes please refer to <a class="reference external" href="../documentation/index.html">here</a></p>
-<div class="section" id="adaptivepele-induced-fit">
-<h3>AdaptivePELE Induced fit<a class="headerlink" href="#adaptivepele-induced-fit" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span> <span class="c1">#atomnumber1</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span> <span class="c1">#atomnumber2</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="pele-induced-fit-slow-but-exhaustive">
-<h3>PELE Induced fit (Slow but exhaustive)<a class="headerlink" href="#pele-induced-fit-slow-but-exhaustive" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">induced_fit_exhaustive</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span> <span class="c1">#atomnumber1</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span> <span class="c1">#atomnumber2</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="minimization-exploration">
-<h3>Minimization exploration<a class="headerlink" href="#minimization-exploration" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">rescoring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="global-exploration">
-<h3>Global exploration<a class="headerlink" href="#global-exploration" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">global</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">poses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">120</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">250</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="water-ligand-exploration">
-<h3>Water+ligand exploration<a class="headerlink" href="#water-ligand-exploration" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">water_lig</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:1</span> <span class="c1">#Chain and residue of 1st water</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:2</span> <span class="c1">#Chain and residue of 2nd water</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">128</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="out-in-local-exploration">
-<h3>Out_in local exploration<a class="headerlink" href="#out-in-local-exploration" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="biased-exploration">
-<h3>Biased exploration<a class="headerlink" href="#biased-exploration" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">bias</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span> <span class="c1">#starting by 1 on the reports</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="receptor-sampling-simulation">
-<h3>Receptor sampling simulation<a class="headerlink" href="#receptor-sampling-simulation" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
-<span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">spawning</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">independent</span>
-<span class="nt">ca_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
-<span class="nt">pca_traj</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/1.pdb&quot;</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/2.pdb&quot;</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/3.pdb&quot;</span>
-<span class="nt">selection_to_perturb</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">perturbation</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="run-simulation">
-<h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
-<p>To run the system launch the simulation with the next command:</p>
-<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="frag/index.html">Prepare your own FragPELE simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="frag/index.html#complex-preparation">1. Complex Preparation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frag/index.html#input-preparation">2. Input Preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="frag/index.html#from-sdf">From sdf</a></li>
+<li class="toctree-l3"><a class="reference internal" href="frag/index.html#from-ai">From ai</a></li>
+<li class="toctree-l3"><a class="reference internal" href="frag/index.html#from-serie-file">From serie file</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="frag/index.html#run-simulation">3. Run simulation</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 
@@ -338,7 +218,7 @@ For more explanation on the modes please refer to <a class="reference external" 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../documentation/index.html" class="btn btn-neutral float-right" title="Input Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="pele/index.html" class="btn btn-neutral float-right" title="Prepare your own PELE simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../installation/index.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

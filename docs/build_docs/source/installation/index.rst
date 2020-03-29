@@ -9,8 +9,14 @@ Conda (recomended)
     conda install numpy cython
 
     conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
+    
+    export PELE=/path/to/PELE-1.X/
 
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+    export SCHRODINGER=/path/to/schoringer/20XX/
+
+    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
+
 
 
 Pypi
@@ -21,10 +27,15 @@ Pypi
     pip install numpy cython
 
     pip install pele_platform
-    
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
 
+    export PELE=/path/to/PELE-1.X/
+
+    export SCHRODINGER=/path/to/schoringer/20XX/
+    
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
+
+    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 
 
 Last stable release from source code
@@ -38,10 +49,14 @@ Last stable release from source code
     
     pip install .
     
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+    export PELE=/path/to/PELE-1.X/
+
+    export SCHRODINGER=/path/to/schoringer/20XX/
 
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
+    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 
 Latest devel version
 ----------------------
@@ -56,8 +71,14 @@ Latest devel version
     
     pip install .
 
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
-    
+    export PELE=/path/to/PELE-1.X/
+
+    export SCHRODINGER=/path/to/schoringer/20XX/
+
+    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
+
+
 Test it works
 ----------------
 

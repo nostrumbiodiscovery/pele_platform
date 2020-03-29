@@ -1,13 +1,14 @@
 import os
 import pandas as pd
 from sklearn.mixture import GaussianMixture
-import AdaptivePELE.analysis.bestStructs as bs
+from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Analysis.plots import _extract_coords
 from multiprocessing import Pool
 
 def cluster_best_structures(be_column, residue="LIG", topology=None, cpus=20, n_components=10, n_structs=1000):
 
-    files_out, _, _, _, output_energy= bs.main(be_column, n_structs=n_structs, path = ".")
+
+    files_out, _, _, _, output_energy = bs.main(be_column, n_structs=n_structs, path = ".")
     files = []
 
     # find all epoch...pdb files

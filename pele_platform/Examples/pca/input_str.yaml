@@ -1,0 +1,14 @@
+system: '../pele_platform/Examples/pca/1.pdb'
+chain: 'Z'
+resname: 'STR'
+restart: false
+seed: 12345
+induced_fit: true
+atom_dist:
+- 32
+- 33
+test: true
+ca_constr: 3
+pca_traj: "../pele_platform/Examples/pca/*.pdb"
+perturbation: false
+working_folder: "PCA_result"

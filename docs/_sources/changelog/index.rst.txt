@@ -4,6 +4,26 @@ Versions
 Here we report the main changes for each version
 
 
+v1.4
+=======================
+
+- FragPELE supported (Beta-version)
+
+- Change global exploration to PPI simulation (Beta-version)
+
+- Make Platform work through SCHRODINGER and PELE variables
+
+- Get rid of PyMol as external dependency
+
+- Define several inputs with asterics. i.e. "complex*.pdb"
+
+- Fix bug on dimer constraints only detecting one chain
+
+- Fix other minor bugs
+
+- Better coverage (77%)
+
+
 v1.3.4
 =======================
 

@@ -180,8 +180,7 @@ class PostProcessor():
         return list(df)[int(column_digit)-1]
 
 
-def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False,
-nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_column=3):
+def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True, mae=False, nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_column=3):
     results_folder = os.path.join(output_folder, "results")
     if os.path.exists(results_folder):
         if not overwrite:
