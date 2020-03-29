@@ -1,0 +1,12 @@
+pele_license: "/work/NBD_Utilities/PELE/licenses"
+usesrun: true
+system: '../pele_platform/Examples/ppi/complex.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+ppi: true
+poses: 3
+atom_dist:
+- 4555
+- 10
+test: true

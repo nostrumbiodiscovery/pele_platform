@@ -29,4 +29,6 @@ def run_ppi(parsed_yaml):
         
     # refine selected best structures
     with cd(simulation.pele_dir):
-    	launch_refinement(parsed_yaml)
+    	induced_fit = launch_refinement(parsed_yaml)
+
+    return simulation, induced_fit

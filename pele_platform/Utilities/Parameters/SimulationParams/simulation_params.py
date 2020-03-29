@@ -8,13 +8,14 @@ from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
 from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
+from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 import pele_platform.Utilities.Helpers.helpers as hp
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams):
+    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, ppi.PPIParams):
 
 
     def __init__(self, args):
@@ -38,6 +39,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         inout_params.InOutParams.__init__(self, args)
         waterexp_params.WaterExp.__init__(self, args)
         pca.PCAParams.__init__(self, args)
+        ppi.PPIParams.__init__(self, args)
 
 
     def simulation_type(self, args):

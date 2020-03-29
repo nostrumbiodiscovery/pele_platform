@@ -267,7 +267,7 @@ class YamlParser(object):
         self.chain_core = data.get("chain_core", False)
 
         #PPI
-        self.n_components = data.get("n_components", 10)
+        self.n_components = data.get("n_components", None)
         self.ppi = data.get("ppi", None)
 
         if self.test:
@@ -288,10 +288,6 @@ def run_platform(input_yaml):
     arguments = YamlParser(arguments.input_file)
     job_params = Launcher(arguments).launch()
     return job_params
-
-        # ppi package make classes!
-        self.ppi = data.get("ppi", None)
-
 
 def run_platform(input_yaml):
     arguments = parseargs_yaml([input_yaml,])
