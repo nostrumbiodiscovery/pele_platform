@@ -9,7 +9,7 @@ import os
 test_path = os.path.join(cs.DIR, "Examples")
 yaml = os.path.join(test_path, "ppi/input_global.yaml")
 
-def test_PPI(energy_result=-3.87, yaml=yaml):
+def test_PPI(energy_result=-3.26, yaml=yaml):
     #Function to test
     job, _ = main.run_platform(yaml)
 
