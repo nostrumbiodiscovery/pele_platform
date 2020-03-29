@@ -89,16 +89,15 @@ class SystemBuilder(object):
         receptor =  os.path.join(self.pele_dir, "receptor.pdb")
 
         with open(self.receptor, 'r') as pdb_file:
-            lines = [line for line in pdb_file if line.startswith("ATOM") or line.startswith("HETATM")]
-            receptor_text = [line for line in lines if line.startswith("ATOM") or (line.startswith("HETATM") and line[17:20].strip() != self.residue)]
+            receptor_text = [line for line in pdb_file if line.startswith("ATOM") or "TER" in line or (line.startswith("HETATM") and line[17:20].strip() != self.residue)]
         with open(self.receptor, 'r') as pdb_file:
             ligand_text = [line for line in pdb_file if line[17:20].strip() == self.residue]
         if not receptor_text  or not ligand_text:
             raise ValueError("Something went wrong when extracting the ligand. Check residue&Chain on input")
         with open(ligand, "w") as fout:
-            fout.write("".join(ligand_text))
+            fout.write("".join(ligand_text+["END"]))
         with open(receptor, "w") as fout:
-            fout.write("".join(receptor_text))
+            fout.write("".join(receptor_text+["END"]))
 
         return "".join(receptor_text), ligand
 

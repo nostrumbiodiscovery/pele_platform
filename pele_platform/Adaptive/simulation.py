@@ -72,11 +72,14 @@ def run_adaptive(args):
             env.adap_ex_input = ", ".join(['"' + input + '"' for input in env.inputs_simulation]).strip('"')
         # Global exploration mode: Create inputs around protein
         elif args.full or args.randomize:
-            ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, syst.system,
+            ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, env.receptor,
                 outputfolder=env.pele_dir, nposes=env.poses, test=env.test)
             env.box_center = box_center if not env.box_center else env.box_center
             env.box_radius = box_radius if not env.box_radius else env.box_radius
-            receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
+            if env.no_ppp:
+                receptor = syst.system
+            else:
+                receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
                             charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter,
                             constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)[0]
             inputs = rd.join(receptor, ligand_positions, env.residue, output_folder=env.pele_dir)
