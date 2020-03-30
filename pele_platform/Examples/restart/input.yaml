@@ -1,4 +1,5 @@
 system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
+usesrun: true
 chain: 'Z'
 resname: 'STR'
 adaptive_restart: true
@@ -8,6 +9,7 @@ atom_dist:
 - 32
 - 33
 test: true
+overwrite_analysis: true
 ca_constr: 3
 
 

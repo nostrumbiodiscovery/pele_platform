@@ -4,7 +4,27 @@ Versions
 Here we report the main changes for each version
 
 
-v1.3.4
+v1.4.0 (30/03/2020)
+=======================
+
+- FragPELE supported (Beta-version)
+
+- PPI simulation supported. Global exploration + induced fit (Beta-version)
+
+- Make Platform work through SCHRODINGER and PELE environment variables
+
+- Get rid of PyMol as external dependency
+
+- Use can define several inputs with asterics. i.e. "complex*.pdb"
+
+- Fix bug on dimer constraints only detecting one chain
+
+- Fix other minor bugs
+
+- Better coverage (77%)
+
+
+v1.3.4 (10/03/2020)
 =======================
 
 - Make mae flag convert clusters as well as top poses to mae
@@ -13,12 +33,12 @@ v1.3.4
 
 - Allow user to specify the columns of the report via be_column, te_column and limit_column.
 
-v1.3.3
+v1.3.3 (01/03/2020)
 =======================
 
 - Include only analysis flag
 
-v1.3.2
+v1.3.2 (30/03/2020)
 =======================
 
 - Automatically score the simulation by making the average of the 25% best energy structures.
@@ -27,14 +47,14 @@ v1.3.2
 
 - Support conda deployment for python 3.8
 
-v1.3.1
+v1.3.1 (29/03/2020)
 =======================
 
 - Fixed bug in xtc analysis
 
 - Renew environment on SCHRODINGER subprocess
 
-v1.3
+v1.3.0 (21/02/2020)
 =======================
 
 - Set constraints by smiles
@@ -51,7 +71,7 @@ v1.3
 
 - Fix minor bugs
 
-v1.2.3
+v1.2.3 (04/02/2020)
 =======================
 
 - Automatic PCA mode
@@ -60,7 +80,7 @@ v1.2.3
 
 - Set PPP as external dependence
 
-v1.2.2
+v1.2.2 (23/12/2019)
 =======================
 
 - Fix global exploration bug when joining ligand & receptor
@@ -72,7 +92,7 @@ v1.2.2
 - Some minor fixes
 
 
-v1.2.1
+v1.2.1 (05/12/2019)
 =======================
 
 - Add verboseMode
@@ -83,7 +103,7 @@ v1.2.1
 
 - Minor fixes
 
-v1.2.0
+v1.2.0 (24/11/2019)
 =======================
 
 - Conda installation
@@ -92,7 +112,7 @@ v1.2.0
 
 - Fix minor bugs
 
-v1.1
+v1.1.0 (19/10/2019)
 =======================
 
 - Automatic Platform to automatically launch PELE&adaptivePELE. It creates the forcefield parameters, the control files, the PELE input.pdb and finally launch the simulation.

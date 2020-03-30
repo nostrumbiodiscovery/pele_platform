@@ -1,0 +1,9 @@
+system: 'data/inputs/*.pdb'
+chain: 'Z'
+resname: 'IK1'
+restart: false
+seed: 12345
+induced_fit: true
+skip_preprocess: true
+cpus: 5
+test: true

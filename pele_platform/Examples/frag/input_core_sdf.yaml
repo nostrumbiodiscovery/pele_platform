@@ -1,0 +1,5 @@
+frag_core: "../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb"
+frag_ligands: "../pele_platform/Examples/frag/lig.pdb"
+residue: "IP3"
+test: true
+

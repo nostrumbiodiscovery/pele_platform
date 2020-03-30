@@ -1,5 +1,6 @@
 import random
 import os
+import glob
 import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
@@ -7,13 +8,14 @@ from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
 from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
+from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 import pele_platform.Utilities.Helpers.helpers as hp
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams):
+    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, ppi.PPIParams):
 
 
     def __init__(self, args):
@@ -37,22 +39,31 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         inout_params.InOutParams.__init__(self, args)
         waterexp_params.WaterExp.__init__(self, args)
         pca.PCAParams.__init__(self, args)
+        ppi.PPIParams.__init__(self, args)
 
 
     def simulation_type(self, args):
-        self.pele = args.pele if args.adaptive else None
-        self.adaptive = args.adaptive if args.adaptive else None
-        self.hbond_donor, self.hbond_acceptor = args.hbond
+        self.adaptive = True if args.system else None
+        self.frag_pele = True if args.frag_input else None
+        # Trick to let frag handle control fodler parameters --> Improve
+        self.complexes = "$PDB" if self.software == "Frag" else "$COMPLEXES"
+        self.frag_pele_steps = "$STEPS" if self.software == "Frag" else "$PELE_STEPS"
+        self.output_path = "$RESULTS_PATH" if self.software == "Frag" else "$OUTPUT_PATH"
 
     def main_pele_params(self,args):
-        self.system = args.system
+        if "*" in args.system:
+            self.system = glob.glob(args.system)[0]
+            args.input = glob.glob(args.system)
+        else:
+            self.system = args.system
         self.residue = args.residue
         self.chain = args.chain
-        assert self.system and self.residue and self.chain, "User must define input, residue and chain"
+        if self.adaptive:
+            assert self.system and self.residue and self.chain, "User must define input, residue and chain"
         self.debug = args.debug if args.debug else False
         self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params.get("pele_steps", 8)
         self.logfile =  LOGFILE if args.log else ""
-        self.license = '''"{}"'''.format(cs.LICENSE)
+        self.license = args.pele_license if args.pele_license else os.path.join(cs.PELE, "licenses")
         self.anm_freq = args.anm_freq if args.anm_freq is not None else self.simulation_params.get("anm_freq", 4)
         self.sidechain_freq = args.sidechain_freq if args.sidechain_freq is not None else self.simulation_params.get("sidechain_freq", 2)
         self.min_freq = args.min_freq if args.min_freq is not None else self.simulation_params.get("min_freq", 1)
@@ -65,6 +76,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", 0.65)
         self.perturbation = "" if args.perturbation is False else self.simulation_params.get("perturbation", cs.PERTURBATION)
         self.perturbation_params(args)
+        self.com = args.com if args.com else self.simulation_params.get("COMligandConstraint", 0)
 
     def anm_params(self, args):
         self.anm_displacement = args.anm_displacement if args.anm_displacement else self.simulation_params.get("anm_displacement", 0.75)
@@ -114,11 +126,11 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.restart = args.restart if args.restart else self.simulation_params.get("restart", "all")
         self.test = args.test 
         #+1 to avoid being 0 
-        self.equil_steps = int(args.eq_steps/self.cpus) + 1 if args.eq_steps else self.simulation_params.get(".eq_steps", 1)
+        self.equil_steps = int(args.eq_steps/self.cpus) + 1 if args.eq_steps else self.simulation_params.get("equilibration_steps", 1)
         self.equilibration = "true" if args.equilibration else self.simulation_params.get("equilibration", "false")
         self.adaptive_restart = args.adaptive_restart
-        self.poses = args.poses if args.poses else self.simulation_params.get("poses", 40)
-        self.pele_exec = args.pele_exec if args.pele_exec else cs.PELE_BIN
+        self.poses = args.poses if args.poses else self.simulation_params.get("poses", self.cpus-1)
+        self.pele_exec = args.pele_exec if args.pele_exec else os.path.join(cs.PELE, "bin/Pele_mpi")
         self.pele_data = args.pele_data if args.pele_data else os.path.join(cs.PELE, "Data")
         self.pele_documents = args.pele_documents if args.pele_documents else os.path.join(cs.PELE, "Documents")
 
@@ -131,6 +143,9 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.no_ppp = args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
 
     def ligand_params(self, args):
+        self.spython = os.path.join(cs.SCHRODINGER, "utilities/python")
+        if not os.path.exists(self.spython):
+            self.spython = os.path.join(cs.SCHRODINGER, "run")
         self.mae_lig = args.mae_lig if args.mae_lig else self.simulation_params.get("mae_lig", None)
         self.external_template = args.template if args.template else self.simulation_params.get("template", [])
         self.external_rotamers = args.rotamers if args.rotamers else self.simulation_params.get("rotamers", [])
@@ -173,10 +188,10 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
     def box_params(self, args):
         self.box_radius = args.box_radius if args.box_radius else self.simulation_params.get("box_radius", None)
-        self.box_center = "["+ ",".join([str(coord) for coord in args.user_center]) + "]" if args.user_center else self.simulation_params.get("box_center", None)
+        self.box_center = "["+ ",".join([str(coord) for coord in args.box_center]) + "]" if args.box_center else self.simulation_params.get("box_center", None)
 
     def metrics_params(self, args):
-        self.metrics = None
+        self.metrics = ""
         self.native = cs.NATIVE.format(os.path.abspath(args.native), self.chain) if args.native else ""
         self.atom_dist = args.atom_dist
 

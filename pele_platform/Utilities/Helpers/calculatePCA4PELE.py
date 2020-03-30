@@ -47,22 +47,21 @@ class PCA_ANM_Analysis:
         print(self.selection, self.vmd, self.compare, self.ref, self.pdbarg)
 
 
-    def set_default_based_on_argparse(self, args):
+    def set_default_based_on_argparse(self, selection, vmd, compare, ref, debug, pdb):
         '''
         set arguments from command line based on argparser
         '''
-        #print(args
-        if args.selection in ["calpha", "backbone", "all"]:
-            self.selection=args.selection
+        if selection in ["calpha", "backbone", "all"]:
+            self.selection=selection
         else:
-            print("Invalid value for selection:", args.selection)
+            print("Invalid value for selection:", selection)
             print("Possible Values for selection are: calpha, backbone, all")
             exit()
-        self.vmd = args.vmd
-        self.compare=args.compare
-        self.ref=args.ref
-        self.debug=args.debug
-        self.pdbarg=args.pdb
+        self.vmd = vmd
+        self.compare=compare
+        self.ref=ref
+        self.debug=debug
+        self.pdbarg=pdb
         
         #set prody level of output
         if self.debug:
@@ -358,7 +357,7 @@ rom command line
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
         print("PCA is saved in:", outputname)
-        return pca
+        return pca, outputname
         
     def calcANM(self, structure):
         '''
@@ -621,18 +620,17 @@ class SmartFormatter(argparse.HelpFormatter):
         if text.startswith('R|'):
             return text[2:].splitlines()
         return argparse.HelpFormatter._split_lines(self, text, width)
-    
-    
-if __name__ == '__main__':
-    #parse command line options and create help
-    args = parse_Arguments()
+
+
+def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=False):
 
     print("\n\nWarning!!! Reference PDB file, if provided, will be rewritten in"
           " ProDy PDB format, with HID and HIE residues renamed to HIS.\n\n")
+    pdb = " ".join(pdb)
         
     #create PCA_analysis object
     Analysis = PCA_ANM_Analysis()
-    Analysis.set_default_based_on_argparse(args)   
+    Analysis.set_default_based_on_argparse(selection, vmd, compare, ref, debug, pdb)
     
     pdbs = Analysis.getPDBs()
     ensemble = Analysis.createEnsemble(pdbs)        
@@ -640,26 +638,17 @@ if __name__ == '__main__':
     #ensemble = Analysis.setWeights(ensemble)
     ensemble = Analysis.setSelections(ensemble)
     
-    pca = Analysis.calcPCA(ensemble)
+    pca, pca_modes = Analysis.calcPCA(ensemble)
     anm = Analysis.calcANM(ensemble.getConformation(0))
     
     if Analysis.compare:
         Analysis.compare_modes(anm,pca)
+   
+    return pca_modes
+    
+    
+if __name__ == '__main__':
+    #parse command line options and create help
+    args = parse_Arguments()
+    main(args.pdb, args.selection, args.vmd, args.compare, args.ref, args.debug)
 
-    
-        
-        
-    
-    
-
-  
-
-    
-    
-    
-    
-    
-    
-    
-    
-    

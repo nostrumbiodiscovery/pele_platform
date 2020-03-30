@@ -1,16 +1,20 @@
 Installation
 ###############
 
-Conda (recomended)
---------------------
+Conda (recommended)
+-----------------------
 
 .. code-block:: bash
 
-    conda install numpy cython
-
     conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
+    
+    export PELE=/path/to/PELE-1.X/
 
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+    export SCHRODINGER=/path/to/schoringer/20XX/
+
+    Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
+
 
 
 Pypi
@@ -21,10 +25,15 @@ Pypi
     pip install numpy cython
 
     pip install pele_platform
-    
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
 
-    conda install rdkit (if you want to have the possibility to build constraints by SMILES)
+    export PELE=/path/to/PELE-1.X/
+
+    export SCHRODINGER=/path/to/schoringer/20XX/
+    
+    conda install rdkit (To work with frag-pele)
+
+    Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 
 
 Last stable release from source code
@@ -38,26 +47,17 @@ Last stable release from source code
     
     pip install .
     
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
+    export PELE=/path/to/PELE-1.X/
+
+    export SCHRODINGER=/path/to/schoringer/20XX/
 
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
+    Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 
-Latest devel version
-----------------------
 
-.. code-block:: bash
 
-    git clone https://github.com/NostrumBioDiscovery/pele_platform.git
-    
-    cd pele_platform
-
-    git checkout devel
-    
-    pip install .
-
-    vim /path/to/installation/pele_platform/constants/constants.py #(change paths under else statement)
-    
 Test it works
 ----------------
 
@@ -65,4 +65,4 @@ Test it works
 
     cd pele_platform/tests
 
-    pytest
+    pytest test_*

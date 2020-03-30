@@ -7,7 +7,7 @@ Pele Platform
 ===========================================
 
 Pele platform is a python module to automatically
-launch PELE and AdaptivePELE. We will support  MSMPELE and FragPELE in next releases. 
+launch PELE, Adaptive-PELE, Frag-PELE (beta-testing) and PPI-PELE (beta-testing). 
 It is built as a python layer on top of all PELE functionalities that can be used as
 a backend for a potential future GUI.
 
@@ -16,19 +16,7 @@ Github : https://github.com/NostrumBioDiscovery/pele_platform
 Requirements
 ===================
 
-- Academic Schordinger
-
-- Pymol Python
-
-  .. code-block:: bash
-
-    yum install gcc gcc-c++ kernel-devel python-devel tkinter python-pmw glew-devel freeglut-devel libpng-devel freetype-devel libxml2-devel glm-devel
-
-    git clone https://github.com/schrodinger/pymol-open-source.git
-
-    cd pymol-open-source
-
-    python setup.py install (with same python you will use later)
+- Academic Schordinger (any version)
 
 
 Documentation
@@ -39,6 +27,9 @@ Documentation
 
 .. toctree::
    cheatsheet/index.rst
+
+.. toctree::
+   modes/index.rst
 
 .. toctree::
    documentation/index.rst

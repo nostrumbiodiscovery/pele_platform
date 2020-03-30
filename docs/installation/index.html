@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; pele platform 1.3.4 documentation</title>
+  <title>Installation &mdash; pele platform 1.4.0 documentation</title>
   
 
   
@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
-        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.3
+                1.4
               </div>
             
           
@@ -86,10 +86,9 @@
             
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#conda-recomended">Conda (recomended)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conda-recommended">Conda (recommended)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pypi">Pypi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#last-stable-release-from-source-code">Last stable release from source code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#latest-devel-version">Latest devel version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#test-it-works">Test it works</a></li>
 </ul>
 </li>
@@ -98,7 +97,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../modes/index.html">Platform Modes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input Flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
@@ -171,13 +173,16 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="conda-recomended">
-<h2>Conda (recomended)<a class="headerlink" href="#conda-recomended" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install numpy cython
+<div class="section" id="conda-recommended">
+<h2>Conda (recommended)<a class="headerlink" href="#conda-recommended" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
 
-conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
+<span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
 
-vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
+
+Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>
@@ -187,9 +192,14 @@ vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">
 
 pip install pele_platform
 
-vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+<span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
 
-conda install rdkit <span class="o">(</span><span class="k">if</span> you want to have the possibility to build constraints by SMILES<span class="o">)</span>
+<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
+
+conda install rdkit <span class="o">(</span>To work with frag-pele<span class="o">)</span>
+
+Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>
@@ -201,23 +211,14 @@ conda install rdkit <span class="o">(</span><span class="k">if</span> you want t
 
 pip install .
 
-vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+<span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
+
+<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
 
 conda install rdkit <span class="o">(</span><span class="k">if</span> you want to have the possibility to build constraints by SMILES<span class="o">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="latest-devel-version">
-<h2>Latest devel version<a class="headerlink" href="#latest-devel-version" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
 
-<span class="nb">cd</span> pele_platform
-
-git checkout devel
-
-pip install .
-
-vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">#(change paths under else statement)</span>
+Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>
@@ -225,7 +226,7 @@ vim /path/to/installation/pele_platform/constants/constants.py <span class="c1">
 <h2>Test it works<a class="headerlink" href="#test-it-works" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> pele_platform/tests
 
-pytest
+pytest test_*
 </pre></div>
 </div>
 </div>
