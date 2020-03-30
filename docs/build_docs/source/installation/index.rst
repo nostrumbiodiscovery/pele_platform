@@ -1,12 +1,10 @@
 Installation
 ###############
 
-Conda (recomended)
---------------------
+Conda (recommended)
+-----------------------
 
 .. code-block:: bash
-
-    conda install numpy cython
 
     conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
     
@@ -14,8 +12,8 @@ Conda (recomended)
 
     export SCHRODINGER=/path/to/schoringer/20XX/
 
-    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
-    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
+    Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 
 
 
@@ -32,10 +30,10 @@ Pypi
 
     export SCHRODINGER=/path/to/schoringer/20XX/
     
-    conda install rdkit (if you want to have the possibility to build constraints by SMILES)
+    conda install rdkit (To work with frag-pele)
 
-    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
-    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
+    Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 
 
 Last stable release from source code
@@ -55,28 +53,9 @@ Last stable release from source code
 
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
-    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
-    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
+    Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 
-Latest devel version
-----------------------
-
-.. code-block:: bash
-
-    git clone https://github.com/NostrumBioDiscovery/pele_platform.git
-    
-    cd pele_platform
-
-    git checkout devel
-    
-    pip install .
-
-    export PELE=/path/to/PELE-1.X/
-
-    export SCHRODINGER=/path/to/schoringer/20XX/
-
-    Licenses must be in /path/to/PELE-1.X/licenses/. Other non-default paths can be
-    specifed via input.yaml flag with the filed license: /path/to/licenses/folder/
 
 
 Test it works
@@ -86,4 +65,4 @@ Test it works
 
     cd pele_platform/tests
 
-    pytest
+    pytest test_*

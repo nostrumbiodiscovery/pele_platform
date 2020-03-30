@@ -1,7 +1,7 @@
-All Parameters
+Input Flags
 ######################
 
-Compulsory flags Adaptive
+Compulsory flags PELE
 --------------------------------
 
 - **system**: Path to the input pdb file cointaining ligand and receptor in your desired initial conformation (except for a global exploration)
@@ -33,31 +33,27 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 
 - **Method to use**: Choose on of the available methos. For more please refer here.
 
+- **cpus**: Cpus to use. Default=48
+
 ..  code-block:: yaml
 
     frag_core: "/home/daniel/PR_core.pdb"
     fag_input: "/home/daniel/serie_file.conf"
+    cpus: 48
 
 
 Optative flags
--------------------
+----------------------------
 
 
-Job parameters
-=================
+General settings
+====================
 
-Configure the main important parameters for the job
-
-
-- **iterations**: Adaptive epochs to run. Set to 1 by default if using PELE
-
-- **steps**: Pele steps in each iteration
+Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).
 
 - **test**: Run a quick test to check the simulation works (~2 min). **Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to made the simulation faster!!!!**
  
 - **usesrun**: Use srun binary to run PELE. Only when using intel processors.
-
-- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)
 
 - **pele_exec**: Use a pele executable that is not the default one. **Needs to be used with pele_data and pele_documents**. default: $PELE/bin/Pele_mpi
 
@@ -69,26 +65,24 @@ Configure the main important parameters for the job
 
 - **schrodinger**: Use a schrodinger path that is not the default one. default: $SCHRODINGER
 
-
 ..  code-block:: yaml
 
-  iterations: 30
-  steps: 12
+
   test: true
   usesrun: false
-  debug: true
   pele_exec: "/home/pele/bin/Pele_mpi"
   pele_data: "/home/pele/Data/"
   pele_documents: "/home/pele/Documents/"
   pele_license: "/home/pele/licenses"
   schrodinger: "/home/pele/schrodinger2020-1/"
 
+
 Receptor preparation
 =======================
 
 Configure the parameters of the PPP (Protein Pele Preparation)
 
-- **preprocess_receptor**: Skip protein pele preparation. Default: False
+- **skip_preprocess**: Skip protein pele preparation. Default: False
 
 - **noTERs**: Don't include TERs on preparation. Used if PPP gets confuse with insertion codes or other. Default: False
 
@@ -214,10 +208,16 @@ Simulation params
 
 
 
-Adaptive params
+PELE params
 ===================
 
-**This flags are exclusive of the adaptivePele mode**
+**These flags are exclusive of the PELE modes not fragPELE**
+
+- **iterations**: Adaptive epochs to run. Set to 1 by default if using PELE
+
+- **steps**: Pele steps in each iteration
+
+- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)
 
 - **spawning**: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional
 
@@ -239,6 +239,9 @@ Adaptive params
 
 ..  code-block:: yaml
 
+    iterations: 30
+    steps: 12
+    debug: true
     spawning: "epsilon"
     density: "exitContinuous"
     cluster_values: [2,3,4]
@@ -253,7 +256,7 @@ Adaptive params
 FragPELE params
 ===================
 
-**This flags are exclusive of the FragPele mode**
+**These flags are exclusive of the FragPele modes not PELE**
 
 - **growing_steps**: Number of steps to grow the fragment with.
 
@@ -263,8 +266,6 @@ FragPELE params
 
 - **protocol**: Type of protocol. options = [HT, ES]. For more info please refere here.
 
-- **cpus**: Cpus to use
-
 
 ..  code-block:: yaml
 
@@ -273,6 +274,18 @@ FragPELE params
     sampling_steps: 20
     protocol: HT
     cpus: 24
+
+PPI params
+===============
+
+**These flags are exclusive of the ppi: true mode**
+
+- n_components: Number of clusters after global exploration. In other words, number of inputs for the refinment exploration after the global simulation. Default: 10
+
+
+..  code-block:: yaml
+
+    n_components: 10
 
 
 Constraints
@@ -320,8 +333,6 @@ This section allows the user to change the constraint values.
 WaterPerturbation
 ======================
 
-Water modes
-+++++++++++++++++
 
     - **water_exp**: Exploration of the hydratation sites of a binding site by perturbing and clusterizing a single water. More advance features will be later implemented to discriminate between "happy" and "unhappy" waters.
 
@@ -344,7 +355,7 @@ Example water ligand:
     - M:2
 
 Simulation Parameters
-++++++++++++++++++++++++
+========================
 
 - **box_water**: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.
 
@@ -379,7 +390,7 @@ Metrics to track along the simulation
 
 - **atom_dist**: Calculate distance between two atomnumbers. To calculate more than one append them in column as the example below. Default=None
 
-    - The atomdist can be specified via atomnumber i.e. 1960 or via chain:resnum:atomname i.e. A:2:CA
+    - The atomdist can be specified via chain:resnum:atomname i.e. A:2:CA
 
 - **rmsd_pdb**: Calculate rmsd of the ligand to a native pdb structure
 
@@ -387,9 +398,10 @@ Metrics to track along the simulation
 ..  code-block:: yaml
 
     atom_dist:
-        - 40
-        - 1960
+        # Distance between the A:2:CA and B:3:CG also between A:5:N and B:3:CG. Append more if desired.
         - "A:2:CA"
+        - "B:3:CG"
+        - "A:5:N"
         - "B:3:CG"
     rmsd_pdb: "/home/dsoler/native.pdb"
 
