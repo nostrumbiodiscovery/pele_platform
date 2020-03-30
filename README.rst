@@ -8,7 +8,7 @@ Pele platform is a python module to automatically launch PELE, AdaptivePELE, MSM
 PELE_Platform Fucntionalities
 ======================================
 
-Automatically prepare and launch PELE&AdaptivePELE input
+Automatically prepare and launch PELE & FragPELE input
 
 Install
 =====================
