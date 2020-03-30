@@ -29,13 +29,13 @@ requirements:
     - pandas
     - pytest
     - adaptive_pele
-    - ploprottemp==1.0.1
+    - ploprottemp==1.0.0
     - pyyaml
     - pppele==1.0.4
     - fpdf
     - scikit-learn
     - rdkit
-    - frag_pele
+    - frag_pele>=2.1.1
 
 test:
   imports:
