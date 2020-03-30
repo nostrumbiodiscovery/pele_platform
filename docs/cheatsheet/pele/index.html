@@ -92,13 +92,13 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Prepare your own PELE simulation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#adaptivepele-induced-fit">AdaptivePELE Induced fit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#pele-induced-fit-slow-but-exhaustive">PELE Induced fit (Slow but exhaustive)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#minimization-exploration">Minimization exploration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#water-ligand-exploration">Water+ligand exploration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#out-in-local-exploration">Out_in local exploration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#biased-exploration">Biased exploration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#receptor-sampling-simulation">Receptor sampling simulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#induced-fit-fast-3-4-h">Induced fit fast (3-4 h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#induced-fit-exhaustive-12h">Induced fit exhaustive (12h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pose-minimization-30min">Pose minimization (30min)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#water-ligand-exploration-4h">Water+ligand exploration (4h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#out-in-local-exploration-12h">Out_in local exploration (12h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#biased-exploration-6h">Biased exploration (6h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#receptor-sampling-simulation-10-min">Receptor sampling simulation (10 min)</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
@@ -112,7 +112,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../modes/index.html">Platform Modes</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">All Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Input Flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Add your own new simulation mode</a></li>
@@ -191,8 +191,9 @@
 follow the steps below.</p>
 <div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
-and output a complex.pdb. The complex.pdb must contain the protein-ligand in the desired intial configuration.</p>
+<p>Prepare the system with maestro (Protein Preparation Wizard)
+and output a complex.pdb. The complex.pdb must contain the protein-ligand in the desired initial configuration.
+<strong>If using the pocket exploration mode, the ligand can be place anywhere</strong></p>
 <p>Make sure the ligand has:</p>
 <blockquote>
 <div><ul class="simple">
@@ -206,64 +207,64 @@ and output a complex.pdb. The complex.pdb must contain the protein-ligand in the
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
 <p>To run different modes prepare different control files.
-For more explanation on the modes please refer to <a class="reference external" href="../documentation/index.html">here</a></p>
-<div class="section" id="adaptivepele-induced-fit">
-<h3>AdaptivePELE Induced fit<a class="headerlink" href="#adaptivepele-induced-fit" title="Permalink to this headline">¶</a></h3>
+For more explanation on the modes please refer to <a class="reference external" href="../../modes/adaptive/index.html">here</a></p>
+<div class="section" id="induced-fit-fast-3-4-h">
+<h3>Induced fit fast (3-4 h)<a class="headerlink" href="#induced-fit-fast-3-4-h" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
 <span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span> <span class="c1">#atomnumber1</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span> <span class="c1">#atomnumber2</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="pele-induced-fit-slow-but-exhaustive">
-<h3>PELE Induced fit (Slow but exhaustive)<a class="headerlink" href="#pele-induced-fit-slow-but-exhaustive" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="induced-fit-exhaustive-12h">
+<h3>Induced fit exhaustive (12h)<a class="headerlink" href="#induced-fit-exhaustive-12h" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
 <span class="nt">induced_fit_exhaustive</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span> <span class="c1">#atomnumber1</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span> <span class="c1">#atomnumber2</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="minimization-exploration">
-<h3>Minimization exploration<a class="headerlink" href="#minimization-exploration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="pose-minimization-30min">
+<h3>Pose minimization (30min)<a class="headerlink" href="#pose-minimization-30min" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
 <span class="nt">rescoring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
 </pre></div>
 </div>
-<div class="section" id="pocket-exploration">
-<h4>Pocket Exploration<a class="headerlink" href="#pocket-exploration" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="pocket-exploration-24h">
+<h4>Pocket Exploration (24h)<a class="headerlink" href="#pocket-exploration-24h" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
 <span class="nt">ppi</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
 </div>
 </div>
-<div class="section" id="water-ligand-exploration">
-<h3>Water+ligand exploration<a class="headerlink" href="#water-ligand-exploration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="water-ligand-exploration-4h">
+<h3>Water+ligand exploration (4h)<a class="headerlink" href="#water-ligand-exploration-4h" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
@@ -272,28 +273,28 @@ For more explanation on the modes please refer to <a class="reference external" 
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:1</span> <span class="c1">#Chain and residue of 1st water</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:2</span> <span class="c1">#Chain and residue of 2nd water</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">128</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="out-in-local-exploration">
-<h3>Out_in local exploration<a class="headerlink" href="#out-in-local-exploration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="out-in-local-exploration-12h">
+<h3>Out_in local exploration (12h)<a class="headerlink" href="#out-in-local-exploration-12h" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
 <span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="biased-exploration">
-<h3>Biased exploration<a class="headerlink" href="#biased-exploration" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="biased-exploration-6h">
+<h3>Biased exploration (6h)<a class="headerlink" href="#biased-exploration-6h" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
@@ -302,14 +303,14 @@ For more explanation on the modes please refer to <a class="reference external" 
 <span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
 <span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span> <span class="c1">#starting by 1 on the reports</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="receptor-sampling-simulation">
-<h3>Receptor sampling simulation<a class="headerlink" href="#receptor-sampling-simulation" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="receptor-sampling-simulation-10-min">
+<h3>Receptor sampling simulation (10 min)<a class="headerlink" href="#receptor-sampling-simulation-10-min" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
