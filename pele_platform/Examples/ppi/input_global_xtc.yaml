@@ -1,0 +1,11 @@
+system: '../pele_platform/Examples/ppi/complex.pdb'
+chain: 'Z'
+resname: 'API'
+traj: "trajectory.xtc"
+seed: 12345
+ppi: true
+poses: 3
+atom_dist:
+- 4555
+- 10
+test: true
