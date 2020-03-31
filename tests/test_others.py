@@ -4,6 +4,7 @@ import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
 import test_adaptive as tk
+import pytest
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
@@ -34,3 +35,8 @@ def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
     job = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", PPP_CONSTR, errors)
     assert not errors
+
+def test_checker():
+    yaml = os.path.join(test_path, "checker/input.yaml")
+    job = main.run_platform(yaml)
+    assert KeyError
