@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Prepare your own PPI-PELE simulation" href="../ppi/index.html" />
+    <link rel="next" title="Platform Modes" href="../../modes/index.html" />
     <link rel="prev" title="Prepare your own PELE simulation" href="../pele/index.html" /> 
 </head>
 
@@ -94,25 +94,20 @@
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#from-sdf">From sdf</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#from-ai">From ai</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#from-serie-file">From serie file</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI-PELE simulation</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation_adaptive/index.html">Adaptive Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modes/index.html">Platform Modes</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation_frag/index.html">FragPELE Modes</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">All Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Input Flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Add your own new simulation mode</a></li>
@@ -190,7 +185,7 @@
 <p>FrAG, a new tool for in silico hit-to-lead drug design, capable of performing HT-fragment growing into a core while exploring the protein-ligand conformational space</p>
 <div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
+<p>Prepare the system with maestro (Protein Preparation Wizard)
 and output a complex.pdb. The complex.pdb must contain protein-ligand_to_be_grown in the desired initial configuration.</p>
 <p>Make sure the ligand has:</p>
 <blockquote>
@@ -206,20 +201,13 @@ and output a complex.pdb. The complex.pdb must contain protein-ligand_to_be_grow
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
 <p>To run different modes prepare different control files.
-For more explanation on the modes please refer to <a class="reference external" href="../documentation/index.html">here</a></p>
+For more explanation on the modes please refer to <a class="reference external" href="../../modes/frag/index.html">here</a></p>
 <div class="section" id="from-sdf">
 <h3>From sdf<a class="headerlink" href="#from-sdf" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
 <span class="nt">frag_ligands</span><span class="p">:</span> <span class="s">&quot;/home/daniel/grown_ligands.sdf&quot;</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="from-ai">
-<h3>From ai<a class="headerlink" href="#from-ai" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
-<span class="nt">frag_ai</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span>
-<span class="nt">protocol</span><span class="p">:</span> <span class="s">&quot;HT&quot;</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -227,6 +215,8 @@ For more explanation on the modes please refer to <a class="reference external" 
 <h3>From serie file<a class="headerlink" href="#from-serie-file" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb&quot;</span>
 <span class="nt">frag_input</span><span class="p">:</span> <span class="s">&quot;../pele_platform/Examples/frag/sequential.conf&quot;</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
 </pre></div>
 </div>
 <p>For more about the serie file please refer to: <a class="reference external" href="https://carlesperez94.github.io/frag_pele/first_steps.html">https://carlesperez94.github.io/frag_pele/first_steps.html</a></p>
@@ -247,7 +237,7 @@ For more explanation on the modes please refer to <a class="reference external" 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../ppi/index.html" class="btn btn-neutral float-right" title="Prepare your own PPI-PELE simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../../modes/index.html" class="btn btn-neutral float-right" title="Platform Modes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../pele/index.html" class="btn btn-neutral float-left" title="Prepare your own PELE simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

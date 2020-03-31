@@ -93,7 +93,7 @@
 <li class="toctree-l1"><a class="reference internal" href="modes/index.html">Platform Modes</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">All Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Input Flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="developers/index.html">Add your own new simulation mode</a></li>
@@ -183,10 +183,9 @@ a backend for a potential future GUI.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation/index.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation/index.html#conda-recomended">Conda (recomended)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation/index.html#conda-recommended">Conda (recommended)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation/index.html#pypi">Pypi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation/index.html#last-stable-release-from-source-code">Last stable release from source code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation/index.html#latest-devel-version">Latest devel version</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation/index.html#test-it-works">Test it works</a></li>
 </ul>
 </li>
@@ -198,16 +197,16 @@ a backend for a potential future GUI.</p>
 <li class="toctree-l2"><a class="reference internal" href="cheatsheet/pele/index.html">Prepare your own PELE simulation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/pele/index.html#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/pele/index.html#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#adaptivepele-induced-fit">AdaptivePELE Induced fit</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#pele-induced-fit-slow-but-exhaustive">PELE Induced fit (Slow but exhaustive)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#minimization-exploration">Minimization exploration</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="cheatsheet/pele/index.html#pocket-exploration">Pocket Exploration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#induced-fit-fast-3-4-h">Induced fit fast (3-4 h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#induced-fit-exhaustive-12h">Induced fit exhaustive (12h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#pose-minimization-30min">Pose minimization (30min)</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="cheatsheet/pele/index.html#pocket-exploration-24h">Pocket Exploration (24h)</a></li>
 </ul>
 </li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#water-ligand-exploration">Water+ligand exploration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#out-in-local-exploration">Out_in local exploration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#biased-exploration">Biased exploration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#receptor-sampling-simulation">Receptor sampling simulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#water-ligand-exploration-4h">Water+ligand exploration (4h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#out-in-local-exploration-12h">Out_in local exploration (12h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#biased-exploration-6h">Biased exploration (6h)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#receptor-sampling-simulation-10-min">Receptor sampling simulation (10 min)</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/pele/index.html#run-simulation">3. Run simulation</a></li>
@@ -217,7 +216,6 @@ a backend for a potential future GUI.</p>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/frag/index.html#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="cheatsheet/frag/index.html#input-preparation">2. Input Preparation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="cheatsheet/frag/index.html#from-sdf">From sdf</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/frag/index.html#from-ai">From ai</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cheatsheet/frag/index.html#from-serie-file">From serie file</a></li>
 </ul>
 </li>
@@ -231,23 +229,19 @@ a backend for a potential future GUI.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modes/index.html">Platform Modes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modes/adaptive/index.html">Adaptive Modes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#automatic-modes">Automatic Modes</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="modes/adaptive/index.html#induced-fit-fast">Induced fit_fast</a></li>
-<li class="toctree-l4"><a class="reference internal" href="modes/adaptive/index.html#induced-fit-exhaustive">Induced fit_exhaustive</a></li>
-<li class="toctree-l4"><a class="reference internal" href="modes/adaptive/index.html#rescoring">Rescoring</a></li>
-<li class="toctree-l4"><a class="reference internal" href="modes/adaptive/index.html#local-exploration">Local Exploration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="modes/adaptive/index.html#biased">Biased</a></li>
-<li class="toctree-l4"><a class="reference internal" href="modes/adaptive/index.html#exit-path">Exit path</a></li>
-<li class="toctree-l4"><a class="reference internal" href="modes/adaptive/index.html#pocket-exploration">Pocket Exploration</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="modes/adaptive/index.html">PELE Modes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#induced-fit-fast">Induced fit_fast</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#induced-fit-exhaustive">Induced fit_exhaustive</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#pocket-exploration">Pocket Exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#rescoring">Rescoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#local-exploration">Local Exploration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#biased">Biased</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#exit-path">Exit path</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="modes/frag/index.html">FragPELE Modes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modes/frag/index.html#standard">Standard</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/frag/index.html#sdf-with-full-ligands">Sdf with full ligands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/frag/index.html#ai">AI</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modes/frag/index.html#ht-mode">HT Mode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="modes/frag/index.html#lt-mode">LT Mode</a></li>
 </ul>
 </li>
 </ul>
@@ -256,23 +250,21 @@ a backend for a potential future GUI.</p>
 </div>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">All Parameters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="documentation/index.html#compulsory-flags-adaptive">Compulsory flags Adaptive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Input Flags</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="documentation/index.html#compulsory-flags-pele">Compulsory flags PELE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="documentation/index.html#compulsory-flags-fragpele">Compulsory flags FragPele</a></li>
 <li class="toctree-l2"><a class="reference internal" href="documentation/index.html#optative-flags">Optative flags</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#job-parameters">Job parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#general-settings">General settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#receptor-preparation">Receptor preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#ligand-preparation">Ligand preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#box-parameters">Box parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#simulation-params">Simulation params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#adaptive-params">Adaptive params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#pele-params">PELE params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#fragpele-params">FragPELE params</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#ppi-params">PPI params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#constraints">Constraints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#waterperturbation">WaterPerturbation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="documentation/index.html#water-modes">Water modes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="documentation/index.html#simulation-parameters">Simulation Parameters</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#waterperturbation">WaterPerturbation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#simulation-parameters">Simulation Parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#metrics">Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#analysis">Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="documentation/index.html#output">Output</a></li>
@@ -296,17 +288,17 @@ a backend for a potential future GUI.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Versions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-4">v1.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-4">v1.3.4</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-3">v1.3.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-2">v1.3.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-1">v1.3.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3">v1.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-3">v1.2.3</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-2">v1.2.2</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-1">v1.2.1</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-0">v1.2.0</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-1">v1.1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-4-0-30-03-2020">v1.4.0 (30/03/2020)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-4-10-03-2020">v1.3.4 (10/03/2020)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-3-01-03-2020">v1.3.3 (01/03/2020)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-2-30-03-2020">v1.3.2 (30/03/2020)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-1-29-03-2020">v1.3.1 (29/03/2020)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-0-21-02-2020">v1.3.0 (21/02/2020)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-3-04-02-2020">v1.2.3 (04/02/2020)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-2-23-12-2019">v1.2.2 (23/12/2019)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-1-05-12-2019">v1.2.1 (05/12/2019)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-0-24-11-2019">v1.2.0 (24/11/2019)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-1-0-19-10-2019">v1.1.0 (19/10/2019)</a></li>
 </ul>
 </li>
 </ul>

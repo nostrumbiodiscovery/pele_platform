@@ -6,7 +6,7 @@ FrAG, a new tool for in silico hit-to-lead drug design, capable of performing HT
 1. Complex Preparation
 ======================
    
-Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
+Prepare the system with maestro (Protein Preparation Wizard)
 and output a complex.pdb. The complex.pdb must contain protein-ligand_to_be_grown in the desired initial configuration.
 
 Make sure the ligand has:
@@ -22,7 +22,7 @@ Make sure the ligand has:
 Prepare the input file ``input.yml``:
 
 To run different modes prepare different control files.
-For more explanation on the modes please refer to `here <../documentation/index.html>`__
+For more explanation on the modes please refer to `here <../../modes/frag/index.html>`__
 
 
 From sdf
@@ -32,17 +32,8 @@ From sdf
 
     frag_core: "/home/daniel/PR_core.pdb"
     frag_ligands: "/home/daniel/grown_ligands.sdf"
-
-From ai
-+++++++++++++++++++++++++++++++++++++
-
-
-..  code-block:: yaml
-
-    frag_core: "/home/daniel/PR_core.pdb"
-    frag_ai: true 
-    iterations: 7 
-    protocol: "HT"
+    cpus: 48
+    chain_core: "L"
 
 From serie file
 +++++++++++++++++++++
@@ -51,7 +42,8 @@ From serie file
 
     frag_core: "../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb"
     frag_input: "../pele_platform/Examples/frag/sequential.conf"
-
+    cpus: 48
+    chain_core: "L"
 For more about the serie file please refer to: https://carlesperez94.github.io/frag_pele/first_steps.html
 
 
