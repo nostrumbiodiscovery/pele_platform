@@ -38,5 +38,9 @@ def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
 
 def test_checker():
     yaml = os.path.join(test_path, "checker/input.yaml")
-    job = main.run_platform(yaml)
-    assert KeyError
+    try:
+        job = main.run_platform(yaml)
+    except KeyError:
+        assert KeyError
+        return
+    assert False

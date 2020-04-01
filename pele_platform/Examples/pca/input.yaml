@@ -3,7 +3,7 @@ chain: 'Z'
 resname: 'STR'
 restart: false
 seed: 12345
-induced_fit: true
+induced_fit_fast: true
 atom_dist:
 - 32
 - 33
