@@ -1,6 +1,7 @@
 import argparse
 import os
 import re
+import time
 from pele_platform.main import YamlParser
 
 def prep_complex(complex, input_file="input.yaml"):
@@ -11,8 +12,9 @@ def prep_complex(complex, input_file="input.yaml"):
     schrodinger_path = "$SCHRODINGER/utilities/prepwizard"
 
     # Run Protein Preparation Wizard - delete waters, fill missing loops and side chains
-    #wizard_command = "{} -fillloops -fillsidechains -delwater_hbond_cutoff 5 {} {}".format(schrodinger_path, input_path, prep_output)
-    #os.system(wizard_command)
+    wizard_command = "{} -fillloops -fillsidechains -delwater_hbond_cutoff 5 {} {}".format(schrodinger_path, input_path, prep_output)
+    os.system(wizard_command)
+    
 
     # Get input.yaml
     yaml = os.path.abspath(input_file)
@@ -21,6 +23,9 @@ def prep_complex(complex, input_file="input.yaml"):
     input_chain = args["chain"]
 
     # Read in PDB file
+    while not os.path.exists(prep_output):
+        time.sleep(10)
+
     with open(prep_output, "r") as pdb:
         lines = pdb.readlines()
         all_chains = [line[21:22].strip() for line in lines if line.startswith("ATOM") or line.startswith("HETATM")]
@@ -33,6 +38,7 @@ def prep_complex(complex, input_file="input.yaml"):
     
     unique_chain = True if lig_occ == lig_length else False
     unique_atomname = True if len(set(lig_atomnames)) == len(lig_atomnames) else False
+
 
     with open(prep_output, "r") as file:
         lines = file.readlines()
