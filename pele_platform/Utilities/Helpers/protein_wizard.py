@@ -10,11 +10,10 @@ def prep_complex(complex, input_file="input.yaml"):
     prep_output = os.path.basename(complex.replace(".pdb", "_prep.pdb"))
     final_output = os.path.basename(complex.replace(".pdb", "_final.pdb"))
     schrodinger_path = "$SCHRODINGER/utilities/prepwizard"
-
+    
     # Run Protein Preparation Wizard - delete waters, fill missing loops and side chains
     wizard_command = "{} -fillloops -fillsidechains -delwater_hbond_cutoff 5 {} {}".format(schrodinger_path, input_path, prep_output)
     os.system(wizard_command)
-    
 
     # Get input.yaml
     yaml = os.path.abspath(input_file)
@@ -63,7 +62,7 @@ def prep_complex(complex, input_file="input.yaml"):
                         line = line.replace(line[12:16], replacement)
                 final_output.write(line)
 
-    return final_output
+    return final_output.name
 
 
 def parse_args():

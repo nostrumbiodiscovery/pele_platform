@@ -5,6 +5,7 @@ import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
 import test_adaptive as tk
 import pytest
+import pele_platform.Utilities.Helpers.protein_wizard as pp
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
@@ -30,11 +31,13 @@ def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = tk.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
     assert not errors
 
+
 def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
     errors = []
     job = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", PPP_CONSTR, errors)
     assert not errors
+
 
 def test_checker():
     yaml = os.path.join(test_path, "checker/input.yaml")
@@ -44,3 +47,28 @@ def test_checker():
         assert KeyError
         return
     assert False
+
+
+def test_proteinwizard():
+    complex_correct = os.path.join(test_path, "preparation/6qmk_correct.pdb")
+    complex_repeated = os.path.join(test_path, "preparation/6qmk_repeated.pdb")
+    yaml = os.path.join(test_path, "preparation/input.yaml")
+
+    correct_output = pp.prep_complex(complex_correct, yaml)
+    repeated_output = pp.prep_complex(complex_repeated, yaml)
+    
+    with open(correct_output, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            correct_lig_chains = [line[21:22].strip() for line in lines if line[17:20] == "J8H"]
+            correct_lig_atomnames = [line[12:16].strip() for line in lines if line [17:20] == "J8H"]
+
+    with open(repeated_output, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            repeated_lig_chains = [line[21:22].strip() for line in lines if line[17:20] == "J8H"]
+            repeated_lig_atomnames = [line[12:16].strip() for line in lines if line [17:20] == "J8H"]
+
+    assert all(elem == "Z" for elem in repeated_lig_chains) and all(elem == "Z" for elem in correct_lig_chains) # make sure all lig chains are Z
+    assert len(set(correct_lig_atomnames)) == len(correct_lig_atomnames) # check for repetition
+    assert len(set(repeated_lig_atomnames)) == len(repeated_lig_atomnames)
