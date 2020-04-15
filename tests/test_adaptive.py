@@ -33,7 +33,7 @@ ADAPTIVE_VALUES = ["water_processed.pdb", "SB4", '"outputPath": "output_sim"',
     '"metricColumnInReport" : 3,', '"metricColumnInReport" : 3,', '"type" : "epsilon"',
     'exitContinuous', '"data": "done"', '"executable": "done"', '"documents": "done"']
 
-PELE_VALUES = ['"reportPath": "$OUTPUT_PATH/rep",', '"trajectoryPath": "$OUTPUT_PATH/traj.xtc"',
+PELE_VALUES = ['rep', 'traj.xtc',
                 'OBC', '"anmFrequency" : 3,', '"sideChainPredictionFrequency" : 3,',
                 '"minimizationFrequency" : 3,', '"temperature": 3000,',
                 '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:111:_CA_" },',
