@@ -20,4 +20,4 @@ omit =
     ../pele_platform/constants/*
     ../pele_platform/Frag/generative_model.py 
     ../setup.py
-    
+    ../pele_platform/Utilities/Helpers/system_prep.py
