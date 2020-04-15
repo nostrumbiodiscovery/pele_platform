@@ -4,16 +4,19 @@ import re
 import time
 from pele_platform.main import YamlParser
 
-def prep_complex(complex, input_file="input.yaml"):
+def prep_complex(complex, input_file="input.yaml", prep_output="", final_output="", debug=False):
 
     input_path = os.path.abspath(complex)
-    prep_output = os.path.basename(complex.replace(".pdb", "_prep.pdb"))
-    final_output = os.path.basename(complex.replace(".pdb", "_final.pdb"))
+    if not prep_output:
+        prep_output = os.path.basename(complex.replace(".pdb", "_prep.pdb"))
+    if not final_output:
+        final_output = os.path.basename(complex.replace(".pdb", "_final.pdb"))
     schrodinger_path = "$SCHRODINGER/utilities/prepwizard"
     
     # Run Protein Preparation Wizard - delete waters, fill missing loops and side chains
     wizard_command = "{} -fillloops -fillsidechains -delwater_hbond_cutoff 5 {} {}".format(schrodinger_path, input_path, prep_output)
-    os.system(wizard_command)
+    if not debug:
+        os.system(wizard_command)
 
     # Get input.yaml
     yaml = os.path.abspath(input_file)

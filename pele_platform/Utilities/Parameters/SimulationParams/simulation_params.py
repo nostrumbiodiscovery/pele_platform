@@ -9,13 +9,15 @@ from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inou
 from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
+from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
 import pele_platform.Utilities.Helpers.helpers as hp
+import pele_platform.Utilities.Helpers.metrics as mt
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, ppi.PPIParams):
+    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, ppi.PPIParams, rna.RNAParams):
 
 
     def __init__(self, args):
@@ -40,11 +42,12 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         waterexp_params.WaterExp.__init__(self, args)
         pca.PCAParams.__init__(self, args)
         ppi.PPIParams.__init__(self, args)
+        rna.RNAParams.__init__(self, args)
 
 
     def simulation_type(self, args):
-        self.adaptive = True if args.system else None
-        self.frag_pele = True if args.frag_input else None
+        self.adaptive = True if args.pele_feature in ["PPI", "adaptive"]  else None
+        self.frag_pele = True if args.pele_feature == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.software == "Frag" else "$COMPLEXES"
         self.frag_pele_steps = "$STEPS" if self.software == "Frag" else "$PELE_STEPS"
@@ -194,6 +197,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.metrics = ""
         self.native = cs.NATIVE.format(os.path.abspath(args.native), self.chain) if args.native else ""
         self.atom_dist = args.atom_dist
+        self.metrics = mt.build_metrics(self.system, self.atom_dist)
 
     def output_params(self, args):
         self.folder = args.folder

@@ -21,20 +21,21 @@ class Launcher():
         self.test = arguments.test
         self._args = arguments
         if arguments.frag_core:
-            self.pele_feature = "frag"
+            self._args.pele_feature = "frag"
+            self._args.system = self._args.frag_core
         elif arguments.ppi:
-            self.pele_feature = "PPI"
+            self._args.pele_feature = "PPI"
         else: 
-            self.pele_feature = "adaptive"
+            self._args.pele_feature = "adaptive"
 
     def launch(self):
         if not self._args.no_check:
             self._check_variables()
-        if self.pele_feature == "adaptive":
+        if self._args.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
-        elif self.pele_feature == "PPI":
+        elif self._args.pele_feature == "PPI":
             job_variables = run_ppi(self._args)
-        elif self.pele_feature == "frag":
+        elif self._args.pele_feature == "frag":
             #Set variables and input ready 
             job_variables = fr.FragRunner(self._args)
             job_variables.prepare_control_file()
@@ -263,7 +264,8 @@ class YamlParser(object):
         "frag_ai_iterations": "frag_ai_iterations",
         "chain_core": "chain_core",
         "n_components": "n_components",
-        "ppi": "ppi"}
+        "ppi": "ppi",
+        "rna": "rna"}
 
         for key in data.keys():
             if key not in valid_flags.values():
@@ -428,6 +430,8 @@ class YamlParser(object):
         #PPI
         self.n_components = data.get(valid_flags["n_components"], None)
         self.ppi = data.get(valid_flags["ppi"], None)
+
+        self.rna = data.get(valid_flags["rna"], None)
 
         if self.test:
             print("##############################")

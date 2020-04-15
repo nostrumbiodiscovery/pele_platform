@@ -54,8 +54,8 @@ def test_proteinwizard():
     complex_repeated = os.path.join(test_path, "preparation/6qmk_repeated.pdb")
     yaml = os.path.join(test_path, "preparation/input.yaml")
 
-    correct_output = pp.prep_complex(complex_correct, yaml)
-    repeated_output = pp.prep_complex(complex_repeated, yaml)
+    correct_output = pp.prep_complex(complex_correct, yaml, prep_output=complex_correct, debug=True)
+    repeated_output = pp.prep_complex(complex_repeated, yaml, prep_output=complex_repeated, debug=True)
     
     with open(correct_output, "r") as f:
         lines = f.readlines()
