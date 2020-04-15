@@ -1,0 +1,1 @@
+docker build . --build-arg INPUT=input.yaml --build-arg PDB=complex.pdb

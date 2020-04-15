@@ -1,0 +1,16 @@
+pele_license: "/work/NBD_Utilities/PELE/licenses"
+system: '6qmk.pdb'
+chain: 'Z'
+resname: 'J8H'
+seed: 12345
+ppi: true
+n_components: 25
+poses: 249
+cpus: 250
+global: true
+atom_dist:
+- "A:603:CA"
+- "Z:702:S1"
+usesrun: true
+working_folder: "global_simulation"
+
