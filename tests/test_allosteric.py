@@ -7,7 +7,7 @@ import glob
 import os
 
 test_path = os.path.join(cs.DIR, "Examples")
-yaml = os.path.join(test_path, "allosteric/input_global.yaml")
+yaml = os.path.join(test_path, "Allosteric/input_global.yaml")
 
 def test_allosteric(energy_result=-3.26, yaml=yaml):
     #Function to test
@@ -24,7 +24,7 @@ def test_allosteric(energy_result=-3.26, yaml=yaml):
     assert best_energy == energy_result
     assert nfiles_refinement
 
-yaml = os.path.join(test_path, "allosteric/input_global_xtc.yaml")
+yaml = os.path.join(test_path, "Allosteric/input_global_xtc.yaml")
 def test_allosteric_xtc(energy_result=-3.26, yaml=yaml):
     #Function to test
     job, _ = main.run_platform(yaml)

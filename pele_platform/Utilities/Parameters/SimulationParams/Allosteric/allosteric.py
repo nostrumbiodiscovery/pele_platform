@@ -1,5 +1,5 @@
 
-class PPIParams(object):
+class AllostericParams(object):
 
 
     def __init__(self, args):

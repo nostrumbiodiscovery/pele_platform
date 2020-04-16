@@ -1,3 +1,4 @@
+usesrun: true
 system: 'data/inputs/*.pdb'
 chain: 'Z'
 resname: 'IK1'

@@ -1,3 +1,4 @@
+usesrun: true
 system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
 usesrun: true
 chain: 'Z'

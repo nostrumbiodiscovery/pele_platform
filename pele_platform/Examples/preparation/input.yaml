@@ -1,3 +1,4 @@
+usesrun: true
 pele_license: "/work/NBD_Utilities/PELE/licenses"
 system: '6qmk.pdb'
 chain: 'Z'

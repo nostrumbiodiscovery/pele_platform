@@ -16,11 +16,11 @@ import pele_platform.Utilities.Helpers.center_of_mass as cm
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
-import pele_platform.Utilities.Helpers.external_files as ext
+#import pele_platform.Utilities.Helpers.external_files as ext
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
 import pele_platform.Analysis.plots as pt
-import pele_platform.RNA.prep as pr
+#import pele_platform.RNA.prep as pr
 
 
 

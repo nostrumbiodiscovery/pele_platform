@@ -17,7 +17,7 @@ LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, allosteric.AllostericParams, rna.RNAParams):
+    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, allosteric.AllostericParams): # rna.RNAParams
 
 
     def __init__(self, args):
@@ -42,7 +42,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         waterexp_params.WaterExp.__init__(self, args)
         pca.PCAParams.__init__(self, args)
         allosteric.AllostericParams.__init__(self, args)
-        rna.RNAParams.__init__(self, args)
+        #rna.RNAParams.__init__(self, args)
 
 
     def simulation_type(self, args):
