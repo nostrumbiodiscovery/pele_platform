@@ -10,7 +10,7 @@ import argparse
 import os
 import pele_platform.Adaptive.simulation as ad
 import pele_platform.Frag.simulation as fr
-from pele_platform.PPI.main import run_ppi
+from pele_platform.Allosteric.main import run_allosteric
 
 class Launcher():
 
@@ -25,6 +25,8 @@ class Launcher():
             self._args.system = self._args.frag_core
         elif arguments.ppi:
             self._args.pele_feature = "PPI"
+        elif arguments.allosteric:
+            self._args.pele_feature = "allosteric"
         else: 
             self._args.pele_feature = "adaptive"
 
@@ -33,8 +35,8 @@ class Launcher():
             self._check_variables()
         if self._args.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
-        elif self._args.pele_feature == "PPI":
-            job_variables = run_ppi(self._args)
+        elif self._args.pele_feature == "allosteric":
+            job_variables = run_allosteric(self._args)
         elif self._args.pele_feature == "frag":
             #Set variables and input ready 
             job_variables = fr.FragRunner(self._args)
@@ -265,7 +267,8 @@ class YamlParser(object):
         "chain_core": "chain_core",
         "n_components": "n_components",
         "ppi": "ppi",
-        "rna": "rna"}
+        "rna": "rna",
+        "allosteric": "allosteric"}
 
         for key in data.keys():
             if key not in valid_flags.values():
@@ -427,10 +430,14 @@ class YamlParser(object):
         self.frag_ai_iterations = data.get(valid_flags["frag_ai_iterations"], False)
         self.chain_core = data.get(valid_flags["chain_core"], False)
 
-        #PPI
+        #Allosteric
         self.n_components = data.get(valid_flags["n_components"], None)
-        self.ppi = data.get(valid_flags["ppi"], None)
+        self.allosteric = data.get(valid_flags["allosteric"], None)
 
+        #PPI
+        self.ppi = data.get(valid_flags["ppi"])
+  
+        #RNA
         self.rna = data.get(valid_flags["rna"], None)
 
         if self.test:

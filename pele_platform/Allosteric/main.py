@@ -1,13 +1,12 @@
-from pele_platform.PPI.cluster import cluster_best_structures
-from pele_platform.PPI.simulation_launcher import launch_global_exploration, launch_refinement
+from pele_platform.Allosteric.cluster import cluster_best_structures
+from pele_platform.Allosteric.simulation_launcher import launch_global_exploration, launch_refinement
 import yaml
 from pele_platform.Utilities.Helpers.helpers import cd
 import os
 
-def run_ppi(parsed_yaml):
+def run_allosteric(parsed_yaml):
 
     # start initial simulation
-
     parsed_yaml.full = True
     simulation = launch_global_exploration(parsed_yaml)
     simulation_path = os.path.join(simulation.pele_dir, simulation.output)
