@@ -11,6 +11,7 @@ import os
 import pele_platform.Adaptive.simulation as ad
 import pele_platform.Frag.simulation as fr
 from pele_platform.Allosteric.main import run_allosteric
+from pele_platform.PPI.main import run_ppi
 
 class Launcher():
 
@@ -37,6 +38,8 @@ class Launcher():
             job_variables = ad.run_adaptive(self._args)
         elif self._args.pele_feature == "allosteric":
             job_variables = run_allosteric(self._args)
+        elif self._args.pele_feature == "PPI":
+            job_variables = run.ppi(self._args)
         elif self._args.pele_feature == "frag":
             #Set variables and input ready 
             job_variables = fr.FragRunner(self._args)
@@ -268,7 +271,10 @@ class YamlParser(object):
         "n_components": "n_components",
         "ppi": "ppi",
         "rna": "rna",
-        "allosteric": "allosteric"}
+        "allosteric": "allosteric",
+        "protein": "protein",
+        "center_of_interface": "center_of_interface",
+        "ligand_pdb": "ligand_pdb"}
 
         for key in data.keys():
             if key not in valid_flags.values():
@@ -433,10 +439,13 @@ class YamlParser(object):
         #Allosteric
         self.n_components = data.get(valid_flags["n_components"], None)
         self.allosteric = data.get(valid_flags["allosteric"], None)
-
+      
         #PPI
         self.ppi = data.get(valid_flags["ppi"])
-  
+        self.protein = data.get(valid_flags["protein"])
+        self.center_of_interface = data.get(valid_flags["center_of_interface"])
+        self.ligand_pdb = data.get(valid_flags["ligand_pdb"])  
+
         #RNA
         self.rna = data.get(valid_flags["rna"], None)
 
