@@ -39,7 +39,7 @@ class Launcher():
         elif self._args.pele_feature == "allosteric":
             job_variables = run_allosteric(self._args)
         elif self._args.pele_feature == "PPI":
-            job_variables = run.ppi(self._args)
+            job_variables = run_ppi(self._args)
         elif self._args.pele_feature == "frag":
             #Set variables and input ready 
             job_variables = fr.FragRunner(self._args)

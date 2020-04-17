@@ -32,9 +32,6 @@ def prepare_structure(protein_file, ligand_pdb, chain):
     
     return protein_file
 
-    # randomize ligand around center of interface
-    #coi = parsed_yaml.center_of_interface
-
 
 if __name__ == "__main__":
     prepare_structure("complex.pdb", "ligand.pdb", "B")

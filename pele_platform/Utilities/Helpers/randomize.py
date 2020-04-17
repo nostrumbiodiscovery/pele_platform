@@ -3,7 +3,7 @@ from Bio.PDB.vectors import Vector
 import numpy as np
 import os, argparse
 
-def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200, test=False):
+def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200, test=False, user_center=None):
     """
     Randomize initial ligand position around the receptor.
     Default number of poses = 200.
@@ -15,12 +15,20 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     if test:  np.random.seed(42)
 
     # read in files
-
     parser = PDBParser()
     output = []
     structure = parser.get_structure('protein', complex_file)
     ligand = parser.get_structure('ligand', ligand_file)
-
+    COI = np.zeros(3)
+    
+    # get center of interface (if PPI)
+    _, res_number, atom_name = user_center.split(":")
+    for residue in structure.get_residues():
+        if residue.id[1] == int(res_number):
+            for atom in residue.get_atoms():
+                 if atom.name == atom_name: 
+                     COI = np.array(list(atom.get_vector())) 
+  
     # calculate protein COM
     structure_mass = 0.0
     com_protein = np.zeros(3)
@@ -36,7 +44,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
         com_ligand = com_ligand + np.array(list(atom.get_vector())) * atom.mass
         ligand_mass += atom.mass
     com_ligand = com_ligand / ligand_mass
-
+    
     # calculating the maximum d of the ligand
     coor_ligand = []
     for atom in ligand.get_atoms():
@@ -44,7 +52,6 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
 
     coor_ligand = np.array(coor_ligand)
     coor_ligand_max = np.amax(coor_ligand, axis=0)
-
     d_ligand = np.sqrt(np.sum(coor_ligand_max ** 2))
 
     # set threshold for near and far contacts based on ligand d
@@ -58,16 +65,19 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     else:
         d8_ligand = 8.0
 
-    # calculate vector to move the ligand
-    move_vector = com_ligand - com_protein
+    # calculate vector to move the ligandi
+    if user_center:
+        move_vector = com_ligand - COI
+    else:
+        move_vector = com_ligand - com_protein
 
-    # translate the ligand to the protein COM
+    # translate the ligand to the protein COM (COI for PPI)
     original_coords = []
     for atom in ligand.get_atoms():
         ligand_origin = np.array(list(atom.get_vector())) - move_vector
         original_coords.append(ligand_origin)
         atom.set_coord(ligand_origin)
-
+    
     # calculating the maximum radius of the protein from the origin
     coor = []
     for atom in structure.get_atoms():
@@ -77,9 +87,14 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     d = np.sqrt(np.sum(coor_max ** 2))
 
     # radius of the sphere from the origin
-    D = np.ceil(6.0 + d)
-    print("Sampling {}A spherical box around the centre of the receptor".format(D))
-    sphere_cent = com_protein
+    D = 10.0 if user_center else np.ceil(6.0 + d)
+    #D = np.ceil(6.0 + d)
+    print("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
+
+    if user_center:
+        sphere_cent = COI
+    else:
+        sphere_cent = com_protein    
 
     j = 0
     print("Generating {} poses...".format(nposes))
@@ -99,13 +114,13 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
         # move ligand to the starting point (protein COM)
         for atom, coord in zip(ligand.get_atoms(), original_coords):
             atom.set_coord(coord)
-
+        
         # translate ligand to a random position
         translation = (x, y, z)
         for atom in ligand.get_atoms():
             new_pos_lig_trans = np.array(list(atom.get_vector())) - translation
             atom.set_coord(new_pos_lig_trans)
-
+        
         # calculate ligand COM in the new position
         new_ligand_COM = np.zeros(3)
         ligand_mass = 0
@@ -191,7 +206,6 @@ def parse_args():
 
 if __name__ == "__main__":
     ligand, receptor, resname, poses, output_folder = parse_args()
-    output, sphere_cent, D = randomize_starting_position(ligand, "input_ligand.pdb", resname, receptor, None, None,
-                                                         output_folder, poses=poses)
+    output, sphere_cent, D = randomize_starting_position(ligand, receptor, output_folder, poses, None, user_center="B:83:HG1")
     # Make format ready to be captured"
     print("OUTPUT; {}; {}; {}".format(output, sphere_cent, D))

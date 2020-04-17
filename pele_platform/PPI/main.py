@@ -13,34 +13,28 @@ def run_ppi(parsed_yaml):
     ligand_pdb = parsed_yaml.ligand_pdb
     protein_file = prepare_structure(protein_file, ligand_pdb, chain)
 
-    # join files 
-    # randomize ligand around center of interface
-    coi = parsed_yaml.center_of_interface    
-
-
-    # start initial simulation
-    parsed_yaml.full = True
-    simulation = launch_global_exploration(parsed_yaml)
+    # start induced fit simulation
+    parsed_yaml.induced_fit_exhaustive = True
+    simulation = launch_refinement(parsed_yaml)
     simulation_path = os.path.join(simulation.pele_dir, simulation.output)
     
     # get best structures and cluster them
     with cd(simulation_path):
         # NEED ALGORITHM TO CHOOSE OPTIMUM NUMBERS OF CLUSTERS!!!!
-        #cluster_best_structures("5", n_components = parsed_yaml.cpus-1)
         cluster_best_structures("5", n_components=simulation.n_components,
             residue=simulation.residue, topology=simulation.topology)
     
     # adjust original input.yaml
-    parsed_yaml.system = os.path.join(simulation_path, "refinement_input/*.pdb")
-    parsed_yaml.folder = "refinement_simulation"
-    parsed_yaml.full = None
-    parsed_yaml.poses = None
-    parsed_yaml.induced_fit_exhaustive = True
-    parsed_yaml.box_center = simulation.box_center
-    parsed_yaml.box_radius = simulation.box_radius
+    #parsed_yaml.system = os.path.join(simulation_path, "refinement_input/*.pdb")
+    #parsed_yaml.folder = "refinement_simulation"
+    #parsed_yaml.full = None
+    #parsed_yaml.poses = None
+    #parsed_yaml.induced_fit_exhaustive = True
+    #parsed_yaml.box_center = simulation.box_center
+    #parsed_yaml.box_radius = simulation.box_radius
         
     # refine selected best structures
-    with cd(simulation.pele_dir):
-    	induced_fit = launch_refinement(parsed_yaml)
+    #with cd(simulation.pele_dir):
+    #	induced_fit = launch_refinement(parsed_yaml)
 
-    return simulation, induced_fit
+    return simulation
