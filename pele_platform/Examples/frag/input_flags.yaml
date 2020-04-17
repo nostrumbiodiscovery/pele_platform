@@ -1,0 +1,78 @@
+frag_core: "../pele_platform/Examples/water/water_processed.pdb"
+frag_input: "../pele_platform/Examples/frag/sequential.conf"
+chain_core : "J"
+resname: 'SB4'
+resname: "3IP"
+log: true
+cpus: 3
+seed: 3000
+iterations: 1
+steps: 1
+skip_preprocess: true
+gridres: 60
+maxtorsion: 2
+templates:
+  - "data/mgz"
+  - "data/strz"
+rotamers:
+  - "data/MG.rot.assign"
+  - "data/STR.rot.assign"
+box_radius: 3000
+box_center:
+  - 30
+  - 30
+  - 30
+anm_freq: 3
+sidechain_freq: 3
+min_freq: 3
+water_freq: 3
+temperature: 3000
+solvent: "OBC"
+sidechain_res: 30
+overlap_factor: 0.3
+steric_trials: 300
+spawning: "epsilon"
+density: "exitContinuous"
+cluster_values: [1,2,3]
+cluster_conditions: [0.1, 0.2, 0.3]
+equilibration: true
+equilibration_steps: 30
+report: rep
+traj: traj.xtc
+ca_constr: 3
+water_constr: 20
+rmsd_pdb: "native.pdb"
+working_folder: "NOR_solvent_OBC"
+output: "output_sim"
+epsilon: 0.3
+bias_column: 3
+exit_value: 0.3
+exit_condition: ">"
+exit_trajnum: 3
+atom_dist:
+- 30
+- 31
+debug: true
+proximityDetection: false
+pele_exec: "done"
+pele_data: "done"
+pele_documents: "done"
+verbose: true
+water_freq: 3
+water_overlap: 3
+water_lig:
+- M:1
+pca: "modes.nmd"
+anm_direction: "steered"
+anm_mix_modes: "DontMixModes"
+anm_picking_mode: "random"
+anm_displacement: 3
+anm_modes_change: 3
+anm_num_of_modes: 3
+anm_relaxation_constr: 3
+remove_constraints: false
+no_check: true
+
+
+
+
