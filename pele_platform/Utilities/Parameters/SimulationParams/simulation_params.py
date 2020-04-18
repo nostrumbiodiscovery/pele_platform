@@ -90,6 +90,12 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.anm_num_of_modes = args.anm_num_of_modes  if args.anm_num_of_modes else self.simulation_params.get("anm_num_of_modes", 6)
         self.anm_relaxation_constr = args.anm_relaxation_constr if args.anm_relaxation_constr else self.simulation_params.get("anm_relaxation_constr", 0.5)
         self.remove_constraints = args.remove_constraints if args.remove_constraints is not None else self.simulation_params.get("remove_constraints", False)
+        if args.anm_nodes:
+            self.anm_nodes = args.anm_nodes
+        elif args.rna:
+            self.anm_nodes = "_P__"
+        else:
+            self.anm_nodes = "_CA_"
 
     def perturbation_params(self, args):
         if self.perturbation:

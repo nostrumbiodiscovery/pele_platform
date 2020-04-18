@@ -1,0 +1,11 @@
+system_fetch: "5KX9.pdb"
+chain: "X"
+log: true
+resname: "6YG"
+rna: true
+induced_fit_fast: true
+anm_freq: 0
+#test: true
+skip_preprocess: true
+remove_constraints: true
+cpus: 20

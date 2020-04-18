@@ -25,9 +25,7 @@ import pele_platform.RNA.prep as pr
 
 
 def run_adaptive(args):
-    if args.rna:
-        args.system = pr.fix_rna_pdb(args.system)
-        args.no_ppp = True
+
     # Build Folders and Logging and env variable that will containt
     #all main  attributes of the simulation
     env = pele.EnviroBuilder()

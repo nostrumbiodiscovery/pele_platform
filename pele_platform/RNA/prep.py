@@ -2,12 +2,13 @@ import os
 import argparse
 import pele_platform.main as pl
 
+METALS = [ "NA", "MG"]
 
+class RNAFix():
 
-class PDBFix():
-
-    def __init__(self, pdb: str, output_folder=":"):
+    def __init__(self, pdb: str, residue: str, output_folder="."):
         self.pdb = pdb
+        self.residue = residue
         self.lines = self.get_lines()
         self.pdb_out = self.pdb.rsplit(".", 1)[0] + "_proc.pdb"
         self.output_folder = output_folder
@@ -23,26 +24,30 @@ class PDBFix():
                 atom_name = line[12:16].strip()
             except IndexError:
                 new_lines.append(line)
-            if atom_name == "H5'1":
-                atom_name = "H5''"
-            elif atom_name == "H5'2":
-                atom_name = " H5'"
-            elif atom_name == "H6 1":
-                atom_name = " H61"
-            elif atom_name == "H6 2":
-                atom_name = " H62"
-            elif atom_name == "HN1":
-                atom_name = " H1 "
-            elif atom_name == "HN3":
-                atom_name = " H3 "
-            elif atom_name == "H4 1":
-                atom_name = " H41"
-            elif atom_name == "H4 2":
-                atom_name = " H42"
-            elif atom_name == "H2 1":
-                atom_name = " H21"
-            elif atom_name == "H2 2":
-                atom_name = " H22"
+            
+            if line.startswith("ATOM"):
+                if atom_name == "H5'1":
+                    atom_name = "H5''"
+                elif atom_name == "H5'2":
+                    atom_name = " H5'"
+                elif atom_name == "H6 1":
+                    atom_name = " H61"
+                elif atom_name == "H6 2":
+                    atom_name = " H62"
+                elif atom_name == "HN1":
+                    atom_name = " H1 "
+                elif atom_name == "HN3":
+                    atom_name = " H3 "
+                elif atom_name == "H4 1":
+                    atom_name = " H41"
+                elif atom_name == "H4 2":
+                    atom_name = " H42"
+                elif atom_name == "H2 1":
+                    atom_name = " H21"
+                elif atom_name == "H2 2":
+                    atom_name = " H22"
+                else:
+                    atom_name = line[12:16]
             else:
                 atom_name = line[12:16]
             new_line = line[:12] + atom_name + line[16:]
@@ -72,12 +77,31 @@ class PDBFix():
             f.write("".join(self.lines))
         return path
 
-def fix_rna_pdb(pdb):
+    def fix_ter(self):
+        new_lines = []
+        for i, line in enumerate(self.lines):
+            residue = line[17:20].strip().upper()
+            if residue in METALS:
+                if "TER" not in self.lines[i-1]: new_lines.append("TER\n")
+                new_lines.append(line)
+                if "TER" not in self.lines[i+1]: new_lines.append("TER\n")
+            elif residue == self.residue:
+                if all(elem not in self.lines[i-1]  for elem in ["TER", residue]):
+                    new_lines.append("TER\n")
+                new_lines.append(line)
+                if all(elem not in self.lines[i+1]  for elem in ["TER", residue]):
+                    new_lines.append("TER\n")
+            else:
+                new_lines.append(line)
+        self.lines = new_lines
+
+def fix_rna_pdb(pdb, residue):
     print("Fixing pdb for RNA")
-    pdb = PDBFix(pdb)
+    pdb = RNAFix(pdb, residue)
     pdb.fix_nucleotides()
     pdb.remove_two_first()
     pdb.change_K_to_na()
+    pdb.fix_ter()
     output = pdb.write()
     return output
 

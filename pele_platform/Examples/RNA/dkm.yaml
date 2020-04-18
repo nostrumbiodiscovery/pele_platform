@@ -1,0 +1,11 @@
+system_fetch: "6BFB.pdb"
+chain: "X"
+resname: "DKM"
+rna: true
+induced_fit_fast: true
+#ppi: true
+#anm_freq: 0
+#test: true
+skip_preprocess: true
+remove_constraints: true
+cpus: 20
