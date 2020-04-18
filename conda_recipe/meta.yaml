@@ -37,6 +37,7 @@ requirements:
     - rdkit
     - frag_pele>=2.1.1
     - lib_prep
+    - wget
 
 test:
   imports:
