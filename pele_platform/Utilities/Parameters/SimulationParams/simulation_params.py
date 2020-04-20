@@ -9,6 +9,7 @@ from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inou
 from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
 from pele_platform.Utilities.Parameters.SimulationParams.Allosteric import allosteric
+from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 #from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
@@ -17,7 +18,7 @@ LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, allosteric.AllostericParams): # rna.RNAParams
+    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, allosteric.AllostericParams, ppi.PPIParams): # rna.RNAParams
 
 
     def __init__(self, args):
@@ -42,11 +43,12 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         waterexp_params.WaterExp.__init__(self, args)
         pca.PCAParams.__init__(self, args)
         allosteric.AllostericParams.__init__(self, args)
+        ppi.PPIParams.__init__(self, args)
         #rna.RNAParams.__init__(self, args)
 
 
     def simulation_type(self, args):
-        self.adaptive = True if args.pele_feature in ["allosteric", "adaptive"]  else None
+        self.adaptive = True if args.pele_feature in ["allosteric", "adaptive", "PPI"]  else None
         self.frag_pele = True if args.pele_feature == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.software == "Frag" else "$COMPLEXES"
