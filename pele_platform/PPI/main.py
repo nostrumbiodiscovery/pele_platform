@@ -1,7 +1,7 @@
 from pele_platform.Allosteric.cluster import cluster_best_structures
-from pele_platform.PPI.simulation_launcher import launch_induced
+from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
-import yaml
+#import yaml
 from pele_platform.Utilities.Helpers.helpers import cd
 import os
 
@@ -18,7 +18,7 @@ def run_ppi(parsed_yaml):
     # start simualtion 1 - induced fit
     parsed_yaml.induced_fit_exhaustive = True
     parsed_yaml.randomize = True
-    simulation1 = launch_induced(parsed_yaml)
+    simulation1 = launch_simulation(parsed_yaml)
     simulation1_path = os.path.join(simulation1.pele_dir, simulation1.output)
     
     # cluster best structures
@@ -27,16 +27,16 @@ def run_ppi(parsed_yaml):
             residue=simulation1.residue, topology=simulation1.topology)
     
     # adjust original input.yaml
-    #parsed_yaml.system = os.path.join(simulation_path, "refinement_input/*.pdb")
-    #parsed_yaml.folder = "refinement_simulation"
-    #parsed_yaml.full = None
-    #parsed_yaml.poses = None
-    #parsed_yaml.induced_fit_exhaustive = True
+    parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*.pdb")
+    parsed_yaml.folder = "refinement_simulation"
+    parsed_yaml.induced_fit_exhaustive = None
+    parsed_yaml.poses = None
+    parsed_yaml.rescoring = True
     #parsed_yaml.box_center = simulation.box_center
     #parsed_yaml.box_radius = simulation.box_radius
         
-    # refine selected best structures
-    #with cd(simulation.pele_dir):
-    #	induced_fit = launch_refinement(parsed_yaml)
+    # start simulation 2 - minimisation
+    with cd(simulation1.pele_dir):
+    	simulation2 = launch_simulation(parsed_yaml)
 
-    #return simulation
+    return simulation1, simulation2
