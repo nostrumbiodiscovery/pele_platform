@@ -17,7 +17,6 @@ def run_ppi(parsed_yaml):
 
     # start simualtion 1 - induced fit
     parsed_yaml.induced_fit_exhaustive = True
-    parsed_yaml.randomize = True
     simulation1 = launch_simulation(parsed_yaml)
     simulation1_path = os.path.join(simulation1.pele_dir, simulation1.output)
     
@@ -30,10 +29,12 @@ def run_ppi(parsed_yaml):
     parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*.pdb")
     parsed_yaml.folder = "refinement_simulation"
     parsed_yaml.induced_fit_exhaustive = None
+    parsed_yaml.ppi = None
     parsed_yaml.poses = None
     parsed_yaml.rescoring = True
-    #parsed_yaml.box_center = simulation.box_center
-    #parsed_yaml.box_radius = simulation.box_radius
+    parsed_yaml.steps = 100
+    parsed_yaml.box_center = simulation1.box_center
+    parsed_yaml.box_radius = 100 #We should have a look at how to set no box but at the moment super big (same as not having one)
         
     # start simulation 2 - minimisation
     with cd(simulation1.pele_dir):
