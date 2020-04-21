@@ -1,5 +1,3 @@
-from pele_platform.Allosteric.main import run_allosteric
-from pele_platform.main import parseargs_yaml, YamlParser
 from pele_platform.constants import constants as cs
 from pele_platform import main
 import pandas as pd
@@ -9,8 +7,9 @@ import os
 test_path = os.path.join(cs.DIR, "Examples")
 yaml = os.path.join(test_path, "Allosteric/input_global.yaml")
 
+
 def test_allosteric(energy_result=-3.26, yaml=yaml):
-    #Function to test
+
     job, _ = main.run_platform(yaml)
 
     # checkpoints
@@ -24,9 +23,12 @@ def test_allosteric(energy_result=-3.26, yaml=yaml):
     assert best_energy == energy_result
     assert nfiles_refinement
 
+
 yaml = os.path.join(test_path, "Allosteric/input_global_xtc.yaml")
+
+
 def test_allosteric_xtc(energy_result=-3.26, yaml=yaml):
-    #Function to test
+
     job, _ = main.run_platform(yaml)
 
     # checkpoints
