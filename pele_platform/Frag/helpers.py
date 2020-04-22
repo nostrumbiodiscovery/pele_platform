@@ -13,7 +13,7 @@ def _search_core_fragment_linker(ligand, ligand_core, result=0):
     except IndexError:
         raise IndexError("Make sure core from pdb and full fragment are the same. Be carefull \
 that either core and fragment have corectly define aromatic bonds!")
-    #Sometime substructure search mess up with symettry. Check that!
+    # Sometime substructure search mess up with symettry. Check that!
     core_atoms = ch.chec_substructure_match(ligand, ligand_core, core_atoms) 
     for atom in ligand.GetAtoms():
         if atom.GetIdx() in core_atoms:
