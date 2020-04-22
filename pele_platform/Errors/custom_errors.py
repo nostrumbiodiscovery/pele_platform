@@ -7,3 +7,6 @@ class LigandSizeExceed(Exception):
 
 class MissResidueFlag(Exception):
     pass
+
+class SameMolecule(Exception):
+    pass

@@ -2,6 +2,7 @@ import os
 import pele_platform.Frag.fragments as fr
 import pele_platform.Frag.atoms as at
 import pele_platform.Frag.checker as ch
+import pele_platform.Errors.custom_errors as ce
 
 
 
@@ -32,7 +33,10 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
     import rdkit.Chem.AllChem as rp
 
     #Retrieve atom core linking fragment
-    atom_core_idx, atoms_core, _ = _search_core_fragment_linker(ligand, ligand_core, result)
+    try:
+        atom_core_idx, atoms_core, _ = _search_core_fragment_linker(ligand, ligand_core, result)
+    except TypeError:
+        raise ce.SameMolecule("Core and ligand are the exact same molecule. Check your inputs")
     atom_core = at.Atom(ligand_core, atom_core_idx)
     mol = Chem.MolFromPDBFile(complex, removeHs=False)
 
