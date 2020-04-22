@@ -7,7 +7,9 @@ import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.constraints as cst
 import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.fragments as fr
+import pele_platform.Frag.checker as ch
 import pele_platform.Frag.generative_model as gm
+import pele_platform.Errors.custom_errors as ce
 import PPP.main as ppp
 
 class FragRunner(pele.EnviroBuilder):
@@ -77,10 +79,17 @@ class FragRunner(pele.EnviroBuilder):
         import rdkit.Chem.AllChem as rp
 
         self.input = "input.conf"
+
+        #Check input file
+        limit_atoms_ligand = 100
+        ch.check_limit_number_atoms(self.ligands, limit_atoms_ligand)
         
         #Get core of the ligand
         mol = Chem.MolFromPDBFile(self.core)
-        ligand_core = rd.SplitMolByPDBResidues(mol)[self.residue]
+        try:
+            ligand_core = rd.SplitMolByPDBResidues(mol)[self.residue]
+        except KeyError:
+            raise ce.MissResidueFlag("Missing residue flag to specify the ligand core residue name. i.e resname: 'LIG'")
             
         #Get sdf full grown ligands
         ligands_grown = Chem.SDMolSupplier(self.ligands, removeHs=False)
@@ -97,7 +106,6 @@ class FragRunner(pele.EnviroBuilder):
                 except (IndexError):
                     print("LIGAND SKIPPED")
                     continue
-            
             lines.append(line)
             self.fragments.append(fragment)
         with open(self.input, "w") as fout:
