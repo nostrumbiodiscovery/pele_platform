@@ -52,4 +52,5 @@ def test_analysis(ext_args=ANALYSIS_ARGS):
     main.run_platform(ext_args)
 
 def test_analysis_mae(ext_args=ANALYSIS_MAE_ARGS):
+    os.system("rm data/*/*summary*")
     main.run_platform(ext_args)

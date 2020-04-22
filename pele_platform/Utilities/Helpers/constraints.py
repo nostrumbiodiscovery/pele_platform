@@ -9,6 +9,9 @@ AMINOACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
               "PHE", "GLU", "HIS", "HIP", "TYR",
               "CYS", "HID"]
 
+NUCLEOTIDES = ["G", "U", "A", "C"]
+
+
 TER_CONSTR = 5
 
 BACK_CONSTR = 0.5
@@ -35,7 +38,7 @@ class ConstraintBuilder(object):
                 atomtype = line[11:16].strip()
                 resnum = line[22:26].strip()
                 chain = line[20:22].strip()
-                if line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
+                if line.startswith("ATOM") and ((resname in AMINOACIDS and atomtype == "CA") or resname in NUCLEOTIDES):
                     try:
                         if not initial_res:
                             residues["initial"] = [chain, line[22:26].strip()]

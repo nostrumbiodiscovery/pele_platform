@@ -1,0 +1,8 @@
+system: "../pele_platform/Examples/RNA/5C45_prep.pdb"
+chain: "Z"
+resname: "51B"
+test: true
+induced_fit_fast: true
+remove_constraints: true
+rna: true
+adaptive_restart: true
