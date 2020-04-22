@@ -73,7 +73,7 @@ Pose minimization (30min)
 
 
 Pocket Exploration (24h)
----------------------------
++++++++++++++++++++++++++++
 
 ..  code-block:: yaml
 
