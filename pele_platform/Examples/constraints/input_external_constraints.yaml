@@ -3,7 +3,7 @@ chain: 'L'
 resname: 'AS4'
 restart: false
 seed: 12345
-induced_fit_fast: true
+induced_fit: true
 test: true
 external_constraints:
 - "10-17" #constraint of 10 at atomnumber 17 

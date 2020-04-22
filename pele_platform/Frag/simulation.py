@@ -7,9 +7,7 @@ import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.constraints as cst
 import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.fragments as fr
-import pele_platform.Frag.checker as ch
 import pele_platform.Frag.generative_model as gm
-import pele_platform.Errors.custom_errors as ce
 import PPP.main as ppp
 
 class FragRunner(pele.EnviroBuilder):
@@ -33,11 +31,10 @@ class FragRunner(pele.EnviroBuilder):
         self.control_file = os.path.join(cs.DIR, "Templates/pele_template.conf")
         self.protocol = args.protocol if args.protocol else self.simulation_params.get("protocol", "")
         self.topology = None if self.pdb else os.path.join("output_pele", "topology.pdb")
-        self.constraints = cst.retrieve_constraints(self.core, {}, {}, self.ca_constr)
+        self.constraints = cst.retrieve_constraints(self.core, {}, {}, 5)
         self.chain_core = args.chain_core if args.chain_core else self.simulation_params.get("chain_core", "L")
         self.box = cs.BOX.format(self.box_radius, self.box_center) if  self.box_radius else ""
         self.gridres = args.gridres
-        self.frag_restart = "-rst" if args.frag_restart else ""
         self.args = args
         
 
@@ -56,23 +53,20 @@ class FragRunner(pele.EnviroBuilder):
     def run(self):
         # If protocol let frag handle all flags
         if self.protocol:
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} -{} --c_chain {} --rotamers {} --seed {} {}".format(
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} -rst --cpus {} -{} --c_chain {} --rotamers {}".format(
                 self.core_process, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
-                self.cpus, self.protocol, self.chain_core, self.gridres, self.seed,
-                self.frag_restart)
+                self.cpus, self.protocol, self.chain_core, self.gridres)
         else:
             # Pass all possible flags
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {} --rotamers {} --c_chain {} --seed {} {}".format(
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} -rst --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {} --rotamers {}".format(
                 self.core_process, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
                 self.cpus, self.gr_steps, self.frag_steps, self.frag_eq_steps, self.temperature,
-                self.gridres, self.chain_core, self.seed, self.frag_restart)
+                self.gridres)
         print(command)
         if not self.debug:
             os.system(command)
-        else:
-            os.system(command + " --debug ")
 
     def prepare_input_file(self):
         from rdkit import Chem
@@ -81,17 +75,10 @@ class FragRunner(pele.EnviroBuilder):
         import rdkit.Chem.AllChem as rp
 
         self.input = "input.conf"
-
-        #Check input file
-        limit_atoms_ligand = 100
-        ch.check_limit_number_atoms(self.ligands, limit_atoms_ligand)
         
         #Get core of the ligand
         mol = Chem.MolFromPDBFile(self.core)
-        try:
-            ligand_core = rd.SplitMolByPDBResidues(mol)[self.residue]
-        except KeyError:
-            raise ce.MissResidueFlag("Missing residue flag to specify the ligand core residue name. i.e resname: 'LIG'")
+        ligand_core = rd.SplitMolByPDBResidues(mol)[self.residue]
             
         #Get sdf full grown ligands
         ligands_grown = Chem.SDMolSupplier(self.ligands, removeHs=False)
@@ -108,6 +95,7 @@ class FragRunner(pele.EnviroBuilder):
                 except (IndexError):
                     print("LIGAND SKIPPED")
                     continue
+            
             lines.append(line)
             self.fragments.append(fragment)
         with open(self.input, "w") as fout:

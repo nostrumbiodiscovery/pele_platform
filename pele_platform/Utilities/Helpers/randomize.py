@@ -146,8 +146,7 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
 
     with open(receptor, "r") as f:
         lines = f.readlines()
-        receptor_content = [line for line in lines if line[17:20] != residue and not line.startswith("CONECT") and not line.startswith("END")]
-        connects = [line for line in lines if line.startswith("CONECT")]
+        receptor_content = [line for line in lines if line[17:20] != residue]
         ligand_content_without_coords = [line[0:27] + "{}" + line[56:] for line in lines if line[17:20] == residue]
         atom_nums = [line[6:11] for line in lines if line[17:20] == residue]
 
@@ -169,7 +168,7 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
 
             for j, line in enumerate(ligand_content):
                 ligand_content[j] = line[:6] + "{:>5}".format(atom_nums[j]) + line[11:]
-        content_join_file = receptor_content + ["TER\n"] + ligand_content + ["TER\n"] + connects + ["END"]
+        content_join_file = receptor_content + ["TER\n"] + ligand_content + ["TER"]
         output_path = os.path.join(output_folder, output.format(i))
         with open(output_path, "w") as fout:
             fout.write("".join(content_join_file))

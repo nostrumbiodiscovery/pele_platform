@@ -1,9 +1,0 @@
-system: 'complex.pdb'
-chain: 'L'
-resname: 'LIG'
-box_radius: 30.0
-restart: false
-seed: 12345
-bias_sim: true
-test: true
-mae: true

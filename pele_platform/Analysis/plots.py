@@ -52,11 +52,8 @@ class PostProcessor():
     def retrive_data(self, separator=","):
         summary_csv_filename = os.path.join(self.simulation_path, "summary.csv")
         if not os.path.exists(summary_csv_filename):
-            try:
-                sp.concat_reports_in_csv(adaptive_results_path=self.simulation_path, output_file_path=summary_csv_filename,
+            sp.concat_reports_in_csv(adaptive_results_path=self.simulation_path, output_file_path=summary_csv_filename,
                                   report_prefix=self.report_name, trajectory_prefix=self.traj_name, separator_out=separator)
-            except ValueError:
-                raise ValueError("Not report found under {}. Did you point to the right folder?".format(os.getcwd()))
         dataframe = pd.read_csv(summary_csv_filename, sep=separator, engine='python', header=0)
         return dataframe
 

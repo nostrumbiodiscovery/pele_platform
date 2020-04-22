@@ -1,1 +1,0 @@
-nohup pytest --cov-config=.coveragerc --cov .. --cov-report xml test_* > log.txt &
