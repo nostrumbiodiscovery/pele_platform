@@ -3,7 +3,7 @@ chain: 'L'
 resname: 'LIG'
 restart: false
 seed: 12345
-bias: true
+bias_sim: true
 bias_column: 6
 cpus: 100
 debug: true
