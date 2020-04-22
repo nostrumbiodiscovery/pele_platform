@@ -1,9 +1,9 @@
 from pele_platform.Allosteric.cluster import cluster_best_structures
 from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
-#import yaml
 from pele_platform.Utilities.Helpers.helpers import cd
 import os
+
 
 def run_ppi(parsed_yaml):
 
@@ -34,10 +34,10 @@ def run_ppi(parsed_yaml):
     parsed_yaml.rescoring = True
     parsed_yaml.steps = 100
     parsed_yaml.box_center = simulation1.box_center
-    parsed_yaml.box_radius = 100 #We should have a look at how to set no box but at the moment super big (same as not having one)
+    parsed_yaml.box_radius = 100  # We should have a look at how to set no box but at the moment super big
         
     # start simulation 2 - minimisation
     with cd(simulation1.pele_dir):
-    	simulation2 = launch_simulation(parsed_yaml)
+        simulation2 = launch_simulation(parsed_yaml)
 
     return simulation1, simulation2

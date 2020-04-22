@@ -1,8 +1,8 @@
 from pele_platform.Allosteric.cluster import cluster_best_structures
 from pele_platform.Allosteric.simulation_launcher import launch_global_exploration, launch_refinement
-import yaml
 from pele_platform.Utilities.Helpers.helpers import cd
 import os
+
 
 def run_allosteric(parsed_yaml):
 
@@ -14,7 +14,6 @@ def run_allosteric(parsed_yaml):
     # get best structures and cluster them
     with cd(simulation_path):
         # NEED ALGORITHM TO CHOOSE OPTIMUM NUMBERS OF CLUSTERS!!!!
-        #cluster_best_structures("5", n_components = parsed_yaml.cpus-1)
         cluster_best_structures("5", n_components=simulation.n_components,
             residue=simulation.residue, topology=simulation.topology)
     
@@ -29,6 +28,6 @@ def run_allosteric(parsed_yaml):
         
     # refine selected best structures
     with cd(simulation.pele_dir):
-    	induced_fit = launch_refinement(parsed_yaml)
+        induced_fit = launch_refinement(parsed_yaml)
 
     return simulation, induced_fit

@@ -1,7 +1,3 @@
-from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection
-from Bio.PDB.vectors import Vector
-import numpy as np
-
 def prepare_structure(protein_file, ligand_pdb, chain):
 
     to_remove = []
