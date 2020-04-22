@@ -21,6 +21,9 @@ def check_limit_number_atoms(sdf:str, limit_atoms: int):
   
 def chec_substructure_match(ligand, ligand_core, core_atoms):
     import rdkit.Chem.rdMolAlign as rd
+    from rdkit import Chem
+    #Initialize ring information
+    Chem.GetSSSR(ligand); Chem.GetSSSR(ligand_core)  
     #Align and obtain vocabulary between atoms in core and ligand
     align_obj = rd.GetO3A(ligand, ligand_core)
     atom_map = align_obj.Matches()

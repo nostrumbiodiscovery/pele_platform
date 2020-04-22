@@ -3,9 +3,11 @@ import glob
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
-import test_adaptive as tk
+from . import test_adaptive as tk
 import pytest
 import pele_platform.Utilities.Helpers.protein_wizard as pp
+import pele_platform.Frag.checker as ch
+import pele_platform.Errors.custom_errors as ce
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
@@ -72,3 +74,28 @@ def test_proteinwizard():
     assert all(elem == "Z" for elem in repeated_lig_chains) and all(elem == "Z" for elem in correct_lig_chains) # make sure all lig chains are Z
     assert len(set(correct_lig_atomnames)) == len(correct_lig_atomnames) # check for repetition
     assert len(set(repeated_lig_atomnames)) == len(repeated_lig_atomnames)
+
+
+SDF_LIMIT_ATOMS = os.path.join(test_path, "frag/checker/receptor.sdf")
+def test_checker_nlimits(sdf=SDF_LIMIT_ATOMS):
+    try:
+        ch.check_limit_number_atoms(sdf, 100)
+    except ce.LigandSizeExceed:
+        assert True
+    else:
+        assert False
+    
+
+PDB_CHECKER_SUBSEARCH = os.path.join(test_path, "frag/checker/4RFM_series.sdf")
+CORE_CHECKER_SUBSEARCH = os.path.join(test_path, "frag/checker/4RFM_proc.pdb")
+def test_checker_subsearch(ligand=PDB_CHECKER_SUBSEARCH, core=CORE_CHECKER_SUBSEARCH):
+    from rdkit import Chem
+    mol = next(Chem.SDMolSupplier(ligand))
+    core = Chem.rdmolfiles.MolFromPDBFile(core)
+    atoms_in_common = mol.GetSubstructMatches(core)[0]
+    atoms_in_common_after = ch.chec_substructure_match(core, mol, atoms_in_common)
+    # Exchange nitrogen due to wrong previous result
+    assert atoms_in_common != atoms_in_common_after
+    assert atoms_in_common_after[atoms_in_common.index(13)] == 12
+    assert atoms_in_common_after[atoms_in_common.index(12)] == 13
+    
