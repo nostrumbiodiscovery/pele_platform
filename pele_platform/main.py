@@ -262,6 +262,7 @@ class YamlParser(object):
         "protocol": "protocol",
         "frag_ai": "frag_ai",
         "frag_ai_iterations": "frag_ai_iterations",
+        "frag_restart": "frag_restart",
         "chain_core": "chain_core",
         "n_components": "n_components",
         "ppi": "ppi",
@@ -426,6 +427,7 @@ class YamlParser(object):
         self.frag_ai = data.get(valid_flags["frag_ai"], False)
         self.frag_ai_iterations = data.get(valid_flags["frag_ai_iterations"], False)
         self.chain_core = data.get(valid_flags["chain_core"], False)
+        self.frag_restart = data.get(valid_flags["frag_restart"], False)
 
         #PPI
         self.n_components = data.get(valid_flags["n_components"], None)
