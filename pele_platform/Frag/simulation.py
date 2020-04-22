@@ -37,6 +37,7 @@ class FragRunner(pele.EnviroBuilder):
         self.chain_core = args.chain_core if args.chain_core else self.simulation_params.get("chain_core", "L")
         self.box = cs.BOX.format(self.box_radius, self.box_center) if  self.box_radius else ""
         self.gridres = args.gridres
+        self.frag_restart = "-rst" if args.frag_restart else ""
         self.args = args
         
 
@@ -55,17 +56,18 @@ class FragRunner(pele.EnviroBuilder):
     def run(self):
         # If protocol let frag handle all flags
         if self.protocol:
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} -rst --cpus {} -{} --c_chain {} --rotamers {} --seed {}".format(
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} -{} --c_chain {} --rotamers {} --seed {} {}".format(
                 self.core_process, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
-                self.cpus, self.protocol, self.chain_core, self.gridres, self.seed)
+                self.cpus, self.protocol, self.chain_core, self.gridres, self.seed,
+                self.frag_restart)
         else:
             # Pass all possible flags
-            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} -rst --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {} --rotamers {} --c_chain {} --seed {}".format(
+            command = "python -m frag_pele.main -cp {} -sef {} --sch_python {} --contrl {} -nc -d {} -dat {} -doc {} --license {} --cpus {} --growing_steps {} --steps {} --pele_eq_steps {} --temperature  {} --rotamers {} --c_chain {} --seed {} {}".format(
                 self.core_process, self.input, self.spython, self.control_file,
                 self.pele_exec, self.pele_data, self.pele_documents, self.license,
                 self.cpus, self.gr_steps, self.frag_steps, self.frag_eq_steps, self.temperature,
-                self.gridres, self.chain_core, self.seed)
+                self.gridres, self.chain_core, self.seed, self.frag_restart)
         print(command)
         if not self.debug:
             os.system(command)
