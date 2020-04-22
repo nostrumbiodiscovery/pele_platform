@@ -1,0 +1,2 @@
+nohup pytest --cov-config=.coveragerc --cov .. --cov-report xml test_* > log.txt &
+bash <(curl -s https://codecov.io/bash) -t 8778202a-8b43-4f45-9c6f-82441dc352ec
