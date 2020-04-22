@@ -1,7 +1,18 @@
-from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection
+from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection, rotaxis
 from Bio.PDB.vectors import Vector
 import numpy as np
 import os, argparse
+
+
+def calculate_com(structure):
+    structure_mass = 0.0
+    com = np.zeros(3)
+    for atom in structure.get_atoms():
+        com = com + np.array(list(atom.get_vector())) * atom.mass
+        structure_mass += atom.mass
+    com = com / structure_mass
+    return com
+
 
 def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200, test=False, user_center=None):
     """
@@ -22,28 +33,17 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     COI = np.zeros(3)
     
     # get center of interface (if PPI)
-    _, res_number, atom_name = user_center.split(":")
-    for residue in structure.get_residues():
-        if residue.id[1] == int(res_number):
-            for atom in residue.get_atoms():
-                 if atom.name == atom_name: 
-                     COI = np.array(list(atom.get_vector())) 
+    if user_center:
+        _, res_number, atom_name = user_center.split(":")
+        for residue in structure.get_residues():
+            if residue.id[1] == int(res_number):
+                for atom in residue.get_atoms():
+                    if atom.name == atom_name: 
+                        COI = np.array(list(atom.get_vector())) 
   
-    # calculate protein COM
-    structure_mass = 0.0
-    com_protein = np.zeros(3)
-    for atom in structure.get_atoms():
-        com_protein = com_protein + np.array(list(atom.get_vector())) * atom.mass
-        structure_mass += atom.mass
-    com_protein = com_protein / structure_mass
-
-    # calculate ligand COM
-    ligand_mass = 0.0
-    com_ligand = np.zeros(3)
-    for atom in ligand.get_atoms():
-        com_ligand = com_ligand + np.array(list(atom.get_vector())) * atom.mass
-        ligand_mass += atom.mass
-    com_ligand = com_ligand / ligand_mass
+    # calculate protein and ligand COM
+    com_protein = calculate_com(structure)
+    com_ligand = calculate_com(ligand)
     
     # calculating the maximum d of the ligand
     coor_ligand = []
@@ -53,15 +53,15 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     coor_ligand = np.array(coor_ligand)
     coor_ligand_max = np.amax(coor_ligand, axis=0)
     d_ligand = np.sqrt(np.sum(coor_ligand_max ** 2))
-
+    
     # set threshold for near and far contacts based on ligand d
-    if d_ligand < 5.0:
+    if d_ligand/2 < 5.0:
         d5_ligand = 5.0
     else:
-        d5_ligand = d_ligand / 2
+        d5_ligand = d_ligand / 2 + 1
 
     if d_ligand > 8.0:
-        d8_ligand = d_ligand / 2 + 3
+        d8_ligand = d_ligand / 2 + 4
     else:
         d8_ligand = 8.0
 
@@ -88,7 +88,6 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
 
     # radius of the sphere from the origin
     D = 10.0 if user_center else np.ceil(6.0 + d)
-    #D = np.ceil(6.0 + d)
     print("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
 
     if user_center:
@@ -122,28 +121,47 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
             atom.set_coord(new_pos_lig_trans)
         
         # calculate ligand COM in the new position
-        new_ligand_COM = np.zeros(3)
-        ligand_mass = 0
+        new_ligand_COM = calculate_com(ligand)
+        print("new ligand COM",new_ligand_COM)
+        # rotate ligand
+        vector = Vector(new_ligand_COM)
+        rotation_matrix = rotaxis(np.random.randint(0, 2*np.pi), vector)
+
         for atom in ligand.get_atoms():
-            new_ligand_COM = new_ligand_COM + np.array(list(atom.get_vector())) * atom.mass
-            ligand_mass += atom.mass
-        new_ligand_COM = new_ligand_COM / ligand_mass
+            coords_after = atom.get_vector().left_multiply(rotation_matrix)
+            atom.set_coord(coords_after)
 
         # check if it's inside the sampling sphere
         dist = np.sqrt((new_ligand_COM[0] - sphere_cent[0]) ** 2 + (new_ligand_COM[1] - sphere_cent[1]) ** 2 + (
                 new_ligand_COM[2] - sphere_cent[2]) ** 2)
 
         if dist < D:
-
+            print("is inside the sampling sphere")
             # check contacts at: 5A (no contacts) and 8A (needs contacts)
             protein_list = Selection.unfold_entities(structure, "A")
             contacts5 = []
-            contacts5 = NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "A")
             contacts8 = []
-            contacts8 = NeighborSearch(protein_list).search(new_ligand_COM, d8_ligand, "A")
+            ligand_atoms = list(ligand.get_atoms())
+            
+            start = np.array(list(ligand_atoms[0].get_vector()))
+            stop = np.array(list(ligand_atoms[-1].get_vector()))
+            mid = np.array(list(ligand_atoms[int(len(ligand_atoms)/2)].get_vector()))
 
-            if contacts8 and not contacts5:
+            contacts5.append(NeighborSearch(protein_list).search(start, d5_ligand, "S"))
+            contacts5.append(NeighborSearch(protein_list).search(stop, d5_ligand, "S"))
+            contacts5.append(NeighborSearch(protein_list).search(mid, d5_ligand, "S"))
+            contacts5.append( NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "S"))
+            #contacts8.append(NeighborSearch(protein_list).search(np.array(list(ligand_atoms[0].get_vector())), d8_ligand, "A"))
+            #contacts8.append(NeighborSearch(protein_list).search(np.array(list(ligand_atoms[-1].get_vector())), d8_ligand, "A"))
+            #contacts8.append(NeighborSearch(protein_list).search(np.array(list(ligand_atoms[int(len(ligand_atoms)/2)].get_vector())), d8_ligand, "A"))
+
+            #contacts5 = NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "A")
+            contacts8 = NeighborSearch(protein_list).search(new_ligand_COM, d8_ligand, "S")
+            print("contacts at 5A", contacts5)
+            print("contacts at 8A", contacts8)
+            if contacts8 and not any(contacts5):
                 j += 1
+                print("saving to file...", j)
                 io = PDBIO()
                 io.set_structure(ligand)
                 output_name = os.path.join(outputfolder, 'ligand{}.pdb'.format(j))
@@ -206,6 +224,6 @@ def parse_args():
 
 if __name__ == "__main__":
     ligand, receptor, resname, poses, output_folder = parse_args()
-    output, sphere_cent, D = randomize_starting_position(ligand, receptor, output_folder, poses, None, user_center="B:83:HG1")
+    output, sphere_cent, D = randomize_starting_position(ligand, receptor, output_folder, poses, None, user_center=None)
     # Make format ready to be captured"
     print("OUTPUT; {}; {}; {}".format(output, sphere_cent, D))
