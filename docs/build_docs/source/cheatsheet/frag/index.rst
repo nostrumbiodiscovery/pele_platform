@@ -32,6 +32,7 @@ From sdf
 
     frag_core: "/home/daniel/PR_core.pdb"
     frag_ligands: "/home/daniel/grown_ligands.sdf"
+    resname: "LIG"
     cpus: 48
     chain_core: "L"
 
@@ -42,8 +43,10 @@ From serie file
 
     frag_core: "../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb"
     frag_input: "../pele_platform/Examples/frag/sequential.conf"
+    resname: "LIG"
     cpus: 48
     chain_core: "L"
+
 For more about the serie file please refer to: https://carlesperez94.github.io/frag_pele/first_steps.html
 
 

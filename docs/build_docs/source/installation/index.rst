@@ -6,7 +6,7 @@ Conda (recommended)
 
 .. code-block:: bash
 
-    conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform==1.4.0
+    conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform==1.4.2
     
     export PELE=/path/to/PELE-1.X/
 
@@ -24,13 +24,13 @@ Pypi
 
     pip install numpy cython
 
-    pip install pele_platform==1.4.0
+    pip install pele_platform==1.4.2
 
     export PELE=/path/to/PELE-1.X/
 
     export SCHRODINGER=/path/to/schoringer/20XX/
     
-    conda install rdkit (To work with frag-pele)
+    conda install rdkit (Or compile from source code)
 
     Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
     specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
