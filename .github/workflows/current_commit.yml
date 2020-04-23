@@ -1,4 +1,4 @@
-name: PELEPlatform currentCommit
+name: Source code Installation
 on: [push]
 
 jobs:
