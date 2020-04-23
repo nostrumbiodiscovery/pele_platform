@@ -1,4 +1,4 @@
-name: Analogs Finder From Conda
+name: Conda Installation
 on: [push]
 
 jobs:
