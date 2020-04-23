@@ -1,6 +1,5 @@
 import os
 import argparse
-import pele_platform.main as pl
 
 
 

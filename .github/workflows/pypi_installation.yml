@@ -1,4 +1,4 @@
-name: PELEPlatform from Pypi
+name: Pypi Installation
 on: [push]
 
 jobs:
