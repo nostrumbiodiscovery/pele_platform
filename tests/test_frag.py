@@ -3,6 +3,7 @@ import glob
 import shutil
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
+from tests import test_adaptive as td
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -10,6 +11,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 FRAG_ARGS = os.path.join(test_path, "frag/input.yaml")
 FRAG_SIM_ARGS = os.path.join(test_path, "frag/input_sim.yaml")
 FRAG_CORE_ARGS = os.path.join(test_path, "frag/input_core.yaml")
+FLAGS_ARGS = os.path.join(test_path, "frag/input_flags.yaml")
 FRAG_AI_ARGS = os.path.join(test_path, "frag/input_ai.yaml")
 
 
@@ -28,3 +30,18 @@ def test_frag_core(ext_args=FRAG_CORE_ARGS, output="1w7h_preparation_structure_2
     if os.path.exists(output):
         shutil.rmtree(output)
     job = main.run_platform(ext_args)
+
+def test_flags(ext_args=FLAGS_ARGS, output="water_processed_processed_aminoCA1N1"):
+    FRAG_FLAGS = ['"seed" : 3000',]
+    errors = []
+    if os.path.exists(output): shutil.rmtree(output, ignore_errors=True)
+    job = main.run_platform(ext_args)
+    folder = output
+    #if not os.path.exists(os.path.join(folder, "DataLocal/LigandRotamerLibs/STR.rot.assign")) or not os.path.exists(os.path.join(folder, "DataLocal/LigandRotamerLibs/MG.rot.assign")):
+        #errors.append("External rotamer flag not working")
+    #if not os.path.exists(os.path.join(folder, "DataLocal/Templates/OPLS2005/HeteroAtoms/strz")) or not os.path.exists(os.path.join(folder, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz")):
+        #errors.append("External templates flag not working")
+    errors = td.check_file(folder, "control_folder/0_pele_template.conf", td.PELE_VALUES + FRAG_FLAGS, errors)
+    errors = td.check_file(folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors)
+    assert not errors
+

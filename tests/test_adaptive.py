@@ -26,19 +26,19 @@ PCA2_ARGS = os.path.join(test_path, "pca/input_str.yaml")
 FLAGS_ARGS = os.path.join(test_path, "flags/input.yaml")
 RESCORING_ARGS = os.path.join(test_path, "rescoring/input.yaml")
 
-ADAPTIVE_VALUES = ["water_processed_processed.pdb", "SB4", '"outputPath": "output_sim"',
+ADAPTIVE_VALUES = ["water_processed.pdb", "SB4", '"outputPath": "output_sim"',
     '"processors" : 3', '"peleSteps" : 1,', '"iterations" : 1,', '"runEquilibration" : true,',
     '"equilibrationLength" : 11,', '"seed": 3000',
     '"values" : [1, 2, 3],', '"conditions": [0.1, 0.2, 0.3]', '"epsilon": 0.3', 
     '"metricColumnInReport" : 3,', '"metricColumnInReport" : 3,', '"type" : "epsilon"',
     'exitContinuous', '"data": "done"', '"executable": "done"', '"documents": "done"']
 
-PELE_VALUES = ['"reportPath": "$OUTPUT_PATH/rep",', '"trajectoryPath": "$OUTPUT_PATH/traj.xtc"',
+PELE_VALUES = ['rep', 'traj.xtc',
                 'OBC', '"anmFrequency" : 3,', '"sideChainPredictionFrequency" : 3,',
                 '"minimizationFrequency" : 3,', '"temperature": 3000,',
-                '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:155:_CA_" },',
+                '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:111:_CA_" },',
                 '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
-                '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:15:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
                 '"radius": 3000',
                 '"fixedCenter": [30,30,30]',
                 'tests/native.pdb"',

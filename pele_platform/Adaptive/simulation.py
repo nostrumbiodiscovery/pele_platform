@@ -10,22 +10,24 @@ import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.system_prep as sp
-import pele_platform.Utilities.Helpers.prepwizard as pp
 import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.center_of_mass as cm
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
-import pele_platform.Utilities.Helpers.external_files as ext
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
 import pele_platform.Analysis.plots as pt
+import pele_platform.RNA.prep as pr
 
 
 
 
 def run_adaptive(args):
+    if args.rna:
+        args.system = pr.fix_rna_pdb(args.system)
+        args.no_ppp = True
     # Build Folders and Logging and env variable that will containt
     #all main  attributes of the simulation
     env = pele.EnviroBuilder()
@@ -41,10 +43,6 @@ def run_adaptive(args):
 
     elif not env.only_analysis:
 
-        ##PREPWIZARD##
-        if args.prepwizard:
-            env.system = pp.run_prepwizard(env.system) 
-
 
         env.logger.info("System: {}; Platform Functionality: {}\n\n".format(env.residue, env.software))
         
@@ -54,6 +52,7 @@ def run_adaptive(args):
             syst = sp.SystemBuilder(env.system, None, None, env.pele_dir)
         
         env.logger.info("Prepare complex {}".format(syst.system))
+           
         ########Choose your own input####################
         # User specifies more than one input
         if env.input:
@@ -108,13 +107,6 @@ def run_adaptive(args):
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
         env.logger.info("Complex {} prepared\n\n".format(env.system))
 
-        ############Build metrics##################
-        env.logger.info("Setting metrics")
-        metrics = mt.Metrics_Builder(syst.system)
-        if env.atom_dist:
-            metrics.distance_to_atom(args.atom_dist)
-        env.metrics = "\n".join(metrics.get_metrics()) if metrics.get_metrics() else None
-        env.logger.info("Metrics set\n\n")
 
         ############Parametrize Ligand###############
         if env.perturbation:

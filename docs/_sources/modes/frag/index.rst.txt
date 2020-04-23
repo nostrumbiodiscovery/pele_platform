@@ -18,6 +18,8 @@ a sdf file with the full ligand. **All ligands must have molecule name**
 - **frag_core**: Core of the molecule we want to add fragments to. Required parameter
 
 - **frag_ligands**: Sdf with the aimed grown ligands
+
+- **resname**: Residue name of the frag_core ligand
  
 - **cpus**: Cpus to use. Default: 48
 

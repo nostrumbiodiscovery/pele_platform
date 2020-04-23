@@ -20,3 +20,11 @@ class Metrics_Builder():
             return self.metrics
         else:
             return ["",]
+
+
+def build_metrics(system, atom_dist):
+    metrics = Metrics_Builder(system)
+    if atom_dist:
+        metrics.distance_to_atom(atom_dist)
+    metrics_out = "\n".join(metrics.get_metrics()) if metrics.get_metrics() else None
+    return metrics_out

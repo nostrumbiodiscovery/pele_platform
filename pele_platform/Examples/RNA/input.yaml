@@ -1,0 +1,12 @@
+system: "../pele_platform/Examples/RNA/5C45_prep.pdb"
+chain: "Z"
+resname: "51B"
+rna: true
+ppi: true
+#test: true
+skip_preprocess: true
+remove_constraints: true
+cpus: 20
+anm_freq: 0
+rmsd_pdb: "5C45_prep_proc.pdb"
+adaptive_restart: true

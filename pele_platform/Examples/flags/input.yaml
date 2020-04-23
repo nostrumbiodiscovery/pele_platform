@@ -6,7 +6,7 @@ cpus: 3
 seed: 3000
 iterations: 1
 steps: 1
-preprocess_receptor: true
+skip_preprocess: true
 gridres: 60
 maxtorsion: 2
 templates:
@@ -38,8 +38,6 @@ equilibration_steps: 30
 report: rep
 traj: traj.xtc
 ca_constr: 3
-interval_constr: 3
-metal_constr: 300
 water_constr: 20
 rmsd_pdb: "native.pdb"
 working_folder: "NOR_solvent_OBC"

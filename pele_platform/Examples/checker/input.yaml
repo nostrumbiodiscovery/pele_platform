@@ -1,0 +1,11 @@
+usesrun: true
+system: '../pele_platform/Examples/ppi/complex.pdb'
+chain: 'Z'
+resname: 'API'
+seed: 12345
+poses: 3
+atom_dist:
+- 4555
+- 10
+test: true
+strange: true

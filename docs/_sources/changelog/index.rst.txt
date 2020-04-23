@@ -3,6 +3,23 @@ Versions
 
 Here we report the main changes for each version
 
+v1.4.2 (23/04/2020)
+====================
+
+- FragPELE better tested
+
+- Coverage Platform up to 90%
+
+- Pyyaml checker for unexisting keywords in input
+
+- Improve substructure search on symmetric cases
+
+- Minor fixes
+
+v1.4.1 (23/04/2020)
+======================
+
+- Wrongly updated
 
 v1.4.0 (30/03/2020)
 =======================
