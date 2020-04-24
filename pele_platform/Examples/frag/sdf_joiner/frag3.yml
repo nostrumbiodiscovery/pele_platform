@@ -1,0 +1,7 @@
+frag_core: "../pele_platform/Examples/frag/sdf_joiner/core3.pdb"
+frag_ligands: "../pele_platform/Examples/frag/sdf_joiner/frag3.sdf"
+resname: "1F0"
+cpus: 10
+test: true
+chain_core: "L"
+debug: true

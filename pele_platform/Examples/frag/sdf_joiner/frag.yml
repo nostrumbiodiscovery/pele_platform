@@ -1,0 +1,7 @@
+frag_core: "../pele_platform/Examples/frag/sdf_joiner/4RFM_proc.pdb"
+frag_ligands: "../pele_platform/Examples/frag/sdf_joiner/frag.sdf"
+resname: "DRG"
+cpus: 10
+test: true
+chain_core: "L"
+debug: true

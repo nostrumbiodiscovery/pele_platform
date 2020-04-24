@@ -13,6 +13,7 @@ FRAG_SIM_ARGS = os.path.join(test_path, "frag/input_sim.yaml")
 FRAG_CORE_ARGS = os.path.join(test_path, "frag/input_core.yaml")
 FLAGS_ARGS = os.path.join(test_path, "frag/input_flags.yaml")
 FRAG_AI_ARGS = os.path.join(test_path, "frag/input_ai.yaml")
+FRAG_JOINER_ARGS = os.path.join(test_path, "frag/sdf_joiner/*.yml")
 
 
 def test_frag(ext_args=FRAG_ARGS, output="1w7h_preparation_structure_2w_aminoC1N1"):
@@ -45,3 +46,10 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_processed_aminoCA1N1
     errors = td.check_file(folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors)
     assert not errors
 
+def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
+    files = glob.glob(ext_args)
+    for file in files:
+        try:
+            job = main.run_platform(file)
+        except Exception:
+            assert False
