@@ -102,25 +102,33 @@ class FragRunner(pele.EnviroBuilder):
         for ligand in ligands_grown:
             try:
                 line, fragment = self._create_fragment_from_ligand(ligand, ligand_core)
-            except (ValueError, AttributeError):
+            except Exception as e:
                 try:
-                    line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
-                except (IndexError):
-                    print("LIGAND SKIPPED")
-                    continue
+                    # Try to fix simmetry
+                    line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, simmetry=True)
+                except Exception as e:
+                    try:
+                        # Try with second substructure search
+                        line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
+                    except Exception as e:
+                        #Skip the ligand
+                        print("Ligand Skipped")
+                        print(e)
+                        continue
             lines.append(line)
             self.fragments.append(fragment)
+            print(f"Ligand {fragment.file} preprocessed")
         with open(self.input, "w") as fout:
             fout.write(("\n").join(lines))
 
 
-    def _create_fragment_from_ligand(self, ligand, ligand_core, result=0, substructure=True):
+    def _create_fragment_from_ligand(self, ligand, ligand_core, result=0, substructure=True, simmetry=False):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
         import rdkit.Chem.rdchem as rc
         import rdkit.Chem.AllChem as rp
         fragment, old_atoms, hydrogen_core, atom_core = hp._build_fragment_from_complex(
-            self.core, self.residue, ligand, ligand_core, result, substructure)
+            self.core, self.residue, ligand, ligand_core, result, substructure, simmetry)
         rp.EmbedMolecule(fragment)
         fragment = hp._retrieve_fragment(
             fragment, old_atoms, atom_core, hydrogen_core)
