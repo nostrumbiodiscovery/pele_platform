@@ -4,7 +4,7 @@ def prepare_structure(protein_file, ligand_pdb, chain):
     with open(protein_file, "r") as file:
         lines = file.readlines()
         for line in lines:
-            if ((line.startswith("ATOM") or line.startswith("HETATM")) and line[21:22].strip() != chain) or line.startswith("END"):
+            if ((line.startswith("ATOM") or line.startswith("HETATM")) and line[21:22].strip() not in chain) or line.startswith("END"):
                 to_remove.append(line)
         protein = [line for line in lines if line not in to_remove]
     

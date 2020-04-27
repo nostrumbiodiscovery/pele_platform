@@ -32,6 +32,7 @@ def run_ppi(parsed_yaml):
     parsed_yaml.ppi = None
     parsed_yaml.poses = None
     parsed_yaml.rescoring = True
+    parsed_yaml.iterations = 1
     parsed_yaml.steps = 100
     parsed_yaml.box_center = simulation1.box_center
     parsed_yaml.box_radius = 100  # We should have a look at how to set no box but at the moment super big

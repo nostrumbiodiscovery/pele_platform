@@ -2,6 +2,7 @@ from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection, rotaxis
 from Bio.PDB.vectors import Vector
 import numpy as np
 import os, argparse
+import time
 
 
 def calculate_com(structure):
@@ -88,6 +89,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
 
     # radius of the sphere from the origin
     D = 10.0 if user_center else np.ceil(6.0 + d)
+    D_initial = D
     print("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
 
     if user_center:
@@ -97,8 +99,8 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
 
     j = 0
     print("Generating {} poses...".format(nposes))
+    start_time = time.time()
     while (j < nposes):
-
         # generate random coordinates
         phi = np.random.uniform(0, 2 * np.pi)
         costheta = np.random.uniform(-1, 1)
@@ -122,7 +124,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
         
         # calculate ligand COM in the new position
         new_ligand_COM = calculate_com(ligand)
-        print("new ligand COM",new_ligand_COM)
+        
         # rotate ligand
         vector = Vector(new_ligand_COM)
         rotation_matrix = rotaxis(np.random.randint(0, 2*np.pi), vector)
@@ -136,7 +138,6 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
                 new_ligand_COM[2] - sphere_cent[2]) ** 2)
 
         if dist < D:
-            print("is inside the sampling sphere")
             # check contacts at: 5A (no contacts) and 8A (needs contacts)
             protein_list = Selection.unfold_entities(structure, "A")
             contacts5 = []
@@ -147,26 +148,26 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
             stop = np.array(list(ligand_atoms[-1].get_vector()))
             mid = np.array(list(ligand_atoms[int(len(ligand_atoms)/2)].get_vector()))
 
-            contacts5.append(NeighborSearch(protein_list).search(start, d5_ligand, "S"))
-            contacts5.append(NeighborSearch(protein_list).search(stop, d5_ligand, "S"))
-            contacts5.append(NeighborSearch(protein_list).search(mid, d5_ligand, "S"))
             contacts5.append( NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "S"))
-            #contacts8.append(NeighborSearch(protein_list).search(np.array(list(ligand_atoms[0].get_vector())), d8_ligand, "A"))
-            #contacts8.append(NeighborSearch(protein_list).search(np.array(list(ligand_atoms[-1].get_vector())), d8_ligand, "A"))
-            #contacts8.append(NeighborSearch(protein_list).search(np.array(list(ligand_atoms[int(len(ligand_atoms)/2)].get_vector())), d8_ligand, "A"))
-
-            #contacts5 = NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "A")
             contacts8 = NeighborSearch(protein_list).search(new_ligand_COM, d8_ligand, "S")
-            print("contacts at 5A", contacts5)
-            print("contacts at 8A", contacts8)
             if contacts8 and not any(contacts5):
                 j += 1
-                print("saving to file...", j)
                 io = PDBIO()
                 io.set_structure(ligand)
                 output_name = os.path.join(outputfolder, 'ligand{}.pdb'.format(j))
                 io.save(output_name)
                 output.append(output_name)
+                start_time = time.time()
+
+            end_time = time.time()
+            total_time = end_time - start_time
+            if total_time > 60:
+                D +=1
+                if D - D_initial >= 20:
+                    print("Original box increased by 20A. Aborting...")
+                    break
+                start_time = end_time
+                print("Increasing sampling box by 1A.")
     print("{} poses created successfully.".format(j))
     return output,  D, list(sphere_cent)
 
@@ -199,7 +200,6 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
                 ligand_pdb_line = pdb_block.format(coord)
                 ligand_content.append(ligand_pdb_line)
 
-
             for j, line in enumerate(ligand_content):
                 ligand_content[j] = line[:6] + "{:>5}".format(atom_nums[j]) + line[11:]
         content_join_file = receptor_content + ["TER\n"] + ligand_content + ["TER\n"] + connects + ["END"]
@@ -218,12 +218,13 @@ def parse_args():
     parser.add_argument("--resname", type=str, required=True, help="Ligand resname")
     parser.add_argument("--poses", type=int, default=20, help="How many input poses to produce")
     parser.add_argument("--output_folder", type=str, default=".", help="output folder")
+    parser.add_argument("--user_center", type=str, default=None, help="Center of protein-protein interface (chain:residue number:atom name)")
     args = parser.parse_args()
-    return os.path.abspath(args.ligand), os.path.abspath(args.receptor), args.resname, args.poses, args.output_folder
+    return os.path.abspath(args.ligand), os.path.abspath(args.receptor), args.resname, args.poses, args.output_folder, args.user_center
 
 
 if __name__ == "__main__":
-    ligand, receptor, resname, poses, output_folder = parse_args()
-    output, sphere_cent, D = randomize_starting_position(ligand, receptor, output_folder, poses, None, user_center=None)
+    ligand, receptor, resname, poses, output_folder, user_center = parse_args()
+    output, sphere_cent, D = randomize_starting_position(ligand, receptor, output_folder, poses, None, user_center)
     # Make format ready to be captured"
-    print("OUTPUT; {}; {}; {}".format(output, sphere_cent, D))
+    print("OUTPUT; {}. Sphere center: {}. D: {}".format(output, sphere_cent, D))
