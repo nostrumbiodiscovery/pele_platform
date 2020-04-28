@@ -1,4 +1,5 @@
 from pele_platform.PPI.main import run_ppi
+from pele_platform.PPI.preparation import prepare_structure 
 from pele_platform.main import parseargs_yaml, YamlParser
 from pele_platform.constants import constants as cs
 from pele_platform import main
@@ -11,7 +12,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 yaml = os.path.join(test_path, "PPI/input.yaml")
 
 
-def test_ppi(energy_result=-2.56, yaml=yaml):
+def test_ppi(energy_result=-2.18, yaml=yaml):
   
     #Function to test
     job, _ = main.run_platform(yaml)
@@ -26,3 +27,25 @@ def test_ppi(energy_result=-2.56, yaml=yaml):
     assert nfiles == job.n_components 
     assert best_energy == energy_result
     assert nfiles_refinement
+
+
+def test_prepare_structure():
+
+    protein_file = os.path.join(test_path, "PPI/1tnf_prep.pdb")
+    new_protein_file = "1tnf_prep_prep.pdb"
+    ligand_pdb = os.path.join(test_path, "PPI/1tnf_ligand.pdb")
+    chain = ["A", "B"]
+
+    prepare_structure(protein_file, ligand_pdb, chain)
+
+    with open(new_protein_file, "r") as file:
+        lines = file.readlines()
+        chains = []
+        for line in lines:
+            if line.startswith("HETATM") or line.startswith("ATOM"):
+                chains.append(line[21:22].strip())
+    
+    assert "C" not in chains
+    
+    for f in glob.glob("*_prep.pdb"):
+        os.remove(f)

@@ -14,6 +14,7 @@ def run_ppi(parsed_yaml):
    
     # remove chains except for "protein" flag
     protein_file = prepare_structure(protein_file, ligand_pdb, chain)
+    parsed_yaml.system = protein_file
 
     # start simualtion 1 - induced fit
     parsed_yaml.induced_fit_exhaustive = True
