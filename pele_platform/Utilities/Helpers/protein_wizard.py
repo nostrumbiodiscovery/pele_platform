@@ -12,7 +12,6 @@ def prep_complex(complex, input_file="input.yaml", prep_output="", final_output=
 
 
 def run_prepwizard(complex, prep_output="", debug=False):
-
     input_path = os.path.abspath(complex)
     if not prep_output:
         prep_output = os.path.basename(complex.replace(".pdb", "_prep.pdb"))
@@ -35,7 +34,7 @@ def change_repited_chain_and_atoms(complex, residue, chain, final_output=""):
 
     with open(complex, "r") as pdb:
         lines = pdb.readlines()
-        all_chains = [line[21:22].strip() for line in lines if line.startswith("ATOM") or line.startswith("HETATM")]
+        all_chains = [line[21:22].strip() for line in lines if (line.startswith("ATOM") or line.startswith("HETATM")) and line[17:20] != input_resname]
         lig_chains = [line[21:22].strip() for line in lines if line[17:20] == input_resname]
         lig_atomnames = [line[12:16].strip() for line in lines if line [17:20] == input_resname]
     
@@ -43,20 +42,21 @@ def change_repited_chain_and_atoms(complex, residue, chain, final_output=""):
     lig_occ = all_chains.count(lig_chains[0])
     lig_length = len(lig_chains)
     
-    unique_chain = True if lig_occ == lig_length else False
+    unique_chain = True if lig_chains[0] not in all_chains else False
     unique_atomname = True if len(set(lig_atomnames)) == len(lig_atomnames) else False
+
 
 
     with open(complex, "r") as file:
         lines = file.readlines()
         dict = {} 
         atom_map = {}
-        with open(final_output, "w") as final_output:
+        with open(final_output, "w") as fo:
             for line in lines:
                 if unique_chain == False:
                     if line[17:20] == input_resname:
                         repl_chain = "Z"
-                        line = line[0:21] + line[21] + line[22:]
+                        line = line[0:21] + repl_chain + line[22:]
                 else:
                     repl_chain = lig_chains[0]
                 if unique_atomname == False:
@@ -72,8 +72,8 @@ def change_repited_chain_and_atoms(complex, residue, chain, final_output=""):
                             replacement = replacement + " "*(4 - len(replacement))
                         atom_map[line[12:16]] =  replacement
                         line = line.replace(line[12:16], replacement)
-                final_output.write(line)
-    return final_output.name, repl_chain, atom_map
+                fo.write(line)
+    return fo.name, repl_chain, atom_map
 
 
 def parse_args():

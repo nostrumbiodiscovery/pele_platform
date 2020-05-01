@@ -3,8 +3,10 @@ chain: "X"
 resname: "DKM"
 rna: true
 induced_fit_fast: true
+rotamers:
+- "DKM.rot.assign"
 #ppi: true
-#anm_freq: 0
+anm_freq: 0
 #test: true
 skip_preprocess: true
 remove_constraints: true
