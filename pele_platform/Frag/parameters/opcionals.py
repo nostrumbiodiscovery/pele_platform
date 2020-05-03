@@ -1,4 +1,5 @@
 import pele_platform.Utilities.Helpers.constraints as cst
+import pele_platform.constants.constants as cs
 
 class FragOpcionalParameters():
 

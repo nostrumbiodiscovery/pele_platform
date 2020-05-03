@@ -29,7 +29,7 @@ class FragRunner(mn.FragParameters):
         return self.control_file
 
     def run(self):
-            frag.main(self.core_process, self.gr_steps, self.criteria, self.plop_path, self.spython, self.pele_exec, self.control_file, self.license, self.output_folder,
+         frag.main(self.core_process, self.gr_steps, self.criteria, self.plop_path, self.spython, self.pele_exec, self.control_file, self.license, self.output_folder,
          self.report_name, self.traj_name, self.cluster_folder, self.cpus, self.distcont, self.threshold, self.epsilon, self.condition, self.metricweights,
          self.nclusters, self.frag_eq_steps, self.frag_restart, self.min_overlap, self.max_overlap, self.input,
          self.chain_core, self.frag_chain, self.frag_steps, self.temperature, self.seed, self.gridres, self.banned, self.limit, self.mae,

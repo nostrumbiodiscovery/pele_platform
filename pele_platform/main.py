@@ -10,6 +10,7 @@ import os
 import pele_platform.Adaptive.simulation as ad
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Frag.simulation as fr
+import pele_platform.Utilities.Helpers.environment_variables as ev
 from pele_platform.PPI.main import run_ppi
 
 class Launcher():
@@ -30,7 +31,7 @@ class Launcher():
 
     def launch(self):
         if not self._args.no_check:
-            self._check_variables()
+            ev.check_variables(self._args)
         if self._args.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
         elif self._args.pele_feature == "PPI":
@@ -46,45 +47,10 @@ class Launcher():
             if job_variables.ligands: #Full ligands as sdf
                 job_variables.prepare_input_file()
                 job_variables.run()
-            elif job_variables.ai:
-                job_variables.grow_ai()
             else:
                 job_variables.run()
             # Execute job
         return job_variables
-
-    def _check_variables(self):
-        variables = [ 
-        EnvVariable("pele_data", self._args.pele_data, os.path.join(cs.PELE, "Data"), "--pele_data /path/to/data/folder/", "export PELE=/path/to/PELE-1.X/"),
-        EnvVariable("pele_documents", self._args.pele_documents, os.path.join(cs.PELE, "Documents"), "--pele_documents /path/to/documents/folder", "export PELE=/path/to/PELE-1.X/"),
-        EnvVariable("pele_exec", self._args.pele_exec, os.path.join(cs.PELE, "bin/Pele_mpi"), "--pele_exec /path/to/PELE_exec", "export PELE=/path/to/PELE-1.X/"),
-        EnvVariable("pele_license", self._args.pele_license, os.path.join(cs.PELE, "licenses"), "--pele_license /path/to/licenses", "export PELE=/path/to/PELE-1.X/"),
-        EnvVariable("schrodinger", self._args.schrodinger, cs.SCHRODINGER, "--schrodinger /path/to/schrodinger-20XX/", "export SCHRODINGER=/path/to/schrodinger-20XX/")
-        ]
-        for variable in variables:
-            variable.is_valid() 
-
-
-class EnvVariable():
-
-    def __init__(self, name, variable, default, flag, env_var):
-        self.name = name
-        self.variable = variable
-        self.default = default
-        self.flag = flag
-        self.env_var = env_var
-        
-    def is_valid(self):
-        if self.variable:
-            if os.path.exists(self.variable):
-                return True
-        elif self.default:
-           if os.path.exists(self.default):
-               return True
-
-        raise ValueError("{} not found. If you have the standard installation \
-export the environment variable by doing: {}.\
- Else define the location of the library via the flag: {}".format(self.name, self.env_var, self.flag))
 
 
 def parseargs_yaml(args=[]):
