@@ -167,6 +167,7 @@ class YamlParser(object):
         "protocol": "protocol",
         "frag_ai": "frag_ai",
         "frag_ai_iterations": "frag_ai_iterations",
+        "frag_run": "frag_run",
         "frag_restart": "frag_restart",
         "frag_output_folder": "frag_output_folder", 
         "chain_core": "chain_core",
@@ -325,6 +326,7 @@ class YamlParser(object):
         self.no_check = data.get(valid_flags["no_check"], False)
 
         #Frag
+        self.frag_run = data.get(valid_flags["frag_run"], True)
         self.frag_core = data.get(valid_flags["frag_core"], False)
         self.frag_input = data.get(valid_flags["frag_input"], False)
         self.frag_ligands = data.get(valid_flags["frag_ligands"], False)

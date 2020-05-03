@@ -45,7 +45,6 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_processed_aminoCA1N1
     errors = td.check_file(folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors)
     assert not errors
 
-"""
 def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     files = glob.glob(ext_args)
     for file in files:
@@ -53,4 +52,3 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
             job = main.run_platform(file)
         except Exception:
             assert False
-"""

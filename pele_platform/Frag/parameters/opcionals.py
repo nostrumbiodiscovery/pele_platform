@@ -4,6 +4,8 @@ import pele_platform.constants.constants as cs
 class FragOpcionalParameters():
 
     def __init__(self, args):
+        #SIMULATION CONTROL
+        self.frag_run = args.frag_run
         #CONSTRAINTS
         self.constraints = cst.retrieve_constraints(self.core, {}, {}, self.ca_constr)
         #CHAIN
