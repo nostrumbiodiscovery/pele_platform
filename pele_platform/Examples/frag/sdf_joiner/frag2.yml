@@ -1,4 +1,5 @@
 frag_core: "../pele_platform/Examples/frag/sdf_joiner/core2.pdb"
+frag_run: False
 frag_ligands: "../pele_platform/Examples/frag/sdf_joiner/frag2.sdf"
 resname: "LIG"
 cpus: 10
