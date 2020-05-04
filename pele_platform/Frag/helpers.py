@@ -6,7 +6,7 @@ import pele_platform.Errors.custom_errors as ce
 
 
 
-def _search_core_fragment_linker(ligand, ligand_core, result=0):
+def _search_core_fragment_linker(ligand, ligand_core, result=0, check_simmetry=False):
     """ Given mol1 and mol2 return the linker atoms"""
     substructure_results = ligand.GetSubstructMatches(ligand_core)
     try:
@@ -15,7 +15,8 @@ def _search_core_fragment_linker(ligand, ligand_core, result=0):
         raise IndexError("Make sure core from pdb and full fragment are the same. Be carefull \
 that either core and fragment have corectly define aromatic bonds. Also, all fragments must have different molecule name")
     # Sometime substructure search mess up with symettry. Check that!
-    core_atoms = ch.chec_substructure_match(ligand, ligand_core, core_atoms) 
+    if check_simmetry:
+        core_atoms = ch.chec_substructure_match(ligand, ligand_core, core_atoms) 
     for atom in ligand.GetAtoms():
         if atom.GetIdx() in core_atoms or atom.GetAtomicNum() == 1:
             continue
@@ -26,7 +27,7 @@ that either core and fragment have corectly define aromatic bonds. Also, all fra
                     return core_atoms.index(neighbour.GetIdx()), core_atoms, substructure_results
 
 
-def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0, substructure=True):
+def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0, substructure=True, simmetry=False):
     from rdkit import Chem
     import rdkit.Chem.rdmolops as rd
     import rdkit.Chem.rdchem as rc
@@ -34,7 +35,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
 
     #Retrieve atom core linking fragment
     try:
-        atom_core_idx, atoms_core, _ = _search_core_fragment_linker(ligand, ligand_core, result)
+        atom_core_idx, atoms_core, _ = _search_core_fragment_linker(ligand, ligand_core, result, simmetry)
     except TypeError:
         raise ce.SameMolecule("Core and ligand are the exact same molecule. Check your inputs")
     atom_core = at.Atom(ligand_core, atom_core_idx)

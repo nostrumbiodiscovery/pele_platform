@@ -1,0 +1,13 @@
+system_fetch: "2L94.pdb"
+chain: "A"
+resname: "L94"
+rna: true
+rotamers:
+- "L94.rot.assign"
+induced_fit_fast: true
+#ppi: true
+anm_freq: 0
+#test: true
+skip_preprocess: true
+remove_constraints: true
+cpus: 20
