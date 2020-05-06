@@ -2,11 +2,11 @@ import random
 import os
 import glob
 import pele_platform.constants.constants as cs
+import pele_platform.constants.pele_params as pp
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
-from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
 from pele_platform.Utilities.Parameters.SimulationParams.Allosteric import allosteric
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
@@ -18,7 +18,7 @@ LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, allosteric.AllostericParams, ppi.PPIParams): # rna.RNAParams
+    inout_params.InOutParams, pca.PCAParams, allosteric.AllostericParams, ppi.PPIParams): # rna.RNAParams
 
 
     def __init__(self, args):
@@ -40,7 +40,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         glide_params.GlideParams.__init__(self, args)
         bias_params.BiasParams.__init__(self, args)
         inout_params.InOutParams.__init__(self, args)
-        waterexp_params.WaterExp.__init__(self, args)
         pca.PCAParams.__init__(self, args)
         allosteric.AllostericParams.__init__(self, args)
         ppi.PPIParams.__init__(self, args)
@@ -161,11 +160,10 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_overlap = args.water_overlap if args.water_overlap else self.simulation_params.get("water_overlap", 0.78)
         self.water_constr = args.water_constr if args.water_constr else self.simulation_params.get("water_constr", 0)
         self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
-        if args.water_lig or args.water_exp:
-            water_arg = args.water_lig if args.water_lig else args.water_exp
-            if "all_waters" in [args.water_lig, args.water_exp]:
-                water_arg = hp.retrieve_all_waters(self.system)
-            self.water_energy = "\n".join([ cs.WATER_ENERGY.format(water.split(":")[0]) for water in water_arg ])
+        if args.waters:
+            water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters
+            self.parameters = self.parameters.rstrip("]\n") + pp.WATER_PARAMS 
+            #self.water_energy = "\n".join([ cs.WATER_ENERGY.format(water.split(":")[0]) for water in water_arg ])
             self.water_energy = None
             self.water = ",".join(['"'+water+'"' for water in water_arg])
             self.water_radius = 6

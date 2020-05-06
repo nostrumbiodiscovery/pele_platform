@@ -1,7 +1,7 @@
-usesrun: true
-system: '../pele_platform/Examples/water/water_processed.pdb'
-chain: 'J'
-resname: 'SB4'
+frag_core: "../pele_platform/Examples/water/water_processed.pdb"
+frag_input: "../pele_platform/Examples/frag/flags.conf"
+chain_core : "J"
+resname: "SB4"
 log: true
 cpus: 3
 seed: 3000
@@ -41,7 +41,6 @@ traj: traj.xtc
 ca_constr: 3
 water_constr: 20
 rmsd_pdb: "native.pdb"
-working_folder: "NOR_solvent_OBC"
 output: "output_sim"
 epsilon: 0.3
 bias_column: 3
@@ -51,8 +50,8 @@ exit_trajnum: 3
 atom_dist:
 - 30
 - 31
-debug: true
 proximityDetection: false
+debug: true
 pele_exec: "done"
 pele_data: "done"
 pele_documents: "done"
@@ -71,6 +70,8 @@ anm_num_of_modes: 3
 anm_relaxation_constr: 3
 remove_constraints: false
 no_check: true
+
+
 
 
 
