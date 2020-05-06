@@ -197,10 +197,6 @@ class YamlParser(object):
         "exit_value": "exit_value",
         "exit_condition": "exit_condition",
         "exit_trajnum": "exit_trajnum",
-        "water_exp": "water_bs",
-        "water_lig": "water_lig",
-        "water": "water",
-        "water_expl": "water_expl",
         "water_freq": "water_freq",
         "water_center": "box_water",
         "water_temp": "water_temp",
@@ -208,6 +204,7 @@ class YamlParser(object):
         "water_constr": "water_constr",
         "water_trials": "water_trials",
         "water_radius": "water_radius",
+        "waters": "waters",
         "bias": "bias",
         "induced_fit_exhaustive": "induced_fit_exhaustive",
         "induced_fit_fast": "induced_fit_fast",
@@ -363,10 +360,7 @@ class YamlParser(object):
         self.exit_value = data.get(valid_flags["exit_value"], None)
         self.exit_condition = data.get(valid_flags["exit_condition"], None)
         self.exit_trajnum = data.get(valid_flags["exit_trajnum"], None)
-        self.water_exp = data.get(valid_flags["water_exp"], None)
-        self.water_lig = data.get(valid_flags["water_lig"], None)
-        self.water = data.get(valid_flags["water"], None)
-        self.water_expl = data.get(valid_flags["water_expl"], None)
+        self.waters = data.get(valid_flags["waters"], None)
         self.water_freq = data.get(valid_flags["water_freq"], None)
         self.water_center = data.get(valid_flags["water_center"], None)
         self.water_temp = data.get(valid_flags["water_temp"], None)

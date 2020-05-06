@@ -5,7 +5,7 @@ resname: 'SB4'
 restart: false
 seed: 12345
 test: true
-water_lig:
+waters:
 - M:1
 anm_freq: 1
 sidechain_freq: 1
