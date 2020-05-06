@@ -1,4 +1,5 @@
 from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch
+import glob
 import os
 
 
@@ -41,9 +42,10 @@ def prepare_structure(protein_file, ligand_pdb, chain):
     return new_protein_file
 
 
-def add_water(refinement_input, chain):
+def add_water(refinement_input, chain, ligand_chain):
 
     output = []
+    refinement_input = glob.glob(refinement_input)
 
     # hard-coded coordinates of water molecules
     water1_O = "HETATM {}  O   HOH {} {}     -25.445  -9.362   2.160  1.00  0.00           O\n"
@@ -80,9 +82,22 @@ def add_water(refinement_input, chain):
 
     # loop over minimisation inputs
     for inp in refinement_input:
+        print("input", inp)
+        new_protein_file = os.path.join(os.path.dirname(inp), os.path.basename(inp).replace(".pdb", "_water.pdb"))
+        print("new protein file", new_protein_file)
 
-        new_protein_file = os.path.basename(inp).replace(".pdb", "_water.pdb")
-        new_protein_file = os.path.abspath(new_protein_file)
+        protein = []
+        ligand = []
+
+        # read in protein and ligand lines
+        with open(inp, "r") as inp:
+            lines = inp.readlines()
+
+            for line in lines:
+                if (line.startswith("ATOM") or line.startswith("HETATM")) and line[21:22].strip() == chain:
+                    protein.append(line)
+                if (line.startswith("ATOM") or line.startswith("HETATM")) and line[17:20].strip() == ligand_chain:
+                    ligand.append(line)
 
         # add water to PDB
         with open(new_protein_file, "w+") as file:
@@ -92,6 +107,8 @@ def add_water(refinement_input, chain):
             for line in water_output:
                 file.write(line)
             file.write("\n")
+            for line in ligand:
+                file.write(line)
 
         # load again with Biopython
         parser = PDBParser()
