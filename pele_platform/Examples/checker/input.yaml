@@ -1,5 +1,3 @@
-usesrun: true
-usesrun: true
 system: '../pele_platform/Examples/ppi/complex.pdb'
 chain: 'Z'
 resname: 'API'

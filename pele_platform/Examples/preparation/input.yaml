@@ -1,5 +1,3 @@
-usesrun: true
-pele_license: "/work/NBD_Utilities/PELE/licenses"
 system: '6qmk.pdb'
 chain: 'Z'
 resname: 'J8H'
@@ -12,6 +10,5 @@ global: true
 atom_dist:
 - "A:603:CA"
 - "Z:702:S1"
-usesrun: true
 working_folder: "global_simulation"
 

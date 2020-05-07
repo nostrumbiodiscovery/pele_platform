@@ -1,6 +1,4 @@
-usesrun: true
 system: '../pele_platform/Examples/Allosteric/complex.pdb'
-pele_license: "/work/NBD_Utilities/PELE/licenses"
 chain: 'Z'
 resname: 'API'
 traj: "trajectory.xtc"
@@ -12,4 +10,3 @@ atom_dist:
 - 4555
 - 10
 test: true
-usesrun: true

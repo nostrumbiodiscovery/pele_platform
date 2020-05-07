@@ -33,15 +33,16 @@ def run_ppi(parsed_yaml):
     parsed_yaml.ppi = None
     parsed_yaml.poses = None
     parsed_yaml.rescoring = True
-    parsed_yaml.iterations = 1
-    parsed_yaml.steps = 100
+    if not parsed_yaml.test:
+        parsed_yaml.iterations = 1
+        parsed_yaml.steps = 100
     parsed_yaml.box_center = simulation1.box_center
     parsed_yaml.box_radius = 100  # We should have a look at how to set no box but at the moment super big
-    parsed_yaml.waters = "all_waters"
     
     # add water molecules to minimisation inputs
-    add_water(parsed_yaml.system, chain, parsed_yaml.residue)
-    parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*_water.pdb")
+    #parsed_yaml.waters = "all_waters"
+    #add_water(parsed_yaml.system, chain, parsed_yaml.residue)
+    #parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*_water.pdb")
 
     # start simulation 2 - minimisation
     with cd(simulation1.pele_dir):

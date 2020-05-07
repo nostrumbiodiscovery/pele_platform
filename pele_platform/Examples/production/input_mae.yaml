@@ -1,4 +1,3 @@
-usesrun: true
 system: '../pele_platform/Examples/Msm/PR_1A28_protein.pdb'
 mae_lig: '../pele_platform/Examples/Msm/AS4_INIT.mae'
 chain: 'L'

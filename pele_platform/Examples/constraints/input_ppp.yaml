@@ -1,4 +1,3 @@
-usesrun: true
 system: '../pele_platform/Examples/constraints/input_ppp.pdb'
 chain: 'Z'
 resname: 'STR'

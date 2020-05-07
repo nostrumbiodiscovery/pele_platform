@@ -1,4 +1,3 @@
-usesrun: true
 system: '../pele_platform/Examples/out_in/1_3ZON_complex.pdb'
 chain: 'Z'
 resname: 'IK1'

@@ -1,4 +1,3 @@
-usesrun: true
 system: '../pele_platform/Examples/water/water_processed.pdb'
 chain: 'M'
 resname: 'HOH'

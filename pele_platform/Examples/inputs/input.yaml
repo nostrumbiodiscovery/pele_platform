@@ -1,4 +1,3 @@
-usesrun: true
 system: '/gpfs/projects/bsc72/PELEPlatform/1.2.0/nord3/pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
 chain: 'Z'
 resname: 'STR'
