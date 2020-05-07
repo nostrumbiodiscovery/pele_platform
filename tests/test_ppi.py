@@ -1,6 +1,7 @@
 from pele_platform.PPI.main import run_ppi
 from pele_platform.PPI.preparation import prepare_structure 
-from pele_platform.main import parseargs_yaml, YamlParser
+from pele_platform.main import parseargs_yaml
+from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 from pele_platform.constants import constants as cs
 from pele_platform import main
 import pandas as pd

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Input Flags &mdash; pele platform 1.4.0 documentation</title>
+  <title>Input Flags &mdash; pele platform 1.4.2 documentation</title>
   
 
   
@@ -210,10 +210,12 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 <ul class="simple">
 <li><p><strong>frag_core</strong>: Core of the molecule we want to add fragments to. Required parameter</p></li>
 <li><p><strong>Method to use</strong>: Choose on of the available methos. For more please refer here.</p></li>
+<li><p><strong>resname^</strong>: Residue name of the frag_core ligand</p></li>
 <li><p><strong>cpus</strong>: Cpus to use. Default=48</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
-<span class="nt">fag_input</span><span class="p">:</span> <span class="s">&quot;/home/daniel/serie_file.conf&quot;</span>
+<span class="nt">frag_input</span><span class="p">:</span> <span class="s">&quot;/home/daniel/serie_file.conf&quot;</span>
+<span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
 </pre></div>
 </div>

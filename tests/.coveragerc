@@ -1,23 +1,14 @@
-[run]
-omit =
-    # omit anything in a .local directory anywhere
-    tests/
-    # omit everything in /usr
-    pele_platform/Analysis/to_mae.py
-    # omit this single file
-    pele_platform/constants/*
-    pele_platform/Frag/generative_model.py 
-
 [report]
-
-[run]
 omit =
     # omit anything in a .local directory anywhere
-    ../tests/
+    test*
     # omit everything in /usr
     ../pele_platform/Analysis/to_mae.py
+    ../pele_platform/Utilities/Helpers/calculatePCA4PELE.py
+    ../pele_platform/Utilities/Helpers/conda_deployment.py
     # omit this single file
     ../pele_platform/constants/*
+    ../pele_platform/RNA/prep.py
     ../pele_platform/Frag/generative_model.py 
     ../setup.py
     ../pele_platform/Utilities/Helpers/system_prep.py

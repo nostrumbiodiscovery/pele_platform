@@ -2,7 +2,7 @@ import argparse
 import os
 import re
 import time
-from pele_platform.main import YamlParser
+from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 
 def prep_complex(complex, input_file="input.yaml", prep_output="", final_output="", debug=False):
 

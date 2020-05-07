@@ -1,7 +1,7 @@
 # must do conda install -c NostrumBioDiscovery pele_platform 
 package:
   name: pele_platform
-  version: "1.4.0"
+  version: "1.4.4"
 
 about:
   home: https://github.com/nostrumbiodiscovery/pele_platform
@@ -35,7 +35,7 @@ requirements:
     - fpdf
     - scikit-learn
     - rdkit
-    - frag_pele>=2.1.1
+    - frag_pele==2.1.2
     - lib_prep
 
 test:

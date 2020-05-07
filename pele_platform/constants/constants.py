@@ -1,19 +1,12 @@
 import socket
 import os
 
-###########################
-# USER TO CHANGE
-###########################
-
-SCHRODINGER = os.environ.get("SCHRODINGER", "")
-PELE = os.environ.get("PELE", "")
-
-
-
 ############################
 # PRIVATE CONSTANTS
 #############################
 
+SCHRODINGER = os.environ.get("SCHRODINGER", "")
+PELE = os.environ.get("PELE", "")
 
 # DEFAULTS
 # --------
