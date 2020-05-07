@@ -9,6 +9,7 @@ def prepare_structure(protein_file, ligand_pdb, chain):
 
     # remove additional protein chains and all water molecules
     with open(protein_file, "r") as file:
+        print(protein_file)
         lines = file.readlines()
 
         for line in lines:
@@ -46,6 +47,7 @@ def add_water(refinement_input, chain, ligand_chain):
 
     output = []
     refinement_input = glob.glob(refinement_input)
+    n_waters = len(refinement_input)*2
 
     # hard-coded coordinates of water molecules
     water1_O = "HETATM {}  O   HOH {} {}     -25.445  -9.362   2.160  1.00  0.00           O\n"
