@@ -175,7 +175,8 @@ class YamlParser(object):
         "center_of_interface": "center_of_interface", 
         "protein": "protein", 
         "ligand_pdb": "ligand_pdb",
-        "allosteric": "allosteric", 
+        "allosteric": "allosteric",
+        "skip_refinement": "skip_refinement",
         "rna": "rna"}
 
         for key in data.keys():
@@ -346,6 +347,7 @@ class YamlParser(object):
         self.center_of_interface = data.get(valid_flags["center_of_interface"], None)
         self.protein = data.get(valid_flags["protein"], None)
         self.ligand_pdb = data.get(valid_flags["ligand_pdb"], None)
+        self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
 
         #Allosteric
         self.allosteric = data.get(valid_flags["allosteric"], None)

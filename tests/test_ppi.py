@@ -17,7 +17,7 @@ def test_ppi(energy_result=-2.18, yaml=yaml):
   
     #Function to test
     job, _ = main.run_platform(yaml)
-
+    
     # checkpoints
     output_csv = pd.read_csv(os.path.join(job.pele_dir, "output/clustering_output.csv"))
     best_energy = round(output_csv["binding_energy"].min(),2)
@@ -50,3 +50,17 @@ def test_prepare_structure():
     
     for f in glob.glob("*_prep.pdb"):
         os.remove(f)
+
+
+yaml = os.path.join(test_path, "PPI/input_skipref.yaml")
+
+def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
+
+    #Function to test
+    job, _ = main.run_platform(yaml)
+
+    # checkpoints
+    files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/BestStructs/epoch*"))
+
+    # test
+    assert not files_refinement

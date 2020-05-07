@@ -41,3 +41,16 @@ def test_allosteric_xtc(energy_result=-1.51, yaml=yaml):
     assert nfiles == job.n_components 
     assert best_energy == energy_result
     assert nfiles_refinement
+
+
+yaml = os.path.join(test_path, "Allosteric/input_skipref.yaml")
+
+def test_allosteric_skipref(yaml=yaml):
+
+    job, _ = main.run_platform(yaml)
+
+    # checkpoints
+    files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/BestStructs/epoch*"))
+
+    # test
+    assert not files_refinement
