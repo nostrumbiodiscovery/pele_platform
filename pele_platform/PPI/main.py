@@ -1,35 +1,50 @@
-from pele_platform.PPI.cluster import cluster_best_structures
-from pele_platform.PPI.simulation_launcher import launch_global_exploration, launch_refinement
-import yaml
+from pele_platform.Allosteric.cluster import cluster_best_structures
+from pele_platform.PPI.simulation_launcher import launch_simulation
+from pele_platform.PPI.preparation import prepare_structure, add_water
 from pele_platform.Utilities.Helpers.helpers import cd
 import os
 
+
 def run_ppi(parsed_yaml):
 
-    # start initial simulation
+    # get arguments from input.yaml
+    protein_file = parsed_yaml.system
+    chain = parsed_yaml.protein
+    ligand_pdb = parsed_yaml.ligand_pdb
+   
+    # remove chains except for "protein" flag
+    protein_file = prepare_structure(protein_file, ligand_pdb, chain)
+    parsed_yaml.system = protein_file
 
-    parsed_yaml.full = True
-    simulation = launch_global_exploration(parsed_yaml)
-    simulation_path = os.path.join(simulation.pele_dir, simulation.output)
+    # start simualtion 1 - induced fit
+    parsed_yaml.induced_fit_exhaustive = True
+    simulation1 = launch_simulation(parsed_yaml)
+    simulation1_path = os.path.join(simulation1.pele_dir, simulation1.output)
     
-    # get best structures and cluster them
-    with cd(simulation_path):
-        # NEED ALGORITHM TO CHOOSE OPTIMUM NUMBERS OF CLUSTERS!!!!
-        #cluster_best_structures("5", n_components = parsed_yaml.cpus-1)
-        cluster_best_structures("5", n_components=simulation.n_components,
-            residue=simulation.residue, topology=simulation.topology)
+    # cluster best structures
+    with cd(simulation1_path):
+        cluster_best_structures("5", n_components=simulation1.n_components,
+            residue=simulation1.residue, topology=simulation1.topology)
     
     # adjust original input.yaml
-    parsed_yaml.system = os.path.join(simulation_path, "refinement_input/*.pdb")
+    parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*.pdb")
     parsed_yaml.folder = "refinement_simulation"
-    parsed_yaml.full = None
+    parsed_yaml.induced_fit_exhaustive = None
+    parsed_yaml.ppi = None
     parsed_yaml.poses = None
-    parsed_yaml.induced_fit_exhaustive = True
-    parsed_yaml.box_center = simulation.box_center
-    parsed_yaml.box_radius = simulation.box_radius
-        
-    # refine selected best structures
-    with cd(simulation.pele_dir):
-    	induced_fit = launch_refinement(parsed_yaml)
+    parsed_yaml.rescoring = True
+    parsed_yaml.iterations = 1
+    parsed_yaml.steps = 100
+    parsed_yaml.box_center = simulation1.box_center
+    parsed_yaml.box_radius = 100  # We should have a look at how to set no box but at the moment super big
+    parsed_yaml.waters = "all_waters"
+    
+    # add water molecules to minimisation inputs
+    add_water(parsed_yaml.system, chain, parsed_yaml.residue)
+    parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*_water.pdb")
 
-    return simulation, induced_fit
+    # start simulation 2 - minimisation
+    with cd(simulation1.pele_dir):
+        simulation2 = launch_simulation(parsed_yaml)
+
+    return simulation1, simulation2
