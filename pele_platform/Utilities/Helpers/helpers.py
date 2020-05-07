@@ -118,7 +118,10 @@ def retrieve_atom_info(atom, pdb):
         for line in f:
             try:
                 if not isinstance(atom, int) and not atom.isdigit():
-                    chain, resnum, atomname = atom.split(":")
+                    try:
+                        chain, resnum, atomname = atom.split(":")
+                    except ValueError:
+                        raise ValueError(f"Check atom distance entrance {atom}. Should be like this: 'A:220:OD1'")
                     if line[21].strip() == chain and line[22:26].strip() == resnum and line[12:16].strip() == atomname:
                         atomname = line[12:16]
                         return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
@@ -130,7 +133,7 @@ def retrieve_atom_info(atom, pdb):
                         return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
             except IndexError:
                 pass
-        sys.exit("Check the atoms given to calculate the distance metric")
+        sys.exit(f"Check the atoms {atom} given to calculate the distance metric.")
 
 
 def find_coords(pdb, resnum, chain, atom="OW"):
