@@ -23,8 +23,9 @@ def run_allosteric(parsed_yaml):
     parsed_yaml.full = None
     parsed_yaml.poses = None
     parsed_yaml.induced_fit_exhaustive = True
-    parsed_yaml.iterations = 100
-    parsed_yaml.pele_steps = 10
+    if not parsed_yaml.test:
+        parsed_yaml.iterations = 100
+        parsed_yaml.pele_steps = 10
     parsed_yaml.box_center = simulation.box_center
     parsed_yaml.box_radius = simulation.box_radius
         
