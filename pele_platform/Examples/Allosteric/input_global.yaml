@@ -1,0 +1,13 @@
+usesrun: true
+pele_license: "/work/NBD_Utilities/PELE/licenses"
+system: '../pele_platform/Examples/Allosteric/complex.pdb'
+chain: 'Z'
+resname: 'API'
+seed: 12345
+allosteric: true
+poses: 3
+atom_dist:
+- 4555
+- 10
+test: true
+usesrun: true

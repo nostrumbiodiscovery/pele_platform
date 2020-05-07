@@ -1,10 +1,12 @@
+usesrun: true
 system: '../pele_platform/Examples/water/water_processed.pdb'
 chain: 'M'
 resname: 'HOH'
+induced_fit_fast: true
 restart: false
 seed: 12345
 test: true
-water_bs:
+waters:
 - M:1
 
 

@@ -19,7 +19,7 @@ import pele_platform.Utilities.Helpers.metrics as mt
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
 import pele_platform.Analysis.plots as pt
-import pele_platform.RNA.prep as pr
+#import pele_platform.RNA.prep as pr
 
 
 
@@ -70,11 +70,11 @@ def run_adaptive(args):
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input + '"' for input in env.inputs_simulation]).strip('"')
         # Global exploration mode: Create inputs around protein
-        elif args.full or args.randomize:
+        elif args.full or args.randomize or args.ppi:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, env.receptor,
-                outputfolder=env.pele_dir, nposes=env.poses, test=env.test)
-            env.box_center = box_center if not env.box_center else env.box_center
-            env.box_radius = box_radius if not env.box_radius else env.box_radius
+                outputfolder=env.pele_dir, nposes=env.poses, test=env.test, user_center=env.center_of_interface)
+            env.box_center = box_center
+            env.box_radius = box_radius
             if env.no_ppp:
                 receptor = syst.system
             else:

@@ -1,4 +1,5 @@
 usesrun: true
+usesrun: true
 working_folder: 'data'
 system: 'your_system.pdb'
 chain: 'L'

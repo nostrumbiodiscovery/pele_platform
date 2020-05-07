@@ -1,3 +1,4 @@
+usesrun: true
 system: '../pele_platform/Examples/pca/1.pdb'
 chain: 'Z'
 resname: 'STR'

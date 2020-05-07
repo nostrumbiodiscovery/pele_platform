@@ -1,3 +1,4 @@
+usesrun: true
 system: '../pele_platform/Examples/bias/complex.pdb'
 chain: 'L'
 resname: 'LIG'

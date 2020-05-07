@@ -1,9 +1,12 @@
+usesrun: true
 system: '../pele_platform/Examples/water/water_processed.pdb'
-chain: 'M'
-resname: 'HOH'
+chain: 'J'
+resname: 'SB4'
 restart: false
 seed: 12345
 test: true
-water_bs: "all_waters"
+anm_freq: 1
+sidechain_freq: 1
+waters: "all_waters"
 
 

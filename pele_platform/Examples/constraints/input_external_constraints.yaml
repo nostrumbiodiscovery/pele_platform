@@ -1,3 +1,4 @@
+usesrun: true
 system: '../pele_platform/Examples/Msm/PR_AS4.pdb'
 chain: 'L'
 resname: 'AS4'

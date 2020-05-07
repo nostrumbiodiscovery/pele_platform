@@ -68,6 +68,16 @@ PCA_VALUES = [
                 '"relaxationSpringConstant" : 2'
              ]  
 
+ALL_WATER_VALUES = [
+    "WaterPerturbation::parameters",
+    '"M:1"',
+    '"M:2"'
+]
+
+WATER_VALUES = [
+    "WaterPerturbation::parameters",
+    '"M:1"',
+]
 
 def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
     main.run_platform(ext_args)
@@ -87,14 +97,19 @@ def test_exit(ext_args=EXIT_ARGS):
 def test_softexit(ext_args=EXITSOFT_ARGS):
     main.run_platform(ext_args)
 
-def test_water(ext_args=WATER_ARGS):
-    main.run_platform(ext_args)
-
 def test_all_waters(ext_args=ALL_WATER_ARGS):
-    main.run_platform(ext_args)
+    errors = []
+    job = main.run_platform(ext_args)
+    folder = job.pele_dir
+    errors = check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
+    assert not errors
 
 def test_water_lig(ext_args=WATERLIG_ARGS):
-    main.run_platform(ext_args)
+    errors = []
+    job = main.run_platform(ext_args)
+    folder = job.pele_dir
+    errors = check_file(folder, "pele.conf", WATER_VALUES, errors)
+    assert not errors
 
 def test_bias(ext_args=BIAS_ARGS):
     main.run_platform(ext_args)
