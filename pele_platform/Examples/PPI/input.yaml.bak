@@ -1,3 +1,4 @@
+pele_license: "/work/NBD_Utilities/PELE/licenses"
 system: '../pele_platform/Examples/PPI/1f47_prep.pdb'
 chain: 'Z'
 protein: 'B'
