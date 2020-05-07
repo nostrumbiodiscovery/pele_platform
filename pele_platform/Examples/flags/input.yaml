@@ -58,7 +58,7 @@ pele_documents: "done"
 verbose: true
 water_freq: 3
 water_overlap: 3
-water_lig:
+waters:
 - M:1
 pca: "modes.nmd"
 anm_direction: "steered"

@@ -10,6 +10,7 @@ import os
 import pele_platform.Adaptive.simulation as ad
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Frag.simulation as fr
+from pele_platform.Allosteric.main import run_allosteric
 import pele_platform.Utilities.Helpers.environment_variables as ev
 from pele_platform.PPI.main import run_ppi
 
@@ -26,6 +27,8 @@ class Launcher():
             self._args.system = self._args.frag_core
         elif arguments.ppi:
             self._args.pele_feature = "PPI"
+        elif arguments.allosteric:
+            self._args.pele_feature = "allosteric"
         else: 
             self._args.pele_feature = "adaptive"
 
@@ -34,6 +37,8 @@ class Launcher():
             ev.check_variables(self._args)
         if self._args.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
+        elif self._args.pele_feature == "allosteric":
+            job_variables = run_allosteric(self._args)
         elif self._args.pele_feature == "PPI":
             job_variables = run_ppi(self._args)
         elif self._args.pele_feature == "frag":
@@ -59,6 +64,7 @@ def parseargs_yaml(args=[]):
     args = parser.parse_args(args) if args else parser.parse_args()
     return args
     
+
 def run_platform(input_yaml):
     arguments = parseargs_yaml([input_yaml,])
     arguments = yp.YamlParser(arguments.input_file)

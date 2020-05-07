@@ -124,31 +124,10 @@ EXIT_DEFAULTS_PELE = [
 
 ]
 
-WATER_LIG_DEFAULTS_ADAPTIVE = [
-    '[1.75, 2.5, 3.5, 5]',
-    '"type" : "inverselyProportional"',
-    '"peleSteps" : 12,',
-    '"iterations" : 50',
-    '[1.6, 1.2, 1, 0.0]'
+WATER_PARAMS_DEFAULTS_PELE = [
+    pp.WATER_PARAMS
 ]
 
-WATER_DEFAULTS_ADAPTIVE = [
-    '"type" : "independent"',
-    '"peleSteps" : 12,',
-    '"iterations" : 50',
-    '"processors" : 128,'
-]
-
-WATER_LIG_DEFAULTS_PELE = [
-    '"numberOfStericTrials": 100',
-    '"overlapFactor": 0.5',
-    '"radius": 10',
-    pp.WATER_LIG
-]
-
-WATER_DEFAULTS_PELE = [
-    pp.WATER_BS
-]
 
 def test_induced_exhaustive_defaults(ext_args=INDUCED_EX_ARGS):
     errors = []
@@ -186,18 +165,10 @@ def test_softexit_defaults(ext_args=EXITSOFT_ARGS):
     errors = check_file(job.pele_dir, "pele.conf", EXIT_DEFAULTS_PELE, errors)
     assert not errors
 
-def test_water_defaults(ext_args=WATER_ARGS):
-    errors = []
-    job = main.run_platform(ext_args)
-    errors = check_file(job.pele_dir, "adaptive.conf", WATER_DEFAULTS_ADAPTIVE, errors)
-    errors = check_file(job.pele_dir, "pele.conf", WATER_DEFAULTS_PELE, errors)
-    assert not errors
-
 def test_water_lig_defaults(ext_args=WATERLIG_ARGS):
     errors = []
     job = main.run_platform(ext_args)
-    errors = check_file(job.pele_dir, "adaptive.conf", WATER_LIG_DEFAULTS_ADAPTIVE, errors)
-    errors = check_file(job.pele_dir, "pele.conf", WATER_LIG_DEFAULTS_PELE, errors)
+    errors = check_file(job.pele_dir, "pele.conf", WATER_PARAMS_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_bias_defaults(ext_args=BIAS_ARGS):
