@@ -42,7 +42,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         inout_params.InOutParams.__init__(self, args)
         pca.PCAParams.__init__(self, args)
         allosteric.AllostericParams.__init__(self, args)
-        ppi.PPIParams.__init__(self, args)
+        ppi.PPIParams.__init__(self, args) #, self.water_args)
         #rna.RNAParams.__init__(self, args)
 
 
@@ -161,11 +161,12 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_constr = args.water_constr if args.water_constr else self.simulation_params.get("water_constr", 0)
         self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
         if args.waters:
-            water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters
+            self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters #IDS of waters
             self.parameters = self.parameters.rstrip("]\n") + pp.WATER_PARAMS 
             #self.water_energy = "\n".join([ cs.WATER_ENERGY.format(water.split(":")[0]) for water in water_arg ])
             self.water_energy = None
-            self.water = ",".join(['"'+water+'"' for water in water_arg])
+            self.water = ",".join(['"'+water+'"' for water in self.water_arg])
+            #####GLOABL BOX
             self.water_radius = 6
             # If there is no given center look for it
             if args.water_center:

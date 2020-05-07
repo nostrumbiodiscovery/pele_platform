@@ -99,13 +99,14 @@ BOX = '''
 WATER = '''
          "WaterPerturbation":
          {{
-             "Box" :
-             {{
-                 "radius" : {},
-                 "fixedCenter": {},
-                 "type" : "sphericalBox"
-             }},
-             "watersToPerturb": {{ "links": {{ "ids": [ {} ] }} }},
+             {}
+#             "Box" :
+#             {{
+#                 "radius" : {},
+#                 "fixedCenter": {},
+#                 "type" : "sphericalBox"
+#             }},
+#             "watersToPerturb": {{ "links": {{ "ids": [ {} ] }} }},
              "parameters":
              {{
                  "temperature": {},
@@ -115,6 +116,8 @@ WATER = '''
              }}
          }}, 
 '''
+
+
 
 
 PCA = '''"preloadedModesIn" : "{}",'''
