@@ -5,7 +5,7 @@ PELE_Platform
 
 Pele platform is a python module to automatically launch PELE, AdaptivePELE, MSMPELE and FragPELE. It is built as a python layer on top of all PELE functionalities that can be used as a backend for a potential future GUI.
 
-PELE_Platform Fucntionalities
+PELE_Platform Functionalities
 ======================================
 
 Automatically prepare and launch PELE & FragPELE input

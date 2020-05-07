@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; pele platform 1.4.0 documentation</title>
+  <title>Installation &mdash; pele platform 1.4.2 documentation</title>
   
 
   
@@ -175,7 +175,7 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="conda-recommended">
 <h2>Conda (recommended)<a class="headerlink" href="#conda-recommended" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c nostrumbiodiscovery -c conda-forge -c anaconda <span class="nv">pele_platform</span><span class="o">==</span><span class="m">1</span>.4.2
 
 <span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
 
@@ -190,13 +190,13 @@ specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 <h2>Pypi<a class="headerlink" href="#pypi" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install numpy cython
 
-pip install pele_platform
+pip install <span class="nv">pele_platform</span><span class="o">==</span><span class="m">1</span>.4.2
 
 <span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
 
 <span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
 
-conda install rdkit <span class="o">(</span>To work with frag-pele<span class="o">)</span>
+conda install rdkit <span class="o">(</span>Or compile from <span class="nb">source</span> code<span class="o">)</span>
 
 Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
 specifed via input.yaml flag. i.e license: /path/to/licenses/folder/

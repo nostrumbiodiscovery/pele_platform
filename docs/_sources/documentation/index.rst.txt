@@ -33,12 +33,15 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 
 - **Method to use**: Choose on of the available methos. For more please refer here.
 
+- **resname^**: Residue name of the frag_core ligand
+
 - **cpus**: Cpus to use. Default=48
 
 ..  code-block:: yaml
 
     frag_core: "/home/daniel/PR_core.pdb"
-    fag_input: "/home/daniel/serie_file.conf"
+    frag_input: "/home/daniel/serie_file.conf"
+    frag_core: "LIG"
     cpus: 48
 
 
