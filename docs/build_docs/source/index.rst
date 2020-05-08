@@ -6,10 +6,17 @@
 Pele Platform
 ===========================================
 
-Pele platform is a python module to automatically
-launch PELE, Adaptive-PELE, Frag-PELE (beta-testing) and PPI-PELE (beta-testing). 
-It is built as a python layer on top of all PELE functionalities that can be used as
-a backend for a potential future GUI.
+Pele platform is a suit of packages that enables users to find novel
+solutions to drug discovery problems in matter of hours.
+
+PELE packages:
+
+    - `Docking Refinement <packages/docking/index.html>`_ (1-2h)
+    - `Pocket Exploration <packages/pocket_exploration/index.html>`_ (24h)
+    - `Protein-Protein Inhibitors <packages/ppi/index.html>`_ (10h)
+    - `HT-Fragment Growing <packages/frag/index.html>`_ (30min/fragment)
+    - `Binding Events <packages/binding/index.html>`_ (6h)
+
 
 Github : https://github.com/NostrumBioDiscovery/pele_platform
 
@@ -19,24 +26,24 @@ Requirements
 - Academic Schordinger (any version)
 
 
-Documentation
-===================
 
 .. toctree::
    installation/index.rst
+   :hidden:
 
 .. toctree::
-   cheatsheet/index.rst
-
-.. toctree::
-   modes/index.rst
+   packages/index.rst
+   :hidden:
 
 .. toctree::
    documentation/index.rst
+   :hidden:
 
 .. toctree::
    developers/index.rst
+   :hidden:
 
 .. toctree::
    changelog/index.rst
+   :hidden:
 

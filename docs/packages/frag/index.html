@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Prepare your own Fragment Growing &mdash; pele platform 1.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Input flags documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers: Add your own mode</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Prepare your own Fragment Growing</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/packages/frag/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="prepare-your-own-fragment-growing">
+<h1>Prepare your own Fragment Growing<a class="headerlink" href="#prepare-your-own-fragment-growing" title="Permalink to this headline">¶</a></h1>
+<p>FrAG, a new tool for in silico hit-to-lead drug design, capable of performing HT-fragment growing into a core while exploring the protein-ligand conformational space. Aims to rank ligands and discover cryptic pockets.</p>
+<p><strong>Article</strong>: <a class="reference external" href="https://nostrumbiodiscovery.github.io/papers/Software/index.html#frag-pele-dynamic-ligand-growing-within-a-binding-site-a-novel-tool-for-hit-to-lead-drug-design">https://nostrumbiodiscovery.github.io/papers/Software/index.html#frag-pele-dynamic-ligand-growing-within-a-binding-site-a-novel-tool-for-hit-to-lead-drug-design</a></p>
+<p><strong>Input</strong> (further explained below):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>protein-fragment_core pdb</p></li>
+<li><p>Grown ligands sdf file</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Output</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ranking of the fragments</p></li>
+<li><p>Ranked binding modes within each fragment</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Computational time</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>30min/3h per fragment (depends on how many rotatable bonds the fragment has)</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="complex-preparation">
+<h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare the system with maestro (Protein Preparation Wizard)
+and output a complex.pdb. The complex.pdb must contain protein-core_fragment in the desired initial configuration (Core fragment dock to the protein).</p>
+<p>Make sure the ligand has:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Unique chain</p></li>
+<li><p>No atomnames with spaces or single letter</p></li>
+<li><p>Any residuename except UNK</p></li>
+<li><p>Well defined aromatic bonds</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="input-preparation">
+<h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
+<div class="section" id="from-sdf">
+<h3>From sdf<a class="headerlink" href="#from-sdf" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span> <span class="c1">#Protein-core complex</span>
+<span class="nt">frag_ligands</span><span class="p">:</span> <span class="s">&quot;/home/daniel/grown_ligands.sdf&quot;</span> <span class="c1">#Full grown ligands</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span> <span class="c1">#Ligand core residue name</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span> <span class="c1">#Ligand core chain</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
+</pre></div>
+</div>
+<p>For more optional flags please refer to <a class="reference external" href="../../documentation/index.html">optative falgs</a></p>
+</div>
+</div>
+<div class="section" id="run-simulation">
+<h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
+<p>To run the system launch the simulation with the next command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
+</div>
+<div class="section" id="output">
+<h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>Rank fragments:</p>
+<p><code class="docutils literal notranslate"><span class="pre">simulation_score.tsv</span></code></p>
+<p>Ranked top poses of each fragment:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fragment_folder/top_results/</span></code></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Daniel Soler Viladrich
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

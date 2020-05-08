@@ -1,0 +1,262 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Prepare your own PPI simulation &mdash; pele platform 1.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Input flags documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers: Add your own mode</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Prepare your own PPI simulation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/packages/ppi/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="prepare-your-own-ppi-simulation">
+<h1>Prepare your own PPI simulation<a class="headerlink" href="#prepare-your-own-ppi-simulation" title="Permalink to this headline">¶</a></h1>
+<p>This simulation aims to find a small molecule that
+inhibitis the interfece between two protein domains.</p>
+<p><strong>Article</strong>: <a class="reference external" href="https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose">https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose</a></p>
+<p><strong>Input</strong> (further explained below):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>protein-protein pdb</p></li>
+<li><p>center of the interface where to focus the simulation</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Output</strong> (further explained below):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ranked binding modes of the chosen small molecule
+with the desired protein</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Computational time</strong>: 9h</p>
+<div class="section" id="complex-preparation">
+<h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare the system with maestro (Protein Preparation Wizard)
+and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligand can be place anywhere as it will be automatically placed all around the protein interface by our automatic pipeline.</p>
+</div>
+<div class="section" id="input-preparation">
+<h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span>system: &#39;3d9u_prep.pdb&#39; #protein-protein pdb
+protein: &#39;A&#39; #Chain of the protein to keep
+ligand_pdb: &quot;3d9u_ligand.pdb&quot; #small molecule pdb
+chain: &#39;Z&#39; #Chain of the ligand
+resname: &#39;LIG&#39; #Residue of the ligand
+center_of_interface: &quot;A:306:O&quot; #center of the protein protein interface
+seed: 12345
+cpus: 50
+#Distance to track along the simulation
+atom_dist:
+- &quot;A:2:CA&quot; #First atom to make the distance to
+- &quot;B:3:CG&quot; #Second atom to make the distance to
+ppi: true
+</pre></div>
+</div>
+<p>For more optional flags please refer to <a class="reference external" href="../../documentation/index.html">optative falgs</a></p>
+</div>
+<div class="section" id="run-simulation">
+<h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
+<p>To run the system launch the simulation with the next command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
+</div>
+<div class="section" id="output">
+<h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>Ranked best clusters:</p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/refinement_simulation/results/clusters</span></code></p>
+<p>Ranked best snapshots:</p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/refinement_simulation/results/BestStructs/</span></code></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Daniel Soler Viladrich
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
