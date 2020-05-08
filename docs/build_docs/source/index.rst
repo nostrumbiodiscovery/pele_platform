@@ -7,13 +7,14 @@ Pele Platform
 ===========================================
 
 Pele platform is a suit of packages that enables users to find novel
-solutions to drug discovery problems in matter of hours.
+drug discovery solutions in matter of hours. It is based on an optimized
+multi-CPU MonteCarlo simulation called PELE. For more about the base-code 
+please refer to `here <https://eapm-bsc.github.io/PELE-repo/>`_.
 
-PELE packages:
+Included packages:
 
     - `Docking Refinement <packages/docking/index.html>`_ (1-2h)
     - `Pocket Exploration <packages/pocket_exploration/index.html>`_ (24h)
-    - `Protein-Protein Inhibitors <packages/ppi/index.html>`_ (10h)
     - `HT-Fragment Growing <packages/frag/index.html>`_ (30min/fragment)
     - `Binding Events <packages/binding/index.html>`_ (6h)
 

@@ -1,47 +1,44 @@
-Prepare your own Pocket Exploration
-#####################################################
+Prepare your own PPI simulation
+####################################
 
-To prepare your own pocket exploration to obtain putative binding sites of your small molecule and retrieve the most promising binding modes of yout ligand, please follow the steps below.
+This simulation aims to find a small molecule that
+inhibitis the interfece between two protein domains.
 
 **Article**: https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose
 
 **Input** (further explained below):
 
-    - Protein-ligand.pdb
+    - protein-protein pdb
+    - center of the interface where to focus the simulation
 
 **Output** (further explained below):
 
-    - Most promising pockets ranked
-    - Most promising binding modes ranked
+    - ranked binding modes of the chosen small molecule
+      with the desired protein
 
-**Computational time**: 24h
+**Computational time**: 9h
 
 1. Complex Preparation
-========================
+======================
    
 Prepare the system with maestro (Protein Preparation Wizard)
-and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligand can be place anywhere as it will be automatically placed all around the protein by our automatic pipeline.
-
-Make sure the ligand has:
-
- - Unique chain
- - No atomnames with spaces or single letter
- - Any residuename except UNK
+and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligand can be place anywhere as it will be automatically placed all around the protein interface by our automatic pipeline.
 
 2. Input Preparation
 =====================
 
 Prepare the input file ``input.yml``:
 
-Pocket Exploration (24h)
-+++++++++++++++++++++++++++
-
 ..  code-block:: yaml
 
-   system: 'docking2grid6n4b_thc.pdb'
-   chain: 'L'
-   resname: 'THC'
+   system: '3d9u_prep.pdb' #protein-protein pdb
+   protein: 'A' #Chain of the protein to keep
+   ligand_pdb: "3d9u_ligand.pdb" #small molecule pdb
+   chain: 'Z' #Chain of the ligand
+   resname: 'LIG' #Residue of the ligand
+   center_of_interface: "A:306:O" #center of the protein protein interface
    seed: 12345
+   cpus: 50
    #Distance to track along the simulation
    atom_dist:
    - "A:2:CA" #First atom to make the distance to
@@ -62,11 +59,11 @@ To run the system launch the simulation with the next command:
 4. Output
 =================
 
-Best pockets ranked by ligand energy:
+Ranked best clusters:
 
 ``working_folder/refinement_simulation/results/clusters``
 
-Best snapshots ranked by ligand energy:
+Ranked best snapshots:
 
 ``working_folder/refinement_simulation/results/BestStructs/``
 

@@ -1,5 +1,5 @@
 #####################################
-Add your own new simulation mode
+Developers: Add your own mode
 #####################################
 
 
