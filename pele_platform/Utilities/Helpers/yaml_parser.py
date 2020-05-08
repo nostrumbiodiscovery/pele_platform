@@ -105,7 +105,7 @@ class YamlParser(object):
         "water_constr": "water_constr",
         "water_trials": "water_trials",
         "water_radius": "water_radius",
-        "bias": "bias",
+        "out_in": "out_in",
         "induced_fit_exhaustive": "induced_fit_exhaustive",
         "induced_fit_fast": "induced_fit_fast",
         "frag": "frag",
@@ -222,6 +222,7 @@ class YamlParser(object):
         self.traj_name = data.get(valid_flags["traj_name"], None)
         self.adaptive = data.get(valid_flags["adaptive"], None)
         self.epsilon = data.get(valid_flags["epsilon"], None)
+        self.out_in = data.get(valid_flags["out_in"], None)
         self.bias_column = data.get(valid_flags["bias_column"], None)
         self.gridres = data.get(valid_flags["gridres"], 10)
         self.core = data.get(valid_flags["core"], -1)
@@ -273,7 +274,6 @@ class YamlParser(object):
         self.water_constr = data.get(valid_flags["water_constr"], None)
         self.water_trials = data.get(valid_flags["water_trials"], None)
         self.water_radius = data.get(valid_flags["water_radius"], None)
-        self.bias = data.get(valid_flags["bias"], None)
         self.induced_fit_exhaustive = data.get(valid_flags["induced_fit_exhaustive"], None)
         self.induced_fit_fast = data.get(valid_flags["induced_fit_fast"], None)
         self.frag = data.get(valid_flags["frag"], None)

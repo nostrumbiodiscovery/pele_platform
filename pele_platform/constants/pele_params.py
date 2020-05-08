@@ -5,7 +5,7 @@ parameters of PELE for each type of simulation
 
 
 
-BIAS = ''' 
+OUT_IN = ''' 
              ,
              "parametersChanges" : [
                  { "ifAnyIsTrue": [ "rand >= .5" ],
@@ -155,46 +155,6 @@ WATER_PARAMS = '''
                      }]
 '''
 
-GLIDE = '''
-            ,
-			"parametersChanges" : [
-				{ "ifAnyIsTrue": [ "rand >= 0.5" ], 
-					"doThesechanges": { 
-						"Perturbation::parameters": { "rotationScalingFactor": 0.30 } 
-					}, 
-					"otherwise": { 
-						"Perturbation::parameters": { "rotationScalingFactor": 0.05 } 
-					} 
-				}, 
-				{ "ifAnyIsTrue": [ "rand1 <= 0.20" ], 
-					"doThesechanges": { 
-						"Perturbation::parameters": { "translationRange": 0.5 } 
-					}, 
-					"otherwise": { "Perturbation::parameters": { "translationRange": 1.5 } } 
-				}, 
-                                { "ifAnyIsTrue": [ "rand2 <= 0.5 " ], 
-					"doThesechanges": { 
-						"Perturbation::parameters": { 
-							"steeringUpdateFrequency": 0,
-							"numberOfTrials": 10}
-					}, 
-					"otherwise": { 
-						"Perturbation::parameters": { 
-							"steeringUpdateFrequency": 1, 
-							"numberOfTrials": 10}
-					} 
-				}, 
-				{ "ifAnyIsTrue": [ "hbond_hinge <= 3.0 " ], 
-					"doThesechanges": { 
-						"Perturbation::parameters": { 
-							"translationRange": 0.5, 
-							"steeringUpdateFrequency": 0, 
-							"numberOfTrials": 25 }
-					},
-                    "otherwise": {} 
-				} 
-			] 
-'''
 
 FRAG = '''
 ,

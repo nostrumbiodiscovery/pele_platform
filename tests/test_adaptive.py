@@ -6,7 +6,6 @@ import pele_platform.main as main
 test_path = os.path.join(cs.DIR, "Examples")
 
 
-BIAS_ARGS = os.path.join(test_path, "bias/input.yaml")
 OUT_IN_ARGS = os.path.join(test_path, "out_in/input.yaml")
 INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive.yaml")
 INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast.yaml")
@@ -111,7 +110,7 @@ def test_water_lig(ext_args=WATERLIG_ARGS):
     errors = check_file(folder, "pele.conf", WATER_VALUES, errors)
     assert not errors
 
-def test_bias(ext_args=BIAS_ARGS):
+def test_out_in(ext_args=OUT_IN_ARGS):
     main.run_platform(ext_args)
 
 def test_restart(ext_args=RESTART_ARGS):
