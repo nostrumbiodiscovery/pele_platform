@@ -132,6 +132,7 @@ class YamlParser(object):
         "anm_modes_change": "anm_modes_change",
         "anm_num_of_modes": "anm_num_of_modes",
         "anm_relaxation_constr": "anm_relaxation_constr",
+        "skip_refinement": "skip_refinement",
         "remove_constraints": "remove_constraints",
         "pca_traj": "pca_traj",
         "perturbation": "perturbation",
@@ -349,6 +350,7 @@ class YamlParser(object):
 
         #Allosteric
         self.allosteric = data.get(valid_flags["allosteric"], None)
+        self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
 
         #RNA
         self.rna = data.get(valid_flags["rna"], None)

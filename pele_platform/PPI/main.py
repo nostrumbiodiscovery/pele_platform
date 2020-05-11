@@ -27,25 +27,35 @@ def run_ppi(parsed_yaml):
             residue=simulation1.residue, topology=simulation1.topology)
     
     # adjust original input.yaml
-    parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*.pdb")
-    parsed_yaml.folder = "refinement_simulation"
-    parsed_yaml.induced_fit_exhaustive = None
-    parsed_yaml.ppi = None
-    parsed_yaml.poses = None
-    parsed_yaml.rescoring = True
-    if not parsed_yaml.test:
-        parsed_yaml.iterations = 1
-        parsed_yaml.steps = 100
-    parsed_yaml.box_center = simulation1.box_center
-    parsed_yaml.box_radius = 100  # We should have a look at how to set no box but at the moment super big
-    
-    # add water molecules to minimisation inputs
-    #parsed_yaml.waters = "all_waters"
-    #add_water(parsed_yaml.system, chain, parsed_yaml.residue)
-    #parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*_water.pdb")
+    if not parsed_yaml.skip_refinement:
+        parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*.pdb")
+        parsed_yaml.folder = "refinement_simulation"
+        parsed_yaml.induced_fit_exhaustive = None
+        parsed_yaml.ppi = None
+        parsed_yaml.poses = None
+        parsed_yaml.rescoring = True
+        if not parsed_yaml.test:
+            parsed_yaml.iterations = 1
+            parsed_yaml.steps = 100
+        parsed_yaml.box_center = simulation1.box_center
+        parsed_yaml.box_radius = 100  # We should have a look at how to set no box but at the moment super big
+        
+        # add water molecules to minimisation inputs
+        #parsed_yaml.waters = "all_waters"
+        #add_water(parsed_yaml.system, chain, parsed_yaml.residue)
+        #parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*_water.pdb")
 
-    # start simulation 2 - minimisation
-    with cd(simulation1.pele_dir):
-        simulation2 = launch_simulation(parsed_yaml)
-
+        # start simulation 2 - minimisation
+        with cd(simulation1.pele_dir):
+            simulation2 = launch_simulation(parsed_yaml)
+    else:
+        simulation2 = None
     return simulation1, simulation2
+
+
+
+
+
+
+
+

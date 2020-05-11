@@ -18,20 +18,21 @@ def run_allosteric(parsed_yaml):
             residue=simulation.residue, topology=simulation.topology)
     
     # adjust original input.yaml
-    parsed_yaml.system = os.path.join(simulation_path, "refinement_input/*.pdb")
-    parsed_yaml.folder = "refinement_simulation"
-    parsed_yaml.full = None
-    parsed_yaml.poses = None
-    parsed_yaml.induced_fit_exhaustive = True
-    if not parsed_yaml.test:
-        parsed_yaml.iterations = 100
-        parsed_yaml.pele_steps = 10
-
-    parsed_yaml.box_center = simulation.box_center
-    parsed_yaml.box_radius = simulation.box_radius
-        
-    # refine selected best structures
-    with cd(simulation.pele_dir):
-        induced_fit = launch_refinement(parsed_yaml)
+    if not parsed_yaml.skip_refinement:
+        parsed_yaml.system = os.path.join(simulation_path, "refinement_input/*.pdb")
+        parsed_yaml.folder = "refinement_simulation"
+        parsed_yaml.full = None
+        parsed_yaml.poses = None
+        parsed_yaml.induced_fit_exhaustive = True
+        if not parsed_yaml.test:
+            parsed_yaml.iterations = 100
+            parsed_yaml.pele_steps = 10
+        parsed_yaml.box_center = simulation.box_center
+        parsed_yaml.box_radius = simulation.box_radius
+        # refine selected best structures
+        with cd(simulation.pele_dir):
+            induced_fit = launch_refinement(parsed_yaml)
+    else:
+        induced_fit = None
 
     return simulation, induced_fit
