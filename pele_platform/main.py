@@ -11,7 +11,7 @@ import pele_platform.Adaptive.simulation as ad
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Frag.simulation as fr
 from pele_platform.Allosteric.main import run_allosteric
-import pele_platform.Utilities.Helpers.environment_variables as ev
+import pele_platform.Checker.main as ck
 from pele_platform.PPI.main import run_ppi
 
 class Launcher():
@@ -34,7 +34,7 @@ class Launcher():
 
     def launch(self):
         if not self._args.no_check:
-            ev.check_variables(self._args)
+            ck.check_executable_and_env_variables(self._args)
         if self._args.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
         elif self._args.pele_feature == "allosteric":

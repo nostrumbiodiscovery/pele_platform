@@ -8,6 +8,7 @@ import pytest
 import pele_platform.Utilities.Helpers.protein_wizard as pp
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
+import pele_platform.Checker.main as mn
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
@@ -98,4 +99,17 @@ def test_checker_subsearch(ligand=PDB_CHECKER_SUBSEARCH, core=CORE_CHECKER_SUBSE
     assert atoms_in_common != atoms_in_common_after
     assert atoms_in_common_after[atoms_in_common.index(13)] == 12
     assert atoms_in_common_after[atoms_in_common.index(12)] == 13
+    
+
+def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
+    path_variables = os.environ["PATH"]
+    os.environ["PATH"] = ""
+    try:
+        job = main.run_platform(ext_args)
+    except ce.ExecutableNotInPath:
+        assert True
+        os.environ["$PATH"] = path_variables
+        return
+    os.environ["$PATH"] = path_variables
+    assert False
     
