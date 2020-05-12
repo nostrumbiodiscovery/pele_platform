@@ -108,8 +108,8 @@ def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
         job = main.run_platform(ext_args)
     except ce.ExecutableNotInPath:
         assert True
-        os.environ["$PATH"] = path_variables
+        os.environ["PATH"] = path_variables
         return
-    os.environ["$PATH"] = path_variables
+    os.environ["PATH"] = path_variables
     assert False
     
