@@ -13,3 +13,6 @@ class SameMolecule(Exception):
 
 class ExecutableNotInPath(Exception):
     pass
+
+class OldPythonVersion(Exception):
+    pass

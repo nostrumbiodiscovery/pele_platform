@@ -13,7 +13,7 @@ class Executable():
 
         fpath, fname = os.path.split(self.executable)
         if fpath:
-            if sefl._is_exe(self.executableprogram):
+            if self_is_exe(self.executableprogram):
                 return True
         else:
             for path in os.environ["PATH"].split(os.pathsep):

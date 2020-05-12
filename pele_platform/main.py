@@ -1,6 +1,8 @@
 import matplotlib
 matplotlib.use("Agg")
 import sys
+import pele_platform.Checker.python_version as pv
+pv.check_python_version()
 import pele_platform.constants.constants as cs
 sys.path.append(cs.DIR)
 from argparse import HelpFormatter

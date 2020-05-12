@@ -1,4 +1,5 @@
 import os
+import sys
 import pele_platform.constants.constants as cs
 from pele_platform.Checker import executable as ex
 from pele_platform.Checker import environment_variables as en
@@ -18,7 +19,6 @@ class Checker():
             env_variable.is_valid()
         for executable in self._generate_executables():
             executable.is_in_path()
-            
 
     def _generate_env_variables(self, args):
         self.env_variables = [
@@ -36,11 +36,12 @@ class Checker():
         return self.executables
 
 
-
     
 def check_executable_and_env_variables(args):
     """
     Check all external requirements are there
     before starting the simulation 
     """
-    Checker().check_variables(args)
+    checker = Checker()
+    checker.check_variables(args)
+    
