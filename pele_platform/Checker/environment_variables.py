@@ -16,7 +16,9 @@ class EnvVariable():
         elif self.default:
            if os.path.exists(self.default):
                return True
-        raise ValueError("{} not found. If you have the standard installation \
-export the environment variable by doing: {}.\
- Else define the location of the library via the flag: {}".format(self.name, self.env_var, self.flag))
+        raise ValueError("{} not found. \n\
+1) If you have the standard installation export the environment variable by doing:\n\
+\t{}.\n\
+2) If the previous does not work define the location of {} with the next flag in the input.yaml:\n\
+\t{}".format(self.name, self.env_var, self.name, self.flag))
 
