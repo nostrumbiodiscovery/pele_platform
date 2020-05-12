@@ -3,6 +3,21 @@ Versions
 
 Here we report the main changes for each version
 
+
+v1.4.4 (5/05/2020)
+=====================
+
+- Include further testing of alignment and rdkit symmetry problem
+
+- Include more flags for FragPele
+
+- Improve exceptions with custom errors
+
+v1.4.3 (27/04/2020)
+======================
+
+- Fix rdkit substructure search symmetry problem by alignment
+
 v1.4.2 (23/04/2020)
 ====================
 
