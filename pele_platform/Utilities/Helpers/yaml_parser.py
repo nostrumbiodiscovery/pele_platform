@@ -177,6 +177,7 @@ class YamlParser(object):
         "ligand_pdb": "ligand_pdb",
         "allosteric": "allosteric",
         "skip_refinement": "skip_refinement",
+        "n_waters": "n_waters",
         "rna": "rna"}
 
         for key in data.keys():
@@ -348,6 +349,7 @@ class YamlParser(object):
         self.protein = data.get(valid_flags["protein"], None)
         self.ligand_pdb = data.get(valid_flags["ligand_pdb"], None)
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
+        self.n_waters = data.get(valid_flags["n_waters"], None)
 
         #Allosteric
         self.allosteric = data.get(valid_flags["allosteric"], None)

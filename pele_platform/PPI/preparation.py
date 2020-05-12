@@ -1,6 +1,8 @@
-from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch
+from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch, Vector
 import glob
+import numpy as np
 import os
+import pele_platform.constants.constants as cs
 
 
 def prepare_structure(protein_file, ligand_pdb, chain):
@@ -9,7 +11,6 @@ def prepare_structure(protein_file, ligand_pdb, chain):
 
     # remove additional protein chains and all water molecules
     with open(protein_file, "r") as file:
-        print(protein_file)
         lines = file.readlines()
 
         for line in lines:
@@ -43,22 +44,12 @@ def prepare_structure(protein_file, ligand_pdb, chain):
     return new_protein_file
 
 
-def add_water(refinement_input, chain, ligand_chain):
+def add_water(refinement_input, chain, ligand_chain, n_waters=2):
 
     output = []
     refinement_input = glob.glob(refinement_input)
-    n_waters = len(refinement_input)*2
-
-    # hard-coded coordinates of water molecules
-    water1_O = "HETATM {}  O   HOH {} {}     -25.445  -9.362   2.160  1.00  0.00           O\n"
-    water1_H1 = "HETATM {}  H1  HOH {} {}     -24.805  -8.727   2.791  1.00  0.00           H\n"
-    water1_H2 = "HETATM {}  H2  HOH {} {}     -26.081  -9.993   2.799  1.00  0.00           H\n"
-    water2_O = "HETATM {}  O   HOH {} {}     -41.331 -14.611   0.035  1.00  0.00           O\n"
-    water2_H1 = "HETATM {}  H1  HOH {} {}     -40.692 -13.976   0.666  1.00  0.00           H\n"
-    water2_H2 = "HETATM {}  H2  HOH {} {}     -41.966 -15.243   0.674  1.00  0.00           H\n"
-
-    water = [water1_O, water1_H1, water1_H2, water2_O, water2_H1, water2_H2]
-
+    n_inputs = len(refinement_input)
+    water_coords = []
     resnums = []
     atomnums = []
 
@@ -67,26 +58,48 @@ def add_water(refinement_input, chain, ligand_chain):
         protein = file.readlines()
 
         for line in protein:
-            if line.startswith("ATOM") or line.startswith("HETATM"):
-                resnums.append(line[23:27].strip())
-                atomnums.append(line[7:11].strip())
-
-    water_chain = chain  # from function args
+            if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER"):
+                if line[23:27]:
+                    resnums.append(line[23:27].strip())
+                if line[7:11]:
+                    atomnums.append(line[7:11].strip())
+    
     resnums = [int(num) for num in resnums]
-    water_resnums = [(max(resnums)+1)]*3+[(max(resnums)+2)]*3
-    atomnum = max([int(num) for num in atomnums])
-    water_atomnums = range(atomnum+1, atomnum+7)
+    max_resnum = max(resnums)
+    water_resnums = []
+    water_chain = chain  # from function args
+    atomnum = max([int(num) for num in atomnums])+1
+    water_atonums = []
 
+    water = cs.water * n_waters * n_inputs
+
+    for inp in range(n_inputs):
+        for n in range(n_waters):
+            O_coords = Vector([np.random.randint(0,100) for i in range(3)])
+            H1_coords = O_coords + Vector(0.757, 0.586, 0.0)
+            H2_coords = O_coords + Vector(-0.757, 0.586, 0.0)
+            water_coords = water_coords + [list(O_coords)] + [list(H1_coords)] + [list(H2_coords)]
+
+            max_resnum += 1 # each water must have a different residue number
+            water_resnums = water_resnums+[max_resnum]*3
+        max_resnum += 1
+    
+    water_atomnums = [atomnum+j for j in range(n_waters*3)] * n_waters
+    
     # PDB lines - water
     water_output = []
-    for atom, num, resnum in zip(water, water_atomnums, water_resnums):
-        water_output.append(atom.format(num, water_chain, resnum))
-
+    for atom, num, resnum, coord in zip(water, water_atomnums, water_resnums, water_coords):
+        coord = ["{:7.4f}".format(c) for c in coord]
+        coord = " ".join(coord)
+        water_output.append(atom.format(num, water_chain, resnum, coord))
+    
+    sliced_water_output = []
+    for i in range(0, len(water_output), n_waters*3):
+        sliced_water_output.append(water_output[i:i+n_waters*3])
+    
     # loop over minimisation inputs
-    for inp in refinement_input:
-        print("input", inp)
+    for inp, w in zip(refinement_input, sliced_water_output):
         new_protein_file = os.path.join(os.path.dirname(inp), os.path.basename(inp).replace(".pdb", "_water.pdb"))
-        print("new protein file", new_protein_file)
 
         protein = []
         ligand = []
@@ -106,7 +119,7 @@ def add_water(refinement_input, chain, ligand_chain):
             for line in protein:
                 file.write(line)
             file.write("\n")
-            for line in water_output:
+            for line in w:
                 file.write(line)
             file.write("\n")
             for line in ligand:
@@ -142,5 +155,27 @@ def add_water(refinement_input, chain, ligand_chain):
         io.set_structure(structure)
         io.save(new_protein_file)
         output.append(new_protein_file)
+
+    return output
+
+
+def ligand_com(refinement_input, ligand_chain):
+
+    parser = PDBParser()                                                                                                                                                            
+    output = []
+    refinement_input = glob.glob(refinement_input)
+
+    for inp in refinement_input:
+        structure = parser.get_structure("inp", inp)
+        mass = 0.0
+        com = np.zeros(3)
+        for res in structure.get_residues():
+            if res.resname == ligand_chain:
+                for atom in res.get_atoms():
+                    com = com + np.array(list(atom.get_vector())) * atom.mass
+                    mass += atom.mass
+                    com = com / mass
+        
+        output.append(com.tolist())
 
     return output
