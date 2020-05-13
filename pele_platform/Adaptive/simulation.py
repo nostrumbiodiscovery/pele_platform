@@ -178,7 +178,7 @@ def run_adaptive(args):
         adaptive.fill_adaptive_template(env)
         if not env.debug:
             adaptive.run()
-        env.logger.info("Simulation run succesfully (:\n\n")
+        env.logger.info("Simulation run successfully (:\n\n")
 
     if env.analyse and not env.debug:
         report = pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
@@ -186,5 +186,5 @@ def run_adaptive(args):
             output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae,
             nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology,
             be_column=env.be_column, limit_column=env.limit_column, te_column=env.te_column)
-        print("Pdf summary report succesfully writen to: {}".format(report))
+        print("Pdf summary report successfully writen to: {}".format(report))
     return env
