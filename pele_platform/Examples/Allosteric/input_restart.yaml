@@ -8,4 +8,5 @@ atom_dist:
 - 4555
 - 10
 test: true
+adaptive_restart: true
 working_folder: allosteric

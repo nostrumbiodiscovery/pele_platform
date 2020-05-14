@@ -28,19 +28,18 @@ yaml = os.path.join(test_path, "PPI/input.yaml")
 def test_ppi(energy_result=-2.18, yaml=yaml):
   
     #Function to test
-    job, _ = main.run_platform(yaml)
+    job, job2 = main.run_platform(yaml)
 
     # checkpoints
     output_csv = pd.read_csv(os.path.join(job.pele_dir, "output/clustering_output.csv"))
     best_energy = round(output_csv["binding_energy"].min(),2)
-    nfiles = len(glob.glob(os.path.join(job.pele_dir, "output/refinement_input/*.pdb")))
-    nfiles_refinement = len(glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/BestStructs/epoch*")))
+    nfiles = len(glob.glob(os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")))
+    nfiles_refinement = len(glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/epoch*")))
 
     # test
     assert nfiles == job.n_components 
     assert best_energy == energy_result
     assert nfiles_refinement
-
 
 def test_prepare_structure():
 
