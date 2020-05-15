@@ -16,6 +16,7 @@ import pele_platform.Utilities.Helpers.center_of_mass as cm
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
+import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
 import pele_platform.Analysis.plots as pt
@@ -36,6 +37,9 @@ def run_adaptive(args):
     env.create_files_and_folders()
     shutil.copy(args.yamlfile, env.pele_dir) 
 
+
+    #######
+
     if env.adaptive_restart and not env.only_analysis:
         with helpers.cd(env.pele_dir):
             adt.main(env.ad_ex_temp)
@@ -54,12 +58,14 @@ def run_adaptive(args):
         env.logger.info("Prepare complex {}".format(syst.system))
            
         ########Choose your own input####################
+        
         # User specifies more than one input
         if env.input:
             env.inputs_simulation = []
             for input in env.input:
                 input_path  = os.path.join(env.pele_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
+                
                 if env.no_ppp:
                     input_proc = input
                 else:
@@ -69,6 +75,7 @@ def run_adaptive(args):
                 env.inputs_simulation.append(input_proc)
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input + '"' for input in env.inputs_simulation]).strip('"')
+        
         # Global exploration mode: Create inputs around protein
         elif args.full or args.randomize or args.ppi:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, env.receptor,
@@ -150,8 +157,6 @@ def run_adaptive(args):
                 obc.main(template, env.obc_file)
         env.logger.info("Implicit solvent set\n\n".format(env.solvent))
         
-
-
         #####Build PCA#######
         if env.pca_traj:
            if isinstance(env.pca_traj, str):
@@ -162,8 +167,16 @@ def run_adaptive(args):
            with helpers.cd(env.pele_dir):
                pca = pc.main(pdbs_full_path)
            env.pca = cs.PCA.format(pca)
-
         
+        ####### Add waters, if needed
+        if args.n_waters:
+            # Add n water molecules to minimisation inputs
+            input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
+            input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
+            wt.water_checker(args)
+            wt.add_water(input_waters, args.residue, args.n_waters)
+            wt.set_water_control_file(env)
+
         ############Fill in Simulation Templates############
         env.logger.info("Running Simulation")
         #if env.adaptive:
@@ -171,11 +184,13 @@ def run_adaptive(args):
         #if env.pele:
         #    ext.external_pele_file(env)
         adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
+        
         # Fill to time because we have flags inside flags
         adaptive.fill_pele_template(env)
         adaptive.fill_pele_template(env)
         adaptive.fill_adaptive_template(env)
         adaptive.fill_adaptive_template(env)
+        
         if not env.debug:
             adaptive.run()
         env.logger.info("Simulation run succesfully (:\n\n")

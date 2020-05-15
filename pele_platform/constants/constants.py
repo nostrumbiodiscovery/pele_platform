@@ -92,37 +92,18 @@ BOX = '''
 WATER = '''
          "WaterPerturbation":
          {{
-             "Box" :
-             {{
-                 "radius" : {},
-                 "fixedCenter": {},
-                 "type" : "sphericalBox"
-             }},
              "watersToPerturb": {{ "links": {{ "ids": [ {} ] }} }},
              "parameters":
              {{
+                 "allowEmptyWaterSelectors": {},
                  "temperature": {},
                  "numberOfStericTrials": {},
                  "overlapFactor": {},
                  "COMConstraintConstant": {}
-             }}
+             }},
+             "waterSites": {}
          }}, 
 '''
-
-WATER_PPI = '''                                                                                                                                                                             
-         "WaterPerturbation":                                                                                                                                                           
-         {{
-         "waterSites": {},                                                                                                                                                                         
-            "parameters":                                                                                                                                                              
-            {{                                                                                                                                                                         
-                "temperature": {},                                                                                                                                                     
-                "numberOfStericTrials": {},                                                                                                                                            
-                "overlapFactor": {},                                                                                                                                                   
-                "COMConstraintConstant": {}                                                                                                                                            
-            }}                                                                                                                                                                         
-        }},                                                                                                                                                                            
-'''  
-
 
 PCA = '''"preloadedModesIn" : "{}",'''
 
@@ -165,9 +146,9 @@ SASA='''
 LIGAND = '"ligandResname" : "$LIG_RES",'
 
 # PPI waters
-water_O = "HETATM {}  O   HOH {} {}    {}  1.00  0.00           O\n"
-water_H1 = "HETATM {}  H1  HOH {} {}    {}  1.00  0.00           H\n"
-water_H2 = "HETATM {}  H2  HOH {} {}    {}  1.00  0.00           H\n"
+water_O = "HETATM {}  OW  HOH {} {}    {}  1.00  0.00           O\n"
+water_H1 = "HETATM {}  1HW HOH {} {}    {}  1.00  0.00           H\n"
+water_H2 = "HETATM {}  2HW HOH {} {}    {}  1.00  0.00           H\n"
 water = [water_O, water_H1, water_H2]
 
 
