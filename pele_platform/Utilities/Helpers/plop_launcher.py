@@ -2,6 +2,7 @@ import os
 import PlopRotTemp as plop
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.helpers as hp
+import pele_platform.Errors.custom_errors as ce
 
 try:
     import subprocess32 as subprocess
@@ -25,7 +26,12 @@ def parametrize_miss_residues(args, env, syst, resname=None):
     my_env["SCHRODINGER"]=cs.SCHRODINGER
     print("Running Plop")
     print("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir))
-    subprocess.call("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir).split(), env=my_env)
+    try:
+        subprocess.check_output("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, syst.lig, resname, templatedir, rotamerdir).split(), env=my_env)
+    except subprocess.CalledProcessError: 
+        raise ce.LigandPreparationError("Ligand preparation failed.\
+ Plese check there are no space in the ligand atom name and that \
+the inputted ligand has a valid structure")
     #hp.silentremove([syst.lig])
 
 
