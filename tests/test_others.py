@@ -13,6 +13,7 @@ import pele_platform.Checker.main as mn
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
 PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
+LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 
 
 EXT_CONSTR = [
@@ -113,3 +114,10 @@ def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
     os.environ["PATH"] = path_variables
     assert False
     
+def test_lig_preparation_error(args=LIG_PREP_ARGS):
+    try:
+        job = main.run_platform(args)
+    except ce.LigandPreparationError:
+        assert True
+        return
+    assert False
