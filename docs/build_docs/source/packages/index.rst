@@ -12,6 +12,7 @@ The next packages are included in the PELE Platform:
     - `Pocket Exploration <pocket_exploration/index.html>`_ (24h)
     - `HT-Fragment Growing <frag/index.html>`_ (30min/fragment)
     - `Binding Events <binding/index.html>`_ (6h)
+    - `Biased Simulation <bias/index.html>`_ (3h)
 
 
 .. toctree::
@@ -28,6 +29,10 @@ The next packages are included in the PELE Platform:
 
 .. toctree::
    binding/index.rst
+   :hidden:
+
+.. toctree::
+   bias/index.rst
    :hidden:
 
 

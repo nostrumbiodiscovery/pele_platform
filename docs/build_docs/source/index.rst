@@ -17,6 +17,7 @@ Included packages:
     - `Pocket Exploration <packages/pocket_exploration/index.html>`_ (24h)
     - `HT-Fragment Growing <packages/frag/index.html>`_ (30min/fragment)
     - `Binding Events <packages/binding/index.html>`_ (6h)
+    - `Biased Simulation <packages/bias/index.html>`_ (3h)
 
 
 Github : https://github.com/NostrumBioDiscovery/pele_platform
