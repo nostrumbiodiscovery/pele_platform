@@ -204,7 +204,7 @@ def ligand_com(refinement_input, ligand_chain):
     parser = PDBParser()                                                                                                                                                            
     output = []
     refinement_input = glob.glob(refinement_input)
-
+    
     for inp in refinement_input:
         structure = parser.get_structure("inp", inp)
         mass = 0.0
@@ -214,7 +214,7 @@ def ligand_com(refinement_input, ligand_chain):
                 for atom in res.get_atoms():
                     com = com + np.array(list(atom.get_vector())) * atom.mass
                     mass += atom.mass
-                    com = com / mass
+                com = com / mass
         
         output.append(com.tolist())
 
