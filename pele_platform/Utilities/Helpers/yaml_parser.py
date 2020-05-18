@@ -39,6 +39,7 @@ class YamlParser(object):
         "sidechain_resolution": "sidechain_res",
         "steric_trials": "steric_trials",
         "overlap_factor": "overlap_factor",
+        "steering": "steering",
         "solvent": "solvent",
         "usesrun": "usesrun",
         "spawning": "spawning",
@@ -205,6 +206,7 @@ class YamlParser(object):
         self.sidechain_resolution = data.get(valid_flags["sidechain_resolution"], None)
         self.steric_trials = data.get(valid_flags["steric_trials"], None)
         self.overlap_factor = data.get(valid_flags["overlap_factor"], None)
+        self.steering= data.get(valid_flags["steering"], None)
         self.solvent = data.get(valid_flags["solvent"], None)
         self.usesrun = data.get(valid_flags["usesrun"], None)
         self.spawning = data.get(valid_flags["spawning"], None)

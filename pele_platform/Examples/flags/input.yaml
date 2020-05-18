@@ -2,6 +2,7 @@ system: '../pele_platform/Examples/water/water_processed.pdb'
 chain: 'J'
 resname: 'SB4'
 log: true
+steering: 3
 cpus: 3
 seed: 3000
 iterations: 1

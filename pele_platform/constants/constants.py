@@ -124,7 +124,7 @@ PERTURBATION = '''
                 "rotationAngles": "nonCoupled",
                 "parameters": {
                     "numberOfStericTrials": $STERIC_TRIALS,
-                    "steeringUpdateFrequency": 0,
+                    "steeringUpdateFrequency": $STEERING,
                     "overlapFactor": $OVERLAP
                 }   
                 
