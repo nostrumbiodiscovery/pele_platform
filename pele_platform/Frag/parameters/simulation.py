@@ -11,3 +11,4 @@ class FragSimulationParameters():
         self.protocol = args.protocol if args.protocol else self.simulation_params.get("protocol", "")
         self.topology = None if self.pdb else os.path.join("output_pele", "topology.pdb")
         self.frag_restart = "-rst" if args.frag_restart else ""
+        self.frag_traj_name = "trajectory"
