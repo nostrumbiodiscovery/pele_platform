@@ -16,3 +16,6 @@ class ExecutableNotInPath(Exception):
 
 class OldPythonVersion(Exception):
     pass
+
+class LigandPreparationError(Exception):
+    pass

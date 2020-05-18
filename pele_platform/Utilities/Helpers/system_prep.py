@@ -4,6 +4,7 @@ import subprocess
 import argparse
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 import pele_platform.constants.constants as cs
+import pele_platform.Errors.custom_errors as ce
 
 class SystemBuilder(object):
     def __init__(self, receptor, ligand, residue, pele_dir):
@@ -25,7 +26,11 @@ class SystemBuilder(object):
         my_env["PYTHONPATH"] = ''
         my_env["SCHRODINGER_PYTHONPATH"]=os.path.join(cs.SCHRODINGER, "internal/lib/python2.7/site-packages/")
         my_env["SCHRODINGER"]=cs.SCHRODINGER
-        subprocess.call("{} {} {} {}".format(SPYTHON, __file__, system.lig_ref, pele_dir).split(), env=my_env)
+        success = subprocess.call("{} {} {} {}".format(SPYTHON, __file__, system.lig_ref, pele_dir).split(), env=my_env)
+        if not success: #If any problem stop
+            raise ce.LigandPreparationError("Ligand preparation failed.\
+ Plese check there are no space in the ligand atom name and that \
+the inputted ligand has a valid structure")
         system.residue = residue
         return system
 
