@@ -88,7 +88,6 @@ def add_water(refinement_input, ligand_chain, n_waters=2):
     	            except:
     	                IndexError("Line '{}' is too short".format(line))
     	lig_length = resnames.count(ligand_chain)
-    	print("lig length", lig_length) 
     	resnums = [int(num) for num in resnums if num]
     	max_resnum = max(resnums)
     	water_resnums = []
