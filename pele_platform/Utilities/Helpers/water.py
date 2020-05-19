@@ -51,10 +51,12 @@ def water_checker(args):
     max_water = 4
     min_water = 1
 
-    if args.n_waters > max_water:
-        raise ValueError("Maximum {} water molecules are allowed.".format(max_water))
-    elif args.n_waters < min_water:
-        raise ValueError("Number of water molecules (n_waters) has to be between {} and {}".format(min_water, max_water))
+    if args.n_waters:
+
+        if args.n_waters > max_water:
+            raise ValueError("Maximum {} water molecules are allowed.".format(max_water))
+        elif args.n_waters < min_water:
+            raise ValueError("Number of water molecules (n_waters) has to be between {} and {}".format(min_water, max_water))
 
 
 def add_water(refinement_input, ligand_chain, n_waters=2):
