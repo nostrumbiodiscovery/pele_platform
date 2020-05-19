@@ -73,7 +73,7 @@ def run_adaptive(args):
         elif args.full or args.randomize or args.ppi:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, env.receptor,
                 outputfolder=env.pele_dir, nposes=env.poses, test=env.test, user_center=env.center_of_interface)
-            if not env.box_center and not env.box_radius:
+            if not args.gpcr_orth:
                 env.box_center = box_center
                 env.box_radius = box_radius
             if env.no_ppp:
