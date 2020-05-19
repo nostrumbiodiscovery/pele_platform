@@ -31,7 +31,7 @@ class FragRunner(mn.FragParameters):
     def run(self):
          if self.frag_run:
              frag.main(self.core_process, self.input, self.gr_steps, self.criteria, self.plop_path, self.spython, self.pele_exec, self.control_file, self.license, self.output_folder,
-             self.report_name, self.traj_name, self.cluster_folder, self.cpus, self.distcont, self.threshold, self.epsilon, self.condition, self.metricweights,
+             self.report_name, "trajectory", self.cluster_folder, self.cpus, self.distcont, self.threshold, self.epsilon, self.condition, self.metricweights,
              self.nclusters, self.frag_eq_steps, self.frag_restart, self.min_overlap, self.max_overlap,
              self.chain_core, self.frag_chain, self.frag_steps, self.temperature, self.seed, self.gridres, self.banned, self.limit, self.mae,
              self.rename, self.threshold_clash, self.steering, self.translation_high, self.rotation_high,
@@ -106,5 +106,9 @@ class FragRunner(mn.FragParameters):
         self.frag_steps = 2
         self.frag_eq_steps = 1
         self.temperature = 100000
+        self.anm_freq = 0
+        self.minimizatoon = 0
+        self.sidechain_freq = 0
+        self.water_freq = 0
         self.cpus = 4
 	
