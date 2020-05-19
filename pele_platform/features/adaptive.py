@@ -30,6 +30,11 @@ def retrieve_software_settings(args, pele_dir):
                                       "cluster_values": "[2, 5, 7]", "cluster_conditions": "[1, 0.6, 0.0]",
                                       "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.OUT_IN,
                                       "box_radius": 30},
+                             "gpcr_orth": {"spawning_type": "epsilon", "density": "null",
+                                      "simulation_type": "pele", "iterations": 50, "pele_steps": 8, 
+                                      "cluster_values": "[1.75, 2.5, 4]", "cluster_conditions": "[0.7, 0.4, 0.0]",
+                                      "steric_trials": 100, "overlap_factor": 0.65, "epsilon": 0.25,
+                                      "bias_column": 6, "params": pcs.GPCR_ORTH, "box_radius": 15, "ca_constr": 5},
                              "global": {"spawning_type": "inverselyProportional", "bias_column": 5, "epsilon":0.25, "density": "continuous",
                                       "simulation_type": "pele", "iterations": 100, "pele_steps": 4, 
                                       "cluster_values": "[2.5, 5, 7]", "cluster_conditions": "[1, 0.6, 0.0]",
@@ -87,6 +92,8 @@ def retrieve_software_settings(args, pele_dir):
             type_simulation = "out_in"
         elif args.adaptive and args.pele:
             type_simulation = "adaptive"
+        elif args.gpcr_orth:
+            type_simulation = "gpcr_orth"
         else:
             #Standard file (user will change the parameters)
             type_simulation = "induced_fit_fast"

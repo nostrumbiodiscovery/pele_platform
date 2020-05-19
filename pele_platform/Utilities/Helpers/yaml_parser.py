@@ -107,6 +107,8 @@ class YamlParser(object):
         "water_trials": "water_trials",
         "water_radius": "water_radius",
         "out_in": "out_in",
+        "orthosteric_site": "orthosteric_site",
+        "initial_site" : "initial_site", 
         "induced_fit_exhaustive": "induced_fit_exhaustive",
         "induced_fit_fast": "induced_fit_fast",
         "frag": "frag",
@@ -161,6 +163,7 @@ class YamlParser(object):
         "frag_input": "frag_input",
         "frag_ligands": "frag_ligands",
         "growing_steps": "growing_steps",
+        "gpcr_orth": "gpcr_orth",
         "frag_steps": "steps_in_gs",
         "frag_eq_steps": "sampling_steps",
         "protocol": "protocol",
@@ -206,7 +209,7 @@ class YamlParser(object):
         self.sidechain_resolution = data.get(valid_flags["sidechain_resolution"], None)
         self.steric_trials = data.get(valid_flags["steric_trials"], None)
         self.overlap_factor = data.get(valid_flags["overlap_factor"], None)
-        self.steering= data.get(valid_flags["steering"], None)
+        self.steering = data.get(valid_flags["steering"], None)
         self.solvent = data.get(valid_flags["solvent"], None)
         self.usesrun = data.get(valid_flags["usesrun"], None)
         self.spawning = data.get(valid_flags["spawning"], None)
@@ -356,6 +359,12 @@ class YamlParser(object):
 
         #RNA
         self.rna = data.get(valid_flags["rna"], None)
+
+
+        #GPCR
+        self.gpcr_orth = data.get(valid_flags["gpcr_orth"], None)
+        self.orthosteric_site = data.get(valid_flags["orthosteric_site"], None)
+        self.initial_site = data.get(valid_flags["initial_site"], None)
 
         if self.test:
             print("##############################")
