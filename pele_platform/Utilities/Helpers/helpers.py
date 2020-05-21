@@ -119,7 +119,7 @@ def retrieve_atom_info(atom, pdb):
             try:
                 if not isinstance(atom, int) and not atom.isdigit():
                     chain, resnum, atomname = atom.split(":")
-                    if line[21].strip() == chain and line[22:26].strip() == resnum and line[12:16].strip() == atomname:
+                    if line[21].strip() == chain.strip() and line[22:26].strip() == resnum.strip() and line[12:16].strip() == atomname.strip():
                         atomname = line[12:16]
                         return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
                 else:

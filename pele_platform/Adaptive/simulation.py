@@ -16,6 +16,7 @@ import pele_platform.Utilities.Helpers.center_of_mass as cm
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
+import pele_platform.Utilities.Helpers.metal_constraints as mc
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
@@ -106,9 +107,19 @@ def run_adaptive(args):
                 shutil.copy(env.system, env.pele_dir)
         else:
             env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
+
+        ################METAL CONSTRAINTS##################
+         
+        metal_constraints = mc.find_metal_geo(os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')))
+        print("metal constraints", metal_constraints)
+        print("external", env.external_constraints)
+        metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
+        env.external_constraints.extend(metal_constraints_json)
+
+        # Keep Json ordered by having first title and then constraints
         if env.external_constraints:
-            # Keep Json ordered by having first title and then constraints
             env.constraints = env.constraints[0:1] + env.external_constraints + env.constraints[1:]
+        print("env.constraints", env.constraints)
         if env.remove_constraints:
             env.constraints = ""
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))

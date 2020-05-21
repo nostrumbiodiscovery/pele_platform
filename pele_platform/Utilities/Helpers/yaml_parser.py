@@ -313,7 +313,7 @@ class YamlParser(object):
         self.constrain_smiles = data.get(valid_flags["constrain_smiles"], None)
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.spawning_condition = data.get(valid_flags["spawning_condition"], None)
-        self.external_constraints = data.get(valid_flags["external_constraints"], None)
+        self.external_constraints = data.get(valid_flags["external_constraints"], [])
         self.only_analysis = data.get(valid_flags["only_analysis"], False)
         self.overwrite = data.get(valid_flags["overwrite"], True)
         self.analysis_nclust = data.get(valid_flags["analysis_nclust"], 10)
