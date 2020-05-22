@@ -15,7 +15,9 @@ PELE packages:
     - `Pocket Exploration <packages/pocket_exploration/index.html>`_ (24h)
     - `Protein-Protein Inhibitors <packages/ppi/index.html>`_ (10h)
     - `HT-Fragment Growing <packages/frag/index.html>`_ (30min/fragment)
+    - `GPCR orthosteric site exploration <packages/gpcr/index.html>`_ (2h)
     - `Binding Events <packages/binding/index.html>`_ (6h)
+    - `Biased Simulation <packages/bias/index.html>`_ (3h)
 
 
 Github : https://github.com/NostrumBioDiscovery/pele_platform
