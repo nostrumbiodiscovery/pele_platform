@@ -27,6 +27,32 @@ OUT_IN = '''
 ]
 '''
 
+GPCR_ORTH = '''
+             ,
+             "parametersChanges" : [
+                 { "ifAnyIsTrue": [ "rand >= .5" ],
+                     "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
+                     "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.2 } }
+                 },
+                 { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+                     "doThesechanges": { "Perturbation::parameters": { "translationRange": 2.0 } },
+                     "otherwise": { "Perturbation::parameters": { "translationRange": 1.0 } }
+                 },
+                 { "ifAnyIsTrue": [ "rand2 >= 0.66" ],
+                     "doThesechanges": { "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials" : 10 } },
+                     "otherwise": { "Perturbation::parameters": { "steeringUpdateFrequency": 2, "numberOfTrials" : 10 } }
+                 },
+                 { "ifAnyIsTrue": [ "sasaLig >= 0.85" ],
+                     "doThesechanges": { "Perturbation::parameters": { "translationRange": 3.0, "steeringUpdateFrequency": 0,"numberOfTrials" : 40 } },
+                     "otherwise": {  }
+                 },
+                 { "ifAnyIsTrue": [ "sasaLig <= 0.35" ],
+                     "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1, "translationRange": 1.0} },
+                     "otherwise": {  }
+                 }
+               ]
+'''
+
 IN_OUT = '''
              ,
 

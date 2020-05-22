@@ -14,6 +14,7 @@ import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Frag.simulation as fr
 from pele_platform.Allosteric.main import run_allosteric
 import pele_platform.Checker.main as ck
+import pele_platform.gpcr.main as gpcr
 from pele_platform.PPI.main import run_ppi
 
 class Launcher():
@@ -31,6 +32,8 @@ class Launcher():
             self._args.pele_feature = "PPI"
         elif arguments.allosteric:
             self._args.pele_feature = "allosteric"
+        elif arguments.gpcr_orth:
+            self._args.pele_feature = "gpcr_orth"
         else: 
             self._args.pele_feature = "adaptive"
 
@@ -39,6 +42,8 @@ class Launcher():
             ck.check_executable_and_env_variables(self._args)
         if self._args.pele_feature == "adaptive":
             job_variables = ad.run_adaptive(self._args)
+        elif self._args.pele_feature == "gpcr_orth":
+            job_variables = gpcr.GpcrLauncher(self._args).run_gpcr_simulation()
         elif self._args.pele_feature == "allosteric":
             job_variables = run_allosteric(self._args)
         elif self._args.pele_feature == "PPI":
