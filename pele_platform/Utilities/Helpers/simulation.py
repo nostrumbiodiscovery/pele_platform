@@ -1,17 +1,34 @@
+from dataclasses import dataclass
 import os
 import AdaptivePELE.adaptiveSampling as ad
 from pele_platform.Utilities.Helpers import helpers, template_builder
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.center_of_mass as cm 
+import pele_platform.Utilities.Parameters.pele_env as pv
 
+@dataclass
 class SimulationBuilder(template_builder.TemplateBuilder):
 
-    def __init__(self, adaptive, pele, env):
-        self.adaptive_file = adaptive
-        self.pele_file = pele
-        self.topology = env.topology
+    adaptive_file: str
+    pele_file: str
+    topology: str
 
-    def fill_pele_template(self, env):
+    def generate_inputs(self, env: pv.EnviroBuilder) -> None:
+        # Fill in simulation template with 
+        # simulation parameters specified in  
+        # pv.EnviroBuilder
+        env.logger.info("Running Simulation")
+        # Fill to time because we have flags inside flags
+        self.fill_pele_template(env)
+        self.fill_pele_template(env)
+        self.fill_adaptive_template(env)
+        self.fill_adaptive_template(env)
+        if not env.debug:
+            self.run()
+        env.logger.info("Simulation run successfully (:\n\n")
+
+    def fill_pele_template(self, env: pv.EnviroBuilder) -> None:
+        # Fill in PELE template
         self.pele_keywords = { "PERTURBATION": env.perturbation, "SELECTION_TO_PERTURB": env.selection_to_perturb,
                         "BE": env.binding_energy, "SASA": env.sasa,
                         "LOGFILE": env.logfile, "NATIVE": env.native, "FORCEFIELD": env.forcefield, "CHAIN": env.chain, 
@@ -30,7 +47,8 @@ class SimulationBuilder(template_builder.TemplateBuilder):
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
-    def fill_adaptive_template(self, env):
+    def fill_adaptive_template(self, env: pv.EnviroBuilder) -> None:
+        # Fill in adaptive template
         self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.output, "INPUT":env.adap_ex_input,
                 "CPUS":env.cpus, "PELE_CFILE": os.path.basename(self.pele_file), "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,
                 "EQUILIBRATION":env.equilibration, "EPSILON": env.epsilon, "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, 
@@ -42,8 +60,8 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)
 
 
-
-    def run(self, hook=False):
+    def run(self, hook=False) -> None:
+        # Launch montecarlo simulation
         with helpers.cd(os.path.dirname(self.adaptive_file)):
                 ad.main(self.adaptive_file)
 

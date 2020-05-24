@@ -4,30 +4,36 @@ import shutil
 import glob
 import AdaptivePELE.adaptiveSampling as adt
 import PPP.main as ppp
-import pele_platform.Utilities.Helpers.plop_launcher as plop
 from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
 import pele_platform.constants.constants as cs
+import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.missing_residues as mr
-import pele_platform.Utilities.Helpers.simulation as ad
-import pele_platform.Utilities.Helpers.center_of_mass as cm
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
-import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
-import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
 import pele_platform.Analysis.plots as pt
+import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Adaptive.ligand_parametrization as lg
+import pele_platform.Adaptive.box as bx
+import pele_platform.Adaptive.solvent as sv
+import pele_platform.Adaptive.pca as pca
 #import pele_platform.RNA.prep as pr
 
 
 
 
-def run_adaptive(args):
-    if args.rna:
-        args.system = pr.fix_rna_pdb(args.system)
-        args.no_ppp = True
+def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
+    """
+    Main function to prepare and launch simulation
+
+    1) Crate working folders and inputs
+    2) Prepare ligand and receptor
+    3) Launch simulation
+    4) Analyse simulation
+    """
     # Build Folders and Logging and env variable that will containt
     #all main  attributes of the simulation
     env = pele.EnviroBuilder()
@@ -108,34 +114,17 @@ def run_adaptive(args):
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
         env.logger.info("Complex {} prepared\n\n".format(env.system))
 
-
-        ############Parametrize Ligand###############
+        ####Ligand parameters and simulation box
         if env.perturbation:
-            env.logger.info("Creating template for residue {}".format(args.residue))
-            with hp.cd(env.pele_dir):
-                plop.parametrize_miss_residues(args, env, syst)
-            env.logger.info("Template {}z created\n\n".format(args.residue.lower()))
-            if env.external_template:
-                for template_file in env.external_template:
-                    cmd_to_move_template = "cp {} {}".format(template_file,  env.template_folder)
-                    subprocess.call(cmd_to_move_template.split())
-            if env.external_rotamers:
-                for rotamer_file in env.external_rotamers:
-                    cmd_to_move_rotamer_file = "cp {} {}".format(rotamer_file, env.rotamers_folder)
-                    subprocess.call(cmd_to_move_rotamer_file.split())
-
-            #################Set Box###################
-            env.logger.info("Generating exploration box")
-            if not env.box_center:
-                env.box_center = cm.center_of_mass(env.ligand_ref)
-                env.logger.info("Box {} generated\n\n".format(env.box_center))
-            else:
-                env.logger.info("Box {} generated\n\n".format(env.box_center))
-            env.box = cs.BOX.format(env.box_radius, env.box_center) if  env.box_radius else ""
+            ligand_params = lg.LigandParametrization(env)
+            ligand_params.generate()
+            box = bx.BoxSetter(env.box_center, env.box_radius,
+                env.ligand_ref, env.logger)
+            env.box = box.generate_json()
         else:
             env.box=""
 
-        ###########Parametrize missing residues#################
+        ###########Parametrize missing residues
         for res, __, _ in missing_residues:
             if res != args.residue and res not in env.skip_ligand_prep:
                 env.logger.info("Creating template for residue {}".format(res))
@@ -143,43 +132,20 @@ def run_adaptive(args):
                     mr.create_template(args, env, res)
                 env.logger.info("Template {}z created\n\n".format(res))
     
-        #########Parametrize solvent parameters if need it##############
-        env.logger.info("Setting implicit solvent: {}".format(env.solvent))
-        if env.solvent == "OBC":
-            shutil.copy(env.obc_tmp, env.obc_file)
-            for template in glob.glob(os.path.join(env.template_folder, "*")):
-                obc.main(template, env.obc_file)
-        env.logger.info("Implicit solvent set\n\n".format(env.solvent))
+        #########Solvent parameters
+        solvent = sv.ImplicitSolvent(env.solvent, env.obc_tmp,
+             env.template_folder, env.obc_file, env.logger)
+        solvent.generate()
         
-
-
         #####Build PCA#######
         if env.pca_traj:
-           if isinstance(env.pca_traj, str):
-               pdbs = glob.glob(env.pca_traj)
-           elif isinstance(env.pca_traj, list):
-               pdbs = env.pca_traj
-           pdbs_full_path = [os.path.abspath(pdb) for pdb in pdbs]
-           with helpers.cd(env.pele_dir):
-               pca = pc.main(pdbs_full_path)
-           env.pca = cs.PCA.format(pca)
-
+            pca_obj = pca.PCA(env.pca_traj, env.pele_dir)
+            env.pca = pca_obj.generate()
         
         ############Fill in Simulation Templates############
-        env.logger.info("Running Simulation")
-        #if env.adaptive:
-        #    ext.external_adaptive_file(env)
-        #if env.pele:
-        #    ext.external_pele_file(env)
-        adaptive = ad.SimulationBuilder(env.ad_ex_temp, env.pele_exit_temp, env)
-        # Fill to time because we have flags inside flags
-        adaptive.fill_pele_template(env)
-        adaptive.fill_pele_template(env)
-        adaptive.fill_adaptive_template(env)
-        adaptive.fill_adaptive_template(env)
-        if not env.debug:
-            adaptive.run()
-        env.logger.info("Simulation run successfully (:\n\n")
+        adaptive = ad.SimulationBuilder(env.ad_ex_temp,
+            env.pele_exit_temp, env.topology)
+        adaptive.generate_inputs(env)
 
     if env.analyse and not env.debug:
         report = pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
