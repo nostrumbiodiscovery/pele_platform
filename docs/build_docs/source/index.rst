@@ -22,6 +22,14 @@ PELE packages:
 
 Github : https://github.com/NostrumBioDiscovery/pele_platform
 
+Structure
+============
+
+.. figure:: package_structure.png
+    :scale: 50%
+    :align: center
+
+
 Requirements
 ===================
 
