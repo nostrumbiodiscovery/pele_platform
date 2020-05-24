@@ -1,3 +1,7 @@
+"""
+Dictionary with valid flags for platform in input.yalm
+"""
+
 
 VALID_FLAGS_PLATFORM = {"system": "system",
 "residue": "resname",

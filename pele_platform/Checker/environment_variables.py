@@ -1,15 +1,17 @@
+from dataclasses import dataclass
 import os
 
+@dataclass
 class EnvVariable():
 
-    def __init__(self, name, variable, default, flag, env_var):
-        self.name = name
-        self.variable = variable
-        self.default = default
-        self.flag = flag
-        self.env_var = env_var
+    name: str
+    variable: str
+    default: str
+    flag: str
+    env_var: str
 
-    def is_valid(self):
+    def is_valid(self) -> None:
+        #Check if environment variable is correctly set
         if self.variable:
             if os.path.exists(self.variable):
                 return True
