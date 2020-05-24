@@ -1,10 +1,15 @@
-from pele_platform.Allosteric.cluster import cluster_best_structures
-from pele_platform.Allosteric.simulation_launcher import launch_global_exploration, launch_refinement
-from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
 import os
+from pele_platform.Allosteric.cluster import cluster_best_structures
+from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
+import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Adaptive.simulation as si
 
-
-def run_allosteric(parsed_yaml):
+def run_allosteric(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
+    '''
+    Run allosteric simulation by:
+    1) Run global exploration to identify most important pockets
+    2) Run induced fit simulation to find deep pockets
+    '''
     #Let user choose working folder
     original_dir = os.path.abspath(os.getcwd())
     working_folder = os.path.abspath("{}_Pele".format(parsed_yaml.residue))
@@ -18,7 +23,7 @@ def run_allosteric(parsed_yaml):
 
     # start initial simulation
     parsed_yaml.full = True
-    simulation = launch_global_exploration(parsed_yaml)
+    simulation = si.run_adaptive(parsed_yaml)
     simulation_path = os.path.join(simulation.pele_dir, simulation.output)
     
     # get best structures and cluster them
@@ -42,7 +47,7 @@ def run_allosteric(parsed_yaml):
         parsed_yaml.box_radius = simulation.box_radius
         # refine selected best structures
         with cd(original_dir):
-            induced_fit = launch_refinement(parsed_yaml)
+            induced_fit = si.run_adaptive(parsed_yaml)
     else:
         induced_fit = None
 
