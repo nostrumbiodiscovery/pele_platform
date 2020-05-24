@@ -12,8 +12,8 @@ import frag_pele.main as frag
 
 class FragRunner(mn.FragParameters):
 
-    #def __init__(self, core, input, gr_steps, steps, eq_steps):
     def __init__(self, args):
+        args.system = args.frag_core
         mn.FragParameters.__init__(self, args)
 
     def run_simulation(self):
