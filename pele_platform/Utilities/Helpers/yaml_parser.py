@@ -1,30 +1,42 @@
+from dataclasses import dataclass, field
 import os
 import yaml
 import pele_platform.Checker.valid_flags as vf
 
 
 
-
+@dataclass
 class YamlParser(object):
 
-    def __init__(self, yamlfile, valid_flags=vf.VALID_FLAGS_PLATFORM):
-        self.yamlfile = yamlfile
+    yamlfile: str
+    valid_flags: dict
+
+
+    def read(self) -> None:
         self.data = self._parse_yaml()
-        self.valid_flags = valid_flags 
-
-
-    def read(self):
         self._check()
         self._parse()
 
+    def _parse_yaml(self) -> dict:
+        # Retrieve raw info from yaml
+        with open(self.yamlfile, 'r') as stream:
+            try:
+                data = yaml.safe_load(stream)
+            except yaml.YAMLError as exc:
+                raise(exc)
+        return data
 
-    def _check(self):
+
+
+    def _check(self) -> None:
+        #Check if valids in yaml file are valids
         for key in self.data.keys():
             if key not in self.valid_flags.values():
                 raise KeyError("Input file contains an invalid keyword: {}".format(key))
         
     
-    def _parse(self):
+    def _parse(self) -> None:
+        #Parse fields in yaml file and set defaults
         valid_flags = self.valid_flags
         data = self.data
         self.system = data.get(valid_flags["system"], "")
@@ -214,12 +226,4 @@ class YamlParser(object):
             self.n_components = 3
             self.temperature = self.temp = 10000
             self.n_components = 3
-
-    def _parse_yaml(self):
-        with open(self.yamlfile, 'r') as stream:
-            try:
-                data = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                raise(exc)
-        return data
 

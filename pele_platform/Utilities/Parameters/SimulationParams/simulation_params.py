@@ -155,6 +155,13 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.external_template = args.template if args.template else self.simulation_params.get("template", [])
         self.external_rotamers = args.rotamers if args.rotamers else self.simulation_params.get("rotamers", [])
         self.skip_ligand_prep = args.skip_ligand_prep if args.skip_ligand_prep else self.simulation_params.get("args.skip_ligand_prep", [])
+        self.core = args.core
+        self.n = args.n
+        self.mtor = args.mtor
+        self.forcefield = args.forcefield
+        self.mae_lig = args.mae_lig
+        self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
+        self.gridres = args.gridres
 
     def water_params(self, args):
         self.water_temp = args.water_temp if args.water_temp else self.simulation_params.get("water_temp", 5000)
