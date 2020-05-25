@@ -23,13 +23,13 @@ class Launcher():
     def launch(self) -> pv.EnviroBuilder:
         #launch package from input.yaml
         self._define_package_to_run()
-        job_variables = self.launch_package(self._args.package, check=self._args.no_check)
+        job_variables = self.launch_package(self._args.package, no_check=self._args.no_check)
         return job_variables
 
 
-    def launch_package(self, package: str, check=True) -> pv.EnviroBuilder:
+    def launch_package(self, package: str, no_check=False) -> pv.EnviroBuilder:
         #launch package from API
-        if not check:
+        if not no_check:
             ck.check_executable_and_env_variables(self._args)
         if package == self.adaptive:
             job_variables = ad.run_adaptive(self._args)
