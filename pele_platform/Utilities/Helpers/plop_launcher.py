@@ -29,9 +29,14 @@ def parametrize_miss_residues(env, resname=None):
     try:
         subprocess.check_output("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, env.lig, resname, templatedir, rotamerdir).split(), env=my_env)
     except subprocess.CalledProcessError: 
-        raise ce.LigandPreparationError("Ligand preparation failed.\
- Plese check there are no space in the ligand atom name and that \
-the inputted ligand has a valid structure")
+        raise ce.LigandPreparationError(
+"\n\nLigand preparation failed.\n\
+##############################\n\n\
+1) Check there are no spaces in the ligand atom name and that \
+the inputted ligand has a valid structure.\n\
+2)Also, if LICENSE -1 FAIL is found on the output please point out to schrodinger licenses by either doing:\n\
+\t - export SCHROD_LICENSE_FILE=/path/to/folder/with/static/license\n\
+\t - export LM_LICENSE_FILE=/path/to/folder/with/server/license/")
     #hp.silentremove([syst.lig])
 
 
