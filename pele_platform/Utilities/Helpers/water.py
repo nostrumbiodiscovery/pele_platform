@@ -59,13 +59,16 @@ def water_checker(args):
             raise ValueError("Number of water molecules (n_waters) has to be between {} and {}".format(min_water, max_water))
 
 
-def add_water(refinement_input, ligand_chain, n_waters=2):
+def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
+
+    if test:
+        np.random.seed(42)
 
     if n_waters <1:
         return
-
+    
     else:
-
+    	#if test:  np.random.seed(42)
     	output = []
     	n_inputs = len(refinement_input)
     	water_coords = []
@@ -88,7 +91,6 @@ def add_water(refinement_input, ligand_chain, n_waters=2):
     	            except:
     	                IndexError("Line '{}' is too short".format(line))
     	lig_length = resnames.count(ligand_chain)
-    	print("lig length", lig_length) 
     	resnums = [int(num) for num in resnums if num]
     	max_resnum = max(resnums)
     	water_resnums = []
@@ -193,7 +195,6 @@ def add_water(refinement_input, ligand_chain, n_waters=2):
     	                new_water_lines.append(line)
 
     	    new_water_lines[-2] = new_water_lines[-2].replace("\nTER\n","")
-    	    print("new water lines", new_water_lines)
     	    with open(new_protein_file, "w+") as file:
     	        for line in protein:
     	            file.write(line)

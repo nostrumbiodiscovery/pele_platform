@@ -162,14 +162,13 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_constr = args.water_constr if args.water_constr else self.simulation_params.get("water_constr", 0)
         self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
        
-        self.allow_empty_selectors = True if args.n_waters else "false"
-        self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters #IDS of waters`
+        self.allow_empty_selectors = True if args.n_waters or args.waters else "false"
+        self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters  # IDs of waters
         self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", None)
-        self.waters = args.waters if args.waters  else self.simulation_params.get("waters", [])
+        self.waters = args.waters if args.waters else self.simulation_params.get("waters", [])
         self.water_radius = args.water_radius if args.water_radius else 6
         self.water_center = None
         self.water = ""
-        #self.water = cs.WATER.format(self.waters, self.allow_empty_selectors, self.water_temp, self.water_trials, self.water_overlap, self.water_constr, self.waters)
         self.water_energy = None
 
     def box_params(self, args):
