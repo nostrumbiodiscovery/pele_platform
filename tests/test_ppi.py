@@ -13,7 +13,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 yaml = os.path.join(test_path, "PPI/input.yaml")
 
 
-def test_ppi(energy_result=-2.18, yaml=yaml):
+def test_ppi_default(energy_result=-2.18, yaml=yaml):
   
     #Function to test
     job, _ = main.run_platform(yaml)

@@ -8,7 +8,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 yaml = os.path.join(test_path, "Allosteric/input_global.yaml")
 
 
-def test_allosteric(energy_result=-1.51, yaml=yaml):
+def test_allosteric_default(energy_result=-1.51, yaml=yaml):
 
     job, _ = main.run_platform(yaml)
 
