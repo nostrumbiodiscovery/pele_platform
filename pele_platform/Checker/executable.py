@@ -1,15 +1,15 @@
+from dataclasses import dataclass
 import os
 import pele_platform.Errors.custom_errors as ce
 
 
-
+@dataclass
 class Executable():
 
 
-    def __init__(self, executable):
-        self.executable = executable
+    executable: str
 
-    def is_in_path(self):
+    def is_in_path(self) -> bool:
 
         fpath, fname = os.path.split(self.executable)
         if fpath:
@@ -22,5 +22,5 @@ class Executable():
                     return True
         raise ce.ExecutableNotInPath(f"Executable {self.executable} not in PATH. Please do: export PATH=/path/to/folder/with/executable:$PATH")
 
-    def _is_exe(self, fpath):
+    def _is_exe(self, fpath) -> str:
         return os.path.isfile(fpath) and os.access(fpath, os.X_OK)

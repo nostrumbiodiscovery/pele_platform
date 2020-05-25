@@ -12,11 +12,22 @@ import frag_pele.main as frag
 
 class FragRunner(mn.FragParameters):
 
-    #def __init__(self, core, input, gr_steps, steps, eq_steps):
     def __init__(self, args):
+        args.system = args.frag_core
         mn.FragParameters.__init__(self, args)
 
-    def prepare_control_file(self):
+    def run_simulation(self):
+        self._set_test_variables()
+        self._prepare_control_file()
+        self._launch()
+
+    def _launch(self):
+        if self.ligands: #Full ligands as sdf
+            self._prepare_input_file()
+        self._run()
+
+
+    def _prepare_control_file(self):
         # Create tmp folder with frag control_file 
         tmp_dir = tempfile.mkdtemp()
         tmp_control_file = os.path.join(tmp_dir, os.path.basename(self.control_file))
@@ -28,7 +39,21 @@ class FragRunner(mn.FragParameters):
         self.control_file = tmp_control_file
         return self.control_file
 
-    def run(self):
+    def _set_test_variables(self):
+        if self.test:
+            self.gr_steps = 1
+            self.frag_steps = 2
+            self.frag_eq_steps = 1
+            self.temperature = 100000
+            self.anm_freq = 0
+            self.minimizatoon = 0
+            self.sidechain_freq = 0
+            self.water_freq = 0
+            self.cpus = 4
+        else:
+            pass
+	
+    def _run(self):
          if self.frag_run:
              frag.main(self.core_process, self.input, self.gr_steps, self.criteria, self.plop_path, self.spython, self.pele_exec, self.control_file, self.license, self.output_folder,
              self.report_name, "trajectory", self.cluster_folder, self.cpus, self.distcont, self.threshold, self.epsilon, self.condition, self.metricweights,
@@ -38,7 +63,7 @@ class FragRunner(mn.FragParameters):
              self.translation_low, self.rotation_low, self.explorative, self.frag_radius, self.sampling_control, self.pele_data, self.pele_documents,
              self.only_prepare, self.only_grow, self.no_check, self.debug)
 
-    def prepare_input_file(self):
+    def _prepare_input_file(self):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
         import rdkit.Chem.rdchem as rc
@@ -101,14 +126,3 @@ class FragRunner(mn.FragParameters):
         return line, fragment
         
 
-    def set_test_variables(self):
-        self.gr_steps = 1
-        self.frag_steps = 2
-        self.frag_eq_steps = 1
-        self.temperature = 100000
-        self.anm_freq = 0
-        self.minimizatoon = 0
-        self.sidechain_freq = 0
-        self.water_freq = 0
-        self.cpus = 4
-	
