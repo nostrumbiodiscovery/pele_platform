@@ -117,7 +117,3 @@ def find_metal_geo(protein_file):
 
 def main(protein_file):
     output = find_metal_geo(protein_file)
-
-if __name__ == "__main__":
-    #main("1zop_angles.pdb") # octahedral Mn
-    main("4um9.pdb") # Mn and Ca, should be octahedral-ish
