@@ -20,10 +20,9 @@ class BoxSetter:
         # json string for PELE control file
         self.logger.info("Generating exploration box")
         self._set_box_center()
-        box_json = self._box_to_json()
         self.logger.info(f"Box with center {self.box_center} \
 and radius {self.box_radius} generated\n\n")
-        return box_json
+        return self.box_json
 
     def _set_box_center(self):
         # If not user's box center
@@ -33,8 +32,8 @@ and radius {self.box_radius} generated\n\n")
         else:
             self.box_center = cm.center_of_mass(self.ligand_ref)
 
-    def _box_to_json(self):
+    @property
+    def box_json(self):
         # generate the json format for the box
         return cs.BOX.format(self.box_radius, self.box_center) if  self.box_radius else ""
-
 
