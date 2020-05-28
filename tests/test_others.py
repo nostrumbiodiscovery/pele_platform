@@ -52,7 +52,7 @@ def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
 
 def test_metal_constraints(ext_args=METAL_CONSTR_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job, _ = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
     assert not errors
 
