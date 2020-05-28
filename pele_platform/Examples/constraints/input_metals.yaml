@@ -1,0 +1,13 @@
+usesrun: true
+pele_license: "/work/NBD_Utilities/PELE/licenses"
+system: '../pele_platform/Examples/constraints/1zop.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+allosteric: true
+global: true
+atom_dist:
+- "A:221:CZ"
+- "Z:1328:H16"
+test: true
+working_folder: "global_simulation"

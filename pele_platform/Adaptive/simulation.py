@@ -111,15 +111,12 @@ def run_adaptive(args):
         ################METAL CONSTRAINTS##################
          
         metal_constraints = mc.find_metal_geo(os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')))
-        print("metal constraints", metal_constraints)
-        print("external", env.external_constraints)
         metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
         env.external_constraints.extend(metal_constraints_json)
 
         # Keep Json ordered by having first title and then constraints
         if env.external_constraints:
             env.constraints = env.constraints[0:1] + env.external_constraints + env.constraints[1:]
-        print("env.constraints", env.constraints)
         if env.remove_constraints:
             env.constraints = ""
         env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
