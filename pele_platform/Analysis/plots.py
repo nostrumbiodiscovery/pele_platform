@@ -227,9 +227,9 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     analysis.top_poses(be, 100, top_poses_folder)
 
     #Clustering of best 2000 best structures
-    print("Retrieve 10 best cluster poses")
+    print(f"Retrieve {nclusts} best cluster poses")
     if clustering:
-        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts=5)
+        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts=nclusts)
     if mae:
         sch_python = os.path.join(cs.SCHRODINGER, "utilities/python")
         if not os.path.exists(sch_python):
