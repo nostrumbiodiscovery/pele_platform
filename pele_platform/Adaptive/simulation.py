@@ -109,8 +109,7 @@ def run_adaptive(args):
             env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
 
         ################METAL CONSTRAINTS##################
-         
-        metal_constraints = mc.find_metal_geo(os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')))
+        metal_constraints = mc.find_metal_geo(os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')), permissive=env.permissive_metal_constr, external=env.external_constraints)
         metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
         env.external_constraints.extend(metal_constraints_json)
 
