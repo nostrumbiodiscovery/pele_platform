@@ -20,6 +20,7 @@ def find_metals(protein_file):
 
     return metals, structure
 
+
 def map_constraints(protein_file, original_input, original_constraints):
     
     atoms = []
@@ -49,7 +50,6 @@ def map_constraints(protein_file, original_input, original_constraints):
                             new_resnum = l[22:26].strip()
                             new_chain = l[21].strip()
                             new_atoms.append([chain, new_chain, resnum, new_resnum, atom_name, new_atom_name])
-    output = []
     
     before = ["{}:{}:{}".format(i[0],i[2],i[4]) for i in new_atoms]
     after = ["{}:{}:{}".format(i[1], i[3], i[5]) for i in new_atoms]
@@ -59,6 +59,49 @@ def map_constraints(protein_file, original_input, original_constraints):
             original_constraints[j] = original_constraints[j].replace(b, a)
 
     return original_constraints
+
+
+def angle_classification(combinations, permissive):
+
+    # angle classification
+    ang_180 = []
+    ang_90 = []
+    ang_109 = []
+    coordinated_atoms = []
+
+    if permissive:
+        lower = 0.65
+        upper = 1.35
+    else:
+        lower = 0.8
+        upper = 1.2
+
+    for c in combinations:
+        a = c[2]
+        if 180 * lower <= a <= 180 * upper:
+            ang_180.append(c)
+        if 90 * lower <= a <= 90 * upper:
+            ang_90.append(c)
+        if 109.5 * lower <= a <= 109.5 * upper:
+            ang_109.append(c)
+
+    # check geometries
+    if len(ang_180) == 3 and len(ang_90) == 12:
+        geo = "octahedral"
+        coordinated_atoms.extend(ang_180)
+        coordinated_atoms.extend(ang_90)
+    elif len(ang_180) == 2 and len(ang_90) == 4:
+        geo = "square planar"
+        coordinated_atoms.extend(ang_180)
+        coordinated_atoms.extend(ang_90)
+    elif len(ang_109) == 6:
+        geo = "tetrahedral"
+        coordinated_atoms.extend(ang_109)
+    else:
+        geo = None
+
+    return geo, coordinated_atoms
+
 
 def find_geometry(metals, structure, permissive=False, external=None):
 
@@ -78,7 +121,7 @@ def find_geometry(metals, structure, permissive=False, external=None):
         
         if not in_ext and list(metal[0].coord) not in checked_metals:
             coords = metal[0].coord
-            coordinated_atoms = []
+
             contacts = []
 
             for chain in structure.get_chains():
@@ -102,51 +145,28 @@ def find_geometry(metals, structure, permissive=False, external=None):
                 angle = vectors.calc_angle(vi, coords, vj) * 180 / np.pi
                 c.append(angle)
 
-            # angle classification
-            ang_180 = []
-            ang_90 = []
-            ang_109 = []
+            geo, coordinated_atoms = angle_classification(combinations, False)
 
-            if permissive:
-                lower = 0.65
-                upper = 1.35
-            else:
-                lower = 0.8
-                upper = 1.2
+            if geo is None and permissive:
+                geo, coordinated_atoms = angle_classification(combinations, True)
 
-            for c in combinations:
-                a = c[2]
-                if 180 * lower <= a <= 180 * upper:
-                    ang_180.append(c)
-                if 90 * lower <= a <= 90 * upper:
-                    ang_90.append(c)
-                if 109.5 * lower <= a <= 109.5 * upper:
-                    ang_109.append(c)
-
-            # check geometries
-            if len(ang_180) == 3 and len(ang_90) == 12:
-                geo = "octahedral"
-                coordinated_atoms.extend(ang_180)
-                coordinated_atoms.extend(ang_90)
-            elif len(ang_180) == 2 and len(ang_90) == 4:
-                geo = "square planar"
-                coordinated_atoms.extend(ang_180)
-                coordinated_atoms.extend(ang_90)
-            elif len(ang_109) == 6:
-                geo = "tetrahedral"
-                coordinated_atoms.extend(ang_109)
-            else:
-                if not permissive:
-                    raise Exception(
-                        "Failed to determine geometry around {} (residue {}). Set 'permissive_metal_constr: true' to "
-                        "allow more permissive angle classification or add constraints manually.".format(
-                            metal[0].name, metal[1].get_id()[1]))
-                else:
+                if geo is None:
                     raise Exception(
                         "Failed to determine geometry around {} (residue {}). Add constraints manually.".format(
                             metal[0].name, metal[1].get_id()[1]))
 
-            if geo:
+                else:
+                    checked_metals.append(list(metal[0].coord))
+                    print("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name,
+                                                                                                 metal[1].get_id()[1]))
+
+            elif geo is None and not permissive:
+                raise Exception(
+                    "Failed to determine geometry around {} (residue {}). Set 'permissive_metal_constr: true' to "
+                    "allow more permissive angle classification or add constraints manually.".format(
+                        metal[0].name, metal[1].get_id()[1]))
+
+            else:
                 checked_metals.append(list(metal[0].coord))
                 print("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name,
                                                                                              metal[1].get_id()[1]))
