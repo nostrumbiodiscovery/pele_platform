@@ -20,6 +20,45 @@ def find_metals(protein_file):
 
     return metals, structure
 
+def map_constraints(protein_file, original_input, original_constraints):
+    
+    atoms = []
+    new_atoms = []
+
+    # get lines from actual input
+    with open(protein_file, "r") as input_file:
+        input_lines = input_file.readlines()
+
+    # get constraints coords from original input file
+    with open(original_input, "r") as file:
+        lines = file.readlines()
+        
+        for orig in original_constraints:
+            k, dist, atom1, atom2 = orig.split("-")
+            atoms.extend([atom1, atom2])
+
+        for atom in atoms:
+            chain, resnum, atom_name = atom.split(":")
+            
+            for line in lines:
+                if (line.startswith("HETATM") or line.startswith("ATOM")) and line[21].strip() == chain.strip() and line[22:26].strip() == resnum.strip() and line[12:16].strip() == atom_name.strip():
+                    coords = line[30:54].split()
+                    for l in input_lines:
+                        if l[30:54].split() == coords:
+                            new_atom_name = l[12:16].strip()
+                            new_resnum = l[22:26].strip()
+                            new_chain = l[21].strip()
+                            new_atoms.append([chain, new_chain, resnum, new_resnum, atom_name, new_atom_name])
+    output = []
+    
+    before = ["{}:{}:{}".format(i[0],i[2],i[4]) for i in new_atoms]
+    after = ["{}:{}:{}".format(i[1], i[3], i[5]) for i in new_atoms]
+    
+    for j in range(len(original_constraints)):
+        for b, a in zip(before, after):
+            original_constraints[j] = original_constraints[j].replace(b, a)
+
+    return original_constraints
 
 def find_geometry(metals, structure, permissive=False, external=None):
 
@@ -27,12 +66,17 @@ def find_geometry(metals, structure, permissive=False, external=None):
     output = []
     checked_metals = []
     structure_list = Selection.unfold_entities(structure, "A")
-
+    
     for metal in metals:
+        
+        metal_str = "{}:{}:{}".format(metal[2].id, metal[1].get_id()[1], metal[0].name)
+        in_ext = []
 
-        metal_str = "{}:{}:{}".format(metal[2], metal[1].get_id(), metal[0])
-
-        if metal_str not in external and list(metal[0].coord) not in checked_metals:
+        for i in external:
+            if metal_str in i:
+                in_ext = True
+        
+        if not in_ext and list(metal[0].coord) not in checked_metals:
             coords = metal[0].coord
             coordinated_atoms = []
             contacts = []
@@ -72,17 +116,12 @@ def find_geometry(metals, structure, permissive=False, external=None):
 
             for c in combinations:
                 a = c[2]
-                print("c", c)
                 if 180 * lower <= a <= 180 * upper:
                     ang_180.append(c)
-                    print("180")
                 if 90 * lower <= a <= 90 * upper:
                     ang_90.append(c)
-                    print("90")
                 if 109.5 * lower <= a <= 109.5 * upper:
                     ang_109.append(c)
-                    print("109.5")
-            print("180", len(ang_180), "109.5", len(ang_109), "90", len(ang_90))
 
             # check geometries
             if len(ang_180) == 3 and len(ang_90) == 12:
@@ -109,7 +148,6 @@ def find_geometry(metals, structure, permissive=False, external=None):
 
             if geo:
                 checked_metals.append(list(metal[0].coord))
-                print("checked_metals", checked_metals)
                 print("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name,
                                                                                              metal[1].get_id()[1]))
 
@@ -149,7 +187,9 @@ def find_geometry(metals, structure, permissive=False, external=None):
     return output
 
 
-def main(protein_file, permissive=False, external=None):
+def main(original_constraints, protein_file, original_input, permissive=False, external=None):
     metals, structure = find_metals(protein_file)
+    if external:
+        external = map_constraints(protein_file, original_input, original_constraints)
     output = find_geometry(metals, structure, permissive, external)
-    return output
+    return output, external
