@@ -83,7 +83,7 @@ def angle_classification(combinations, permissive):
             ang_90.append(c)
         if 109.5 * lower <= a <= 109.5 * upper:
             ang_109.append(c)
-
+    
     # check geometries
     if len(ang_180) == 3 and len(ang_90) == 12:
         geo = "octahedral"
@@ -108,9 +108,16 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
     output = []
     checked_metals = []
     structure_list = Selection.unfold_entities(structure, "A")
-    dist = 2.6
 
     for metal in metals:
+
+        # search distance based on metal type
+        if metal[0].element == "YB":
+            dist = 3.5
+        elif metal[0].element == "K":
+            dist = 3.3
+        else:
+            dist = 2.9 
         
         metal_str = "{}:{}:{}".format(metal[2].id, metal[1].get_id()[1], metal[0].name)
         in_ext = []
@@ -129,7 +136,8 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
                 for residue in chain.get_residues():
                     contacts_atoms = NeighborSearch(structure_list).search(coords, dist, "A")
                     # exclude self-contacts, carbons and hydrogens
-                    contacts_atoms = [c for c in contacts_atoms if c.element not in [metal[0].name, "C", "H"]]
+                    excluded_contacts = cs.metals + ['C', 'H']
+                    contacts_atoms = [c for c in contacts_atoms if c.element not in excluded_contacts]
 
                     for atom in contacts_atoms:
                         if residue in chain.get_residues() and atom in residue.get_atoms():
@@ -151,10 +159,16 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
                 geo, coordinated_atoms = angle_classification(combinations, True)
                 
                 if geo is None and all_metals and combinations:
-                    coordinated_atoms = combinations
-                    checked_metals.append(list(metal[0].coord))
-                    geo = "no"
-                    print("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
+
+                    geo, coordinated_atoms = angle_classification(combinations, True)
+                    if geo:
+                        print("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1]))
+                        checked_metals.append(list(metal[0].coord))
+                    else:
+                        coordinated_atoms = combinations
+                        checked_metals.append(list(metal[0].coord))
+                        geo = "no"
+                        print("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
                 
                 elif geo is None and not all_metals:
                     raise Exception("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1], dist))
@@ -162,17 +176,27 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
                 elif geo is None and all_metals and not combinations:
                     print("No atoms coordinated to {} (residue {}).".format(metal[0].name, metal[1].get_id()[1]))
 
+                elif geo:
+                    checked_metals.append(list(metal[0].coord))
+                    print("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1])) 
+
             elif geo is None and all_metals and combinations:
-                geo = "no"
-                coordinated_atoms = combinations
-                checked_metals.append(list(metal[0].coord)) 
-                print("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
+                geo, coordinated_atoms = angle_classification(combinations, True)
+                
+                if geo is None:
+                    geo = "no"
+                    coordinated_atoms = combinations
+                    checked_metals.append(list(metal[0].coord)) 
+                    print("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
+
+                else:
+                    print("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1]))
 
             elif geo is None and all_metals and not combinations:
                print("No atoms coordinated to {} (residue {}).".format(metal[0].name, metal[1].get_id()[1]))
 
             elif geo is None and not all_metals and not permissive:
-                raise Exception("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1]), dist)
+                raise Exception("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1], dist))
 
             else:
                 checked_metals.append(list(metal[0].coord))

@@ -109,10 +109,14 @@ def run_adaptive(args):
             env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
 
         ################METAL CONSTRAINTS##################
-        metal_constraints, env.external_constraints = mc.main(args.external_constraints, os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')), syst.system, permissive=env.permissive_metal_constr, all_metals=args.constrain_all_metals, external=env.external_constraints)
-        env.external_constraints = hp.retrieve_constraints_for_pele(env.external_constraints, env.system)
-        metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
-        env.external_constraints.extend(metal_constraints_json)
+        if not args.no_metal_constraints:
+            metal_constraints, env.external_constraints = mc.main(args.external_constraints, os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')), syst.system, permissive=env.permissive_metal_constr, all_metals=args.constrain_all_metals, external=env.external_constraints)
+            metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
+            env.external_constraints = hp.retrieve_constraints_for_pele(env.external_constraints, env.system)
+            metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
+            env.external_constraints.extend(metal_constraints_json)
+        else:
+            env.external_constraints = hp.retrieve_constraints_for_pele(env.external_constraints, env.system)
 
         # Keep Json ordered by having first title and then constraints
         if env.external_constraints:

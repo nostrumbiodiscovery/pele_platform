@@ -180,7 +180,8 @@ class YamlParser(object):
         "skip_refinement": "skip_refinement",
         "rna": "rna",
         "permissive_metal_constr": "permissive_metal_constr",
-        "constrain_all_metals": "constrain_all_metals"}
+        "constrain_all_metals": "constrain_all_metals",
+        "no_metal_constraints": "no_metal_constraints"}
 
         for key in data.keys():
             if key not in valid_flags.values():
@@ -326,9 +327,10 @@ class YamlParser(object):
         self.pele_license = data.get(valid_flags["pele_license"], None)
         self.schrodinger = data.get(valid_flags["schrodinger"], None)
         self.no_check = data.get(valid_flags["no_check"], False)
+        # Metal constraints
         self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
         self.constrain_all_metals = data.get(valid_flags["constrain_all_metals"], False)
-
+        self.no_metal_constraints = data.get(valid_flags["no_metal_constraints"], False)
         #Frag
         self.frag_run = data.get(valid_flags["frag_run"], True)
         self.frag_core = data.get(valid_flags["frag_core"], False)
