@@ -181,8 +181,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water = ""
         #self.water = cs.WATER.format(self.waters, self.allow_empty_selectors, self.water_temp, self.water_trials, self.water_overlap, self.water_constr, self.waters)
         self.water_energy = None
-        self.parameters = self.parameters.rstrip("]\n") + pp.WATER_PARAMS if args.waters else self.parameters
-        #self.water = ",".join(['"'+water+'"' for water in self.water_arg])
 
 
     def box_params(self, args):
