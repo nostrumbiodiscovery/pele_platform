@@ -19,3 +19,6 @@ class OldPythonVersion(Exception):
 
 class LigandPreparationError(Exception):
     pass
+
+class NoGeometryAroundMetal(Exception):
+    pass

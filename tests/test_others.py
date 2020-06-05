@@ -13,8 +13,6 @@ import pele_platform.Checker.main as mn
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
 PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
-METAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_metals.yaml")
-NO_METAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_no_metal_constraints.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 
 
@@ -29,14 +27,6 @@ PPP_CONSTR = [
     '"constrainThisAtom": "B:247:_CA_" }'
 ]
 
-METAL_CONSTR = [
-       '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.0319981575012207, "constrainThisAtom":  "A:239:_OD1", "toThisOtherAtom": "A:350:MG__"},',
-       '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.0453453063964844, "constrainThisAtom":  "A:311:_OW_", "toThisOtherAtom": "A:350:MG__"},',
-       '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.5390141010284424, "constrainThisAtom":  "A:401:CL__", "toThisOtherAtom": "A:350:MG__"},',
-       '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.0555760860443115, "constrainThisAtom":  "A:312:_OW_", "toThisOtherAtom": "A:350:MG__"},',
-       '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.0924105644226074, "constrainThisAtom":  "A:141:_OG_", "toThisOtherAtom": "A:350:MG__"},',
-       '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.0959291458129883, "constrainThisAtom":  "A:139:_OG_", "toThisOtherAtom": "A:350:MG__"},'
-]
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
@@ -50,20 +40,6 @@ def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
     job = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", PPP_CONSTR, errors)
     assert not errors
-
-
-def test_metal_constraints(ext_args=METAL_CONSTR_ARGS):
-    errors = []
-    job, _ = main.run_platform(ext_args)
-    errors = tk.check_file(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
-    assert not errors
-
-
-def test_no_metal_constraints(ext_args=NO_METAL_CONSTR_ARGS):
-    errors = []
-    job = main.run_platform(ext_args)
-    errors = tk.check_file(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
-    assert errors 
 
 
 def test_checker():

@@ -1,4 +1,5 @@
 import pele_platform.constants.constants as cs
+import pele_platform.Errors.custom_errors as ce
 from Bio.PDB import PDBParser, NeighborSearch, Selection, Vector, vectors
 import itertools
 import numpy as np
@@ -174,7 +175,7 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
                         print("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
                 
                 elif geo is None and not all_metals:
-                    raise Exception("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1], dist))
+                    raise ce.NoGeometryAroundMetal("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1], dist))
 
                 elif geo is None and all_metals and not combinations:
                     print("No atoms coordinated to {} (residue {}).".format(metal[0].name, metal[1].get_id()[1]))
@@ -199,7 +200,7 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
                print("No atoms coordinated to {} (residue {}).".format(metal[0].name, metal[1].get_id()[1]))
 
             elif geo is None and not all_metals and not permissive:
-                raise Exception("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1], dist))
+                raise ce.NoGeometryAroundMetal("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1], dist))
 
             else:
                 checked_metals.append(list(metal[0].coord))
