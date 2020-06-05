@@ -34,7 +34,10 @@ def map_constraints(protein_file, original_input, original_constraints):
         lines = file.readlines()
         
         for orig in original_constraints:
-            k, dist, atom1, atom2 = orig.split("-")
+            try:
+                k, dist, atom1, atom2 = orig.split("-")
+            except ValueError: #If more than one atom
+                continue
             atoms.extend([atom1, atom2])
 
         for atom in atoms:
