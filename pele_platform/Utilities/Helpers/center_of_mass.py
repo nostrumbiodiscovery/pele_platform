@@ -73,36 +73,3 @@ def center_of_mass(pdbfile, include='ATOM,HETATM'):
                    for i in range(len(weights))]) for j in range(3)]
     center_rounded = [round(center[i], 3) for i in range(3)]
     return center_rounded
-
-
-if __name__ == '__main__':
-
-  import argparse
-
-  parser = argparse.ArgumentParser(
-      description='Calculates the weighted center of mass for structures in a PDB file.\n'
-                  'By default, all atoms in the PDB file are included in the calculation.',
-      epilog='Example:\n'
-      'center_of_mass.py ~/Desktop/protein.pdb \n'
-      '[-8.125, 20.461, -10.438]'
-      '\n\nNote that for the center of mass calculation, the relative\natomic'
-      ' weights are taken into account (atomic mass unit [u]).\n\n'
-      'A list of the atomic weights can be found, e.g., at\n'
-      'http://en.wikipedia.org/wiki/List_of_elements',
-      formatter_class=argparse.RawTextHelpFormatter
-  )
-
-  parser.add_argument('PDBfile')
-  parser.add_argument('-i', '--include', type=str,
-                      default='ATOM,HETATM',
-                      metavar='coordinate-ID',
-                      help='Coordinate lines to include (default: "ATOM,HETATM")')
-
-  parser.add_argument('-v', '--version', action='version', version='center_of_mass v. 1.0')
-
-  args = parser.parse_args()
-
-  center_of_mass = center_of_mass(args.PDBfile, include=args.include)
-
-  for component in center_of_mass:
-    print(component)

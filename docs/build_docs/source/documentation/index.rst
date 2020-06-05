@@ -1,5 +1,5 @@
-Input Flags
-######################
+Input flags documentation
+###########################
 
 Compulsory flags PELE
 --------------------------------
@@ -33,7 +33,7 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 
 - **Method to use**: Choose on of the available methos. For more please refer here.
 
-- **resname^**: Residue name of the frag_core ligand
+- **resname**: Residue name of the frag_core ligand
 
 - **cpus**: Cpus to use. Default=48
 
@@ -54,7 +54,7 @@ General settings
 
 Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).
 
-- **test**: Run a quick test to check the simulation works (~2 min). **Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to made the simulation faster!!!!**
+- **test**: Run a quick test to check the simulation works (~2 min). **Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to make simulation faster!!!!**
  
 - **usesrun**: Use srun binary to run PELE. Only when using intel processors.
 

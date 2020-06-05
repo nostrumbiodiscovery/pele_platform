@@ -6,8 +6,10 @@ from pele_platform.Analysis.plots import _extract_coords
 from multiprocessing import Pool
 
 
-def cluster_best_structures(be_column, residue="LIG", topology=None, cpus=20, n_components=10, n_structs=1000):
-
+def cluster_best_structures(be_column: int, residue="LIG", topology=None, cpus=20, n_components=10, n_structs=1000, directory=".") -> str:
+    '''
+    Cluster the full simulation by ligand heavy atom's coordinates
+    '''
     files_out, _, _, _, output_energy = bs.main(be_column, n_structs=n_structs, path=".", topology=topology)
     files = []
 
@@ -37,14 +39,12 @@ def cluster_best_structures(be_column, residue="LIG", topology=None, cpus=20, n_
     clustered_lig.to_csv("clustering_output.csv")
 
     output_files = clustered_lig["file_name"].values.tolist()
-    directory = "refinement_input"
+    directory = os.path.join(directory, "refinement_input")
 
     # copy selected files to create input for refinement
     if not os.path.isdir(directory):
-        os.mkdir(directory)
-        for file in output_files:
-            os.system("cp {} {}/.".format(file, directory))
-    else:
-        print(directory, "already exists!")
+        os.makedirs(directory, exist_ok=True)
+    for file in output_files:
+        os.system("cp {} {}/.".format(file, directory))
 
     return clustered_lig['file_name']

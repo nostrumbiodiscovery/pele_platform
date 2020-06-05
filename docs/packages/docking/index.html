@@ -1,0 +1,266 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Refine docking poses by accounting with receptor flexibility &mdash; pele platform 1.4.4 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Input flags documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers: Add your own mode</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+      <li>Refine docking poses by accounting with receptor flexibility</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/packages/docking/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="refine-docking-poses-by-accounting-with-receptor-flexibility">
+<h1>Refine docking poses by accounting with receptor flexibility<a class="headerlink" href="#refine-docking-poses-by-accounting-with-receptor-flexibility" title="Permalink to this headline">¶</a></h1>
+<p>This simulation aims to enhance docking poses by having into account
+receptor flexibility. To do this, a curated side chain prediction and ANM
+algorithms were developed and benchmarked against standard docking techniques.</p>
+<p><strong>Article</strong>: <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pubmed/27545443">https://www.ncbi.nlm.nih.gov/pubmed/27545443</a></p>
+<p><strong>Input</strong> (further explained below):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Protein-ligand.pdb</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Output</strong> (further explained below):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ranked binding modes</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Computational time</strong>: 2h</p>
+<div class="section" id="complex-preparation">
+<h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare the system with maestro (Protein Preparation Wizard) and output a complex.pdb. The complex.pdb must contain the docked protein-ligand.</p>
+<p>Make sure the ligand has:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Unique chain</p></li>
+<li><p>No atomnames with spaces or single letter</p></li>
+<li><p>Any residuename except UNK</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="input-preparation">
+<h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span> <span class="c1">#Protein ligand pdb</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1">#Ligand chain name</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span> <span class="c1"># Ligand residue name</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<span class="c1">#Distance to track along the simulation</span>
+<span class="nt">atom_dist</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1">#2-3h less sampling but faster</span>
+<span class="c1">#induced_fit_exhaustive: true #6h sim but much more sampling</span>
+</pre></div>
+</div>
+<p>For more optional flags please refer to <a class="reference external" href="../../documentation/index.html">optative falgs</a></p>
+</div>
+<div class="section" id="run-simulation">
+<h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
+<p>To run the system launch the simulation with the next command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
+</div>
+<div class="section" id="output">
+<h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>Best ranked clusters:</p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/results/clusters</span></code></p>
+<p>Best ranked poses:</p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/results/BestStructs/</span></code></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Daniel Soler Viladrich
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

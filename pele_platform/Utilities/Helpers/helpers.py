@@ -1,8 +1,10 @@
 import os
+import numpy as np
 import sys
 import re
 import logging
 import warnings
+from Bio.PDB import PDBParser
 
 def silentremove(*args, **kwargs):
     for files in args:
@@ -118,8 +120,11 @@ def retrieve_atom_info(atom, pdb):
         for line in f:
             try:
                 if not isinstance(atom, int) and not atom.isdigit():
-                    chain, resnum, atomname = atom.split(":")
-                    if line[21].strip() == chain.strip() and line[22:26].strip() == resnum.strip() and line[12:16].strip() == atomname.strip():
+                    try:
+                        chain, resnum, atomname = atom.split(":")
+                    except ValueError:
+                        raise ValueError(f"Check atom distance entrance {atom}. Should be like this: 'A:220:OD1'")
+                    if line[21].strip() == chain and line[22:26].strip() == resnum and line[12:16].strip() == atomname:
                         atomname = line[12:16]
                         return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
                 else:
@@ -130,7 +135,7 @@ def retrieve_atom_info(atom, pdb):
                         return chain + ":" + resnum + ":" + atomname.replace(" ", "_")
             except IndexError:
                 pass
-        sys.exit("Check the atoms given to calculate the distance metric")
+        sys.exit(f"Check the atoms {atom} given to calculate the distance metric.")
 
 
 def find_coords(pdb, resnum, chain, atom="OW"):
@@ -172,3 +177,23 @@ def retrieve_constraints_for_pele(constraints, pdb):
         final_constraints.append(constraint)
     return final_constraints
         
+def retrieve_box(structure, residue_1, residue_2, weights=[0.5, 0.5]):
+    # get center of interface (if PPI)
+    coords1 = get_coords_from_residue(structure, residue_1)
+    coords2 = get_coords_from_residue(structure, residue_2)
+    
+    box_center = np.average([coords1, coords2], axis=0, weights=weights)
+    box_radius = abs(np.linalg.norm(coords1-coords2))/2 + 4 #Sum 4 to give more space
+    return list(box_center), box_radius
+
+def get_coords_from_residue(structure, residue):
+    parser = PDBParser()
+    COI = np.zeros(3)
+    structure = parser.get_structure('protein', structure)
+    chain, res_number, atom_name = residue.split(":")
+    for residue in structure.get_residues():
+        if residue.id[1] == int(res_number):
+            for atom in residue.get_atoms():
+                if atom.name == atom_name:
+                    COI = np.array(list(atom.get_vector()))
+                    return COI

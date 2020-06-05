@@ -10,7 +10,7 @@
 #############################NO CHANGE###########################
 module purge
 export SCHRODINGER="/sNow/easybuild/centos/7.4.1708/Skylake/software/schrodinger2017-4/"
-export PELE="/sNow/easybuild/centos/7.4.1708/Skylake/software/PELE/1.5.0.2524-intel-2018a/"
+export PELE="/work/NBD_Utilities/PELE/PELE_Softwares/bin/PELE1.6/"
 unset PYTHONPATH
 unset LD_LIBRARY_PATH
 module load impi/2018.1.163-iccifort-2018.1.163-GCC-6.4.0-2.28 Boost/1.66.0-intel-2018a wjelement/1.3-intel-2018a

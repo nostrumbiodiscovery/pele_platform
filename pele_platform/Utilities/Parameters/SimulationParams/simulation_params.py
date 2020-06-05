@@ -48,12 +48,12 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
 
     def simulation_type(self, args):
-        self.adaptive = True if args.pele_feature in ["allosteric", "adaptive", "PPI"]  else None
-        self.frag_pele = True if args.pele_feature == "frag" else None
+        self.adaptive = True if args.package in ["allosteric", "adaptive", "PPI"]  else None
+        self.frag_pele = True if args.package == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
-        self.complexes = "$PDB" if self.software == "Frag" else "$COMPLEXES"
-        self.frag_pele_steps = "$STEPS" if self.software == "Frag" else "$PELE_STEPS"
-        self.output_path = "$RESULTS_PATH" if self.software == "Frag" else "$OUTPUT_PATH"
+        self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
+        self.frag_pele_steps = "$STEPS" if self.frag_pele else "$PELE_STEPS"
+        self.output_path = "$RESULTS_PATH" if self.frag_pele else "$OUTPUT_PATH"
 
     def main_pele_params(self,args):
         if "*" in args.system:
@@ -79,6 +79,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", 250)
         self.ca_constr = args.ca_constr if args.ca_constr is not None else self.simulation_params.get("ca_constr", 0.5)
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", 0.65)
+        self.steering= args.steering if args.steering else self.simulation_params.get("steering", 0)
         self.perturbation = "" if args.perturbation is False else self.simulation_params.get("perturbation", cs.PERTURBATION)
         self.perturbation_params(args)
         self.com = args.com if args.com else self.simulation_params.get("COMligandConstraint", 0)
@@ -156,12 +157,20 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.external_template = args.template if args.template else self.simulation_params.get("template", [])
         self.external_rotamers = args.rotamers if args.rotamers else self.simulation_params.get("rotamers", [])
         self.skip_ligand_prep = args.skip_ligand_prep if args.skip_ligand_prep else self.simulation_params.get("args.skip_ligand_prep", [])
+        self.core = args.core
+        self.n = args.n
+        self.mtor = args.mtor
+        self.forcefield = args.forcefield
+        self.mae_lig = args.mae_lig
+        self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
+        self.gridres = args.gridres
 
     def water_params(self, args):
         self.water_temp = args.water_temp if args.water_temp else self.simulation_params.get("water_temp", 5000)
         self.water_overlap = args.water_overlap if args.water_overlap else self.simulation_params.get("water_overlap", 0.78)
         self.water_constr = args.water_constr if args.water_constr else self.simulation_params.get("water_constr", 0)
         self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
+
        
         self.allow_empty_selectors = True if args.n_waters else "false"
         self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters #IDS of waters`
@@ -172,6 +181,9 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water = ""
         #self.water = cs.WATER.format(self.waters, self.allow_empty_selectors, self.water_temp, self.water_trials, self.water_overlap, self.water_constr, self.waters)
         self.water_energy = None
+        self.parameters = self.parameters.rstrip("]\n") + pp.WATER_PARAMS if args.waters else self.parameters
+        #self.water = ",".join(['"'+water+'"' for water in self.water_arg])
+
 
     def box_params(self, args):
         self.box_radius = args.box_radius if args.box_radius else self.simulation_params.get("box_radius", None)

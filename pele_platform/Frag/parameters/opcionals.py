@@ -35,7 +35,6 @@ class FragOpcionalParameters():
         self.limit = None
         self.rename = False
         self.threshold_clash = 1.7
-        self.steering = 0
         self.translation_high = 0.05
         self.translation_low = 0.02
         self.rotation_high = 0.1

@@ -6,7 +6,6 @@ import pele_platform.main as main
 test_path = os.path.join(cs.DIR, "Examples")
 
 
-BIAS_ARGS = os.path.join(test_path, "bias/input.yaml")
 OUT_IN_ARGS = os.path.join(test_path, "out_in/input.yaml")
 INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive.yaml")
 INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast.yaml")
@@ -25,6 +24,7 @@ PCA_ARGS = os.path.join(test_path, "pca/input.yaml")
 PCA2_ARGS = os.path.join(test_path, "pca/input_str.yaml")
 FLAGS_ARGS = os.path.join(test_path, "flags/input.yaml")
 RESCORING_ARGS = os.path.join(test_path, "rescoring/input.yaml")
+GPCR_ARGS = os.path.join(test_path, "gpcr/input.yaml")
 
 ADAPTIVE_VALUES = ["water_processed.pdb", "SB4", '"outputPath": "output_sim"',
     '"processors" : 3', '"peleSteps" : 1,', '"iterations" : 1,', '"runEquilibration" : true,',
@@ -47,6 +47,7 @@ PELE_VALUES = ['rep', 'traj.xtc',
                 'simulationLogPath',
                 '"activateProximityDetection": false',
                 '"overlapFactor": 3,',
+                '"steeringUpdateFrequency": 3',
                 '"verboseMode": true,',
                 '"displacementFactor" : 3',
                 '"modesChangeFrequency" : 3,',
@@ -77,6 +78,11 @@ ALL_WATER_VALUES = [
 WATER_VALUES = [
     "WaterPerturbation::parameters",
     '"M:1"',
+]
+
+GPCR_VALUES = [
+     '"radius": 19.970223159033843,',
+     '"fixedCenter": [-71.78435134887695,-13.431749963760375,-42.46209926605225]'
 ]
 
 def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
@@ -111,7 +117,7 @@ def test_water_lig(ext_args=WATERLIG_ARGS):
     errors = check_file(folder, "pele.conf", WATER_VALUES, errors)
     assert not errors
 
-def test_bias(ext_args=BIAS_ARGS):
+def test_out_in(ext_args=OUT_IN_ARGS):
     main.run_platform(ext_args)
 
 def test_restart(ext_args=RESTART_ARGS):
@@ -169,3 +175,10 @@ def check_file(folder, filename, values, errors):
           if value not in "".join(lines):
               errors.append(value) 
    return errors
+
+def test_gpcr(args=GPCR_ARGS):
+    errors = []
+    job = main.run_platform(args)
+    folder = job.pele_dir
+    errors = check_file(folder, "pele.conf", GPCR_VALUES, errors)
+    assert not errors

@@ -8,3 +8,4 @@ atom_dist:
 - 4555
 - 10
 test: true
+working_folder: allosteric

@@ -2,6 +2,7 @@ frag_core: "../pele_platform/Examples/water/water_processed.pdb"
 frag_input: "../pele_platform/Examples/frag/flags.conf"
 chain_core : "J"
 resname: "SB4"
+steering: 3
 log: true
 cpus: 3
 seed: 3000
