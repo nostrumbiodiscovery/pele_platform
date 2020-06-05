@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
 import os
 import yaml
-import pele_platform.Checker.valid_flags as vf
-
 
 
 @dataclass

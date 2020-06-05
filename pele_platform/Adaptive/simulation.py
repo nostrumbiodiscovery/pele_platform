@@ -148,7 +148,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             if res != args.residue and res not in env.skip_ligand_prep:
                 env.logger.info("Creating template for residue {}".format(res))
                 with hp.cd(env.pele_dir):
-                    mr.create_template(args, env, res)
+                    mr.create_template(env, res)
                 env.logger.info("Template {}z created\n\n".format(res))
     
         #########Solvent parameters
