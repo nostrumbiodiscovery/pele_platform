@@ -14,6 +14,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
 PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
 METAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_metals.yaml")
+NO_METAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_no_metal_constraints.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 
 
@@ -58,6 +59,13 @@ def test_metal_constraints(ext_args=METAL_CONSTR_ARGS):
     job, _ = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
     assert not errors
+
+
+def test_no_metal_constraints(ext_args=NO_METAL_CONSTR_ARGS):
+    errors = []
+    job = main.run_platform(ext_args)
+    errors = tk.check_file(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
+    assert errors 
 
 
 def test_checker():
