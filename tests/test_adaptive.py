@@ -60,8 +60,8 @@ PELE_VALUES = ['rep', 'traj.xtc',
               ]
 
 PCA_VALUES = [
-                '"displacementFactor" : 1.75',
-                '"modesChangeFrequency" : 8,',
+                '"displacementFactor" : 2',
+                '"modesChangeFrequency" : 50,',
                 '"directionGeneration" : "oscillate",',
                 '"modesMixingOption" : "doNotMixModes",',
                 '"pickingCase" : "LOWEST_MODE"',
