@@ -1,0 +1,8 @@
+pele_license: "/work/NBD_Utilities/PELE/licenses"
+system: '4w5i_prep.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+induced_fit_fast: true
+test: true
+traj: trajectory.xtc

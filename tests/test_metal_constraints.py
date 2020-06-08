@@ -11,6 +11,9 @@ FAIL_PERMISSIVE_METAL_CONSTR_ARGS = os.path.join(test_path, "constraints/fail_in
 PASS_PERMISSIVE_METAL_CONSTR_ARGS = os.path.join(test_path, "constraints/pass_input_permissive_constraints.yaml")
 ALL_METAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_all_metal_constraints.yaml")
 PERMISSIVE_EXCEPTION = os.path.join(test_path, "constraints/input_permissive_exception.yaml")
+SQUARE_PLANAR_ARGS = os.path.join(test_path, "constraints/input_square_planar.yaml")
+TETRAHEDRAL_ARGS = os.path.join(test_path, "constraints/input_tetrahedral.yaml")
+K_ARGS = os.path.join(test_path, "constraints/input_k.yaml")
 
 PASS_METAL_CONSTR = [
         '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.7238008975982666, "constrainThisAtom":  "A:40:_OG_", "toThisOtherAtom": "A:2007:MG__"}',
@@ -36,6 +39,27 @@ ALL_METAL_CONSTR = [
         '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.0511677265167236, "constrainThisAtom":  "A:294:_OE1", "toThisOtherAtom": "A:511:ZN__"},'
 ]
 
+SQUARE_PLANAR = [
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.7451300621032715, "constrainThisAtom":  "A:107:_OD2", "toThisOtherAtom": "A:302:MG__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.5832695960998535, "constrainThisAtom":  "A:301:_O2G", "toThisOtherAtom": "A:302:MG__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.181016683578491, "constrainThisAtom":  "A:546:_OW_", "toThisOtherAtom": "A:302:MG__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.6696133613586426, "constrainThisAtom":  "A:301:_O1B", "toThisOtherAtom": "A:302:MG__"},'
+]
+
+TETRAHEDRAL = [
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.197800636291504, "constrainThisAtom":  "A:1081:_SG_", "toThisOtherAtom": "A:1201:ZN__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.2736423015594482, "constrainThisAtom":  "A:1089:_SG_", "toThisOtherAtom": "A:1201:ZN__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.312882661819458, "constrainThisAtom":  "A:1092:_SG_", "toThisOtherAtom": "A:1201:ZN__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.275092363357544, "constrainThisAtom":  "A:1084:_ND1", "toThisOtherAtom": "A:1201:ZN__"},'
+]
+
+K_CONSTR = [
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 1.995115876197815, "constrainThisAtom":  "B:709:_OW_", "toThisOtherAtom": "B:603:_K__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.0087051391601562, "constrainThisAtom":  "B:701:_OW_", "toThisOtherAtom": "B:603:_K__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.5826101303100586, "constrainThisAtom":  "B:177:_OD2", "toThisOtherAtom": "B:603:_K__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.017709970474243, "constrainThisAtom":  "B:713:_OW_", "toThisOtherAtom": "B:603:_K__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.6524617671966553, "constrainThisAtom":  "B:153:_OD2", "toThisOtherAtom": "B:603:_K__"},'
+]
 
 def test_metal_constraints(ext_args=METAL_CONSTR_ARGS):
     # checks metal constraints without any flags
@@ -86,3 +110,25 @@ def test_all_metal_constraints(ext_args=ALL_METAL_CONSTR_ARGS, ext_args_permissi
         return
     assert False
 
+
+def test_square_planar(ext_args=SQUARE_PLANAR_ARGS):
+                                                                                                                                               
+    errors = []                                                                                                                                                                         
+    job = main.run_platform(ext_args)                                                                                                                                                   
+    errors = tk.check_file(job.pele_dir, "pele.conf", SQUARE_PLANAR, errors)
+    assert not errors 
+
+
+def test_tetrahedral(ext_args=TETRAHEDRAL_ARGS):                                                                                                                                    
+                                                                                                                                                                                            
+    errors = []
+    job = main.run_platform(ext_args)                                                                                                                                                   
+    errors = tk.check_file(job.pele_dir, "pele.conf", TETRAHEDRAL, errors)                                                                                                            
+    assert not errors
+
+
+def test_K_dist(ext_args=K_ARGS)
+    errors = []
+    job = main.run_platform(ext_args)                                                                                                                                                   
+    errors = tk.check_file(job.pele_dir, "pele.conf", K_CONSTR, errors)                                                                                                              
+    assert not errors 
