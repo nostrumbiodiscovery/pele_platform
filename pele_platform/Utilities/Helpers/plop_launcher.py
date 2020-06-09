@@ -11,7 +11,7 @@ except ImportError:
 except SyntaxError:
     import subprocess
 
-def parametrize_miss_residues(env, resname=None):
+def parametrize_miss_residues(env, resname=None, ligand=None):
     resname = env.residue if not resname else resname
     SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
     if not os.path.exists(SPYTHON):
@@ -25,9 +25,10 @@ def parametrize_miss_residues(env, resname=None):
     my_env["SCHRODINGER_PYTHONPATH"]=os.path.join(cs.SCHRODINGER, "internal/lib/python2.7/site-packages/")
     my_env["SCHRODINGER"]=cs.SCHRODINGER
     print("Running Plop")
-    print("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, env.lig, resname, templatedir, rotamerdir))
+    ligand = ligand if ligand else env.lig
+    print("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir))
     try:
-        subprocess.check_output("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, env.lig, resname, templatedir, rotamerdir).split(), env=my_env)
+        subprocess.check_output("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir).split(), env=my_env)
     except subprocess.CalledProcessError: 
         raise ce.LigandPreparationError(
 "\n\nLigand preparation failed.\n\

@@ -20,7 +20,7 @@ HET     MG  A 302       1
 HET    LIG  Z 305      15
 HET    ATP  A 301      12
 HET    LIG  Z 305      18
-HETNAM     ATP ADENOSINE-5'-TRIPHOSPHATE
+HETNAM     ATP ADENOSINE-5-TRIPHOSPHATE
 HETNAM      MG MAGNESIUM ION
 HETNAM     LIG Unknown ligand
 FORMUL   1  ATP    2(C10 H16 N5 O13 P3)
@@ -28,25 +28,6 @@ FORMUL   2   MG    MG 2+
 FORMUL   3  LIG    2(UNL )
 FORMUL   6  HOH   *24(H2 0)
 MODEL        1
-ATOM      1  N   ASN A   7      10.824 -41.767  -8.106  1.00 56.70           N  
-ANISOU    1  N   ASN A   7     7299   7503   6741    126   -262    327
-ATOM      2  CA  ASN A   7      11.628 -42.282  -7.005  1.00 56.93           C  
-ANISOU    2  CA  ASN A   7     7216   7506   6908    112    286     91
-ATOM      3  C   ASN A   7      10.781 -42.560  -5.769  1.00 59.15           C  
-ANISOU    3  C   ASN A   7     7173   7561   7738    540    421    -68
-ATOM      4  O   ASN A   7      10.112 -41.663  -5.254  1.00 59.40           O  
-ANISOU    4  O   ASN A   7     7201   7473   7897    844    364   -635
-ATOM      5  CB  ASN A   7      12.746 -41.303  -6.660  1.00  0.00           C  
-ATOM      6  CG  ASN A   7      13.397 -40.566  -7.830  1.00  0.00           C  
-ATOM      7  OD1 ASN A   7      12.972 -39.489  -8.231  1.00  0.00           O  
-ATOM      8  ND2 ASN A   7      14.478 -41.126  -8.369  1.00  0.00           N  
-ATOM      9  H11 ASN A   7      11.417 -41.595  -8.905  1.00  0.00           H  
-ATOM     10  H22 ASN A   7      10.116 -42.444  -8.352  1.00  0.00           H  
-ATOM     11  HA  ASN A   7      12.083 -43.220  -7.325  1.00  0.00           H  
-ATOM     12  HB2 ASN A   7      12.359 -40.526  -6.000  1.00  0.00           H  
-ATOM     13  HB3 ASN A   7      13.555 -41.835  -6.159  1.00  0.00           H  
-ATOM     14 HD22 ASN A   7      14.945 -40.679  -9.145  1.00  0.00           H  
-ATOM     15 HD21 ASN A   7      14.830 -41.998  -8.001  1.00  0.00           H  
 ATOM     16  N   LEU A   8      10.813 -43.803  -5.297  1.00 62.40           N  
 ANISOU   16  N   LEU A   8     7043   7707   8959    731    333     11
 ATOM     17  CA  LEU A   8      10.026 -44.192  -4.133  1.00 63.04           C  
@@ -6085,8 +6066,8 @@ HETATM 4102  H2' ATP A 301      11.585 -37.263  -4.116  1.00  0.00           H
 HETATM 4103 HO2' ATP A 301      13.398 -38.618  -4.604  1.00  0.00           H  
 HETATM 4104  H1' ATP A 301      13.859 -37.699  -2.255  1.00  0.00           H  
 HETATM 4105  H8  ATP A 301      10.290 -37.107  -1.331  1.00  0.00           H  
-HETATM 4106 H6 1 ATP A 301       9.673 -43.442  -1.277  1.00  0.00           H  
-HETATM 4107 H6 2 ATP A 301       8.882 -41.925  -0.911  1.00  0.00           H  
+HETATM 4106  H61 ATP A 301       9.673 -43.442  -1.277  1.00  0.00           H  
+HETATM 4107  H62 ATP A 301       8.882 -41.925  -0.911  1.00  0.00           H  
 HETATM 4108  H2  ATP A 301      13.820 -42.317  -2.950  1.00  0.00           H  
 HETATM 4109 MG    MG A 302       6.000 -30.157  -2.832  1.00 56.56          Mg2+
 ANISOU 4109 MG    MG A 302     4888   8251   8350  -1702   -345  -2222

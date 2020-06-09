@@ -1,8 +1,8 @@
-pele_license: "/work/NBD_Utilities/PELE/licenses"
-system: '4qnr_prep.pdb'
+system: '../pele_platform/Examples/constraints/4qnr_prep.pdb'
 chain: 'Z'
 resname: 'LIG'
 seed: 12345
+permissive_metal_constr: true
 induced_fit_fast: true
 test: true
 traj: trajectory.xtc

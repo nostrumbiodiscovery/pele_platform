@@ -9,4 +9,4 @@ def create_template(env, residue):
     rotamers_dir = os.path.join(env.pele_dir, "DataLocal/LigandRotamerLibs")
     output_pdb = os.path.join(env.pele_dir, "miss_residue.pdb")
     syst = sp.SystemBuilder.build_system(env.system_fix, None, residue, env.pele_dir, output=output_pdb)
-    plop.parametrize_miss_residues(env, residue)
+    plop.parametrize_miss_residues(env, residue, syst.lig)

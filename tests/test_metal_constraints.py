@@ -127,7 +127,8 @@ def test_tetrahedral(ext_args=TETRAHEDRAL_ARGS):
     assert not errors
 
 
-def test_K_dist(ext_args=K_ARGS)
+def test_K_dist(ext_args=K_ARGS):
+
     errors = []
     job = main.run_platform(ext_args)                                                                                                                                                   
     errors = tk.check_file(job.pele_dir, "pele.conf", K_CONSTR, errors)                                                                                                              
