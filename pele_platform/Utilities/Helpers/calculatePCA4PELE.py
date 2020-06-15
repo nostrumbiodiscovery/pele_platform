@@ -100,7 +100,7 @@ rom command line
         '''
 
         
-    def createEnsemble(self, pdbsi, env):
+    def createEnsemble(self, pdbs, env):
         '''
         Create a prody ensemble based on getPDBs return
         Take into account, that system can be prepared or not
@@ -160,7 +160,7 @@ rom command line
         pdbfiledata = pdbfiledata.replace("HID","HIS")
         pdbfiledata = pdbfiledata.replace("HIE","HIS")
         
-        env.logger.info("Warning!!! Rewriting reference file {}".format(self.ref))
+        env.info("Warning!!! Rewriting reference file {}".format(self.ref))
         pdbfile = open(self.ref,'w')
         pdbfile.write(pdbfiledata)
         pdbfile.close()
@@ -176,9 +176,9 @@ rom command line
         ref_selection = ref_structure.select(self.selection)
         reference_hierview = ref_structure.getHierView()
         
-        env.logger.info("Found", reference_hierview.numChains(), "Chain(s) in", reference_hierview._atoms.getTitle())
+        env.info("Found", reference_hierview.numChains(), "Chain(s) in", reference_hierview._atoms.getTitle())
         ensemble_ref_title = reference_hierview._atoms.getTitle()
-        env.logger.info(reference_hierview[0])
+        env.info(reference_hierview[0])
         
         '''
         at the moment all chains are taken
@@ -331,7 +331,7 @@ rom command line
 
         return ensemble
         
-    def calcPCA(self, ensemble):
+    def calcPCA(self, ensemble, env):
         '''
         calcPCA:
         #ensemble: prody ensmeble with structure information
@@ -340,15 +340,15 @@ rom command line
         
         return: prody.pca object
         '''
-        env.logger.info("Calculate PCA")
+        env.info("Calculate PCA")
              
         PCAname = ensemble.getTitle()
         pca = prody.PCA(PCAname)
         pca.buildCovariance(ensemble)
 
-        env.logger.info("PCA")
+        env.info("PCA")
         pca.calcModes()
-        env.logger.info(repr(pca))
+        env.info(repr(pca))
         
         outputname = PCAname + "_pca_modes.nmd"
                     
@@ -356,10 +356,10 @@ rom command line
         
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
-        env.logger.info("PCA is saved in:", outputname)
+        env.info("PCA is saved in:", outputname)
         return pca, outputname
         
-    def calcANM(self, structure):
+    def calcANM(self, structure, env):
         '''
         calcANM:
         #structure: prody PDB-structure
@@ -368,7 +368,7 @@ rom command line
         
         return: prody.anm object
         '''
-        env.logger.info("Calculate ANM")
+        env.info("Calculate ANM")
         ANMname = structure.getLabel()
         anm = prody.ANM(ANMname)
         anm.buildHessian(structure, cutoff=15.0)
@@ -378,7 +378,7 @@ rom command line
         prody.writeNMD(outputname, anm[:10], self.selection_ref_structure)
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
-        env.logger.info("ANM is saved in:", outputname)
+        env.info("ANM is saved in:", outputname)
         return anm
 
     def compare_modes(self, modes1, modes2):
@@ -633,13 +633,13 @@ def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=Fa
     Analysis.set_default_based_on_argparse(selection, vmd, compare, ref, debug, pdb)
     
     pdbs = Analysis.getPDBs()
-    ensemble = Analysis.createEnsemble(pdbs)        
+    ensemble = Analysis.createEnsemble(pdbs, env)        
     # set weights for the PCA analysis
     # ensemble = Analysis.setWeights(ensemble)
     ensemble = Analysis.setSelections(ensemble)
     
-    pca, pca_modes = Analysis.calcPCA(ensemble)
-    anm = Analysis.calcANM(ensemble.getConformation(0))
+    pca, pca_modes = Analysis.calcPCA(ensemble, env)
+    anm = Analysis.calcANM(ensemble.getConformation(0), env)
     
     if Analysis.compare:
         Analysis.compare_modes(anm,pca)

@@ -25,7 +25,7 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
     my_env = os.environ.copy()
     my_env["SCHRODINGER_PYTHONPATH"]=os.path.join(cs.SCHRODINGER, "internal/lib/python2.7/site-packages/")
     my_env["SCHRODINGER"]=cs.SCHRODINGER
-    env.info("Running Plop")
+    env.logger.info("Running Plop")
     ligand = ligand if ligand else env.lig
     env.logger.info("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir))
     try:
