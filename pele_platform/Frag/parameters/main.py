@@ -8,19 +8,19 @@ class FragParameters(pele.EnviroBuilder,
     def __init__(self, args):
         self.software = "Frag"
 
-        #Platform common variables
+        # Platform common variables
         self.build_frag_variables(args)
 
-        #Frag Input_files parameters
+        # Frag Input_files parameters
         files.FragInputFiles.__init__(self, args)
         
-        #Frag Simulation Parameters
+        # Frag Simulation Parameters
         simulation.FragSimulationParameters.__init__(self, args)
 
-        #Frag Opcional Parameters
+        # Frag Optional Parameters
         opcionals.FragOpcionalParameters.__init__(self, args)
 
-        #Keep inital arguments
+        # Keep initial arguments
         self.args = args
 
 

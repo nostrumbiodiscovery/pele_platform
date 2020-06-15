@@ -42,9 +42,9 @@ class PCA_ANM_Analysis:
         '''
         Print all settings for debugging purposes
         '''
-        print("Settings in PCA_ANM_Analysis")
-        print("selection, VMD, compare, ref, pdb")
-        print(self.selection, self.vmd, self.compare, self.ref, self.pdbarg)
+        env.logger.info("Settings in PCA_ANM_Analysis")
+        env.logger.info("selection, VMD, compare, ref, pdb")
+        env.logger.info(self.selection, self.vmd, self.compare, self.ref, self.pdbarg)
 
 
     def set_default_based_on_argparse(self, selection, vmd, compare, ref, debug, pdb):
@@ -54,8 +54,8 @@ class PCA_ANM_Analysis:
         if selection in ["calpha", "backbone", "all"]:
             self.selection=selection
         else:
-            print("Invalid value for selection:", selection)
-            print("Possible Values for selection are: calpha, backbone, all")
+            env.logger.info("Invalid value for selection:", selection)
+            env.logger.info("Possible Values for selection are: calpha, backbone, all")
             exit()
         self.vmd = vmd
         self.compare=compare
@@ -70,9 +70,9 @@ class PCA_ANM_Analysis:
             prody.confProDy(verbosity="info")
             
         if self.debug:
-            print("***DEBUG***")
+            env.logger.info("***DEBUG***")
             self.printSettings()
-            print("***DEBUG-END***")
+            env.logger.info("***DEBUG-END***")
     
     def getPDBs(self):
         '''
@@ -87,7 +87,7 @@ rom command line
             pdbs = self.pdbarg.split()
             
         if self.debug:
-            print("***DEBUG*** The chosen PDBs are:", pdbs)
+            env.logger.info("***DEBUG*** The chosen PDBs are:", pdbs)
         self.pdbs = pdbs    
         return pdbs
         
@@ -113,7 +113,7 @@ rom command line
             - set reference depending on longest chain with no gaps
             - check for duplicate chains and only select this one
         '''
-        print("Create Ensemble")
+        env.logger.info("Create Ensemble")
         ref_chids = []
         ensemble_ref_title = "Default"
         
@@ -126,18 +126,18 @@ rom command line
         else:
             if self.ref in pdbs:
                 if self.debug:
-                    print("***DEBUG*** Found Ref:", self.ref)
-                    print("***DEBUG*** Index Ref", pdbs.index(self.ref))
-                    print("Removing reference from pdblist")
+                    env.logger.info("***DEBUG*** Found Ref:", self.ref)
+                    env.logger.info("***DEBUG*** Index Ref", pdbs.index(self.ref))
+                    env.logger.info("Removing reference from pdblist")
                 pdbs.pop(pdbs.index(self.ref))
    
         if self.debug:
-            print("***DEBUG*** Reference is",self.ref)
+            env.logger.info("***DEBUG*** Reference is",self.ref)
             
         try: 
             f = open(self.ref)
         except IOError as e:
-            print("I/O error({0}): {1} \"{2}\"".format(e.errno, e.strerror, self.ref))
+            env.logger.info("I/O error({0}): {1} \"{2}\"".format(e.errno, e.strerror, self.ref))
             exit()
         
         
@@ -146,21 +146,21 @@ rom command line
         try:
             pdbinfile = open(self.ref)   
         except IOError as e:
-            print(self.ref)
-            print("I/O error({0}): {1}".format(e.errno, e.strerror))
+            env.logger.info(self.ref)
+            env.logger.info("I/O error({0}): {1}".format(e.errno, e.strerror))
             exit()
         
         pdbfiledata = pdbinfile.read()
         for line in pdbinfile:
             if line[17:20] == "HID" or line[17:20] == "HIE":
-                print("HID or HIE found in pdb-structure. The names will be changed to HIS in the input file")
+                env.logger.info("HID or HIE found in pdb-structure. The names will be changed to HIS in the input file")
                 break
         pdbinfile.close()
         
         pdbfiledata = pdbfiledata.replace("HID","HIS")
         pdbfiledata = pdbfiledata.replace("HIE","HIS")
         
-        print("Warning!!! Rewriting reference file {}".format(self.ref))
+        env.logger.info("Warning!!! Rewriting reference file {}".format(self.ref))
         pdbfile = open(self.ref,'w')
         pdbfile.write(pdbfiledata)
         pdbfile.close()
@@ -176,9 +176,9 @@ rom command line
         ref_selection = ref_structure.select(self.selection)
         reference_hierview = ref_structure.getHierView()
         
-        print("Found", reference_hierview.numChains(), "Chain(s) in", reference_hierview._atoms.getTitle())
+        env.logger.info("Found", reference_hierview.numChains(), "Chain(s) in", reference_hierview._atoms.getTitle())
         ensemble_ref_title = reference_hierview._atoms.getTitle()
-        print(reference_hierview[0])
+        env.logger.info(reference_hierview[0])
         
         '''
         at the moment all chains are taken
@@ -188,12 +188,12 @@ rom command line
         for chain in reference_hierview:
             ref_chids.append(chain.getChid())
         if self.debug:
-            print("***DEBUG***", ref_chids)
+            env.logger.info("***DEBUG***", ref_chids)
         
         reference_chains = [reference_hierview[chid] for chid in ref_chids] 
         
         if self.debug:
-            print("***DEBUG***", reference_chains)
+            env.logger.info("***DEBUG***", reference_chains)
             
         
         
@@ -201,7 +201,7 @@ rom command line
         for i in range (1, len(reference_chains), 1):
             ref_chain = ref_chain + reference_chains[i]
         if self.debug:
-            print("***DEBUG***", ref_chain)
+            env.logger.info("***DEBUG***", ref_chain)
         # save globally
         self.ref_chain = ref_chain
         #Create Ensemble of structures
@@ -212,14 +212,14 @@ rom command line
         ensemble.addCoordset(ref_structure)
         
         if self.debug:
-            print("***DEBUG***", ref_chain.getResnames())
-            print("***DEBUG***", ref_chain.getResnums())
+            env.logger.info("***DEBUG***", ref_chain.getResnames())
+            env.logger.info("***DEBUG***", ref_chain.getResnums())
         
         unmapped = []
         # map remaining structures to reference chain and add to ensemble if mapped
         for pdb in pdbs:
              if self.debug:
-                 print("***DEBUG*** Processing ", pdb)
+                 env.logger.info("***DEBUG*** Processing ", pdb)
              if self.selection == "all":
                  #structure = prody.parsePDB(self.ref)
                  structure = prody.parsePDB(pdb)
@@ -233,16 +233,16 @@ rom command line
                                          seqid=90,
                                          coverage=50,
                                          subset=self.selection)
-                 #print(mappings, len(mappings)
+
                  if len(mappings) == 0:
-                     print('Failed to map', pdb)
+                     env.logger.info('Failed to map', pdb)
                      break
                  atommaps.append(mappings[0][0])
                  # Make sure all chains are mapped
              if len(atommaps) != len(reference_chains):
                  unmapped.append(pdb)
                  continue
-             #print(atommaps[0]
+             #env.logger.info(atommaps[0]
              atommap = atommaps[0]
              for i in range (1, len(reference_chains), 1):
                   atommap = atommap + atommaps[i]
@@ -252,12 +252,12 @@ rom command line
              ensemble.addCoordset(atommap, weights=atommap.getFlags('mapped'))
      
         if self.debug:
-            print("***DEBUG*** Number of conformations:", ensemble.numConfs())
-            print("***DEBUG*** ", ensemble)
-            print("***DEBUG*** Unmapped structures:", unmapped)
+            env.logger.info("***DEBUG*** Number of conformations:", ensemble.numConfs())
+            env.logger.info("***DEBUG*** ", ensemble)
+            env.logger.info("***DEBUG*** Unmapped structures:", unmapped)
         ensemble.iterpose()
 
-        #print(ensemble.getTitle()
+        #env.logger.info(ensemble.getTitle()
         return ensemble
     
     def setSelections(self, ensemble):
@@ -277,8 +277,8 @@ rom command line
             #selec = structure.getSelstr().split()
             selec = structure.getIndices()
             if self.debug:
-                print("***DEBUG***", selec)
-                print("***DEBUG***", len(selec))
+                env.logger.info("***DEBUG***", selec)
+                env.logger.info("***DEBUG***", len(selec))
         
             #create new ensemble containing only the selected atoms        
             ensemble2 = prody.PDBEnsemble(ensemble.getTitle())
@@ -293,15 +293,15 @@ rom command line
                 for coord in range(len(coords)):
                     if coord in selec:
                         new_coords[count] = coords[coord]
-                        #print(count, new_coords[count]
+                        #env.logger.info(count, new_coords[count]
                         count+=1
                 ensemble2.addCoordset(new_coords) 
                 
             ensemble2.getConformation(0).setLabel(ensemble2.getTitle())    
 
             if self.debug:
-                print("***DEBUG*** Ensemble before selections: ", repr(ensemble))
-                print("***DEBUG*** Ensemble after selections: ", repr(ensemble2))
+                env.logger.info("***DEBUG*** Ensemble before selections: ", repr(ensemble))
+                env.logger.info("***DEBUG*** Ensemble after selections: ", repr(ensemble2))
             
             return ensemble2
     
@@ -312,7 +312,7 @@ rom command line
         --> They will not contribute to the PCA
         the original ensemble is not changed!
         '''
-        print("Set weights")
+        env.logger.info("Set weights")
         self.selection2="(backbone)"
         structure =  ensemble.getAtoms().select(self.selection2)
         sel_string = structure.getSelstr()
@@ -325,7 +325,7 @@ rom command line
                 #set atoms in selection to 1 rest to 0
                 if j not in selec:
                     weights[i][j] = 0
-                #print(j, weights[i][j]
+                #env.logger.info(j, weights[i][j]
         
         ensemble.setWeights(weights)
 
@@ -340,15 +340,15 @@ rom command line
         
         return: prody.pca object
         '''
-        print("Calculate PCA")
+        env.logger.info("Calculate PCA")
              
         PCAname = ensemble.getTitle()
         pca = prody.PCA(PCAname)
         pca.buildCovariance(ensemble)
 
-        print("PCA")
+        env.logger.info("PCA")
         pca.calcModes()
-        print(repr(pca))
+        env.logger.info(repr(pca))
         
         outputname = PCAname + "_pca_modes.nmd"
                     
@@ -356,7 +356,7 @@ rom command line
         
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
-        print("PCA is saved in:", outputname)
+        env.logger.info("PCA is saved in:", outputname)
         return pca, outputname
         
     def calcANM(self, structure):
@@ -368,7 +368,7 @@ rom command line
         
         return: prody.anm object
         '''
-        print("Calculate ANM")
+        env.logger.info("Calculate ANM")
         ANMname = structure.getLabel()
         anm = prody.ANM(ANMname)
         anm.buildHessian(structure, cutoff=15.0)
@@ -378,7 +378,7 @@ rom command line
         prody.writeNMD(outputname, anm[:10], self.selection_ref_structure)
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
-        print("ANM is saved in:", outputname)
+        env.logger.info("ANM is saved in:", outputname)
         return anm
 
     def compare_modes(self, modes1, modes2):
@@ -386,39 +386,39 @@ rom command line
         Compare the calculated ANM and PCA
         '''
         
-        print(self.print_Eigen_Val_Vec(modes1))
-        print(self.print_Eigen_Val_Vec(modes2))
+        env.logger.info(self.print_Eigen_Val_Vec(modes1))
+        env.logger.info(self.print_Eigen_Val_Vec(modes2))
         
         prody.printOverlapTable(modes2[:3], modes1[:3]) # Top 3 PCs vs slowest 3 ANM modes
         
         for mode in modes2[:10]:
             var = prody.calcFractVariance(mode).round(3)
-            print('{0:s}  % variance = {1:.2f}'.format(mode, var))
+            env.logger.info('{0:s}  % variance = {1:.2f}'.format(mode, var))
             coll = prody.calcCollectivity(mode)
-            print('{0:s}  collectivity = {1:.2f}'.format(mode, coll))
+            env.logger.info('{0:s}  collectivity = {1:.2f}'.format(mode, coll))
     
         for mode in modes1[:10]:    # Print ANM mode collectivity
             var = prody.calcFractVariance(mode).round(3)
-            print('{0:s}  % variance = {1:.2f}'.format(mode, var))
+            env.logger.info('{0:s}  % variance = {1:.2f}'.format(mode, var))
             coll = prody.calcCollectivity(mode)
-            print('{0:s}  collectivity = {1:.2f}'.format(mode, coll))
+            env.logger.info('{0:s}  collectivity = {1:.2f}'.format(mode, coll))
         
     def print_Eigen_Val_Vec(self,mode):
-        print("Eigenvalues of", mode.getModel())
-        print(mode.getEigvals().round(3))
-        print("Eigenvectors of", mode.getModel())
-        print(mode.getEigvecs().round(3))
+        env.logger.info("Eigenvalues of", mode.getModel())
+        env.logger.info(mode.getEigvals().round(3))
+        env.logger.info("Eigenvectors of", mode.getModel())
+        env.logger.info(mode.getEigvecs().round(3))
 
     def print_Match(self, match):
-       print('Chain 1     : {}'.format(match[0]))
-       print('Chain 2     : {}'.format(match[1]))
-       print('Length      : {}'.format(len(match[0])))
-       print('Seq identity: {}'.format(match[2]))
-       print('Seq overlap : {}'.format(match[3]))
-       print('RMSD        : {}\n'.format(calcRMSD(match[0], match[1])))
+       env.logger.info('Chain 1     : {}'.format(match[0]))
+       env.logger.info('Chain 2     : {}'.format(match[1]))
+       env.logger.info('Length      : {}'.format(len(match[0])))
+       env.logger.info('Seq identity: {}'.format(match[2]))
+       env.logger.info('Seq overlap : {}'.format(match[3]))
+       env.logger.info('RMSD        : {}\n'.format(calcRMSD(match[0], match[1])))
 
     def print_modes(self, modes):
-        print("Printing modes to file")
+        env.logger.info("Printing modes to file")
         import matplotlib.pyplot as plt
         residues = self.ref_chain.getResnums()
         print_offset = residues[0]
@@ -451,11 +451,11 @@ rom command line
         lgd = plt.legend(loc='center right', bbox_to_anchor=(1.3,0.5))
         plt.savefig(str(modes)+"_mode_1_to_6.pdf", bbox_extra_artists=(lgd, ), bbox_inches='tight')
         
-        print("Printing modes to file finished")
+        env.logger.info("Printing modes to file finished")
 
           
     def print_diff(self, pca_modes, anm_modes):
-        print("here I am in DIFF")
+        env.logger.info("here I am in DIFF")
         import matplotlib.pyplot as plt
         from matplotlib.path import Path
         import matplotlib.patches as patches
@@ -546,8 +546,7 @@ rom command line
         plt.savefig(str(pca_modes)+"_ANM_PCA_DIFF.pdf", bbox_extra_artists=(lgd, ), bbox_inches='tight')
         
     def print_from_file(self, modesfile):
-        print("Printing modes from file", modesfile)
-        #print(len(modes)
+        env.logger.info("Printing modes from file", modesfile)
         import matplotlib.pyplot as plt
         from matplotlib.path import Path
         import matplotlib.patches as patches
@@ -577,7 +576,7 @@ rom command line
         lgd = plt.legend(loc='center right', bbox_to_anchor=(1.6,0.5))
         plt.savefig(str(modes.getTitle())+"_mode_1_to_6.pdf", bbox_extra_artists=(lgd, ), bbox_inches='tight')
         
-        print("Printing modes to file finished")
+        env.logger.info("Printing modes to file finished")
 
 def parse_Arguments():
     '''
@@ -610,11 +609,12 @@ def parse_Arguments():
     parser.add_argument("--anm_only", help="Only perform ANM analysis", action="store_true", default=False)
     return parser.parse_args()
 
+
 class SmartFormatter(argparse.HelpFormatter):
-    '''
+    """
     Helper class for argparse
     help beginning with R| will be parsed with new lines
-    '''
+    """
     def _split_lines(self, text, width):
         # this is the RawTextHelpFormatter._split_lines
         if text.startswith('R|'):
@@ -622,20 +622,20 @@ class SmartFormatter(argparse.HelpFormatter):
         return argparse.HelpFormatter._split_lines(self, text, width)
 
 
-def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=False):
+def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=False, env=env):
 
-    print("\n\nWarning!!! Reference PDB file, if provided, will be rewritten in"
+    env.info("\n\nWarning!!! Reference PDB file, if provided, will be rewritten in"
           " ProDy PDB format, with HID and HIE residues renamed to HIS.\n\n")
     pdb = " ".join(pdb)
         
-    #create PCA_analysis object
+    # create PCA_analysis object
     Analysis = PCA_ANM_Analysis()
     Analysis.set_default_based_on_argparse(selection, vmd, compare, ref, debug, pdb)
     
     pdbs = Analysis.getPDBs()
     ensemble = Analysis.createEnsemble(pdbs)        
-    #set weights for the PCA analysis
-    #ensemble = Analysis.setWeights(ensemble)
+    # set weights for the PCA analysis
+    # ensemble = Analysis.setWeights(ensemble)
     ensemble = Analysis.setSelections(ensemble)
     
     pca, pca_modes = Analysis.calcPCA(ensemble)
@@ -648,7 +648,7 @@ def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=Fa
     
     
 if __name__ == '__main__':
-    #parse command line options and create help
+    # parse command line options and create help
     args = parse_Arguments()
     main(args.pdb, args.selection, args.vmd, args.compare, args.ref, args.debug)
 

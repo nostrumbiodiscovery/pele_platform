@@ -12,7 +12,7 @@ import pele_platform.Adaptive.simulation as si
 def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
 
 
-    #Let user choose working folder
+    # Let user choose working folder
     original_dir = os.path.abspath(os.getcwd())
     working_folder = os.path.abspath("{}_Pele".format(parsed_yaml.residue))
     if not parsed_yaml.folder:
@@ -20,7 +20,7 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     else:
         working_folder = os.path.abspath(parsed_yaml.folder)
 
-    #Set main folder
+    # Set main folder
     parsed_yaml.folder = os.path.join(working_folder, "1_interface_exploration")
 
     # Check n_waters before launching the simulation
@@ -44,12 +44,11 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     parsed_yaml.induced_fit_exhaustive = True
     simulation1 = si.run_adaptive(parsed_yaml)
     simulation1_path = os.path.join(simulation1.pele_dir, simulation1.output)
-    
+
     # cluster best structures
     with cd(simulation1_path):
-        cluster_best_structures("5", n_components=simulation1.n_components,
-            residue=simulation1.residue, topology=simulation1.topology,
-            directory=working_folder)
+        cluster_best_structures("5", n_components=simulation1.n_components, residue=simulation1.residue,
+                                topology=simulation1.topology, directory=working_folder, env=simulation1.logger)
     
     # adjust original input.yaml
     if not parsed_yaml.skip_refinement:
@@ -64,11 +63,6 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
             parsed_yaml.steps = 100
         parsed_yaml.box_center = simulation1.box_center
         parsed_yaml.box_radius = 100  # We should have a look at how to set no box but at the moment super big
-        
-        # add water molecules to minimisation inputs
-        #parsed_yaml.waters = "all_waters"
-        #add_water(parsed_yaml.system, chain, parsed_yaml.residue)
-        #parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*_water.pdb")
 
         # start simulation 2 - minimisation
         with cd(original_dir):

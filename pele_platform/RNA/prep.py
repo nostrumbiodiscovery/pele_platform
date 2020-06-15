@@ -72,7 +72,7 @@ class PDBFix():
         return path
 
 def fix_rna_pdb(pdb):
-    print("Fixing pdb for RNA")
+    env.logger("Fixing pdb for RNA")
     pdb = PDBFix(pdb)
     pdb.fix_nucleotides()
     pdb.remove_two_first()

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 import os
 import yaml
 
@@ -26,14 +26,14 @@ class YamlParser(object):
 
 
     def _check(self) -> None:
-        #Check if valids in yaml file are valids
+        # Check if valids in yaml file are valids
         for key in self.data.keys():
             if key not in self.valid_flags.values():
                 raise KeyError("Input file contains an invalid keyword: {}".format(key))
         
     
     def _parse(self) -> None:
-        #Parse fields in yaml file and set defaults
+        # Parse fields in yaml file and set defaults
         valid_flags = self.valid_flags
         data = self.data
         self.system = data.get(valid_flags["system"], "")

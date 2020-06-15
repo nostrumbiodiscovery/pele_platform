@@ -13,7 +13,7 @@ from pele_platform.Utilities.Parameters.SimulationFolders import simulation_fold
 
 class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.SimulationPaths):
     """
-        Base class wher the needed pele environment
+        Base class where the needed pele environment
         is build by creating folders and files
     """
     def __init__(self):
@@ -37,14 +37,13 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             setattr(self, key, value)
 
     def build_frag_variables(self, args):
-        #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
+        # Define default variables, files and folder "HIDING VARIABLES " --> CHANGE
         for key, value in frfs.retrieve_software_settings(args).items():
             setattr(self, key, value)
-        #####Initialize all variables by combining default and user input######
+        # Initialize all variables by combining default and user input
         simulation_params.SimulationParams.__init__(self, args)
         for key, value in frfs.retrieve_software_settings(args).items():
             setattr(self, key, value)
-        
 
     def create_files_and_folders(self):
         if not self.adaptive_restart:
@@ -53,8 +52,6 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             self.create_logger()
         else:
             self.create_logger()
-
-
 
     def create_folders(self):
         """

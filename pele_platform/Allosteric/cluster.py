@@ -6,10 +6,8 @@ from pele_platform.Analysis.plots import _extract_coords
 from multiprocessing import Pool
 
 
-def cluster_best_structures(be_column: int, residue="LIG", topology=None, cpus=20, n_components=10, n_structs=1000, directory=".") -> str:
-    '''
-    Cluster the full simulation by ligand heavy atom's coordinates
-    '''
+def cluster_best_structures(be_column: int, residue="LIG", topology=None, cpus=20, n_components=10, n_structs=1000, directory=".", env=None):
+
     files_out, _, _, _, output_energy = bs.main(be_column, n_structs=n_structs, path=".", topology=topology)
     files = []
 
@@ -21,7 +19,7 @@ def cluster_best_structures(be_column: int, residue="LIG", topology=None, cpus=2
             continue
     n_files = len(files_out)
 
-    print("Extracting data from {} files.".format(n_files))
+    env.info("Extracting data from {} files.".format(n_files))
 
     snapshot = 0
     pool = Pool(cpus)
@@ -29,7 +27,7 @@ def cluster_best_structures(be_column: int, residue="LIG", topology=None, cpus=2
     all_coords = pool.map(_extract_coords, input_pool)
 
     # cluster
-    print("Creating clusters.")
+    env.info("Creating clusters.")
     cluster = GaussianMixture(n_components, covariance_type='full', random_state=42)
     labels = cluster.fit_predict(all_coords)
 
