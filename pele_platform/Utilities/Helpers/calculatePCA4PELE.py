@@ -622,7 +622,7 @@ class SmartFormatter(argparse.HelpFormatter):
         return argparse.HelpFormatter._split_lines(self, text, width)
 
 
-def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=False, env=env):
+def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=False, env=None):
 
     env.info("\n\nWarning!!! Reference PDB file, if provided, will be rewritten in"
           " ProDy PDB format, with HID and HIE residues renamed to HIS.\n\n")

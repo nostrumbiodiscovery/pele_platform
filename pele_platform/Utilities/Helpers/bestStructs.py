@@ -104,7 +104,7 @@ def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, outp
     return files_out, epochs, file_ids, step_indexes, values
 
 
-def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, env=env):
+def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, env=None):
     f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.pdb".format(f_id)))
     if not f_in:
         f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.*".format(f_id)))

@@ -34,7 +34,7 @@ class PCA(env=None):
             pdbs = self.pca_traj
         return pdbs
 
-    def _pca_to_json(self, pdbs, env=env) -> str:
+    def _pca_to_json(self, pdbs, env=None) -> str:
         # calculate pca over pdb and get json
         pdbs_full_path = [os.path.abspath(pdb) for pdb in pdbs]
         with helpers.cd(self.pele_dir):
