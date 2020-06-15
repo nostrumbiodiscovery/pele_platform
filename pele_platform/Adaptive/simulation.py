@@ -148,7 +148,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         
         # Build PCA
         if env.pca_traj:
-            pca_obj = pca.PCA(env.pca_traj, env.pele_dir, env=env.logger)
+            pca_obj = pca.PCA(env.pca_traj, env.pele_dir)
             env.pca = pca_obj.generate(env.logger)
 
         # Add waters, if needed

@@ -7,7 +7,7 @@ import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
 
 
 @dataclass
-class PCA(env=None):
+class PCA():
     """
     Base class to perform pca analysis
     on user's receptor traj and generate
@@ -23,7 +23,7 @@ class PCA(env=None):
     def generate(self, env) -> str:
         # Calculate pca and retrieve json format
         pdbs = self._retrieve_trajectories()
-        pca_json = self._pca_to_json(pdbs, env=env.logger)
+        pca_json = self._pca_to_json(pdbs, env=env)
         return pca_json
 
     def _retrieve_trajectories(self) -> list:

@@ -100,7 +100,7 @@ rom command line
         '''
 
         
-    def createEnsemble(self, pdbs):
+    def createEnsemble(self, pdbsi, env):
         '''
         Create a prody ensemble based on getPDBs return
         Take into account, that system can be prepared or not
@@ -113,7 +113,7 @@ rom command line
             - set reference depending on longest chain with no gaps
             - check for duplicate chains and only select this one
         '''
-        env.logger.info("Create Ensemble")
+        env.info("Create Ensemble")
         ref_chids = []
         ensemble_ref_title = "Default"
         
