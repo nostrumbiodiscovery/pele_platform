@@ -44,6 +44,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         simulation_params.SimulationParams.__init__(self, args)
         for key, value in frfs.retrieve_software_settings(args).items():
             setattr(self, key, value)
+        self.logger = self.create_logger(".")
 
     def create_files_and_folders(self):
         if not self.adaptive_restart:
@@ -69,8 +70,9 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         for file, destination_name in zip(self.files, self.file_names):
             shutil.copy(file, os.path.join(self.pele_dir, destination_name))
 
-    def create_logger(self):
-        log_name = os.path.join(self.pele_dir, "{}.log".format(self.residue))
+    def create_logger(self, directory=None):
+        directory = directory if directory else self.pele_dir
+        log_name = os.path.join(directory, "{}.log".format(self.residue))
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
