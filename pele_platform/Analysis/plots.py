@@ -94,7 +94,7 @@ class PostProcessor:
             env.info("Plotted {} vs {}".format(column_to_x, column_to_y))
         return output_name
 
-    def top_poses(self, metric, n_structs, output="BestStructs"):
+    def top_poses(self, metric, n_structs, output="BestStructs", env=None):
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
         self._extract_poses(best_poses, metric, output)
@@ -223,15 +223,15 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     # Plot metrics
     while current_metric <= metrics - 1:
         try:
-            analysis.plot_two_metrics(total_energy, be, current_metric, output_folder=plots_folder)
-            analysis.plot_two_metrics(current_metric, be, output_folder=plots_folder)
+            analysis.plot_two_metrics(total_energy, be, current_metric, output_folder=plots_folder, env=env)
+            analysis.plot_two_metrics(current_metric, be, output_folder=plots_folder, env=env)
         except ValueError:
             break
         current_metric += 1
 
     # Retrieve 100 best structures
     env.info("Retrieve 100 Best Poses")
-    analysis.top_poses(be, 100, top_poses_folder)
+    analysis.top_poses(be, 100, top_poses_folder, env=env)
 
     # Clustering of best 2000 best structures
     env.info(f"Retrieve {nclusts} best cluster poses")

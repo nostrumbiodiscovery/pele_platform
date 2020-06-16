@@ -39,7 +39,7 @@ STEPS = 3
 HELP = "USE:\n\n- For xtc: python bestStructs.py 5 --top topology.pdb\n\n- For pdb:  python bestStructs.py 5"
 
 
-def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, criteria2=None, topology=None):
+def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, criteria2=None, topology=None, env=None):
     """
 
       Description: Rank the traj found in the report files under path
@@ -96,9 +96,9 @@ def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, outp
     # Read trajectory and output snapshot
     for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
         if not topology:
-            extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out)
+            extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, env=env)
         else:
-            extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out)
+            extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, env=env)
     files_out = [os.path.join(output, f) for f in files_out]
     # Return data
     return files_out, epochs, file_ids, step_indexes, values

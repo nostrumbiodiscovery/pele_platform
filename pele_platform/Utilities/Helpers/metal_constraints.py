@@ -247,5 +247,5 @@ def main(original_constraints, protein_file, original_input, permissive=False, a
     metals, structure = find_metals(protein_file)
     if external:
         external = map_constraints(protein_file, original_input, original_constraints)
-    output = find_geometry(metals, structure, permissive, all_metals, external, env=None)
+    output = find_geometry(metals, structure, permissive, all_metals, external, env=env)
     return output, external
