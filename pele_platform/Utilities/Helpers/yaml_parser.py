@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
 import os
 import yaml
-import pele_platform.Checker.valid_flags as vf
-
 
 
 @dataclass
@@ -25,7 +23,6 @@ class YamlParser(object):
             except yaml.YAMLError as exc:
                 raise(exc)
         return data
-
 
 
     def _check(self) -> None:
@@ -121,7 +118,7 @@ class YamlParser(object):
         self.exit_trajnum = data.get(valid_flags["exit_trajnum"], None)
         self.waters = data.get(valid_flags["waters"], None)
         self.water_freq = data.get(valid_flags["water_freq"], None)
-        self.water_center = data.get(valid_flags["water_center"], None)
+        #self.water_center = data.get(valid_flags["water_center"], None)
         self.water_temp = data.get(valid_flags["water_temp"], None)
         self.water_overlap = data.get(valid_flags["water_overlap"], None)
         self.water_constr = data.get(valid_flags["water_constr"], None)
@@ -164,7 +161,7 @@ class YamlParser(object):
         self.constrain_smiles = data.get(valid_flags["constrain_smiles"], None)
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.spawning_condition = data.get(valid_flags["spawning_condition"], None)
-        self.external_constraints = data.get(valid_flags["external_constraints"], None)
+        self.external_constraints = data.get(valid_flags["external_constraints"], [])
         self.only_analysis = data.get(valid_flags["only_analysis"], False)
         self.overwrite = data.get(valid_flags["overwrite"], True)
         self.analysis_nclust = data.get(valid_flags["analysis_nclust"], 10)
@@ -175,7 +172,10 @@ class YamlParser(object):
         self.pele_license = data.get(valid_flags["pele_license"], None)
         self.schrodinger = data.get(valid_flags["schrodinger"], None)
         self.no_check = data.get(valid_flags["no_check"], False)
-
+        # Metal constraints
+        self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
+        self.constrain_all_metals = data.get(valid_flags["constrain_all_metals"], False)
+        self.no_metal_constraints = data.get(valid_flags["no_metal_constraints"], False)
         #Frag
         self.frag_run = data.get(valid_flags["frag_run"], True)
         self.frag_core = data.get(valid_flags["frag_core"], False)
@@ -199,6 +199,8 @@ class YamlParser(object):
         self.center_of_interface = data.get(valid_flags["center_of_interface"], None)
         self.protein = data.get(valid_flags["protein"], None)
         self.ligand_pdb = data.get(valid_flags["ligand_pdb"], None)
+        self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
+        self.n_waters = data.get(valid_flags["n_waters"], 1 if self.ppi else 0)
 
         #Allosteric
         self.allosteric = data.get(valid_flags["allosteric"], None)

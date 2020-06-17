@@ -161,4 +161,8 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "protein": "protein", 
 "ligand_pdb": "ligand_pdb",
 "allosteric": "allosteric", 
+"permissive_metal_constr": "permissive_metal_constr",
+"constrain_all_metals": "constrain_all_metals",
+"no_metal_constraints": "no_metal_constraints",
+"n_waters": "n_waters",
 "rna": "rna"}

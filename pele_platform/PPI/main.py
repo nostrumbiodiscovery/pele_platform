@@ -2,12 +2,15 @@ import os
 from pele_platform.Allosteric.cluster import cluster_best_structures
 from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
+from pele_platform.Utilities.Helpers.water import add_water, water_checker
+import glob
 from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
 
 
 def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
+
 
     #Let user choose working folder
     original_dir = os.path.abspath(os.getcwd())
@@ -20,16 +23,24 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     #Set main folder
     parsed_yaml.folder = os.path.join(working_folder, "1_interface_exploration")
 
+    # Check n_waters before launching the simulation
+    water_checker(parsed_yaml)
+
     # get arguments from input.yaml
+    n_waters = parsed_yaml.n_waters
+    parsed_yaml.n_waters = None
     protein_file = parsed_yaml.system
     chain = parsed_yaml.protein
     ligand_pdb = parsed_yaml.ligand_pdb
+
+    # no waters in the first simulation
+    parsed_yaml.water_arg = None 
    
     # remove chains except for "protein" flag
-    protein_file = prepare_structure(protein_file, ligand_pdb, chain)
+    protein_file = prepare_structure(protein_file, ligand_pdb, chain, True)
     parsed_yaml.system = protein_file
 
-    # start simualtion 1 - induced fit
+    # start simulation 1 - induced fit
     parsed_yaml.induced_fit_exhaustive = True
     simulation1 = si.run_adaptive(parsed_yaml)
     simulation1_path = os.path.join(simulation1.pele_dir, simulation1.output)
@@ -65,11 +76,3 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     else:
         simulation2 = None
     return simulation1, simulation2
-
-
-
-
-
-
-
-

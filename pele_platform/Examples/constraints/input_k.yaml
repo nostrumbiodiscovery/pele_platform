@@ -1,0 +1,8 @@
+system: '../pele_platform/Examples/constraints/4l3a_prep.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+induced_fit_fast: true
+test: true
+constrain_all_metals: true
+traj: trajectory.xtc

@@ -47,16 +47,34 @@ def test_prepare_structure():
     ligand_pdb = os.path.join(test_path, "PPI/1tnf_ligand.pdb")
     chain = ["A", "B"]
 
-    prepare_structure(protein_file, ligand_pdb, chain)
+    prepare_structure(protein_file, ligand_pdb, chain, remove_water=True)
 
     with open(new_protein_file, "r") as file:
         lines = file.readlines()
         chains = []
+        no_water = True
         for line in lines:
+            if "HOH" in line:
+                no_water = False
             if line.startswith("HETATM") or line.startswith("ATOM"):
                 chains.append(line[21:22].strip())
     
     assert "C" not in chains
+    assert no_water
     
     for f in glob.glob("*_prep.pdb"):
         os.remove(f)
+
+
+yaml = os.path.join(test_path, "PPI/input_skipref.yaml")
+
+def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
+
+    #Function to test
+    job, _ = main.run_platform(yaml)
+
+    # checkpoints
+    files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/BestStructs/epoch*"))
+
+    # test
+    assert not files_refinement

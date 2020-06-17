@@ -52,3 +52,4 @@ def run_allosteric(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
         induced_fit = None
 
     return simulation, induced_fit
+

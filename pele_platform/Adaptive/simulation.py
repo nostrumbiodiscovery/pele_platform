@@ -14,6 +14,8 @@ import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
+import pele_platform.Utilities.Helpers.metal_constraints as mc
+import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.ligand_parametrization as lg
@@ -42,6 +44,9 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
     env.create_files_and_folders()
     shutil.copy(args.yamlfile, env.pele_dir) 
 
+
+    #######
+
     if env.adaptive_restart and not env.only_analysis:
         with helpers.cd(env.pele_dir):
             adt.main(env.ad_ex_temp)
@@ -60,12 +65,14 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         env.logger.info("Prepare complex {}".format(syst.system))
            
         ########Choose your own input####################
+        
         # User specifies more than one input
         if env.input:
             env.inputs_simulation = []
             for input in env.input:
                 input_path  = os.path.join(env.pele_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
+                
                 if env.no_ppp:
                     input_proc = input
                 else:
@@ -75,6 +82,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                 env.inputs_simulation.append(input_proc)
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input + '"' for input in env.inputs_simulation]).strip('"')
+        
         # Global exploration mode: Create inputs around protein
         elif args.full or args.randomize or args.ppi:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(env.ligand_ref, env.receptor,
@@ -106,8 +114,19 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                 shutil.copy(env.system, env.pele_dir)
         else:
             env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
+
+        ################METAL CONSTRAINTS##################
+        if not args.no_metal_constraints:
+            metal_constraints, env.external_constraints = mc.main(args.external_constraints, os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')), syst.system, permissive=env.permissive_metal_constr, all_metals=args.constrain_all_metals, external=env.external_constraints)
+            metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
+            env.external_constraints = hp.retrieve_constraints_for_pele(env.external_constraints, env.system)
+            metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
+            env.external_constraints.extend(metal_constraints_json)
+        else:
+            env.external_constraints = hp.retrieve_constraints_for_pele(env.external_constraints, env.system)
+
+        # Keep Json ordered by having first title and then constraints
         if env.external_constraints:
-            # Keep Json ordered by having first title and then constraints
             env.constraints = env.constraints[0:1] + env.external_constraints + env.constraints[1:]
         if env.remove_constraints:
             env.constraints = ""
@@ -129,7 +148,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             if res != args.residue and res not in env.skip_ligand_prep:
                 env.logger.info("Creating template for residue {}".format(res))
                 with hp.cd(env.pele_dir):
-                    mr.create_template(args, env, res)
+                    mr.create_template(env, res)
                 env.logger.info("Template {}z created\n\n".format(res))
     
         #########Solvent parameters
@@ -141,11 +160,24 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         if env.pca_traj:
             pca_obj = pca.PCA(env.pca_traj, env.pele_dir)
             env.pca = pca_obj.generate()
+
         
+        ####### Add waters, if needed
+        if args.n_waters:
+            # Add n water molecules to minimisation inputs
+            input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
+            input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
+            wt.water_checker(args)
+            wt.add_water(input_waters, args.residue, args.n_waters, test=env.test)
+            wt.set_water_control_file(env)
+        elif args.waters:
+            wt.set_water_control_file(env)
+
         ############Fill in Simulation Templates############
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,
             env.pele_exit_temp, env.topology)
         adaptive.generate_inputs(env)
+
 
     if env.analyse and not env.debug:
         report = pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 
