@@ -47,7 +47,7 @@ def test_prepare_structure():
     ligand_pdb = os.path.join(test_path, "PPI/1tnf_ligand.pdb")
     chain = ["A", "B"]
 
-    prepare_structure(protein_file, ligand_pdb, chain)
+    prepare_structure(protein_file, ligand_pdb, chain, remove_water=True)
 
     with open(new_protein_file, "r") as file:
         lines = file.readlines()
