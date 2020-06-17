@@ -40,23 +40,6 @@ STEPS=3
 HELP = "USE:\n\n- For xtc: python bestStructs.py 5 --top topology.pdb\n\n- For pdb:  python bestStructs.py 5"
 
 
-def parse_args():
-
-    parser = argparse.ArgumentParser(description=HELP, formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument("crit", type=str, nargs='+', help="Criteria we want to rank and output the strutures for. Must be a column of the report. i.e: Binding Energy")
-    parser.add_argument("--crit2", type=str, nargs='+', help="Second Criteria we want to rank and output the strutures for. Must be a column of the report. i.e: SasaLig, i.e.2. 3", default="")
-    parser.add_argument("--path", type=str, help="Path to Pele's results root folder i.e: path=/Pele/results/", default=DIR)
-    parser.add_argument("--nst", "-n", type=int, help="Number of produced structures. i.e: 20" , default=N_STRUCTS)
-    parser.add_argument("--sort", "-s", type=str, help="Look for minimum or maximum value --> Options: [min/max]. i.e: max", default=ORDER)
-    parser.add_argument("--ofreq", "-f", type=int, help="Every how many steps the trajectory were outputted on PELE i.e: 4", default=FREQ)
-    parser.add_argument("--out", "-o", type=str, help="Output Path. i.e: BindingEnergies_apo", default=OUTPUT_FOLDER)
-    parser.add_argument("--top", "-t", type=str, help="PDB topology file. Mandatory when using xtf", default=None)
-    parser.add_argument("--numfolders", "-nm", action="store_true", help="Not to parse non numerical folders")
-    args = parser.parse_args()
-
-    return os.path.abspath(args.path), " ".join(args.crit), " ".join(args.crit2), args.nst, args.sort, args.ofreq, args.out, args.numfolders, args.top
-
-
 def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, criteria2=None, topology=None):
     """
 
@@ -225,8 +208,3 @@ def mkdir_p(path):
             pass
         else:
             raise
-
-
-if __name__ == "__main__":
-    path, criteria, criteria2, interval, sort_order, out_freq, output, numfolders, top = parse_args()
-    main(criteria, path, interval, sort_order, out_freq, output, numfolders, criteria2, top)

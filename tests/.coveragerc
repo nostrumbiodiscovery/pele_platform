@@ -3,6 +3,7 @@ omit =
     # omit anything in a .local directory anywhere
     test*
     # omit everything in /usr
+    ../pele_platform/main.py
     ../pele_platform/Analysis/to_mae.py
     ../pele_platform/Utilities/Helpers/calculatePCA4PELE.py
     ../pele_platform/Utilities/Helpers/conda_deployment.py

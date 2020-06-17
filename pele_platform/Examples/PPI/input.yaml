@@ -8,5 +8,6 @@ seed: 12345
 ppi: true
 test: true
 atom_dist:
-- "B:66:CA"
-- "Z:301:N2"
+- "B:1:CA"
+- "B:2:CA"
+working_folder: "dani_ppi"

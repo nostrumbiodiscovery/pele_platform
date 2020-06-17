@@ -10,4 +10,4 @@ test: true
 atom_dist:
 - "B:66:CA"
 - "Z:301:N2"
-skip_refinement: True
+skip_refinement: true

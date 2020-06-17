@@ -1,17 +1,22 @@
+from dataclasses import dataclass, field
 import os
 import yaml
 
 
-
-
+@dataclass
 class YamlParser(object):
 
-    def __init__(self, yamlfile):
-        self.yamlfile = yamlfile
-        self.checker()
-        self.parse()
+    yamlfile: str
+    valid_flags: dict
 
-    def parse_yaml(self):
+
+    def read(self) -> None:
+        self.data = self._parse_yaml()
+        self._check()
+        self._parse()
+
+    def _parse_yaml(self) -> dict:
+        # Retrieve raw info from yaml
         with open(self.yamlfile, 'r') as stream:
             try:
                 data = yaml.safe_load(stream)
@@ -19,176 +24,18 @@ class YamlParser(object):
                 raise(exc)
         return data
 
-    def checker(self):
 
-        data = self.parse_yaml()
-
-        valid_flags = {"system": "system",
-        "residue": "resname",
-        "chain": "chain",
-        "hbond": "hbond",
-        "test": "test",
-        "pele": "pele",
-        "forcefield": "forcefield",
-        "verbose": "verbose",
-        "anm_freq": "anm_freq",
-        "sidechain_freq": "sidechain_freq",
-        "min_freq": "min_freq",
-        "water_freq": "water_freq",
-        "temperature": "temperature",
-        "sidechain_resolution": "sidechain_res",
-        "steric_trials": "steric_trials",
-        "overlap_factor": "overlap_factor",
-        "solvent": "solvent",
-        "usesrun": "usesrun",
-        "spawning": "spawning",
-        "iterations": "iterations",
-        "pele_steps": "steps",
-        "cpus": "cpus",
-        "density": "density",
-        "cluster_values": "cluster_values",
-        "cluster_conditions": "cluster_conditions",
-        "simulation_type": "simulation_type",
-        "equilibration": "equilibration",
-        "eq_steps": "equilibration_steps",
-        "adaptive_restart": "adaptive_restart",
-        "input": "global_inputs",
-        "report_name": "report",
-        "traj_name": "traj",
-        "adaptive": "adaptive",
-        "epsilon": "epsilon",
-        "bias_column": "bias_column",
-        "gridres": "gridres",
-        "core": "core",
-        "mtor": "maxtorsion",
-        "n": "n",
-        "template": "templates",
-        "ext_temp": "template",
-        "rotamers": "rotamers",
-        "mae_lig": "mae_lig",
-        "skip_prep": "skip_preprocess",
-        "gaps_ter": "TERs",
-        "charge_ter": "charge_ters",
-        "nonstandard": "nonstandard",
-        "prepwizard": "prepwizard",
-        "box_center": "box_center",
-        "box_radius": "box_radius",
-        "box": "box",
-        "native": "rmsd_pdb",
-        "atom_dist": "atom_dist",
-        "debug": "debug",
-        "folder": "working_folder",
-        "output": "output",
-        "randomize": "randomize",
-        "full": "global",
-        "proximityDetection": "proximityDetection",
-        "poses": "poses",
-        "precision_glide": "precision_glide",
-        "msm": "msm",
-        "precision": "precision",
-        "clust": "exit_clust",
-        "restart": "restart",
-        "lagtime": "lagtime",
-        "msm_clust": "msm_clust",
-        "rescoring": "rescoring",
-        "in_out": "in_out",
-        "in_out_soft": "in_out_soft",
-        "exit": "exit",
-        "exit_value": "exit_value",
-        "exit_condition": "exit_condition",
-        "exit_trajnum": "exit_trajnum",
-        "water_freq": "water_freq",
-        #"water_center": "box_water",
-        "water_temp": "water_temp",#p
-        "water_overlap": "water_overlap",#p
-        "water_constr": "water_constr",#p
-        "water_trials": "water_trials",#p
-        "water_radius": "water_radius", #water site radius
-        "waters": "waters", #waters of the user
-        "n_waters": "n_waters", #waters we add
-        "bias": "bias",
-        "induced_fit_exhaustive": "induced_fit_exhaustive",
-        "induced_fit_fast": "induced_fit_fast",
-        "frag": "frag",
-        "ca_constr": "ca_constr",
-        "one_exit": "one_exit",
-        "box_type": "box_type",
-        "box_metric": "box_metric",
-        "time": "time",
-        "nosasa": "nosasa",
-        "sasa": "sasa",
-        "perc_sasa": "perc_sasa",
-        "seed": "seed",
-        "pdb": "pdb",
-        "log": "log",
-        "nonrenum": "nonrenum",
-        "pele_exec": "pele_exec",
-        "pele_data": "pele_data",
-        "pele_documents": "pele_documents",
-        "pca": "pca",
-        "anm_direction": "anm_direction",
-        "anm_mix_modes": "anm_mix_modes",
-        "anm_picking_mode": "anm_picking_mode",
-        "anm_displacement": "anm_displacement",
-        "anm_modes_change": "anm_modes_change",
-        "anm_num_of_modes": "anm_num_of_modes",
-        "anm_relaxation_constr": "anm_relaxation_constr",
-        "remove_constraints": "remove_constraints",
-        "pca_traj": "pca_traj",
-        "perturbation": "perturbation",
-        "binding_energy": "binding_energy",
-        "sasa": "sasa",
-        "parameters": "parameters",
-        "analyse": "analyse",
-        "selection_to_perturb": "selection_to_perturb",
-        "mae": "mae",
-        "constrain_smiles": "constrain_smiles",
-        "skip_ligand_prep": "skip_ligand_prep",
-        "spawning_condition": "spawning_condition",
-        "external_constraints": "external_constraints",
-        "only_analysis": "only_analysis",
-        "overwrite": "overwrite_analysis",
-        "analysis_nclust": "analysis_nclust",
-        "te_column": "te_column",
-        "be_column": "be_column",
-        "limit_column": "limit_column",
-        "com": "COMligandConstraint",
-        "pele_license": "pele_license",
-        "schrodinger": "schrodinger",
-        "no_check": "no_check",
-        "frag_core": "frag_core",
-        "frag_input": "frag_input",
-        "frag_ligands": "frag_ligands",
-        "growing_steps": "growing_steps",
-        "frag_steps": "steps_in_gs",
-        "frag_eq_steps": "sampling_steps",
-        "protocol": "protocol",
-        "frag_ai": "frag_ai",
-        "frag_ai_iterations": "frag_ai_iterations",
-        "frag_run": "frag_run",
-        "frag_restart": "frag_restart",
-        "frag_output_folder": "frag_output_folder", 
-        "chain_core": "chain_core",
-        "n_components": "n_components",
-        "frag_criteria": "frag_criteria",
-        "frag_cluster_folder": "frag_cluster_folder",
-        "ppi": "ppi",
-        "center_of_interface": "center_of_interface", 
-        "protein": "protein", 
-        "ligand_pdb": "ligand_pdb",
-        "allosteric": "allosteric",
-        "skip_refinement": "skip_refinement",
-        "rna": "rna"}
-
-        for key in data.keys():
-            if key not in valid_flags.values():
+    def _check(self) -> None:
+        #Check if valids in yaml file are valids
+        for key in self.data.keys():
+            if key not in self.valid_flags.values():
                 raise KeyError("Input file contains an invalid keyword: {}".format(key))
         
-        return valid_flags     
     
-    def parse(self):
-        valid_flags = self.checker()
-        data = self.parse_yaml()
+    def _parse(self) -> None:
+        #Parse fields in yaml file and set defaults
+        valid_flags = self.valid_flags
+        data = self.data
         self.system = data.get(valid_flags["system"], "")
         self.system = os.path.abspath(self.system) if self.system else ""
         self.residue = data.get(valid_flags["residue"], None)
@@ -206,6 +53,7 @@ class YamlParser(object):
         self.sidechain_resolution = data.get(valid_flags["sidechain_resolution"], None)
         self.steric_trials = data.get(valid_flags["steric_trials"], None)
         self.overlap_factor = data.get(valid_flags["overlap_factor"], None)
+        self.steering = data.get(valid_flags["steering"], None)
         self.solvent = data.get(valid_flags["solvent"], None)
         self.usesrun = data.get(valid_flags["usesrun"], None)
         self.spawning = data.get(valid_flags["spawning"], None)
@@ -224,6 +72,7 @@ class YamlParser(object):
         self.traj_name = data.get(valid_flags["traj_name"], None)
         self.adaptive = data.get(valid_flags["adaptive"], None)
         self.epsilon = data.get(valid_flags["epsilon"], None)
+        self.out_in = data.get(valid_flags["out_in"], None)
         self.bias_column = data.get(valid_flags["bias_column"], None)
         self.gridres = data.get(valid_flags["gridres"], 10)
         self.core = data.get(valid_flags["core"], -1)
@@ -275,7 +124,6 @@ class YamlParser(object):
         self.water_constr = data.get(valid_flags["water_constr"], None)
         self.water_trials = data.get(valid_flags["water_trials"], None)
         self.water_radius = data.get(valid_flags["water_radius"], None)
-        self.bias = data.get(valid_flags["bias"], None)
         self.induced_fit_exhaustive = data.get(valid_flags["induced_fit_exhaustive"], None)
         self.induced_fit_fast = data.get(valid_flags["induced_fit_fast"], None)
         self.frag = data.get(valid_flags["frag"], None)
@@ -313,7 +161,7 @@ class YamlParser(object):
         self.constrain_smiles = data.get(valid_flags["constrain_smiles"], None)
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.spawning_condition = data.get(valid_flags["spawning_condition"], None)
-        self.external_constraints = data.get(valid_flags["external_constraints"], None)
+        self.external_constraints = data.get(valid_flags["external_constraints"], [])
         self.only_analysis = data.get(valid_flags["only_analysis"], False)
         self.overwrite = data.get(valid_flags["overwrite"], True)
         self.analysis_nclust = data.get(valid_flags["analysis_nclust"], 10)
@@ -324,7 +172,10 @@ class YamlParser(object):
         self.pele_license = data.get(valid_flags["pele_license"], None)
         self.schrodinger = data.get(valid_flags["schrodinger"], None)
         self.no_check = data.get(valid_flags["no_check"], False)
-
+        # Metal constraints
+        self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
+        self.constrain_all_metals = data.get(valid_flags["constrain_all_metals"], False)
+        self.no_metal_constraints = data.get(valid_flags["no_metal_constraints"], False)
         #Frag
         self.frag_run = data.get(valid_flags["frag_run"], True)
         self.frag_core = data.get(valid_flags["frag_core"], False)
@@ -353,9 +204,16 @@ class YamlParser(object):
 
         #Allosteric
         self.allosteric = data.get(valid_flags["allosteric"], None)
+        self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
 
         #RNA
         self.rna = data.get(valid_flags["rna"], None)
+
+
+        #GPCR
+        self.gpcr_orth = data.get(valid_flags["gpcr_orth"], None)
+        self.orthosteric_site = data.get(valid_flags["orthosteric_site"], None)
+        self.initial_site = data.get(valid_flags["initial_site"], None)
 
         if self.test:
             print("##############################")

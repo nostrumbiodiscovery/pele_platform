@@ -35,11 +35,12 @@ def test_best_structs(simulation_path=simulation_path, report_name=REPORT_NAME, 
     assert len(files) == 1
 
 def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
-    main.run_platform(ext_args)
+    job = main.run_platform(ext_args)
     assert os.path.exists("data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_distance0_plot.png")
     assert os.path.exists("data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_sasaLig_plot.png")
     assert os.path.exists("data/results/Plots/distance0_currentEnergy_plot.png")
     assert os.path.exists("data/results/Plots/sasaLig_currentEnergy_plot.png")
+    assert job.analysis_nclust == 1
     assert len(glob.glob("data/results/Plots/*.png")) == 4
 
 def test_analysis_flag(ext_args=ANALYSIS_FLAGS):

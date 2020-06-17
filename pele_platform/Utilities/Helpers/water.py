@@ -114,6 +114,7 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
 
         # PDB lines - water
         water_output = []
+
         for atom, num, resnum, coord in zip(water, water_atomnums, water_resnums, water_coords):
             coord = ["{:7.4f}".format(c) for c in coord]
             coord = " ".join(coord)
@@ -122,7 +123,7 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
         sliced_water_output = []
         for i in range(0, len(water_output), n_waters * 3):
             sliced_water_output.append(water_output[i:i + n_waters * 3])
-        
+
         # loop over minimisation inputs
         for inp, w in zip(refinement_input, sliced_water_output):
             new_protein_file = inp

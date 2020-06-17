@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Pele Platform &mdash; pele platform 1.4.2 documentation</title>
+  <title>Pele Platform &mdash; pele platform 1.4.4 documentation</title>
   
 
   
@@ -87,16 +87,13 @@
 <li class="toctree-l1"><a class="reference internal" href="installation/index.html">Installation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="cheatsheet/index.html">Prepare your own simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="packages/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modes/index.html">Platform Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Input flags documentation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Input Flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="developers/index.html">Add your own new simulation mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developers/index.html">Developers: Add your own mode</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Versions</a></li>
@@ -166,142 +163,42 @@
             
   <div class="section" id="pele-platform">
 <h1>Pele Platform<a class="headerlink" href="#pele-platform" title="Permalink to this headline">¶</a></h1>
-<p>Pele platform is a python module to automatically
-launch PELE, Adaptive-PELE, Frag-PELE (beta-testing) and PPI-PELE (beta-testing).
-It is built as a python layer on top of all PELE functionalities that can be used as
-a backend for a potential future GUI.</p>
+<p>Pele platform is a suit of packages that enables users to find novel
+solutions to drug discovery problems in matter of hours.</p>
+<p>PELE packages:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="packages/docking/index.html">Docking Refinement</a> (1-2h)</p></li>
+<li><p><a class="reference external" href="packages/pocket_exploration/index.html">Pocket Exploration</a> (24h)</p></li>
+<li><p><a class="reference external" href="packages/ppi/index.html">Protein-Protein Inhibitors</a> (10h)</p></li>
+<li><p><a class="reference external" href="packages/frag/index.html">HT-Fragment Growing</a> (30min/fragment)</p></li>
+<li><p><a class="reference external" href="packages/gpcr/index.html">GPCR orthosteric site exploration</a> (2h)</p></li>
+<li><p><a class="reference external" href="packages/binding/index.html">Binding Events</a> (6h)</p></li>
+<li><p><a class="reference external" href="packages/bias/index.html">Biased Simulation</a> (3h)</p></li>
+</ul>
+</div></blockquote>
 <p>Github : <a class="reference external" href="https://github.com/NostrumBioDiscovery/pele_platform">https://github.com/NostrumBioDiscovery/pele_platform</a></p>
+</div>
+<div class="section" id="structure">
+<h1>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h1>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/package_structure.png"><img alt="_images/package_structure.png" src="_images/package_structure.png" style="width: 560.0px; height: 655.0px;" /></a>
+</div>
 </div>
 <div class="section" id="requirements">
 <h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p>Academic Schordinger (any version)</p></li>
 </ul>
-</div>
-<div class="section" id="documentation">
-<h1>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation/index.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation/index.html#conda-recommended">Conda (recommended)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation/index.html#pypi">Pypi</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation/index.html#last-stable-release-from-source-code">Last stable release from source code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation/index.html#test-it-works">Test it works</a></li>
-</ul>
-</li>
-</ul>
 </div>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="cheatsheet/index.html">Prepare your own simulation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cheatsheet/pele/index.html">Prepare your own PELE simulation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cheatsheet/pele/index.html#complex-preparation">1. Complex Preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cheatsheet/pele/index.html#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#induced-fit-fast-3-4-h">Induced fit fast (3-4 h)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#induced-fit-exhaustive-12h">Induced fit exhaustive (12h)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#pose-minimization-30min">Pose minimization (30min)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#pocket-exploration-24h">Pocket Exploration (24h)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#water-ligand-exploration-4h">Water+ligand exploration (4h)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#out-in-local-exploration-12h">Out_in local exploration (12h)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#biased-exploration-6h">Biased exploration (6h)</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/pele/index.html#receptor-sampling-simulation-10-min">Receptor sampling simulation (10 min)</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cheatsheet/pele/index.html#run-simulation">3. Run simulation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cheatsheet/frag/index.html">Prepare your own FragPELE simulation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cheatsheet/frag/index.html#complex-preparation">1. Complex Preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cheatsheet/frag/index.html#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/frag/index.html#from-sdf">From sdf</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cheatsheet/frag/index.html#from-serie-file">From serie file</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="cheatsheet/frag/index.html#run-simulation">3. Run simulation</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 </div>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="modes/index.html">Platform Modes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="modes/adaptive/index.html">PELE Modes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#induced-fit-fast">Induced fit_fast</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#induced-fit-exhaustive">Induced fit_exhaustive</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#pocket-exploration">Pocket Exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#rescoring">Rescoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#local-exploration">Local Exploration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#biased">Biased</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/adaptive/index.html#exit-path">Exit path</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="modes/frag/index.html">FragPELE Modes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="modes/frag/index.html#ht-mode">HT Mode</a></li>
-<li class="toctree-l3"><a class="reference internal" href="modes/frag/index.html#lt-mode">LT Mode</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 </div>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="documentation/index.html">Input Flags</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="documentation/index.html#compulsory-flags-pele">Compulsory flags PELE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="documentation/index.html#compulsory-flags-fragpele">Compulsory flags FragPele</a></li>
-<li class="toctree-l2"><a class="reference internal" href="documentation/index.html#optative-flags">Optative flags</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#general-settings">General settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#receptor-preparation">Receptor preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#ligand-preparation">Ligand preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#box-parameters">Box parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#simulation-params">Simulation params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#pele-params">PELE params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#fragpele-params">FragPELE params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#ppi-params">PPI params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#constraints">Constraints</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#waterperturbation">WaterPerturbation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#simulation-parameters">Simulation Parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#metrics">Metrics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#analysis">Analysis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="documentation/index.html#output">Output</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
 </div>
 <div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="developers/index.html">Add your own new simulation mode</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="developers/index.html#generate-your-own-mode">1) Generate your own mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developers/index.html#include-your-mode-into-the-pipeline">2) Include your mode into the pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developers/index.html#create-your-mode-s-input-option">3) Create your mode’s input option</a></li>
-<li class="toctree-l2"><a class="reference internal" href="developers/index.html#run-your-mode">4) Run your mode</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="changelog/index.html">Versions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-4-2-23-04-2020">v1.4.2 (23/04/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-4-1-23-04-2020">v1.4.1 (23/04/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-4-0-30-03-2020">v1.4.0 (30/03/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-4-10-03-2020">v1.3.4 (10/03/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-3-01-03-2020">v1.3.3 (01/03/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-2-30-03-2020">v1.3.2 (30/03/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-1-29-03-2020">v1.3.1 (29/03/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-3-0-21-02-2020">v1.3.0 (21/02/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-3-04-02-2020">v1.2.3 (04/02/2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-2-23-12-2019">v1.2.2 (23/12/2019)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-1-05-12-2019">v1.2.1 (05/12/2019)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-2-0-24-11-2019">v1.2.0 (24/11/2019)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="changelog/index.html#v1-1-0-19-10-2019">v1.1.0 (19/10/2019)</a></li>
-</ul>
-</li>
-</ul>
 </div>
 </div>
 
@@ -323,7 +220,7 @@ a backend for a potential future GUI.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Daniel Soler Viladrich
+        &copy; Copyright 2020, Daniel Soler Viladrich
 
     </p>
   </div>

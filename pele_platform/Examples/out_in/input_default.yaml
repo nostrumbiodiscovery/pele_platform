@@ -1,0 +1,8 @@
+system: '../pele_platform/Examples/bias/complex.pdb'
+chain: 'L'
+resname: 'LIG'
+restart: false
+seed: 12345
+out_in: true
+cpus: 100
+debug: true

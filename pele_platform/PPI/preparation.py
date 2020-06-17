@@ -43,4 +43,3 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
             file.write(line)
  
     return new_protein_file
-
