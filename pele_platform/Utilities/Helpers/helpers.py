@@ -138,14 +138,6 @@ def retrieve_atom_info(atom, pdb):
         sys.exit(f"Check the atoms {atom} given to calculate the distance metric.")
 
 
-def find_coords(pdb, resnum, chain, atom="OW"):
-    with open(pdb, "r") as f:
-        for line in f:
-            if line:
-                if line.startswith("HETATM") and line[22:26].strip() == resnum and line[21:22] == chain:
-                    return [float(coord) for coord in line[30:54].split()]
-
-
 def find_centroid(points):
     x = [cx for cx, cy, cz in points]
     y = [cy for cx, cy, cz in points]

@@ -52,11 +52,15 @@ def test_prepare_structure():
     with open(new_protein_file, "r") as file:
         lines = file.readlines()
         chains = []
+        no_water = True
         for line in lines:
+            if "HOH" in line:
+                no_water = False
             if line.startswith("HETATM") or line.startswith("ATOM"):
                 chains.append(line[21:22].strip())
     
     assert "C" not in chains
+    assert no_water
     
     for f in glob.glob("*_prep.pdb"):
         os.remove(f)
