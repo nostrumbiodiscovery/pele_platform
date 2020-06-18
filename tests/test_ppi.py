@@ -11,6 +11,7 @@ import os
 test_path = os.path.join(cs.DIR, "Examples")
 
 
+
 yaml = os.path.join(test_path, "PPI/input_skipref.yaml")
 def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
 

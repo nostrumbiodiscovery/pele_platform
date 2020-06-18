@@ -11,10 +11,10 @@ def test_allosteric_skipref(yaml=yaml):
 
     job, job2 = main.run_platform(yaml)
     refinement_simulation = os.path.join(os.path.dirname(job.pele_dir), "2_refinement_simulation")
-
     # checkpoints
     assert not os.path.exists(refinement_simulation)
     assert not job2
+
 
 
 yaml = os.path.join(test_path, "Allosteric/input_global.yaml")

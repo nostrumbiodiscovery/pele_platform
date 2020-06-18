@@ -59,6 +59,15 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
         parsed_yaml.ppi = None
         parsed_yaml.poses = None
         parsed_yaml.rescoring = True
+        del parsed_yaml.water_arg
+        # Set waters ony if specified by user
+        if n_waters != 0:
+            parsed_yaml.waters = "all_waters"
+            parsed_yaml.n_waters = n_waters
+        else:
+            parsed_yaml.waters = None
+            parsed_yaml.n_waters = n_waters
+        parsed_yaml.adaptive_restart = False
         if not parsed_yaml.test:
             parsed_yaml.iterations = 1
             parsed_yaml.steps = 100

@@ -35,12 +35,14 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     
     # get center of interface (if PPI)
     if user_center:
-        _, res_number, atom_name = user_center.split(":")
-        for residue in structure.get_residues():
-            if residue.id[1] == int(res_number):
-                for atom in residue.get_atoms():
-                    if atom.name == atom_name: 
-                        COI = np.array(list(atom.get_vector())) 
+        chain_id, res_number, atom_name = user_center.split(":")
+        for chain in structure.get_chains():
+            if chain.id == chain_id:
+                for residue in chain.get_residues():
+                    if residue.id[1] == int(res_number):
+                        for atom in residue.get_atoms():
+                            if atom.name == atom_name: 
+                                COI = np.array(list(atom.get_vector())) 
   
     # calculate protein and ligand COM
     com_protein = calculate_com(structure)
