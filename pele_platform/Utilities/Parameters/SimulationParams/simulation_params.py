@@ -172,7 +172,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
 
        
-        self.allow_empty_selectors = True if args.n_waters or args.waters else "false"
+        self.allow_empty_selectors = '"allowEmptyWaterSelectors": true,' if args.water_empty_selector else ""
         self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters  # IDs of waters
         self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", None)
         self.waters = args.waters if args.waters else self.simulation_params.get("waters", [])

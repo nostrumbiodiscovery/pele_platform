@@ -1,4 +1,5 @@
 import os
+from subprocess import Popen, PIPE
 import glob
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
@@ -14,6 +15,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
 PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
+ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
 
 
 EXT_CONSTR = [
@@ -117,6 +119,22 @@ def test_lig_preparation_error(args=LIG_PREP_ARGS):
     try:
         job = main.run_platform(args)
     except ce.LigandPreparationError:
+        assert True
+        return
+    assert False
+
+def test_env_variable(ext_args=ENV_ARGS):
+    try:
+        job = main.run_platform(ext_args)
+    except ce.EnvVariableNotFound as e:
+        assert True
+        return
+    assert False
+
+def test_python_version_error(args=ENV_ARGS):
+    p = Popen("/usr/bin/python -m pele_platform.main -h".split(), stdout=PIPE, stderr=PIPE)
+    output, error = p.communicate()
+    if "OldPythonVersion" in error.decode():
         assert True
         return
     assert False

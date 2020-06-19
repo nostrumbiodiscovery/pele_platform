@@ -22,3 +22,6 @@ class LigandPreparationError(Exception):
 
 class NoGeometryAroundMetal(Exception):
     pass
+
+class EnvVariableNotFound(Exception):
+    pass

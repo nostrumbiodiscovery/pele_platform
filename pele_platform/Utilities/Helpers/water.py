@@ -16,7 +16,6 @@ def set_water_control_file(env):
         all_waters = ""
         water_string = []
 
-        env.allow_empty_selectors = "true" if env.n_waters else "false"
         env.water_radius = env.water_radius if env.water_radius else 6
         water_inputs = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
         water_inputs = [os.path.join(env.pele_dir, elem) for elem in water_inputs]

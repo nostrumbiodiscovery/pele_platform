@@ -90,8 +90,6 @@ def retrieve_software_settings(args, pele_dir):
             type_simulation = "rescoring"
         elif args.out_in:
             type_simulation = "out_in"
-        elif args.adaptive and args.pele:
-            type_simulation = "adaptive"
         elif args.gpcr_orth:
             type_simulation = "gpcr_orth"
         else:

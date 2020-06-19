@@ -95,7 +95,7 @@ WATER = '''
              "watersToPerturb": {{ "links": {{ "ids": [ {} ] }} }},
              "parameters":
              {{
-                 "allowEmptyWaterSelectors": {},
+                 {}
                  "temperature": {},
                  "numberOfStericTrials": {},
                  "overlapFactor": {},

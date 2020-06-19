@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import os
+import pele_platform.Errors.custom_errors as ce
 
 @dataclass
 class EnvVariable():
@@ -18,7 +19,7 @@ class EnvVariable():
         elif self.default:
            if os.path.exists(self.default):
                return True
-        raise ValueError("{} not found. \n\
+        raise ce.EnvVariableNotFound("{} not found. \n\
 1) If you have the standard installation export the environment variable by doing:\n\
 \t{}.\n\
 2) If the previous does not work define the location of {} with the next flag in the input.yaml:\n\
