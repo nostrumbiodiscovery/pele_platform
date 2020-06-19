@@ -1,11 +1,23 @@
 import os
 import argparse
-import pele_platform.Utilities.Helpers.helpers as hp
 import schrodinger.structure as st
+
+
+class cd:
+    """Context manager for changing the current working directory"""
+    def __init__(self, newPath):
+        self.newPath = os.path.expanduser(newPath)
+
+    def __enter__(self):
+        self.savedPath = os.getcwd()
+        os.chdir(self.newPath)
+
+    def __exit__(self, etype, value, traceback):
+        os.chdir(self.savedPath)
 
 def pdb_to_mae(fname, schr_path, mae_output_file=None, remove=False):
     directory = os.path.dirname(fname)
-    with hp.cd(directory):
+    with cd(directory):
         file_info = fname.split("_")
         properties = {"BindingEnergy": float(file_info[-1].replace("BindingEnergy", "").replace(".pdb", "")),
            "trajectory": int(file_info[-2].split(".")[0]), 
