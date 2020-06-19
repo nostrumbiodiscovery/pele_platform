@@ -111,7 +111,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#waterperturbation">WaterPerturbation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#simulation-parameters">Simulation Parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
@@ -485,28 +484,8 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 </div>
 <div class="section" id="waterperturbation">
 <h3>WaterPerturbation<a class="headerlink" href="#waterperturbation" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>water_exp</strong>: Exploration of the hydratation sites of a binding site by perturbing and clusterizing a single water. More advance features will be later implemented to discriminate between “happy” and “unhappy” waters.</p></li>
-<li><p><strong>water_lig</strong>: Perturb one or several water molecules while exploring the conformational space of the ligand.</p></li>
-</ul>
-</div></blockquote>
-<p>Example water exploration:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">water_exp</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:1</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:2</span>
-</pre></div>
-</div>
-<p>Example water ligand:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">water_lig</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:1</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:2</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="simulation-parameters">
-<h3>Simulation Parameters<a class="headerlink" href="#simulation-parameters" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p><strong>n_waters</strong>: Number of waters to randomly add into your simulation. Compulsory when running MonteCarlo with water perturbation. Default=0</p></li>
 <li><p><strong>box_water</strong>: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.</p></li>
 <li><p><strong>water_radius</strong>: Radius of the water box. Default=7</p></li>
 <li><p><strong>water_trials</strong>: Numerical trials on water perturbation. Default=10000</p></li>
@@ -514,7 +493,8 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 <li><p><strong>water_temp</strong>: Temperature of the water perturbation step. Default=5000</p></li>
 <li><p><strong>water_overlap</strong>: Overlap factor of water. Default=0.78</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">box_water</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">n_water</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span> <span class="c1">#Compulsory</span>
+<span class="nt">box_water</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
