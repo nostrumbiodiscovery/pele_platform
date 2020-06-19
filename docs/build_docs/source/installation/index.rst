@@ -6,7 +6,7 @@ Conda (recommended)
 
 .. code-block:: bash
 
-    conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform==1.4.5
+    conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform==1.5.0
     
     export PELE=/path/to/PELE-1.X/
 
@@ -24,7 +24,7 @@ Pypi
 
     pip install numpy cython
 
-    pip install pele_platform==1.4.5
+    pip install pele_platform==1.5.0
 
     export PELE=/path/to/PELE-1.X/
 
