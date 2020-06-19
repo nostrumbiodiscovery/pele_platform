@@ -65,4 +65,5 @@ Test it works
 
     cd pele_platform/tests
 
-    pytest test_*
+    python -m pele_platform.main ../Examples/induced/input_fast.yaml
+
