@@ -13,7 +13,10 @@ class FragFromCoreParameters():
         self.core = args.frag_core
         self.core_process = os.path.basename(ppp.main(self.core, ".", output_pdb=["" , ],
             charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0])
-        self.core_format = args.frag_core.rsplit(".")[-1]
+
+    @property
+    def core_format(self):
+        return self.core.rsplit(".")[-1]
 
 #If using input + sdf ligands
 class FragFromSDFParameters():

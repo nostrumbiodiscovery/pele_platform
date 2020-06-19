@@ -2,22 +2,24 @@ import random
 import os
 import glob
 import pele_platform.constants.constants as cs
+import pele_platform.constants.pele_params as pp
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
-from pele_platform.Utilities.Parameters.SimulationParams.WaterExp import waterexp_params
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
+from pele_platform.Utilities.Parameters.SimulationParams.Allosteric import allosteric
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
-from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
+#from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
+import pele_platform.Utilities.Helpers.water as wt
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams,  waterexp_params.WaterExp, pca.PCAParams, ppi.PPIParams, rna.RNAParams):
+    inout_params.InOutParams, pca.PCAParams, allosteric.AllostericParams, ppi.PPIParams): # rna.RNAParams
 
 
     def __init__(self, args):
@@ -39,19 +41,19 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         glide_params.GlideParams.__init__(self, args)
         bias_params.BiasParams.__init__(self, args)
         inout_params.InOutParams.__init__(self, args)
-        waterexp_params.WaterExp.__init__(self, args)
         pca.PCAParams.__init__(self, args)
+        allosteric.AllostericParams.__init__(self, args)
         ppi.PPIParams.__init__(self, args)
-        rna.RNAParams.__init__(self, args)
+        #rna.RNAParams.__init__(self, args)
 
 
     def simulation_type(self, args):
-        self.adaptive = True if args.pele_feature in ["PPI", "adaptive"]  else None
-        self.frag_pele = True if args.pele_feature == "frag" else None
+        self.adaptive = True if args.package in ["allosteric", "adaptive", "PPI"]  else None
+        self.frag_pele = True if args.package == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
-        self.complexes = "$PDB" if self.software == "Frag" else "$COMPLEXES"
-        self.frag_pele_steps = "$STEPS" if self.software == "Frag" else "$PELE_STEPS"
-        self.output_path = "$RESULTS_PATH" if self.software == "Frag" else "$OUTPUT_PATH"
+        self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
+        self.frag_pele_steps = "$STEPS" if self.frag_pele else "$PELE_STEPS"
+        self.output_path = "$RESULTS_PATH" if self.frag_pele else "$OUTPUT_PATH"
 
     def main_pele_params(self,args):
         if "*" in args.system:
@@ -77,6 +79,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", 250)
         self.ca_constr = args.ca_constr if args.ca_constr is not None else self.simulation_params.get("ca_constr", 0.5)
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", 0.65)
+        self.steering= args.steering if args.steering else self.simulation_params.get("steering", 0)
         self.perturbation = "" if args.perturbation is False else self.simulation_params.get("perturbation", cs.PERTURBATION)
         self.perturbation_params(args)
         self.com = args.com if args.com else self.simulation_params.get("COMligandConstraint", 0)
@@ -141,7 +144,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
         self.nonstandard = args.nonstandard if args.nonstandard else self.simulation_params.get("nonstandard", [])
         self.constraints = None
-        self.external_constraints = hp.retrieve_constraints_for_pele(args.external_constraints, self.system) if args.external_constraints else None
+        self.external_constraints = hp.retrieve_constraints_for_pele(args.external_constraints, self.system) if args.external_constraints else []
+        self.permissive_metal_constr = args.permissive_metal_constr if args.permissive_metal_constr else []
         self.constrain_smiles = args.constrain_smiles if args.constrain_smiles else self.simulation_params.get("constrain_smiles", None)
         self.no_ppp = args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
 
@@ -153,40 +157,29 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.external_template = args.template if args.template else self.simulation_params.get("template", [])
         self.external_rotamers = args.rotamers if args.rotamers else self.simulation_params.get("rotamers", [])
         self.skip_ligand_prep = args.skip_ligand_prep if args.skip_ligand_prep else self.simulation_params.get("args.skip_ligand_prep", [])
+        self.core = args.core
+        self.n = args.n
+        self.mtor = args.mtor
+        self.forcefield = args.forcefield
+        self.mae_lig = args.mae_lig
+        self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
+        self.gridres = args.gridres
 
     def water_params(self, args):
         self.water_temp = args.water_temp if args.water_temp else self.simulation_params.get("water_temp", 5000)
         self.water_overlap = args.water_overlap if args.water_overlap else self.simulation_params.get("water_overlap", 0.78)
         self.water_constr = args.water_constr if args.water_constr else self.simulation_params.get("water_constr", 0)
         self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
-        if args.water_lig or args.water_exp:
-            water_arg = args.water_lig if args.water_lig else args.water_exp
-            if "all_waters" in [args.water_lig, args.water_exp]:
-                water_arg = hp.retrieve_all_waters(self.system)
-            self.water_energy = "\n".join([ cs.WATER_ENERGY.format(water.split(":")[0]) for water in water_arg ])
-            self.water_energy = None
-            self.water = ",".join(['"'+water+'"' for water in water_arg])
-            self.water_radius = 6
-            # If there is no given center look for it
-            if args.water_center:
-                self.water_center =  ("[" + ",".join([str(coord) for coord in args.water_center]) + "]")
-            else:
-                cms = [ hp.find_coords(self.system, water.split(":")[1], water.split(":")[0]) for water in water_arg]
-                try:
-                    cm = [coord for coord in hp.find_centroid(cms)]
-                except TypeError:
-                    raise TypeError("Check the specified waters exist")
-                self.water_center = cm
-                self.water_radius = 6 if  self.water else None
-            self.waters = ",".join([ '"' + water + '"' for water in water_arg] )
-            self.water = cs.WATER.format(self.water_radius, self.water_center, self.waters, self.water_temp, 
-            self.water_trials, self.water_overlap, self.water_constr)
-        else:
-            self.water_energy = None
-            self.water = None
-            self.water_radius = None
-            self.water_center = None
-            self.water = ""
+
+       
+        self.allow_empty_selectors = '"allowEmptyWaterSelectors": true,' if args.water_empty_selector else ""
+        self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters  # IDs of waters
+        self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", None)
+        self.waters = args.waters if args.waters else self.simulation_params.get("waters", [])
+        self.water_radius = args.water_radius if args.water_radius else 6
+        self.water_center = None
+        self.water = ""
+        self.water_energy = None
 
 
     def box_params(self, args):

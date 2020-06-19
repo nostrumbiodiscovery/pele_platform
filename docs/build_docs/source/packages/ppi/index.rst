@@ -29,7 +29,7 @@ and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligan
 
 Prepare the input file ``input.yml``:
 
-..  code-block:: yaml
+.. code-block:: yaml
 
    system: '3d9u_prep.pdb' #protein-protein pdb
    protein: 'A' #Chain of the protein to keep

@@ -1,0 +1,6 @@
+system: '../pele_platform/Examples/preparation/complex.pdb'
+chain: 'L'
+resname: 'LIG'
+seed: 12345
+induced_fit_fast: true
+test: true

@@ -2,6 +2,7 @@ system: '../pele_platform/Examples/water/water_processed.pdb'
 chain: 'J'
 resname: 'SB4'
 log: true
+steering: 3
 cpus: 3
 seed: 3000
 iterations: 1
@@ -27,7 +28,7 @@ water_freq: 3
 temperature: 3000
 solvent: "OBC"
 sidechain_res: 30
-overlap_factor: 0.3
+overlap_factor: 3
 steric_trials: 300
 spawning: "epsilon"
 density: "exitContinuous"
@@ -58,7 +59,7 @@ pele_documents: "done"
 verbose: true
 water_freq: 3
 water_overlap: 3
-water_lig:
+waters:
 - M:1
 pca: "modes.nmd"
 anm_direction: "steered"

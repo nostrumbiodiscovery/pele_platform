@@ -25,12 +25,17 @@ def retrieve_software_settings(args, pele_dir):
                   "files" : [os.path.join(cs.DIR, "Templates/template_adaptive.conf"), 
                              os.path.join(cs.DIR, "Templates/pele_template.conf") ],
                  "simulation_params" : {
-                             "adaptive": {"spawning_type": "epsilon", "bias_column": 5, "epsilon":0.15, "density": "continuous",
-                                      "simulation_type": "pele", "iterations": 100, "pele_steps": 4, 
-                                      "cluster_values": "[2.5, 5, 7]", "cluster_conditions": "[1, 0.6, 0.0]",
-                                      "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.BIAS,
-                                      "box_radius": 10},
-                             "full": {"spawning_type": "inverselyProportional", "bias_column": 5, "epsilon":0.25, "density": "continuous",
+                             "out_in": {"spawning_type": "inverselyProportional", "density": "continuous",
+                                      "simulation_type": "pele", "iterations": 100, "pele_steps": 8, 
+                                      "cluster_values": "[2, 5, 7]", "cluster_conditions": "[1, 0.6, 0.0]",
+                                      "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.OUT_IN,
+                                      "box_radius": 30},
+                             "gpcr_orth": {"spawning_type": "epsilon", "density": "null",
+                                      "simulation_type": "pele", "iterations": 50, "pele_steps": 8, 
+                                      "cluster_values": "[1.75, 2.5, 4]", "cluster_conditions": "[0.7, 0.4, 0.0]",
+                                      "steric_trials": 100, "overlap_factor": 0.65, "epsilon": 0.25,
+                                      "bias_column": 6, "params": pcs.GPCR_ORTH, "box_radius": 15, "ca_constr": 5},
+                             "global": {"spawning_type": "inverselyProportional", "bias_column": 5, "epsilon":0.25, "density": "continuous",
                                       "simulation_type": "pele", "iterations": 100, "pele_steps": 4, 
                                       "cluster_values": "[2.5, 5, 7]", "cluster_conditions": "[1, 0.6, 0.0]",
                                       "steric_trials": 200, "overlap_factor": 0.65, "params": pcs.GLOBAL,
@@ -55,28 +60,16 @@ def retrieve_software_settings(args, pele_dir):
                                       "cluster_values": "[1, 2.5]", "cluster_conditions": "[1.1]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.IN_OUT,
                                       "box_radius": 10, "spawning_condition": "max"},
-                             "water_exp": {"spawning_type": "independent",
-                                      "iterations": 50, "pele_steps": 12},
-                             "water_lig": {"spawning_type": "inverselyProportional",
-                                      "iterations": 50, "pele_steps": 12, 
-                                      "cluster_values": "[1.75, 2.5, 3.5, 5]", "cluster_conditions": "[1.6, 1.2, 1, 0.0]",
-                                      "steric_trials": 100, "overlap_factor": 0.5, "params": pcs.WATER_LIG,
-                                      "box_radius": 10},
                              "rescoring" : {"spawning_type": "independent", "bias_column": 5, "epsilon":0.25, "density": "null",
                                       "simulation_type": "pele", "iterations": 20, "pele_steps": 12,
                                       "cluster_values": "[1.75, 2.5, 4, 6]", "cluster_conditions": "[1, 0.6, 0.4, 0.0]",
                                       "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.RESCORING,
                                       "box_radius": 6, "anm_freq": 6, "sidechain_freq": 3, "min_freq": 1, "temperature": 1000,
                                       "anm_displacement": 0.5, "anm_modes_change": 3},
-                             "bias": {"spawning_type": "epsilon", "bias_column": 5, "epsilon":0.25, "density": "null",
-                                      "simulation_type": "pele", "iterations": 50, "pele_steps": 8, 
-                                      "cluster_values": "[1.5, 2, 5]", "cluster_conditions": "[0.6, 0.4, 0.0]",
-                                      "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.BIAS,
-                                      "box_radius": 30},
                              "anm": {"spawning_type": "independent", "bias_column": 5, "epsilon":0.15, "density": "null",
                                       "simulation_type": "pele", "iterations": 50, "pele_steps": 8, 
                                       "cluster_values": "[1.5, 2, 5]", "cluster_conditions": "[0.6, 0.4, 0.0]",
-                                      "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.BIAS,
+                                      "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.OUT_IN,
                                       "box_radius": 30}
                     }
 
@@ -84,7 +77,7 @@ def retrieve_software_settings(args, pele_dir):
         
         software_setings = SOFTWARE_CONSTANTS
         if args.full:
-            type_simulation = "full"
+            type_simulation = "global"
         elif args.in_out:
             type_simulation = "in_out"
         elif args.in_out_soft:
@@ -95,17 +88,13 @@ def retrieve_software_settings(args, pele_dir):
             type_simulation = "induced_fit_fast"
         elif args.rescoring:
             type_simulation = "rescoring"
-        elif args.water_exp:
-            type_simulation = "water_exp"
-        elif args.water_lig:
-            type_simulation = "water_lig"
-        elif args.bias:
-            type_simulation = "bias"
-        elif args.adaptive and args.pele:
-            type_simulation = "adaptive"
+        elif args.out_in:
+            type_simulation = "out_in"
+        elif args.gpcr_orth:
+            type_simulation = "gpcr_orth"
         else:
             #Standard file (user will change the parameters)
-            type_simulation = "bias"
+            type_simulation = "induced_fit_fast"
 
         software_setings["files"] = software_setings["files"]
         software_setings["simulation_params"] = software_setings["simulation_params"].get(type_simulation)

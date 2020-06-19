@@ -72,7 +72,6 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         for file, destination_name in zip(self.files, self.file_names):
             shutil.copy(file, os.path.join(self.pele_dir, destination_name))
 
-
     def create_logger(self):
         log_name = os.path.join(self.pele_dir, "{}.log".format(self.residue))
         self.logger = logging.getLogger(__name__)

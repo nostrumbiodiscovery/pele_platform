@@ -1,0 +1,10 @@
+system: '../pele_platform/Examples/constraints/1zop.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+induced_fit_fast: true
+no_metal_constraints: true
+atom_dist:
+- "A:221:CZ"
+- "Z:1328:H16"
+test: true

@@ -91,7 +91,18 @@ class SystemBuilder(object):
         with open(self.receptor, 'r') as pdb_file:
             receptor_text = [line for line in pdb_file if line.startswith("ATOM") or "TER" in line or (line.startswith("HETATM") and line[17:20].strip() != self.residue)]
         with open(self.receptor, 'r') as pdb_file:
-            ligand_text = [line for line in pdb_file if line[17:20].strip() == self.residue]
+            residue = None
+            ligand_text = []
+            for line in pdb_file:
+                if line[17:20].strip() == self.residue:
+                    if residue is None:
+                        residue = line[22:26]
+                        chain = line[20:22]
+                        ligand_text.append(line)
+                    else:
+                        if residue == line[22:26] and chain == line[20:22]:
+                            ligand_text.append(line)
+
         if not receptor_text  or not ligand_text:
             raise ValueError("Something went wrong when extracting the ligand. Check residue&Chain on input")
         with open(ligand, "w") as fout:

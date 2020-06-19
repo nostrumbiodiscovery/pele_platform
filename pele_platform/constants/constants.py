@@ -92,23 +92,18 @@ BOX = '''
 WATER = '''
          "WaterPerturbation":
          {{
-             "Box" :
-             {{
-                 "radius" : {},
-                 "fixedCenter": {},
-                 "type" : "sphericalBox"
-             }},
              "watersToPerturb": {{ "links": {{ "ids": [ {} ] }} }},
              "parameters":
              {{
+                 {}
                  "temperature": {},
                  "numberOfStericTrials": {},
                  "overlapFactor": {},
                  "COMConstraintConstant": {}
-             }}
+             }},
+             "waterSites": {}
          }}, 
 '''
-
 
 PCA = '''"preloadedModesIn" : "{}",'''
 
@@ -122,7 +117,7 @@ PERTURBATION = '''
                 "rotationAngles": "nonCoupled",
                 "parameters": {
                     "numberOfStericTrials": $STERIC_TRIALS,
-                    "steeringUpdateFrequency": 0,
+                    "steeringUpdateFrequency": $STEERING,
                     "overlapFactor": $OVERLAP
                 }   
                 
@@ -150,6 +145,15 @@ SASA='''
 
 LIGAND = '"ligandResname" : "$LIG_RES",'
 
+# PPI waters
+water_O = "HETATM {}  OW  HOH {} {}    {}  1.00  0.00           O\n"
+water_H1 = "HETATM {}  1HW HOH {} {}    {}  1.00  0.00           H\n"
+water_H2 = "HETATM {}  2HW HOH {} {}    {}  1.00  0.00           H\n"
+water = [water_O, water_H1, water_H2]
+
+
+# METALS
+metals = ['LI', 'BE', 'NA', 'MG', 'AL', 'K', 'CA', 'SC', 'TI', 'V', 'CR', 'MN', 'FE', 'CO', 'NI', 'CU', 'ZN', 'GA', 'RB', 'SR', 'Y', 'ZR', 'NB', 'MO', 'TC', 'RU', 'RH', 'PD', 'AG', 'CD', 'IN', 'SN', 'CS', 'BA', 'LA', 'CE', 'PR', 'ND', 'PM', 'SM', 'EU', 'GD', 'TB', 'DY', 'HO', 'ER', 'TM', 'YB', 'LU', 'HF', 'TA', 'W', 'RE', 'OS', 'IR', 'PT', 'AU', 'HG', 'TL', 'PB', 'BI', 'PO', 'FR', 'RA', 'AC', 'TH', 'PA', 'U', 'NP', 'PU', 'AM', 'CM', 'BK', 'CF', 'ES', 'FM', 'MD', 'NO', 'LR', 'RF', 'DB', 'SG', 'BH', 'HS', 'MT', 'DS', 'RG', 'CN', 'NH', 'FL', 'MC', 'LV']
 
 
 #TEMPLATE KEYWORDS

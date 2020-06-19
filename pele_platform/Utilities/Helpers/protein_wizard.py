@@ -3,6 +3,8 @@ import os
 import re
 import time
 from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
+import pele_platform.Checker.valid_flags as vf
+
 
 def prep_complex(complex, input_file="input.yaml", prep_output="", final_output="", debug=False):
 
@@ -20,7 +22,7 @@ def prep_complex(complex, input_file="input.yaml", prep_output="", final_output=
 
     # Get input.yaml
     yaml = os.path.abspath(input_file)
-    args = YamlParser(yaml).parse_yaml()
+    args = YamlParser(yaml, vf.VALID_FLAGS_PLATFORM)._parse_yaml()
     input_resname = args["resname"]
     input_chain = args["chain"]
 

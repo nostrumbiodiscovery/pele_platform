@@ -1,0 +1,11 @@
+system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
+chain: 'Z'
+resname: 'STR'
+seed: 12345
+induced_fit_fast: true
+traj: "trajectory.xtc"
+atom_dist:
+- 32
+- 33
+test: true
+n_waters: 1

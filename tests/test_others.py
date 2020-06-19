@@ -1,4 +1,5 @@
 import os
+from subprocess import Popen, PIPE
 import glob
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
@@ -8,16 +9,17 @@ import pytest
 import pele_platform.Utilities.Helpers.protein_wizard as pp
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
+import pele_platform.Checker.main as mn
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
 PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
+LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
+ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
 
 
 EXT_CONSTR = [
-    '{ "type": "constrainAtomToPosition", "springConstant": 10, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_H__" },',
     '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_H__" },',
-    '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"},',
     '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"}'
 ]
 
@@ -26,6 +28,7 @@ PPP_CONSTR = [
     '"constrainThisAtom": "A:1:_CA_" }',
     '"constrainThisAtom": "B:247:_CA_" }'
 ]
+
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
@@ -99,3 +102,39 @@ def test_checker_subsearch(ligand=PDB_CHECKER_SUBSEARCH, core=CORE_CHECKER_SUBSE
     assert atoms_in_common_after[atoms_in_common.index(13)] == 12
     assert atoms_in_common_after[atoms_in_common.index(12)] == 13
     
+
+def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
+    path_variables = os.environ["PATH"]
+    os.environ["PATH"] = ""
+    try:
+        job = main.run_platform(ext_args)
+    except ce.ExecutableNotInPath:
+        assert True
+        os.environ["PATH"] = path_variables
+        return
+    os.environ["PATH"] = path_variables
+    assert False
+    
+def test_lig_preparation_error(args=LIG_PREP_ARGS):
+    try:
+        job = main.run_platform(args)
+    except ce.LigandPreparationError:
+        assert True
+        return
+    assert False
+
+def test_env_variable(ext_args=ENV_ARGS):
+    try:
+        job = main.run_platform(ext_args)
+    except ce.EnvVariableNotFound as e:
+        assert True
+        return
+    assert False
+
+def test_python_version_error(args=ENV_ARGS):
+    p = Popen("/usr/bin/python -m pele_platform.main -h".split(), stdout=PIPE, stderr=PIPE)
+    output, error = p.communicate()
+    if "OldPythonVersion" in error.decode():
+        assert True
+        return
+    assert False

@@ -36,7 +36,7 @@ Prepare the input file ``input.yml``:
     atom_dist:
     - "A:2:CA" #First atom to make the distance to
     - "B:3:CG" #Second atom to make the distance to
-    cpus: 100
+    cpus: 200
     out_in: true
 
 For more optional flags please refer to `optative falgs <../../documentation/index.html>`_
