@@ -11,8 +11,13 @@ class FragFromCoreParameters():
 
     def __init__(self, args):
         self.core = args.frag_core
-        self.core_process = os.path.basename(ppp.main(self.core, ".", output_pdb=["" , ],
-            charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0])
+        self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
+        if not self.skip_prep:
+            self.core_process = os.path.basename(ppp.main(self.core, ".", output_pdb=["" , ],
+                charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter)[0])
+        else:
+            print("Skipping preprocess")
+            self.core_process = self.core
 
     @property
     def core_format(self):

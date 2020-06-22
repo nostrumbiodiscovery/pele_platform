@@ -9,8 +9,11 @@ import pele_platform.Errors.custom_errors as ce
 def _search_core_fragment_linker(ligand, ligand_core, result=0, check_simmetry=False):
     """ Given mol1 and mol2 return the linker atoms"""
     substructure_results = ligand.GetSubstructMatches(ligand_core)
+    
     try:
+        print("Running substucture search")
         core_atoms = substructure_results[result]
+        print("RESULT SUBSTRUCTURE", core_atoms)
     except IndexError:
         raise IndexError("Make sure core from pdb and full fragment are the same. Be carefull \
 that either core and fragment have corectly define aromatic bonds. Also, all fragments must have different molecule name")
@@ -24,7 +27,7 @@ that either core and fragment have corectly define aromatic bonds. Also, all fra
             atoms_bonded = atom.GetNeighbors()
             for neighbour in atoms_bonded:
                 if neighbour.GetIdx()  in core_atoms:
-                    return core_atoms.index(neighbour.GetIdx()), core_atoms, substructure_results
+                    return core_atoms.index(neighbour.GetIdx()), core_atoms, atom.GetIdx()
 
 
 def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0, substructure=True, simmetry=False):
@@ -35,7 +38,9 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
 
     #Retrieve atom core linking fragment
     try:
-        atom_core_idx, atoms_core, _ = _search_core_fragment_linker(ligand, ligand_core, result, simmetry)
+        atom_core_idx, atoms_core, atom_fragment = _search_core_fragment_linker(ligand, ligand_core, result, simmetry)
+        print("ATOM OF FRAGMENT ATTACH TO CORE:", atom_fragment)
+        print("ATOM OF CORE ATTACH TO FRAG:", atom_core_idx)
     except TypeError:
         raise ce.SameMolecule("Core and ligand are the exact same molecule. Check your inputs")
     atom_core = at.Atom(ligand_core, atom_core_idx)
@@ -49,35 +54,61 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
     # Delete core for full ligand with substructure 
     # and if it fails manually
     #Chem.MolToPDBFile(ligand, "int0.pdb")
+    print("MOL ATOMS", [atom.GetIdx() for atom in ligand.GetAtoms()])
     if substructure:
+        print("Remove fragment from full ligand 1")
         fragment = rd.DeleteSubstructs(ligand, ligand_core)
+        atoms = [i.GetIdx() for i in fragment.GetAtoms()]
+        print("Fragment atoms", atoms)
         new_mol = rc.EditableMol(fragment)
         for atom in reversed(fragment.GetAtoms()):
             neighbours = atom.GetNeighbors()
             if len(neighbours) == 0: new_mol.RemoveAtom(atom.GetIdx())
     else:
+        print("Remove fragment from full ligand 2")
         new_mol = rc.EditableMol(ligand)
-        for atom in atoms_core:
+        Chem.MolToPDBFile(new_mol.GetMol(), "int1.0.pdb")
+        print(atoms_core)
+        for atom in reversed(atoms_core):
+            print("AAA", atom)
             new_mol.RemoveAtom(atom)
-        #Chem.MolToPDBFile(new_mol.GetMol(), "int1.pdb")
+        print("B")
+        #Chem.MolToPDBFile(new_mol.GetMol(), "int1.1.pdb")
+        print("C")
         for atom in reversed(new_mol.GetMol().GetAtoms()): 
             neighbours = atom.GetNeighbors()
             if len(neighbours) == 0: new_mol.RemoveAtom(atom.GetIdx())
+        print("FRAGMENT ATOMS", [atom.GetIdx() for atom in new_mol.GetMol().GetAtoms()])
 
 
     #Add missing hydrogen to full ligand and create pdb differently
     #depending on the previous step
     fragment = new_mol.GetMol()
-    #Chem.MolToPDBFile(fragment, "int2.pdb")
     old_atoms = [atom.GetIdx() for atom in fragment.GetAtoms()]
+    new_atoms = [atom.GetIdx() for atom in ligand.GetAtoms() if atom.GetIdx() not in atoms_core and atom.GetAtomicNum() != 1]
+    mapping = {new_atom:old_atom for new_atom, old_atom in zip(new_atoms, old_atoms)}
+    try:
+        Chem.MolToPDBFile(fragment, "int2.pdb")
+    except Exception:
+        hydrogens_attached_to_fagment_atom = len([atom for atom in ligand.GetAtomWithIdx(atom_fragment).GetNeighbors() if atom.GetAtomicNum() == 1]) + 1
+        fragment.GetAtomWithIdx(mapping[atom_fragment]).SetNumExplicitHs(hydrogens_attached_to_fagment_atom)
     if substructure:
         fragment = Chem.AddHs(fragment, False, True)
     else:
         #res = rp.EmbedMolecule(fragment)
         fragment = Chem.AddHs(fragment, False, True)
-    return fragment, old_atoms, hydrogen_core, atom_core
+    return fragment, old_atoms, hydrogen_core, atom_core, atom_fragment, mapping
 
-def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core): 
+import random
+import string
+
+def randomString(stringLength=8):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(stringLength))
+
+
+
+def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, atom_fragment, mapping): 
     from rdkit import Chem
     import rdkit.Chem.rdmolops as rd
     import rdkit.Chem.rdchem as rc
@@ -85,14 +116,18 @@ def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core):
     try:
         added_hydrogen_idx = [atom.GetIdx() for atom in fragment.GetAtoms() if atom.GetIdx() not in old_atoms][0]
         no_hydrogens = False
+        # Get fragment atom attached to newly added hydrogen
+        atom_fragment_idx = fragment.GetAtomWithIdx(added_hydrogen_idx).GetNeighbors()[0].GetIdx()
     except IndexError:
         print("Hydrogen detection failed won't have into account steriochemistry")
         added_hydrogen_idx = 0
         no_hydrogens = True
-    # Get fragment atom attached to newly added hydrogen
-    atom_fragment_idx = fragment.GetAtomWithIdx(added_hydrogen_idx).GetNeighbors()[0].GetIdx()
+        atom_fragment_idx = mapping[atom_fragment]
+        print("Final atom fragment", atom_fragment_idx)
     # Save fragment
-    fragment_filename = fragment.GetProp("_Name")+".pdb"
+    string = randomString(8)
+    fragment_filename = fragment.GetProp("_Name")+string+".pdb"
+    print("file fragment", fragment_filename)
     Chem.MolToPDBFile(fragment, fragment_filename)
     fragment = Chem.MolFromPDBFile(fragment_filename, removeHs=False)
     added_hydrogen = at.Atom(fragment, added_hydrogen_idx)
