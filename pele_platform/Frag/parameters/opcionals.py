@@ -1,28 +1,29 @@
 import pele_platform.Utilities.Helpers.constraints as cst
 import pele_platform.constants.constants as cs
 
+
 class FragOpcionalParameters():
 
     def __init__(self, args):
-        #SIMULATION CONTROL
+        # SIMULATION CONTROL
         self.frag_run = args.frag_run
-        #CONSTRAINTS
+        # CONSTRAINTS
         self.constraints = cst.retrieve_constraints(self.core, {}, {}, self.ca_constr)
-        #CHAIN
+        # CHAIN
         self.chain_core = args.chain_core if args.chain_core else self.simulation_params.get("chain_core", "L")
-        #BOX
+        # BOX
         self.box = cs.BOX.format(self.box_radius, self.box_center) if  self.box_radius else ""
-        #LIGAND
+        # LIGAND
         self.gridres = args.gridres
         self.plop_path = "PlopRotTemp_S_2017/ligand_prep.py"
-        #OUTPUT
+        # OUTPUT
         self.criteria = args.frag_criteria if args.frag_criteria else self.simulation_params.get(
             "frag_criteria", "Binding Energy")
         self.output_folder = args.frag_output_folder if args.frag_output_folder else self.simulation_params.get(
             "frag_output_folder", "growing_steps")
         self.cluster_folder = args.frag_cluster_folder if args.frag_cluster_folder else self.simulation_params.get(
             "frag_cluster_folder", "clustering_PDBs")
-        #OTHERS
+        # OTHERS
         self.distcont = 4
         self.threshold = 0.3
         self.condition = "min"
@@ -45,6 +46,3 @@ class FragOpcionalParameters():
         self.only_prepare = False
         self.only_grow = False
         self.no_check = True
-        
-
-        

@@ -1,7 +1,8 @@
 import os
 import pele_platform.constants.constants as cs
 
-class FragSimulationParameters():
+
+class FragSimulationParameters:
 
     def __init__(self, args):
         self.gr_steps = args.growing_steps if args.growing_steps else self.simulation_params.get("growing_steps", 6)
