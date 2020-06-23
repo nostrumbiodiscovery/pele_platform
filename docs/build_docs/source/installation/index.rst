@@ -65,5 +65,13 @@ Test it works
 
     cd pele_platform/tests
 
-    python -m pele_platform.main ../Examples/induced/input_fast.yaml
+    python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml
+
+
+
+
+
+
+
+
 
