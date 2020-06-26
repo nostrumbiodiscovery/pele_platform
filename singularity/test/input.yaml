@@ -4,6 +4,5 @@ resname: 'LIG'
 box_radius: 30.0
 restart: false
 seed: 12345
-bias: true
+out_in: true
 test: true
-mae: true
