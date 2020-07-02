@@ -138,3 +138,14 @@ def test_python_version_error(args=ENV_ARGS):
         assert True
         return
     assert False
+
+def test_flag_similarity():
+    yaml = os.path.join(test_path, "checker/input.yaml")
+    try:
+        job = main.run_platform(yaml)
+    except KeyError as e:
+        assert str(e).strip("'") == 'Incorrect flag posis. Did you mean poses?'
+        return
+    assert False
+    
+
