@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
+from difflib import SequenceMatcher
 import os
 import yaml
+
 
 
 @dataclass
@@ -29,7 +31,21 @@ class YamlParser(object):
         #Check if valids in yaml file are valids
         for key in self.data.keys():
             if key not in self.valid_flags.values():
-                raise KeyError("Input file contains an invalid keyword: {}".format(key))
+                raise KeyError(self._recommend(key))
+
+    def _recommend(self, key):
+        most_similar_flag = None
+        for valid_key in self.valid_flags.values():
+            flag = Most_Similar_Flag(valid_key)
+            flag.calculate_distance(key)
+            if not most_similar_flag:
+                most_similar_flag = flag
+            else:
+                 if flag.distance > most_similar_flag.distance:
+                     most_similar_flag = flag
+        exception_raised = f"Incorrect flag {key}. Did you mean {most_similar_flag.name}?"
+        return exception_raised
+            
         
     
     def _parse(self) -> None:
@@ -230,3 +246,10 @@ class YamlParser(object):
             self.temperature = self.temp = 10000
             self.n_components = 3
 
+@dataclass
+class Most_Similar_Flag():
+
+    name: str
+
+    def calculate_distance(self, key):
+        self.distance = SequenceMatcher(None, self.name, key).ratio()
