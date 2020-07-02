@@ -7,7 +7,6 @@ import pele_platform.Frag.checker as ch
 import pele_platform.Frag.parameters.main as mn
 import pele_platform.Errors.custom_errors as ce
 import frag_pele.main as frag
-
 import faulthandler; faulthandler.enable()
 
 
@@ -68,7 +67,7 @@ class FragRunner(mn.FragParameters):
                           self.sampling_control, self.pele_data, self.pele_documents,
                           self.only_prepare, self.only_grow, self.no_check, self.debug)
             except Exception:
-                print("skipped")
+                print("Skipped - FragPELE will not run.")
 
     def _prepare_input_file(self):
         from rdkit import Chem
@@ -95,28 +94,24 @@ class FragRunner(mn.FragParameters):
             pass
         for ligand in ligands_grown:
             print("Testing molecule", ligand.GetProp("_Name"))
+            Chem.AssignAtomChiralTagsFromStructure(ligand)
             try:
-                print("Try to create_fragment_from_ligand")
                 line, fragment = self._create_fragment_from_ligand(ligand, ligand_core)
             except Exception as e:
                 try:
-                    print("Try to create_fragment_from_ligand with subtructure 2")
                     line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, substructure=False)
                 except Exception as e:
                     try:
                         # Try to fix symmetry
-                        print("Try to fix simmetry")
-                        line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, simmetry=True)
+                        line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, symmetry=True)
                     except Exception as e:
-                        try:
+                        #try:
                             # Try with second substructure search
-                            print("Try with second substructure search")
-                            line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
-                        except Exception as e:
+                        line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
+                        #except IndexError as e:
                             # Skip the ligand
-                            print("Ligand skipped", ligand.GetProp("_Name"))
-                            print(e)
-                            continue
+                            #print("Ligand skipped", ligand.GetProp("_Name"))
+                            #continue
 
             print(f"Ligand {fragment.file} preprocessed")
             with open(self.input, "a") as fout:
@@ -124,21 +119,24 @@ class FragRunner(mn.FragParameters):
 
     def _create_fragment_from_ligand(self, ligand, ligand_core, result=0, substructure=True, symmetry=False):
         import rdkit.Chem.AllChem as rp
+        from rdkit import Chem
 
-        print("_build_fragment_from_complex")
-        fragment, old_atoms, hydrogen_core, atom_core, atom_frag, mapping = hp._build_fragment_from_complex(
+        fragment, old_atoms, hydrogen_core, atom_core, atom_frag, mapping, correct = hp._build_fragment_from_complex(
             self.core, self.residue, ligand, ligand_core, result, substructure, symmetry)
-
-        print("rp.EmbedMolecule")
+        
+        filename = "temp.pdb"
+        Chem.MolToPDBFile(fragment, filename)
+        fragment = Chem.MolFromPDBFile(filename, removeHs=False)
+        os.remove(filename)
+        
         rp.EmbedMolecule(fragment)
         fragment = hp._retrieve_fragment(
-            fragment, old_atoms, atom_core, hydrogen_core, atom_frag, mapping)
-
-        print("fragment", fragment)
+        fragment, old_atoms, atom_core, hydrogen_core, atom_frag, mapping)
         line = fragment.get_inputfile_line()
-
-        print("sanitize file")
         fragment.sanitize_file()
+        
+        if not correct:
+            print("Ligand incorrect")
         return line, fragment
         
 
