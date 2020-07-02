@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import os
 import yaml
-
+import warnings
 
 @dataclass
 class YamlParser(object):
@@ -216,9 +216,9 @@ class YamlParser(object):
         self.initial_site = data.get(valid_flags["initial_site"], None)
 
         if self.test:
-            print("##############################")
-            print("WARNING: This simulation is a test do not use the input files to run production simulations")
-            print("##############################")
+            warnings.warn("##############################")
+            warnings.warn("WARNING: This simulation is a test do not use the input files to run production simulations")
+            warnings.warn("##############################")
             self.cpus = 5
             self.pele_steps = self.steps = 1
             self.iterations = 1
