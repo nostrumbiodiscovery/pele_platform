@@ -16,6 +16,7 @@ EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_const
 PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
+ATOM_GPCR_ERROR_ARGS = os.path.join(test_path, "gpcr/input_atom_error.yaml")
 
 
 EXT_CONSTR = [
@@ -147,5 +148,14 @@ def test_flag_similarity():
         assert str(e).strip("'") == 'Incorrect flag posis. Did you mean poses?'
         return
     assert False
+
+def test_atom_error(ext_args=ATOM_GPCR_ERROR_ARGS):
+    try:
+        job = main.run_platform(ext_args)
+    except ce.WrongAtomSpecified as e:
+        assert str(e).strip("'") == "Atom A:114:CM could not be found in structure"
+        return
+    assert False
+
     
 
