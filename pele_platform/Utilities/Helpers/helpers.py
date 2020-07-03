@@ -4,6 +4,7 @@ import sys
 import re
 import logging
 import warnings
+import pele_platform.Errors.custom_errors as cs
 from Bio.PDB import PDBParser
 
 def silentremove(*args, **kwargs):
@@ -161,14 +162,15 @@ def retrieve_box(structure, residue_1, residue_2, weights=[0.5, 0.5]):
     box_radius = abs(np.linalg.norm(coords1-coords2))/2 + 4 #Sum 4 to give more space
     return list(box_center), box_radius
 
-def get_coords_from_residue(structure, residue):
+def get_coords_from_residue(structure, original_residue):
     parser = PDBParser()
     COI = np.zeros(3)
     structure = parser.get_structure('protein', structure)
-    chain, res_number, atom_name = residue.split(":")
+    chain, res_number, atom_name = original_residue.split(":")
     for residue in structure.get_residues():
         if residue.id[1] == int(res_number):
             for atom in residue.get_atoms():
                 if atom.name == atom_name:
                     COI = np.array(list(atom.get_vector()))
                     return COI
+    raise cs.WrongAtomSpecified(f"Atom {original_residue} could not be found in structure")

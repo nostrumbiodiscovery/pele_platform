@@ -25,3 +25,6 @@ class NoGeometryAroundMetal(Exception):
 
 class EnvVariableNotFound(Exception):
     pass
+
+class WrongAtomSpecified(Exception):
+    pass
