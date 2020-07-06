@@ -37,7 +37,7 @@ def _extract_coords(info):
 class PostProcessor:
 
     def __init__(self, report_name, traj_name, simulation_path, cpus, topology=False, residue=False,
-                 be_column=4, limit_column=6, te_column=3):
+                 be_column=4, limit_column=6, te_column=3, env=None):
         self.report_name = report_name
         self.traj_name = traj_name
         self.simulation_path = simulation_path
@@ -48,6 +48,7 @@ class PostProcessor:
         self.limit_column = limit_column
         self.te_column = te_column
         self.cpus = cpus
+        self.env = env
 
     def retrive_data(self, separator=","):
         summary_csv_filename = os.path.join(self.simulation_path, "summary.csv")
@@ -62,8 +63,7 @@ class PostProcessor:
         dataframe = pd.read_csv(summary_csv_filename, sep=separator, engine='python', header=0)
         return dataframe
 
-    def plot_two_metrics(self, column_to_x, column_to_y, column_to_z=False, output_name=None, output_folder=".",
-                         env=None):
+    def plot_two_metrics(self, column_to_x, column_to_y, column_to_z=False, output_name=None, output_folder="."):
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
@@ -83,7 +83,7 @@ class PostProcessor:
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
-            env.info("Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z))
+            self.env.info("Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z))
         else:
             output_name = output_name if output_name else "{}_{}_plot.png".format(column_to_x, column_to_y)
             output_name = os.path.join(output_folder, output_name).replace(" ", "_")
@@ -91,7 +91,7 @@ class PostProcessor:
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
-            env.info("Plotted {} vs {}".format(column_to_x, column_to_y))
+            self.env.info("Plotted {} vs {}".format(column_to_x, column_to_y))
         return output_name
 
     def top_poses(self, metric, n_structs, output="BestStructs", env=None):
@@ -203,8 +203,8 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
         else:
             shutil.rmtree(os.path.join(output_folder, "results"))
     analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology,
-                             be_column=be_column, limit_column=limit_column, te_column=te_column)
-
+                             be_column=be_column, limit_column=limit_column, te_column=te_column, env=env)
+    
     metrics = len(list(analysis.data)) - 1  # Discard epoch as metric
     be = analysis.be_column
     total_energy = analysis.te_column
@@ -223,8 +223,9 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     # Plot metrics
     while current_metric <= metrics - 1:
         try:
-            analysis.plot_two_metrics(total_energy, be, current_metric, output_folder=plots_folder, env=env)
-            analysis.plot_two_metrics(current_metric, be, output_folder=plots_folder, env=env)
+            analysis.plot_two_metrics(total_energy, be, current_metric, output_folder=plots_folder)
+            analysis.plot_two_metrics(current_metric, be, output_folder=plots_folder)
+
         except ValueError:
             break
         current_metric += 1

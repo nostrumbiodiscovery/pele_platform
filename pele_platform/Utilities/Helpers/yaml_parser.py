@@ -216,9 +216,7 @@ class YamlParser(object):
         self.initial_site = data.get(valid_flags["initial_site"], None)
 
         if self.test:
-            warnings.warn("##############################")
             warnings.warn("WARNING: This simulation is a test do not use the input files to run production simulations")
-            warnings.warn("##############################")
             self.cpus = 5
             self.pele_steps = self.steps = 1
             self.iterations = 1

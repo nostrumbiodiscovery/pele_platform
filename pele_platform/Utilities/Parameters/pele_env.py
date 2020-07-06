@@ -44,7 +44,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         simulation_params.SimulationParams.__init__(self, args)
         for key, value in frfs.retrieve_software_settings(args).items():
             setattr(self, key, value)
-        self.logger = self.create_logger(".")
+        self.create_logger(".")
 
     def create_files_and_folders(self):
         if not self.adaptive_restart:
