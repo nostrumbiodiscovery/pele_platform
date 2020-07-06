@@ -79,44 +79,11 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
 
     assert len(old_atoms) == len(new_atoms)
     mapping = {new_atom: old_atom for new_atom, old_atom in zip(new_atoms, old_atoms)}
-
     atom_fragment_mapped = mapping[atom_fragment]
 
     fragment = Chem.AddHs(fragment, False, True)
-    frag_neighbours = fragment.GetAtomWithIdx(atom_fragment_mapped).GetNeighbors()
-    lig_neighbours = ligand.GetAtomWithIdx(atom_fragment).GetNeighbors()
+    correct = _check_fragment(fragment, ligand, mapping, atom_fragment, atom_fragment_mapped, ligand_core)
 
-    if len(frag_neighbours) < len(lig_neighbours):
-        to_add = len(lig_neighbours) - len(frag_neighbours)
-        fragment.GetAtomWithIdx(atom_fragment_mapped).SetNumExplicitHs(to_add)
-
-    fragment = Chem.AddHs(fragment, False, True)
-
-    # checking chirality
-    lig_chir = Chem.FindMolChiralCenters(ligand, force=True, includeUnassigned=True)
-    frag_chir = Chem.FindMolChiralCenters(fragment, force=True, includeUnassigned=True)
-
-    # check fragment size
-    ligand_len = ligand.GetNumHeavyAtoms()
-    frag_len = fragment.GetNumHeavyAtoms()
-    core_len = ligand_core.GetNumHeavyAtoms()
-
-    if ligand_len - core_len == frag_len:
-        if lig_chir and frag_chir:
-            for lg, fg in zip(lig_chir, frag_chir):
-                # If chirality different or atom number different --> ? as incorrect
-                if lg[1] != fg[1] or mapping[lg[0]] != fg[0]:
-                    if lg[1] != "?" and fg[1] != "?":
-                        correct = False
-                        break
-                    else:
-                        correct = True
-                else:
-                    correct = True
-        else:
-            correct = True
-    else:
-        correct = False
     return fragment, old_atoms, hydrogen_core, atom_core, atom_fragment, mapping, correct
 
 
@@ -154,3 +121,46 @@ def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, atom_fragm
     fragment = fr.Fragment(fragment_filename, atom_fragment_attach_to_hydrogen, added_hydrogen, atom_core,
                            hydrogen_core, no_hydrogens)
     return fragment
+
+
+def _check_fragment(fragment, ligand, mapping, atom_fragment, atom_fragment_mapped, ligand_core):
+    from rdkit import Chem
+
+    frag_neighbours = fragment.GetAtomWithIdx(atom_fragment_mapped).GetNeighbors()
+    lig_neighbours = ligand.GetAtomWithIdx(atom_fragment).GetNeighbors()
+
+    # Check, if atom_fragments has correct number of hydrogens by comparing to the original ligand
+    if len(frag_neighbours) < len(lig_neighbours):
+        to_add = len(lig_neighbours) - len(frag_neighbours)
+        fragment.GetAtomWithIdx(atom_fragment_mapped).SetNumExplicitHs(to_add)
+
+    # Add hydrogens
+    fragment = Chem.AddHs(fragment, False, True)
+
+    # Compare chirality
+    lig_chir = Chem.FindMolChiralCenters(ligand, force=True, includeUnassigned=True)
+    frag_chir = Chem.FindMolChiralCenters(fragment, force=True, includeUnassigned=True)
+
+    # Check fragment size
+    ligand_len = ligand.GetNumHeavyAtoms()
+    frag_len = fragment.GetNumHeavyAtoms()
+    core_len = ligand_core.GetNumHeavyAtoms()
+
+    if ligand_len - core_len == frag_len:
+        if lig_chir and frag_chir:
+            for lg, fg in zip(lig_chir, frag_chir):
+                # If chirality different or atom number different --> ? as incorrect
+                if lg[1] != fg[1] or mapping[lg[0]] != fg[0]:
+                    if lg[1] != "?" and fg[1] != "?":
+                        correct = False
+                        break
+                    else:
+                        correct = True
+                else:
+                    correct = True
+        else:
+            correct = True
+    else:
+        correct = False
+
+    return correct
