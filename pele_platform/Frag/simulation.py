@@ -22,7 +22,7 @@ class FragRunner(mn.FragParameters):
         self._launch()
 
     def _launch(self):
-        if self.ligands: # Full ligands as sdf
+        if self.ligands:  # Full ligands as sdf
             self._prepare_input_file()
         self._run()
 
@@ -93,7 +93,6 @@ class FragRunner(mn.FragParameters):
         with open(self.input, "w") as fout:
             pass
         for ligand in ligands_grown:
-            print("Testing molecule", ligand.GetProp("_Name"))
             Chem.AssignAtomChiralTagsFromStructure(ligand)
             try:
                 line, fragment = self._create_fragment_from_ligand(ligand, ligand_core)
@@ -105,13 +104,8 @@ class FragRunner(mn.FragParameters):
                         # Try to fix symmetry
                         line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, symmetry=True)
                     except Exception as e:
-                        #try:
                             # Try with second substructure search
                         line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
-                        #except IndexError as e:
-                            # Skip the ligand
-                            #print("Ligand skipped", ligand.GetProp("_Name"))
-                            #continue
 
             print(f"Ligand {fragment.file} preprocessed")
             with open(self.input, "a") as fout:
@@ -123,7 +117,8 @@ class FragRunner(mn.FragParameters):
 
         fragment, old_atoms, hydrogen_core, atom_core, atom_frag, mapping, correct = hp._build_fragment_from_complex(
             self.core, self.residue, ligand, ligand_core, result, substructure, symmetry)
-        
+
+        # temporary override to fix segmentation faults
         filename = "temp.pdb"
         Chem.MolToPDBFile(fragment, filename)
         fragment = Chem.MolFromPDBFile(filename, removeHs=False)
