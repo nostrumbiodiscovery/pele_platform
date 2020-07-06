@@ -11,7 +11,7 @@ def _search_core_fragment_linker(ligand, ligand_core, result=0, check_symmetry=F
     substructure_results = ligand.GetSubstructMatches(ligand_core)
 
     try:
-        print("Running substructure search...")
+        print("Running substructure search on {}...".format(ligand.GetProp('_Name')))
         core_atoms = substructure_results[result]
         print("RESULT SUBSTRUCTURE", core_atoms)
     except IndexError:
@@ -59,7 +59,8 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
         new_mol = rc.EditableMol(fragment)
         for atom in reversed(fragment.GetAtoms()):
             neighbours = atom.GetNeighbors()
-            if len(neighbours) == 0: new_mol.RemoveAtom(atom.GetIdx())
+            if len(neighbours) == 0 and atom.GetAtomicNum() == 1:
+                new_mol.RemoveAtom(atom.GetIdx())
     else:
         new_mol = rc.EditableMol(ligand)
 
@@ -68,7 +69,8 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
 
         for atom in reversed(new_mol.GetMol().GetAtoms()):
             neighbours = atom.GetNeighbors()
-            if len(neighbours) == 0: new_mol.RemoveAtom(atom.GetIdx())
+            if len(neighbours) == 0 and atom.GetAtomicNum() == 1:
+                new_mol.RemoveAtom(atom.GetIdx())
     print("FRAGMENT ATOMS", [atom.GetIdx() for atom in new_mol.GetMol().GetAtoms()])
 
     # Add missing hydrogen to full ligand and create pdb differently depending on the previous step
@@ -76,14 +78,14 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
     old_atoms = [atom.GetIdx() for atom in fragment.GetAtoms() if atom.GetAtomicNum() != 1]
     new_atoms = [atom.GetIdx() for atom in ligand.GetAtoms() if
                  atom.GetIdx() not in atoms_core and atom.GetAtomicNum() != 1]
-
-    assert len(old_atoms) == len(new_atoms)
+    print("old_atoms", old_atoms, "new_atoms", new_atoms)
     mapping = {new_atom: old_atom for new_atom, old_atom in zip(new_atoms, old_atoms)}
     atom_fragment_mapped = mapping[atom_fragment]
 
     fragment = Chem.AddHs(fragment, False, True)
     correct = _check_fragment(fragment, ligand, mapping, atom_fragment, atom_fragment_mapped, ligand_core)
-
+    Chem.MolToPDBFile(fragment, "int0.pdb")
+    assert len(old_atoms) == len(new_atoms)
     return fragment, old_atoms, hydrogen_core, atom_core, atom_fragment, mapping, correct
 
 
