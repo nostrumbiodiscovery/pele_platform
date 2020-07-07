@@ -112,7 +112,7 @@ def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, atom_fragm
 
     # Save fragment
     string = random_string(8)
-    fragment_filename = fragment.GetProp("_Name") + string + ".pdb"
+    fragment_filename = fragment.GetProp("_Name").replace(" ", "_") + string + ".pdb"
 
     Chem.MolToPDBFile(fragment, fragment_filename)
     fragment = Chem.MolFromPDBFile(fragment_filename, removeHs=False)
