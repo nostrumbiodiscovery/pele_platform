@@ -46,3 +46,4 @@ class FragOpcionalParameters():
         self.only_prepare = False
         self.only_grow = False
         self.no_check = True
+        self.cleanup = args.cleanup if args.cleanup else False

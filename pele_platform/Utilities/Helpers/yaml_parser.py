@@ -172,10 +172,13 @@ class YamlParser(object):
         self.pele_license = data.get(valid_flags["pele_license"], None)
         self.schrodinger = data.get(valid_flags["schrodinger"], None)
         self.no_check = data.get(valid_flags["no_check"], False)
+        self.cleanup = data.get(valid_flags["cleanup"], False)
+
         # Metal constraints
         self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
         self.constrain_all_metals = data.get(valid_flags["constrain_all_metals"], False)
         self.no_metal_constraints = data.get(valid_flags["no_metal_constraints"], False)
+        
         #Frag
         self.frag_run = data.get(valid_flags["frag_run"], True)
         self.frag_core = data.get(valid_flags["frag_core"], False)
