@@ -7,7 +7,6 @@ import pele_platform.Frag.checker as ch
 import pele_platform.Frag.parameters.main as mn
 import pele_platform.Errors.custom_errors as ce
 import frag_pele.main as frag
-import faulthandler; faulthandler.enable()
 
 
 class FragRunner(mn.FragParameters):
@@ -65,7 +64,7 @@ class FragRunner(mn.FragParameters):
                           self.rename, self.threshold_clash, self.steering, self.translation_high, self.rotation_high,
                           self.translation_low, self.rotation_low, self.explorative, self.frag_radius,
                           self.sampling_control, self.pele_data, self.pele_documents,
-                          self.only_prepare, self.only_grow, self.no_check, self.debug)
+                          self.only_prepare, self.only_grow, self.no_check, self.debug, usesrun=self.usesrun)
             except Exception:
                 print("Skipped - FragPELE will not run.")
 
