@@ -22,8 +22,13 @@ class FragRunner(mn.FragParameters):
 
     def _launch(self):
         if self.ligands:  # Full ligands as sdf
-            self._prepare_input_file()
+            fragment_files = self._prepare_input_file()
+        else:
+            fragment_files = None
         self._run()
+        
+        if self.cleanup and fragment_files:
+            self._clean_up(fragment_files)
 
     def _prepare_control_file(self):
         # Create tmp folder with frag control_file 
@@ -87,7 +92,8 @@ class FragRunner(mn.FragParameters):
             
         # Get sdf full grown ligands
         ligands_grown = Chem.SDMolSupplier(self.ligands, removeHs=False)
-
+        fragment_files = []
+        
         # For each full grown ligand create neutral fragment
         with open(self.input, "w") as fout:
             pass
@@ -107,8 +113,11 @@ class FragRunner(mn.FragParameters):
                         line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
 
             print(f"Ligand {fragment.file} preprocessed")
+            fragment_files.append(fragment.file)
             with open(self.input, "a") as fout:
                 fout.write(line + "\n")
+
+        return fragment_files
 
     def _create_fragment_from_ligand(self, ligand, ligand_core, result=0, substructure=True, symmetry=False):
         import rdkit.Chem.AllChem as rp
@@ -134,3 +143,8 @@ class FragRunner(mn.FragParameters):
         return line, fragment
         
 
+    def _clean_up(self, fragment_files):
+
+        for file in fragment_files:
+            if os.path.isfile(file):
+                os.remove(file)
