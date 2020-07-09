@@ -397,7 +397,7 @@ WaterPerturbation
 
 ..  code-block:: yaml
 
-    n_water: 3 #Compulsory
+    n_waters: 3 #Compulsory
     box_water:
     - 20
     - 30
