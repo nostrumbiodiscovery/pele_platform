@@ -11,14 +11,22 @@ f_m_ct {
  b_ppw_prepared
  s_ppw_prepared_with_version
  b_ppw_created_disulfur
+ r_user_PELE_energy
+ r_user_PELE_epoch
+ r_user_PELE_traj
+ r_user_PELE_snapshot
  i_m_ct_format
  :::
- "" 
+ trajectory.BindingEnergy1.26468.pdb_BindEn_1.26 
   1
   3.0 
   1
   2020-1 
   1
+  1.26468
+  0
+  1
+  0
   2
  m_atom[1250] { 
   # First column is atom index #
