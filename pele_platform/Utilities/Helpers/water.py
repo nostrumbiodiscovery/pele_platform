@@ -7,7 +7,7 @@ import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.pele_params as pp
 
 
-def set_water_control_file(env):
+def set_water_control_file(env, original_wat=False):
     if env.waters or env.n_waters:
         env.water_arg = hp.retrieve_all_waters(
             env.system) if env.waters == "all_waters" else env.waters  # IDs of waters to perturb
@@ -27,7 +27,7 @@ def set_water_control_file(env):
 
             template = '{{"watersToPerturb": {{"links": {{"ids": [{index}] }}}}, "Box": {{"radius": {radius}, "fixedCenter": [{com}], "type": "sphericalBox"}}}}'
 
-            waters = hp.retrieve_all_waters(inp)
+            waters = hp.retrieve_all_waters(inp, exclude=original_wat)
             waters = ", ".join(['"{}"'.format(water) for water in waters])
             all_waters = all_waters + waters + ", "
             water_string.append(template.format(index=waters, radius=env.water_radius, com=env.water_center))
@@ -78,12 +78,11 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
 
         # get maximum residue and atom numbers
         with open(refinement_input[0], "r") as file:
-            protein = file.readlines()
-
-            for line in protein:
+            pdb_lines = file.readlines()
+            for line in pdb_lines:
                 if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER"):
                     try:
-                        resnums.append(line[23:27].strip())
+                        resnums.append(line[22:27].strip())
                         atomnums.append(line[7:11].strip())
                         chains.append(line[21])
                         resnames.append(line[17:20])
@@ -97,7 +96,6 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
         atomnum = max([int(num) for num in atomnums if num]) + 1 + lig_length
 
         water = cs.water * n_waters * n_inputs
-        
         for inp in range(n_inputs):
             for n in range(n_waters):
                 O_coords = Vector([np.random.randint(0, 100) for i in range(3)])
@@ -113,7 +111,6 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
 
         # PDB lines - water
         water_output = []
-
         for atom, num, resnum, coord in zip(water, water_atomnums, water_resnums, water_coords):
             coord = ["{:7.4f}".format(c) for c in coord]
             coord = " ".join(coord)
@@ -126,42 +123,32 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
         # loop over minimisation inputs
         for inp, w in zip(refinement_input, sliced_water_output):
             new_protein_file = inp
-            protein = []
-            ligand = []
-
-            # read in protein and ligand lines
-            with open(inp, "r") as inp:
-                lines = inp.readlines()
-
-                for line in lines:
-                    if line.startswith("ATOM") or line.startswith("HETATM"):
-                        if line[17:20].strip() == ligand_chain:
-                            ligand.append(line)
-                        else:
-                            protein.append(line)
-
             # add water to PDB
-            with open(new_protein_file, "w+") as file:
-                for line in protein:
-                    file.write(line)
+            with open(inp, "w+") as file:
+                for line in pdb_lines:
+                    if "END" not in line:
+                        file.write(line)
                 file.write("\n")
                 for line in w:
                     file.write(line)
-                file.write("\n")
-                for line in ligand:
-                    file.write(line)
+                file.write("END")
 
             # load again with Biopython
             parser = PDBParser()
             structure = parser.get_structure("complex", new_protein_file)
             water_list = []
             protein_list = Selection.unfold_entities(structure, "A")
-            temp_protein_file = os.path.join(os.path.dirname(inp.name),
-                                             os.path.basename(inp.name).replace(".pdb", "_temp.pdb"))
+            temp_protein_file = os.path.join(os.path.dirname(inp),
+                                             os.path.basename(inp).replace(".pdb", "_temp.pdb"))
 
+            original_waters = []
             for res in structure.get_residues():
+                resnum = res._id[1]
                 if res.resname == 'HOH':
-                    water_list = water_list + Selection.unfold_entities(res, "A")
+                    if resnum not in resnums:
+                        water_list = water_list + Selection.unfold_entities(res, "A")
+                    else:
+                        original_waters.append(resnum)
 
             # check for water contacts
             contacts5 = []
@@ -188,28 +175,27 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
             with open(temp_protein_file, "r") as temp:
                 temp_lines = temp.readlines()
                 for line in temp_lines:
-                    if line[17:20].strip() == "HOH":
+                    if line[17:20].strip() == "HOH" and int(line[22:27].strip()) not in resnums:
                         line = line.replace(line[7:11], str(int(line[7:11]) + lig_length))
                         if line[12:15] == "2HW":
-                            line = line + "\nTER\n"
+                            line = line.strip("\n") + "\nTER\n"
+                            print(line)
                         new_water_lines.append(line)
 
-            new_water_lines[-2] = new_water_lines[-2].replace("\nTER\n", "")
+            del new_water_lines[-1] #Last biopython line is a not need it TER
             
             with open(new_protein_file, "w+") as file:
-                for line in protein:
+                for line in pdb_lines:
                     file.write(line)
-                file.write("\nTER\n")
+                if not line.startswith("TER"):
+                    file.write("TER\n")
                 for line in new_water_lines:
                     file.write(line)
-                file.write("\n")
-                for line in ligand:
-                    file.write(line)
-                file.write("TER")
+                file.write("END")
 
             os.remove(temp_protein_file)
 
-        return output
+        return output, original_waters
 
 
 def ligand_com(refinement_input, ligand_chain):

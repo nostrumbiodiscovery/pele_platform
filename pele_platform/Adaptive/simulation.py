@@ -168,8 +168,8 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
             input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
             wt.water_checker(args)
-            wt.add_water(input_waters, args.residue, args.n_waters, test=env.test)
-            wt.set_water_control_file(env)
+            _, original_waters = wt.add_water(input_waters, args.residue, args.n_waters, test=env.test)
+            wt.set_water_control_file(env, original_waters)
         elif args.waters:
             wt.set_water_control_file(env)
 

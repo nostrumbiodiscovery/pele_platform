@@ -130,9 +130,12 @@ def retrieve_atom_info(atom, pdb):
                 pass
         sys.exit(f"Check the atoms {atom} given to calculate the distance metric.")
 
-def retrieve_all_waters(pdb):
+def retrieve_all_waters(pdb, exclude=False):
     with open(pdb, 'r') as f:
-        return list(set(["{}:{}".format(line[21:22], line[23:26].strip()) for line in f if line and "HOH" in line]))
+        waters = list(set(["{}:{}".format(line[21:22], line[22:26].strip()) for line in f if line and "HOH" in line]))
+    if exclude:
+        waters = [water for water in waters if int(water.split(":")[1]) not in exclude]
+    return waters
 
 def retrieve_constraints_for_pele(constraints, pdb):
     CONSTR_ATOM_POINT = '{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
