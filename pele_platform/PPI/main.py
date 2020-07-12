@@ -24,7 +24,7 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     parsed_yaml.folder = os.path.join(working_folder, "1_interface_exploration")
 
     # Check n_waters before launching the simulation
-    water_checker(parsed_yaml)
+    #water_checker(parsed_yaml)
 
     # get arguments from input.yaml
     n_waters = parsed_yaml.n_waters

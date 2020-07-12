@@ -5,6 +5,7 @@ from pele_platform.Utilities.Helpers import helpers, template_builder
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.center_of_mass as cm 
 import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Helpers.water as wt
 
 @dataclass
 class SimulationBuilder(template_builder.TemplateBuilder):
@@ -13,21 +14,21 @@ class SimulationBuilder(template_builder.TemplateBuilder):
     pele_file: str
     topology: str
 
-    def generate_inputs(self, env: pv.EnviroBuilder) -> None:
+    def generate_inputs(self, env: pv.EnviroBuilder, water_obj: wt.WaterIncluder) -> None:
         # Fill in simulation template with 
         # simulation parameters specified in  
         # pv.EnviroBuilder
         env.logger.info("Running Simulation")
         # Fill to time because we have flags inside flags
-        self.fill_pele_template(env)
-        self.fill_pele_template(env)
+        self.fill_pele_template(env, water_obj)
+        self.fill_pele_template(env, water_obj)
         self.fill_adaptive_template(env)
         self.fill_adaptive_template(env)
         if not env.debug:
             self.run()
         env.logger.info("Simulation run successfully (:\n\n")
 
-    def fill_pele_template(self, env: pv.EnviroBuilder) -> None:
+    def fill_pele_template(self, env: pv.EnviroBuilder, water_obj: wt.WaterIncluder) -> None:
         # Fill in PELE template
         self.pele_keywords = { "PERTURBATION": env.perturbation, "SELECTION_TO_PERTURB": env.selection_to_perturb,
                         "BE": env.binding_energy, "SASA": env.sasa,
@@ -35,11 +36,11 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "CONSTRAINTS": "\n".join(env.constraints), "CPUS":env.cpus,
                         "LICENSES": env.license, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center,
                         "SASA_min": env.sasa_min, "SASA_max": env.sasa_max,
-                        "WATER_RADIUS": env.water_radius, "WATER_CENTER": env.water_center, "WATER": env.water,
-                        "WATER_ENERGY": env.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, "TRAJ_NAME": env.traj_name,
+                        "WATER_RADIUS": water_obj.water_radius, "WATER_CENTER": water_obj.water_center, "WATER": water_obj.water_line,
+                        "WATER_ENERGY": water_obj.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, "TRAJ_NAME": env.traj_name,
                         "SOLVENT": env.solvent, "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
                         "OVERLAP": env.overlap_factor, "STERIC_TRIALS": env.steric_trials, "TEMPERATURE": env.temperature, 
-                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box, "PROXIMITY": env.proximityDetection, "WATER_FREQ": env.water_freq, "VERBOSE": env.verbose, "ANM_DISPLACEMENT": env.anm_displacement, "ANM_MODES_CHANGE": env.anm_modes_change, "ANM_DIRECTION": env.anm_direction, "ANM_MIX_MODES": env.anm_mix_modes, "ANM_PICKING_MODE": env.anm_picking_mode,
+                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box, "PROXIMITY": env.proximityDetection, "WATER_FREQ": water_obj.water_freq, "VERBOSE": env.verbose, "ANM_DISPLACEMENT": env.anm_displacement, "ANM_MODES_CHANGE": env.anm_modes_change, "ANM_DIRECTION": env.anm_direction, "ANM_MIX_MODES": env.anm_mix_modes, "ANM_PICKING_MODE": env.anm_picking_mode,
                         "ANM_NUM_OF_MODES": env.anm_num_of_modes, "ANM_RELAXATION_CONST": env.anm_relaxation_constr,
                         "PCA": env.pca, "COMPLEXES": env.complexes, "PELE_STEPS": env.frag_pele_steps, "OUTPUT_PATH": env.output_path,
                         "COM": env.com, "STEERING": env.steering}
@@ -56,7 +57,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                 "SIMULATION_TYPE": env.simulation_type, "CLUSTER_VALUES": env.cluster_values, "CLUSTER_CONDITION": env.cluster_conditions,
                 "UNBINDING": env.unbinding_block, "USESRUN": env.usesrun, "LIGAND": env.ligand,
                 "PELE_BIN": env.pele_exec, "PELE_DATA": env.pele_data, "PELE_DOCUMENTS": env.pele_documents,
-                "CONDITION": env.spawning_condition}
+                "CONDITION": env.spawning_condition, "CLUST_TYPE": env.clust_type}
         super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)
 
 

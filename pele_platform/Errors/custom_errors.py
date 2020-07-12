@@ -28,3 +28,6 @@ class EnvVariableNotFound(Exception):
 
 class WrongAtomSpecified(Exception):
     pass
+
+class NotCenterOfWaterBox(Exception):
+    pass

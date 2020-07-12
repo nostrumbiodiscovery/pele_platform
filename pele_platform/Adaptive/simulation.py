@@ -164,19 +164,22 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         
         ####### Add waters, if needed
         if args.n_waters:
-            # Add n water molecules to minimisation inputs
             input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
             input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
-            wt.water_checker(args)
-            _, original_waters = wt.add_water(input_waters, args.residue, args.n_waters, test=env.test)
-            wt.set_water_control_file(env, original_waters)
-        elif args.waters:
-            wt.set_water_control_file(env)
+            water_obj = wt.WaterIncluder(input_waters, env.n_waters, env.parameters, 
+                water_center=args.water_center, water_radius=env.water_radius,
+                allow_empty_selectors=env.allow_empty_selectors, water_temp=env.water_temp,
+                water_trials=env.water_trials, water_overlap=env.water_overlap,
+                water_constr=env.water_constr, test=env.test, water_freq=env.water_freq,
+                ligand_residue=env.residue)
+            # Add n water molecules to minimisation inputs
+            water_obj.run()
+            env.parameters = water_obj.ligand_perturbation_params
 
         ############Fill in Simulation Templates############
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,
             env.pele_exit_temp, env.topology)
-        adaptive.generate_inputs(env)
+        adaptive.generate_inputs(env, water_obj)
 
 
     if env.analyse and not env.debug:
