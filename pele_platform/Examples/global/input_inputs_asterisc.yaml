@@ -1,4 +1,4 @@
-system: 'data/inputs/*.pdb'
+system: '../pele_platform/Examples/analysis/data/inputs/*.pdb'
 chain: 'Z'
 resname: 'IK1'
 restart: false

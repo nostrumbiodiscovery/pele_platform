@@ -6,7 +6,7 @@ import pele_platform.main as main
 import pele_platform.Analysis.plots as pt
 
 test_path = os.path.join(cs.DIR, "Examples")
-simulation_path = "data/output"
+simulation_path = "../pele_platform/Examples/analysis/data/output"
 REPORT_NAME = "report_"
 TRAJ_NAME = "trajectory_"
 ANALYSIS_ARGS = os.path.join(test_path, "analysis/input.yaml")
@@ -36,22 +36,22 @@ def test_best_structs(simulation_path=simulation_path, report_name=REPORT_NAME, 
 
 def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
     job = main.run_platform(ext_args)
-    assert os.path.exists("data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_distance0_plot.png")
-    assert os.path.exists("data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_sasaLig_plot.png")
-    assert os.path.exists("data/results/Plots/distance0_currentEnergy_plot.png")
-    assert os.path.exists("data/results/Plots/sasaLig_currentEnergy_plot.png")
+    assert os.path.exists("../pele_platform/Examples/analysis/data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_distance0_plot.png")
+    assert os.path.exists("../pele_platform/Examples/analysis/data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_sasaLig_plot.png")
+    assert os.path.exists("../pele_platform/Examples/analysis/data/results/Plots/distance0_currentEnergy_plot.png")
+    assert os.path.exists("../pele_platform/Examples/analysis/data/results/Plots/sasaLig_currentEnergy_plot.png")
     assert job.analysis_nclust == 1
-    assert len(glob.glob("data/results/Plots/*.png")) == 4
+    assert len(glob.glob("../pele_platform/Examples/analysis/data/results/Plots/*.png")) == 4
 
 def test_analysis_flag(ext_args=ANALYSIS_FLAGS):
     main.run_platform(ext_args)
-    assert os.path.exists("data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_distance0_plot.png")
-    assert os.path.exists("data/results/Plots/distance0_currentEnergy_plot.png")
-    assert len(glob.glob("data/results/Plots/*.png")) == 2
+    assert os.path.exists("../pele_platform/Examples/analysis/data/results/Plots/numberOfAcceptedPeleSteps_currentEnergy_distance0_plot.png")
+    assert os.path.exists("../pele_platform/Examples/analysis/data/results/Plots/distance0_currentEnergy_plot.png")
+    assert len(glob.glob("../pele_platform/Examples/analysis/data/results/Plots/*.png")) == 2
 
 def test_analysis(ext_args=ANALYSIS_ARGS):
     main.run_platform(ext_args)
 
 def test_analysis_mae(ext_args=ANALYSIS_MAE_ARGS):
-    os.system("rm data/*/*summary*")
+    os.system("rm ../pele_platform/Examples/analysis/data/*/*summary*")
     main.run_platform(ext_args)

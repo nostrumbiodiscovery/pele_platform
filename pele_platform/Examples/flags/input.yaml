@@ -11,11 +11,11 @@ skip_preprocess: true
 gridres: 60
 maxtorsion: 2
 templates:
-  - "data/mgz"
-  - "data/strz"
+  - "../pele_platform/Examples/analysis/data/mgz"
+  - "../pele_platform/Examples/analysis/data/strz"
 rotamers:
-  - "data/MG.rot.assign"
-  - "data/STR.rot.assign"
+  - "../pele_platform/Examples/analysis/data/MG.rot.assign"
+  - "../pele_platform/Examples/analysis/data/STR.rot.assign"
 box_radius: 3000
 box_center:
   - 30
