@@ -113,7 +113,7 @@ rom command line
             - set reference depending on longest chain with no gaps
             - check for duplicate chains and only select this one
         '''
-        env.info("Create Ensemble")
+        logger.info("Create Ensemble")
         ref_chids = []
         ensemble_ref_title = "Default"
         
@@ -160,7 +160,7 @@ rom command line
         pdbfiledata = pdbfiledata.replace("HID","HIS")
         pdbfiledata = pdbfiledata.replace("HIE","HIS")
         
-        env.info("Warning!!! Rewriting reference file {}".format(self.ref))
+        logger.info("Warning!!! Rewriting reference file {}".format(self.ref))
         pdbfile = open(self.ref,'w')
         pdbfile.write(pdbfiledata)
         pdbfile.close()
@@ -176,9 +176,9 @@ rom command line
         ref_selection = ref_structure.select(self.selection)
         reference_hierview = ref_structure.getHierView()
         
-        env.info("Found", reference_hierview.numChains(), "Chain(s) in", reference_hierview._atoms.getTitle())
+        logger.info("Found", reference_hierview.numChains(), "Chain(s) in", reference_hierview._atoms.getTitle())
         ensemble_ref_title = reference_hierview._atoms.getTitle()
-        env.info(reference_hierview[0])
+        logger.info(reference_hierview[0])
         
         '''
         at the moment all chains are taken
@@ -340,15 +340,15 @@ rom command line
         
         return: prody.pca object
         '''
-        env.info("Calculate PCA")
+        logger.info("Calculate PCA")
              
         PCAname = ensemble.getTitle()
         pca = prody.PCA(PCAname)
         pca.buildCovariance(ensemble)
 
-        env.info("PCA")
+        logger.info("PCA")
         pca.calcModes()
-        env.info(repr(pca))
+        logger.info(repr(pca))
         
         outputname = PCAname + "_pca_modes.nmd"
                     
@@ -356,7 +356,7 @@ rom command line
         
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
-        env.info("PCA is saved in:", outputname)
+        logger.info("PCA is saved in:", outputname)
         return pca, outputname
         
     def calcANM(self, structure, env):
@@ -368,7 +368,7 @@ rom command line
         
         return: prody.anm object
         '''
-        env.info("Calculate ANM")
+        logger.info("Calculate ANM")
         ANMname = structure.getLabel()
         anm = prody.ANM(ANMname)
         anm.buildHessian(structure, cutoff=15.0)
@@ -378,7 +378,7 @@ rom command line
         prody.writeNMD(outputname, anm[:10], self.selection_ref_structure)
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
-        env.info("ANM is saved in:", outputname)
+        logger.info("ANM is saved in:", outputname)
         return anm
 
     def compare_modes(self, modes1, modes2):
@@ -622,9 +622,9 @@ class SmartFormatter(argparse.HelpFormatter):
         return argparse.HelpFormatter._split_lines(self, text, width)
 
 
-def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=False, env=None):
+def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=False, logger=None):
 
-    env.info("\n\nWarning!!! Reference PDB file, if provided, will be rewritten in"
+    logger.info("\n\nWarning!!! Reference PDB file, if provided, will be rewritten in"
           " ProDy PDB format, with HID and HIE residues renamed to HIS.\n\n")
     pdb = " ".join(pdb)
         
@@ -633,13 +633,13 @@ def main(pdb, selection='calpha', vmd=False, compare=False, ref="none", debug=Fa
     Analysis.set_default_based_on_argparse(selection, vmd, compare, ref, debug, pdb)
     
     pdbs = Analysis.getPDBs()
-    ensemble = Analysis.createEnsemble(pdbs, env)        
+    ensemble = Analysis.createEnsemble(pdbs, logger)
     # set weights for the PCA analysis
     # ensemble = Analysis.setWeights(ensemble)
     ensemble = Analysis.setSelections(ensemble)
     
-    pca, pca_modes = Analysis.calcPCA(ensemble, env)
-    anm = Analysis.calcANM(ensemble.getConformation(0), env)
+    pca, pca_modes = Analysis.calcPCA(ensemble, logger)
+    anm = Analysis.calcANM(ensemble.getConformation(0), logger)
     
     if Analysis.compare:
         Analysis.compare_modes(anm,pca)

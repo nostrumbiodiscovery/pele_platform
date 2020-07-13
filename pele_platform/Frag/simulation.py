@@ -61,7 +61,7 @@ class FragRunner(mn.FragParameters):
              self.translation_low, self.rotation_low, self.explorative, self.frag_radius, self.sampling_control, self.pele_data, self.pele_documents,
              self.only_prepare, self.only_grow, self.no_check, self.debug)
 
-    def _prepare_input_file(self, env=None):
+    def _prepare_input_file(self, logger=None):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
 
@@ -86,32 +86,32 @@ class FragRunner(mn.FragParameters):
         lines = []
         for ligand in ligands_grown:
             try:
-                line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, env=env)
+                line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, logger=logger)
             except Exception as e:
                 try:
                     # Try to fix symmetry
-                    line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, simmetry=True, env=env)
+                    line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, simmetry=True, logger=logger)
                 except Exception as e:
                     try:
                         # Try with second substructure search
-                        line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False, env=env)
+                        line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False, logger=logger)
                     except Exception as e:
                         # Skip the ligand
-                        env.info("Ligand Skipped")
-                        env.info(e)
+                        logger.info("Ligand Skipped")
+                        logger.info(e)
                         continue
             lines.append(line)
             self.fragments.append(fragment)
-            env.info(f"Ligand {fragment.file} preprocessed")
+            logger.info(f"Ligand {fragment.file} preprocessed")
         with open(self.input, "w") as fout:
             fout.write(("\n").join(lines))
 
-    def _create_fragment_from_ligand(self, ligand, ligand_core, result=0, substructure=True, simmetry=False, env=None):
+    def _create_fragment_from_ligand(self, ligand, ligand_core, result=0, substructure=True, simmetry=False, logger=None):
         import rdkit.Chem.AllChem as rp
         fragment, old_atoms, hydrogen_core, atom_core = hp._build_fragment_from_complex(
             self.core, self.residue, ligand, ligand_core, result, substructure, simmetry)
         rp.EmbedMolecule(fragment)
-        fragment = hp._retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, env=env)
+        fragment = hp._retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, logger=logger)
         line = fragment.get_inputfile_line()
         fragment.sanitize_file()
         return line, fragment

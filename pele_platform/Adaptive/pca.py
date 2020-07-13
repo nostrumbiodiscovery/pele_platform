@@ -7,7 +7,7 @@ import pele_platform.Utilities.Helpers.calculatePCA4PELE as pc
 
 
 @dataclass
-class PCA():
+class PCA:
     """
     Base class to perform pca analysis
     on user's receptor traj and generate
@@ -23,7 +23,7 @@ class PCA():
     def generate(self, env) -> str:
         # Calculate pca and retrieve json format
         pdbs = self._retrieve_trajectories()
-        pca_json = self._pca_to_json(pdbs, env=env)
+        pca_json = self._pca_to_json(pdbs, logger=env)
         return pca_json
 
     def _retrieve_trajectories(self) -> list:
@@ -34,10 +34,10 @@ class PCA():
             pdbs = self.pca_traj
         return pdbs
 
-    def _pca_to_json(self, pdbs, env=None) -> str:
+    def _pca_to_json(self, pdbs, logger=None) -> str:
         # calculate pca over pdb and get json
         pdbs_full_path = [os.path.abspath(pdb) for pdb in pdbs]
         with helpers.cd(self.pele_dir):
-            pca = pc.main(pdbs_full_path, env=env)
+            pca = pc.main(pdbs_full_path, logger=logger)
         self.pca = cs.PCA.format(pca)
         return self.pca

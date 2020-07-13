@@ -16,7 +16,7 @@ def calculate_com(structure):
 
 
 def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200, test=False, user_center=None,
-                                env=None):
+                                logger=None):
     """
     Randomize initial ligand position around the receptor.
     Default number of poses = 200.
@@ -91,7 +91,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     # radius of the sphere from the origin
     D = 10.0 if user_center else np.ceil(6.0 + d)
     D_initial = D
-    env.info("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
+    logger.info("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
 
     if user_center:
         sphere_cent = COI
@@ -99,7 +99,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
         sphere_cent = com_protein
 
     j = 0
-    env.info("Generating {} poses...".format(nposes))
+    logger.info("Generating {} poses...".format(nposes))
     start_time = time.time()
     while (j < nposes):
         # generate random coordinates
@@ -165,11 +165,11 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
             if total_time > 60:
                 D += 1
                 if D - D_initial >= 20:
-                    env.info("Original box increased by 20A. Aborting...")
+                    logger.info("Original box increased by 20A. Aborting...")
                     break
                 start_time = end_time
-                env.info("Increasing sampling box by 1A.")
-    env.info("{} poses created successfully.".format(j))
+                logger.info("Increasing sampling box by 1A.")
+    logger.info("{} poses created successfully.".format(j))
     return output, D, list(sphere_cent)
 
 

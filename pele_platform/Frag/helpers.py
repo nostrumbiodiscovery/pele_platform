@@ -75,7 +75,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
     return fragment, old_atoms, hydrogen_core, atom_core
 
 
-def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, env=None):
+def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, logger=None):
     from rdkit import Chem
 
     # Get new added hydrogen
@@ -83,7 +83,7 @@ def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, env=None):
         added_hydrogen_idx = [atom.GetIdx() for atom in fragment.GetAtoms() if atom.GetIdx() not in old_atoms][0]
         no_hydrogens = False
     except IndexError:
-        env.info("Hydrogen detection failed won't have into account steriochemistry")
+        logger.info("Hydrogen detection failed won't have into account steriochemistry")
         added_hydrogen_idx = 0
         no_hydrogens = True
     # Get fragment atom attached to newly added hydrogen

@@ -166,23 +166,23 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
 
                     geo, coordinated_atoms = angle_classification(combinations, True)
                     if geo:
-                        env.info("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1]))
+                        logger.info("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1]))
                         checked_metals.append(list(metal[0].coord))
                     else:
                         coordinated_atoms = combinations
                         checked_metals.append(list(metal[0].coord))
                         geo = "no"
-                        env.info("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
+                        logger.info("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
                 
                 elif geo is None and not all_metals:
                     raise ce.NoGeometryAroundMetal("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1], dist))
 
                 elif geo is None and all_metals and not combinations:
-                    env.info("No atoms coordinated to {} (residue {}).".format(metal[0].name, metal[1].get_id()[1]))
+                    logger.info("No atoms coordinated to {} (residue {}).".format(metal[0].name, metal[1].get_id()[1]))
 
                 elif geo:
                     checked_metals.append(list(metal[0].coord))
-                    env.info("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1])) 
+                    logger.info("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1]))
 
             elif geo is None and all_metals and combinations:
                 geo, coordinated_atoms = angle_classification(combinations, True)
@@ -191,20 +191,20 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
                     geo = "no"
                     coordinated_atoms = combinations
                     checked_metals.append(list(metal[0].coord)) 
-                    env.info("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
+                    logger.info("Found {} geometry around {} (residue {}). Adding constraints to all atoms within {}A of the metal.".format(geo, metal[0].name, metal[1].get_id()[1], dist))
 
                 else:
-                    env.info("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1]))
+                    logger.info("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name, metal[1].get_id()[1]))
 
             elif geo is None and all_metals and not combinations:
-               env.info("No atoms coordinated to {} (residue {}).".format(metal[0].name, metal[1].get_id()[1]))
+               logger.info("No atoms coordinated to {} (residue {}).".format(metal[0].name, metal[1].get_id()[1]))
 
             elif geo is None and not all_metals and not permissive:
                 raise ce.NoGeometryAroundMetal("Failed to determine geometry around {} (residue {}). Add constraints manually or set 'constrain_all_metals: true' to constrain all atoms within {}A of the metal.".format(metal[0].name, metal[1].get_id()[1], dist))
 
             else:
                 checked_metals.append(list(metal[0].coord))
-                env.info("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name,
+                logger.info("Found {} geometry around {} (residue {}). Adding constraints.".format(geo, metal[0].name,
                                                                                              metal[1].get_id()[1]))
 
             # format string

@@ -37,7 +37,7 @@ def _extract_coords(info):
 class PostProcessor:
 
     def __init__(self, report_name, traj_name, simulation_path, cpus, topology=False, residue=False,
-                 be_column=4, limit_column=6, te_column=3, env=None):
+                 be_column=4, limit_column=6, te_column=3, logger=None):
         self.report_name = report_name
         self.traj_name = traj_name
         self.simulation_path = simulation_path
@@ -48,7 +48,7 @@ class PostProcessor:
         self.limit_column = limit_column
         self.te_column = te_column
         self.cpus = cpus
-        self.env = env
+        self.logger = logger
 
     def retrive_data(self, separator=","):
         summary_csv_filename = os.path.join(self.simulation_path, "summary.csv")
@@ -83,7 +83,7 @@ class PostProcessor:
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
-            self.env.info("Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z))
+            self.logger.info("Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z))
         else:
             output_name = output_name if output_name else "{}_{}_plot.png".format(column_to_x, column_to_y)
             output_name = os.path.join(output_folder, output_name).replace(" ", "_")
@@ -91,10 +91,10 @@ class PostProcessor:
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
-            self.env.info("Plotted {} vs {}".format(column_to_x, column_to_y))
+            self.logger.info("Plotted {} vs {}".format(column_to_x, column_to_y))
         return output_name
 
-    def top_poses(self, metric, n_structs, output="BestStructs", env=None):
+    def top_poses(self, metric, n_structs, output="BestStructs", logger=None):
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
         self._extract_poses(best_poses, metric, output)
@@ -124,14 +124,14 @@ class PostProcessor:
             else:
                 bs.extract_snapshot_from_xtc(path, f_id, output, self.topology, step, out_freq, f_out)
 
-    def cluster_poses(self, n_structs, metric, output, nclusts=10, env=None):
+    def cluster_poses(self, n_structs, metric, output, nclusts=10, logger=None):
         assert self.residue, "Set residue ligand name to clusterize"
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
-        clusters = self._cluster(best_poses, metric, output, nclusts, env=None)
+        clusters = self._cluster(best_poses, metric, output, nclusts, logger=None)
         return clusters
 
-    def _cluster(self, poses, metric, output, nclusts=10, env=None):
+    def _cluster(self, poses, metric, output, nclusts=10, logger=None):
         # Extract metric values
         values = poses[metric].tolist()
         epochs = poses[EPOCH].tolist()
@@ -171,17 +171,17 @@ class PostProcessor:
             input_traj = file_ids[max_idx]
             if not self.topology:
                 bs.extract_snapshot_from_pdb(max_traj, input_traj, output, self.topology, max_snapshot, out_freq,
-                                             output_traj, env=env)
+                                             output_traj, logger=logger)
             else:
                 bs.extract_snapshot_from_xtc(max_traj, input_traj, output, self.topology, max_snapshot, out_freq,
-                                             output_traj, env=env)
+                                             output_traj, logger=logger)
             all_metrics.append(cluster_metrics)
             output_clusters.append(os.path.join(output, output_traj))
         fig, ax = plt.subplots()
         try:
             ax.boxplot(all_metrics)
         except IndexError:
-            env.info("Samples to disperse to produce a cluster")
+            logger.info("Samples to disperse to produce a cluster")
             return
         ax.set_ylabel(metric)
         ax.set_xlabel("Cluster number")
@@ -194,7 +194,7 @@ class PostProcessor:
 
 def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True,
                        mae=False, nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_column=3,
-                       env=None):
+                       logger=None):
     results_folder = os.path.join(output_folder, "results")
     if os.path.exists(results_folder):
         if not overwrite:
@@ -231,13 +231,13 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
         current_metric += 1
 
     # Retrieve 100 best structures
-    env.info("Retrieve 100 Best Poses")
-    analysis.top_poses(be, 100, top_poses_folder, env=env)
+    logger.info("Retrieve 100 Best Poses")
+    analysis.top_poses(be, 100, top_poses_folder, logger=logger)
 
     # Clustering of best 2000 best structures
-    env.info(f"Retrieve {nclusts} best cluster poses")
+    logger.info(f"Retrieve {nclusts} best cluster poses")
     if clustering:
-        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts=nclusts, env=env)
+        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts=nclusts, logger=logger)
     if mae:
         sch_python = os.path.join(cs.SCHRODINGER, "utilities/python")
         if not os.path.exists(sch_python):
@@ -246,7 +246,7 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
         python_file = os.path.join(cs.DIR, "Analysis/to_mae.py")
         for poses in top_poses + clusters:
             command = "{} {} {} --schr {} {}".format(sch_python, python_file, poses, cs.SCHRODINGER, "--remove")
-            env.info(command)
+            logger.info(command)
             try:
                 subprocess.check_call(command.split())
             except ValueError:

@@ -39,7 +39,7 @@ STEPS = 3
 HELP = "USE:\n\n- For xtc: python bestStructs.py 5 --top topology.pdb\n\n- For pdb:  python bestStructs.py 5"
 
 
-def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, criteria2=None, topology=None, env=None):
+def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, criteria2=None, topology=None, logger=None):
     """
 
       Description: Rank the traj found in the report files under path
@@ -130,7 +130,7 @@ def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_ou
             raise AttributeError("Model not found. Check the -f option.")
         traj.append("ENDMDL\n")
         f.write("\n".join(traj))
-    env.info("Model {} selected".format(os.path.join(output, f_out)))
+    logger.info("Model {} selected".format(os.path.join(output, f_out)))
 
 
 def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, env=None):
@@ -140,7 +140,7 @@ def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_ou
     if len(f_in) == 0: 
         sys.exit("Trajectory {} not found. Be aware that PELE trajectories must contain the label \'trajectory\' in their file name to be detected".format("*trajectory*_{}".format(f_id)))
     splitTrajectory.main(output, [f_in[0], ], topology, [(step)/out_freq+1, ], template= f_out)
-    env.info("Model {} selected".format(f_out))
+    logger.info("Model {} selected".format(f_out))
 
 
 def parse_values(reports, n_structs, criteria, sort_order, steps):
