@@ -16,6 +16,7 @@ class WaterIncluder():
 
     input_pdbs: list
     n_waters: int
+    user_waters: List=field(default_factory=lambda: [])
     ligand_perturbation_params: str=""
     ligand_residue: str=""
     water_center: bool=False
@@ -35,12 +36,19 @@ class WaterIncluder():
     
     def run(self):
         self.set_empty_selectors()
+        self.set_user_waters()
         self.water_checker()
         self.add_water()
         self.set_water_control_file()
     
     def set_empty_selectors(self):
+        #If True include in control file else null
         self.allow_empty_selectors = '"allowEmptyWaterSelectors": true,' if self.allow_empty_selectors else ""
+
+    def set_user_waters(self):
+        #If all_waters extract them from the any pdb
+        if self.user_waters == "all_waters":
+            self.user_waters = hp.retrieve_all_waters(self.input_pdbs[0])
         
         
     def set_parameters(self):
@@ -78,7 +86,7 @@ class WaterIncluder():
              
 
     def set_water_control_file(self):
-        if self.n_waters:
+        if self.n_waters != 0 or self.user_waters:
             self.set_parameters()
             water_string = [self.set_water_input(inp).strip("'") for inp in self.input_pdbs]
             self.all_waters = self.all_waters.rstrip(", ")
@@ -108,30 +116,40 @@ class WaterIncluder():
         if self.test:
             np.random.seed(42)
     
+    
+        output = []
+        n_inputs = len(self.input_pdbs)
+        water_coords = []
+        resnums = []
+        atomnums = []
+        chains = []
+        resnames = []
+    
+        # get maximum residue and atom numbers keep original waters
+        with open(self.input_pdbs[0], "r") as file:
+            pdb_lines = [ line for line in file.readlines() if "END" not in line]
+            for line in pdb_lines:
+                if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER"):
+                    try:
+                        resnum = line[22:27].strip()
+                        atomnum = line[7:11].strip()
+                        chain = line[21]
+                        resname = line[17:20]
+                        resnums.append(resnum)
+                        atomnums.append(atomnum)
+                        chains.append(chain)
+                        resnames.append(resname)
+                        if resname == "HOH":
+                            water = f"{chain}:{resnum}"
+                            if water not in self.user_waters and water not in self.water_to_exclude:
+                                self.water_to_exclude.append(water)
+                    #Line too short - Remarks pdb
+                    except IndexError:
+                        pass
+
         if self.n_waters < 1:
             return
-    
         else:
-            output = []
-            n_inputs = len(self.input_pdbs)
-            water_coords = []
-            resnums = []
-            atomnums = []
-            chains = []
-            resnames = []
-    
-            # get maximum residue and atom numbers
-            with open(self.input_pdbs[0], "r") as file:
-                pdb_lines = [ line for line in file.readlines() if "END" not in line]
-                for line in pdb_lines:
-                    if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER"):
-                        try:
-                            resnums.append(line[22:27].strip())
-                            atomnums.append(line[7:11].strip())
-                            chains.append(line[21])
-                            resnames.append(line[17:20])
-                        except:
-                            IndexError("Line '{}' is too short".format(line))
             lig_length = resnames.count(self.ligand_residue)
             resnums = [int(num) for num in resnums if num]
             max_resnum = max(resnums)
@@ -189,8 +207,6 @@ class WaterIncluder():
                     if res.resname == 'HOH':
                         if resnum not in resnums:
                             water_list = water_list + Selection.unfold_entities(res, "A")
-                        else:
-                            self.water_to_exclude.append(resnum)
     
                 # check for water contacts
                 contacts5 = []

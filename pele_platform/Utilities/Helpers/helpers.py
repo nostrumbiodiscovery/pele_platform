@@ -134,7 +134,7 @@ def retrieve_all_waters(pdb, exclude=False):
     with open(pdb, 'r') as f:
         waters = list(set(["{}:{}".format(line[21:22], line[22:26].strip()) for line in f if line and "HOH" in line]))
     if exclude:
-        waters = [water for water in waters if int(water.split(":")[1]) not in exclude]
+        waters = [water for water in waters if water not in exclude]
     return waters
 
 def retrieve_constraints_for_pele(constraints, pdb):

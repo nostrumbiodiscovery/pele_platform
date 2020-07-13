@@ -163,18 +163,17 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
 
         
         ####### Add waters, if needed
-        if args.n_waters:
-            input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
-            input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
-            water_obj = wt.WaterIncluder(input_waters, env.n_waters, env.parameters, 
-                water_center=args.water_center, water_radius=env.water_radius,
-                allow_empty_selectors=env.allow_empty_selectors, water_temp=env.water_temp,
-                water_trials=env.water_trials, water_overlap=env.water_overlap,
-                water_constr=env.water_constr, test=env.test, water_freq=env.water_freq,
-                ligand_residue=env.residue)
-            # Add n water molecules to minimisation inputs
-            water_obj.run()
-            env.parameters = water_obj.ligand_perturbation_params
+        input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
+        input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
+        water_obj = wt.WaterIncluder(input_waters, env.n_waters, 
+            user_waters=env.waters, ligand_perturbation_params=env.parameters, 
+            water_center=args.water_center, water_radius=env.water_radius,
+            allow_empty_selectors=env.allow_empty_selectors, water_temp=env.water_temp,
+            water_trials=env.water_trials, water_overlap=env.water_overlap,
+            water_constr=env.water_constr, test=env.test, water_freq=env.water_freq,
+            ligand_residue=env.residue)
+        water_obj.run()
+        env.parameters = water_obj.ligand_perturbation_params
 
         ############Fill in Simulation Templates############
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,

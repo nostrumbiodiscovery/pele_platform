@@ -2,7 +2,6 @@ import os
 from pele_platform.Allosteric.cluster import cluster_best_structures
 from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
-from pele_platform.Utilities.Helpers.water import add_water, water_checker
 import glob
 from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
 import pele_platform.Utilities.Parameters.pele_env as pv
