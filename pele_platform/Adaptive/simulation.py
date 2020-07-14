@@ -25,8 +25,6 @@ import pele_platform.Adaptive.pca as pca
 #import pele_platform.RNA.prep as pr
 
 
-
-
 def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
     """
     Main function to prepare and launch simulation
