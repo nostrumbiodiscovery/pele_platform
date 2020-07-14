@@ -146,9 +146,9 @@ SASA='''
 LIGAND = '"ligandResname" : "$LIG_RES",'
 
 # PPI waters
-water_O = "HETATM {}  OW  HOH {} {}    {}  1.00  0.00           O\n"
-water_H1 = "HETATM {}  1HW HOH {} {}    {}  1.00  0.00           H\n"
-water_H2 = "HETATM {}  2HW HOH {} {}    {}  1.00  0.00           H\n"
+water_O =  "HETATM {}  OW  HOH {}{:>4}     {}  1.00  0.00           O\n"
+water_H1 = "HETATM {}  1HW HOH {}{:>4}     {}  1.00  0.00           H\n"
+water_H2 = "HETATM {}  2HW HOH {}{:>4}     {}  1.00  0.00           H\n"
 water = [water_O, water_H1, water_H2]
 
 
