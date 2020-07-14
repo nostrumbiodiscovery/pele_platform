@@ -95,6 +95,10 @@ def test_include_water_no_ligand_API(pdb=pdb, n_waters=n_waters, water_center=[1
     assert not errors
     
     
+API_WATERS2 = [
+'HETATM 4761  OW  HOH A 402      51.000  92.000  14.000  1.00  0.00           O',
+'HETATM 4764  OW  HOH A 403      71.000  60.000  20.000  1.00  0.00           O'
+]
 def test_include_water_ligand_API(pdb=pdb, n_waters=n_waters, water_center=False, water_radius=False,
     water_trials=1, water_temp=1, water_constr=1, water_overlap=1, water_freq=9, ligand_residue="LIG"):
     errors = []
@@ -105,7 +109,7 @@ def test_include_water_ligand_API(pdb=pdb, n_waters=n_waters, water_center=False
         water_trials=water_trials, water_temp=water_temp, water_constr=water_constr,
         water_overlap=water_overlap, water_freq=water_freq, ligand_residue=ligand_residue)
     water_object.run()
-    errors = tk.check_file(".", input_file, API_WATERS, errors)
+    errors = tk.check_file(".", input_file, API_WATERS2, errors)
     #os.remove(input_file)
     assert water_object.water_line == '\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 6, "fixedCenter": [-87.5760388319, -7.1355193027, -64.8428620317], "type": "sphericalBox"}}]\n         }, \n'
     assert not errors

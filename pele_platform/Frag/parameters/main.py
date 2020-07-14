@@ -12,7 +12,7 @@ class FragParameters(pele.EnviroBuilder, water.FragWaterParams,
         self.build_frag_variables(args)
 
         #Water Parameters
-        water.FragWaterParams.__init__(self, args.frag_input)
+        water.FragWaterParams.__init__(self, args.frag_core)
 
         #Frag Input_files parameters
         files.FragInputFiles.__init__(self, args)
