@@ -110,7 +110,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
 
         # Metal constraints
         if not args.no_metal_constraints:
-            metal_constraints, env.external_constraints = mc.main(args.external_constraints, os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')), syst.system, permissive=env.permissive_metal_constr, all_metals=args.constrain_all_metals, external=env.external_constraints, env=env.logger)
+            metal_constraints, env.external_constraints = mc.main(args.external_constraints, os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')), syst.system, permissive=env.permissive_metal_constr, all_metals=args.constrain_all_metals, external=env.external_constraints, logger=env.logger)
             env.external_constraints = hp.retrieve_constraints_for_pele(env.external_constraints, env.system)
             metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
             env.external_constraints.extend(metal_constraints_json)
@@ -172,6 +172,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
             output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae,
             nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology,
-            be_column=env.be_column, limit_column=env.limit_column, te_column=env.te_column, env=env.logger)
+            be_column=env.be_column, limit_column=env.limit_column, te_column=env.te_column, logger=env.logger)
         env.logger.info("Pdf summary report successfully written to: {}".format(report))
     return env

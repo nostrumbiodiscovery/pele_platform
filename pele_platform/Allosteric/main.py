@@ -33,7 +33,7 @@ def run_allosteric(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
         # NEED ALGORITHM TO CHOOSE OPTIMUM NUMBERS OF CLUSTERS!!!!
         cluster_best_structures("5", n_components=simulation.n_components,
             residue=simulation.residue, topology=simulation.topology,
-            directory=working_folder, env=simulation.logger)
+            directory=working_folder, logger=simulation.logger)
     
     # adjust original input.yaml
     if not parsed_yaml.skip_refinement:

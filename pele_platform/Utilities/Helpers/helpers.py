@@ -197,3 +197,11 @@ def get_coords_from_residue(structure, residue):
                 if atom.name == atom_name:
                     COI = np.array(list(atom.get_vector()))
                     return COI
+
+def backup_logger(logger, message):
+    if not logger:
+        logger = logging.getLogger('logger')
+        logger.setLevel(logging.INFO)
+        logger.info(message)
+    else:
+        logger.info(message)

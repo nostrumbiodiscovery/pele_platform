@@ -48,7 +48,7 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     # cluster best structures
     with cd(simulation1_path):
         cluster_best_structures("5", n_components=simulation1.n_components, residue=simulation1.residue,
-                                topology=simulation1.topology, directory=working_folder, env=simulation1.logger)
+                                topology=simulation1.topology, directory=working_folder, logger=simulation1.logger)
     
     # adjust original input.yaml
     if not parsed_yaml.skip_refinement:

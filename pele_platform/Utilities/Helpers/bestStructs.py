@@ -96,15 +96,15 @@ def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, outp
     # Read trajectory and output snapshot
     for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
         if not topology:
-            extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, env=env)
+            extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, logger=logger)
         else:
-            extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, env=env)
+            extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, logger=logger)
     files_out = [os.path.join(output, f) for f in files_out]
     # Return data
     return files_out, epochs, file_ids, step_indexes, values
 
 
-def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, env=None):
+def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, logger=None):
     f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.pdb".format(f_id)))
     if not f_in:
         f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.*".format(f_id)))
@@ -133,7 +133,7 @@ def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_ou
     logger.info("Model {} selected".format(os.path.join(output, f_out)))
 
 
-def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, env=None):
+def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, logger=None):
     f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.xtc".format(f_id)))
     if not f_in:
         f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.*".format(f_id)))

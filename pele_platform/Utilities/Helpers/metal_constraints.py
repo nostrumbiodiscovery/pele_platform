@@ -106,7 +106,7 @@ def angle_classification(combinations, permissive):
     return geo, coordinated_atoms
 
 
-def find_geometry(metals, structure, permissive=False, all_metals=False, external=None, env=None):
+def find_geometry(metals, structure, permissive=False, all_metals=False, external=None, logger=None):
 
     # check metal contacts
     output = []
@@ -243,9 +243,9 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
     return output
 
 
-def main(original_constraints, protein_file, original_input, permissive=False, all_metals=False, external=None, env=None):
+def main(original_constraints, protein_file, original_input, permissive=False, all_metals=False, external=None, logger=None):
     metals, structure = find_metals(protein_file)
     if external:
         external = map_constraints(protein_file, original_input, original_constraints)
-    output = find_geometry(metals, structure, permissive, all_metals, external, env=env)
+    output = find_geometry(metals, structure, permissive, all_metals, external, logger=logger)
     return output, external

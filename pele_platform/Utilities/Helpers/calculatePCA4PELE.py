@@ -100,7 +100,7 @@ rom command line
         '''
 
         
-    def createEnsemble(self, pdbs, env):
+    def createEnsemble(self, pdbs, logger):
         '''
         Create a prody ensemble based on getPDBs return
         Take into account, that system can be prepared or not
@@ -126,13 +126,13 @@ rom command line
         else:
             if self.ref in pdbs:
                 if self.debug:
-                    env.logger.info("***DEBUG*** Found Ref:", self.ref)
-                    env.logger.info("***DEBUG*** Index Ref", pdbs.index(self.ref))
-                    env.logger.info("Removing reference from pdblist")
+                    logger.info("***DEBUG*** Found Ref:", self.ref)
+                    logger.info("***DEBUG*** Index Ref", pdbs.index(self.ref))
+                    logger.info("Removing reference from pdblist")
                 pdbs.pop(pdbs.index(self.ref))
    
         if self.debug:
-            env.logger.info("***DEBUG*** Reference is",self.ref)
+            logger.info("***DEBUG*** Reference is",self.ref)
             
         try: 
             f = open(self.ref)
@@ -331,7 +331,7 @@ rom command line
 
         return ensemble
         
-    def calcPCA(self, ensemble, env):
+    def calcPCA(self, ensemble, logger):
         '''
         calcPCA:
         #ensemble: prody ensmeble with structure information
@@ -359,7 +359,7 @@ rom command line
         logger.info("PCA is saved in:", outputname)
         return pca, outputname
         
-    def calcANM(self, structure, env):
+    def calcANM(self, structure, logger):
         '''
         calcANM:
         #structure: prody PDB-structure

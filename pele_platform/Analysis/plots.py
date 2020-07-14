@@ -12,6 +12,7 @@ import AdaptivePELE.analysis.selectOnPlot as sp
 import AdaptivePELE.analysis.bestStructs as bs
 from pele_platform.constants import constants as cs
 import pele_platform.Analysis.pdf_report as pr
+from pele_platform.Utilities.Helpers.helpers import backup_logger
 
 EPOCH = "epoch"
 STEPS = 3
@@ -83,7 +84,7 @@ class PostProcessor:
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
-            self.logger.info("Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z))
+            backup_logger(self.logger, "Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z))
         else:
             output_name = output_name if output_name else "{}_{}_plot.png".format(column_to_x, column_to_y)
             output_name = os.path.join(output_folder, output_name).replace(" ", "_")
@@ -91,7 +92,7 @@ class PostProcessor:
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
-            self.logger.info("Plotted {} vs {}".format(column_to_x, column_to_y))
+            backup_logger(self.logger, "Plotted {} vs {}".format(column_to_x, column_to_y))
         return output_name
 
     def top_poses(self, metric, n_structs, output="BestStructs", logger=None):
@@ -203,7 +204,7 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
         else:
             shutil.rmtree(os.path.join(output_folder, "results"))
     analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology,
-                             be_column=be_column, limit_column=limit_column, te_column=te_column, env=env)
+                             be_column=be_column, limit_column=limit_column, te_column=te_column, logger=logger)
     
     metrics = len(list(analysis.data)) - 1  # Discard epoch as metric
     be = analysis.be_column

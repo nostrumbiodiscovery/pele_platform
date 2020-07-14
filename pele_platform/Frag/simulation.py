@@ -22,7 +22,7 @@ class FragRunner(mn.FragParameters):
 
     def _launch(self):
         if self.ligands: #Full ligands as sdf
-            self._prepare_input_file(env=self.logger)
+            self._prepare_input_file(logger=self.logger)
         self._run()
 
     def _prepare_control_file(self):
