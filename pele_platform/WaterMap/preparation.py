@@ -19,4 +19,4 @@ def remove_water(protein_file):
         for line in new_lines:
             new_file.write(line)
 
-    return new_file
+    return new_file.name
