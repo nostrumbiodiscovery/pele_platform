@@ -63,7 +63,10 @@ class WaterIncluder():
             com_format = ['{:.10f}'.format(elem) for elem in com[0]]
             self.water_center = ", ".join(com_format)
         else:
-            com_format = ['{:.10f}'.format(coord) for coord in self.water_center]
+            try:
+                self.water_center = hp.get_coords_from_residue(self.input_pdbs[0], self.water_center)
+            except:
+                com_format = ['{:.10f}'.format(coord) for coord in self.water_center]
             self.water_center = ", ".join(com_format)
 
 
