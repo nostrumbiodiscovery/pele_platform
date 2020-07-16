@@ -77,7 +77,7 @@ def retrieve_software_settings(args, pele_dir):
                     "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.OUT_IN,
                     "box_radius": 30},
             "watermap": {"spawning_type": "independent", "iterations": 50, "pele_steps": 4, "n_waters": 1,
-                         "all_waters": True, "perturbation": False}
+                         "all_waters": True, "perturbation": ""}
         }
 
     }
