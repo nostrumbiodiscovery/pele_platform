@@ -65,9 +65,10 @@ class WaterIncluder():
         else:
             try:
                 self.water_center = hp.get_coords_from_residue(self.input_pdbs[0], self.water_center)
+                self.water_center = ", ".join(self.water_center)
             except:
                 com_format = ['{:.10f}'.format(coord) for coord in self.water_center]
-            self.water_center = ", ".join(com_format)
+                self.water_center = ", ".join(com_format)
 
 
     def set_box_radius(self):
