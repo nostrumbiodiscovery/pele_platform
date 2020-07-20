@@ -16,7 +16,7 @@ def run_watermap(parsed_yaml):
 
     # Get path to simulation output
     simulation_output = os.path.join(simulation.pele_dir, simulation.output)
-
+    
     # Analyse
     analysis = an.Watermap(simulation_output)
     analysis_results = analysis.run()
