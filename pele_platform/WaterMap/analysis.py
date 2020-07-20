@@ -67,7 +67,7 @@ def extract_water_coords(snapshots):
 
     for snap in snapshots:
         file, model, water_lines = snap
-        file_id = os.path.basename(file).replace(".pdb","").replace("trajectory_","")+model
+        file_id = "traj{}_model{}".format(os.path.basename(file).replace(".pdb","").replace("trajectory_",""), model)
         water = [line[32:56].strip().split() for line in water_lines]
         water_coords.append([file_id, model, water])
     return water_coords
