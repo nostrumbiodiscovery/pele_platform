@@ -1,4 +1,5 @@
 import os
+from Bio.PDB import PDBParser, PDBIO, Select
 import sys
 import subprocess
 import argparse
@@ -102,6 +103,8 @@ class SystemBuilder(object):
                     else:
                         if residue == line[22:26] and chain == line[20:22]:
                             ligand_text.append(line)
+                elif "CONECT" in line:
+                    ligand_text.append(line)
 
         if not receptor_text  or not ligand_text:
             raise ValueError("Something went wrong when extracting the ligand. Check residue&Chain on input")
@@ -110,7 +113,23 @@ class SystemBuilder(object):
         with open(receptor, "w") as fout:
             fout.write("".join(receptor_text+["END"]))
 
+        #parser = PDBParser()
+        #structure = parser.get_structure('protein', self.receptor)
+        #output=PDBIO()
+        #output.set_structure(structure)
+        #output.save(ligand, select=LigandSelect(self.residue), preserve_atom_numbering=True)
         return "".join(receptor_text), ligand
+
+class LigandSelect(Select):
+
+    def __init__(self, residue):
+        self.residue = residue
+
+    def accept_residue(self, residue):
+        if residue.get_resname()==self.residue:
+            return 1
+        else:
+            return 0
 
 def convert_pdb(mae_file, output_dir):
     from schrodinger import structure as st

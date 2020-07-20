@@ -5,6 +5,7 @@ import shutil
 import logging
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
 import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.constants.constants as cs
 
 @dataclass
 class ImplicitSolvent:
@@ -14,11 +15,17 @@ class ImplicitSolvent:
     template_folder: str
     obc_file: str
     logger: logging.Logger
+    forcefield: str=""
 
     def generate(self):
+        self.enforce_obc_with_openff()
         self.logger.info("Setting implicit solvent: {}".format(self.solvent))
         self.set_implicit_solvent()
         self.logger.info("Implicit solvent set\n\n".format(self.solvent))
+
+    def enforce_obc_with_openff(self):
+        if self.forcefield == cs.OPENFORCEFIELD:
+            self.solvent = "OBC"
 
     def set_implicit_solvent(self):
         if self.solvent == "OBC": #OBC from ...

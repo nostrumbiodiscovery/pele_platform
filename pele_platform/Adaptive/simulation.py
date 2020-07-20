@@ -135,7 +135,14 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
 
         ####Ligand parameters and simulation box
         if env.perturbation:
-            ligand_params = lg.LigandParametrization(env)
+            lig = env.ligand_ref if env.forcefield == cs.OPENFORCEFIELD else env.lig
+            ligand_params = lg.LigandParametrization(lig, env.residue, 
+                env.mae_lig, 
+                env.external_template, env.external_rotamers,
+                env.pele_dir, env.template_folder, env.rotamers_folder,
+                core=env.core, mtor=env.mtor, n=env.n,
+                forcefield=env.forcefield, gridres=env.gridres,
+                logger=env.logger)
             ligand_params.generate()
             box = bx.BoxSetter(env.box_center, env.box_radius,
                 env.ligand_ref, env.logger)
@@ -153,7 +160,8 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
     
         #########Solvent parameters
         solvent = sv.ImplicitSolvent(env.solvent, env.obc_tmp,
-             env.template_folder, env.obc_file, env.logger)
+             env.template_folder, env.obc_file, env.logger,
+             env.forcefield)
         solvent.generate()
         
         #####Build PCA#######
@@ -176,7 +184,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         ############Fill in Simulation Templates############
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,
             env.pele_exit_temp, env.topology)
-        adaptive.generate_inputs(env)
+        adaptive.generate_inputs(env, solvent)
 
 
     if env.analyse and not env.debug:

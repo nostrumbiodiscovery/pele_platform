@@ -42,8 +42,11 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             setattr(self, key, value)
         #####Initialize all variables by combining default and user input######
         simulation_params.SimulationParams.__init__(self, args)
+        self.pele_dir = "*"
+        simulation_folders.SimulationPaths.__init__(self, args)
         for key, value in frfs.retrieve_software_settings(args).items():
             setattr(self, key, value)
+        self.logger = logging.getLogger(__name__)
         
 
     def create_files_and_folders(self):

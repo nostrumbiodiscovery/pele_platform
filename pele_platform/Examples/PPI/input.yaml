@@ -10,4 +10,3 @@ test: true
 atom_dist:
 - "B:1:CA"
 - "B:2:CA"
-working_folder: "dani_ppi"

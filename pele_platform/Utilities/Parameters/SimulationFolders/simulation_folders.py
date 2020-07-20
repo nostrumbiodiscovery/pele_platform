@@ -32,7 +32,10 @@ class SimulationPaths(msm_folders.MSMPaths, glide_folders.GlidePaths):
     def ligand_paths(self, args):
         self.ligand_ref = os.path.join(self.pele_dir, "ligand.pdb")
         self.rotamers_folder = os.path.join(self.pele_dir, "DataLocal/LigandRotamerLibs/")
-        self.template_folder = os.path.join(self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
+        if self.forcefield == cs.OPENFORCEFIELD:
+            self.template_folder = os.path.join(self.pele_dir, "DataLocal/Templates/OFF/Parsley/HeteroAtoms/")
+        else:
+            self.template_folder = os.path.join(self.pele_dir, "DataLocal/Templates/{}/HeteroAtoms/".format(self.forcefield))
 
     def complex_paths(self, args):
         self.receptor = os.path.join(self.pele_dir, "receptor.pdb")

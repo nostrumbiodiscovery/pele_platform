@@ -160,6 +160,7 @@ metals = ['LI', 'BE', 'NA', 'MG', 'AL', 'K', 'CA', 'SC', 'TI', 'V', 'CR', 'MN', 
 #------------------
 
 GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
+OPENFORCEFIELD = "OpenForceField"
 
 #RESTARTS:
 #-----------

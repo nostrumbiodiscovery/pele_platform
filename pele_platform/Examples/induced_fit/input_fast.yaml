@@ -11,5 +11,6 @@ atom_dist:
 - 33
 test: true
 ca_constr: 3
+forcefield: "OpenForceField"
 
 
