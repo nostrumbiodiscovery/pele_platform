@@ -2,7 +2,7 @@ import os
 from pele_platform.Allosteric.cluster import cluster_best_structures
 from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
-from pele_platform.Utilities.Helpers.water import add_water, water_checker
+import glob
 from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
@@ -23,7 +23,7 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     parsed_yaml.folder = os.path.join(working_folder, "1_interface_exploration")
 
     # Check n_waters before launching the simulation
-    water_checker(parsed_yaml)
+    #water_checker(parsed_yaml)
 
     # get arguments from input.yaml
     n_waters = parsed_yaml.n_waters
@@ -75,7 +75,9 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
         
         # add water molecules to minimisation inputs
         #parsed_yaml.waters = "all_waters"
-        #add_water(parsed_yaml.system, chain, parsed_yaml.residue)
+        #
+        
+        (parsed_yaml.system, chain, parsed_yaml.residue)
         #parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*_water.pdb")
 
         # start simulation 2 - minimisation

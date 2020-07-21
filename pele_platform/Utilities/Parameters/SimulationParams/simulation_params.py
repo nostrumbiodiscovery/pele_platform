@@ -114,6 +114,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.simulation_type = args.simulation_type if args.simulation_type else self.simulation_params.get("simulation_type", "pele")
         iterations = 1 if self.spawning == "independent" else 30
         self.iterations = args.iterations if args.iterations else self.simulation_params.get("iterations", iterations)
+        self.clust_type = args.clust_type if args.clust_type else self.simulation_params.get("clust_type", "rmsd")
         self.cluster_values = args.cluster_values if args.cluster_values else self.simulation_params.get("cluster_values", "[1.75, 2.5, 4, 6]")
         self.cluster_conditions = args.cluster_conditions if args.cluster_conditions else self.simulation_params.get("cluster_conditions", "[1, 0.6, 0.4, 0.0]")
         self.seed = args.seed if args.seed else random.randrange(1, 70000)
@@ -171,7 +172,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
        
         self.allow_empty_selectors = '"allowEmptyWaterSelectors": true,' if args.water_empty_selector else ""
         self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters  # IDs of waters
-        self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", None)
+        self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", 0)
         self.waters = args.waters if args.waters else self.simulation_params.get("waters", [])
         self.water_radius = args.water_radius if args.water_radius else 6
         self.water_center = None

@@ -130,7 +130,8 @@ EXIT_DEFAULTS_PELE = [
 ]
 
 WATER_PARAMS_DEFAULTS_PELE = [
-    pp.WATER_PARAMS
+    pp.WATER_PARAMS,
+    '"watersToPerturb": {"links": {"ids": ["M:1"] }}' 
 ]
 
 GPCR_DEFAULTS_PELE = [
