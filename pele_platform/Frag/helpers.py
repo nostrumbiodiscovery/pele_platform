@@ -1,4 +1,3 @@
-import os
 import pele_platform.Frag.fragments as fr
 import pele_platform.Frag.atoms as at
 import pele_platform.Frag.checker as ch

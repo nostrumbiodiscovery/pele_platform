@@ -2,8 +2,6 @@ from dataclasses import dataclass
 import os
 import AdaptivePELE.adaptiveSampling as ad
 from pele_platform.Utilities.Helpers import helpers, template_builder
-import pele_platform.constants.constants as cs
-import pele_platform.Utilities.Helpers.center_of_mass as cm 
 import pele_platform.Utilities.Parameters.pele_env as pv
 
 @dataclass

@@ -2,7 +2,6 @@ import random
 import os
 import glob
 import pele_platform.constants.constants as cs
-import pele_platform.constants.pele_params as pp
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
@@ -13,7 +12,6 @@ from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 #from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
-import pele_platform.Utilities.Helpers.water as wt
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
@@ -37,14 +35,13 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.analysis_params(args)
 
         #Create all simulation types (could be more efficient --> chnage in future) 
-        msm_params.MSMParams.__init__(self, args)
-        glide_params.GlideParams.__init__(self, args)
-        bias_params.BiasParams.__init__(self, args)
-        inout_params.InOutParams.__init__(self, args)
-        pca.PCAParams.__init__(self, args)
-        allosteric.AllostericParams.__init__(self, args)
-        ppi.PPIParams.__init__(self, args)
-        #rna.RNAParams.__init__(self, args)
+        super().generate_msm_params(args)
+        super().generate_bias_params(args)
+        super().generate_inout_params(args)
+        super().generate_pca_params(args)
+        super().generate_allosteric_params(args)
+        super().generate_ppi_params(args)
+        #super().generate_rna_params(args)
 
 
     def simulation_type(self, args):

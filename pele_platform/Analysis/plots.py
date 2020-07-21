@@ -83,7 +83,7 @@ class PostProcessor():
         else:
             output_name = output_name if output_name else "{}_{}_plot.png".format(column_to_x, column_to_y)
             output_name = os.path.join(output_folder,output_name).replace(" ", "_")
-            pts = ax.scatter(self.data[column_to_x], self.data[column_to_y], s=20)
+            ax.scatter(self.data[column_to_x], self.data[column_to_y], s=20)
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)

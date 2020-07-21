@@ -87,8 +87,8 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
                         atomnums.append(line[7:11].strip())
                         chains.append(line[21])
                         resnames.append(line[17:20])
-                    except:
-                        IndexError("Line '{}' is too short".format(line))
+                    except IndexError:
+                        pass
         lig_length = resnames.count(ligand_chain)
         resnums = [int(num) for num in resnums if num]
         max_resnum = max(resnums)
@@ -172,10 +172,10 @@ def add_water(refinement_input, ligand_chain, n_waters=2, test=False):
             # translate water, if needed
             while contacts5:
                 contacts5 = []
-                for w in water_list:
-                    x, y, z = w.coord
-                    w.set_coord([x - 5, y, z])
-                    contacts5 = contacts5 + NeighborSearch(protein_list).search(w.coord, 5.0, "A")
+                for w_ in water_list:
+                    x, y, z = w_.coord
+                    w_.set_coord([x - 5, y, z])
+                    contacts5 = contacts5 + NeighborSearch(protein_list).search(w_.coord, 5.0, "A")
                     contacts5 = [c for c in contacts5 if c not in water_list]
 
             # save final output

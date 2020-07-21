@@ -2,5 +2,5 @@
 class RNAParams(object):
 
 
-    def __init__(self, args):
+    def generate_rna_params(self, args):
         self.rna = args.rna

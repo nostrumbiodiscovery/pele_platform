@@ -1,5 +1,4 @@
 from fpdf import FPDF
-import glob
 import os
 import numpy as np
 

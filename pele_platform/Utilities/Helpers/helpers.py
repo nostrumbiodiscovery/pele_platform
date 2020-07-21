@@ -1,8 +1,6 @@
 import os
 import numpy as np
 import sys
-import re
-import logging
 import warnings
 import pele_platform.Errors.custom_errors as cs
 from Bio.PDB import PDBParser
@@ -164,7 +162,6 @@ def retrieve_box(structure, residue_1, residue_2, weights=[0.5, 0.5]):
 
 def get_coords_from_residue(structure, original_residue):
     parser = PDBParser()
-    COI = np.zeros(3)
     structure = parser.get_structure('protein', structure)
     chain, res_number, atom_name = original_residue.split(":")
     for residue in structure.get_residues():

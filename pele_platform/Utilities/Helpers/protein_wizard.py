@@ -24,7 +24,6 @@ def prep_complex(complex, input_file="input.yaml", prep_output="", final_output=
     yaml = os.path.abspath(input_file)
     args = YamlParser(yaml, vf.VALID_FLAGS_PLATFORM)._parse_yaml()
     input_resname = args["resname"]
-    input_chain = args["chain"]
 
     # Read in PDB file
     while not os.path.exists(prep_output):
