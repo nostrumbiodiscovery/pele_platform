@@ -75,7 +75,9 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
         
         # add water molecules to minimisation inputs
         #parsed_yaml.waters = "all_waters"
-        #add_water(parsed_yaml.system, chain, parsed_yaml.residue)
+        #
+        
+        (parsed_yaml.system, chain, parsed_yaml.residue)
         #parsed_yaml.system = os.path.join(simulation1_path, "refinement_input/*_water.pdb")
 
         # start simulation 2 - minimisation

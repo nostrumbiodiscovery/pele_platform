@@ -1,4 +1,3 @@
-import sys
 import pele_platform.Errors.custom_errors as ce
 
 

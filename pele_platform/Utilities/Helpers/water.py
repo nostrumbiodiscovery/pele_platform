@@ -217,10 +217,10 @@ class WaterIncluder():
                 # translate water, if needed
                 while contacts5:
                     contacts5 = []
-                    for w in water_list:
-                        x, y, z = w.coord
-                        w.set_coord([x - 5, y, z])
-                        contacts5 = contacts5 + NeighborSearch(protein_list).search(w.coord, 5.0, "A")
+                    for w_ in water_list:
+                        x, y, z = w_.coord
+                        w_.set_coord([x - 5, y, z])
+                        contacts5 = contacts5 + NeighborSearch(protein_list).search(w_.coord, 5.0, "A")
                         contacts5 = [c for c in contacts5 if c not in water_list]
     
                 # save final output
@@ -252,7 +252,6 @@ class WaterIncluder():
                     file.write("END")
     
                 os.remove(temp_protein_file)
-    
 
 
 def ligand_com(refinement_input, ligand_chain):

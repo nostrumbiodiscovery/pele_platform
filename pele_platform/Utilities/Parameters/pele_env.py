@@ -1,7 +1,5 @@
 import os
 import shutil
-import warnings
-import random
 import logging
 import pele_platform.constants.constants as cs
 import pele_platform.features.adaptive as adfs

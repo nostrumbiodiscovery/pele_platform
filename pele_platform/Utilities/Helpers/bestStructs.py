@@ -2,7 +2,6 @@
 
 import os
 import errno
-import argparse
 import pandas as pd
 import glob
 import re

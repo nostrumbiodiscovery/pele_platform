@@ -1,7 +1,5 @@
-import subprocess
 import os
 import shutil
-import glob
 import AdaptivePELE.adaptiveSampling as adt
 import PPP.main as ppp
 from pele_platform.Utilities.Helpers import helpers
@@ -13,7 +11,6 @@ import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
-import pele_platform.Utilities.Helpers.metrics as mt
 import pele_platform.Utilities.Helpers.metal_constraints as mc
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
@@ -118,6 +115,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         ################METAL CONSTRAINTS##################
         if not args.no_metal_constraints:
             metal_constraints, env.external_constraints = mc.main(args.external_constraints, os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')), syst.system, permissive=env.permissive_metal_constr, all_metals=args.constrain_all_metals, external=env.external_constraints)
+            #??????
             metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
             env.external_constraints = hp.retrieve_constraints_for_pele(env.external_constraints, env.system)
             metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)

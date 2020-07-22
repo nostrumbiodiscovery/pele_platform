@@ -146,10 +146,6 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
             contacts8 = []
             ligand_atoms = list(ligand.get_atoms())
             
-            start = np.array(list(ligand_atoms[0].get_vector()))
-            stop = np.array(list(ligand_atoms[-1].get_vector()))
-            mid = np.array(list(ligand_atoms[int(len(ligand_atoms)/2)].get_vector()))
-
             contacts5.append( NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "S"))
             contacts8 = NeighborSearch(protein_list).search(new_ligand_COM, d8_ligand, "S")
             if contacts8 and not any(contacts5):
