@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Input Flags &mdash; pele platform 1.4.2 documentation</title>
+  <title>Input flags documentation &mdash; pele platform 1.5.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Add your own new simulation mode" href="../developers/index.html" />
-    <link rel="prev" title="FragPELE Modes" href="../modes/frag/index.html" /> 
+    <link rel="next" title="Developers: Add your own mode" href="../developers/index.html" />
+    <link rel="prev" title="Prepare your own biased simulation" href="../packages/bias/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.4
+                1.5
               </div>
             
           
@@ -88,27 +88,29 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../modes/index.html">Platform Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Input Flags</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Input flags documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#compulsory-flags-pele">Compulsory flags PELE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#compulsory-flags-fragpele">Compulsory flags FragPele</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optative-flags">Optative flags</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#general-settings">General settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#receptor-preparation">Receptor preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#receptor-preparation">Receptor preparation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pca">PCA</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">Ligand preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#box-parameters">Box parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#simulation-params">Simulation params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pele-params">PELE params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fragpele-params">FragPELE params</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ppi-params">PPI params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#metal-constraints">Metal constraints</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#waterperturbation">WaterPerturbation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#simulation-parameters">Simulation Parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
@@ -118,7 +120,7 @@
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers: Add your own mode</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
@@ -167,7 +169,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Input Flags</li>
+      <li>Input flags documentation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -186,8 +188,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="input-flags">
-<h1>Input Flags<a class="headerlink" href="#input-flags" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="input-flags-documentation">
+<h1>Input flags documentation<a class="headerlink" href="#input-flags-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="compulsory-flags-pele">
 <h2>Compulsory flags PELE<a class="headerlink" href="#compulsory-flags-pele" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -210,7 +212,7 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 <ul class="simple">
 <li><p><strong>frag_core</strong>: Core of the molecule we want to add fragments to. Required parameter</p></li>
 <li><p><strong>Method to use</strong>: Choose on of the available methos. For more please refer here.</p></li>
-<li><p><strong>resname^</strong>: Residue name of the frag_core ligand</p></li>
+<li><p><strong>resname</strong>: Residue name of the frag_core ligand</p></li>
 <li><p><strong>cpus</strong>: Cpus to use. Default=48</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
@@ -226,7 +228,7 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 <h3>General settings<a class="headerlink" href="#general-settings" title="Permalink to this headline">¶</a></h3>
 <p>Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).</p>
 <ul class="simple">
-<li><p><strong>test</strong>: Run a quick test to check the simulation works (~2 min). <strong>Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to made the simulation faster!!!!</strong></p></li>
+<li><p><strong>test</strong>: Run a quick test to check the simulation works (~2 min). <strong>Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to make simulation faster!!!!</strong></p></li>
 <li><p><strong>usesrun</strong>: Use srun binary to run PELE. Only when using intel processors.</p></li>
 <li><p><strong>pele_exec</strong>: Use a pele executable that is not the default one. <strong>Needs to be used with pele_data and pele_documents</strong>. default: $PELE/bin/Pele_mpi</p></li>
 <li><p><strong>pele_data</strong>: Use a pele data folder that is not the default one. default: $PELE/Data</p></li>
@@ -261,6 +263,22 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">TPO</span>
 <span class="nt">prepwizard</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
+</div>
+<div class="section" id="pca">
+<h4>PCA<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h4>
+<p>This algorithm calculates the PCA of a pdb trajectory (minimum of 3 snapshots) and includes the movement into the simulation.</p>
+<ul class="simple">
+<li><p><strong>pca_traj</strong>: Pdb snapshots to build the PCA on. Default = []</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pca_traj</span><span class="p">:</span> <span class="c1">#Example1</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/1.pdb&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/2.pdb&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/3.pdb&quot;</span>
+<span class="nt">pca_traj</span><span class="p">:</span> <span class="c1">#Example2</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/*.pdb&quot;</span>
+<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1">#When running PCA remove contraints on carbon-alphas</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="ligand-preparation">
@@ -408,9 +426,8 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 <ul class="simple">
 <li><p><strong>ca_constr</strong>: Carbon alpha constraints. Default=0.5</p></li>
 <li><p><strong>interval_constr</strong>: Every how many carbon alphas to apply the constraints. Default:10</p></li>
-<li><p><strong>metal_constr</strong>: Metal constraints. Default=200</p></li>
 <li><p><strong>water_constr</strong>: Water constraints. Default=5</p></li>
-<li><p><strong>constrain_smiles</strong>: SMILES string to indicate what part of the molecule to constraint. Default=None</p></li>
+<li><p><strong>constrain_smiles</strong>: SMILES string to indicate what part of the molecule to constrain. Default=None</p></li>
 <li><p><strong>smiles_constr</strong>: Numeric value of the SMILES constraints. Default=10</p></li>
 <li><p><strong>external_constraints</strong>: You can specify 2 types of constraints. Positional constraints or atom-atom constraint. (Example below)</p>
 <ul>
@@ -432,53 +449,52 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 </li>
 </ul>
 </li>
+<li><p><strong>remove_constraints</strong>: Do not place constraints on the carbon-alpha of the protein. Default: False</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ca_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="nt">interval_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">metal_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
 <span class="nt">water_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
 <span class="nt">constrain_smiles</span><span class="p">:</span> <span class="s">&quot;C2CCC1CCCCC1C2&quot;</span>
 <span class="nt">smiles_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
 <span class="nt">external_constraints</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;10-17&quot;</span> <span class="c1">#constraint of 10kcal/mol at atomnumber 17</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;5-A:1:H&quot;</span> <span class="c1">##constraint of 10kcal/mol at atom with chain A residuenumber 1 and atomname H</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-17-4159&quot;</span> <span class="c1">#constraint of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 &amp; 4159</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-A:1:H-L:1:C21&quot;</span> <span class="c1">#constraint of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;10-17&quot;</span> <span class="c1">#constrain of 10kcal/mol at atomnumber 17</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;5-A:1:H&quot;</span> <span class="c1">##constrain of 10kcal/mol at atom with chain A residuenumber 1 and atomname H</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-17-4159&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 &amp; 4159</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-A:1:H-L:1:C21&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname</span>
+<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
+</div>
+<div class="section" id="metal-constraints">
+<h4>Metal constraints<a class="headerlink" href="#metal-constraints" title="Permalink to this headline">¶</a></h4>
+<p>Algorithm to automatically set metal constraints around the ligand.</p>
+<ul class="simple">
+<li><p><strong>no_metal_constraints</strong>: Ignore all metals in the PDB file, no constraints will be set automatically. Default=False</p></li>
+<li><p><strong>permissive_metal_constr</strong>: Expand the search for coordinated atoms by allowing 35% deviation from “ideal” angles. If the algorithm finds a valid geometry it will include the metal constraint into the simulation. Default=False</p></li>
+<li><p><strong>constrain_all_metals</strong>: Constrain all atoms around the metal, regardless of the angles or coordination number. Default=False</p></li>
+<li><p><strong>external_constraints</strong>: Set a manual constraint containing a metal atom to disable search for this particular metal. Default=[]</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">no_metal_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">permissive_metal_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">constrain_all_metals</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">external_constraints</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-A:1:H-L:1:MG&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="waterperturbation">
 <h3>WaterPerturbation<a class="headerlink" href="#waterperturbation" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>water_exp</strong>: Exploration of the hydratation sites of a binding site by perturbing and clusterizing a single water. More advance features will be later implemented to discriminate between “happy” and “unhappy” waters.</p></li>
-<li><p><strong>water_lig</strong>: Perturb one or several water molecules while exploring the conformational space of the ligand.</p></li>
-</ul>
-</div></blockquote>
-<p>Example water exploration:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">water_exp</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:1</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:2</span>
-</pre></div>
-</div>
-<p>Example water ligand:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">water_lig</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:1</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">M:2</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="simulation-parameters">
-<h3>Simulation Parameters<a class="headerlink" href="#simulation-parameters" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
+<li><p><strong>n_waters</strong>: Number of waters to randomly add into your simulation. Compulsory when running MonteCarlo with water perturbation. Default=0</p></li>
 <li><p><strong>box_water</strong>: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.</p></li>
 <li><p><strong>water_radius</strong>: Radius of the water box. Default=7</p></li>
 <li><p><strong>water_trials</strong>: Numerical trials on water perturbation. Default=10000</p></li>
-<li><p><strong>water_constr</strong>: COM constraint applied to th water molecule after perturbation. Default=0</p></li>
+<li><p><strong>water_constr</strong>: COM constrain applied to th water molecule after perturbation. Default=0</p></li>
 <li><p><strong>water_temp</strong>: Temperature of the water perturbation step. Default=5000</p></li>
 <li><p><strong>water_overlap</strong>: Overlap factor of water. Default=0.78</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">box_water</span><span class="p">:</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">n_waters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span> <span class="c1">#Compulsory</span>
+<span class="nt">box_water</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
 <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
@@ -556,10 +572,10 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Add your own new simulation mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers: Add your own mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../modes/frag/index.html" class="btn btn-neutral float-left" title="FragPELE Modes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../packages/bias/index.html" class="btn btn-neutral float-left" title="Prepare your own biased simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -568,7 +584,7 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Daniel Soler Viladrich
+        &copy; Copyright 2020, Daniel Soler Viladrich
 
     </p>
   </div>

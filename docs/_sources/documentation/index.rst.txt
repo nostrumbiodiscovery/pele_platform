@@ -1,5 +1,5 @@
-Input Flags
-######################
+Input flags documentation
+###########################
 
 Compulsory flags PELE
 --------------------------------
@@ -33,7 +33,7 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
 
 - **Method to use**: Choose on of the available methos. For more please refer here.
 
-- **resname^**: Residue name of the frag_core ligand
+- **resname**: Residue name of the frag_core ligand
 
 - **cpus**: Cpus to use. Default=48
 
@@ -54,7 +54,7 @@ General settings
 
 Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).
 
-- **test**: Run a quick test to check the simulation works (~2 min). **Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to made the simulation faster!!!!**
+- **test**: Run a quick test to check the simulation works (~2 min). **Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to make simulation faster!!!!**
  
 - **usesrun**: Use srun binary to run PELE. Only when using intel processors.
 
@@ -103,6 +103,25 @@ Configure the parameters of the PPP (Protein Pele Preparation)
   nonstandard:
     - TPO
   prepwizard: false
+
+PCA
+++++++
+
+This algorithm calculates the PCA of a pdb trajectory (minimum of 3 snapshots) and includes the movement into the simulation.
+
+- **pca_traj**: Pdb snapshots to build the PCA on. Default = []
+ 
+
+..  code-block:: yaml
+
+    pca_traj: #Example1
+    - "pele_platform/Examples/pca/1.pdb"
+    - "pele_platform/Examples/pca/2.pdb"
+    - "pele_platform/Examples/pca/3.pdb"
+    pca_traj: #Example2
+    - "pele_platform/Examples/pca/*.pdb"
+    remove_constraints: true #When running PCA remove contraints on carbon-alphas
+
 
 Ligand preparation
 ======================
@@ -300,11 +319,9 @@ This section allows the user to change the constraint values.
 
 - **interval_constr**: Every how many carbon alphas to apply the constraints. Default:10
 
-- **metal_constr**: Metal constraints. Default=200
-
 - **water_constr**: Water constraints. Default=5
 
-- **constrain_smiles**: SMILES string to indicate what part of the molecule to constraint. Default=None
+- **constrain_smiles**: SMILES string to indicate what part of the molecule to constrain. Default=None
 
 - **smiles_constr**: Numeric value of the SMILES constraints. Default=10
 
@@ -318,47 +335,52 @@ This section allows the user to change the constraint values.
         - springConstant-equilibriumDistance-atomnumber1-atomnumber2. i.e. "50-2.34-17-4159"
         - springConstant-equilibriumDistance-chain1:resnum1:atomname1-chain2:resnum2:atomname2. i.e. "50-2.34-A:1:H-L:1:C21"
 
+- **remove_constraints**: Do not place constraints on the carbon-alpha of the protein. Default: False
+
+
 ..  code-block:: yaml
 
     ca_constr: 2
     interval_constr: 10
-    metal_constr: 100
     water_constr: 5
     constrain_smiles: "C2CCC1CCCCC1C2"
     smiles_constr: 5
     external_constraints:
-    - "10-17" #constraint of 10kcal/mol at atomnumber 17
-    - "5-A:1:H" ##constraint of 10kcal/mol at atom with chain A residuenumber 1 and atomname H
-    - "50-2.34-17-4159" #constraint of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 & 4159
-    - "50-2.34-A:1:H-L:1:C21" #constraint of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
+    - "10-17" #constrain of 10kcal/mol at atomnumber 17
+    - "5-A:1:H" ##constrain of 10kcal/mol at atom with chain A residuenumber 1 and atomname H
+    - "50-2.34-17-4159" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 & 4159
+    - "50-2.34-A:1:H-L:1:C21" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
+    remove_constraints: true
+
+Metal constraints
++++++++++++++++++++++
+
+Algorithm to automatically set metal constraints around the ligand.
+
+- **no_metal_constraints**: Ignore all metals in the PDB file, no constraints will be set automatically. Default=False
+
+- **permissive_metal_constr**: Expand the search for coordinated atoms by allowing 35% deviation from “ideal” angles. If the algorithm finds a valid geometry it will include the metal constraint into the simulation. Default=False
+
+- **constrain_all_metals**: Constrain all atoms around the metal, regardless of the angles or coordination number. Default=False
+
+- **external_constraints**: Set a manual constraint containing a metal atom to disable search for this particular metal. Default=[]
+
+
+..  code-block:: yaml
+
+    no_metal_constraints: true
+    permissive_metal_constr: true
+    constrain_all_metals: true
+    external_constraints:
+        - "50-2.34-A:1:H-L:1:MG" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
+
+
 
 
 WaterPerturbation
 ======================
 
-
-    - **water_exp**: Exploration of the hydratation sites of a binding site by perturbing and clusterizing a single water. More advance features will be later implemented to discriminate between "happy" and "unhappy" waters.
-
-    - **water_lig**: Perturb one or several water molecules while exploring the conformational space of the ligand.
-
-Example water exploration:
-
-..  code-block:: yaml
-
-  water_exp:
-    - M:1
-    - M:2
-
-Example water ligand:
-
-..  code-block:: yaml
-
-    water_lig:
-    - M:1
-    - M:2
-
-Simulation Parameters
-========================
+- **n_waters**: Number of waters to randomly add into your simulation. Compulsory when running MonteCarlo with water perturbation. Default=0
 
 - **box_water**: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.
 
@@ -366,7 +388,7 @@ Simulation Parameters
 
 - **water_trials**: Numerical trials on water perturbation. Default=10000
 
-- **water_constr**: COM constraint applied to th water molecule after perturbation. Default=0
+- **water_constr**: COM constrain applied to th water molecule after perturbation. Default=0
 
 - **water_temp**: Temperature of the water perturbation step. Default=5000
 
@@ -375,6 +397,7 @@ Simulation Parameters
 
 ..  code-block:: yaml
 
+    n_waters: 3 #Compulsory
     box_water:
     - 20
     - 30

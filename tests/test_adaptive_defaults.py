@@ -7,8 +7,8 @@ import pele_platform.main as main
 test_path = os.path.join(cs.DIR, "Examples")
 
 
+OUT_IN_ARGS = os.path.join(test_path, "out_in/input_default.yaml")
 BIAS_ARGS = os.path.join(test_path, "bias/input_defaults.yaml")
-OUT_IN_ARGS = os.path.join(test_path, "out_in/input.yaml")
 INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive_defaults.yaml")
 INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast_defaults.yaml")
 GLOBAL_ARGS = os.path.join(test_path, "global/input_defaults.yaml")
@@ -23,6 +23,7 @@ MAE_ARGS = os.path.join(test_path, "induced_fit/input_mae.yaml")
 PCA_ARGS = os.path.join(test_path, "pca/input.yaml")
 FLAGS_ARGS = os.path.join(test_path, "flags/input.yaml")
 RESCORING_ARGS = os.path.join(test_path, "rescoring/input_defaults.yaml")
+GPCR_ARGS = os.path.join(test_path, "gpcr/input_defaults.yaml")
 
 INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE = [
     '"type" : "independent"',
@@ -44,6 +45,11 @@ INDUCE_FIT_PELE = [
     '"numberOfStericTrials": 500'
     ]
 
+BIAS_DEFAULTS_ADAPTIVE = [
+    '"type" : "epsilon"',
+    '"epsilon": 1'
+]
+
 GLOBAL_DEFAULTS_ADAPTIVE = [
     '"type" : "inverselyProportional"',
     '"peleSteps" : 4,',
@@ -58,20 +64,19 @@ GLOBAL_DEFAULTS_PELE = [
     pp.GLOBAL
 ]
 
-BIAS_DEFAULTS_ADAPTIVE = [
-    '"type" : "epsilon"',
+OUT_IN_DEFAULTS_ADAPTIVE = [
+    '"type" : "inverselyProportional"',
     '"peleSteps" : 8,',
-    '"iterations" : 50,',
-    '"processors" : 100,',
-    '[1.5, 2, 5]',
-    '[0.6, 0.4, 0.0]',
-    '"metricColumnInReport" : 6',
-    '"epsilon": 0.25'
+    '"iterations" : 100,',
+    '[2, 5, 7]',
+    '[1, 0.6, 0.0]',
 ]
 
-BIAS_DEFAULTS_PELE = [
+OUT_IN_DEFAULTS_PELE = [
     '"numberOfStericTrials": 250',
-    pp.BIAS
+    '"radius": 30',
+    '"overlapFactor": 0.65',
+    pp.OUT_IN
 ]
 
 REF_DEFAULTS_ADAPTIVE = [
@@ -124,31 +129,27 @@ EXIT_DEFAULTS_PELE = [
 
 ]
 
-WATER_LIG_DEFAULTS_ADAPTIVE = [
-    '[1.75, 2.5, 3.5, 5]',
-    '"type" : "inverselyProportional"',
-    '"peleSteps" : 12,',
+WATER_PARAMS_DEFAULTS_PELE = [
+    pp.WATER_PARAMS
+]
+
+GPCR_DEFAULTS_PELE = [
+     '"radius": 19.970223159033843,',
+     '"fixedCenter": [-71.78435134887695,-13.431749963760375,-42.46209926605225]',
+     '"numberOfStericTrials": 100,',
+     pp.GPCR_ORTH
+]
+
+GPCR_DEFAULTS_ADAPTIVE = [
+    '"type" : "epsilon"',
+    '"metricColumnInReport" : 6',
+    '"epsilon": 0.25',
     '"iterations" : 50',
-    '[1.6, 1.2, 1, 0.0]'
+    '"peleSteps" : 8',
+    '"values" : [1.75, 2.5, 4],',
+    '"conditions": [0.7, 0.4, 0.0]'
 ]
 
-WATER_DEFAULTS_ADAPTIVE = [
-    '"type" : "independent"',
-    '"peleSteps" : 12,',
-    '"iterations" : 50',
-    '"processors" : 128,'
-]
-
-WATER_LIG_DEFAULTS_PELE = [
-    '"numberOfStericTrials": 100',
-    '"overlapFactor": 0.5',
-    '"radius": 10',
-    pp.WATER_LIG
-]
-
-WATER_DEFAULTS_PELE = [
-    pp.WATER_BS
-]
 
 def test_induced_exhaustive_defaults(ext_args=INDUCED_EX_ARGS):
     errors = []
@@ -186,38 +187,37 @@ def test_softexit_defaults(ext_args=EXITSOFT_ARGS):
     errors = check_file(job.pele_dir, "pele.conf", EXIT_DEFAULTS_PELE, errors)
     assert not errors
 
-def test_water_defaults(ext_args=WATER_ARGS):
-    errors = []
-    job = main.run_platform(ext_args)
-    errors = check_file(job.pele_dir, "adaptive.conf", WATER_DEFAULTS_ADAPTIVE, errors)
-    errors = check_file(job.pele_dir, "pele.conf", WATER_DEFAULTS_PELE, errors)
-    assert not errors
-
 def test_water_lig_defaults(ext_args=WATERLIG_ARGS):
     errors = []
     job = main.run_platform(ext_args)
-    errors = check_file(job.pele_dir, "adaptive.conf", WATER_LIG_DEFAULTS_ADAPTIVE, errors)
-    errors = check_file(job.pele_dir, "pele.conf", WATER_LIG_DEFAULTS_PELE, errors)
+    errors = check_file(job.pele_dir, "pele.conf", WATER_PARAMS_DEFAULTS_PELE, errors)
+    assert not errors
+
+def test_out_in_defaults(ext_args=OUT_IN_ARGS):
+    errors = []
+    job = main.run_platform(ext_args)
+    errors = check_file(job.pele_dir, "adaptive.conf", OUT_IN_DEFAULTS_ADAPTIVE, errors)
+    errors = check_file(job.pele_dir, "pele.conf", OUT_IN_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_bias_defaults(ext_args=BIAS_ARGS):
     errors = []
     job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", BIAS_DEFAULTS_ADAPTIVE, errors)
-    errors = check_file(job.pele_dir, "pele.conf", BIAS_DEFAULTS_PELE, errors)
     assert not errors
-
-def pca():
-    pass
-
-def out_in():
-    pass
 
 def test_rescoring_defaults(ext_args=RESCORING_ARGS):
     errors = []
     job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", REF_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", REF_DEFAULTS_PELE, errors)
+    assert not errors
+
+def test_gpcr_defaults(ext_args=GPCR_ARGS):
+    errors = []
+    job = main.run_platform(ext_args)
+    errors = check_file(job.pele_dir, "adaptive.conf", GPCR_DEFAULTS_ADAPTIVE, errors)
+    errors = check_file(job.pele_dir, "pele.conf", GPCR_DEFAULTS_PELE, errors)
     assert not errors
 
 def check_file(folder, filename, values, errors):

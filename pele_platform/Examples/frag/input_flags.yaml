@@ -2,6 +2,7 @@ frag_core: "../pele_platform/Examples/water/water_processed.pdb"
 frag_input: "../pele_platform/Examples/frag/flags.conf"
 chain_core : "J"
 resname: "SB4"
+steering: 3
 log: true
 cpus: 3
 seed: 3000
@@ -28,7 +29,7 @@ water_freq: 3
 temperature: 3000
 solvent: "OBC"
 sidechain_res: 30
-overlap_factor: 0.3
+overlap_factor: 3
 steric_trials: 300
 spawning: "epsilon"
 density: "exitContinuous"
@@ -58,7 +59,7 @@ pele_documents: "done"
 verbose: true
 water_freq: 3
 water_overlap: 3
-water_lig:
+waters:
 - M:1
 pca: "modes.nmd"
 anm_direction: "steered"
@@ -70,7 +71,3 @@ anm_num_of_modes: 3
 anm_relaxation_constr: 3
 remove_constraints: false
 no_check: true
-
-
-
-

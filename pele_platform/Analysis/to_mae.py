@@ -3,84 +3,40 @@ import argparse
 import schrodinger.structure as st
 
 
-class OutputFile(object):
-    
-    def __init__(self, inputfile):
-        self.inputfile = inputfile
-        self._format = self.inputfile.split(".")[-1]
+class cd:
+    """Context manager for changing the current working directory"""
+    def __init__(self, newPath):
+        self.newPath = os.path.expanduser(newPath)
 
-    
-    def get_property(self, Property):
-        return self._get_property(Property)
+    def __enter__(self):
+        self.savedPath = os.getcwd()
+        os.chdir(self.newPath)
 
+    def __exit__(self, etype, value, traceback):
+        os.chdir(self.savedPath)
 
-    def set_property(self, Property, value, typedata="r", author="pele"):
-        self._typedata = typedata
-        self._author = author
-        return self._set_property(Property, value)
-
-
-
-class MaeFile(OutputFile):
-    
-    
-    def __init__(self, inputfile):
-        OutputFile.__init__(self, inputfile)
-        self._structure = next(st.StructureReader(self.inputfile))
-        self._properties = self._structure.property
-
-    def _get_property(self, Property):
-        try:
-            return self._properties[Property]
-        except KeyError:
-            raise KeyError("Property {} not found in {}".format(Property, self.inputfile))
-
-    def _set_property(self, Property, value):
-        if Property in self._structure.property:
-            self._structure.property[Property] = value
-        else:
-            propertyname = "{}_{}_{}_{}".format(self._typedata, self._author, Property, value)
-            self._structure.property[propertyname] =  value
-            self._properties = self._structure.property
-        return self._properties
-
-
-def pdb_to_mae(pdb_inputfile, schr_path, mae_output_file=None, remove=False):
-    # Get output name from file
-    file_info = pdb_inputfile.split("_")
-    if not mae_output_file:
-        dirpath = os.path.join(os.path.dirname(pdb_inputfile))
-        filename = os.path.basename(pdb_inputfile).rsplit(".", 1)[0] + ".mae"
-        mae_output_file = os.path.join(dirpath, filename)
-
-    # Get properties from name
-    properties = {"BindingEnergy": float(file_info[-1].replace("BindingEnergy", "").replace(".pdb", "")),
-                  "trajectory": int(file_info[-2].split(".")[0]), 
-                  "snapshot": file_info[-2].split(".")[1],
-                  "epoch": file_info[-4].split("epoch")[-1]
-                  }
-
-    # Convert to mae file
-    pdb_convert = os.path.join(schr_path, "utilities/pdbconvert")
-    os.system("{} -ipdb {} -omae {}".format(pdb_convert, pdb_inputfile, mae_output_file))
-
-    # Set properties to mae_file
-    mae_file = MaeFile(mae_output_file)
-    for Property, value in properties.items():
-        if type(value) == str:
-            proper = mae_file.set_property(Property, value, typedata="s")
-        if type(value) == int:
-            proper = mae_file.set_property(Property, value, typedata="i")
-        if type(value) == float:
-            proper = mae_file.set_property(Property, value, typedata="r")
-
-    # output maestro file
-    with st.StructureWriter(mae_output_file) as writer:
-        writer.append(mae_file._structure)
-
-    if remove:
-        os.remove(pdb_inputfile)
-
+def pdb_to_mae(fname, schr_path, mae_output_file=None, remove=False):
+    directory = os.path.dirname(fname)
+    with cd(directory):
+        file_info = fname.split("_")
+        properties = {"BindingEnergy": float(file_info[-1].replace("BindingEnergy", "").replace(".pdb", "")),
+           "trajectory": int(file_info[-2].split(".")[0]), 
+           "snapshot": int(file_info[-2].split(".")[1]),
+           "epoch": int(file_info[-4].split("epoch")[-1])
+           }
+        title = fname.split('_')
+        traj = os.path.basename(title[1] + '.' + title[3])
+        pele_energy = float(title[4].replace('BindingEnergy',''). replace('.pdb',''))           
+        cmd = '$SCHRODINGER/utilities/prepwizard -rehtreat -noepik -disulfides -noimpref -nometaltreat -noprotassign -nopropka -WAIT %s %s.mae' %(fname, traj)
+        print(cmd)
+        os.system(cmd)
+        struct = next(st.StructureReader(f"{traj}.mae"))
+        struct.property['r_user_PELE_energy'] = properties["BindingEnergy"]
+        struct.property['r_user_PELE_epoch'] = properties["epoch"]
+        struct.property['r_user_PELE_traj'] = properties["trajectory"]
+        struct.property['r_user_PELE_snapshot'] = properties["snapshot"]
+        struct.title = '%s_BindEn_%.2f' %(traj, pele_energy) 
+        struct.write(f"{traj}.mae")
 
 def add_args(parser):
     parser.add_argument('inputfile', type=str, help="Pdb input file")

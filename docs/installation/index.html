@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; pele platform 1.4.2 documentation</title>
+  <title>Installation &mdash; pele platform 1.5.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Prepare your own simulation" href="../cheatsheet/index.html" />
+    <link rel="next" title="Prepare your own simulation" href="../packages/index.html" />
     <link rel="prev" title="Pele Platform" href="../index.html" /> 
 </head>
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.4
+                1.5
               </div>
             
           
@@ -94,16 +94,13 @@
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../modes/index.html">Platform Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input flags documentation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input Flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers: Add your own mode</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
@@ -175,13 +172,13 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="conda-recommended">
 <h2>Conda (recommended)<a class="headerlink" href="#conda-recommended" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c nostrumbiodiscovery -c conda-forge -c anaconda <span class="nv">pele_platform</span><span class="o">==</span><span class="m">1</span>.4.3
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c nostrumbiodiscovery -c conda-forge -c anaconda <span class="nv">pele_platform</span><span class="o">==</span><span class="m">1</span>.5.0
 
 <span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
 
 <span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
 
-Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
 specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
@@ -190,7 +187,7 @@ specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 <h2>Pypi<a class="headerlink" href="#pypi" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install numpy cython
 
-pip install <span class="nv">pele_platform</span><span class="o">==</span><span class="m">1</span>.4.3
+pip install <span class="nv">pele_platform</span><span class="o">==</span><span class="m">1</span>.5.0
 
 <span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
 
@@ -198,7 +195,7 @@ pip install <span class="nv">pele_platform</span><span class="o">==</span><span 
 
 conda install rdkit <span class="o">(</span>Or compile from <span class="nb">source</span> code<span class="o">)</span>
 
-Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
 specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
@@ -217,7 +214,7 @@ pip install .
 
 conda install rdkit <span class="o">(</span><span class="k">if</span> you want to have the possibility to build constraints by SMILES<span class="o">)</span>
 
-Licenses must be under /path/to/PELE-1.X/licenses/. Other non-default paths can be
+Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
 specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
@@ -226,7 +223,7 @@ specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 <h2>Test it works<a class="headerlink" href="#test-it-works" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> pele_platform/tests
 
-pytest test_*
+python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml
 </pre></div>
 </div>
 </div>
@@ -240,7 +237,7 @@ pytest test_*
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../cheatsheet/index.html" class="btn btn-neutral float-right" title="Prepare your own simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../packages/index.html" class="btn btn-neutral float-right" title="Prepare your own simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../index.html" class="btn btn-neutral float-left" title="Pele Platform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -252,7 +249,7 @@ pytest test_*
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Daniel Soler Viladrich
+        &copy; Copyright 2020, Daniel Soler Viladrich
 
     </p>
   </div>

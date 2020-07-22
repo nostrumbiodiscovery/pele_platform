@@ -12,6 +12,7 @@ import AdaptivePELE.analysis.selectOnPlot as sp
 import AdaptivePELE.analysis.bestStructs as bs
 from pele_platform.constants import constants as cs
 import pele_platform.Analysis.pdf_report as pr
+import time
 
 EPOCH = "epoch"
 STEPS = 3
@@ -140,9 +141,12 @@ class PostProcessor():
         # Clusterize
         assert all_coords[0][0], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
         try:
+            start_gm = time.time()
             clf = mixture.GaussianMixture(n_components=nclusts, covariance_type='full')
             labels = clf.fit_predict(all_coords)
             indexes = labels
+            end_gm = time.time()
+            print("Gaussian Mixture took", end_gm - start_gm)
         except ValueError:
             indexes = [1]
         n_clusters = len(set(indexes))
@@ -223,10 +227,9 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     analysis.top_poses(be, 100, top_poses_folder)
 
     #Clustering of best 2000 best structures
-    print("Retrieve 10 best cluster poses")
+    print(f"Retrieve {nclusts} best cluster poses")
     if clustering:
-        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts)
-
+        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts=nclusts)
     if mae:
         sch_python = os.path.join(cs.SCHRODINGER, "utilities/python")
         if not os.path.exists(sch_python):

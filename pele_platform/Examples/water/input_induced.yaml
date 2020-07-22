@@ -1,0 +1,10 @@
+system: '../pele_platform/Examples/water/complex_induced.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+test: true
+atom_dist:
+- "A:106:OH"
+- "Z:201:C5"
+n_waters: 3
+induced_fit_fast: true

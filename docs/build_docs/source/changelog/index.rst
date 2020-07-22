@@ -3,6 +3,47 @@ Versions
 
 Here we report the main changes for each version
 
+v1.5.0 (19/06/2020)
+==========================
+
+- PPI package
+
+- Allosteric package
+
+- GPCR orthosteric package
+
+- Binding package
+
+- External metal constraints
+
+- Add n random water to your simulation by setting n_waters flag
+
+- More robust error handling
+
+- Remove support python 3.6 and update features python 3.7
+
+- Full refactor of code
+
+- Improvement of frag_pele
+
+- New docs
+
+- Coverage up to 94%
+
+v1.4.4 (5/05/2020)
+=====================
+
+- Include further testing of alignment and rdkit symmetry problem
+
+- Include more flags for FragPele
+
+- Improve exceptions with custom errors
+
+v1.4.3 (27/04/2020)
+======================
+
+- Fix rdkit substructure search symmetry problem by alignment
+
 v1.4.2 (23/04/2020)
 ====================
 

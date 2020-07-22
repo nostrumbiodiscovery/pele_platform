@@ -1,4 +1,5 @@
 import os
+import glob
 import shutil
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
@@ -6,10 +7,10 @@ import pele_platform.main as main
 test_path = os.path.join(cs.DIR, "Examples")
 
 
-BIAS_ARGS = os.path.join(test_path, "bias/input.yaml")
 OUT_IN_ARGS = os.path.join(test_path, "out_in/input.yaml")
 INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive.yaml")
 INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast.yaml")
+NWATER_ARGS = os.path.join(test_path, "water/input_nwaters.yaml")
 GLOBAL_ARGS = os.path.join(test_path, "global/input.yaml")
 INPUTS_GLOBAL_ARGS = os.path.join(test_path, "global/input_inputs.yaml")
 INPUTS_AST_ARGS = os.path.join(test_path, "global/input_inputs_asterisc.yaml")
@@ -25,6 +26,7 @@ PCA_ARGS = os.path.join(test_path, "pca/input.yaml")
 PCA2_ARGS = os.path.join(test_path, "pca/input_str.yaml")
 FLAGS_ARGS = os.path.join(test_path, "flags/input.yaml")
 RESCORING_ARGS = os.path.join(test_path, "rescoring/input.yaml")
+GPCR_ARGS = os.path.join(test_path, "gpcr/input.yaml")
 
 ADAPTIVE_VALUES = ["water_processed.pdb", "SB4", '"outputPath": "output_sim"',
     '"processors" : 3', '"peleSteps" : 1,', '"iterations" : 1,', '"runEquilibration" : true,',
@@ -46,7 +48,8 @@ PELE_VALUES = ['rep', 'traj.xtc',
                 '"atoms": { "ids":["A:6:_CD_"]}',
                 'simulationLogPath',
                 '"activateProximityDetection": false',
-                '"overlapFactor": 3,',
+                '"overlapFactor": 3',
+                '"steeringUpdateFrequency": 3',
                 '"verboseMode": true,',
                 '"displacementFactor" : 3',
                 '"modesChangeFrequency" : 3,',
@@ -59,8 +62,8 @@ PELE_VALUES = ['rep', 'traj.xtc',
               ]
 
 PCA_VALUES = [
-                '"displacementFactor" : 1.75',
-                '"modesChangeFrequency" : 8,',
+                '"displacementFactor" : 2',
+                '"modesChangeFrequency" : 50,',
                 '"directionGeneration" : "oscillate",',
                 '"modesMixingOption" : "doNotMixModes",',
                 '"pickingCase" : "LOWEST_MODE"',
@@ -68,12 +71,42 @@ PCA_VALUES = [
                 '"relaxationSpringConstant" : 2'
              ]  
 
+ALL_WATER_VALUES = [
+    "WaterPerturbation::parameters",
+    '"M:1"',
+    '"M:2"'
+]
+
+WATER_VALUES = [
+    "WaterPerturbation::parameters",
+    '"M:1"',
+]
+
+GPCR_VALUES = [
+     '"radius": 19.970223159033843,',
+     '"fixedCenter": [-71.78435134887695,-13.431749963760375,-42.46209926605225]'
+]
 
 def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
     main.run_platform(ext_args)
 
 def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
     main.run_platform(ext_args)
+
+def test_n_water(ext_args=NWATER_ARGS):
+    job = main.run_platform(ext_args)
+    results = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/*.pdb"))
+    error = False
+    #Result has waters
+    for result in results:
+        with open(result, "r") as f:
+            if not "HOH" in "".join(f.readlines()):
+                error = True
+    #Input has no water
+    with open("../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb", "r") as f:
+        if "HOH" in "".join(f.readlines()):
+            error = True
+    assert not error
 
 def test_global(ext_args=GLOBAL_ARGS):
     main.run_platform(ext_args)
@@ -87,16 +120,21 @@ def test_exit(ext_args=EXIT_ARGS):
 def test_softexit(ext_args=EXITSOFT_ARGS):
     main.run_platform(ext_args)
 
-def test_water(ext_args=WATER_ARGS):
-    main.run_platform(ext_args)
-
 def test_all_waters(ext_args=ALL_WATER_ARGS):
-    main.run_platform(ext_args)
+    errors = []
+    job = main.run_platform(ext_args)
+    folder = job.pele_dir
+    errors = check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
+    assert not errors
 
 def test_water_lig(ext_args=WATERLIG_ARGS):
-    main.run_platform(ext_args)
+    errors = []
+    job = main.run_platform(ext_args)
+    folder = job.pele_dir
+    errors = check_file(folder, "pele.conf", WATER_VALUES, errors)
+    assert not errors
 
-def test_bias(ext_args=BIAS_ARGS):
+def test_out_in(ext_args=OUT_IN_ARGS):
     main.run_platform(ext_args)
 
 def test_restart(ext_args=RESTART_ARGS):
@@ -154,3 +192,13 @@ def check_file(folder, filename, values, errors):
           if value not in "".join(lines):
               errors.append(value) 
    return errors
+
+def test_gpcr(args=GPCR_ARGS):
+    errors = []
+    job = main.run_platform(args)
+    folder = job.pele_dir
+    errors = check_file(folder, "pele.conf", GPCR_VALUES, errors)
+    input_file = os.path.join(folder, "complex_processed.pdb")
+    if not os.path.exists(input_file):
+        errors.append("skip_ppp")
+    assert not errors
