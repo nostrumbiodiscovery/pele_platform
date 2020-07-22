@@ -1,8 +1,6 @@
 name: Conda deployment
 
 on:
-  push:
-    branches: [ master ]
   release:
     types: [created]
 
