@@ -1,4 +1,4 @@
-import pele_platform
+import versioneer
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
@@ -14,7 +14,8 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name="pele_platform",
-    version=pele_platform.__version__,
+    version=version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     description='Automatic platform to launch PELE',
     long_description=long_description,
     url="https://github.com/NostrumBioDiscovery/pele_platform",
