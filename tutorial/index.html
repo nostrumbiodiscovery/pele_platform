@@ -1,0 +1,238 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Launch your first job &mdash; pele platform 1.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modes/index.html">Platform Modes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Input Flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Launch your first job</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorial/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="launch-your-first-job">
+<h1>Launch your first job<a class="headerlink" href="#launch-your-first-job" title="Permalink to this headline">¶</a></h1>
+<p>0) Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
+and output a complex.pdb</p>
+<p>1) Copy the text below into a file called input.yaml and change the path
+to your input pdb file, the residue name of the ligand to be perturb and its chain.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span>
+<span class="nt">residue</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Choose one of the modes below by copying its line to the input.yaml:</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">in_out</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">global</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Test your simulation (1min):</p></li>
+</ol>
+<p>First add the flag <strong>test:true</strong> into and launch the next command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yaml</span></code></p>
+<ol class="arabic simple" start="4">
+<li><p>Run prodution</p></li>
+</ol>
+<p>If everything works change the flag <strong>test: true</strong> by <strong>cpus: X</strong> being X the number of cpus to use for the job. From 40-60 for induced fit simulation and exit paths, from 100-200 for local explorations and 250 for global. Finally run the python command again:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yaml</span></code></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Daniel Soler Viladrich
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Adaptive Modes &mdash; pele platform 1.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="FragPELE Modes" href="../documentation_frag/index.html" />
+    <link rel="prev" title="Prepare your own simulation" href="../cheatsheet/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Adaptive Modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#induced-fit-fast">Induced fit_fast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#induced-fit-exhaustive">Induced fit_exhaustive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rescoring">Rescoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-exploration">Local Exploration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#biased">Biased</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#exit-path">Exit path</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#global-exploration">Global exploration</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation_frag/index.html">FragPELE Modes</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">All Parameters</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Adaptive Modes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/documentation_adaptive/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="adaptive-modes">
+<h1>Adaptive Modes<a class="headerlink" href="#adaptive-modes" title="Permalink to this headline">¶</a></h1>
+<p>Automatically configures all control file and defaults accordin to the chosen methodology.</p>
+<div class="section" id="induced-fit-fast">
+<h2>Induced fit_fast<a class="headerlink" href="#induced-fit-fast" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>induced_fit_fast</strong>: Run a short induced fit AdaptivePELE simulation paramaters by setting the center of the box in the
+cm of the ligand, a box radius of 10A, small rotations and translations and a high number of
+steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
+new conformations within the same binding site.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="induced-fit-exhaustive">
+<h2>Induced fit_exhaustive<a class="headerlink" href="#induced-fit-exhaustive" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>induced_fit_exhaustive</strong>: Run a long induced fit PELE simulation paramaters by setting the center of the box in the
+cm of the ligand, a box radius of 10A, small rotations and translations and a high number of
+steric clashes and sidechain predition frequency. Usefull to refine docking poses, and search
+new conformations within the same binding site.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit_exhaustive</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="rescoring">
+<h2>Rescoring<a class="headerlink" href="#rescoring" title="Permalink to this headline">¶</a></h2>
+<p>Simulation to refine around an initial conformation. Not looking to find a new binding mode but to minimize
+the actual one.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">rescoring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="local-exploration">
+<h2>Local Exploration<a class="headerlink" href="#local-exploration" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>out_in</strong>: Local exploration to move the ligand from the bulk to the binding site. The box center set on the
+center of mass of the ligand with a radius of 30A, steering 1 50% of the times, and a slight bias towards binding energies.
+Useful when no docking is possible in the binding site and you need to open up the pocket.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="biased">
+<h2>Biased<a class="headerlink" href="#biased" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>bias</strong>: Bias exploration towards the indicated bias column. The box center is set on the center of mass of the ligand with
+a radius of 30A, and a bias towards the chosen metric is set. An epsilon fraction of processors are distributed proportionally to the value of a metric, and the rest are inverselyProportional distributed. Therefore, the <strong>epsilon</strong> value controls fraction of the processors that will be assigned according to the selected metric in <strong>biascolumn</strong></p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">bias</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5 (starting by 1 on the reports)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="exit-path">
+<h2>Exit path<a class="headerlink" href="#exit-path" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>in_out</strong>: Explore the dissociative path of a molecule. At each step the box is center on the most exterior cluster
+and there is a bias towards higher values of SASA. This type accepts a <strong>exit_metric</strong> which represents a column in the report file, an <strong>exit_value</strong> which represents a value for the metric and a <strong>exit_condition</strong> parameter which can be either “&lt;” or “&gt;”, default value is “&lt;”. The simulation will terminate after the metric written in the metricCol reaches a value smaller or greater than exitValue, depending on the condition specified. An example of the exit condition block that would terminate the program after 4 trajectories reaches a value of more than 0.9 for the sixth column (6th starting to count from 1) of the report file would look like:</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">in_out</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">exit_value</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.9</span>
+<span class="nt">exit_condition</span><span class="p">:</span> <span class="s">&quot;&gt;&quot;</span>
+<span class="nt">exit_trajnum</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="global-exploration">
+<h2>Global exploration<a class="headerlink" href="#global-exploration" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>global</strong>: Configure a global exploration by randomizing the ligand all around the protein. Then the simulation will start from all configurationsof the system at the same time. The number of configurations (ligand-protein systems) can be chosen thorugh the <strong>poses</strong> flag.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">global</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">poses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">40</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../documentation_frag/index.html" class="btn btn-neutral float-right" title="FragPELE Modes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../cheatsheet/index.html" class="btn btn-neutral float-left" title="Prepare your own simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Daniel Soler Viladrich
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

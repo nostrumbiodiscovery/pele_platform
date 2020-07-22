@@ -1,0 +1,273 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FragPELE Modes &mdash; pele platform 1.4.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="All Parameters" href="../documentation/index.html" />
+    <link rel="prev" title="Adaptive Modes" href="../documentation_adaptive/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cheatsheet/index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation_adaptive/index.html">Adaptive Modes</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">FragPELE Modes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#standard">Standard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sdf-with-full-ligands">Sdf with full ligands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ai">AI</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">All Parameters</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Add your own new simulation mode</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>FragPELE Modes</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/documentation_frag/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fragpele-modes">
+<h1>FragPELE Modes<a class="headerlink" href="#fragpele-modes" title="Permalink to this headline">¶</a></h1>
+<p>Summary of all FragPele growing methods</p>
+<div class="section" id="standard">
+<h2>Standard<a class="headerlink" href="#standard" title="Permalink to this headline">¶</a></h2>
+<p>This method works by specifying the inicial receptor-core pdb and
+an input file that contains information of the where and what to grow</p>
+<ul class="simple">
+<li><p><strong>frag_core</strong>: Core of the molecule we want to add fragments to. Required parameter</p></li>
+<li><p><strong>frag_input</strong>: Serie file with growing instructions. For more please refer here.</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
+<span class="nt">fag_input</span><span class="p">:</span> <span class="s">&quot;/home/daniel/serie_file.conf&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sdf-with-full-ligands">
+<h2>Sdf with full ligands<a class="headerlink" href="#sdf-with-full-ligands" title="Permalink to this headline">¶</a></h2>
+<p>This method works by specifying the inicial receptor-core pdb and
+a sdf file with the full ligand. <strong>All ligands must have molecule name</strong></p>
+<ul class="simple">
+<li><p><strong>frag_core</strong>: Core of the molecule we want to add fragments to. Required parameter</p></li>
+<li><p><strong>frag_ligands</strong>: Sdf with the aimed grown ligands</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
+<span class="nt">frag_ligands</span><span class="p">:</span> <span class="s">&quot;/home/daniel/grown_ligands.sdf&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ai">
+<h2>AI<a class="headerlink" href="#ai" title="Permalink to this headline">¶</a></h2>
+<p>This method works by specifying the inicial receptor-core. Then a RNN
+generative model will grow fragments with as many atoms as iterations
+the user set. i.e iterations: 3 will grow fragments up to 3 atoms all around
+the molecule.</p>
+<ul class="simple">
+<li><p><strong>frag_core</strong>: Core of the molecule we want to add fragments to. Required parameter</p></li>
+<li><p><strong>frag_ai</strong>: Whether to use AI method or not</p></li>
+<li><p><strong>iterations</strong>: Maximum number of atoms of your fragment</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
+<span class="nt">frag_ai</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../documentation/index.html" class="btn btn-neutral float-right" title="All Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../documentation_adaptive/index.html" class="btn btn-neutral float-left" title="Adaptive Modes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Daniel Soler Viladrich
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
