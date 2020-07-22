@@ -14,7 +14,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name="pele_platform",
-    version=version=versioneer.get_version(),
+    version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description='Automatic platform to launch PELE',
     long_description=long_description,
