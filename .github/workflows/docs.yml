@@ -27,7 +27,7 @@ jobs:
     - name: Build sphinx documentation
       run: |
         cd docs/build_docs
-        rm -r _build/html/*
+        rm -r -f _build/html/*
         make html
         cp -r _build/html/* ../
     # https://github.com/peaceiris/actions-gh-pages
