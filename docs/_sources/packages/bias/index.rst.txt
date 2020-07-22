@@ -42,6 +42,7 @@ Prepare the input file ``input.yml``:
     out_in: true #Binding simulation
     spawning: epsilon #Apply bias
     epsilon: 0.25 #Level of bias ranging from 0 to 1
+    bias_column: 7 #Column of the report starting by one to bias the results towards. (You may want to first launch a simulation with the default bias_column, then inspect the simulation report. Last, kill that simulation to launch anotherone with the optimized bias column value)
 
 For more optional flags please refer to `optative falgs <../../documentation/index.html>`_
 

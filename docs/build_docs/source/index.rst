@@ -34,7 +34,7 @@ Structure
 Requirements
 ===================
 
-- Academic Schordinger (any version)
+- Academic Schrodinger (any version)
 
 
 
