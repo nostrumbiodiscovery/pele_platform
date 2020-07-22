@@ -1,11 +1,8 @@
-import versioneer
-import pele_platform
-import setuptools
 from setuptools import setup, find_packages
 # To use a consistent encoding
 from codecs import open
 from os import path
-from distutils.extension import Extension
+import versioneer
 
 here = path.abspath(path.dirname(__file__))
 ext_modules = []
@@ -15,8 +12,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name="pele_platform",
-#    version=versioneer.get_version(),
-    version=pele_platform.__version__,
+    version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description='Automatic platform to launch PELE',
     long_description=long_description,
