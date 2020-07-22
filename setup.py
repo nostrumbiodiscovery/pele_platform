@@ -1,4 +1,5 @@
 import versioneer
+import pele_platform
 import setuptools
 from setuptools import setup, find_packages
 # To use a consistent encoding
@@ -14,7 +15,8 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name="pele_platform",
-    version=versioneer.get_version(),
+#    version=versioneer.get_version(),
+    version=pele_platform.__version__,
     cmdclass=versioneer.get_cmdclass(),
     description='Automatic platform to launch PELE',
     long_description=long_description,
