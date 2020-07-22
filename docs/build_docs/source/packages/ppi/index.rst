@@ -13,8 +13,7 @@ inhibitis the interfece between two protein domains.
 
 **Output** (further explained below):
 
-    - ranked binding modes of the chosen small molecule
-      with the desired protein
+    - ranked binding modes of the chosen small molecule with the desired protein
 
 **Computational time**: 9h
 
@@ -22,7 +21,7 @@ inhibitis the interfece between two protein domains.
 ======================
    
 Prepare the system with maestro (Protein Preparation Wizard)
-and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligand can be place anywhere as it will be automatically placed all around the protein interface by our automatic pipeline.
+and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligand can be placed anywhere as it will be automatically placed all around the protein interface by our automatic pipeline.
 
 2. Input Preparation
 =====================

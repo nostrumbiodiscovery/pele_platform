@@ -218,6 +218,7 @@ and output a complex.pdb. The complex.pdb must contain the protein-ligand in the
 <span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1">#Binding simulation</span>
 <span class="nt">spawning</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">epsilon</span> <span class="c1">#Apply bias</span>
 <span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span> <span class="c1">#Level of bias ranging from 0 to 1</span>
+<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span> <span class="c1">#Column of the report starting by one to bias the results towards. (You may want to first launch a simulation with the default bias_column, then inspect the simulation report. Last, kill that simulation to launch anotherone with the optimized bias column value)</span>
 </pre></div>
 </div>
 <p>For more optional flags please refer to <a class="reference external" href="../../documentation/index.html">optative falgs</a></p>

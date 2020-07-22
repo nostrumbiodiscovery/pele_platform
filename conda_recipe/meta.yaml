@@ -1,7 +1,8 @@
+{% set data = load_setup_py_data() %}
 # must do conda install -c NostrumBioDiscovery pele_platform 
 package:
   name: pele_platform
-  version: "1.5.0"
+  version: {{ data.get('version') }}
 
 about:
   home: https://github.com/nostrumbiodiscovery/pele_platform
@@ -19,6 +20,7 @@ build:
 requirements:
   host:
     - python
+    - setuptools
 
   run:
     # Base dependencies
