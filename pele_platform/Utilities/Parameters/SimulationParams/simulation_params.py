@@ -2,7 +2,6 @@ import random
 import os
 import glob
 import pele_platform.constants.constants as cs
-import pele_platform.constants.pele_params as pp
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
@@ -13,7 +12,6 @@ from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 #from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
-import pele_platform.Utilities.Helpers.water as wt
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
