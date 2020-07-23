@@ -1,5 +1,4 @@
 from fpdf import FPDF
-import glob
 import os
 import numpy as np
 
@@ -64,9 +63,3 @@ def create_report(plots, clusters, top_poses, best_energies, output="simulation_
     #Output report    
     pdf.output(output, 'F')
     return output
-
-if __name__ == "__main__":
-    plots = glob.glob("/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform_devel/pele_platform/results/Plots/*")
-    clusters = glob.glob("/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform_devel/pele_platform/results/clusters/*.png")
-    top_poses = glob.glob("/work/NBD_Utilities/PELE/PELE_Softwares/pele_platform_devel/pele_platform/results/BestStructs/*.pdb")
-    create_report(plots, clusters, top_poses)

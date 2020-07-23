@@ -1,8 +1,4 @@
-from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch, Vector
-import glob
-import numpy as np
 import os
-import pele_platform.constants.constants as cs
 
 
 def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):

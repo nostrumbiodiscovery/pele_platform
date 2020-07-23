@@ -35,12 +35,14 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     
     # get center of interface (if PPI)
     if user_center:
-        _, res_number, atom_name = user_center.split(":")
-        for residue in structure.get_residues():
-            if residue.id[1] == int(res_number):
-                for atom in residue.get_atoms():
-                    if atom.name == atom_name: 
-                        COI = np.array(list(atom.get_vector())) 
+        chain_id, res_number, atom_name = user_center.split(":")
+        for chain in structure.get_chains():
+            if chain.id == chain_id:
+                for residue in chain.get_residues():
+                    if residue.id[1] == int(res_number):
+                        for atom in residue.get_atoms():
+                            if atom.name == atom_name: 
+                                COI = np.array(list(atom.get_vector())) 
   
     # calculate protein and ligand COM
     com_protein = calculate_com(structure)
@@ -144,10 +146,6 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
             contacts8 = []
             ligand_atoms = list(ligand.get_atoms())
             
-            start = np.array(list(ligand_atoms[0].get_vector()))
-            stop = np.array(list(ligand_atoms[-1].get_vector()))
-            mid = np.array(list(ligand_atoms[int(len(ligand_atoms)/2)].get_vector()))
-
             contacts5.append( NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "S"))
             contacts8 = NeighborSearch(protein_list).search(new_ligand_COM, d8_ligand, "S")
             if contacts8 and not any(contacts5):

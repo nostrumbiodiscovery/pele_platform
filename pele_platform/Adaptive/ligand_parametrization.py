@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import subprocess
-import shutil
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Utilities.Helpers.plop_launcher as plop

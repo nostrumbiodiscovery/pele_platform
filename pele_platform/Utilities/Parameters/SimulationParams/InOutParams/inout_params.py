@@ -3,7 +3,7 @@ import pele_platform.constants.constants as cs
 class InOutParams(object):
 
 
-    def __init__(self, args):
+    def generate_inout_params(self, args):
         #If User inputs exit condition or when doing an exit simulation
         if args.exit or args.in_out or args.in_out_soft:
             self.exit_value = args.exit_value if args.exit_value else self.simulation_params.get("exit_value", 0.9)

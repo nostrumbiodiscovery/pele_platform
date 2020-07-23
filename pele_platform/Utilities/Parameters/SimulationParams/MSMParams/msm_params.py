@@ -2,7 +2,7 @@
 class MSMParams(object):
 
 
-    def __init__(self, args):
+    def generate_msm_params(self, args):
         self.lagtime = args.lagtime
         self.msm_clust = args.msm_clust
         self.sasa_max = None

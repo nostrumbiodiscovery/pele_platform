@@ -2,7 +2,6 @@ import random
 import os
 import glob
 import pele_platform.constants.constants as cs
-import pele_platform.constants.pele_params as pp
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
@@ -13,7 +12,6 @@ from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 #from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.metrics as mt
-import pele_platform.Utilities.Helpers.water as wt
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
@@ -37,14 +35,13 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.analysis_params(args)
 
         #Create all simulation types (could be more efficient --> chnage in future) 
-        msm_params.MSMParams.__init__(self, args)
-        glide_params.GlideParams.__init__(self, args)
-        bias_params.BiasParams.__init__(self, args)
-        inout_params.InOutParams.__init__(self, args)
-        pca.PCAParams.__init__(self, args)
-        allosteric.AllostericParams.__init__(self, args)
-        ppi.PPIParams.__init__(self, args)
-        #rna.RNAParams.__init__(self, args)
+        super().generate_msm_params(args)
+        super().generate_bias_params(args)
+        super().generate_inout_params(args)
+        super().generate_pca_params(args)
+        super().generate_allosteric_params(args)
+        super().generate_ppi_params(args)
+        #super().generate_rna_params(args)
 
 
     def simulation_type(self, args):
@@ -117,6 +114,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.simulation_type = args.simulation_type if args.simulation_type else self.simulation_params.get("simulation_type", "pele")
         iterations = 1 if self.spawning == "independent" else 30
         self.iterations = args.iterations if args.iterations else self.simulation_params.get("iterations", iterations)
+        self.clust_type = args.clust_type if args.clust_type else self.simulation_params.get("clust_type", "rmsd")
         self.cluster_values = args.cluster_values if args.cluster_values else self.simulation_params.get("cluster_values", "[1.75, 2.5, 4, 6]")
         self.cluster_conditions = args.cluster_conditions if args.cluster_conditions else self.simulation_params.get("cluster_conditions", "[1, 0.6, 0.4, 0.0]")
         self.seed = args.seed if args.seed else random.randrange(1, 70000)
@@ -172,14 +170,13 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
 
        
-        self.allow_empty_selectors = True if args.n_waters else "false"
-        self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters #IDS of waters`
-        self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", None)
-        self.waters = args.waters if args.waters  else self.simulation_params.get("waters", [])
+        self.allow_empty_selectors = '"allowEmptyWaterSelectors": true,' if args.water_empty_selector else ""
+        self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters  # IDs of waters
+        self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", 0)
+        self.waters = args.waters if args.waters else self.simulation_params.get("waters", [])
         self.water_radius = args.water_radius if args.water_radius else 6
         self.water_center = None
         self.water = ""
-        #self.water = cs.WATER.format(self.waters, self.allow_empty_selectors, self.water_temp, self.water_trials, self.water_overlap, self.water_constr, self.waters)
         self.water_energy = None
 
 

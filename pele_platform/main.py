@@ -2,12 +2,7 @@ import matplotlib
 matplotlib.use("Agg") #Avoid backend issues
 import pele_platform.Checker.python_version as pv
 pv.check_python_version() #Avoid python2
-import sys
-import pele_platform.constants.constants as cs
-from argparse import HelpFormatter
-from operator import attrgetter
-import argparse
-import os
+from argparse import ArgumentParser
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Utilities.Helpers.launcher as lc
 import pele_platform.Utilities.Parameters.pele_env as pv
@@ -19,7 +14,7 @@ def parseargs(args=[]):
     '''
     Command line parser
     '''
-    parser = argparse.ArgumentParser(description='Run PELE Platform')
+    parser = ArgumentParser(description='Run PELE Platform')
     parser.add_argument('input_file', type=str, help='Yaml input file')
     args = parser.parse_args(args) if args else parser.parse_args()
     return args.input_file

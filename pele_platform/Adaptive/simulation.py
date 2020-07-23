@@ -1,7 +1,5 @@
-import subprocess
 import os
 import shutil
-import glob
 import AdaptivePELE.adaptiveSampling as adt
 import PPP.main as ppp
 from pele_platform.Utilities.Helpers import helpers
@@ -13,7 +11,6 @@ import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
-import pele_platform.Utilities.Helpers.metrics as mt
 import pele_platform.Utilities.Helpers.metal_constraints as mc
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
@@ -118,6 +115,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         ################METAL CONSTRAINTS##################
         if not args.no_metal_constraints:
             metal_constraints, env.external_constraints = mc.main(args.external_constraints, os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')), syst.system, permissive=env.permissive_metal_constr, all_metals=args.constrain_all_metals, external=env.external_constraints)
+            #??????
             metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
             env.external_constraints = hp.retrieve_constraints_for_pele(env.external_constraints, env.system)
             metal_constraints_json = hp.retrieve_constraints_for_pele(metal_constraints, env.system)
@@ -163,20 +161,22 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
 
         
         ####### Add waters, if needed
-        if args.n_waters:
-            # Add n water molecules to minimisation inputs
-            input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
-            input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
-            wt.water_checker(args)
-            wt.add_water(input_waters, args.residue, args.n_waters, test=env.test)
-            wt.set_water_control_file(env)
-        elif args.waters:
-            wt.set_water_control_file(env)
+        input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
+        input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
+        water_obj = wt.WaterIncluder(input_waters, env.n_waters, 
+            user_waters=env.waters, ligand_perturbation_params=env.parameters, 
+            water_center=args.water_center, water_radius=env.water_radius,
+            allow_empty_selectors=env.allow_empty_selectors, water_temp=env.water_temp,
+            water_trials=env.water_trials, water_overlap=env.water_overlap,
+            water_constr=env.water_constr, test=env.test, water_freq=env.water_freq,
+            ligand_residue=env.residue)
+        water_obj.run()
+        env.parameters = water_obj.ligand_perturbation_params
 
         ############Fill in Simulation Templates############
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,
             env.pele_exit_temp, env.topology)
-        adaptive.generate_inputs(env)
+        adaptive.generate_inputs(env, water_obj)
 
 
     if env.analyse and not env.debug:

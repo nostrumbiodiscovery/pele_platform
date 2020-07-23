@@ -380,29 +380,7 @@ Algorithm to automatically set metal constraints around the ligand.
 WaterPerturbation
 ======================
 
-
-    - **water_exp**: Exploration of the hydratation sites of a binding site by perturbing and clusterizing a single water. More advance features will be later implemented to discriminate between "happy" and "unhappy" waters.
-
-    - **water_lig**: Perturb one or several water molecules while exploring the conformational space of the ligand.
-
-Example water exploration:
-
-..  code-block:: yaml
-
-  water_exp:
-    - M:1
-    - M:2
-
-Example water ligand:
-
-..  code-block:: yaml
-
-    water_lig:
-    - M:1
-    - M:2
-
-Simulation Parameters
-========================
+- **n_waters**: Number of waters to randomly add into your simulation. Compulsory when running MonteCarlo with water perturbation. Default=0
 
 - **box_water**: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.
 
@@ -419,6 +397,7 @@ Simulation Parameters
 
 ..  code-block:: yaml
 
+    n_waters: 3 #Compulsory
     box_water:
     - 20
     - 30

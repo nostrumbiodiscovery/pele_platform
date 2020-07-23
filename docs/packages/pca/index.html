@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Prepare your own PPI-PELE simulation &mdash; pele platform 1.4.0 documentation</title>
+  <title>Simulate big conformational moves of your receptor with PCA-PELE &mdash; pele platform 1.5.0 documentation</title>
   
 
   
@@ -34,9 +34,7 @@
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Adaptive Modes" href="../../documentation_adaptive/index.html" />
-    <link rel="prev" title="Prepare your own FragPELE simulation" href="../frag/index.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -60,7 +58,7 @@
             
             
               <div class="version">
-                1.4
+                1.5
               </div>
             
           
@@ -87,33 +85,14 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Prepare your own simulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../pele/index.html">Prepare your own PELE simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Prepare your own FragPELE simulation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Prepare your own PPI-PELE simulation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ppi-input">PPI input</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Prepare your own simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation_adaptive/index.html">Adaptive Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Input flags documentation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation_frag/index.html">FragPELE Modes</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">All Parameters</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Add your own new simulation mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers: Add your own mode</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
@@ -162,15 +141,13 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../index.html">Prepare your own simulation</a> &raquo;</li>
-        
-      <li>Prepare your own PPI-PELE simulation</li>
+      <li>Simulate big conformational moves of your receptor with PCA-PELE</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/cheatsheet/ppi/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/packages/pca/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -183,17 +160,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="prepare-your-own-ppi-pele-simulation">
-<h1>Prepare your own PPI-PELE simulation<a class="headerlink" href="#prepare-your-own-ppi-pele-simulation" title="Permalink to this headline">¶</a></h1>
-<p>PPI-package aims to find PPI inhibitors and allosteric modulators to disrupt protein protein contacts.
-This module takes half a day to run.
-It will retrieve the most putative binding modes of your ligand all around the surface of your target.</p>
-<p>To start with the simulation follow the instructions below:</p>
+  <div class="section" id="simulate-big-conformational-moves-of-your-receptor-with-pca-pele">
+<h1>Simulate big conformational moves of your receptor with PCA-PELE<a class="headerlink" href="#simulate-big-conformational-moves-of-your-receptor-with-pca-pele" title="Permalink to this headline">¶</a></h1>
+<p>This simulation aims to enhance the receptor movement by extracting
+a pca from a movement defined for 3 or more pdbs (trajectory’s snapshots).
+The best binding modes of the simulated ligand will be ranked and extracted
+for user inspection.</p>
+<p><strong>Input</strong> (further explained below):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Protein-ligand.pdb</p></li>
+<li><p>3 identical pdb (only changing coordinates) which defines a motion</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Output</strong> (further explained below):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Ranked binding modes</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Computational time</strong>: 5h</p>
 <div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Prepare the system with maestro (Protein Preparation Wizard, hydrogen optimization and posterior minimization)
-and output a complex.pdb. The complex.pdb must contain the protein-ligand in any configuration as later PPIPELE
-will place the ligand all over the protein.</p>
+<p>Prepare the system with maestro (Protein Preparation Wizard) and output a complex.pdb. The complex.pdb must contain the protein-ligand in the desired initial configuration.</p>
 <p>Make sure the ligand has:</p>
 <blockquote>
 <div><ul class="simple">
@@ -206,26 +195,36 @@ will place the ligand all over the protein.</p>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<p>To run different modes prepare different control files.
-For more explanation on the modes please refer to <a class="reference external" href="../documentation/index.html">here</a></p>
-<div class="section" id="ppi-input">
-<h3>PPI input<a class="headerlink" href="#ppi-input" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;complex.pdb&#39;</span> <span class="c1">#Protein-ligand complex</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1">#Chain name of the ligand</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span> <span class="c1">#Residue name of the ligand</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4059</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4556</span>
-<span class="nt">ppi</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="c1">#Calculate PCA by giving 3 pdb snapshots</span>
+<span class="c1"># defining a motion</span>
+<span class="nt">pca_traj</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;snap1.pdb&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;snap2.pdb&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;snap3.pdb&quot;</span>
+<span class="c1">#Do not constraint structure</span>
+<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="c1">#Big sampling of the receptor while making binding</span>
+<span class="nt">spawning</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">independent</span>
+<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1">#You can change the method to any other (induced_fit, rescoring...)</span>
 </pre></div>
 </div>
-</div>
+<p>For more optional flags please refer to <a class="reference external" href="../../documentation/index.html">optative falgs</a></p>
 </div>
 <div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
 <p>To run the system launch the simulation with the next command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
+</div>
+<div class="section" id="output">
+<h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>Best ranked clusters:</p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/results/clusters</span></code></p>
+<p>Best ranked poses:</p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/results/BestStructs/</span></code></p>
 </div>
 </div>
 
@@ -235,21 +234,12 @@ For more explanation on the modes please refer to <a class="reference external" 
           </div>
           <footer>
   
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../../documentation_adaptive/index.html" class="btn btn-neutral float-right" title="Adaptive Modes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../frag/index.html" class="btn btn-neutral float-left" title="Prepare your own FragPELE simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, Daniel Soler Viladrich
+        &copy; Copyright 2020, Daniel Soler Viladrich
 
     </p>
   </div>

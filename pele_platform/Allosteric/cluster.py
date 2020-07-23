@@ -11,16 +11,7 @@ def cluster_best_structures(be_column: int, residue="LIG", topology=None, cpus=2
     Cluster the full simulation by ligand heavy atom's coordinates
     '''
     files_out, _, _, _, output_energy = bs.main(be_column, n_structs=n_structs, path=".", topology=topology)
-    files = []
-
-    # find all epoch...pdb files
-    for filename in os.listdir("."):
-        if filename.endswith(".pdb") and filename.startswith("epoch"):
-            files.append(filename)
-        else:
-            continue
     n_files = len(files_out)
-
     print("Extracting data from {} files.".format(n_files))
 
     snapshot = 0

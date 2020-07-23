@@ -1,6 +1,8 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from difflib import SequenceMatcher
 import os
 import yaml
+
 
 
 @dataclass
@@ -29,7 +31,21 @@ class YamlParser(object):
         #Check if valids in yaml file are valids
         for key in self.data.keys():
             if key not in self.valid_flags.values():
-                raise KeyError("Input file contains an invalid keyword: {}".format(key))
+                raise KeyError(self._recommend(key))
+
+    def _recommend(self, key):
+        most_similar_flag = None
+        for valid_key in self.valid_flags.values():
+            flag = Most_Similar_Flag(valid_key)
+            flag.calculate_distance(key)
+            if not most_similar_flag:
+                most_similar_flag = flag
+            else:
+                 if flag.distance > most_similar_flag.distance:
+                     most_similar_flag = flag
+        exception_raised = f"Incorrect flag {key}. Did you mean {most_similar_flag.name}?"
+        return exception_raised
+            
         
     
     def _parse(self) -> None:
@@ -118,7 +134,7 @@ class YamlParser(object):
         self.exit_trajnum = data.get(valid_flags["exit_trajnum"], None)
         self.waters = data.get(valid_flags["waters"], None)
         self.water_freq = data.get(valid_flags["water_freq"], None)
-        #self.water_center = data.get(valid_flags["water_center"], None)
+        self.water_center = data.get(valid_flags["water_center"], None)
         self.water_temp = data.get(valid_flags["water_temp"], None)
         self.water_overlap = data.get(valid_flags["water_overlap"], None)
         self.water_constr = data.get(valid_flags["water_constr"], None)
@@ -154,6 +170,7 @@ class YamlParser(object):
         self.pca_traj = data.get(valid_flags["pca_traj"], None)
         self.perturbation = data.get(valid_flags["perturbation"], None)
         self.binding_energy = data.get(valid_flags["binding_energy"], None)
+        self.clust_type = data.get(valid_flags["clust_type"], None)
         self.parameters = data.get(valid_flags["parameters"], None)
         self.analyse = data.get(valid_flags["analyse"], None)
         self.selection_to_perturb = data.get(valid_flags["selection_to_perturb"], None)
@@ -173,6 +190,7 @@ class YamlParser(object):
         self.schrodinger = data.get(valid_flags["schrodinger"], None)
         self.no_check = data.get(valid_flags["no_check"], False)
         self.cleanup = data.get(valid_flags["cleanup"], False)
+        self.water_empty_selector = data.get(valid_flags["water_empty_selector"], False)
 
         # Metal constraints
         self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
@@ -203,7 +221,7 @@ class YamlParser(object):
         self.protein = data.get(valid_flags["protein"], None)
         self.ligand_pdb = data.get(valid_flags["ligand_pdb"], None)
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
-        self.n_waters = data.get(valid_flags["n_waters"], 1 if self.ppi else 0)
+        self.n_waters = data.get(valid_flags["n_waters"], 0)
 
         #Allosteric
         self.allosteric = data.get(valid_flags["allosteric"], None)
@@ -232,3 +250,10 @@ class YamlParser(object):
             self.temperature = self.temp = 10000
             self.n_components = 3
 
+@dataclass
+class Most_Similar_Flag():
+
+    name: str
+
+    def calculate_distance(self, key):
+        self.distance = SequenceMatcher(None, self.name, key).ratio()

@@ -1,7 +1,6 @@
 import os
 import PlopRotTemp as plop
 import pele_platform.constants.constants as cs
-import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Errors.custom_errors as ce
 
 try:
@@ -20,7 +19,6 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
     options = retrieve_options(env)
     templatedir = os.path.join(env.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms")
     rotamerdir = os.path.join(env.pele_dir, "DataLocal/LigandRotamerLibs")  
-    mae_cahrges = True if env.mae_lig else False
     my_env = os.environ.copy()
     my_env["SCHRODINGER_PYTHONPATH"]=os.path.join(cs.SCHRODINGER, "internal/lib/python2.7/site-packages/")
     my_env["SCHRODINGER"]=cs.SCHRODINGER
