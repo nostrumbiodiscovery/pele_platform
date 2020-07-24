@@ -9,8 +9,9 @@ class Grid:
     def __init__(self, center, radius):
         self.center = center  # user-defined for WaterMap, otherwise ligand COI
         self.radius = radius  # user-defined for WaterMap, otherwise max coordinates of the ligand
-        self.side = int(radius) / 2
+        self.side = int(radius) * 2
         self.n_voxels = int(self.side) ** 3
+        self.active_voxels = []
 
     def generate_voxels(self):
         center = self.center
@@ -24,18 +25,26 @@ class Grid:
         first_voxel_center = v1 + np.array([0.5, 0.5, 0.5])
         last_voxel_center = v8 + np.array([-0.5, -0.5, -0.5])
 
-        samples = int(max(last_voxel_center) - min(first_voxel_center) + 1)
+        samples = self.side
 
-        x = y = z = np.linspace(min(first_voxel_center), max(last_voxel_center), samples)
+        x = np.linspace(first_voxel_center[0], last_voxel_center[0], samples)
+        y = np.linspace(first_voxel_center[1], last_voxel_center[1], samples)
+        z = np.linspace(first_voxel_center[2], last_voxel_center[2], samples)
+
         x_coord, y_coord, z_coord = np.meshgrid(x, y, z)
         coordinate_grid = np.array([x_coord, y_coord, z_coord])
 
-        voxels = zip(coordinate_grid[0, :, :].reshape(1, self.n_voxels).tolist()[0],
+        voxels = list(zip(coordinate_grid[0, :, :].reshape(1, self.n_voxels).tolist()[0],
                      coordinate_grid[1, :, :].reshape(1, self.n_voxels).tolist()[0],
-                     coordinate_grid[2, :, :].reshape(1, self.n_voxels).tolist()[0])
+                     coordinate_grid[2, :, :].reshape(1, self.n_voxels).tolist()[0]))
         self.voxels = voxels
 
         return voxels
+
+    def add_active_voxel(self, voxel, s):
+
+        v = Voxel(voxel, s)
+        self.active_voxels.append(v)
 
 
 class Snapshot:
@@ -87,7 +96,7 @@ class WaterSnapshot(Snapshot):
             dist = np.subtract(oxygen_coords, voxel)
             dist = np.linalg.norm(dist)
             distances[voxel] = dist
-        print("len distances", len(distances))
+
         min_dist = min(list(distances.values()))
         result = [key for key, value in distances.items() if value == min_dist]
 
@@ -96,14 +105,19 @@ class WaterSnapshot(Snapshot):
         return result
 
 
-class Voxel:
+class Voxel(Snapshot):
 
-    def __init__(self, v):
+    def __init__(self, v, s):
+        super().__init__(s)
         self.voxel_center = v
         self.snapshots = []
+        self.snapshots.append(s)
 
-    def add_snapshot(self, snapshot):
-        self.snapshots.append(snapshot)
+    def calculate_entropy(self):
+        pass
+
+    def calculate_enthalpy(self):
+        pass
 
 
 def extract_snapshots(output_simulation):
@@ -135,15 +149,15 @@ def main(center, radius, output_simulation):
     snapshots = extract_snapshots(output_simulation)
 
     for s in snapshots:
-        snapshot = Snapshot(s)
+        snapshot = WaterSnapshot(s)
         snapshot.generate_properties()
         voxel = snapshot.check_voxel(grid.voxels)
-        voxel.add_snapshot(snapshot)
+        grid.add_active_voxel(voxel, s)
 
 
 if __name__ == "__main__":
 
-    center = [50, 50, 50]
+    center = [29.842, 48.919, 61.586]
     radius = 20
     output_simulation = "water_sim"
 
@@ -152,13 +166,8 @@ if __name__ == "__main__":
     snapshots = extract_snapshots(output_simulation)
 
     for s in snapshots:
-        print("Checking snapshot", s[0])
         snapshot = WaterSnapshot(s)
         snapshot.generate_properties()
-        print(snapshot.oxygen_coords)
-        snapshot.check_voxel(grid.voxels)
-        print("Correct voxel", snapshot.voxel)
-        #v = Voxel(voxel)
-        #v.add_snapshot(s)
-        #voxel.add_snapshot(snapshot)
+        voxel = snapshot.check_voxel(grid.voxels)
+        grid.add_active_voxel(voxel, s)
 
