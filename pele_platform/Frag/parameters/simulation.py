@@ -1,7 +1,8 @@
 import os
 import pele_platform.constants.constants as cs
 
-class FragSimulationParameters():
+
+class FragSimulationParameters:
 
     def __init__(self, args):
         self.gr_steps = args.growing_steps if args.growing_steps else self.simulation_params.get("growing_steps", 6)
@@ -12,3 +13,4 @@ class FragSimulationParameters():
         self.topology = None if self.pdb else os.path.join("output_pele", "topology.pdb")
         self.frag_restart = "-rst" if args.frag_restart else ""
         self.frag_traj_name = "trajectory"
+        self.usesrun = True if self.usesrun == "true" else False

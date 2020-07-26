@@ -1,14 +1,7 @@
-
-
-
-
-
-class Fragment():
-
+class Fragment:
 
     def __init__(self, file, atom_fragment, hydrogen_fragment, atom_core, hydrogen_core, no_hydrogen):
         from rdkit import Chem
-        import rdkit.Chem.rdchem as rc
         self.file = file
         self.atom_fragment = atom_fragment
         self.hydrogen_fragment = hydrogen_fragment
@@ -16,7 +9,6 @@ class Fragment():
         self.hydrogen_core = hydrogen_core
         self.mol = Chem.MolFromPDBFile(self.file, removeHs=False)
         self.no_hydrogen = no_hydrogen
-
 
     def get_inputfile_line(self):
         if self.no_hydrogen:

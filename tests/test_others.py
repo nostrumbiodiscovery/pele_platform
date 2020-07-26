@@ -97,7 +97,7 @@ def test_checker_subsearch(ligand=PDB_CHECKER_SUBSEARCH, core=CORE_CHECKER_SUBSE
     mol = next(Chem.SDMolSupplier(ligand))
     core = Chem.rdmolfiles.MolFromPDBFile(core)
     atoms_in_common = mol.GetSubstructMatches(core)[0]
-    atoms_in_common_after = ch.chec_substructure_match(core, mol, atoms_in_common)
+    atoms_in_common_after = ch.check_substructure_match(core, mol, atoms_in_common)
     # Exchange nitrogen due to wrong previous result
     assert atoms_in_common != atoms_in_common_after
     assert atoms_in_common_after[atoms_in_common.index(13)] == 12

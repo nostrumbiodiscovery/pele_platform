@@ -1,7 +1,4 @@
-
-
-
-class GenerativeModel():
+class GenerativeModel:
 
     def __init__(self, core, resname, iterations, only_grow=True, only_rank=False):
         self.core = core
@@ -13,4 +10,3 @@ class GenerativeModel():
     def run(self):
         from growai import grow
         return grow.main(self.core, self.resname, self.only_grow, self.only_rank, self.iterations)
-        

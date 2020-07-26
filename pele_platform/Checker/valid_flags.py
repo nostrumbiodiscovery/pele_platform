@@ -165,4 +165,5 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "constrain_all_metals": "constrain_all_metals",
 "no_metal_constraints": "no_metal_constraints",
 "n_waters": "n_waters",
-"rna": "rna"}
+"rna": "rna",
+"cleanup": "cleanup"}
