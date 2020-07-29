@@ -55,3 +55,15 @@ def test_analysis(ext_args=ANALYSIS_ARGS):
 def test_analysis_mae(ext_args=ANALYSIS_MAE_ARGS):
     os.system("rm ../pele_platform/Examples/analysis/data/*/*summary*")
     main.run_platform(ext_args)
+
+def test_cluster():
+    output_folder = "clusters"
+    n_clusts = 2
+    if os.path.exists(output_folder): shutil.rmtree(output_folder)
+    analysis = pt.PostProcessor("report_", "trajectory_", "../pele_platform/Examples/analysis/data/xtc", 2, 
+        topology="../pele_platform/Examples/analysis/data/xtc/topologies/topology_0.pdb", residue="L01")
+    analysis.retrive_data()
+    analysis.cluster_poses(2, 5, output_folder, nclusts=n_clusts)
+    assert os.path.exists(output_folder)
+    assert len(glob.glob(os.path.join(output_folder, "clust*.pdb"))) == n_clusts - 1
+    

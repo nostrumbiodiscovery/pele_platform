@@ -10,3 +10,5 @@ test: true
 atom_dist:
 - "B:1:CA"
 - "B:2:CA"
+debug: true
+working_folder: "ppi_folder"

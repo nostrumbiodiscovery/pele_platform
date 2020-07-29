@@ -154,6 +154,7 @@ class PostProcessor():
            for epoch, step, report, value, cluster in zip(epochs, snapshots, file_ids, values, indexes)]
         all_metrics = []
         output_clusters = []
+        #Without -1 test fails
         for n_cluster in range(n_clusters-1):
             metrics = {value:idx for idx, (value, cluster) in enumerate(zip(values, indexes)) if n_cluster == cluster}
             out_freq = 1
@@ -248,10 +249,3 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     clusters = glob.glob(os.path.join(clusters_folder, "*.png"))
     report = pr.create_report(plots, clusters, poses, analysis.best_energies, output=os.path.join(output_folder, "summary_results.pdf"))
     return report
-       
-
-
-
-
-if __name__ == "__main__":
-    analyse_simulation("report_", "trajectory_", "/scratch/jobs/dsoler/water/trypsin/BEN_Pele_36/output/", residue="BEN")
