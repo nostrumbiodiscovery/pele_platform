@@ -1,8 +1,8 @@
 import os
+import glob
 from pele_platform.Allosteric.cluster import cluster_best_structures
 from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
-import glob
 from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
@@ -45,10 +45,11 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     simulation1_path = os.path.join(simulation1.pele_dir, simulation1.output)
     
     # cluster best structures
-    with cd(simulation1_path):
-        cluster_best_structures("5", n_components=simulation1.n_components,
-            residue=simulation1.residue, topology=simulation1.topology,
-            directory=working_folder)
+    if not parsed_yaml.debug:
+        with cd(simulation1_path):
+            cluster_best_structures("5", n_components=simulation1.n_components,
+                residue=simulation1.residue, topology=simulation1.topology,
+                directory=working_folder)
     
     # adjust original input.yaml
     if not parsed_yaml.skip_refinement:
@@ -82,7 +83,10 @@ def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
 
         # start simulation 2 - minimisation
         with cd(original_dir):
-            simulation2 = launch_simulation(parsed_yaml)
+            if not parsed_yaml.debug:
+                simulation2 = launch_simulation(parsed_yaml)
+            else:
+                simulation2 = None
     else:
         simulation2 = None
     return simulation1, simulation2
