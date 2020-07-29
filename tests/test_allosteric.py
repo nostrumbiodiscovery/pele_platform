@@ -64,14 +64,14 @@ def test_allosteric_skipref(yaml=yaml):
     assert not files_refinement
 
     
-yaml = os.path.join(test_path, "Allosteric/input_restart.yaml")
-def test_allosteric_restart(yaml=yaml):
-    job, job2 = main.run_platform(yaml)
-    # checkpoints
-    output_csv = pd.read_csv(os.path.join(job.pele_dir, "output/clustering_output.csv"))
-    nfiles = len(glob.glob(os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")))
-    nfiles_refinement = len(glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/epoch*")))
-    # test
-    assert nfiles == job.n_components 
-    assert nfiles_refinement
+#yaml = os.path.join(test_path, "Allosteric/input_restart.yaml")
+#def test_allosteric_restart(yaml=yaml):
+#    job, job2 = main.run_platform(yaml)
+#    # checkpoints
+#    output_csv = pd.read_csv(os.path.join(job.pele_dir, "output/clustering_output.csv"))
+#    nfiles = len(glob.glob(os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")))
+#    nfiles_refinement = len(glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/epoch*")))
+#    # test
+#    assert nfiles == job.n_components 
+#    assert nfiles_refinement
 

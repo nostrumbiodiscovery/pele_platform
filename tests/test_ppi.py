@@ -25,7 +25,7 @@ def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
     assert not files_refinement
 
 yaml = os.path.join(test_path, "PPI/input.yaml")
-def test_ppi(energy_result=-2.18, yaml=yaml):
+def test_ppi_default(energy_result=-2.18, yaml=yaml):
   
     #Function to test
     job, job2 = main.run_platform(yaml)

@@ -69,7 +69,7 @@ class FragRunner(mn.FragParameters):
                           self.rename, self.threshold_clash, self.steering, self.translation_high, self.rotation_high,
                           self.translation_low, self.rotation_low, self.explorative, self.frag_radius,
                           self.sampling_control, self.pele_data, self.pele_documents,
-                          self.only_prepare, self.only_grow, self.no_check, self.debug, usesrun=self.usesrun)
+                          self.only_prepare, self.only_grow, self.no_check, self.debug, srun=self.usesrun)
             except Exception:
                 print("Skipped - FragPELE will not run.")
 

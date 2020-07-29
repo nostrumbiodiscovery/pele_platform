@@ -26,7 +26,7 @@ def test_frag_core(ext_args=FRAG_CORE_ARGS, output="1w7h_preparation_structure_2
         shutil.rmtree(output)
     job = main.run_platform(ext_args)
 
-def test_flags(ext_args=FLAGS_ARGS, output="water_processed_processed_aminoCA1N1"):
+def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     FRAG_FLAGS = ['"seed" : 3000',]
     errors = []
     if os.path.exists(output): shutil.rmtree(output, ignore_errors=True)
