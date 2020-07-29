@@ -1,8 +1,9 @@
-from pele_platform.constants import constants as cs
-from pele_platform import main
+import shutil
 import pandas as pd
 import glob
 import os
+from pele_platform.constants import constants as cs
+from pele_platform import main
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -63,6 +64,12 @@ def test_allosteric_skipref(yaml=yaml):
     # test
     assert not files_refinement
 
+yaml = os.path.join(test_path, "Allosteric/input_folder.yaml")
+def test_working_folder(yaml=yaml, output="allosteric_folder"):
+    if os.path.exists(output): shutil.rmtree(output) 
+    job, _ = main.run_platform(yaml)
+    assert os.path.exists(job.folder)
+    
     
 #yaml = os.path.join(test_path, "Allosteric/input_restart.yaml")
 #def test_allosteric_restart(yaml=yaml):
