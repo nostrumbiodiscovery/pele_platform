@@ -5,7 +5,7 @@ from pele_platform.Utilities.Helpers.randomize import calculate_com
 
 
 def prepare_system(protein_file, user_center, user_radius):
-
+    user_center = list(user_center)
     pdb_no_waters = remove_water(protein_file)
     pdb_with_water = add_water_box(pdb_no_waters, user_center)
     equilibration_input = remove_overlaps(pdb_with_water, user_center, user_radius)

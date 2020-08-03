@@ -76,7 +76,7 @@ def retrieve_software_settings(args, pele_dir):
                     "cluster_values": "[1.5, 2, 5]", "cluster_conditions": "[0.6, 0.4, 0.0]",
                     "steric_trials": 250, "overlap_factor": 0.65, "params": pcs.OUT_IN,
                     "box_radius": 30},
-            "watermap": {"spawning_type": "independent", "iterations": 50, "pele_steps": 4, "n_waters": 1,
+            "watermap": {"spawning_type": "independent", "iterations": 50, "pele_steps": 4,
                          "all_waters": True, "perturbation": ""}
         }
 
