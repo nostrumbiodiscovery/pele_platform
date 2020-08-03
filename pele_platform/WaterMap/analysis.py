@@ -16,6 +16,7 @@ class Grid:
     def generate_voxels(self):
         center = self.center
         side = self.side
+        self.voxels = []
 
         print("Creating {} voxels.".format(self.n_voxels))
 
@@ -37,20 +38,21 @@ class Grid:
         voxels = list(zip(coordinate_grid[0, :, :].reshape(1, self.n_voxels).tolist()[0],
                      coordinate_grid[1, :, :].reshape(1, self.n_voxels).tolist()[0],
                      coordinate_grid[2, :, :].reshape(1, self.n_voxels).tolist()[0]))
-        self.voxels = voxels
 
-        return voxels
+        for v in voxels:
+            voxel = Voxel(v)
+            self.voxels.append(voxel)
 
-    def add_active_voxel(self, voxel, s):
-
-        v = Voxel(voxel, s)
-        self.active_voxels.append(v)
+    def add_active_voxel(self, voxel):
+        self.active_voxels.append(voxel)
 
 
 class Snapshot:
 
-    def __init__(self, s):
-        self.file, self.model, self.water_lines = s
+    def __init__(self, file, model, atom_lines):
+        self.file = file
+        self.model = model
+        self.atom_lines = atom_lines
 
     def generate_properties(self):
         self.snapshot_id = "{}_{}".format(self.file, self.model)
@@ -58,15 +60,15 @@ class Snapshot:
 
 class WaterSnapshot(Snapshot):
 
-    def __init__(self, s):
-        super().__init__(s)
-        self.water_coords, self.oxygen_coords = self.extract_water_coords(self.water_lines)
+    def __init__(self, file, model, atom_lines):
+        super().__init__(file, model, atom_lines)
+        self.water_coords, self.oxygen_coords = self.extract_water_coords(self.atom_lines)
         self.orientation = self.calculate_orientation(self.water_coords)
 
     def extract_water_coords(self, water_lines):
         water = [line[32:56].strip().split() for line in water_lines]
 
-        return water, water[0] # oxygen coordinates
+        return water, water[0]  # oxygen coordinates
 
     def calculate_orientation(self, water_coords):
 
@@ -79,11 +81,11 @@ class WaterSnapshot(Snapshot):
         v2 = np.subtract(coord_h2, coord_o)
 
         v_middle = np.add(v1, v2)
-        v_middle_magnitutde = np.sqrt(v_middle[0] ** 2 + v_middle[1] ** 2 + v_middle[2] ** 2)
+        v_middle_magnitude = np.sqrt(v_middle[0] ** 2 + v_middle[1] ** 2 + v_middle[2] ** 2)
 
-        orientation = [np.degrees(np.arccos(v_middle[0] / v_middle_magnitutde)),
-                       np.degrees(np.arccos(v_middle[1] / v_middle_magnitutde)),
-                       np.degrees(np.arccos(v_middle[2] / v_middle_magnitutde))]
+        orientation = [np.degrees(np.arccos(v_middle[0] / v_middle_magnitude)),
+                       np.degrees(np.arccos(v_middle[1] / v_middle_magnitude)),
+                       np.degrees(np.arccos(v_middle[2] / v_middle_magnitude))]
 
         return orientation
 
@@ -93,25 +95,26 @@ class WaterSnapshot(Snapshot):
 
         for voxel in voxels:
             oxygen_coords = [float(c) for c in self.oxygen_coords]
-            dist = np.subtract(oxygen_coords, voxel)
+            dist = np.subtract(oxygen_coords, voxel.voxel_center)
             dist = np.linalg.norm(dist)
             distances[voxel] = dist
 
         min_dist = min(list(distances.values()))
         result = [key for key, value in distances.items() if value == min_dist]
 
-        self.voxel = result
+        self.voxel = result[0]
 
-        return result
+        return self.voxel
 
 
-class Voxel(Snapshot):
+class Voxel:
 
-    def __init__(self, v, s):
-        super().__init__(s)
+    def __init__(self, v):
         self.voxel_center = v
         self.snapshots = []
-        self.snapshots.append(s)
+
+    def add_snapshot(self, snap):
+        self.snapshots.append(snap)
 
     def calculate_entropy(self):
         pass
@@ -138,7 +141,9 @@ def extract_snapshots(output_simulation):
                     model = re.search(r'MODEL\s+(\d+)', m).group(1)
                     if model != '1':
                         water_match = re.findall(r'.+HOH.+', m)
-                        all_snapshots.append([f, model, water_match])
+                        snapshot = WaterSnapshot(f, model, water_match)
+                        all_snapshots.append(snapshot)
+
     return all_snapshots
 
 
@@ -149,10 +154,10 @@ def main(center, radius, output_simulation):
     snapshots = extract_snapshots(output_simulation)
 
     for s in snapshots:
-        snapshot = WaterSnapshot(s)
-        snapshot.generate_properties()
-        voxel = snapshot.check_voxel(grid.voxels)
-        grid.add_active_voxel(voxel, s)
+        s.generate_properties()
+        voxel = s.check_voxel(grid.voxels)
+        voxel.add_snapshot(s)
+        grid.add_active_voxel(voxel)
 
 
 if __name__ == "__main__":
@@ -166,8 +171,10 @@ if __name__ == "__main__":
     snapshots = extract_snapshots(output_simulation)
 
     for s in snapshots:
-        snapshot = WaterSnapshot(s)
-        snapshot.generate_properties()
-        voxel = snapshot.check_voxel(grid.voxels)
-        grid.add_active_voxel(voxel, s)
+        s.generate_properties()
+        voxel = s.check_voxel(grid.voxels)
+        voxel.add_snapshot(s)
+        grid.add_active_voxel(voxel)
+
+
 

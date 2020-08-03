@@ -18,7 +18,6 @@ def run_watermap(parsed_yaml):
     simulation_output = os.path.join(simulation.pele_dir, simulation.output)
     
     # Analyse
-    analysis = an.Watermap(simulation_output)
-    analysis_results = analysis.run()
+    analysis = an.main(simulation.water_center, simulation.water_radius, simulation_output)
 
-    return analysis_results
+    return analysis
