@@ -2,6 +2,7 @@ import numpy as np
 import os
 from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection
 from pele_platform.Utilities.Helpers.randomize import calculate_com
+import pele_platform.Templates as templ
 
 
 def prepare_system(protein_file, user_center, user_radius):
@@ -36,8 +37,8 @@ def remove_water(protein_file):
 
 def add_water_box(protein_file, user_center):
 
-    water_box_file = "water_box.pdb"  # make more general
     output_file = "translated_water.pdb"
+    water_box_file = "../Templates/water_box.pdb"
 
     parser = PDBParser()
     water_box = parser.get_structure("water_box", water_box_file)
@@ -111,7 +112,7 @@ def remove_overlaps(protein_file, user_center, user_radius):
     with open(protein_file, "r") as file:
         lines = file.readlines()
         for line in lines:
-            if line[22:26].strip() in residues_to_remove and len(line[20:22].strip()) == 0:
+            if line[22:26].strip() in residues_to_remove and line[20:22].strip() == "w":
                 to_remove.append(line)
 
     final_lines = [line for line in lines if line not in to_remove]
