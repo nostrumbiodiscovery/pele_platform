@@ -9,7 +9,8 @@ import pele_platform.WaterMap.analysis as an
 def run_watermap(parsed_yaml):
 
     # Remove all waters from the system
-    parsed_yaml.system = prep.remove_water(parsed_yaml.system)
+    user_radius = parsed_yaml.water_radius if parsed_yaml.water_radius else 6.0
+    parsed_yaml.system = prep.prepare_system(parsed_yaml.system, parsed_yaml.water_center, user_radius)
 
     # Launch adaptive simulation
     simulation = sim.run_adaptive(parsed_yaml)
