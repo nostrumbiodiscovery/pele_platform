@@ -10,7 +10,8 @@ def run_watermap(parsed_yaml):
 
     # Remove all waters from the system
     user_radius = parsed_yaml.water_radius if parsed_yaml.water_radius else 6.0
-    parsed_yaml.system = prep.prepare_system(parsed_yaml.system, parsed_yaml.water_center, user_radius)
+    parsed_yaml.system = prep.prepare_system(parsed_yaml.system, parsed_yaml.box_water, user_radius)
+    parsed_yaml.waters = "all_waters"
 
     # Launch adaptive simulation
     simulation = sim.run_adaptive(parsed_yaml)
