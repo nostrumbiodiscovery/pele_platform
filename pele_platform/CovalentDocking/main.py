@@ -21,7 +21,6 @@ class CovalentDocking:
         # Reactive atoms
         self.atom_ligand = self.args.atom_ligand
         self.atom_sidechain = self.args.atom_sidechain
-        self.n_structs = self.args.cpus
 
         # Simulation parameters
         self.epsilon = 0.25
