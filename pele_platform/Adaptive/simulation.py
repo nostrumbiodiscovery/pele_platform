@@ -142,7 +142,8 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             env.box=""
 
         ###########Parametrize missing residues
-        for res, __, _ in missing_residues:
+        missing_residues = [res for res, _, _ in missing_residues]
+        for res in list(set(missing_residues)):
             if res != args.residue and res not in env.skip_ligand_prep:
                 env.logger.info("Creating template for residue {}".format(res))
                 with hp.cd(env.pele_dir):
