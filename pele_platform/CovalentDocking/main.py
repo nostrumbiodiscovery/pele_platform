@@ -1,8 +1,10 @@
+from dataclasses import dataclass
 import pele_platform.Adaptive.simulation as si
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Parameters.pele_env as pv
 
 
+@dataclass
 class CovalentDocking:
     args: pv.EnviroBuilder
 
