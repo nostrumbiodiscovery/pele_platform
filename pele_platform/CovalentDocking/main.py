@@ -16,15 +16,17 @@ class CovalentDocking:
 
     def _set_parameters(self) -> None:
 
-        # Simulation parameters
-        self.epsilon = 0.25
-        self.out_in = True
-        self.bias_column = 7  # atom_dist
-        self.args.randomize = True
-
         # Reactive atoms
         self.atom_ligand = self.args.atom_ligand
         self.atom_sidechain = self.args.atom_sidechain
+
+        # Simulation parameters
+        self.epsilon = 0.25
+        self.out_in = True
+        self.args.bias_column = 7  # atom_dist
+        self.args.be_column = 7
+        self.args.randomize = True
+        self.args.atom_dist = [self.atom_ligand, self.atom_sidechain]
 
         # Box
         box_center, box_radius = hp.retrieve_box(self.args.system, self.atom_ligand, self.atom_sidechain)
