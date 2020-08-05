@@ -228,6 +228,10 @@ class YamlParser(object):
         #RNA
         self.rna = data.get(valid_flags["rna"], None)
 
+        # CovalentDocking
+        self.covalent_docking = data.get(valid_flags["covalent_docking"])
+        self.atom_sidechain = data.get(valid_flags["atom_sidechain"], None)
+        self.atom_ligand = data.get(valid_flags["atom_ligand"], None)
 
         #GPCR
         self.gpcr_orth = data.get(valid_flags["gpcr_orth"], None)
