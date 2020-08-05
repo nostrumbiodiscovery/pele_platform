@@ -3,6 +3,7 @@ import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
 from pele_platform.Allosteric.main import run_allosteric
+import pele_platform.CovalentDocking.main as cd
 import pele_platform.gpcr.main as gpcr
 from pele_platform.PPI.main import run_ppi
 import pele_platform.Utilities.Parameters.pele_env as pv
@@ -10,25 +11,24 @@ import argparse
 
 
 @dataclass
-class Launcher():
+class Launcher:
 
     _args: argparse.ArgumentParser
-    frag: str="frag"
-    ppi: str="PPI"
-    allosteric: str="allosteric"
-    gpcr_orth: str="gpcr_orth"
-    adaptive: str="adaptive"
-    
+    frag: str = "frag"
+    ppi: str = "PPI"
+    allosteric: str = "allosteric"
+    gpcr_orth: str = "gpcr_orth"
+    adaptive: str = "adaptive"
+    covalent_docking: str = "covalent_docking"
 
     def launch(self) -> pv.EnviroBuilder:
-        #launch package from input.yaml
+        # launch package from input.yaml
         self._define_package_to_run()
         job_variables = self.launch_package(self._args.package, no_check=self._args.no_check)
         return job_variables
 
-
     def launch_package(self, package: str, no_check=False) -> pv.EnviroBuilder:
-        #launch package from API
+        # launch package from API
         if not no_check:
             ck.check_executable_and_env_variables(self._args)
         if package == self.adaptive:
@@ -39,14 +39,15 @@ class Launcher():
             job_variables = run_allosteric(self._args)
         elif package == self.ppi:
             job_variables = run_ppi(self._args)
+        elif package == self.covalent_docking:
+            job_variables = cd.CovalentDocking(self._args).run_covalent_docking()
         elif package == self.frag:
-            #Set variables and input ready 
+            # Set variables and input ready
             job_variables = fr.FragRunner(self._args).run_simulation()
         return job_variables
 
-
     def _define_package_to_run(self) -> None:
-        #define package being run from input.yaml flags
+        # define package being run from input.yaml flags
         if self._args.frag_core:
             self._args.package = self.frag
         elif self._args.ppi:
@@ -55,6 +56,8 @@ class Launcher():
             self._args.package = self.allosteric
         elif self._args.gpcr_orth:
             self._args.package = self.gpcr_orth
+        elif self._args.covalent_docking:
+            self._args.package = self.covalent_docking
         else: 
             self._args.package = self.adaptive
 
