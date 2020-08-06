@@ -174,3 +174,22 @@ def get_coords_from_residue(structure, original_residue):
                     COI = np.array(list(atom.get_vector()))
                     return COI
     raise cs.WrongAtomSpecified(f"Atom {original_residue} could not be found in structure")
+
+def remove_residue(pdb_file, resname, output=None):
+    if not output:
+        output = pdb_file
+    to_remove = []
+
+    with open(pdb_file, "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            if line[17:20].strip() == resname:
+                to_remove.append(line)
+
+    lines = [line for line in lines if line not in to_remove]
+
+    with open(output, "w+") as fout:
+        for line in lines:
+            fout.write(line)
+
+
