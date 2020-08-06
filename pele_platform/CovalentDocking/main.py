@@ -10,21 +10,25 @@ class CovalentDocking:
     args: pv.EnviroBuilder
 
     def run_covalent_docking(self) -> pv.EnviroBuilder:
-        self._set_parameters()
-        simulation_parameters = si.run_adaptive(self.args)
-        frag_input = self._extract_structures(simulation_parameters)
+        self._set_adaptive_parameters()
+        adaptive_simulation = si.run_adaptive(self.args)
+        frag_input = self._extract_structures(adaptive_simulation)
+        self._set_frag_parameters(adaptive_simulation, frag_input)
+        print("adaptive pele dir", adaptive_simulation.pele_dir) 
+        with hp.cd(adaptive_simulation.pele_dir):
+            fragment_growing = si.run_adaptive(self.args)
         
-        return simulation_parameters
+        return adaptive_simulation, fragment_growing
 
-    def _set_parameters(self) -> None:
+    def _set_adaptive_parameters(self) -> None:
 
         # Reactive atoms
         self.atom_ligand = self.args.atom_ligand
         self.atom_sidechain = self.args.atom_sidechain
 
         # Simulation parameters
-        self.epsilon = 0.25
-        self.out_in = True
+        self.args.epsilon = 0.25
+        self.args.out_in = True
         self.args.bias_column = '7'  # atom_dist
         self.args.be_column = '7'
         self.args.randomize = True
@@ -35,13 +39,30 @@ class CovalentDocking:
         self.args.box_center = self.args.box_center if self.args.box_center else box_center
         self.args.box_radius = self.args.box_radius if self.args.box_radius else box_radius
 
-    def _extract_structures(self, simulation_parameters) -> list:
+    def _extract_structures(self, adaptive_simulation) -> list:
 
-        max_dist = 2.0 # might need to change that
-        output_dir = os.path.join(simulation_parameters.pele_dir, simulation_parameters.output)
-        self.n_structs = 5 if simulation_parameters.test else 100
+        output_dir = os.path.join(adaptive_simulation.pele_dir, adaptive_simulation.output)
+                
+        files_out, _, _, _, dist = bs.main(criteria=self.args.be_column, n_structs=1, path=output_dir, topology=None)
+        bs_files = [os.path.join(adaptive_simulation.pele_dir, "results", f) for f in files_out]
         
-        files_out, _, _, _, dist = bs.main(criteria=self.args.be_column, n_structs=self.n_structs, path=output_dir, topology=None)
-        frag_input = [f for f, d in zip(files_out, dist) if d <= max_dist]
+        frag_input = os.path.join(adaptive_simulation.pele_dir, "covalent_docking_input")
+        os.system("mkdir {}".format(frag_input))
+        
+        for file in bs_files:
+            os.system("cp {} {}/.".format(file, frag_input))
+            hp.remove_residue(os.path.join(frag_input, os.path.basename(file)), adaptive_simulation.residue)
 
         return frag_input
+    
+    def _set_frag_parameters(self, adaptive_simulation, frag_input):
+        
+        # Get rid of adaptive parameters
+        self.args.system = os.path.join(frag_input, "*.pdb")
+        self.args.resname = None
+        self.args.randomize = False
+        self.args.out_in = False
+        self.args.atom_dist = None
+
+        # Set up frag
+        
