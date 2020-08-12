@@ -6,7 +6,6 @@ resname: 'LIG'
 center_of_interface: "B:66:CA"
 seed: 12345
 ppi: true
-test: true
 atom_dist:
 - "B:1:CA"
 - "B:2:CA"

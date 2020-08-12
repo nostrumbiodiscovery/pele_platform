@@ -7,7 +7,6 @@ poses: 3
 atom_dist:
 - 4555
 - 10
-test: true
 debug: true
 working_folder: "allosteric_folder"
 
