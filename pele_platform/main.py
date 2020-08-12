@@ -7,6 +7,7 @@ import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Utilities.Helpers.launcher as lc
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Checker.valid_flags as vf
+import pele_platform.Errors.custom_errors as ce
 
 
 
@@ -27,7 +28,10 @@ def run_platform(input_yaml):
     3) Return job parametrs
     '''
     yaml_obj = yp.YamlParser(input_yaml, vf.VALID_FLAGS_PLATFORM)
-    yaml_obj.read()
+    try:
+        yaml_obj.read()
+    except AttributeError:
+        raise ce.WrongYamlFile(f"Input file: {input_yaml} does not look like a correct yml file")
     job_params = lc.Launcher(yaml_obj).launch()
     return job_params
 
