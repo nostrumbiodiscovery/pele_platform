@@ -1,0 +1,7 @@
+system: '../pele_platform/Examples/preparation/complex_2.pdb'
+chain: 'L'
+resname: 'DRG'
+perturbation: false
+seed: 12345
+induced_fit_fast: true
+debug: true
