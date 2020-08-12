@@ -157,5 +157,13 @@ def test_atom_error(ext_args=ATOM_GPCR_ERROR_ARGS):
         return
     assert False
 
+def test_input_yaml_error():
+    yaml = os.path.join(test_path, "gpcr/complex.pdb")
+    try:
+        job = main.run_platform(yaml)
+    except ce.WrongYamlFile:
+        assert True
+        return
+    assert False
     
 
