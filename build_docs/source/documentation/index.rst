@@ -1,4 +1,4 @@
-Input flags documentation
+Optative flags
 ###########################
 
 Optional flags for each package:
