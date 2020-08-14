@@ -2,7 +2,7 @@ Prepare your own PPI simulation
 ####################################
 
 This simulation aims to find a small molecule that
-inhibitis the interfece between two protein domains.
+inhibits the interface between two protein domains.
 
 **Article**: https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose
 
