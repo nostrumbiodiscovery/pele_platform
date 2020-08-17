@@ -61,6 +61,9 @@ Raw output
 Trajectory and report files for each simulation are located in ``working_folder/output``. That's where you can find
 detailed information on each snapshot (PDB file, binding energy, metrics, etc.).
 
+Selected poses
+++++++++++++++++
+
 **Clusters**
 
 Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
