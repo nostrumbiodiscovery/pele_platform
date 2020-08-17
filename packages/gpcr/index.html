@@ -91,7 +91,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Prepare your own simulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Refine docking poses by accounting with receptor flexibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Refine docking poses by accounting for receptor flexibility</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Prepare your own Pocket Exploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Prepare your own Fragment Growing</a></li>
@@ -101,6 +101,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#raw-output">Raw output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#selected-poses">Selected poses</a></li>
 </ul>
 </li>
 </ul>
@@ -239,6 +240,9 @@ the latter can be placed anywhere as its position will be automatically randomis
 <h3>Raw output<a class="headerlink" href="#raw-output" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory and report files for each simulation are located in <code class="docutils literal notranslate"><span class="pre">working_folder/output</span></code>. That’s where you can find
 detailed information on each snapshot (PDB file, binding energy, metrics, etc.).</p>
+</div>
+<div class="section" id="selected-poses">
+<h3>Selected poses<a class="headerlink" href="#selected-poses" title="Permalink to this headline">¶</a></h3>
 <p><strong>Clusters</strong></p>
 <p>Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:</p>
