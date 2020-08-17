@@ -51,6 +51,10 @@ Requirements
    :hidden:
 
 .. toctree::
+   tutorials/index.rst
+   :hidden:
+
+.. toctree::
    developers/index.rst
    :hidden:
 

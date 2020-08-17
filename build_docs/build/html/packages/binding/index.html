@@ -100,7 +100,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#raw-output">Raw output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#selected-poses">Selected poses</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Prepare your own biased simulation</a></li>
@@ -109,6 +113,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Optative flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers: Add your own mode</a></li>
@@ -184,19 +191,17 @@
             
   <div class="section" id="prepare-your-own-binding-simulation">
 <h1>Prepare your own binding simulation<a class="headerlink" href="#prepare-your-own-binding-simulation" title="Permalink to this headline">¶</a></h1>
-<p>This simulation aims to find the binding path
-of a small molecule to a given receptor.</p>
+<p>This simulation aims to find the binding path of a small molecule to a given receptor.</p>
 <p><strong>Input</strong> (further explained below):</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>protein-ligand pdb</p></li>
+<li><p>protein-ligand PDB file</p></li>
 </ul>
 </div></blockquote>
 <p><strong>Output</strong> (further explained below):</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>ranked binding modes of the chosen small molecule
-with the desired protein</p></li>
+<li><p>ranked binding modes of the chosen small molecule with the desired protein</p></li>
 </ul>
 </div></blockquote>
 <p><strong>Computational Time</strong>: 6h</p>
@@ -208,31 +213,42 @@ and output a complex.pdb. The complex.pdb must contain the protein-ligand in the
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span> <span class="c1">#Protein ligand pdb</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1">#Ligand chain name</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span> <span class="c1"># Protein ligand PDB</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1"># Ligand chain ID</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span> <span class="c1"># Ligand residue name</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="c1">#Distance to track along the simulation</span>
+<span class="c1"># Distance to track along the simulation</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1">#First atom to make the distance to</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1">#Second atom to make the distance to</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1"># First atom (chain ID:residue number:atom name)</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1"># Second atom</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
 <span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
-<p>For more optional flags please refer to <a class="reference external" href="../../documentation/index.html">optative falgs</a></p>
+<p>For more optional flags please refer to <a class="reference external" href="../../documentation/index.html">optional flags</a></p>
 </div>
 <div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
-<p>To run the system launch the simulation with the next command:</p>
+<p>To run the system launch the simulation with the following command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
 </div>
 <div class="section" id="output">
 <h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
-<p>Best ranked clusters:</p>
+<div class="section" id="raw-output">
+<h3>Raw output<a class="headerlink" href="#raw-output" title="Permalink to this headline">¶</a></h3>
+<p>Trajectory and report files for each simulation are located in <code class="docutils literal notranslate"><span class="pre">working_folder/output</span></code>. That’s where you can find
+detailed information on each snapshot (PDB file, binding energy, metrics, etc.).</p>
+</div>
+<div class="section" id="selected-poses">
+<h3>Selected poses<a class="headerlink" href="#selected-poses" title="Permalink to this headline">¶</a></h3>
+<p><strong>Clusters</strong></p>
+<p>Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
+Ranked cluster representatives can be found in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/clusters</span></code></p>
-<p>Best ranked poses:</p>
-<p><code class="docutils literal notranslate"><span class="pre">working_folder/results/BestStructs/</span></code></p>
+<p><strong>Best snapshots</strong></p>
+<p>In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:</p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/results/BestStructs</span></code></p>
+</div>
 </div>
 </div>
 
