@@ -243,14 +243,16 @@ bottom panel in Maestro by hovering the mouse pointer over a specific atom.</p>
 <li><p><strong>system</strong> - path to your PDB file</p></li>
 <li><p><strong>chain</strong> - ligand chain ID, which we set as <code class="docutils literal notranslate"><span class="pre">Z</span></code> in step 1c</p></li>
 <li><p><strong>resname</strong> - ligand residue name, in our case <code class="docutils literal notranslate"><span class="pre">LIG</span></code></p></li>
+<li><p><strong>allosteric</strong> - flag to run pocket exploration</p></li>
 <li><p><strong>atom_dist</strong> - strings representing atoms selected in point 1e</p></li>
 <li><p><strong>seed</strong> - random seed used in Monte Carlo steps, you should keep it consistent to ensure reproducibility of the results</p></li>
 <li><p><strong>cpus</strong> - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).</p></li>
 </ul>
 </div></blockquote>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&quot;Z&quot;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+<span class="nt">allosteric</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
 <span class="p p-Indicator">-</span> <span class="s">&quot;Z:299:C3&quot;</span>
 <span class="p p-Indicator">-</span> <span class="s">&quot;A:178:CA&quot;</span>
