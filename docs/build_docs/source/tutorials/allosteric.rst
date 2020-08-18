@@ -50,6 +50,7 @@ e. **Pick atoms** to track progress. One of the metrics we use to follow the sim
 selected atoms. In this case, we will pick one atom from the ligand and one from the protein, e.g.
     - ligand atom ``Z:299:C3``
     - protein atom ``A:178:CA``.
+
 The atom strings need to follow ``chain ID:residue number:atom name`` format, you can easily check those values on the
 bottom panel in Maestro by hovering the mouse pointer over a specific atom.
 
@@ -67,6 +68,7 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     - **system** - path to your PDB file
     - **chain** - ligand chain ID, which we set as ``Z`` in step 1c
     - **resname** - ligand residue name, in our case ``LIG``
+    - **allosteric** - flag to run pocket exploration
     - **atom_dist** - strings representing atoms selected in point 1e
     - **seed** - random seed used in Monte Carlo steps, you should keep it consistent to ensure reproducibility of the results
     - **cpus** - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).
@@ -74,8 +76,9 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
 ..  code-block:: yaml
 
     system: "complex.pdb"
-    chain: "L"
+    chain: "Z"
     resname: "LIG"
+    allosteric: true
     atom_dist:
     - "Z:299:C3"
     - "A:178:CA"
