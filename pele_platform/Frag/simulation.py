@@ -59,6 +59,7 @@ class FragRunner(mn.FragParameters):
     def _run(self):
         if self.frag_run:
             try:
+                print("self.spython", self.spython)
                 frag.main(self.core_process, self.input, self.gr_steps, self.criteria, self.plop_path, self.spython,
                           self.pele_exec, self.control_file, self.license, self.output_folder,
                           self.report_name, "trajectory", self.cluster_folder, self.cpus, self.distcont, self.threshold,
@@ -69,9 +70,10 @@ class FragRunner(mn.FragParameters):
                           self.rename, self.threshold_clash, self.steering, self.translation_high, self.rotation_high,
                           self.translation_low, self.rotation_low, self.explorative, self.frag_radius,
                           self.sampling_control, self.pele_data, self.pele_documents,
-                          self.only_prepare, self.only_grow, self.no_check, self.debug, srun=self.usesrun)
-            except Exception:
+                          self.only_prepare, self.only_grow, self.no_check, self.debug, srun=self.usesrun, cov_res=self.args.cov_res)
+            except Exception as e:
                 print("Skipped - FragPELE will not run.")
+                print("Exception:", e)
 
     def _prepare_input_file(self):
         from rdkit import Chem

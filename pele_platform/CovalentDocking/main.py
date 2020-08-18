@@ -86,5 +86,6 @@ class CovalentDocking:
         
         # FragCovalent parameters
         self.args.frag_input = os.path.join(self.current_dir, "input.conf")
-        self.be_column = "LocalNonBindingEnergy"
+        self.args.be_column = "LocalNonBindingEnergy"
+        self.args.f_chain = self.atom_ligand.split(":")[0]
 

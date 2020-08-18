@@ -31,7 +31,7 @@ class FragOpcionalParameters():
         self.nclusters = 5
         self.min_overlap = 0.5
         self.max_overlap = 0.7
-        self.frag_chain = "L"
+        self.frag_chain = args.f_chain if args.f_chain else "L"
         self.banned = None
         self.limit = None
         self.rename = False
