@@ -37,3 +37,6 @@ class TemplateFileNotFound(Exception):
 
 class RotamersFileNotFound(Exception):
     pass
+  
+class WrongYamlFile(Exception):
+    pass
