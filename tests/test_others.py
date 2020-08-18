@@ -157,6 +157,16 @@ def test_atom_error(ext_args=ATOM_GPCR_ERROR_ARGS):
         return
     assert False
 
+
+yaml = os.path.join(test_path, "checker/input_template.yaml") 
+def test_template_error(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.TemplateFileNotFound as e:
+        assert str(e).strip("'") == "File mgadeaz not found"
+        return
+    assert False
+
 def test_input_yaml_error():
     yaml = os.path.join(test_path, "gpcr/complex.pdb")
     try:
@@ -167,3 +177,11 @@ def test_input_yaml_error():
     assert False
     
 
+yaml = os.path.join(test_path, "checker/input_rotamer.yaml") 
+def test_rotamer_error(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.RotamersFileNotFound as e:
+        assert str(e).strip("'") == "File mgadeaz not found"
+        return
+    assert False

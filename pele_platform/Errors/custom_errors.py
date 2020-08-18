@@ -32,5 +32,11 @@ class WrongAtomSpecified(Exception):
 class NotCenterOfWaterBox(Exception):
     pass
 
+class TemplateFileNotFound(Exception):
+    pass
+
+class RotamersFileNotFound(Exception):
+    pass
+  
 class WrongYamlFile(Exception):
     pass
