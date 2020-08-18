@@ -211,6 +211,7 @@ class YamlParser(object):
         self.frag_criteria = data.get(valid_flags["frag_criteria"], False)
         self.frag_output_folder = data.get(valid_flags["frag_output_folder"], False)
         self.frag_cluster_folder = data.get(valid_flags["frag_cluster_folder"], False)
+        self.f_chain = data.get(valid_flags["f_chain"], None)
 
         #PPI
         self.n_components = data.get(valid_flags["n_components"], None)
@@ -230,6 +231,7 @@ class YamlParser(object):
 
         # CovalentDocking
         self.covalent_docking = data.get(valid_flags["covalent_docking"])
+        self.cov_res = data.get(valid_flags["cov_res"])
         self.atom_sidechain = data.get(valid_flags["atom_sidechain"], None)
         self.atom_ligand = data.get(valid_flags["atom_ligand"], None)
 

@@ -169,4 +169,6 @@ VALID_FLAGS_PLATFORM = {"system": "system",
                         "cleanup": "cleanup",
                         "covalent_docking": "covalent_docking",
                         "atom_ligand": "atom_ligand",
-                        "atom_sidechain": "atom_sidechain"}
+                        "atom_sidechain": "atom_sidechain",
+                        "f_chain": "f_chain",
+                        "cov_res": "cov_res"}
