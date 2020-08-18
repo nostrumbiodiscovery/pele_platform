@@ -31,7 +31,7 @@ def run_platform(input_yaml):
     try:
         yaml_obj.read()
     except AttributeError:
-        raise ce.WrongYamlFile(f"Input file: {input_yaml} does not look like a correct yml file")
+        raise ce.WrongYamlFile("Input file: {} does not look like a correct yml file".format(input_yaml))
     job_params = lc.Launcher(yaml_obj).launch()
     return job_params
 
