@@ -78,10 +78,9 @@ selected atoms to new entry``.
 
 b. **Enumerate R-groups**
 
-    - Click on ``Select -> Set pick level -> Atoms`` and select the nitrogen atom, then
     - Click on ``Select -> Set pick level -> Atoms`` and select any of the hydrogen atoms adjacent to nitrogen
     - Click on ``Tasks``, search for ``Enumeration`` and select ``Enumeration > Custom R-Group...``
-    - Choose ``Diverse R-groups`` from the drop down menu and ``Run``
+    - Choose ``R-groups to Create a Hydrogen Bond`` from the drop down menu and ``Run``
 
 .. image:: ../img/fragment_growing_tutorial_2b.png
   :width: 400
@@ -91,9 +90,12 @@ Once the job has finished, you will notice a new group on your entry list called
 
 c. **Prepare ligands**
 
-    - Select all enumerated ligands by clicking on the ``enumerate_1`` group
-    - Click on ``Tasks`` and search for ``LigPrep``
-    - Run LigPrep making sure you use selected structures from the project table and generate at most 2 stereoisomers per ligand (otherwise it will return a lot of structures)
+Select all enumerated ligands by clicking on the ``enumerate_1`` group, then click on ``Tasks`` and search for ``LigPrep``.
+Run LigPrep using the following options (otherwise it will return a lot of structures):
+
+    - use selected structures from the project table
+    - generate at most 2 stereoisomers per ligand
+    - do not change the ionisation state
 
 .. image:: ../img/fragment_growing_tutorial_2c.png
   :width: 400
@@ -107,8 +109,60 @@ Once ligand preparation is finished (it might take a few minutes), select all en
 3. FragPELE input file
 ++++++++++++++++++++++++
 
+Once you have ``scaffold.pdb`` and ``ligands.sdf`` in your working directory, create an input file called ``input.yaml`` with the following flags:
+
+    - **frag_core** - protein-scaffold PDB file
+    - **frag_ligands** - SD file with fully grown ligands
+    - **resname** - residue name of the scaffold (we renamed it to ``LIG`` in step 1d)
+    - **chain_core** - chain ID of the scaffold (``Z`` in our case)
+    - **cpus** - number of CPUs you would like to use for each fragment growing simulation
+
+..  code-block:: yaml
+
+    frag_core: "scaffold.pdb"
+    frag_ligands: "ligands.sdf"
+    resname: "LIG"
+    chain_core: "Z"
+    cpus: 50
+
 4. Launching the simulation
 +++++++++++++++++++++++++++++
 
+You can launch the simulation from your working directory using one of the following methods:
+
+    - **directly** on command line using ``python -m pele_platform.main input.yaml``
+
+    - submit a slurm file to the **queue system** (ask your IT manager, if you are not sure how to do it). In our case, the slurm file is called ``run.sl`` and we can launch it on the command line using ``sbatch slurm.sl``
+
+Example slurm file:
+
+.. code-block:: console
+
+    #!/bin/bash
+    #SBATCH -J PELE
+    #SBATCH --output=mpi_%j.out
+    #SBATCH --error=mpi_%j.err
+    #SBATCH --ntasks=50
+    #SBATCH --mem-per-cpu=1000
+
+    python -m pele_platform.main input.yaml
+
 5. Analysis of the results
 ++++++++++++++++++++++++++++
+
+Once the simulation has finished, your working directory should contain (among other files):
+
+    - a TSV file with scored fragments ``simulation_score.tsv``
+    - a number of fragment folders with seemingly random names, e.g. ``scaffold_processed_scaffold,ligand-designer_form-hbond_10evvpbrpvN1-H6C1-H1``
+
+a. Ranked fragments
+--------------------
+
+Examine ``simulation_score.tsv`` file
+
+b. Best binding poses
+-----------------------
+
+In each fragment folder, you will find a ``top_results`` directory containing PDB files with the best binding poses for that fragment.
+
+
