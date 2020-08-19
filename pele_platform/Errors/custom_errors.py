@@ -31,3 +31,6 @@ class WrongAtomSpecified(Exception):
 
 class NotCenterOfWaterBox(Exception):
     pass
+
+class OutInError(Exception):
+    pass
