@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Allosteric simulation - tutorial (unfinished) &mdash; pele platform 1.5.0 documentation</title>
+  <title>Pocket exploration tutorial (unfinished) &mdash; pele platform 1.5.0 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Developers: Add your own mode" href="../developers/index.html" />
+    <link rel="next" title="Fragment growing tutorial (unfinished)" href="fragment_growing.html" />
     <link rel="prev" title="Tutorials" href="index.html" /> 
 </head>
 
@@ -97,7 +97,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Allosteric simulation - tutorial (unfinished)</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Pocket exploration tutorial (unfinished)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#protein-preparation">1. Protein preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pele-input-file">2. PELE input file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#launching-the-simulation">3. Launching the simulation</a></li>
@@ -108,6 +108,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="fragment_growing.html">Fragment growing tutorial (unfinished)</a></li>
 </ul>
 </li>
 </ul>
@@ -164,7 +165,7 @@
         
           <li><a href="index.html">Tutorials</a> &raquo;</li>
         
-      <li>Allosteric simulation - tutorial (unfinished)</li>
+      <li>Pocket exploration tutorial (unfinished)</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -183,8 +184,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="allosteric-simulation-tutorial-unfinished">
-<h1>Allosteric simulation - tutorial (unfinished)<a class="headerlink" href="#allosteric-simulation-tutorial-unfinished" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="pocket-exploration-tutorial-unfinished">
+<h1>Pocket exploration tutorial (unfinished)<a class="headerlink" href="#pocket-exploration-tutorial-unfinished" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial we will set up a <strong>pocket exploration</strong> simulation aimed to discover allosteric binding sites in the protein.
 We will be using protein tyrosine phosphatase 1B (PDB code 1T4J) as an example, but feel free to follow the steps using a
 protein of your choice.</p>
@@ -194,7 +195,7 @@ protein of your choice.</p>
 <p>a. Launch Maestro and <strong>import the structure from PDB</strong> by clicking <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB...</span></code>, type in your PDB ID, e.g. <code class="docutils literal notranslate"><span class="pre">1T4J</span></code>,
 and click <code class="docutils literal notranslate"><span class="pre">Download</span></code>. The protein structure should appear in your workspace.</p>
 <a class="reference internal image-reference" href="../_images/allosteric_tutorial_1a.png"><img alt="../_images/allosteric_tutorial_1a.png" class="align-center" src="../_images/allosteric_tutorial_1a.png" style="width: 400px;" /></a>
-<p>b. <strong>Preprocess the protein</strong> using Protein Preparation Wizard. Click on <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> and search <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Preperation</span> <span class="pre">Wizard</span></code>.
+<p>b. <strong>Preprocess the protein</strong> using Protein Preparation Wizard. Click on <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> and search <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Preparation</span> <span class="pre">Wizard</span></code>.
 Check the following options and hit <code class="docutils literal notranslate"><span class="pre">Preprocess</span></code>.</p>
 <blockquote>
 <div><ul class="simple">
@@ -209,7 +210,7 @@ Check the following options and hit <code class="docutils literal notranslate"><
 <li><dl class="simple">
 <dt><strong>Change ligand chain ID and residue name</strong></dt><dd><ul class="simple">
 <li><p>Click on <code class="docutils literal notranslate"><span class="pre">Select</span> <span class="pre">-&gt;</span> <span class="pre">Set</span> <span class="pre">pick</span> <span class="pre">level</span> <span class="pre">-&gt;</span> <span class="pre">Residues</span></code>, then select the ligand with a mouse click</p></li>
-<li><p>Open <code class="docutils literal notranslate"><span class="pre">Builder</span></code> and choose <code class="docutils literal notranslate"><span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">atom</span> <span class="pre">properties...</span></code></p></li>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">Build</span></code> and choose <code class="docutils literal notranslate"><span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">atom</span> <span class="pre">properties...</span></code></p></li>
 <li><p>Set residue name to <code class="docutils literal notranslate"><span class="pre">LIG</span></code> and chain name to <code class="docutils literal notranslate"><span class="pre">Z</span></code></p></li>
 <li><p>Choose <code class="docutils literal notranslate"><span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">name</span></code> from the drop down list and select <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">unique</span> <span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">names</span> <span class="pre">within</span> <span class="pre">residues</span></code></p></li>
 <li><p>Click <code class="docutils literal notranslate"><span class="pre">Apply</span></code> and close the window.</p></li>
@@ -327,7 +328,7 @@ general idea of the progression of the simulation.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers: Add your own mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="fragment_growing.html" class="btn btn-neutral float-right" title="Fragment growing tutorial (unfinished)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

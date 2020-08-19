@@ -1,4 +1,4 @@
-Allosteric simulation - tutorial (unfinished)
+Pocket exploration tutorial (unfinished)
 =================================================
 In this tutorial we will set up a **pocket exploration** simulation aimed to discover allosteric binding sites in the protein.
 We will be using protein tyrosine phosphatase 1B (PDB code 1T4J) as an example, but feel free to follow the steps using a
@@ -16,7 +16,7 @@ and click ``Download``. The protein structure should appear in your workspace.
   :width: 400
   :align: center
 
-b. **Preprocess the protein** using Protein Preparation Wizard. Click on ``Tasks`` and search ``Protein Preperation Wizard``.
+b. **Preprocess the protein** using Protein Preparation Wizard. Click on ``Tasks`` and search ``Protein Preparation Wizard``.
 Check the following options and hit ``Preprocess``.
     - Fill in missing side chain using Prime
     - Fill in missing loops using Prime
@@ -30,7 +30,7 @@ The preprocessing might take a few minutes. Upon completion, you should see ``1T
 
 c. **Change ligand chain ID and residue name**
     - Click on ``Select -> Set pick level -> Residues``, then select the ligand with a mouse click
-    - Open ``Builder`` and choose ``Other edits -> Change atom properties...``
+    - Open ``Build`` and choose ``Other edits -> Change atom properties...``
     - Set residue name to ``LIG`` and chain name to ``Z``
     - Choose ``PDB atom name`` from the drop down list and select ``Set unique PDB atom names within residues``
     - Click ``Apply`` and close the window.
