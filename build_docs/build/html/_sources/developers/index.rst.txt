@@ -2,17 +2,12 @@
 Developers: Add your own mode
 #####################################
 
+If your simulation set up requires tweaking a lot of parameters, you can add a new **feature** to the platform.
 
-To add your own new simulation mode:
-
-
-1) Generate your own mode
+1. Generate your own mode
 ++++++++++++++++++++++++++++
 
-Add the default of your features below pele_platform/features.py line 27:
-  
-  
-Example:
+Add a new feature with your own defaults to ``pele_platform/features/adaptive.py`` (below line 27), e.g.
 
 .. code-block:: python
 
@@ -22,37 +17,35 @@ Example:
           "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.INDUCED_FIT,
           "box_radius": 6},
 
-2) Include your mode into the pipeline
+2. Include it in the pipeline
 ++++++++++++++++++++++++++++++++++++++++
 
-Set the type of the simulation below pele_platform/features.py line 90:
-
-Example:
+Set the type of the simulation in ``pele_platform/features/adaptive.py`` (after line 79), e.g.
 
 .. code-block:: python
 
     elif args.induced_fit_fast:
         type_simulation = "induced_fit_fast"
 
-3) Create your mode's input option
-+++++++++++++++++++++++++++++++++++
+3. Add an input option
++++++++++++++++++++++++++++++
 
-Under pele_platform/main.py line 204 create your input.yaml option. 
-Set the default to false so it will get activated when the user specifies induced_fit_fast: true.
+A new input flag will not be recognised by the platform, unless you add it to:
 
-Example:
+    - ``_parse`` function in ``pele_platform/Utilities/Helpers/yaml_parser.py`` and set the default to False
+    - ``VALID_FLAGS_PLATFORM`` dictionary in ``pele_platform/Checker/valid_flags.py``
+
+Example in ``yaml_parser.py``:
 
 .. code-block:: python
 
   self.induced_fit_fast = data.get("induced_fit_fast", False)
 
 
-4) Run your mode
+4. Run your mode
 +++++++++++++++++++++
 
-To run your simulation mode in the input file specify the previously generated yaml option.
-
-Example:
+To run your simulation mode in the input file, include the previously generated YAML flag, for example:
 
 .. code-block:: yaml
 
