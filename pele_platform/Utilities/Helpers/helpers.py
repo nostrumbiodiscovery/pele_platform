@@ -2,9 +2,9 @@ import os
 import numpy as np
 import sys
 import warnings
-import pele_platform.Errors.custom_errors as cs
 import PPP.global_variables as gv
 from Bio.PDB import PDBParser
+import pele_platform.Errors.custom_errors as cs
 
 def silentremove(*args, **kwargs):
     for files in args:
@@ -168,8 +168,13 @@ def get_coords_from_residue(structure, original_residue):
     parser = PDBParser()
     structure = parser.get_structure('protein', structure)
     chain, res_number, atom_name = original_residue.split(":")
+    try:
+        res_number = int(res_number)
+    except ValueError:
+        raise cs.WrongAtomStringFormat(f"The specified atom is wrong '{original_residue}'. \
+Should be 'chain:resnumber:atomname'")
     for residue in structure.get_residues():
-        if residue.id[1] == int(res_number):
+        if residue.id[1] == res_number:
             for atom in residue.get_atoms():
                 if atom.name == atom_name:
                     COI = np.array(list(atom.get_vector()))

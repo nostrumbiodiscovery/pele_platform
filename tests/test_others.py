@@ -185,3 +185,21 @@ def test_rotamer_error(yaml=yaml):
         assert str(e).strip("'") == "File mgadeaz not found"
         return
     assert False
+
+yaml = os.path.join(test_path, "out_in/input_flag_error.yaml") 
+def test_out_in_flag(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.OutInError as e:
+        assert str(e).strip("'") == "flag final_site must be specified for out_in package"
+        return
+    assert False
+
+yaml = os.path.join(test_path, "checker/input_atom_string.yaml") 
+def test_atom_string_error(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.WrongAtomStringFormat as e:
+        assert str(e).strip("'") == "The specified atom is wrong '157:A:N'. Should be 'chain:resnumber:atomname"
+        return
+    assert False

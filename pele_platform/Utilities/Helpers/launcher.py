@@ -4,6 +4,7 @@ import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
 from pele_platform.Allosteric.main import run_allosteric
 import pele_platform.gpcr.main as gpcr
+import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
 import pele_platform.Utilities.Parameters.pele_env as pv
 import argparse
@@ -17,6 +18,7 @@ class Launcher():
     ppi: str="PPI"
     allosteric: str="allosteric"
     gpcr_orth: str="gpcr_orth"
+    out_in: str="out_in"
     adaptive: str="adaptive"
     
 
@@ -35,6 +37,8 @@ class Launcher():
             job_variables = ad.run_adaptive(self._args)
         elif package == self.gpcr_orth:
             job_variables = gpcr.GpcrLauncher(self._args).run_gpcr_simulation()
+        elif package == self.out_in:
+            job_variables = outin.OutInLauncher(self._args).run_gpcr_simulation()
         elif package == self.allosteric:
             job_variables = run_allosteric(self._args)
         elif package == self.ppi:
@@ -55,6 +59,8 @@ class Launcher():
             self._args.package = self.allosteric
         elif self._args.gpcr_orth:
             self._args.package = self.gpcr_orth
+        elif self._args.out_in:
+            self._args.package = self.out_in
         else: 
             self._args.package = self.adaptive
 

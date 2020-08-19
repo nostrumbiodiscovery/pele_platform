@@ -1,0 +1,7 @@
+system: '../pele_platform/Examples/gpcr/complex.pdb'
+chain: 'L'
+resname: 'LIG'
+out_in: true
+initial_site: "157:A:N"
+final_site: "A:157:N"
+debug: true

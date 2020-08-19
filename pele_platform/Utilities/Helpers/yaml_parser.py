@@ -234,6 +234,9 @@ class YamlParser(object):
         self.orthosteric_site = data.get(valid_flags["orthosteric_site"], None)
         self.initial_site = data.get(valid_flags["initial_site"], None)
 
+        #OUTIN
+        self.final_site = data.get(valid_flags["final_site"], None)
+
         if self.test:
             print("##############################")
             print("WARNING: This simulation is a test do not use the input files to run production simulations")
