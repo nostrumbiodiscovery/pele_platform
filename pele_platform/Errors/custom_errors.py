@@ -34,3 +34,15 @@ class NotCenterOfWaterBox(Exception):
 
 class OutInError(Exception):
     pass
+
+class TemplateFileNotFound(Exception):
+    pass
+
+class RotamersFileNotFound(Exception):
+    pass
+
+class WrongAtomStringFormat(Exception):
+    pass
+
+class WrongYamlFile(Exception):
+    pass
