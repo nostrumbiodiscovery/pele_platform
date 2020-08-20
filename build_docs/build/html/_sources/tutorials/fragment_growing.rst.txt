@@ -26,6 +26,8 @@ selected atoms. This way we will be left with a single protein-scaffold complex.
   :width: 400
   :align: center
 
+Similarly, you can select ligand ``54E`` (residue 402) and remove it, since we will not need it.
+
 c. **Preprocess the protein** using Protein Preparation Wizard. Click on ``Tasks`` and search ``Protein Preparation Wizard``.
 Check the following options and hit ``Preprocess``.
     - Fill in missing side chain using Prime
@@ -61,7 +63,7 @@ d. **Change ligand chain ID and residue name**
   :align: center
 
 e. **Export structure** by clicking on ``File -> Export structures...`` and save all workspace atoms as ``scaffold.pdb``
-in your working directory.
+in your working directory. Close Maestro.
 
 2. Ligands
 ++++++++++++
