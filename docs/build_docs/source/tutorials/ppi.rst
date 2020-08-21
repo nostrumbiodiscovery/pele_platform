@@ -7,7 +7,7 @@ a ligand from PDB 4UIT co-crystal.
 1. Protein preparation
 +++++++++++++++++++++++
 
-First, we will import the complex from Protein Data Bank and preprocess it using Schrödinger Maestro (release 2020-1).
+We will import the complex from Protein Data Bank and preprocess it using Schrödinger Maestro (release 2020-1).
 
 a. Launch Maestro and **import the structure from PDB** by clicking ``File -> Get PDB...``, type in your PDB ID, e.g. ``4YY6``,
 and click ``Download``. The protein structure should appear in your workspace.
@@ -44,7 +44,8 @@ in your working directory.
 2. Ligand preparation
 ++++++++++++++++++++++
 
-a. Import and preprocess PDB structure ``4UIT``. You can ignore multiple occupancy issues, since we are only interested in the ligand.
+a. Import and preprocess PDB structure ``4UIT``. You can ignore multiple occupancy issues, since we are only interested in
+the ligand.
 
 b. **Extract the ligand**
     - Click on ``Select -> Set pick level -> Residues``, then select the ligand with a mouse click
@@ -77,13 +78,13 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
 
     - **system** - path to the protein-protein PDB file
     - **ligand_pdb** - PDB file with the ligand
-    - **chain** - ligand chain ID, which we set as ``Z`` in step 1c
+    - **chain** - ligand chain ID, which we set as ``Z`` in step 2b
     - **resname** - ligand residue name, in our case ``LIG``
-    - **protein** - chain ID of the protein chain to be kept (``A`` here, since we pick centre of interface on A
+    - **protein** - chain ID of the protein chain to be kept (``A``, since we picked the centre of interface on A, the other chain will be automatically removed)
     - **center_of_interface** - atom at the centre of the protein-protein interface ``(chain ID:residue number:atom name)``
     - **ppi** - flag to run PPI simulation
     - **steps** - number of steps in each PELE iteration (optional)
-    - **atom_dist** - strings representing atoms selected in points 1c and 2c
+    - **atom_dist** - strings representing atoms selected in points 1c and 2c, used to track the progress of the simulation
     - **seed** - random seed used in Monte Carlo steps, you should keep it consistent to ensure reproducibility of the results
     - **cpus** - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).
 
