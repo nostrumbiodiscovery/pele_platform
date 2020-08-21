@@ -124,10 +124,18 @@ PERTURBATION = '''
 '''
 BE = '''
                         { "type": "bindingEnergy",
-
                            "boundPartSelection": { "chains": { "names": ["$CHAIN"] } }
 
                         },
+'''
+
+BE_COV = '''
+                      {{
+                                           "type": "localNonBondingEnergy",
+                                                                "selection": {{ "links": {{ "ids": ["{}"] }} }},
+                                                                                      "radius": 20
+                                                                                                           }},
+
 '''
 
 SASA='''

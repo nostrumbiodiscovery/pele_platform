@@ -21,8 +21,21 @@ class Metrics_Builder():
         else:
             return ["",]
 
+    @staticmethod
+    def binding_energy(covalent, perturbation=True):
+        if perturbation:
+            if covalent:
+                return cs.BE_COV.format(covalent)
+            else:
+                return cs.BE
+        else:
+            if covalent:
+                return cs.BE_COV.format(covalent)
+            else:
+                return ""
 
-def build_metrics(system, atom_dist):
+
+def build_metrics(system, atom_dist, covalent=False):
     metrics = Metrics_Builder(system)
     if atom_dist:
         metrics.distance_to_atom(atom_dist)

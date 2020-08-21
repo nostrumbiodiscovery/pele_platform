@@ -93,17 +93,16 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.remove_constraints = args.remove_constraints if args.remove_constraints is not None else self.simulation_params.get("remove_constraints", False)
 
     def perturbation_params(self, args):
+        self.binding_energy = args.binding_energy if args.binding_energy else mt.Metrics_Builder(self.system).binding_energy(args.cov_res, self.perturbation)
         if self.perturbation:
             self.selection_to_perturb = args.selection_to_perturb if args.selection_to_perturb else self.simulation_params.get("selection_to_perturb", cs.SELECTION_TO_PERTURB)
             self.parameters = args.parameters  if args.parameters else self.simulation_params.get("params", True)
             self.ligand = cs.LIGAND if self.perturbation else ""
-            self.binding_energy = args.binding_energy if args.binding_energy else self.simulation_params.get("binding_energy", cs.BE)
             self.sasa = args.sasa if args.sasa else self.simulation_params.get("sasa", cs.SASA)
         else:
             self.selection_to_perturb = ""
             self.parameters = ""
             self.ligand = ""
-            self.binding_energy = ""
             self.sasa = ""
 
 
