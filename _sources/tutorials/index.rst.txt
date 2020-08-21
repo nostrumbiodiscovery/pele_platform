@@ -11,7 +11,7 @@ We assume you have already installed the software and have access to Schrödinge
 
 
 .. toctree::
-   allosteric.rst
+   ppi.rst
    :hidden:
 
 .. toctree::
