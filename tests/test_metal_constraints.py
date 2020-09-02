@@ -79,15 +79,7 @@ def test_no_metal_constraints(ext_args=NO_METAL_CONSTR_ARGS):
 
 def test_permissive_constraints(passed=PASS_PERMISSIVE_METAL_CONSTR_ARGS, failed=FAIL_PERMISSIVE_METAL_CONSTR_ARGS):
     
-    # non-permissive -> supposed to fail due to lack of geometry
-    try:
-        job = main.run_platform(failed)
-    except ce.NoGeometryAroundMetal:
-        assert ce.NoGeometryAroundMetal
-        return
-    assert False
-
-    # same system, but permissive -> should add constraints around the metal
+    # should add constraints around the metal
     errors = []
     job = main.run_platform(passed)
     errors = tk.check_file(job.pele_dir, "pele.conf", PASS_METAL_CONSTR, errors)
