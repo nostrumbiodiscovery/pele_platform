@@ -59,6 +59,10 @@ Requirements
    :hidden:
 
 .. toctree::
+   errors/index.rst
+   :hidden:
+
+.. toctree::
    changelog/index.rst
    :hidden:
 

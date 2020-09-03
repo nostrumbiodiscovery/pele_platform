@@ -46,5 +46,9 @@ The next packages are included in the PELE Platform:
    bias/index.rst
    :hidden:
 
+.. toctree::
+   pca/index.rst
+   :hidden:
+
 
 

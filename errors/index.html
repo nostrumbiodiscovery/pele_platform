@@ -1,0 +1,284 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Common errors &mdash; pele platform 1.5.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Versions" href="../changelog/index.html" />
+    <link rel="prev" title="Developers: Add your own mode" href="../developers/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers: Add your own mode</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Common errors</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#check-atoms">Check atoms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filenotfound">FileNotFound</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#valueerror-ligand">ValueError - ligand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#valueerror-water-molecules">ValueError - water molecules</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Common errors</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/errors/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="common-errors">
+<h1>Common errors<a class="headerlink" href="#common-errors" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="check-atoms">
+<h2>Check atoms<a class="headerlink" href="#check-atoms" title="Permalink to this headline">¶</a></h2>
+<p>The following error message indicates that the atom(s) you chose to calculate the distance metric or constrain does not exist.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Check the atoms A:999:C given to calculate the distance metric.</span>
+</pre></div>
+</div>
+<p>To resolve the issue, you should:</p>
+<ul class="simple">
+<li><p>ensure the atom string has the correct format, i.e. <code class="docutils literal notranslate"><span class="pre">&quot;chain_id:residue_number:atom_name&quot;</span></code></p></li>
+<li><p>examine the protein structure in Schrödinger Maestro (or open the PDB file as text) and double-check, if the atom exists.</p></li>
+</ul>
+<p>You can easily check residue numbers and atom names in the bottom panel in Maestro by hovering the mouse pointer over a specific atom. In this example, the correct atom string would be <code class="docutils literal notranslate"><span class="pre">&quot;A:106:OH&quot;</span></code>.</p>
+<a class="reference internal image-reference" href="../_images/ppi_tutorial_1e.png"><img alt="../_images/ppi_tutorial_1e.png" class="align-center" src="../_images/ppi_tutorial_1e.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="filenotfound">
+<h2>FileNotFound<a class="headerlink" href="#filenotfound" title="Permalink to this headline">¶</a></h2>
+<p>If PELE raises <code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code>, it probably means it cannot find one of the files specified in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> such as system, ligand or RMSD reference. Make sure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>there are no spelling mistakes in file names</p></li>
+<li><p>all required files are located in your working directory (or provide a relative path in your input file instead).</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">FileNotFoundError: [Errno 2] No such file or directory: &#39;/home/anna/errors/file.pdb&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="valueerror-ligand">
+<h2>ValueError - ligand<a class="headerlink" href="#valueerror-ligand" title="Permalink to this headline">¶</a></h2>
+<p>This error indicates that the software was not able to find the ligand in the PDB file. Make sure <code class="docutils literal notranslate"><span class="pre">chain</span></code> and <code class="docutils literal notranslate"><span class="pre">resname</span></code> flags
+in your input file have correct values. Remember that ligands needs to have a unique chain ID!</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ValueError: Something went wrong when extracting the ligand. Check residue&amp;Chain on input</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="valueerror-water-molecules">
+<h2>ValueError - water molecules<a class="headerlink" href="#valueerror-water-molecules" title="Permalink to this headline">¶</a></h2>
+<p>PELE does not allow more than 4 water molecules to be perturbed, since it results in a lot of noise in simulation results. Make sure
+<code class="docutils literal notranslate"><span class="pre">n_waters</span></code> flag in the input file is set to a value between 1 and 4.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ValueError: Maximum 4 water molecules are allowed.</span>
+</pre></div>
+</div>
+<p>This is only relevant to <code class="docutils literal notranslate"><span class="pre">n_waters</span></code> flag used to automatically add water molecules to the system when running AquaPELE.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../changelog/index.html" class="btn btn-neutral float-right" title="Versions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../developers/index.html" class="btn btn-neutral float-left" title="Developers: Add your own mode" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Daniel Soler Viladrich
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
