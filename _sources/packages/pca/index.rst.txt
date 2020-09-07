@@ -66,10 +66,15 @@ To run the system launch the simulation with the following command:
 4. Output
 =================
 
-Best ranked clusters:
+**Clusters**
+
+Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
+Ranked cluster representatives can be found in:
 
 ``working_folder/results/clusters``
 
-Best ranked poses:
+**Best snapshots**
 
-``working_folder/results/BestStructs/``
+In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
+
+``working_folder/results/BestStructs``
