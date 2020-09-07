@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Protein-protein interaction tutorial (unfinished) &mdash; pele platform 1.5.0 documentation</title>
+  <title>Protein-protein interaction tutorial &mdash; pele platform 1.5.0 documentation</title>
   
 
   
@@ -97,7 +97,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Protein-protein interaction tutorial (unfinished)</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Protein-protein interaction tutorial</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#protein-preparation">1. Protein preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">2. Ligand preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pele-input-file">3. PELE input file</a></li>
@@ -169,7 +169,7 @@
         
           <li><a href="index.html">Tutorials</a> &raquo;</li>
         
-      <li>Protein-protein interaction tutorial (unfinished)</li>
+      <li>Protein-protein interaction tutorial</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -188,8 +188,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="protein-protein-interaction-tutorial-unfinished">
-<h1>Protein-protein interaction tutorial (unfinished)<a class="headerlink" href="#protein-protein-interaction-tutorial-unfinished" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="protein-protein-interaction-tutorial">
+<h1>Protein-protein interaction tutorial<a class="headerlink" href="#protein-protein-interaction-tutorial" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial we will set up a <strong>protein-protein interaction</strong> simulation aimed to elucidate a binding pocket of a bromodomain-histone
 inhibitor. We will be using bromodomain-containing protein 9/histone 4 X-ray structure (PDB code 4YY6) and
 a ligand from PDB 4UIT co-crystal.</p>
@@ -203,11 +203,12 @@ and click <code class="docutils literal notranslate"><span class="pre">Download<
 Check the following options and hit <code class="docutils literal notranslate"><span class="pre">Preprocess</span></code>.</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Fill in missing side chain using Prime</p></li>
-<li><p>Fill in missing loops using Prime</p></li>
-<li><p>Delete waters beyond 5.0 Å from het groups</p></li>
+<li><p>Fill in missing side chain using Prime*</p></li>
+<li><p>Fill in missing loops using Prime*</p></li>
+<li><p>Delete waters beyond 0.0 Å from het groups (i.e. all waters in the system)</p></li>
 </ul>
 </div></blockquote>
+<p>*If you do not have Prime license, you can skip those steps.</p>
 <a class="reference internal image-reference" href="../_images/allosteric_tutorial_1b.png"><img alt="../_images/allosteric_tutorial_1b.png" class="align-center" src="../_images/allosteric_tutorial_1b.png" style="width: 400px;" /></a>
 <p>The preprocessing might take a few minutes. Upon completion, you should see <code class="docutils literal notranslate"><span class="pre">4YY6</span> <span class="pre">-</span> <span class="pre">preprocessed</span></code> on the entry list.</p>
 <ol class="loweralpha simple" start="3">
@@ -240,7 +241,8 @@ the ligand.</p>
 <a class="reference internal image-reference" href="../_images/allosteric_tutorial_1c1.png"><img alt="../_images/allosteric_tutorial_1c1.png" class="align-center" src="../_images/allosteric_tutorial_1c1.png" style="width: 400px;" /></a>
 <a class="reference internal image-reference" href="../_images/allosteric_tutorial_1c2.png"><img alt="../_images/allosteric_tutorial_1c2.png" class="align-center" src="../_images/allosteric_tutorial_1c2.png" style="width: 400px;" /></a>
 <p>c. <strong>Pick atom</strong> to track progress. One of the metrics we use to follow the simulation is the distance between two
-selected atoms. In this case, we will pick ligand atom <code class="docutils literal notranslate"><span class="pre">Z:1123:C13</span></code>, then track the distance between that and the centre of interface.</p>
+selected atoms. In this case, we will pick ligand atom <code class="docutils literal notranslate"><span class="pre">Z:1123:C13</span></code>, then track the distance between that and the centre of interface. It will help us assess whether
+the ligand is forming expected interactions at the protein-protein interface or elsewhere.</p>
 <p>d. <strong>Export the ligand</strong> by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures...</span></code> and save all workspace atoms as <code class="docutils literal notranslate"><span class="pre">ligand.pdb</span></code>
 in your working directory.</p>
 <p>You can close Maestro now.</p>

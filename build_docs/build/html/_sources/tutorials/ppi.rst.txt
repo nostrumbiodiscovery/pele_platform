@@ -1,4 +1,4 @@
-Protein-protein interaction tutorial (unfinished)
+Protein-protein interaction tutorial
 =================================================
 In this tutorial we will set up a **protein-protein interaction** simulation aimed to elucidate a binding pocket of a bromodomain-histone
 inhibitor. We will be using bromodomain-containing protein 9/histone 4 X-ray structure (PDB code 4YY6) and
@@ -18,9 +18,11 @@ and click ``Download``. The protein structure should appear in your workspace.
 
 b. **Preprocess the protein** using Protein Preparation Wizard. Click on ``Tasks`` and search ``Protein Preparation Wizard``.
 Check the following options and hit ``Preprocess``.
-    - Fill in missing side chain using Prime
-    - Fill in missing loops using Prime
-    - Delete waters beyond 5.0 Å from het groups
+    - Fill in missing side chain using Prime*
+    - Fill in missing loops using Prime*
+    - Delete waters beyond 0.0 Å from het groups (i.e. all waters in the system)
+
+\*If you do not have Prime license, you can skip those steps.
 
 .. image:: ../img/allosteric_tutorial_1b.png
   :width: 400
@@ -64,7 +66,8 @@ b. **Extract the ligand**
   :align: center
 
 c. **Pick atom** to track progress. One of the metrics we use to follow the simulation is the distance between two
-selected atoms. In this case, we will pick ligand atom ``Z:1123:C13``, then track the distance between that and the centre of interface.
+selected atoms. In this case, we will pick ligand atom ``Z:1123:C13``, then track the distance between that and the centre of interface. It will help us assess whether
+the ligand is forming expected interactions at the protein-protein interface or elsewhere.
 
 d. **Export the ligand** by clicking on ``File -> Export structures...`` and save all workspace atoms as ``ligand.pdb``
 in your working directory.
