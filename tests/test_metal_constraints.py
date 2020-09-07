@@ -16,10 +16,10 @@ TETRAHEDRAL_ARGS = os.path.join(test_path, "constraints/input_tetrahedral.yaml")
 K_ARGS = os.path.join(test_path, "constraints/input_k.yaml")
 
 PASS_METAL_CONSTR = [
-        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.7238008975982666, "constrainThisAtom":  "A:40:_OG_", "toThisOtherAtom": "A:2007:MG__"}',
-        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 1.9963840246200562, "constrainThisAtom":  "Z:2001:_O5_", "toThisOtherAtom": "A:2007:MG__"},',
-        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.107039213180542, "constrainThisAtom":  "Z:2001:_O1_", "toThisOtherAtom": "A:2007:MG__"},',
-        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.232748031616211, "constrainThisAtom":  "A:17:_OG1", "toThisOtherAtom": "A:2007:MG__"},'
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.7238008975982666, "constrainThisAtom":  "A:40:_OG_", "toThisOtherAtom": "A:2002:MG__"}',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 1.9963840246200562, "constrainThisAtom":  "Z:2001:_O5_", "toThisOtherAtom": "A:2002:MG__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.107039213180542, "constrainThisAtom":  "Z:2001:_O1_", "toThisOtherAtom": "A:2002:MG__"},',
+        '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.232748031616211, "constrainThisAtom":  "A:17:_OG1", "toThisOtherAtom": "A:2002:MG__"},'
 ]
 
 METAL_CONSTR = [
