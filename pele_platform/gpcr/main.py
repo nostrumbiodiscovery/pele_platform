@@ -21,5 +21,9 @@ class GpcrLauncher:
         self.orthosteric_site = self.args.orthosteric_site
         self.initial_site = self.args.initial_site
         self.args.center_of_interface = self.initial_site
-        self.args.box_center, self.args.box_radius = hp.retrieve_box(self.args.system, self.initial_site, self.orthosteric_site, weights=[0.35, 0.65])
+        box_center, box_radius = hp.retrieve_box(
+    self.args.system, self.initial_site, self.orthosteric_site,
+    weights=[0.35, 0.65])
+        self.args.box_center = self.args.box_center if self.args.box_center else box_center
+        self.args.box_radius = self.args.box_radius if self.args.box_radius else box_radius
         self.args.randomize = True

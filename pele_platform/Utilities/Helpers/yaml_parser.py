@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from difflib import SequenceMatcher
 import os
 import yaml
 import warnings
@@ -29,7 +30,20 @@ class YamlParser(object):
         # Check if valids in yaml file are valids
         for key in self.data.keys():
             if key not in self.valid_flags.values():
-                raise KeyError("Input file contains an invalid keyword: {}".format(key))
+                raise KeyError(self._recommend(key))
+
+    def _recommend(self, key):
+        most_similar_flag = None
+        for valid_key in self.valid_flags.values():
+            flag = Most_Similar_Flag(valid_key)
+            flag.calculate_distance(key)
+            if not most_similar_flag:
+                most_similar_flag = flag
+            else:
+                 if flag.distance > most_similar_flag.distance:
+                     most_similar_flag = flag
+        exception_raised = f"Incorrect flag {key}. Did you mean {most_similar_flag.name}?"
+        return exception_raised
         
     
     def _parse(self) -> None:
@@ -65,6 +79,7 @@ class YamlParser(object):
         self.cluster_conditions = data.get(valid_flags["cluster_conditions"], None)
         self.simulation_type = data.get(valid_flags["simulation_type"], None)
         self.equilibration = data.get(valid_flags["equilibration"], None)
+        self.clust_type = data.get(valid_flags["clust_type"], None)
         self.eq_steps = data.get(valid_flags["eq_steps"], None)
         self.adaptive_restart = data.get(valid_flags["adaptive_restart"], None)
         self.input = data.get(valid_flags["input"], None)
@@ -87,10 +102,10 @@ class YamlParser(object):
         self.skip_prep = self.no_ppp = data.get(valid_flags["skip_prep"], None)
         self.gaps_ter = data.get(valid_flags["gaps_ter"], None)
         self.charge_ter = data.get(valid_flags["charge_ter"], None)
+        self.mpi_params = data.get(valid_flags["mpi_params"], None)
         self.nonstandard = data.get(valid_flags["nonstandard"], None)
         self.prepwizard = data.get(valid_flags["prepwizard"], None)
         self.box_center = data.get(valid_flags["box_center"], None)
-        self.box_center = [str(x) for x in self.box_center] if self.box_center else None
         self.box_radius = data.get(valid_flags["box_radius"], None)
         self.box = data.get(valid_flags["box"], None)
         self.native = data.get(valid_flags["native"], "")
@@ -118,7 +133,7 @@ class YamlParser(object):
         self.exit_trajnum = data.get(valid_flags["exit_trajnum"], None)
         self.waters = data.get(valid_flags["waters"], None)
         self.water_freq = data.get(valid_flags["water_freq"], None)
-        #self.water_center = data.get(valid_flags["water_center"], None)
+        self.water_center = data.get(valid_flags["water_center"], None)
         self.water_temp = data.get(valid_flags["water_temp"], None)
         self.water_overlap = data.get(valid_flags["water_overlap"], None)
         self.water_constr = data.get(valid_flags["water_constr"], None)
@@ -172,10 +187,14 @@ class YamlParser(object):
         self.pele_license = data.get(valid_flags["pele_license"], None)
         self.schrodinger = data.get(valid_flags["schrodinger"], None)
         self.no_check = data.get(valid_flags["no_check"], False)
+        self.cleanup = data.get(valid_flags["cleanup"], False)
+        self.water_empty_selector = data.get(valid_flags["water_empty_selector"], False)
+
         # Metal constraints
         self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
         self.constrain_all_metals = data.get(valid_flags["constrain_all_metals"], False)
         self.no_metal_constraints = data.get(valid_flags["no_metal_constraints"], False)
+        
         #Frag
         self.frag_run = data.get(valid_flags["frag_run"], True)
         self.frag_core = data.get(valid_flags["frag_core"], False)
@@ -200,7 +219,7 @@ class YamlParser(object):
         self.protein = data.get(valid_flags["protein"], None)
         self.ligand_pdb = data.get(valid_flags["ligand_pdb"], None)
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
-        self.n_waters = data.get(valid_flags["n_waters"], 1 if self.ppi else 0)
+        self.n_waters = data.get(valid_flags["n_waters"], 0)
 
         #Allosteric
         self.allosteric = data.get(valid_flags["allosteric"], None)
@@ -227,3 +246,10 @@ class YamlParser(object):
             self.temperature = self.temp = 10000
             self.n_components = 3
 
+@dataclass
+class Most_Similar_Flag():
+
+    name: str
+
+    def calculate_distance(self, key):
+        self.distance = SequenceMatcher(None, self.name, key).ratio()

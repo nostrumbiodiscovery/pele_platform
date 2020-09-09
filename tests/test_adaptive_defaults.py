@@ -24,6 +24,7 @@ PCA_ARGS = os.path.join(test_path, "pca/input.yaml")
 FLAGS_ARGS = os.path.join(test_path, "flags/input.yaml")
 RESCORING_ARGS = os.path.join(test_path, "rescoring/input_defaults.yaml")
 GPCR_ARGS = os.path.join(test_path, "gpcr/input_defaults.yaml")
+GPCR2_ARGS = os.path.join(test_path, "gpcr/input_defaults2.yaml")
 
 INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE = [
     '"type" : "independent"',
@@ -130,7 +131,8 @@ EXIT_DEFAULTS_PELE = [
 ]
 
 WATER_PARAMS_DEFAULTS_PELE = [
-    pp.WATER_PARAMS
+    pp.WATER_PARAMS,
+    '"watersToPerturb": {"links": {"ids": ["M:1"] }}' 
 ]
 
 GPCR_DEFAULTS_PELE = [
@@ -148,6 +150,13 @@ GPCR_DEFAULTS_ADAPTIVE = [
     '"peleSteps" : 8',
     '"values" : [1.75, 2.5, 4],',
     '"conditions": [0.7, 0.4, 0.0]'
+]
+
+GPCR2_DEFAULTS_PELE = [
+     '"radius": 10,',
+     '"fixedCenter": [10,10,10]',
+     '"numberOfStericTrials": 100,',
+     pp.GPCR_ORTH
 ]
 
 
@@ -218,6 +227,13 @@ def test_gpcr_defaults(ext_args=GPCR_ARGS):
     job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GPCR_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GPCR_DEFAULTS_PELE, errors)
+    assert not errors
+
+def test_gpcr2_defaults(ext_args=GPCR2_ARGS):
+    errors = []
+    job = main.run_platform(ext_args)
+    errors = check_file(job.pele_dir, "adaptive.conf", GPCR_DEFAULTS_ADAPTIVE, errors)
+    errors = check_file(job.pele_dir, "pele.conf", GPCR2_DEFAULTS_PELE, errors)
     assert not errors
 
 def check_file(folder, filename, values, errors):

@@ -13,3 +13,4 @@ class FragSimulationParameters:
         self.topology = None if self.pdb else os.path.join("output_pele", "topology.pdb")
         self.frag_restart = "-rst" if args.frag_restart else ""
         self.frag_traj_name = "trajectory"
+        self.usesrun = True if self.usesrun == "true" else False

@@ -1,9 +1,9 @@
 import os
 import numpy as np
 import sys
-import re
-import logging
 import warnings
+import pele_platform.Errors.custom_errors as cs
+import PPP.global_variables as gv
 from Bio.PDB import PDBParser
 
 def silentremove(*args, **kwargs):
@@ -47,14 +47,6 @@ class cd:
 
     def __exit__(self, etype, value, traceback):
         os.chdir(self.savedPath)
-
-
-def preproces_lines(lines):
-    for i, line in enumerate(lines):
-        line = re.sub(' +', ' ', line)
-        line = line.strip('\n').strip().split()
-        lines[i] = line
-    return lines
 
 
 def is_repited(pele_dir):
@@ -137,26 +129,12 @@ def retrieve_atom_info(atom, pdb):
                 pass
         sys.exit(f"Check the atoms {atom} given to calculate the distance metric.")
 
-
-def find_coords(pdb, resnum, chain, atom="OW"):
-    with open(pdb, "r") as f:
-        for line in f:
-            if line:
-                if line.startswith("HETATM") and line[22:26].strip() == resnum and line[21:22] == chain:
-                    return [float(coord) for coord in line[30:54].split()]
-
-
-def find_centroid(points):
-    x = [cx for cx, cy, cz in points]
-    y = [cy for cx, cy, cz in points]
-    z = [cz for cx, cy, cz in points]
-    n_points = len(points)
-    centroid = (sum(x) / n_points, sum(y) / n_points, sum(z) / n_points)
-    return centroid
-
-def retrieve_all_waters(pdb):
+def retrieve_all_waters(pdb, exclude=False):
     with open(pdb, 'r') as f:
-        return list(set(["{}:{}".format(line[21:22], line[23:26].strip()) for line in f if line and "HOH" in line]))
+        waters = list(set(["{}:{}".format(line[21:22], line[22:26].strip()) for line in f if line and "HOH" in line]))
+    if exclude:
+        waters = [water for water in waters if water not in exclude]
+    return waters
 
 def retrieve_constraints_for_pele(constraints, pdb):
     CONSTR_ATOM_POINT = '{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
@@ -186,17 +164,17 @@ def retrieve_box(structure, residue_1, residue_2, weights=[0.5, 0.5]):
     box_radius = abs(np.linalg.norm(coords1-coords2))/2 + 4 #Sum 4 to give more space
     return list(box_center), box_radius
 
-def get_coords_from_residue(structure, residue):
+def get_coords_from_residue(structure, original_residue):
     parser = PDBParser()
-    COI = np.zeros(3)
     structure = parser.get_structure('protein', structure)
-    chain, res_number, atom_name = residue.split(":")
+    chain, res_number, atom_name = original_residue.split(":")
     for residue in structure.get_residues():
         if residue.id[1] == int(res_number):
             for atom in residue.get_atoms():
                 if atom.name == atom_name:
                     COI = np.array(list(atom.get_vector()))
                     return COI
+
 
 def backup_logger(logger, message):
     if not logger:
@@ -205,3 +183,12 @@ def backup_logger(logger, message):
         logger.info(message)
     else:
         logger.info(message)
+    raise cs.WrongAtomSpecified(f"Atom {original_residue} could not be found in structure")
+
+def find_nonstd_residue(pdb):
+    with open(pdb, "r") as f:
+        resnames = list(set([line[17:20] for line in f \
+    if line.startswith("ATOM") and line[17:20] not in gv.supported_aminoacids]))
+        return resnames
+        
+

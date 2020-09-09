@@ -1,5 +1,6 @@
-
-__version__ = '1.4.4'
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
 
 __author__ = "Daniel Soler Viladrich"
 

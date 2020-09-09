@@ -29,11 +29,12 @@ def run_allosteric(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
     simulation_path = os.path.join(simulation.pele_dir, simulation.output)
     
     # get best structures and cluster them
-    with cd(simulation_path):
-        # NEED ALGORITHM TO CHOOSE OPTIMUM NUMBERS OF CLUSTERS!!!!
-        cluster_best_structures("5", n_components=simulation.n_components,
-            residue=simulation.residue, topology=simulation.topology,
-            directory=working_folder, logger=simulation.logger)
+    if not parsed_yaml.debug:
+        with cd(simulation_path):
+            # NEED ALGORITHM TO CHOOSE OPTIMUM NUMBERS OF CLUSTERS!!!!
+            cluster_best_structures("5", n_components=simulation.n_components,
+                residue=simulation.residue, topology=simulation.topology,
+                directory=working_folder, logger=simulation.logger)
     
     # adjust original input.yaml
     if not parsed_yaml.skip_refinement:
@@ -51,7 +52,10 @@ def run_allosteric(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
 
         # refine selected best structures
         with cd(original_dir):
-            induced_fit = si.run_adaptive(parsed_yaml)
+            if not parsed_yaml.debug:
+                induced_fit = si.run_adaptive(parsed_yaml)
+            else:
+                induced_fit = None
     else:
         induced_fit = None
 

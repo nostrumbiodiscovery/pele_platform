@@ -106,7 +106,7 @@ def parseImpactTemplate(impactTemplate):
     
     try:
         fileout = open(impactTemplate)
-    except:
+    except OSError:
         env.logger.info('Impossible to open the file ....  ',impactTemplate)
         sys.exit()
     
@@ -165,8 +165,6 @@ def getOverlapscalefactorsFromAtomName(atomName,atomTypesOverlapscalefactors,ato
    
     shortName = getShortName(atomName)
 
- 
-    overlapFactor = '2.0'
     radii ='0.80'
     found = False
 
@@ -209,8 +207,6 @@ def assignOverlapFactor(name,atomTypeOverlapFactorTable,numberOfBonds,realName):
 # extract atom type from atom name for hetero atoms
 def getShortName(name):
 #    shortName = ''.join(i for i in name if not i.isdigit()).upper()
-
-    tmp = ''
 
     size = len(name)
     start = 0

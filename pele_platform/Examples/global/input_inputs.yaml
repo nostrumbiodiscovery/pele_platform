@@ -5,9 +5,9 @@ restart: false
 seed: 12345
 global: true
 global_inputs:
-- "data/inputs/input1.pdb"
-- "data/inputs/input2.pdb"
-- "data/inputs/input3.pdb"
+- "../pele_platform/Examples/analysis/data/inputs/input1.pdb"
+- "../pele_platform/Examples/analysis/data/inputs/input2.pdb"
+- "../pele_platform/Examples/analysis/data/inputs/input3.pdb"
 poses: 4
 test: true
 

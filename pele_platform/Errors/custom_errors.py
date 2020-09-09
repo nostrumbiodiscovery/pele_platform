@@ -22,3 +22,21 @@ class LigandPreparationError(Exception):
 
 class NoGeometryAroundMetal(Exception):
     pass
+
+class EnvVariableNotFound(Exception):
+    pass
+
+class WrongAtomSpecified(Exception):
+    pass
+
+class NotCenterOfWaterBox(Exception):
+    pass
+
+class TemplateFileNotFound(Exception):
+    pass
+
+class RotamersFileNotFound(Exception):
+    pass
+  
+class WrongYamlFile(Exception):
+    pass

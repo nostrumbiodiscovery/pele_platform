@@ -90,14 +90,6 @@ rom command line
             env.logger.info("***DEBUG*** The chosen PDBs are:", pdbs)
         self.pdbs = pdbs    
         return pdbs
-        
-        ''' 
-        Possibilities
-        all PDBs --> simple: pdbs = glob.glob('*.pdb')
-        list with PDBs --> simple: pdbs = self.args.pdb.split()
-        trajectory: check PDB if more than one structure and set flag: will be handled in createEnsemble --> done here
-        DCD: ? not important
-        '''
 
         
     def createEnsemble(self, pdbs, logger):
@@ -115,8 +107,6 @@ rom command line
         '''
         logger.info("Create Ensemble")
         ref_chids = []
-        ensemble_ref_title = "Default"
-        
         
         #set the reference structure, if not chosen by user, the first Frame or PDB is taken
         #remove reference Frame/PDB from list
@@ -134,14 +124,6 @@ rom command line
         if self.debug:
             logger.info("***DEBUG*** Reference is",self.ref)
             
-        try: 
-            f = open(self.ref)
-        except IOError as e:
-            env.logger.info("I/O error({0}): {1} \"{2}\"".format(e.errno, e.strerror, self.ref))
-            exit()
-        
-        
-        
         #open reference file and check for HID, HIE; if found, replace by HIS
         try:
             pdbinfile = open(self.ref)   
@@ -172,8 +154,6 @@ rom command line
             ref_structure = prody.parsePDB(self.ref, subset=self.selection)
     
 
-        
-        ref_selection = ref_structure.select(self.selection)
         reference_hierview = ref_structure.getHierView()
         
         logger.info("Found", reference_hierview.numChains(), "Chain(s) in", reference_hierview._atoms.getTitle())
@@ -273,7 +253,6 @@ rom command line
         else:
             self.selection2="name CA"
             structure =  ensemble.getAtoms().select(self.selection2)
-            sel_string = structure.getSelstr()
             #selec = structure.getSelstr().split()
             selec = structure.getIndices()
             if self.debug:
@@ -315,7 +294,6 @@ rom command line
         env.logger.info("Set weights")
         self.selection2="(backbone)"
         structure =  ensemble.getAtoms().select(self.selection2)
-        sel_string = structure.getSelstr()
         #selec = structure.getSelstr().split()
         selec = structure.getIndices()
         #set weights for atoms outside selection to zero!
@@ -427,7 +405,7 @@ rom command line
         for count in range(len(modes)):
             #array with lenghts of vectors
             a3d = (modes[count].getArrayNx3()**2).sum(axis=1)**0.5
-            show = plt.plot(a3d[:])
+            plt.plot(a3d[:])
             plt.xlabel('Residue index')
             plt.ylabel('Lenght of fluctuation vector')         
             locs,labels = plt.xticks()
@@ -440,7 +418,7 @@ rom command line
         for count in range(6):
             #array with lenghtes of vectors
             a3d = (modes[count].getArrayNx3()**2).sum(axis=1)**0.5
-            show = plt.plot(a3d[:], label=("Mode "+str(count+1)))
+            plt.plot(a3d[:], label=("Mode "+str(count+1)))
 
         plt.xlabel('Residue index')
         plt.ylabel('Lenght of fluctuation vector')
@@ -477,7 +455,7 @@ rom command line
             a3d_all = a3d_all + a3d_pca - a3d_anm
             
             
-        show = plt.plot(a3d_all[:], label=("Difference"), lw=1.5)
+        plt.plot(a3d_all[:], label=("Difference"), lw=1.5)
         plt.xlabel('Residue index')
         plt.ylabel('|PCA| - |ANM|')         
         locs,labels = plt.xticks()
@@ -513,7 +491,7 @@ rom command line
         for count in range(6):
             #array with lenghtes of vectors         
             a3d = ((pca_modes[count].getArrayNx3())**2).sum(axis=1)**0.5 - ((anm_modes[count].getArrayNx3())**2).sum(axis=1)**0.5         
-            show = plt.plot(a3d[:], label=("Mode "+str(count+1)), lw=1.5)
+            plt.plot(a3d[:], label=("Mode "+str(count+1)), lw=1.5)
         plt.xlabel('Residue index')
         plt.ylabel('|PCA| - |ANM|')   
         locs,labels = plt.xticks()
@@ -563,7 +541,7 @@ rom command line
         for count in range(6):
             #array with lenghtes of vectors
             a3d = (modes[count].getArrayNx3()**2).sum(axis=1)**0.5
-            show = plt.plot(a3d[:], label=("Mode "+str(count+1)))
+            plt.plot(a3d[:], label=("Mode "+str(count+1)))
         plt.xlabel('Residue index')
         plt.ylabel('Lenght of fluctuation vector')
         

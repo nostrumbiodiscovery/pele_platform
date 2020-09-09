@@ -10,16 +10,10 @@ class Executable():
     executable: str
 
     def is_in_path(self) -> bool:
-
-        fpath, fname = os.path.split(self.executable)
-        if fpath:
-            if self_is_exe(self.executableprogram):
+        for path in os.environ["PATH"].split(os.pathsep):
+            exe_file = os.path.join(path, self.executable)
+            if self._is_exe(exe_file):
                 return True
-        else:
-            for path in os.environ["PATH"].split(os.pathsep):
-                exe_file = os.path.join(path, self.executable)
-                if self._is_exe(exe_file):
-                    return True
         raise ce.ExecutableNotInPath(f"Executable {self.executable} not in PATH. Please do: export PATH=/path/to/folder/with/executable:$PATH")
 
     def _is_exe(self, fpath) -> str:

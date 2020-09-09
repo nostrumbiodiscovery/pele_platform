@@ -106,6 +106,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             else:
                 shutil.copy(env.system, env.pele_dir)
         else:
+            env.nonstandard.extend(hp.find_nonstd_residue(syst.system))
             env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
 
         # Metal constraints
@@ -151,21 +152,25 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             pca_obj = pca.PCA(env.pca_traj, env.pele_dir)
             env.pca = pca_obj.generate(env.logger)
 
-        # Add waters, if needed
-        if args.n_waters:
-            # Add n water molecules to minimisation inputs
-            input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
-            input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
-            wt.water_checker(args)
-            wt.add_water(input_waters, args.residue, args.n_waters, test=env.test)
-            wt.set_water_control_file(env)
-        elif args.waters:
-            wt.set_water_control_file(env)
+        
+        ####### Add waters, if needed
+        input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
+        input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
+        water_obj = wt.WaterIncluder(input_waters, env.n_waters, 
+            user_waters=env.waters, ligand_perturbation_params=env.parameters, 
+            water_center=args.water_center, water_radius=env.water_radius,
+            allow_empty_selectors=env.allow_empty_selectors, water_temp=env.water_temp,
+            water_trials=env.water_trials, water_overlap=env.water_overlap,
+            water_constr=env.water_constr, test=env.test, water_freq=env.water_freq,
+            ligand_residue=env.residue)
+        water_obj.run()
+        env.parameters = water_obj.ligand_perturbation_params
+
 
         # Fill in simulation templates
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,
             env.pele_exit_temp, env.topology)
-        adaptive.generate_inputs(env)
+        adaptive.generate_inputs(env, water_obj)
 
     if env.analyse and not env.debug:
         report = pt.analyse_simulation(env.report_name, env.traj_name[:-4]+"_", 

@@ -1,7 +1,5 @@
 import os
 import shutil
-import warnings
-import random
 import logging
 import pele_platform.constants.constants as cs
 import pele_platform.features.adaptive as adfs
@@ -76,7 +74,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
         formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
-        if self.restart in ["all", "glide" ]:
+        if not self.adaptive_restart:
             file_handler = logging.FileHandler(log_name, mode='w')
         else:
             file_handler = logging.FileHandler(log_name, mode='a')
