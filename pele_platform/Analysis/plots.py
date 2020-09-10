@@ -67,13 +67,18 @@ class PostProcessor():
 
         column_to_x = column_to_x if not str(column_to_x).isdigit() else self._get_column_name(self.data, column_to_x)
         column_to_y = column_to_y if not str(column_to_y).isdigit() else self._get_column_name(self.data, column_to_y)
-
+        n_points_to_remove = int(len(self.data[column_to_x]) * 0.05) # remove top 5%
+        
+        # sorting values to remove based on col y, since it's always BindingEnergy
+        data = self.data.sort_values(column_to_y, ascending=False)
+        data = data.iloc[n_points_to_remove:]
+        
         fig, ax = plt.subplots()
         if column_to_z:
             column_to_z = column_to_z if not str(column_to_z).isdigit() else self._get_column_name(self.data, column_to_z)
             output_name = output_name if output_name else "{}_{}_{}_plot.png".format(column_to_x, column_to_y, column_to_z)
             output_name = os.path.join(output_folder,output_name).replace(" ", "_")
-            pts = ax.scatter(self.data[column_to_x], self.data[column_to_y], c=self.data[column_to_z], s=20)
+            pts = ax.scatter(data[column_to_x], data[column_to_y], c=data[column_to_z], s=20)
             cbar = plt.colorbar(pts)
             cbar.ax.set_ylabel(column_to_z)
             ax.set_xlabel(column_to_x)
@@ -83,7 +88,7 @@ class PostProcessor():
         else:
             output_name = output_name if output_name else "{}_{}_plot.png".format(column_to_x, column_to_y)
             output_name = os.path.join(output_folder,output_name).replace(" ", "_")
-            ax.scatter(self.data[column_to_x], self.data[column_to_y], s=20)
+            ax.scatter(data[column_to_x], data[column_to_y], s=20)
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
