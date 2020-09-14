@@ -159,7 +159,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         if env.pca_traj:
             pca_obj = pca.PCA(env.pca_traj, env.pele_dir)
             env.pca = pca_obj.generate()
-
         
         ####### Add waters, if needed
         input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
@@ -173,6 +172,12 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             ligand_residue=env.residue)
         water_obj.run()
         env.parameters = water_obj.ligand_perturbation_params
+
+        # metal polarisation
+        if not env.depolarize_metals:
+            hp.change_metal_charges(env.template_folder, env.forcefield, env.system)
+        else:
+            env.logger.info("Metals depolarized.")
 
         ############Fill in Simulation Templates############
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,

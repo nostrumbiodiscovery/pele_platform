@@ -139,6 +139,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.pele_exec = args.pele_exec if args.pele_exec else os.path.join(cs.PELE, "bin/Pele_mpi")
         self.pele_data = args.pele_data if args.pele_data else os.path.join(cs.PELE, "Data")
         self.pele_documents = args.pele_documents if args.pele_documents else os.path.join(cs.PELE, "Documents")
+        self.depolarize_metals = args.depolarize_metals if args.depolarize_metals else False
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
