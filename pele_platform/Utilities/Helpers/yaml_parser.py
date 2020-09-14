@@ -189,7 +189,9 @@ class YamlParser(object):
         self.no_check = data.get(valid_flags["no_check"], False)
         self.cleanup = data.get(valid_flags["cleanup"], False)
         self.water_empty_selector = data.get(valid_flags["water_empty_selector"], False)
-        self.depolarize_metals = data.get(valid_flags["depolarize_metals"], False)
+        self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
+        self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
+
         # Metal constraints
         self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
         self.constrain_all_metals = data.get(valid_flags["constrain_all_metals"], False)

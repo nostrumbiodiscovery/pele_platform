@@ -5,7 +5,6 @@ import sys
 import warnings
 import pele_platform.Errors.custom_errors as cs
 import pele_platform.constants.constants as const
-import pele_platform.Utilities.Helpers.metal_constraints as mc
 import PPP.global_variables as gv
 from Bio.PDB import PDBParser
 
@@ -185,41 +184,3 @@ def find_nonstd_residue(pdb):
 if line.startswith("ATOM") and line[17:20] not in gv.supported_aminoacids]))
     return resnames
        
-
-def change_metal_charges(template_dir, forcefield, protein_file):
-
-    # get names of all metals in the structure
-    metals_in_structure, _ = mc.find_metals(protein_file)
-    metals = list(set([m[0].name for m in metals_in_structure]))
-
-    # get Data and LocalData directories
-    template_paths = []
-    local_template_dir = template_dir
-    global_template_dir = os.path.join(os.environ["PELE"], "Data")
-
-    # find all metal template files in PELE Data
-    for metal in metals:
-        metal_template = "{}z".format(metal.lower())
-        metal_template_file = glob.glob(os.path.join(global_template_dir, "Templates/{}/HeteroAtoms".format(forcefield), metal_template))
-        if metal_template_file:
-            template_paths.append(metal_template_file[0])
-    
-    # get the line with metal charge and divide the value by two
-    for path in template_paths:
-        with open(path, "r") as file_in:
-            lines = file_in.readlines()
-
-            for i in range(len(lines)):
-                if "NBON" in lines[i]:
-                    charge = lines[i+1][26:33]
-                    charge_after = "{:7.6f}".format(float(charge)/2)
-                    lines[i+1] = lines[i+1][:25] + charge_after + lines[i+1][34:]
-        
-        # create a path in DataLocal
-        copied_path = os.path.join(local_template_dir, os.path.basename(path))
-        
-        # write to DataLocal
-        with open(copied_path, "w+") as file_out:
-            for line in lines:
-                file_out.write(line)
-
