@@ -174,10 +174,8 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         env.parameters = water_obj.ligand_perturbation_params
 
         # metal polarisation
-        if not env.depolarize_metals:
+        if not env.polarize_metals:
             hp.change_metal_charges(env.template_folder, env.forcefield, env.system)
-        else:
-            env.logger.info("Metals depolarized.")
 
         ############Fill in Simulation Templates############
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,
