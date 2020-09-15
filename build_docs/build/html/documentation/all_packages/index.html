@@ -105,6 +105,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#metal-constraints">Metal constraints</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#metal-polarisation">Metal polarisation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
@@ -410,6 +411,18 @@
     <span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-A:1:H-L:1:MG&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname</span>
 </pre></div>
 </div>
+</div>
+</div>
+<div class="section" id="metal-polarisation">
+<h2>Metal polarisation<a class="headerlink" href="#metal-polarisation" title="Permalink to this headline">¶</a></h2>
+<p>An optional flag to adjust charges on the metals by dividing them by certain factor.</p>
+<ul class="simple">
+<li><p><strong>polarize_metals</strong> - adjust charges on the metals by dividing them by 2 (unless other value is set in polarization_factor)</p></li>
+<li><p><strong>polarization_factor</strong> - factor by which the metal charges should be divided</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">polarize_metals</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">polarization_factor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span> <span class="c1"># Mg2+ will have a charge of +1</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="metrics">
