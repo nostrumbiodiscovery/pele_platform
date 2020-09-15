@@ -167,4 +167,6 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "no_metal_constraints": "no_metal_constraints",
 "n_waters": "n_waters",
 "rna": "rna",
-"cleanup": "cleanup"}
+"cleanup": "cleanup",
+"polarize_metals": "polarize_metals",
+"polarization_factor": "polarization_factor"}

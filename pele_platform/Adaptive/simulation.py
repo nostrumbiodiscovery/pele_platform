@@ -11,7 +11,8 @@ import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
-import pele_platform.Utilities.Helpers.metal_constraints as mc
+import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
+import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
 import pele_platform.Utilities.Parameters.pele_env as pv
@@ -159,7 +160,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         if env.pca_traj:
             pca_obj = pca.PCA(env.pca_traj, env.pele_dir)
             env.pca = pca_obj.generate()
-
         
         ####### Add waters, if needed
         input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
@@ -173,6 +173,10 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             ligand_residue=env.residue)
         water_obj.run()
         env.parameters = water_obj.ligand_perturbation_params
+
+        # metal polarisation
+        if env.polarize_metals:
+            mp.change_metal_charges(env.template_folder, env.forcefield, env.polarization_factor, env.system)
 
         ############Fill in Simulation Templates############
         adaptive = ad.SimulationBuilder(env.ad_ex_temp,

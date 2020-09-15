@@ -1,8 +1,10 @@
+import glob
 import os
 import numpy as np
 import sys
 import warnings
 import pele_platform.Errors.custom_errors as cs
+import pele_platform.constants.constants as const
 import PPP.global_variables as gv
 from Bio.PDB import PDBParser
 
@@ -181,4 +183,4 @@ def find_nonstd_residue(pdb):
         resnames = list(set([line[17:20] for line in f \
 if line.startswith("ATOM") and line[17:20] not in gv.supported_aminoacids]))
     return resnames
-        
+       
