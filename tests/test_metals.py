@@ -16,6 +16,9 @@ SQUARE_PLANAR_ARGS = os.path.join(test_path, "constraints/input_square_planar.ya
 TETRAHEDRAL_ARGS = os.path.join(test_path, "constraints/input_tetrahedral.yaml")
 K_ARGS = os.path.join(test_path, "constraints/input_k.yaml")
 POLARISATION_ARGS = os.path.join(test_path, "constraints/input_square_planar_polarisation.yaml")
+IGNORE_ARGS = os.path.join(test_path, "constraints/input_ignore.yaml")
+
+IGNORE = "A:2002:MG__"
 
 PASS_METAL_CONSTR = [
         '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.7238008975982666, "constrainThisAtom":  "A:40:_OG_", "toThisOtherAtom": "A:2002:MG__"}',
@@ -121,6 +124,21 @@ def test_tetrahedral(ext_args=TETRAHEDRAL_ARGS):
     job = main.run_platform(ext_args)                                                                                                                                                   
     errors = tk.check_file(job.pele_dir, "pele.conf", TETRAHEDRAL, errors)                                                                                                            
     assert not errors
+
+
+def test_ignore_external(ext_args=IGNORE_ARGS):
+
+    metal_lines = []
+    job = main.run_platform(ext_args)
+    path = os.path.join(job.pele_dir, "pele.conf")
+    
+    with open(path, "r") as file:
+        lines = file.readlines()
+
+        for line in lines:
+            if IGNORE in line:
+                metal_lines.append(line)
+    assert len(metal_lines) == 1
 
 
 def test_polarisation(ext_args_true=POLARISATION_ARGS, ext_args_false=SQUARE_PLANAR_ARGS):
