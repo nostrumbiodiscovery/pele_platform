@@ -2,6 +2,7 @@ from . import test_adaptive as tk
 import pele_platform.main as main
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.constants.constants as cs
+import glob
 import os
 
 test_path = os.path.join(cs.DIR, "Examples")
@@ -14,6 +15,7 @@ PERMISSIVE_EXCEPTION = os.path.join(test_path, "constraints/input_permissive_exc
 SQUARE_PLANAR_ARGS = os.path.join(test_path, "constraints/input_square_planar.yaml")
 TETRAHEDRAL_ARGS = os.path.join(test_path, "constraints/input_tetrahedral.yaml")
 K_ARGS = os.path.join(test_path, "constraints/input_k.yaml")
+POLARISATION_ARGS = os.path.join(test_path, "constraints/input_square_planar_polarisation.yaml")
 
 PASS_METAL_CONSTR = [
         '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.7238008975982666, "constrainThisAtom":  "A:40:_OG_", "toThisOtherAtom": "A:2002:MG__"}',
@@ -60,6 +62,8 @@ K_CONSTR = [
         '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.017709970474243, "constrainThisAtom":  "B:713:_OW_", "toThisOtherAtom": "B:603:_K__"},',
         '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.6524617671966553, "constrainThisAtom":  "B:153:_OD2", "toThisOtherAtom": "B:603:_K__"},'
 ]
+
+POLARISATION = ["    1   1.6445   0.8750  0.200000 0.9545   0.8222   0.005000000   0.000000000"]
 
 def test_metal_constraints(ext_args=METAL_CONSTR_ARGS):
     # checks metal constraints without any flags
@@ -118,6 +122,19 @@ def test_tetrahedral(ext_args=TETRAHEDRAL_ARGS):
     errors = tk.check_file(job.pele_dir, "pele.conf", TETRAHEDRAL, errors)                                                                                                            
     assert not errors
 
+
+def test_polarisation(ext_args_true=POLARISATION_ARGS, ext_args_false=SQUARE_PLANAR_ARGS):
+
+    # no polarisation
+    job1 = main.run_platform(ext_args_false)
+    mg_template_file_false = glob.glob(os.path.join(job1.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz"))
+    assert not mg_template_file_false
+
+    # polarisation with factor 10
+    errors = []
+    job2 = main.run_platform(ext_args_true)
+    errors = tk.check_file(job2.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz", POLARISATION, errors)
+    assert not errors
 
 #def test_K_dist(ext_args=K_ARGS):
 #
