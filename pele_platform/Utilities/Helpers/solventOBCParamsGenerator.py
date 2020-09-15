@@ -107,7 +107,7 @@ def parseImpactTemplate(impactTemplate):
     try:
         fileout = open(impactTemplate)
     except OSError:
-        print('Impossible to open the file ....  ',impactTemplate)
+        env.logger.info('Impossible to open the file ....  ',impactTemplate)
         sys.exit()
     
     name = ''
@@ -250,7 +250,7 @@ def generateSolventTemplate(residueName, atomNamesAndTypes,paramtersLst,atomType
             overlapFactor, radii, foundNoStd = getOverlapscalefactorsFromAtomName(ele[0],atomTypesOverlapFactors,atomTypesHCTradii,numberOfBonds[i])
             
             if not foundNoStd:
-                print('Parameter NOT found in the template database ....... '+ele[0]+'   '+ele[1]+'  using default parameters')
+                env.logger.info('Parameter NOT found in the template database ....... '+ele[0]+'   '+ele[1]+'  using default parameters')
 
             templateParameters.append(residueName+'Z   '+ele[0]+'   '+ele[1]+'    '+overlapFactor+'   '+radii+'\n') 
         

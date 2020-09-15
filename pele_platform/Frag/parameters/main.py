@@ -21,10 +21,10 @@ class FragParameters(pele.EnviroBuilder, water.FragWaterParams,
         # Frag Simulation Parameters
         simulation.FragSimulationParameters.__init__(self, args)
 
-        # Frag Opcional Parameters
+        # Frag Optional Parameters
         opcionals.FragOpcionalParameters.__init__(self, args)
 
-        # Keep inital arguments
+        # Keep initial arguments
         self.args = args
 
 

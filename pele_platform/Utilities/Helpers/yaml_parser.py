@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from difflib import SequenceMatcher
 import os
 import yaml
-
+import warnings
 
 @dataclass
 class YamlParser(object):
@@ -27,7 +27,7 @@ class YamlParser(object):
 
 
     def _check(self) -> None:
-        #Check if valids in yaml file are valids
+        # Check if valids in yaml file are valids
         for key in self.data.keys():
             if key not in self.valid_flags.values():
                 raise KeyError(self._recommend(key))
@@ -47,7 +47,7 @@ class YamlParser(object):
         
     
     def _parse(self) -> None:
-        #Parse fields in yaml file and set defaults
+        # Parse fields in yaml file and set defaults
         valid_flags = self.valid_flags
         data = self.data
         self.system = data.get(valid_flags["system"], "")
@@ -189,6 +189,8 @@ class YamlParser(object):
         self.no_check = data.get(valid_flags["no_check"], False)
         self.cleanup = data.get(valid_flags["cleanup"], False)
         self.water_empty_selector = data.get(valid_flags["water_empty_selector"], False)
+        self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
+        self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
 
         # Metal constraints
         self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
@@ -228,7 +230,6 @@ class YamlParser(object):
         #RNA
         self.rna = data.get(valid_flags["rna"], None)
 
-
         #GPCR
         self.gpcr_orth = data.get(valid_flags["gpcr_orth"], None)
         self.orthosteric_site = data.get(valid_flags["orthosteric_site"], None)
@@ -238,9 +239,7 @@ class YamlParser(object):
         self.final_site = data.get(valid_flags["final_site"], None)
 
         if self.test:
-            print("##############################")
-            print("WARNING: This simulation is a test do not use the input files to run production simulations")
-            print("##############################")
+            warnings.warn("WARNING: This simulation is a test do not use the input files to run production simulations")
             self.cpus = 5
             self.pele_steps = self.steps = 1
             self.iterations = 1

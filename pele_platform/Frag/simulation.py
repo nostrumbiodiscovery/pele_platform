@@ -22,7 +22,7 @@ class FragRunner(mn.FragParameters):
 
     def _launch(self):
         if self.ligands:  # Full ligands as sdf
-            fragment_files = self._prepare_input_file()
+            fragment_files = self._prepare_input_file(logger=self.logger)
         else:
             fragment_files = None
         self._run()
@@ -73,7 +73,7 @@ class FragRunner(mn.FragParameters):
             except Exception:
                 print("Skipped - FragPELE will not run.")
 
-    def _prepare_input_file(self):
+    def _prepare_input_file(self, logger=None):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
 
@@ -90,6 +90,7 @@ class FragRunner(mn.FragParameters):
         except KeyError:
             raise ce.MissResidueFlag("Missing residue flag to specify the ligand core residue name. i.e resname: 'LIG'")
             
+
         # Get sdf full grown ligands
         ligands_grown = Chem.SDMolSupplier(self.ligands, removeHs=False)
         fragment_files = []
@@ -100,7 +101,7 @@ class FragRunner(mn.FragParameters):
         for ligand in ligands_grown:
             Chem.AssignAtomChiralTagsFromStructure(ligand)
             try:
-                line, fragment = self._create_fragment_from_ligand(ligand, ligand_core)
+                line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, logger=logger)
             except Exception as e:
                 try:
                     line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, substructure=False)
@@ -112,7 +113,7 @@ class FragRunner(mn.FragParameters):
                             # Try with second substructure search
                         line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
 
-            print(f"Ligand {fragment.file} preprocessed")
+            logger.info(f"Ligand {fragment.file} preprocessed")
             fragment_files.append(fragment.file)
             with open(self.input, "a") as fout:
                 fout.write(line + "\n")

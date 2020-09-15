@@ -1,4 +1,5 @@
 import os
+import logging
 import glob
 import shutil
 import pele_platform.constants.constants as cs
@@ -30,6 +31,7 @@ def test_best_structs(simulation_path=simulation_path, report_name=REPORT_NAME, 
     if os.path.exists(output_folder):
         shutil.rmtree(output_folder)
     analysis = pt.PostProcessor(report_name, traj_name, simulation_path, 1)
+    analysis.logger = logging.getLogger('logger')
     analysis.top_poses(5, n_structs, output_folder)
     files = glob.glob(os.path.join(output_folder, "*"))
     assert len(files) == 1
@@ -62,6 +64,7 @@ def test_cluster():
     if os.path.exists(output_folder): shutil.rmtree(output_folder)
     analysis = pt.PostProcessor("report_", "trajectory_", "../pele_platform/Examples/analysis/data/xtc", 2, 
         topology="../pele_platform/Examples/analysis/data/xtc/topologies/topology_0.pdb", residue="L01")
+    analysis.logger = logging.getLogger('logger')
     analysis.retrive_data()
     analysis.cluster_poses(2, 5, output_folder, nclusts=n_clusts)
     assert os.path.exists(output_folder)

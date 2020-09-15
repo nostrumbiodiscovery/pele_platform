@@ -2,7 +2,8 @@ import os
 import argparse
 import schrodinger.structure as st
 
-
+####Here because otherwise need to charge helpers with PPP
+####and schrodinger does not have that module
 class cd:
     """Context manager for changing the current working directory"""
     def __init__(self, newPath):
@@ -43,14 +44,15 @@ def pdb_to_mae(fname, schr_path, mae_output_file=None, remove=False):
         struct.title = '%s_BindEn_%.2f' %(traj, pele_energy) 
         struct.write(f"{traj}.mae")
 
+
 def add_args(parser):
     parser.add_argument('inputfile', type=str, help="Pdb input file")
-    parser.add_argument('--schr', type=str, help="schrodinger root path")
-    parser.add_argument('--remove', action="store_true", help="Remove inputfile at exit")
+    parser.add_argument('--schr', type=str, help="Schrodinger root path")
+    parser.add_argument('--remove', action="store_true", help="Remove input file at exit")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Write mae and sdf files with certain properties')
+    parser = argparse.ArgumentParser(description='Write MAE and SDF files with certain properties')
     add_args(parser)
     args = parser.parse_args()
     pdb_to_mae(args.inputfile, args.schr, remove=args.remove)
