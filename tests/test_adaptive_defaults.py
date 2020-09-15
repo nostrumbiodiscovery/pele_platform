@@ -75,7 +75,6 @@ OUT_IN_DEFAULTS_ADAPTIVE = [
 
 OUT_IN_DEFAULTS_PELE = [
     '"numberOfStericTrials": 250',
-    '"radius": 30',
     '"overlapFactor": 0.65',
     pp.OUT_IN
 ]
