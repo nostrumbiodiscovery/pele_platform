@@ -1,4 +1,5 @@
 import os
+import logging
 import numpy as np
 import sys
 import warnings
@@ -174,6 +175,7 @@ def get_coords_from_residue(structure, original_residue):
                 if atom.name == atom_name:
                     COI = np.array(list(atom.get_vector()))
                     return COI
+    raise cs.WrongAtomSpecified(f"Atom {original_residue} could not be found in structure")
 
 
 def backup_logger(logger, message):
@@ -183,7 +185,6 @@ def backup_logger(logger, message):
         logger.info(message)
     else:
         logger.info(message)
-    raise cs.WrongAtomSpecified(f"Atom {original_residue} could not be found in structure")
 
 def find_nonstd_residue(pdb):
     with open(pdb, "r") as f:

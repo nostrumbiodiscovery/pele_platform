@@ -9,7 +9,7 @@ from sklearn import mixture
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
 import AdaptivePELE.analysis.selectOnPlot as sp
-import AdaptivePELE.analysis.bestStructs as bs
+import pele_platform.Utilities.Helpers.bestStructs as bs
 from pele_platform.constants import constants as cs
 import pele_platform.Analysis.pdf_report as pr
 from pele_platform.Utilities.Helpers.helpers import backup_logger
@@ -95,7 +95,7 @@ class PostProcessor:
             backup_logger(self.logger, "Plotted {} vs {}".format(column_to_x, column_to_y))
         return output_name
 
-    def top_poses(self, metric, n_structs, output="BestStructs", logger=None):
+    def top_poses(self, metric, n_structs, output="BestStructs"):
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
         self._extract_poses(best_poses, metric, output)
@@ -118,21 +118,21 @@ class PostProcessor:
         for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
             if not self.topology:
                 try:
-                    bs.extract_snapshot_from_pdb(path, f_id, output, self.topology, step, out_freq, f_out)
+                    bs.extract_snapshot_from_pdb(path, f_id, output, self.topology, step, out_freq, f_out, self.logger)
                 except UnicodeDecodeError:
                     raise Exception(
                         "XTC output being treated as PDB. Please specify XTC with the next flag. traj: 'trajectory_name.xtc' in the input.yaml")
             else:
-                bs.extract_snapshot_from_xtc(path, f_id, output, self.topology, step, out_freq, f_out)
+                bs.extract_snapshot_from_xtc(path, f_id, output, self.topology, step, out_freq, f_out, self.logger)
 
-    def cluster_poses(self, n_structs, metric, output, nclusts=10, logger=None):
+    def cluster_poses(self, n_structs, metric, output, nclusts=10):
         assert self.residue, "Set residue ligand name to clusterize"
         metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
         best_poses = self.data.nsmallest(n_structs, metric)
-        clusters = self._cluster(best_poses, metric, output, nclusts, logger=None)
+        clusters = self._cluster(best_poses, metric, output, nclusts)
         return clusters
 
-    def _cluster(self, poses, metric, output, nclusts=10, logger=None):
+    def _cluster(self, poses, metric, output, nclusts=10):
         # Extract metric values
         values = poses[metric].tolist()
         epochs = poses[EPOCH].tolist()
@@ -173,10 +173,10 @@ class PostProcessor:
             input_traj = file_ids[max_idx]
             if not self.topology:
                 bs.extract_snapshot_from_pdb(max_traj, input_traj, output, self.topology, max_snapshot, out_freq,
-                                             output_traj, logger=logger)
+                                             output_traj, logger=self.logger)
             else:
                 bs.extract_snapshot_from_xtc(max_traj, input_traj, output, self.topology, max_snapshot, out_freq,
-                                             output_traj, logger=logger)
+                                             output_traj, logger=self.logger)
             all_metrics.append(cluster_metrics)
             output_clusters.append(os.path.join(output, output_traj))
         fig, ax = plt.subplots()
@@ -234,12 +234,12 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
 
     # Retrieve 100 best structures
     logger.info("Retrieve 100 Best Poses")
-    analysis.top_poses(be, 100, top_poses_folder, logger=logger)
+    analysis.top_poses(be, 100, top_poses_folder)
 
     # Clustering of best 2000 best structures
     logger.info(f"Retrieve {nclusts} best cluster poses")
     if clustering:
-        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts=nclusts, logger=logger)
+        clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts=nclusts)
     if mae:
         sch_python = os.path.join(cs.SCHRODINGER, "utilities/python")
         if not os.path.exists(sch_python):

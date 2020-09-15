@@ -156,7 +156,7 @@ rom command line
 
         reference_hierview = ref_structure.getHierView()
         
-        logger.info("Found", reference_hierview.numChains(), "Chain(s) in", reference_hierview._atoms.getTitle())
+        logger.info(f"Found {reference_hierview.numChains()} Chain(s) in {reference_hierview._atoms.getTitle()}")
         ensemble_ref_title = reference_hierview._atoms.getTitle()
         logger.info(reference_hierview[0])
         
@@ -168,12 +168,12 @@ rom command line
         for chain in reference_hierview:
             ref_chids.append(chain.getChid())
         if self.debug:
-            env.logger.info("***DEBUG***", ref_chids)
+            env.logger.info(f"***DEBUG*** {ref_chids}")
         
         reference_chains = [reference_hierview[chid] for chid in ref_chids] 
         
         if self.debug:
-            env.logger.info("***DEBUG***", reference_chains)
+            env.logger.info(f"***DEBUG*** {reference_chains}")
             
         
         
@@ -334,7 +334,7 @@ rom command line
         
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
-        logger.info("PCA is saved in:", outputname)
+        logger.info(f"PCA is saved in: {outputname}")
         return pca, outputname
         
     def calcANM(self, structure, logger):
@@ -356,7 +356,7 @@ rom command line
         prody.writeNMD(outputname, anm[:10], self.selection_ref_structure)
         if self.vmd == True:
             prody.viewNMDinVMD(outputname)
-        logger.info("ANM is saved in:", outputname)
+        logger.info(f"ANM is saved in: {outputname}")
         return anm
 
     def compare_modes(self, modes1, modes2):

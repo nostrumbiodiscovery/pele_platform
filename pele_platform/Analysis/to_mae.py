@@ -2,7 +2,19 @@ import os
 import argparse
 import schrodinger.structure as st
 
+####Here because otherwise need to charge helpers with PPP
+####and schrodinger does not have that module
+class cd:
+    """Context manager for changing the current working directory"""
+    def __init__(self, newPath):
+        self.newPath = os.path.expanduser(newPath)
 
+    def __enter__(self):
+        self.savedPath = os.getcwd()
+        os.chdir(self.newPath)
+
+    def __exit__(self, etype, value, traceback):
+        os.chdir(self.savedPath)
 
 def pdb_to_mae(fname, schr_path, mae_output_file=None, remove=False):
     directory = os.path.dirname(fname)
