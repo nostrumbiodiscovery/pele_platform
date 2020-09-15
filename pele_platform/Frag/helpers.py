@@ -6,6 +6,7 @@ import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
 
 
+
 def _search_core_fragment_linker(ligand, ligand_core, result=0, check_symmetry=False):
     """ Given mol1 and mol2 return the linker atoms"""
     substructure_results = ligand.GetSubstructMatches(ligand_core)
@@ -53,6 +54,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
         [atom.GetIdx() for atom in original.GetAtomWithIdx(atom_core_idx).GetNeighbors() if atom.GetAtomicNum() == 1][0]
     hydrogen_core = at.Atom(original, hydrogen_core_idx)
 
+
     # Delete core for full ligand with substructure and if it fails manually
     if substructure:
         fragment = rd.DeleteSubstructs(ligand, ligand_core)
@@ -66,6 +68,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
 
         for atom in reversed(atoms_core):
             new_mol.RemoveAtom(atom)
+
 
         for atom in reversed(new_mol.GetMol().GetAtoms()):
             neighbours = atom.GetNeighbors()
@@ -104,7 +107,7 @@ def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, atom_fragm
         # Get fragment atom attached to newly added hydrogen
         atom_fragment_idx = fragment.GetAtomWithIdx(added_hydrogen_idx).GetNeighbors()[0].GetIdx()
     except IndexError:
-        print("Hydrogen detection failed won't have into account stereochemistry")
+        logger.info("Hydrogen detection failed won't have into account steriochemistry")
         added_hydrogen_idx = 0
         no_hydrogens = True
         atom_fragment_idx = mapping[atom_fragment]
@@ -120,8 +123,8 @@ def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, atom_fragm
     atom_fragment_attach_to_hydrogen = at.Atom(fragment, atom_fragment_idx)
 
     # Build fragment object
-    fragment = fr.Fragment(fragment_filename, atom_fragment_attach_to_hydrogen, added_hydrogen, atom_core,
-                           hydrogen_core, no_hydrogens)
+    fragment = fr.Fragment(fragment_filename, atom_fragment_attach_to_hydrogen,
+                           added_hydrogen, atom_core, hydrogen_core, no_hydrogens)
     return fragment
 
 

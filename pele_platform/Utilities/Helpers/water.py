@@ -237,7 +237,6 @@ class WaterIncluder():
                             line = line.replace(line[7:11], str(int(line[7:11]) + lig_length))
                             if line[12:15] == "2HW":
                                 line = line.strip("\n") + "\nTER\n"
-                                print(line)
                             new_water_lines.append(line)
     
                 del new_water_lines[-1] #Last biopython line is a not need it TER

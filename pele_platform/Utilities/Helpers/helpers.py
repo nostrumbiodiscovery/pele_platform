@@ -1,5 +1,6 @@
 import glob
 import os
+import logging
 import numpy as np
 import sys
 import warnings
@@ -178,9 +179,17 @@ def get_coords_from_residue(structure, original_residue):
                     return COI
     raise cs.WrongAtomSpecified(f"Atom {original_residue} could not be found in structure")
 
+
+def backup_logger(logger, message):
+    if not logger:
+        logger = logging.getLogger('logger')
+        logger.setLevel(logging.INFO)
+        logger.info(message)
+    else:
+        logger.info(message)
+
 def find_nonstd_residue(pdb):
     with open(pdb, "r") as f:
         resnames = list(set([line[17:20] for line in f \
-if line.startswith("ATOM") and line[17:20] not in gv.supported_aminoacids]))
-    return resnames
-       
+    if line.startswith("ATOM") and line[17:20] not in gv.supported_aminoacids]))
+        return resnames

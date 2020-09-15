@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from difflib import SequenceMatcher
 import os
 import yaml
-
+import warnings
 
 @dataclass
 class YamlParser(object):
@@ -27,7 +27,7 @@ class YamlParser(object):
 
 
     def _check(self) -> None:
-        #Check if valids in yaml file are valids
+        # Check if valids in yaml file are valids
         for key in self.data.keys():
             if key not in self.valid_flags.values():
                 raise KeyError(self._recommend(key))
@@ -47,7 +47,7 @@ class YamlParser(object):
         
     
     def _parse(self) -> None:
-        #Parse fields in yaml file and set defaults
+        # Parse fields in yaml file and set defaults
         valid_flags = self.valid_flags
         data = self.data
         self.system = data.get(valid_flags["system"], "")
@@ -236,9 +236,7 @@ class YamlParser(object):
         self.initial_site = data.get(valid_flags["initial_site"], None)
 
         if self.test:
-            print("##############################")
-            print("WARNING: This simulation is a test do not use the input files to run production simulations")
-            print("##############################")
+            warnings.warn("WARNING: This simulation is a test do not use the input files to run production simulations")
             self.cpus = 5
             self.pele_steps = self.steps = 1
             self.iterations = 1
