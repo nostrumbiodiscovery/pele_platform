@@ -5,6 +5,6 @@ epsilon: 1
 resname: 'LIG'
 restart: false
 seed: 12345
-out_in: true
+induced_fit_fast: true
 cpus: 100
 debug: true
