@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Docking pose refinement tutorial &mdash; pele platform 1.5.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developers: Add your own mode" href="../developers/index.html" />
+    <link rel="prev" title="Protein-protein interaction tutorial" href="ppi.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Docking pose refinement tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#protein-preparation">1. Protein preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-input-file">2. PELE input file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launching-the-simulation">3. Launching the simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis-of-the-results">4. Analysis of the results</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-plots">a. Plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-selected-binding-modes">b. Selected binding modes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers: Add your own mode</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>Docking pose refinement tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/induced_fit.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="docking-pose-refinement-tutorial">
+<h1>Docking pose refinement tutorial<a class="headerlink" href="#docking-pose-refinement-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>The aim of this tutorial is to refine a Glide docking pose of flu virus hemagglutinin inhibitor JNJ4796.</p>
+<div class="section" id="protein-preparation">
+<h2>1. Protein preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
+<p>We will be using a preprocessed docking pose of JNJ4796 ligand extracted from PDB 6CF7 in hemagglutinin structure (PDB code 5W6T).
+You can download the structure <a class="reference download internal" download="" href="../_downloads/059d8f3c96131a359f21dcb73f4c2831/docking.pdb"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> .</p>
+<a class="reference internal image-reference" href="../_images/induced_fit_tutorial_1.png"><img alt="../_images/induced_fit_tutorial_1.png" class="align-center" src="../_images/induced_fit_tutorial_1.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="pele-input-file">
+<h2>2. PELE input file<a class="headerlink" href="#pele-input-file" title="Permalink to this headline">¶</a></h2>
+<p>Create <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file in your working directory, it should contain the following flags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>system</strong> - path to the protein-ligand PDB file</p></li>
+<li><p><strong>chain</strong> - ligand chain ID, here <code class="docutils literal notranslate"><span class="pre">Z</span></code></p></li>
+<li><p><strong>resname</strong> - ligand residue name, in our case <code class="docutils literal notranslate"><span class="pre">LIG</span></code></p></li>
+<li><p><strong>induced_fit_exhaustive</strong> - to run an exhaustive induced fit simulation</p></li>
+<li><p><strong>atom_dist</strong> - atoms used to track the progress of the simulation, we will use one from the ligand and one from the receptor, following <code class="docutils literal notranslate"><span class="pre">chain</span> <span class="pre">ID:residue</span> <span class="pre">number:atom</span> <span class="pre">name</span></code> format</p></li>
+<li><p><strong>cpus</strong> - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only)</p></li>
+<li><p><strong>seed</strong> - random seed to ensure reproducibility.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<span class="nt">induced_fit_exhaustive</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="nt">atom_dist</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:39:N&quot;</span> <span class="c1"># nitrogen of Ser39 in the binding site</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;Z:201:C13&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="launching-the-simulation">
+<h2>3. Launching the simulation<a class="headerlink" href="#launching-the-simulation" title="Permalink to this headline">¶</a></h2>
+<p>Once you have <code class="docutils literal notranslate"><span class="pre">docking.pdb</span></code> and <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> in your working directory, you can launch the simulation using one of the following methods:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>directly</strong> on command line using <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yaml</span></code></p></li>
+<li><p>submit a slurm file to the <strong>queue system</strong> (ask your IT manager, if you are not sure how to do it). In our case, the slurm file is called <code class="docutils literal notranslate"><span class="pre">run.sl</span></code> and we can launch it on the command line using <code class="docutils literal notranslate"><span class="pre">sbatch</span> <span class="pre">slurm.sl</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Example slurm file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>!/bin/bash
+<span class="gp">#</span>SBATCH -J PELE
+<span class="gp">#</span>SBATCH --output<span class="o">=</span>mpi_%j.out
+<span class="gp">#</span>SBATCH --error<span class="o">=</span>mpi_%j.err
+<span class="gp">#</span>SBATCH --ntasks<span class="o">=</span><span class="m">50</span>
+<span class="gp">#</span>SBATCH --mem-per-cpu<span class="o">=</span><span class="m">1000</span>
+
+<span class="go">python -m pele_platform.main input.yaml</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="analysis-of-the-results">
+<h2>4. Analysis of the results<a class="headerlink" href="#analysis-of-the-results" title="Permalink to this headline">¶</a></h2>
+<p>Inside your <code class="docutils literal notranslate"><span class="pre">LIG_Pele</span></code> directory, you will find several folders containing simulation configuration and data, raw output as well as <code class="docutils literal notranslate"><span class="pre">results</span></code> folder, which
+we will be mostly concerned with in this tutorial.</p>
+<div class="section" id="a-plots">
+<h3>a. Plots<a class="headerlink" href="#a-plots" title="Permalink to this headline">¶</a></h3>
+<p>In the <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results/Plots</span></code> folder you will find several plots, you can inspect them to get the general idea of the progression of the simulation.
+For example, you can see a clear relationship between the ligand’s solvent accessible surface area and binding energy on <code class="docutils literal notranslate"><span class="pre">currentEnergy_Binding_Energy_sasaLig_plot.png</span></code>.</p>
+<a class="reference internal image-reference" href="../_images/induced_tutorial_sasa.png"><img alt="../_images/induced_tutorial_sasa.png" class="align-center" src="../_images/induced_tutorial_sasa.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="b-selected-binding-modes">
+<h3>b. Selected binding modes<a class="headerlink" href="#b-selected-binding-modes" title="Permalink to this headline">¶</a></h3>
+<p>The software extracts the top 100 lowest binding energy structures in <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results/BestStructs/</span></code>. Additionally, it clusters all poses based on
+ligand heavy atom coordinates, the best energy representative of each cluster can be found in <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results/clusters/</span></code>. The figure below shows
+a representative of cluster 5 (green) superposed with the native pose (pink, PDB code 6CF7).</p>
+<a class="reference internal image-reference" href="../_images/induced_tutorial_cluster5.png"><img alt="../_images/induced_tutorial_cluster5.png" class="align-center" src="../_images/induced_tutorial_cluster5.png" style="width: 400px;" /></a>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers: Add your own mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ppi.html" class="btn btn-neutral float-left" title="Protein-protein interaction tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Daniel Soler Viladrich
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

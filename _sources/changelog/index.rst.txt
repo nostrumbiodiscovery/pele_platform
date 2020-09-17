@@ -20,6 +20,8 @@ v1.5.1
 
 - Tutorials
 
+- Outliers removed from plots
+
 - Improved documentation
 
 v1.5.0 (19/06/2020)
