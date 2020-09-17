@@ -62,12 +62,17 @@ class PostProcessor:
             except ValueError:
                 raise ValueError("Not report found under {}. Did you point to the right folder?".format(os.getcwd()))
         dataframe = pd.read_csv(summary_csv_filename, sep=separator, engine='python', header=0)
+        dataframe_filtered = self._remove_outliers(dataframe)
         
+        return dataframe_filtered
+
+    def _remove_outliers(self, dataframe):
+
         cols = list(dataframe.columns)
         n_points_to_remove = int(len(dataframe[cols[0]]) * 0.02) # remove top 2% of each energy
         dataframe_filtered = dataframe.sort_values(cols[3], ascending=False).iloc[n_points_to_remove:]
         dataframe_filtered = dataframe_filtered.sort_values(cols[4], ascending=False).iloc[n_points_to_remove:]
-        
+
         return dataframe_filtered
 
     def plot_two_metrics(self, column_to_x, column_to_y, column_to_z=False, output_name=None, output_folder="."):
