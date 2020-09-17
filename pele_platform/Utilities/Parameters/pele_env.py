@@ -73,6 +73,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         log_name = os.path.join(directory, "{}.log".format(self.residue))
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
+        self.logger.propagate = False
         formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
         if not self.adaptive_restart:
             file_handler = logging.FileHandler(log_name, mode='w')

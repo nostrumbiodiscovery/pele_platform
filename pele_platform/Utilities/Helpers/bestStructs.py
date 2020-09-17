@@ -130,7 +130,6 @@ def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_ou
             raise AttributeError("Model not found. Check the -f option.")
         traj.append("ENDMDL\n")
         f.write("\n".join(traj))
-    logger.info("Model {} selected".format(os.path.join(output, f_out)))
 
 
 def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, logger=None):
