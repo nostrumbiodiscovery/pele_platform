@@ -2,11 +2,13 @@ Docking pose refinement tutorial
 ======================================================
 The aim of this tutorial is to refine a Glide docking pose of flu virus hemagglutinin inhibitor JNJ4796.
 
-1. Protein preparation
+1. Protein file
 +++++++++++++++++++++++
 
 We will be using a preprocessed docking pose of JNJ4796 ligand extracted from PDB 6CF7 in hemagglutinin structure (PDB code 5W6T).
 You can download the structure :download:`here <../files/docking.pdb>` .
+
+The superposition of Glide docking output (green) with the native pose (pink) resulted in the ligand RMSD of 7.68Å. Let's see, if we can improve that with PELE's induced fit simulation!
 
 .. image:: ../img/induced_fit_tutorial_1.png
   :width: 400
@@ -82,7 +84,7 @@ b. Selected binding modes
 
 The software extracts the top 100 lowest binding energy structures in ``LIG_Pele/results/BestStructs/``. Additionally, it clusters all poses based on
 ligand heavy atom coordinates, the best energy representative of each cluster can be found in ``LIG_Pele/results/clusters/``. The figure below shows
-a representative of cluster 5 (green) superposed with the native pose (pink, PDB code 6CF7).
+a representative of cluster 5 (green) superposed with the native pose (pink, PDB code 6CF7), the resulting RMSD is 4.99Å.
 
 .. image:: ../img/induced_tutorial_cluster5.png
   :width: 400
