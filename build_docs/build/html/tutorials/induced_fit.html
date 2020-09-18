@@ -99,7 +99,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Docking pose refinement tutorial</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#protein-preparation">1. Protein preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#protein-file">1. Protein file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pele-input-file">2. PELE input file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#launching-the-simulation">3. Launching the simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#analysis-of-the-results">4. Analysis of the results</a><ul>
@@ -190,10 +190,11 @@
   <div class="section" id="docking-pose-refinement-tutorial">
 <h1>Docking pose refinement tutorial<a class="headerlink" href="#docking-pose-refinement-tutorial" title="Permalink to this headline">¶</a></h1>
 <p>The aim of this tutorial is to refine a Glide docking pose of flu virus hemagglutinin inhibitor JNJ4796.</p>
-<div class="section" id="protein-preparation">
-<h2>1. Protein preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="protein-file">
+<h2>1. Protein file<a class="headerlink" href="#protein-file" title="Permalink to this headline">¶</a></h2>
 <p>We will be using a preprocessed docking pose of JNJ4796 ligand extracted from PDB 6CF7 in hemagglutinin structure (PDB code 5W6T).
 You can download the structure <a class="reference download internal" download="" href="../_downloads/059d8f3c96131a359f21dcb73f4c2831/docking.pdb"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> .</p>
+<p>The superposition of Glide docking output (green) with the native pose (pink) resulted in the ligand RMSD of 7.68Å. Let’s see, if we can improve that with PELE’s induced fit simulation!</p>
 <a class="reference internal image-reference" href="../_images/induced_fit_tutorial_1.png"><img alt="../_images/induced_fit_tutorial_1.png" class="align-center" src="../_images/induced_fit_tutorial_1.png" style="width: 400px;" /></a>
 </div>
 <div class="section" id="pele-input-file">
@@ -257,7 +258,7 @@ For example, you can see a clear relationship between the ligand’s solvent acc
 <h3>b. Selected binding modes<a class="headerlink" href="#b-selected-binding-modes" title="Permalink to this headline">¶</a></h3>
 <p>The software extracts the top 100 lowest binding energy structures in <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results/BestStructs/</span></code>. Additionally, it clusters all poses based on
 ligand heavy atom coordinates, the best energy representative of each cluster can be found in <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results/clusters/</span></code>. The figure below shows
-a representative of cluster 5 (green) superposed with the native pose (pink, PDB code 6CF7).</p>
+a representative of cluster 5 (green) superposed with the native pose (pink, PDB code 6CF7), the resulting RMSD is 4.99Å.</p>
 <a class="reference internal image-reference" href="../_images/induced_tutorial_cluster5.png"><img alt="../_images/induced_tutorial_cluster5.png" class="align-center" src="../_images/induced_tutorial_cluster5.png" style="width: 400px;" /></a>
 </div>
 </div>
