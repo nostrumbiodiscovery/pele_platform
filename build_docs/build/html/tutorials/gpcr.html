@@ -179,11 +179,11 @@ the initial structure due to the lack of membrane as well as set up a simulation
 <div class="section" id="protein-preparation">
 <h2>1. Protein preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
 <p>We will import the complex from Protein Data Bank and preprocess it using Schrödinger Maestro (release 2020-1).</p>
-<p>a. Launch Maestro and <strong>import the structure from PDB</strong> by clicking <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB...</span></code>, type in your PDB ID, e.g. <code class="docutils literal notranslate"><span class="pre">5C1M</span></code>,
+<p>a. Launch Maestro and <strong>import the structure from PDB</strong> by clicking <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB...</span></code>, type in your PDB ID, e.g. <code class="docutils literal notranslate"><span class="pre">6DDE</span></code>,
 and click <code class="docutils literal notranslate"><span class="pre">Download</span></code>. The protein structure should appear in your workspace.</p>
 <a class="reference internal image-reference" href="../_images/gpcr_tutorial_1a.png"><img alt="../_images/gpcr_tutorial_1a.png" class="align-center" src="../_images/gpcr_tutorial_1a.png" style="width: 400px;" /></a>
-<p>b. Remove the redundant nanobody from the structure. Click on <code class="docutils literal notranslate"><span class="pre">Select</span> <span class="pre">-&gt;</span> <span class="pre">Set</span> <span class="pre">pick</span> <span class="pre">level</span> <span class="pre">-&gt;</span> <span class="pre">Chains</span></code>, then select chain B in the workspace. Open <code class="docutils literal notranslate"><span class="pre">Build</span></code> window and remove
-selected atoms. You should also remove any other irrelevant residues, such as OLC, CLR and P6G. This way we will be left with the receptor structure only.</p>
+<p>b. Remove redundant chains from the structure. Click on <code class="docutils literal notranslate"><span class="pre">Select</span> <span class="pre">-&gt;</span> <span class="pre">Set</span> <span class="pre">pick</span> <span class="pre">level</span> <span class="pre">-&gt;</span> <span class="pre">Chains</span></code>, then in the workspace select all chains except for R. Open <code class="docutils literal notranslate"><span class="pre">Build</span></code> window and remove
+selected atoms.</p>
 <p>c. <strong>Preprocess the protein</strong> using Protein Preparation Wizard. Click on <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> and search <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Preparation</span> <span class="pre">Wizard</span></code>.
 Check the following options and hit <code class="docutils literal notranslate"><span class="pre">Preprocess</span></code>.</p>
 <blockquote>
@@ -195,28 +195,49 @@ Check the following options and hit <code class="docutils literal notranslate"><
 </div></blockquote>
 <p>*If you do not have Prime license, you can skip those steps.</p>
 <a class="reference internal image-reference" href="../_images/allosteric_tutorial_1b.png"><img alt="../_images/allosteric_tutorial_1b.png" class="align-center" src="../_images/allosteric_tutorial_1b.png" style="width: 400px;" /></a>
-<p>The preprocessing might take a few minutes. Maestro will warn you about three residues with double occupancy issues. Simply select them all, click <code class="docutils literal notranslate"><span class="pre">Commit</span></code> and then
-<code class="docutils literal notranslate"><span class="pre">Update</span></code> to ensure there are no more problems with the protein. Upon completion, you should see <code class="docutils literal notranslate"><span class="pre">5C1M</span> <span class="pre">-</span> <span class="pre">preprocessed</span></code> on the entry list.</p>
-<ol class="loweralpha simple" start="4">
+<p>The preprocessing might take a few minutes… Afterwards, Maestro will warn you about overlapping hydrogen atoms - to resolve it, simply go to <code class="docutils literal notranslate"><span class="pre">Refine</span></code>
+tab of the Protein Preparation Wizard and perform restrained minimization on hydrogens only.</p>
+<a class="reference internal image-reference" href="../_images/gpcr_tutorial_1c.png"><img alt="../_images/gpcr_tutorial_1c.png" class="align-center" src="../_images/gpcr_tutorial_1c.png" style="width: 400px;" /></a>
+<p>In the end you should see <code class="docutils literal notranslate"><span class="pre">6DDE</span> <span class="pre">-</span> <span class="pre">minimized</span></code> entry in the table on your left.</p>
+</div>
+<div class="section" id="ligand-preparation">
+<h2>2. Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
+<p>a. Import structure <code class="docutils literal notranslate"><span class="pre">5C1M</span></code> from PDB and preprocess with Protein Preparation Wizard like before. Maestro will prompt you about
+some double occupancy issues, you can resolve them by selecting all entries and clicking <code class="docutils literal notranslate"><span class="pre">Commit</span></code>.</p>
+<ol class="loweralpha simple" start="2">
 <li><dl class="simple">
-<dt><strong>Change ligand chain ID and residue name</strong></dt><dd><ul class="simple">
+<dt><strong>Extract the ligand</strong> and change its chain ID and residue name</dt><dd><ul class="simple">
 <li><p>Click on <code class="docutils literal notranslate"><span class="pre">Select</span> <span class="pre">-&gt;</span> <span class="pre">Set</span> <span class="pre">pick</span> <span class="pre">level</span> <span class="pre">-&gt;</span> <span class="pre">Residues</span></code>, then select ligand <code class="docutils literal notranslate"><span class="pre">4VO</span></code> (residue 401) with a mouse click</p></li>
 <li><p>Open <code class="docutils literal notranslate"><span class="pre">Build</span></code> and choose <code class="docutils literal notranslate"><span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">atom</span> <span class="pre">properties...</span></code></p></li>
 <li><p>Set residue name to <code class="docutils literal notranslate"><span class="pre">LIG</span></code> and chain name to <code class="docutils literal notranslate"><span class="pre">Z</span></code></p></li>
 <li><p>Choose <code class="docutils literal notranslate"><span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">name</span></code> from the drop down list and select <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">unique</span> <span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">names</span> <span class="pre">within</span> <span class="pre">residues</span></code></p></li>
 <li><p>Click <code class="docutils literal notranslate"><span class="pre">Apply</span></code> and close the window</p></li>
+<li><p>In <code class="docutils literal notranslate"><span class="pre">Build</span></code> window click the button highlighted below to extract the ligand to a separate entry.</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ol>
-<p>e. <strong>Pick atom</strong> to track progress. One of the metrics we use to follow the simulation is the distance between two
+<a class="reference internal image-reference" href="../_images/gpcr_tutorial_2b.png"><img alt="../_images/gpcr_tutorial_2b.png" class="align-center" src="../_images/gpcr_tutorial_2b.png" style="width: 300px;" /></a>
+<ol class="loweralpha simple" start="3">
+<li><dl class="simple">
+<dt><strong>Merge</strong> the protein and the ligand entries:</dt><dd><ul class="simple">
+<li><p>Select both enties by holding Ctrl button</p></li>
+<li><p>Right click and choose <code class="docutils literal notranslate"><span class="pre">Merge</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<p>This will create a new entry containing both preprocessed 5C1M ligand and 6DDE receptor structure. The initial position of the ligand does not matter since PELE automatically
+moves it to the simulation box created based on the specified initial and orthosteric sites.</p>
+<p>d. <strong>Pick atom</strong> to track progress. One of the metrics we use to follow the simulation is the distance between two
 selected atoms. In this case, we will pick ligand atom <code class="docutils literal notranslate"><span class="pre">Z:401:C13</span></code> and then track its distance to the orthosteric site.</p>
-<p>f. <strong>Export structure</strong> by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures...</span></code> and save all workspace atoms as <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>
+<p>e. <strong>Export merged structure</strong> by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures...</span></code> and save all workspace atoms as <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>
 in your working directory. You can close Maestro now.</p>
 </div>
 <div class="section" id="pele-input-file">
-<h2>2. PELE input file<a class="headerlink" href="#pele-input-file" title="Permalink to this headline">¶</a></h2>
+<h2>3. PELE input file<a class="headerlink" href="#pele-input-file" title="Permalink to this headline">¶</a></h2>
 <p>Create <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file in your working directory, it should contain the following flags:</p>
 <blockquote>
 <div><ul class="simple">
@@ -235,18 +256,18 @@ in your working directory. You can close Maestro now.</p>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
 <span class="nt">gpcr_orth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;A:303:N&quot;</span> <span class="c1"># Lys303 nitrogen</span>
-<span class="nt">orthosteric_site</span><span class="p">:</span> <span class="s">&quot;A:147:CG&quot;</span> <span class="c1"># Asp147 interacting with the ligand gamma-carbon</span>
+<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;R:212:OE1&quot;</span> <span class="c1"># Gln212 oxygen</span>
+<span class="nt">orthosteric_site</span><span class="p">:</span> <span class="s">&quot;R:124:NE2&quot;</span> <span class="c1"># Gln124 interacting with the 6DDE ligand</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;A:147:CG&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;R:124:NE2&quot;</span>
 <span class="p p-Indicator">-</span> <span class="s">&quot;Z:401:C13&quot;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="launching-the-simulation">
-<h2>3. Launching the simulation<a class="headerlink" href="#launching-the-simulation" title="Permalink to this headline">¶</a></h2>
+<h2>4. Launching the simulation<a class="headerlink" href="#launching-the-simulation" title="Permalink to this headline">¶</a></h2>
 <p>Once you have <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code> and <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> in your working directory, you can launch the simulation using one of the following methods:</p>
 <blockquote>
 <div><ul class="simple">

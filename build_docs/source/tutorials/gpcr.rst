@@ -13,15 +13,15 @@ the initial structure due to the lack of membrane as well as set up a simulation
 
 We will import the complex from Protein Data Bank and preprocess it using Schrödinger Maestro (release 2020-1).
 
-a. Launch Maestro and **import the structure from PDB** by clicking ``File -> Get PDB...``, type in your PDB ID, e.g. ``5C1M``,
+a. Launch Maestro and **import the structure from PDB** by clicking ``File -> Get PDB...``, type in your PDB ID, e.g. ``6DDE``,
 and click ``Download``. The protein structure should appear in your workspace.
 
 .. image:: ../img/gpcr_tutorial_1a.png
   :width: 400
   :align: center
 
-b. Remove the redundant nanobody from the structure. Click on ``Select -> Set pick level -> Chains``, then select chain B in the workspace. Open ``Build`` window and remove
-selected atoms. You should also remove any other irrelevant residues, such as OLC, CLR and P6G. This way we will be left with the receptor structure only.
+b. Remove redundant chains from the structure. Click on ``Select -> Set pick level -> Chains``, then in the workspace select all chains except for R. Open ``Build`` window and remove
+selected atoms.
 
 c. **Preprocess the protein** using Protein Preparation Wizard. Click on ``Tasks`` and search ``Protein Preparation Wizard``.
 Check the following options and hit ``Preprocess``.
@@ -35,23 +35,47 @@ Check the following options and hit ``Preprocess``.
   :width: 400
   :align: center
 
-The preprocessing might take a few minutes. Maestro will warn you about three residues with double occupancy issues. Simply select them all, click ``Commit`` and then
-``Update`` to ensure there are no more problems with the protein. Upon completion, you should see ``5C1M - preprocessed`` on the entry list.
+The preprocessing might take a few minutes... Afterwards, Maestro will warn you about overlapping hydrogen atoms - to resolve it, simply go to ``Refine``
+tab of the Protein Preparation Wizard and perform restrained minimization on hydrogens only.
 
-d. **Change ligand chain ID and residue name**
+.. image:: ../img/gpcr_tutorial_1c.png
+  :width: 400
+  :align: center
+
+In the end you should see ``6DDE - minimized`` entry in the table on your left.
+
+2. Ligand preparation
++++++++++++++++++++++++++
+
+a. Import structure ``5C1M`` from PDB and preprocess with Protein Preparation Wizard like before. Maestro will prompt you about
+some double occupancy issues, you can resolve them by selecting all entries and clicking ``Commit``.
+
+b. **Extract the ligand** and change its chain ID and residue name
     - Click on ``Select -> Set pick level -> Residues``, then select ligand ``4VO`` (residue 401) with a mouse click
     - Open ``Build`` and choose ``Other edits -> Change atom properties...``
     - Set residue name to ``LIG`` and chain name to ``Z``
     - Choose ``PDB atom name`` from the drop down list and select ``Set unique PDB atom names within residues``
     - Click ``Apply`` and close the window
+    - In ``Build`` window click the button highlighted below to extract the ligand to a separate entry.
 
-e. **Pick atom** to track progress. One of the metrics we use to follow the simulation is the distance between two
+.. image:: ../img/gpcr_tutorial_2b.png
+  :width: 300
+  :align: center
+
+c. **Merge** the protein and the ligand entries:
+    - Select both enties by holding Ctrl button
+    - Right click and choose ``Merge``.
+
+This will create a new entry containing both preprocessed 5C1M ligand and 6DDE receptor structure. The initial position of the ligand does not matter since PELE automatically
+moves it to the simulation box created based on the specified initial and orthosteric sites.
+
+d. **Pick atom** to track progress. One of the metrics we use to follow the simulation is the distance between two
 selected atoms. In this case, we will pick ligand atom ``Z:401:C13`` and then track its distance to the orthosteric site.
 
-f. **Export structure** by clicking on ``File -> Export structures...`` and save all workspace atoms as ``complex.pdb``
+e. **Export merged structure** by clicking on ``File -> Export structures...`` and save all workspace atoms as ``complex.pdb``
 in your working directory. You can close Maestro now.
 
-2. PELE input file
+3. PELE input file
 ++++++++++++++++++++
 
 Create ``input.yaml`` file in your working directory, it should contain the following flags:
@@ -72,15 +96,15 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     chain: 'Z'
     resname: 'LIG'
     gpcr_orth: true
-    initial_site: "A:303:N" # Lys303 nitrogen
-    orthosteric_site: "A:147:CG" # Asp147 interacting with the ligand gamma-carbon
+    initial_site: "R:212:OE1" # Gln212 oxygen
+    orthosteric_site: "R:124:NE2" # Gln124 interacting with the 6DDE ligand
     seed: 12345
     cpus: 50
     atom_dist:
-    - "A:147:CG"
+    - "R:124:NE2"
     - "Z:401:C13"
 
-3. Launching the simulation
+4. Launching the simulation
 +++++++++++++++++++++++++++++
 
 Once you have ``complex.pdb`` and ``input.yaml`` in your working directory, you can launch the simulation using one of the following methods:
