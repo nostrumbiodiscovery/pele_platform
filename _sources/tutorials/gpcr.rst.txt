@@ -1,10 +1,10 @@
 GPCR tutorial
 =================================================
 
-In this tutorial we will run the GPCR simulation of μ-opioid receptor which aims to find the path of BU72 agonist (PDB code 5C1M)
-to the orthosteric site.
+In this tutorial we will run a GPCR cross-simulation which aims to find the path of BU72 agonist (PDB code 5C1M)
+to the orthosteric site of μ-opioid receptor (PDB code 6DDE).
 
-Initially, the software with randomise the position of the ligand around the specified initial site, then perform a simulation
+Initially, the software will randomise the position of the ligand around the specified initial site, then perform a simulation
 slightly biased against the solvent accessible surface area. The setup will automatically constrain α-carbons to prevent the collapse of
 the initial structure due to the lack of membrane as well as set up a simulation box encompassing both the initial and the orthosteric site.
 
@@ -125,3 +125,52 @@ Example slurm file:
     #SBATCH --mem-per-cpu=1000
 
     python -m pele_platform.main input.yaml
+
+5. Analysis of the results
+++++++++++++++++++++++++++++
+
+To ensure the simulation has finished, check the standard output file (in our case ``mpi_xxxxx.out``, as indicated in the slurm file). It should contain the
+following line at the end:
+
+.. code-block:: console
+
+    Pdf summary report successfully writen to: /your_working_directory/LIG_Pele/summary_results.pdf`
+
+All relevant simulation results, including best energy poses, clusters and plots are located in ``LIG_Pele/results`` directory. We will now explore
+the content of each folder.
+
+a. Plots
+----------
+
+The ``Plots`` directory contains several plots to help you get the general idea of the progress of the simulation, showing relationships between
+the binding energy and solvent accessible surface area of the ligand, distance between two selected atoms or any other metric of your choice.
+
+For example, the following plot clearly shows how binding energy improves as the distance between the ligand and the orthosteric site decreases.
+
+.. image:: ../img/gpcr_tutorial_5a.png
+  :width: 400
+  :align: center
+
+b. Best structures
+--------------------
+
+PELE scans all produced poses and retrieves the top 100 lowest binding energy structures to the ``BestStructs`` folder. The file names indicate
+the trajectory and model IDs of each structure as well as its associated binding energy.
+
+Shown below is an example of a pose with binding energy of -91.1362 (green) superposed with
+the original native structure (pink). The RMSD between the two ligands was 1.88 Å and most pharmacophore features were correctly reproduced.
+
+.. image:: ../img/gpcr_tutorial_5b.png
+  :width: 400
+  :align: center
+
+
+c. Clusters
+---------------
+
+To ensure no binding modes were omitted in the previous step, we also cluster all poses based on ligand heavy atom coordinates and retrieve the lowest
+binding energy representative of each cluster. In this case, four cluster representatives show a similar binding mode to the one discussed above.
+
+.. image:: ../img/gpcr_tutorial_5c.png
+  :width: 400
+  :align: center

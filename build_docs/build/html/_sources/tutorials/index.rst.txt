@@ -8,6 +8,7 @@ We assume you have already installed the software and have access to Schrödinge
 
     - `Disturbing protein-protein interaction between a bromodomain and a histone <ppi.html>`_
     - `Glide docking pose refinement in hemagglutinin binding site <induced_fit.html>`_
+    - `GPCR simualtion of BU72 agonist of the μ-opioid receptor <gpcr.html>`_
 
 .. toctree::
    ppi.rst
@@ -15,4 +16,8 @@ We assume you have already installed the software and have access to Schrödinge
 
 .. toctree::
    induced_fit.rst
+   :hidden:
+
+.. toctree::
+   gpcr.rst
    :hidden:

@@ -35,7 +35,9 @@
 
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Developers: Add your own mode" href="../developers/index.html" />
+    <link rel="prev" title="Docking pose refinement tutorial" href="induced_fit.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,8 +95,25 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
 </ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="index.html">Tutorials</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">GPCR tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#protein-preparation">1. Protein preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">2. Ligand preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-input-file">3. PELE input file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launching-the-simulation">4. Launching the simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis-of-the-results">5. Analysis of the results</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-plots">a. Plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-best-structures">b. Best structures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-clusters">c. Clusters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers: Add your own mode</a></li>
@@ -150,6 +169,8 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
       <li>GPCR tutorial</li>
     
     
@@ -171,9 +192,9 @@
             
   <div class="section" id="gpcr-tutorial">
 <h1>GPCR tutorial<a class="headerlink" href="#gpcr-tutorial" title="Permalink to this headline">¶</a></h1>
-<p>In this tutorial we will run the GPCR simulation of μ-opioid receptor which aims to find the path of BU72 agonist (PDB code 5C1M)
-to the orthosteric site.</p>
-<p>Initially, the software with randomise the position of the ligand around the specified initial site, then perform a simulation
+<p>In this tutorial we will run a GPCR cross-simulation which aims to find the path of BU72 agonist (PDB code 5C1M)
+to the orthosteric site of μ-opioid receptor (PDB code 6DDE).</p>
+<p>Initially, the software will randomise the position of the ligand around the specified initial site, then perform a simulation
 slightly biased against the solvent accessible surface area. The setup will automatically constrain α-carbons to prevent the collapse of
 the initial structure due to the lack of membrane as well as set up a simulation box encompassing both the initial and the orthosteric site.</p>
 <div class="section" id="protein-preparation">
@@ -287,6 +308,37 @@ in your working directory. You can close Maestro now.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="analysis-of-the-results">
+<h2>5. Analysis of the results<a class="headerlink" href="#analysis-of-the-results" title="Permalink to this headline">¶</a></h2>
+<p>To ensure the simulation has finished, check the standard output file (in our case <code class="docutils literal notranslate"><span class="pre">mpi_xxxxx.out</span></code>, as indicated in the slurm file). It should contain the
+following line at the end:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Pdf summary report successfully writen to: /your_working_directory/LIG_Pele/summary_results.pdf`</span>
+</pre></div>
+</div>
+<p>All relevant simulation results, including best energy poses, clusters and plots are located in <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results</span></code> directory. We will now explore
+the content of each folder.</p>
+<div class="section" id="a-plots">
+<h3>a. Plots<a class="headerlink" href="#a-plots" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">Plots</span></code> directory contains several plots to help you get the general idea of the progress of the simulation, showing relationships between
+the binding energy and solvent accessible surface area of the ligand, distance between two selected atoms or any other metric of your choice.</p>
+<p>For example, the following plot clearly shows how binding energy improves as the distance between the ligand and the orthosteric site decreases.</p>
+<a class="reference internal image-reference" href="../_images/gpcr_tutorial_5a.png"><img alt="../_images/gpcr_tutorial_5a.png" class="align-center" src="../_images/gpcr_tutorial_5a.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="b-best-structures">
+<h3>b. Best structures<a class="headerlink" href="#b-best-structures" title="Permalink to this headline">¶</a></h3>
+<p>PELE scans all produced poses and retrieves the top 100 lowest binding energy structures to the <code class="docutils literal notranslate"><span class="pre">BestStructs</span></code> folder. The file names indicate
+the trajectory and model IDs of each structure as well as its associated binding energy.</p>
+<p>Shown below is an example of a pose with binding energy of -91.1362 (green) superposed with
+the original native structure (pink). The RMSD between the two ligands was 1.88 Å and most pharmacophore features were correctly reproduced.</p>
+<a class="reference internal image-reference" href="../_images/gpcr_tutorial_5b.png"><img alt="../_images/gpcr_tutorial_5b.png" class="align-center" src="../_images/gpcr_tutorial_5b.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="c-clusters">
+<h3>c. Clusters<a class="headerlink" href="#c-clusters" title="Permalink to this headline">¶</a></h3>
+<p>To ensure no binding modes were omitted in the previous step, we also cluster all poses based on ligand heavy atom coordinates and retrieve the lowest
+binding energy representative of each cluster. In this case, four cluster representatives show a similar binding mode to the one discussed above.</p>
+<a class="reference internal image-reference" href="../_images/gpcr_tutorial_5c.png"><img alt="../_images/gpcr_tutorial_5c.png" class="align-center" src="../_images/gpcr_tutorial_5c.png" style="width: 400px;" /></a>
+</div>
+</div>
 </div>
 
 
@@ -294,6 +346,15 @@ in your working directory. You can close Maestro now.</p>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers: Add your own mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="induced_fit.html" class="btn btn-neutral float-left" title="Docking pose refinement tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
