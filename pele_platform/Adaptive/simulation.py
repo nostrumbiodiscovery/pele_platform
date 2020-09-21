@@ -13,6 +13,7 @@ import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
+import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
 import pele_platform.Utilities.Parameters.pele_env as pv
@@ -165,6 +166,17 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             ligand_residue=env.residue)
         water_obj.run()
         env.parameters = water_obj.ligand_perturbation_params
+
+        #metrics
+        metrics = mt.MetricBuilder()
+        if args.atom_dist:
+            env.metrics = metrics.distance_to_atom_json(env.system, args.atom_dist)
+        else:
+            env.metrics = ""
+        if args.native:
+            env.native = metrics.rsmd_to_json(args.native, env.chain)
+        else:
+            env.native = ""
 
         # metal polarisation
         if env.polarize_metals:

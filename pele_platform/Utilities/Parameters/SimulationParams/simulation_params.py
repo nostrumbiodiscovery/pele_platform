@@ -11,7 +11,6 @@ from pele_platform.Utilities.Parameters.SimulationParams.Allosteric import allos
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 #from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
 import pele_platform.Utilities.Helpers.helpers as hp
-import pele_platform.Utilities.Helpers.metrics as mt
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
@@ -30,7 +29,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.anm_params(args)
         self.water_params(args)
         self.box_params(args)
-        self.metrics_params(args)
         self.output_params(args)
         self.analysis_params(args)
 
@@ -195,12 +193,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
                 self.box_center = "["+ ",".join([str(coord) for coord in self.box_center]) + "]"
         else:
             self.box_center = self.simulation_params.get("box_center", None)
-
-    def metrics_params(self, args):
-        self.metrics = ""
-        self.native = cs.NATIVE.format(os.path.abspath(args.native), self.chain) if args.native else ""
-        self.atom_dist = args.atom_dist
-        self.metrics = mt.build_metrics(self.system, self.atom_dist)
 
     def output_params(self, args):
         self.folder = args.folder
