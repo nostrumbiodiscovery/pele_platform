@@ -1,0 +1,11 @@
+system: 'complex.pdb'
+chain: 'Z'
+resname: 'LIG'
+gpcr_orth: true
+initial_site: "R:212:OE1" # Gln212 oxygen
+orthosteric_site: "R:124:NE2" # Gln124 interacting with the 6DDE ligand
+seed: 12345
+cpus: 50
+atom_dist:
+- "R:124:NE2"
+- "Z:401:C13"
