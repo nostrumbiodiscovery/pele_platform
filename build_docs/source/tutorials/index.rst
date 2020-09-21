@@ -10,6 +10,8 @@ We assume you have already installed the software and have access to Schrödinge
     - `Glide docking pose refinement in hemagglutinin binding site <induced_fit.html>`_
     - `GPCR simualtion of BU72 agonist of the μ-opioid receptor <gpcr.html>`_
 
+All tutorial files are available in ``Examples/tutorials``.
+
 .. toctree::
    ppi.rst
    :hidden:
