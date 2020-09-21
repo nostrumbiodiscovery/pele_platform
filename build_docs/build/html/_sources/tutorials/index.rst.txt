@@ -8,7 +8,7 @@ We assume you have already installed the software and have access to Schrödinge
 
     - `Disturbing protein-protein interaction between a bromodomain and a histone <ppi.html>`_
     - `Glide docking pose refinement in hemagglutinin binding site <induced_fit.html>`_
-    - `GPCR simualtion of BU72 agonist of the μ-opioid receptor <gpcr.html>`_
+    - `GPCR simulation of BU72 agonist of the μ-opioid receptor <gpcr.html>`_
 
 All tutorial files are available in ``Examples/tutorials``.
 
