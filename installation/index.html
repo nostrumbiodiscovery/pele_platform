@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; pele platform 1.5.0 documentation</title>
+  <title>Installation &mdash; pele platform 1.5.1 documentation</title>
   
 
   
@@ -89,6 +89,7 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#conda-recommended">Conda (recommended)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#singularity">singularity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pypi">Pypi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#last-stable-release-from-source-code">Last stable release from source code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#test-it-works">Test it works</a></li>
@@ -189,6 +190,24 @@
 
 Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
 specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
+</pre></div>
+</div>
+</div>
+<div class="section" id="singularity">
+<h2>singularity<a class="headerlink" href="#singularity" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
+
+<span class="nb">cd</span> pele_platform/singularity/
+
+bash create_pele_image.sh <span class="o">(</span>You will need acces to PELE dockerhub<span class="o">)</span>
+
+<span class="nb">cd</span> test/
+
+<span class="c1">#Change the licenses and folders inside singularity.sl (IT section)</span>
+
+bash singularity.sl  <span class="c1">#If not queue system</span>
+
+sbatch singularity.sl  <span class="c1">#If slurm queue system</span>
 </pre></div>
 </div>
 </div>
