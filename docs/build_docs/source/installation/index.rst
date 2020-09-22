@@ -44,7 +44,7 @@ Pypi
 
     pip install numpy cython
 
-    pip install pele_platform==1.5.0
+    pip install pele_platform==1.5.1
 
     export PELE=/path/to/PELE-1.X/
 
