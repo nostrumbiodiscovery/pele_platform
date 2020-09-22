@@ -15,3 +15,5 @@ omit =
     ../pele_platform/Utilities/Helpers/system_prep.py
     #Already tested via subprocess
     ../pele_platform/Checker/python_version.py
+    ../versioneer.py
+    ../pele_platform/_version.py

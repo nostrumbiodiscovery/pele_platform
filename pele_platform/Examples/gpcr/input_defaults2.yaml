@@ -1,0 +1,13 @@
+system: "../pele_platform/Examples/gpcr/complex.pdb"
+resname: "LIG"
+chain: "L"
+seed: 1234
+gpcr_orth: true
+orthosteric_site: "A:114:CG"
+initial_site: "A:310:CD"
+box_center:
+- 10
+- 10
+- 10
+box_radius: 10
+debug: true

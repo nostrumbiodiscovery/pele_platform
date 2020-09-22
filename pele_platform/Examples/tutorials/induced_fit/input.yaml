@@ -1,0 +1,10 @@
+system: 'docking.pdb'
+chain: 'Z'
+resname: 'LIG'
+induced_fit_fast: true
+cpus: 50
+seed: 12345
+atom_dist:
+- "A:39:N" # nitrogen of Ser39 in the binding site
+- "Z:201:C13"
+skip_preprocess: true

@@ -25,3 +25,24 @@ class NoGeometryAroundMetal(Exception):
 
 class EnvVariableNotFound(Exception):
     pass
+
+class WrongAtomSpecified(Exception):
+    pass
+
+class NotCenterOfWaterBox(Exception):
+    pass
+
+class OutInError(Exception):
+    pass
+
+class TemplateFileNotFound(Exception):
+    pass
+
+class RotamersFileNotFound(Exception):
+    pass
+
+class WrongAtomStringFormat(Exception):
+    pass
+
+class WrongYamlFile(Exception):
+    pass

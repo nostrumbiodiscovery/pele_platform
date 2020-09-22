@@ -1,0 +1,15 @@
+system: '../pele_platform/Examples/water/complex_ref_LESSH2O.pdb'
+chain: 'L'
+resname: 'LIG'
+seed: 12345
+spawning: independent
+perturbation: false
+test: true
+n_waters: 1
+clust_type: "null"
+water_freq: 1
+water_center:
+- 0
+- 0
+- 0
+#debug: true

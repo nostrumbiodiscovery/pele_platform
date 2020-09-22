@@ -1,7 +1,3 @@
-import sys
-import os
-import argparse
-import pele_platform.Utilities.Helpers.template_builder as tb
 
 AMINOACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
               "SER", "ASP", "LYS", "MET", "GLN",

@@ -4,7 +4,6 @@ import glob
 import shutil
 import logging
 import pele_platform.Utilities.Helpers.solventOBCParamsGenerator as obc
-import pele_platform.Utilities.Parameters.pele_env as pv
 
 @dataclass
 class ImplicitSolvent:

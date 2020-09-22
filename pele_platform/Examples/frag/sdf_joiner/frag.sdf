@@ -81,22 +81,22 @@ int0
  34 37  1  0  0  0
 M  END
 > <s_m_entry_id>
-656
+30
 
 > <s_m_entry_name>
-frag.2
+frag.1
 
 > <s_pdb_PDB_format_version>
 3.0
 
 > <s_m_Source_Path>
-/home/dsoler
+/home/dsoler/repos/pele_platform/pele_platform/Examples/frag/sdf_joiner
 
 > <s_m_Source_File>
 frag.sdf
 
 > <i_m_Source_File_Index>
-2
+1
 
 > <chiral flag>
 1
@@ -107,11 +107,14 @@ frag.sdf
 > <b_m_Mark>
 1
 
+> <chiral flag>
+1
+
 > <s_m_subgroup_title>
 frag
 
 > <s_m_subgroupid>
-frag
+frag1
 
 > <b_m_subgroup_collapsed>
 0
@@ -221,7 +224,7 @@ int1
  38 47  1  0  0  0
 M  END
 > <s_m_entry_id>
-648
+31
 
 > <s_m_entry_name>
 frag.2
@@ -230,7 +233,7 @@ frag.2
 3.0
 
 > <s_m_Source_Path>
-/home/dsoler
+/home/dsoler/repos/pele_platform/pele_platform/Examples/frag/sdf_joiner
 
 > <s_m_Source_File>
 frag.sdf
@@ -247,11 +250,14 @@ frag.sdf
 > <b_m_Mark>
 1
 
+> <chiral flag>
+1
+
 > <s_m_subgroup_title>
 frag
 
 > <s_m_subgroupid>
-frag
+frag1
 
 > <b_m_subgroup_collapsed>
 0
@@ -349,7 +355,7 @@ int2
  36 41  1  0  0  0
 M  END
 > <s_m_entry_id>
-649
+32
 
 > <s_m_entry_name>
 frag.3
@@ -358,7 +364,7 @@ frag.3
 3.0
 
 > <s_m_Source_Path>
-/home/dsoler
+/home/dsoler/repos/pele_platform/pele_platform/Examples/frag/sdf_joiner
 
 > <s_m_Source_File>
 frag.sdf
@@ -375,11 +381,14 @@ frag.sdf
 > <b_m_Mark>
 1
 
+> <chiral flag>
+1
+
 > <s_m_subgroup_title>
 frag
 
 > <s_m_subgroupid>
-frag
+frag1
 
 > <b_m_subgroup_collapsed>
 0
@@ -483,7 +492,7 @@ int3
  37 44  1  0  0  0
 M  END
 > <s_m_entry_id>
-650
+33
 
 > <s_m_entry_name>
 frag.4
@@ -492,7 +501,7 @@ frag.4
 3.0
 
 > <s_m_Source_Path>
-/home/dsoler
+/home/dsoler/repos/pele_platform/pele_platform/Examples/frag/sdf_joiner
 
 > <s_m_Source_File>
 frag.sdf
@@ -509,11 +518,14 @@ frag.sdf
 > <b_m_Mark>
 1
 
+> <chiral flag>
+1
+
 > <s_m_subgroup_title>
 frag
 
 > <s_m_subgroupid>
-frag
+frag1
 
 > <b_m_subgroup_collapsed>
 0
@@ -602,7 +614,7 @@ int4
  34 37  2  0  0  0
 M  END
 > <s_m_entry_id>
-651
+34
 
 > <s_m_entry_name>
 frag.5
@@ -611,7 +623,7 @@ frag.5
 3.0
 
 > <s_m_Source_Path>
-/home/dsoler
+/home/dsoler/repos/pele_platform/pele_platform/Examples/frag/sdf_joiner
 
 > <s_m_Source_File>
 frag.sdf
@@ -628,147 +640,14 @@ frag.sdf
 > <b_m_Mark>
 1
 
-> <s_m_subgroup_title>
-frag
-
-> <s_m_subgroupid>
-frag
-
-> <b_m_subgroup_collapsed>
-0
-
-$$$$
-int6
-                    3D
- Structure written by MMmdl.
- 45 49  0  0  1  0            999 V2000
-   -0.8660   30.2730   11.2770 C   0  0  0  0  0  0
-   -0.4870   29.6900    9.9480 C   0  0  1  0  0  0
-   -0.0150   30.7280    8.9360 C   0  0  0  0  0  0
-    0.8980   30.1360    7.9210 C   0  0  0  0  0  0
-    1.4010   30.7870    6.8190 N   0  0  0  0  0  0
-    2.2080   29.9960    6.0830 N   0  0  0  0  0  0
-    2.2110   28.8380    6.7290 C   0  0  0  0  0  0
-    3.0220   27.7020    6.1800 C   0  0  0  0  0  0
-    2.7830   26.5110    6.3540 O   0  0  0  0  0  0
-    4.0600   28.1350    5.4630 N   0  0  0  0  0  0
-    5.0470   27.2860    4.8020 C   0  0  0  0  0  0
-    6.1490   27.7000    4.0470 C   0  0  0  0  0  0
-    6.8420   26.6820    3.5870 N   0  0  0  0  0  0
-    6.1970   25.5930    4.0380 N   0  0  0  0  0  0
-    5.0920   25.9040    4.7860 C   0  0  0  0  0  0
-    1.4020   28.8720    7.9020 C   0  0  0  0  0  0
-    1.1220   27.8050    8.9250 C   0  0  1  0  0  0
-    0.0740   28.2600    9.9410 C   0  0  2  0  0  0
-   -1.3490   28.5300    9.5140 C   0  0  0  0  0  0
-   -2.3600   28.1320   10.3690 F   0  0  0  0  0  0
-   -1.6730   28.4180    8.1730 F   0  0  0  0  0  0
-   -1.1910   29.4760   11.9450 H   0  0  0  0  0  0
-   -0.0040   30.7810   11.7100 H   0  0  0  0  0  0
-   -1.6780   30.9880   11.1420 H   0  0  0  0  0  0
-   -0.8850   31.1750    8.4540 H   0  0  0  0  0  0
-    0.5030   31.5240    9.4700 H   0  0  0  0  0  0
-    4.2910   29.1030    5.2910 H   0  0  0  0  0  0
-    6.4290   28.7280    3.8450 H   0  0  0  0  0  0
-    4.4650   25.1350    5.2210 H   0  0  0  0  0  0
-    2.0340   27.5500    9.4650 H   0  0  0  0  0  0
-    0.1590   27.7560   10.9020 H   0  0  0  0  0  0
-    6.5435   24.6714    3.8128 H   0  0  0  0  0  0
-    1.1376   32.0929    6.4588 C   0  0  0  0  0  0
-    1.6456   32.6947    5.3775 C   0  0  0  0  0  0
-    1.1277   34.0681    5.3488 C   0  0  0  0  0  0
-    0.3340   34.2239    6.4142 C   0  0  0  0  0  0
-    0.2358   32.9871    7.2610 C   0  0  0  0  0  0
-    2.3295   32.2450    4.6391 H   0  0  0  0  0  0
-    1.3548   34.8299    4.5851 H   0  0  0  0  0  0
-   -0.2009   35.1568    6.6609 H   0  0  0  0  0  0
-    0.6353   33.1592    8.2874 H   0  0  0  0  0  0
-   -0.8070   32.5946    7.2954 H   0  0  0  0  0  0
-    0.4279   25.7571    8.8565 H   0  0  0  0  0  0
-    0.6552   26.5625    8.2909 N   0  0  0  0  0  0
-    0.5636   26.5204    7.2860 H   0  0  0  0  0  0
-  1  2  1  0  0  0
-  1 22  1  0  0  0
-  1 23  1  0  0  0
-  1 24  1  0  0  0
-  2  3  1  0  0  0
-  2 18  1  0  0  0
-  2 19  1  0  0  0
-  3  4  1  0  0  0
-  3 25  1  0  0  0
-  3 26  1  0  0  0
-  4  5  1  0  0  0
-  4 16  2  0  0  0
-  5  6  1  0  0  0
-  5 33  1  0  0  0
-  6  7  2  0  0  0
-  7  8  1  0  0  0
-  7 16  1  0  0  0
-  8  9  2  0  0  0
-  8 10  1  0  0  0
- 10 11  1  0  0  0
- 10 27  1  0  0  0
- 11 12  1  0  0  0
- 11 15  2  0  0  0
- 12 13  2  0  0  0
- 12 28  1  0  0  0
- 13 14  1  0  0  0
- 14 15  1  0  0  0
- 14 32  1  0  0  0
- 15 29  1  0  0  0
- 16 17  1  0  0  0
- 17 18  1  0  0  0
- 17 30  1  0  0  0
- 17 44  1  0  0  0
- 18 19  1  0  0  0
- 18 31  1  0  0  0
- 19 20  1  0  0  0
- 19 21  1  0  0  0
- 33 34  2  0  0  0
- 33 37  1  0  0  0
- 34 35  1  0  0  0
- 34 38  1  0  0  0
- 35 36  2  0  0  0
- 35 39  1  0  0  0
- 36 37  1  0  0  0
- 36 40  1  0  0  0
- 37 41  1  0  0  0
- 37 42  1  0  0  0
- 43 44  1  0  0  0
- 44 45  1  0  0  0
-M  END
-> <s_m_entry_id>
-652
-
-> <s_m_entry_name>
-frag.6
-
-> <s_pdb_PDB_format_version>
-3.0
-
-> <s_m_Source_Path>
-/home/dsoler
-
-> <s_m_Source_File>
-frag.sdf
-
-> <i_m_Source_File_Index>
-6
-
 > <chiral flag>
 1
 
-> <version>
-0
-
-> <b_m_Mark>
-1
-
 > <s_m_subgroup_title>
 frag
 
 > <s_m_subgroupid>
-frag
+frag1
 
 > <b_m_subgroup_collapsed>
 0
@@ -853,7 +732,7 @@ int7
  34 35  1  0  0  0
 M  END
 > <s_m_entry_id>
-653
+36
 
 > <s_m_entry_name>
 frag.7
@@ -862,7 +741,7 @@ frag.7
 3.0
 
 > <s_m_Source_Path>
-/home/dsoler
+/home/dsoler/repos/pele_platform/pele_platform/Examples/frag/sdf_joiner
 
 > <s_m_Source_File>
 frag.sdf
@@ -879,11 +758,14 @@ frag.sdf
 > <b_m_Mark>
 1
 
+> <chiral flag>
+1
+
 > <s_m_subgroup_title>
 frag
 
 > <s_m_subgroupid>
-frag
+frag1
 
 > <b_m_subgroup_collapsed>
 0

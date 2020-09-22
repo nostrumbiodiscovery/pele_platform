@@ -16,6 +16,7 @@ EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_const
 PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
+ATOM_GPCR_ERROR_ARGS = os.path.join(test_path, "gpcr/input_atom_error.yaml")
 
 
 EXT_CONSTR = [
@@ -96,7 +97,7 @@ def test_checker_subsearch(ligand=PDB_CHECKER_SUBSEARCH, core=CORE_CHECKER_SUBSE
     mol = next(Chem.SDMolSupplier(ligand))
     core = Chem.rdmolfiles.MolFromPDBFile(core)
     atoms_in_common = mol.GetSubstructMatches(core)[0]
-    atoms_in_common_after = ch.chec_substructure_match(core, mol, atoms_in_common)
+    atoms_in_common_after = ch.check_substructure_match(core, mol, atoms_in_common)
     # Exchange nitrogen due to wrong previous result
     assert atoms_in_common != atoms_in_common_after
     assert atoms_in_common_after[atoms_in_common.index(13)] == 12
@@ -136,5 +137,69 @@ def test_python_version_error(args=ENV_ARGS):
     output, error = p.communicate()
     if "OldPythonVersion" in error.decode():
         assert True
+        return
+    assert False
+
+def test_flag_similarity():
+    yaml = os.path.join(test_path, "checker/input.yaml")
+    try:
+        job = main.run_platform(yaml)
+    except KeyError as e:
+        assert str(e).strip("'") == 'Incorrect flag posis. Did you mean poses?'
+        return
+    assert False
+
+def test_atom_error(ext_args=ATOM_GPCR_ERROR_ARGS):
+    try:
+        job = main.run_platform(ext_args)
+    except ce.WrongAtomSpecified as e:
+        assert str(e).strip("'") == "Atom A:114:CM could not be found in structure"
+        return
+    assert False
+
+
+yaml = os.path.join(test_path, "checker/input_template.yaml") 
+def test_template_error(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.TemplateFileNotFound as e:
+        assert str(e).strip("'") == "File mgadeaz not found"
+        return
+    assert False
+
+def test_input_yaml_error():
+    yaml = os.path.join(test_path, "gpcr/complex.pdb")
+    try:
+        job = main.run_platform(yaml)
+    except ce.WrongYamlFile:
+        assert True
+        return
+    assert False
+    
+
+yaml = os.path.join(test_path, "checker/input_rotamer.yaml") 
+def test_rotamer_error(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.RotamersFileNotFound as e:
+        assert str(e).strip("'") == "File mgadeaz not found"
+        return
+    assert False
+
+yaml = os.path.join(test_path, "out_in/input_flag_error.yaml") 
+def test_out_in_flag(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.OutInError as e:
+        assert str(e).strip("'") == "flag final_site must be specified for out_in package"
+        return
+    assert False
+
+yaml = os.path.join(test_path, "checker/input_atom_string.yaml") 
+def test_atom_string_error(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.WrongAtomStringFormat as e:
+        assert str(e).strip("'") == "The specified atom is wrong '157:A:N'. Should be 'chain:resnumber:atomname"
         return
     assert False

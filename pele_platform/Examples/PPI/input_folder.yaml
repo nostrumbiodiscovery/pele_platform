@@ -1,0 +1,13 @@
+system: '../pele_platform/Examples/PPI/1f47_prep.pdb'
+chain: 'Z'
+protein: 'B'
+ligand_pdb: "../pele_platform/Examples/PPI/1f47_ligand.pdb"
+resname: 'LIG'
+center_of_interface: "B:66:CA"
+seed: 12345
+ppi: true
+atom_dist:
+- "B:1:CA"
+- "B:2:CA"
+debug: true
+working_folder: "ppi_folder"

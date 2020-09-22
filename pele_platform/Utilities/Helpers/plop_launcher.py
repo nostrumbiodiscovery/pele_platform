@@ -1,7 +1,6 @@
 import os
 import PlopRotTemp as plop
 import pele_platform.constants.constants as cs
-import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Errors.custom_errors as ce
 
 try:
@@ -10,6 +9,7 @@ except ImportError:
     import subprocess
 except SyntaxError:
     import subprocess
+
 
 def parametrize_miss_residues(env, resname=None, ligand=None):
     resname = env.residue if not resname else resname
@@ -20,13 +20,12 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
     options = retrieve_options(env)
     templatedir = os.path.join(env.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms")
     rotamerdir = os.path.join(env.pele_dir, "DataLocal/LigandRotamerLibs")  
-    mae_cahrges = True if env.mae_lig else False
     my_env = os.environ.copy()
     my_env["SCHRODINGER_PYTHONPATH"]=os.path.join(cs.SCHRODINGER, "internal/lib/python2.7/site-packages/")
     my_env["SCHRODINGER"]=cs.SCHRODINGER
-    print("Running Plop")
+    env.logger.info("Running Plop")
     ligand = ligand if ligand else env.lig
-    print("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir))
+    env.logger.info("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir))
     try:
         subprocess.check_output("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir).split(), env=my_env)
     except subprocess.CalledProcessError: 
@@ -38,7 +37,6 @@ the inputted ligand has a valid structure.\n\
 2)Also, if LICENSE -1 FAIL is found on the output please point out to schrodinger licenses by either doing:\n\
 \t - export SCHROD_LICENSE_FILE=/path/to/folder/with/static/license\n\
 \t - export LM_LICENSE_FILE=/path/to/folder/with/server/license/")
-    #hp.silentremove([syst.lig])
 
 
 def retrieve_options(env):

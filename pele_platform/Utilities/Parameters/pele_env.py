@@ -1,7 +1,5 @@
 import os
 import shutil
-import warnings
-import random
 import logging
 import pele_platform.constants.constants as cs
 import pele_platform.features.adaptive as adfs
@@ -13,7 +11,7 @@ from pele_platform.Utilities.Parameters.SimulationFolders import simulation_fold
 
 class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.SimulationPaths):
     """
-        Base class wher the needed pele environment
+        Base class where the needed pele environment
         is build by creating folders and files
     """
     def __init__(self):
@@ -37,14 +35,14 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             setattr(self, key, value)
 
     def build_frag_variables(self, args):
-        #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
+        # Define default variables, files and folder "HIDING VARIABLES " --> CHANGE
         for key, value in frfs.retrieve_software_settings(args).items():
             setattr(self, key, value)
-        #####Initialize all variables by combining default and user input######
+        # Initialize all variables by combining default and user input
         simulation_params.SimulationParams.__init__(self, args)
         for key, value in frfs.retrieve_software_settings(args).items():
             setattr(self, key, value)
-        
+        self.create_logger(".")
 
     def create_files_and_folders(self):
         if not self.adaptive_restart:
@@ -53,8 +51,6 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             self.create_logger()
         else:
             self.create_logger()
-
-
 
     def create_folders(self):
         """
@@ -72,12 +68,14 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         for file, destination_name in zip(self.files, self.file_names):
             shutil.copy(file, os.path.join(self.pele_dir, destination_name))
 
-    def create_logger(self):
-        log_name = os.path.join(self.pele_dir, "{}.log".format(self.residue))
+    def create_logger(self, directory=None):
+        directory = directory if directory else self.pele_dir
+        log_name = os.path.join(directory, "{}.log".format(self.residue))
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
+        self.logger.propagate = False
         formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
-        if self.restart in ["all", "glide" ]:
+        if not self.adaptive_restart:
             file_handler = logging.FileHandler(log_name, mode='w')
         else:
             file_handler = logging.FileHandler(log_name, mode='a')

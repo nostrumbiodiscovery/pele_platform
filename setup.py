@@ -22,7 +22,7 @@ setup(
     packages=find_packages(exclude=['docs', 'tests', 'tests.data']),
     package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd'], "pele_platform/AdaptivePELE/freeEnergies/": ['*.pyx']},
     include_package_data=True,
-    install_requires=["AdaptivePELE", "frag_pele>=2.1.1", "lib_prep", "PPPele==1.0.4", "PlopRotTemp==1.0.1", "PyYAML", "fpdf", "scikit-learn>0.2", "pillow", "scipy", "matplotlib", 
+    install_requires=["AdaptivePELE", "frag_pele==2.2.1", "lib_prep", "PPPele==1.0.5", "PlopRotTemp==1.0.1", "PyYAML", "fpdf", "scikit-learn>0.2", "pillow", "scipy", "matplotlib", 
        "biopython", "pandas", "pytest", "cython", "numpy"],    
     ext_modules=ext_modules  # accepts a glob pattern
 )

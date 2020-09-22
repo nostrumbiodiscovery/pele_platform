@@ -15,7 +15,8 @@ def calculate_com(structure):
     return com
 
 
-def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200, test=False, user_center=None):
+def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200, test=False, user_center=None,
+                                logger=None):
     """
     Randomize initial ligand position around the receptor.
     Default number of poses = 200.
@@ -32,7 +33,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     structure = parser.get_structure('protein', complex_file)
     ligand = parser.get_structure('ligand', ligand_file)
     COI = np.zeros(3)
-    
+
     # get center of interface (if PPI)
     if user_center:
         chain_id, res_number, atom_name = user_center.split(":")
@@ -47,7 +48,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     # calculate protein and ligand COM
     com_protein = calculate_com(structure)
     com_ligand = calculate_com(ligand)
-    
+
     # calculating the maximum d of the ligand
     coor_ligand = []
     for atom in ligand.get_atoms():
@@ -56,9 +57,9 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     coor_ligand = np.array(coor_ligand)
     coor_ligand_max = np.amax(coor_ligand, axis=0)
     d_ligand = np.sqrt(np.sum(coor_ligand_max ** 2))
-    
+
     # set threshold for near and far contacts based on ligand d
-    if d_ligand/2 < 5.0:
+    if d_ligand / 2 < 5.0:
         d5_ligand = 5.0
     else:
         d5_ligand = d_ligand / 2 + 1
@@ -80,7 +81,7 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
         ligand_origin = np.array(list(atom.get_vector())) - move_vector
         original_coords.append(ligand_origin)
         atom.set_coord(ligand_origin)
-    
+
     # calculating the maximum radius of the protein from the origin
     coor = []
     for atom in structure.get_atoms():
@@ -92,15 +93,15 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
     # radius of the sphere from the origin
     D = 10.0 if user_center else np.ceil(6.0 + d)
     D_initial = D
-    print("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
+    logger.info("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
 
     if user_center:
         sphere_cent = COI
     else:
-        sphere_cent = com_protein    
+        sphere_cent = com_protein
 
     j = 0
-    print("Generating {} poses...".format(nposes))
+    logger.info("Generating {} poses...".format(nposes))
     start_time = time.time()
     while (j < nposes):
         # generate random coordinates
@@ -117,19 +118,19 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
         # move ligand to the starting point (protein COM)
         for atom, coord in zip(ligand.get_atoms(), original_coords):
             atom.set_coord(coord)
-        
+
         # translate ligand to a random position
         translation = (x, y, z)
         for atom in ligand.get_atoms():
             new_pos_lig_trans = np.array(list(atom.get_vector())) - translation
             atom.set_coord(new_pos_lig_trans)
-        
+
         # calculate ligand COM in the new position
         new_ligand_COM = calculate_com(ligand)
-        
+
         # rotate ligand
         vector = Vector(new_ligand_COM)
-        rotation_matrix = rotaxis(np.random.randint(0, 2*np.pi), vector)
+        rotation_matrix = rotaxis(np.random.randint(0, 2 * np.pi), vector)
 
         for atom in ligand.get_atoms():
             coords_after = atom.get_vector().left_multiply(rotation_matrix)
@@ -146,10 +147,6 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
             contacts8 = []
             ligand_atoms = list(ligand.get_atoms())
             
-            start = np.array(list(ligand_atoms[0].get_vector()))
-            stop = np.array(list(ligand_atoms[-1].get_vector()))
-            mid = np.array(list(ligand_atoms[int(len(ligand_atoms)/2)].get_vector()))
-
             contacts5.append( NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "S"))
             contacts8 = NeighborSearch(protein_list).search(new_ligand_COM, d8_ligand, "S")
             if contacts8 and not any(contacts5):
@@ -164,14 +161,14 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
             end_time = time.time()
             total_time = end_time - start_time
             if total_time > 60:
-                D +=1
+                D += 1
                 if D - D_initial >= 20:
-                    print("Original box increased by 20A. Aborting...")
+                    logger.info("Original box increased by 20A. Aborting...")
                     break
                 start_time = end_time
-                print("Increasing sampling box by 1A.")
-    print("{} poses created successfully.".format(j))
-    return output,  D, list(sphere_cent)
+                logger.info("Increasing sampling box by 1A.")
+    logger.info("{} poses created successfully.".format(j))
+    return output, D, list(sphere_cent)
 
 
 def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
@@ -182,7 +179,8 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
 
     with open(receptor, "r") as f:
         lines = f.readlines()
-        receptor_content = [line for line in lines if line[17:20] != residue and not line.startswith("CONECT") and not line.startswith("END")]
+        receptor_content = [line for line in lines if
+                            line[17:20] != residue and not line.startswith("CONECT") and not line.startswith("END")]
         connects = [line for line in lines if line.startswith("CONECT")]
         ligand_content_without_coords = [line[0:27] + "{}" + line[56:] for line in lines if line[17:20] == residue]
         atom_nums = [line[6:11] for line in lines if line[17:20] == residue]
@@ -193,7 +191,7 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
             # exclude connects but keep initial atom names (CL problem)
             ligand_coords = {line[12:16].strip(): line[27:56] for line in fin if
                              line.startswith("ATOM") or line.startswith("HETATM")}
-            #assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part - send an issue to github"
+            # assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part - send an issue to github"
 
             ligand_content = []
             for pdb_block in ligand_content_without_coords:
@@ -220,9 +218,11 @@ def parse_args():
     parser.add_argument("--resname", type=str, required=True, help="Ligand resname")
     parser.add_argument("--poses", type=int, default=20, help="How many input poses to produce")
     parser.add_argument("--output_folder", type=str, default=".", help="output folder")
-    parser.add_argument("--user_center", type=str, default=None, help="Center of protein-protein interface (chain:residue number:atom name)")
+    parser.add_argument("--user_center", type=str, default=None,
+                        help="Center of protein-protein interface (chain:residue number:atom name)")
     args = parser.parse_args()
-    return os.path.abspath(args.ligand), os.path.abspath(args.receptor), args.resname, args.poses, args.output_folder, args.user_center
+    return os.path.abspath(args.ligand), os.path.abspath(
+        args.receptor), args.resname, args.poses, args.output_folder, args.user_center
 
 
 if __name__ == "__main__":

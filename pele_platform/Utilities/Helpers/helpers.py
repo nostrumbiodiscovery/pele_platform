@@ -1,10 +1,14 @@
+import glob
 import os
+import logging
 import numpy as np
 import sys
-import re
-import logging
 import warnings
+import pele_platform.Errors.custom_errors as cs
+import pele_platform.constants.constants as const
+import PPP.global_variables as gv
 from Bio.PDB import PDBParser
+import pele_platform.Errors.custom_errors as cs
 
 def silentremove(*args, **kwargs):
     for files in args:
@@ -129,9 +133,12 @@ def retrieve_atom_info(atom, pdb):
                 pass
         sys.exit(f"Check the atoms {atom} given to calculate the distance metric.")
 
-def retrieve_all_waters(pdb):
+def retrieve_all_waters(pdb, exclude=False):
     with open(pdb, 'r') as f:
-        return list(set(["{}:{}".format(line[21:22], line[23:26].strip()) for line in f if line and "HOH" in line]))
+        waters = list(set(["{}:{}".format(line[21:22], line[22:26].strip()) for line in f if line and "HOH" in line]))
+    if exclude:
+        waters = [water for water in waters if water not in exclude]
+    return waters
 
 def retrieve_constraints_for_pele(constraints, pdb):
     CONSTR_ATOM_POINT = '{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
@@ -161,14 +168,34 @@ def retrieve_box(structure, residue_1, residue_2, weights=[0.5, 0.5]):
     box_radius = abs(np.linalg.norm(coords1-coords2))/2 + 4 #Sum 4 to give more space
     return list(box_center), box_radius
 
-def get_coords_from_residue(structure, residue):
+def get_coords_from_residue(structure, original_residue):
     parser = PDBParser()
-    COI = np.zeros(3)
     structure = parser.get_structure('protein', structure)
-    chain, res_number, atom_name = residue.split(":")
+    chain, res_number, atom_name = original_residue.split(":")
+    try:
+        res_number = int(res_number)
+    except ValueError:
+        raise cs.WrongAtomStringFormat(f"The specified atom is wrong '{original_residue}'. \
+Should be 'chain:resnumber:atomname'")
     for residue in structure.get_residues():
-        if residue.id[1] == int(res_number):
+        if residue.id[1] == res_number:
             for atom in residue.get_atoms():
                 if atom.name == atom_name:
                     COI = np.array(list(atom.get_vector()))
                     return COI
+    raise cs.WrongAtomSpecified(f"Atom {original_residue} could not be found in structure")
+
+
+def backup_logger(logger, message):
+    if not logger:
+        logger = logging.getLogger('logger')
+        logger.setLevel(logging.INFO)
+        logger.info(message)
+    else:
+        logger.info(message)
+
+def find_nonstd_residue(pdb):
+    with open(pdb, "r") as f:
+        resnames = list(set([line[17:20] for line in f \
+    if line.startswith("ATOM") and line[17:20] not in gv.supported_aminoacids]))
+        return resnames

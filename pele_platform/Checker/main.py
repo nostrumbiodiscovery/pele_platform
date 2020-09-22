@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import os
-import sys
 import pele_platform.constants.constants as cs
 from pele_platform.Checker import executable as ex
 from pele_platform.Checker import environment_variables as en
