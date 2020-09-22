@@ -29,6 +29,7 @@ Prepare the input file ``input.yml``:
 
 ..  code-block:: yaml
 
+    #####Normal simulation (any type)########
     system: 'docking2grid6n4b_thc.pdb' # Protein ligand PDB
     chain: 'L' # Ligand chain name
     resname: 'THC' # Ligand residue name
@@ -39,6 +40,9 @@ Prepare the input file ``input.yml``:
     - "B:3:CG" # Second atom
     cpus: 100
     out_in: true # Binding simulation
+    initial_site: "A:577:N"
+    final_site: "A:867:CB"
+    ###############BIAS PART#######################
     spawning: epsilon # Apply bias
     epsilon: 0.25 # Level of bias ranging from 0 to 1
     bias_column: 7 # Column of the report starting by one to bias the results towards. (You may want to first launch a simulation with the default bias_column, then inspect the simulation report. Last, kill that simulation to launch another one with the optimized bias column value)

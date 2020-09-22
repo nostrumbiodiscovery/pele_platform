@@ -34,8 +34,10 @@ Prepare the input file ``input.yml``:
     atom_dist:
     - "A:2:CA" # First atom (chain ID:residue number:atom name)
     - "B:3:CG" # Second atom
-    cpus: 200
+    cpus: 60
     out_in: true
+    initial_site: "A:577:N"
+    final_site: "A:867:CB"
 
 For more optional flags please refer to `optional flags <../../documentation/index.html>`_
 
