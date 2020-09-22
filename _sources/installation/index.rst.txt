@@ -6,7 +6,7 @@ Conda (recommended)
 
 .. code-block:: bash
 
-    conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform==1.5.0
+    conda install -c nostrumbiodiscovery -c conda-forge -c anaconda pele_platform==1.5.1
     
     export PELE=/path/to/PELE-1.X/
 
