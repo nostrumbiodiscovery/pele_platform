@@ -16,7 +16,7 @@ Conda (recommended)
     specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 
 
-singularity
+Singularity
 ----------------
 
 .. code-block:: bash
