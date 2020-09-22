@@ -31,9 +31,9 @@ requirements:
     - pandas
     - pytest
     - adaptive_pele
-    - ploprottemp==1.0.0
+    - ploprottemp==1.0.1
     - pyyaml
-    - pppele==1.0.4
+    - pppele==1.0.5
     - fpdf
     - scikit-learn
     - rdkit
