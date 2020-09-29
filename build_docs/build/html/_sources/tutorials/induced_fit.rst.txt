@@ -39,6 +39,8 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     atom_dist:
     - "A:39:N" # nitrogen of Ser39 in the binding site
     - "Z:201:C13"
+    skip_preprocess: true
+    #pele_licenses: /gpfs/projects/bsc72/PELE++/mniv/V1.6.1/license/ #(Example MN4 - Need it if complain about licenses)
 
 3. Launching the simulation
 +++++++++++++++++++++++++++++
