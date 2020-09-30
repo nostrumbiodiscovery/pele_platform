@@ -26,6 +26,19 @@ def test_plot_two_metrics(simulation_path=simulation_path, report_name=REPORT_NA
     output = analysis.plot_two_metrics(5, 6, output_folder=output_folder)
     assert os.path.exists(output)
 
+def test_kde_plot(simulation_path=simulation_path, report_name=REPORT_NAME, traj_name=TRAJ_NAME):
+
+    output_folder="tmp/plots"
+    if os.path.exists(output_folder):
+        shutil.rmtree(output_folder)
+    if not os.path.exists(output_folder):
+        os.mkdir(output_folder)
+
+    kde = pt.PostProcessor(report_name, traj_name, simulation_path, 1)
+    output = kde.plot_kde(4, 5, output_folder=output_folder, kde_structs=2)
+    
+    assert os.path.exists(output)
+
 def test_best_structs(simulation_path=simulation_path, report_name=REPORT_NAME, traj_name=TRAJ_NAME, n_structs=1):
     output_folder="tmp/tests/BestStructs"
     if os.path.exists(output_folder):
