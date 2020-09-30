@@ -39,6 +39,7 @@ requirements:
     - rdkit
     - frag_pele==2.2.1
     - lib_prep
+    - seaborn
 
 test:
   imports:
