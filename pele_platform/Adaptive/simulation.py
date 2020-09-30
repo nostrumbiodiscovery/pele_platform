@@ -193,6 +193,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             os.path.join(env.pele_dir, env.output), env.residue, cpus=env.cpus,
             output_folder=env.pele_dir, clustering=env.perturbation, mae=env.mae,
             nclusts=env.analysis_nclust, overwrite=env.overwrite, topology=env.topology,
-            be_column=env.be_column, limit_column=env.limit_column, te_column=env.te_column, logger=env.logger)
+            be_column=env.be_column, limit_column=env.limit_column, te_column=env.te_column, kde=env.kde, kde_structs=env.kde_structs, logger=env.logger)
         env.logger.info("Pdf summary report successfully written to: {}".format(report))
     return env

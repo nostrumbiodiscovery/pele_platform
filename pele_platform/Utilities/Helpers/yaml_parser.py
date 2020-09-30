@@ -235,6 +235,10 @@ class YamlParser(object):
         self.orthosteric_site = data.get(valid_flags["orthosteric_site"], None)
         self.initial_site = data.get(valid_flags["initial_site"], None)
 
+        # Plots
+        self.kde = data.get(valid_flags["kde"], False)
+        self.kde_structs = data.get(valid_flags["kde_structs"], 1000)
+
         #OUTIN
         self.final_site = data.get(valid_flags["final_site"], None)
 

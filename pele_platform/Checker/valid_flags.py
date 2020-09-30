@@ -170,4 +170,6 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "rna": "rna",
 "cleanup": "cleanup",
 "polarize_metals": "polarize_metals",
-"polarization_factor": "polarization_factor"}
+"polarization_factor": "polarization_factor",
+"kde_structs": "kde_structs",
+"kde": "kde"}

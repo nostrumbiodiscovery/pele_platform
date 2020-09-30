@@ -5,6 +5,7 @@ import subprocess
 import mdtraj
 import numpy as np
 import pandas as pd
+import seaborn as sb
 from sklearn import mixture
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
@@ -103,6 +104,20 @@ class PostProcessor:
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
             backup_logger(self.logger, "Plotted {} vs {}".format(column_to_x, column_to_y))
+        return output_name
+
+    def plot_kde(self, column_to_x, column_to_y, output_folder, kde_structs):
+
+        column_to_x = column_to_x if not str(column_to_x).isdigit() else self._get_column_name(self.data, column_to_x)
+        column_to_y = column_to_y if not str(column_to_y).isdigit() else self._get_column_name(self.data, column_to_y)
+
+        output_name =  "{}_{}_kde.png".format(column_to_x, column_to_y)
+        output_name = os.path.join(output_folder,output_name).replace(" ", "_")
+        top_1000 = self.data.sort_values(column_to_y, ascending=True)[0:int(kde_structs)]
+        plot = sb.kdeplot(top_1000[column_to_x], top_1000[column_to_y], cmap="crest", fill=False, shade=True, cbar=True)
+        figure = plot.get_figure()
+        figure.savefig(output_name)
+
         return output_name
 
     def top_poses(self, metric, n_structs, output="BestStructs"):
@@ -205,7 +220,7 @@ class PostProcessor:
 
 
 def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True,
-                       mae=False, nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_column=3,
+                       mae=False, nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_column=3, kde=False, kde_structs=1000,
                        logger=None):
     results_folder = os.path.join(output_folder, "results")
     if os.path.exists(results_folder):
@@ -237,7 +252,8 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
         try:
             analysis.plot_two_metrics(total_energy, be, current_metric, output_folder=plots_folder)
             analysis.plot_two_metrics(current_metric, be, output_folder=plots_folder)
-
+            if kde:
+                analysis.plot_kde(current_metric, be, plots_folder, kde_structs)
         except ValueError:
             break
         current_metric += 1
