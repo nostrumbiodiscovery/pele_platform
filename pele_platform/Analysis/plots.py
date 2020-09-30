@@ -108,6 +108,9 @@ class PostProcessor:
 
     def plot_kde(self, column_to_x, column_to_y, output_folder, kde_structs):
 
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+
         column_to_x = column_to_x if not str(column_to_x).isdigit() else self._get_column_name(self.data, column_to_x)
         column_to_y = column_to_y if not str(column_to_y).isdigit() else self._get_column_name(self.data, column_to_y)
 
