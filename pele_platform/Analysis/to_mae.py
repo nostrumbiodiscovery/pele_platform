@@ -42,7 +42,7 @@ def pdb_to_mae(fname, schr_path, mae_output_file=None, remove=False):
         struct.property['r_user_PELE_traj'] = properties["trajectory"]
         struct.property['r_user_PELE_snapshot'] = properties["snapshot"]
         struct.title = '%s_BindEn_%.2f' %(traj, pele_energy) 
-        struct.write(f"{traj}.mae")
+        struct.write("{}.mae.format(traj)")
 
 
 def add_args(parser):
