@@ -1,5 +1,4 @@
-usesrun: true
-system: 'mapping_complex.pdb'
+system: '../pele_platform/Examples/checker/mapping_complex.pdb'
 chain: 'Z'
 resname: 'LIG'
 induced_fit_fast: true
