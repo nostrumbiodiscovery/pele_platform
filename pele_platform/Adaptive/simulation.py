@@ -175,6 +175,13 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         water_obj.run()
         env.parameters = water_obj.ligand_perturbation_params
 
+        # Check if atom strings need mapping due to preprocessing
+        atom_args = cs.atom_string_flags
+        atom_args = [arg for arg in atom_args if arg in vars(args).keys() and vars(args)[arg] is not None]
+
+        for arg in atom_args:
+            vars(args)[arg] = hp.check_atom_string(vars(args)[arg], syst.system, env.system, logger=env.logger)
+
         #metrics
         metrics = mt.MetricBuilder()
         if args.atom_dist:
