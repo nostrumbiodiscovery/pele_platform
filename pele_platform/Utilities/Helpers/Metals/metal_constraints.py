@@ -22,7 +22,7 @@ def find_metals(protein_file):
     return metals, structure
 
 
-def map_metal_constraints(protein_file, original_input, original_constraints):
+def map_metal_constraints(protein_file, original_input, original_constraints, logger=None):
     
     atoms = []
         
@@ -34,7 +34,7 @@ def map_metal_constraints(protein_file, original_input, original_constraints):
         atoms.extend([atom1, atom2])
 
     for atom in atoms:
-        before, after = hp.map_atom_string(atom, original_input, protein_file)
+        before, after = hp.map_atom_string(atom, original_input, protein_file, logger)
     
     for j in range(len(original_constraints)):
         for b, a in zip(before, after):
@@ -234,6 +234,6 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
 def main(original_constraints, protein_file, original_input, permissive=False, all_metals=False, external=None, logger=None):
     metals, structure = find_metals(protein_file)
     if external:
-        external = map_metal_constraints(protein_file, original_input, original_constraints)
+        external = map_metal_constraints(protein_file, original_input, original_constraints, logger=logger)
     output = find_geometry(metals, structure, permissive, all_metals, external, logger=logger)
     return output, external
