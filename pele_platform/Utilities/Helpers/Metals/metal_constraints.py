@@ -1,5 +1,6 @@
 import pele_platform.constants.constants as cs
 import pele_platform.Errors.custom_errors as ce
+import pele_platform.Utilities.Helpers.helpers as hp
 from Bio.PDB import PDBParser, NeighborSearch, Selection, Vector, vectors
 import itertools
 import numpy as np
@@ -21,41 +22,19 @@ def find_metals(protein_file):
     return metals, structure
 
 
-def map_constraints(protein_file, original_input, original_constraints):
+def map_metal_constraints(protein_file, original_input, original_constraints):
     
     atoms = []
-    new_atoms = []
-
-    # get lines from actual input
-    with open(protein_file, "r") as input_file:
-        input_lines = input_file.readlines()
-
-    # get constraints coords from original input file
-    with open(original_input, "r") as file:
-        lines = file.readlines()
         
-        for orig in original_constraints:
-            try:
-                k, dist, atom1, atom2 = orig.split("-")
-            except ValueError: #If more than one atom
-                continue
-            atoms.extend([atom1, atom2])
+    for orig in original_constraints:
+        try:
+            k, dist, atom1, atom2 = orig.split("-")
+        except ValueError:  # If more than one atom
+            continue
+        atoms.extend([atom1, atom2])
 
-        for atom in atoms:
-            chain, resnum, atom_name = atom.split(":")
-            
-            for line in lines:
-                if (line.startswith("HETATM") or line.startswith("ATOM")) and line[21].strip() == chain.strip() and line[22:26].strip() == resnum.strip() and line[12:16].strip() == atom_name.strip():
-                    coords = line[30:54].split()
-                    for l in input_lines:
-                        if l[30:54].split() == coords:
-                            new_atom_name = l[12:16].strip()
-                            new_resnum = l[22:26].strip()
-                            new_chain = l[21].strip()
-                            new_atoms.append([chain, new_chain, resnum, new_resnum, atom_name, new_atom_name])
-    
-    before = ["{}:{}:{}".format(i[0],i[2],i[4]) for i in new_atoms]
-    after = ["{}:{}:{}".format(i[1], i[3], i[5]) for i in new_atoms]
+    for atom in atoms:
+        before, after = hp.map_atom_string(atom, original_input, protein_file)
     
     for j in range(len(original_constraints)):
         for b, a in zip(before, after):
@@ -255,6 +234,6 @@ def find_geometry(metals, structure, permissive=False, all_metals=False, externa
 def main(original_constraints, protein_file, original_input, permissive=False, all_metals=False, external=None, logger=None):
     metals, structure = find_metals(protein_file)
     if external:
-        external = map_constraints(protein_file, original_input, original_constraints)
+        external = map_metal_constraints(protein_file, original_input, original_constraints)
     output = find_geometry(metals, structure, permissive, all_metals, external, logger=logger)
     return output, external
