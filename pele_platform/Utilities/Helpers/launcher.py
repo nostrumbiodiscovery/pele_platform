@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
-from pele_platform.Allosteric.main import al
+import pele_platform.Allosteric.main as al
 import pele_platform.gpcr.main as gpcr
 import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
