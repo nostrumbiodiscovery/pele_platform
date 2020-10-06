@@ -107,6 +107,9 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     - "A:106:OH"
     - "Z:1123:C13"
 
+**We strongly recommend running a test first to ensure all your input files are valid.** Simply include ``test: true`` in your input.yaml and launch the simulation. If it finishes correctly, you can remove the test flag and start a full production run.
+Otherwise, inspect the logs and correct any mistakes indicated in the error codes.
+
 4. Launching the simulation
 +++++++++++++++++++++++++++++
 

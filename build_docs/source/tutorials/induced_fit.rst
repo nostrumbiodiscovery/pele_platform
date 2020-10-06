@@ -42,6 +42,10 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     skip_preprocess: true
     #pele_licenses: /gpfs/projects/bsc72/PELE++/mniv/V1.6.1/license/ #(Example MN4 - Need it if complain about licenses)
 
+**We strongly recommend running a test first to ensure all your input files are valid.** Simply include ``test: true`` in your input.yaml and launch the simulation. If it finishes correctly, you can remove the test flag and start a full production run.
+Otherwise, inspect the logs and correct any mistakes indicated in the error codes.
+
+
 3. Launching the simulation
 +++++++++++++++++++++++++++++
 
