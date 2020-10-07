@@ -1,0 +1,16 @@
+system: '../pele_platform/Examples/checker/complex2.pdb'
+chain: 'Z'
+protein: 'A'
+ligand_pdb: '../pele_platform/Examples/checker/ligand2.pdb'
+resname: 'LIG'
+center_of_interface: "A_106:OH"
+seed: 12345
+ppi: true
+steps: 200
+cpus: 50
+test: true
+atom_dist:
+- "A_106:OH"
+- "Z:1123:C13"
+usesrun: true
+
