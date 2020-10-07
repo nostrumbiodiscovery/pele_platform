@@ -3,7 +3,7 @@ from Bio.PDB.vectors import Vector
 import numpy as np
 import os, argparse
 import time
-
+import pele_platform.Errors.custom_errors as cs
 
 def calculate_com(structure):
     structure_mass = 0.0
@@ -36,7 +36,11 @@ def randomize_starting_position(ligand_file, complex_file, outputfolder=".", npo
 
     # get center of interface (if PPI)
     if user_center:
-        chain_id, res_number, atom_name = user_center.split(":")
+        try:
+            chain_id, res_number, atom_name = user_center.split(":")
+        except ValueError:
+            raise cs.WrongAtomStringFormat(f"The specified atom is wrong '{user_center}'. \
+Should be 'chain:resnumber:atomname'")
         for chain in structure.get_chains():
             if chain.id == chain_id:
                 for residue in chain.get_residues():
