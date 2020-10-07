@@ -1,7 +1,14 @@
 from dataclasses import dataclass
+import numpy as np
 import os
+import pandas as pd
+from Bio.PDB import PDBParser
+from multiprocessing import Pool
+
 from pele_platform.Allosteric.cluster import cluster_best_structures
+from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
+from pele_platform.Analysis.plots import _extract_coords
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
 
@@ -49,14 +56,55 @@ class AllostericLauncher:
         return sim_params
 
     def _choose_refinement_input(self):
+        """
+        Scan top 75% best binding energies, pick n best ones as long as ligand COMs are >= box radius away from each other.
+        """
         simulation_path = os.path.join(self.global_simulation.pele_dir, self.global_simulation.output)
+        n_best_poses = int(self.global_simulation.iterations * self.global_simulation.pele_steps * (
+                    self.global_simulation.cpus - 1) * 0.75)
+        n_inputs = int((self.global_simulation.cpus - 1) * 0.75)
 
         if not self.args.debug:
             with cd(simulation_path):
-                cluster_best_structures("5", n_components=self.global_simulation.n_components,
-                                        residue=self.global_simulation.residue,
-                                        topology=self.global_simulation.topology,
-                                        directory=self.working_folder, logger=self.global_simulation.logger)
+                files_out, _, _, _, output_energy = bs.main(str(self.args.be_column), n_structs=n_best_poses, path=".",
+                                                            topology=self.global_simulation.topology,
+                                                            logger=self.global_simulation.logger)
+        
+        snapshot = 0
+        pool = Pool(self.global_simulation.cpus)
+        files_out = [os.path.join(self.global_simulation.pele_dir, "results", f) for f in files_out]
+        input_pool = [[f, snapshot, self.global_simulation.residue, self.global_simulation.topology] for f in files_out]          
+        all_coords = pool.map(_extract_coords, input_pool)
+        coords = [list(c[0:3]) for c in all_coords]
+
+        dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)), columns=["File", "Binding energy", "1st atom coordinates"])
+        dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
+
+        inputs = []
+        input_coords = []
+        distances = []
+
+        while len(inputs) < 3:
+            for i in range(len(dataframe)) : 
+                f = dataframe.loc[i, "File"] 
+                c = dataframe.loc[i, "1st atom coordinates"]
+                if not input_coords:
+                    inputs.append(f)
+                    input_coords.append(c)
+                else:
+                    for ic in input_coords:
+                        distances.append(abs(np.linalg.norm(np.array(c)-np.array(ic))))
+                    distances = [d for d in distances if d > 6]
+                    if distances:
+                        inputs.append(f)
+                        input_coords.append(c)
+        
+        directory = os.path.join(self.working_folder, "refinement_input")
+        
+        if not os.path.isdir(directory):
+            os.makedirs(directory, exist_ok=True)
+        for i in inputs:
+            os.system("cp {} {}/.".format(i, directory))
 
     def _set_params_refinement(self):
 
