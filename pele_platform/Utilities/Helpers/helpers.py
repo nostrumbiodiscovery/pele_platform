@@ -9,6 +9,8 @@ import pele_platform.constants.constants as const
 import PPP.global_variables as gv
 from Bio.PDB import PDBParser
 import pele_platform.Errors.custom_errors as cs
+from multiprocessing import Pool
+from functools import partial
 
 def silentremove(*args, **kwargs):
     for files in args:
@@ -199,3 +201,11 @@ def find_nonstd_residue(pdb):
         resnames = list(set([line[17:20] for line in f \
     if line.startswith("ATOM") and line[17:20] not in gv.supported_aminoacids]))
         return resnames
+
+
+def parallelize(func, iterable, n_workers, **kwargs):
+    pool = Pool(n_workers)
+    f = partial(func, **kwargs)
+    return pool.map(f, iterable)
+    pool.close()
+    pool.join()

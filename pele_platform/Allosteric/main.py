@@ -2,10 +2,9 @@ from dataclasses import dataclass
 import numpy as np
 import os
 import pandas as pd
-from multiprocessing import Pool
 
 from pele_platform.Utilities.Helpers import bestStructs as bs
-from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
+from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last, parallelize
 from pele_platform.Analysis.plots import _extract_coords
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
@@ -69,10 +68,10 @@ class AllostericLauncher:
                                                             logger=self.global_simulation.logger)
 
         snapshot = 0
-        pool = Pool(self.global_simulation.cpus)
         files_out = [os.path.join(self.global_simulation.pele_dir, "results", f) for f in files_out]
         input_pool = [[f, snapshot, self.global_simulation.residue, self.global_simulation.topology] for f in files_out]
-        all_coords = pool.map(_extract_coords, input_pool)
+        
+        all_coords = parallelize(_extract_coords, input_pool, self.global_simulation.cpus)
         coords = [list(c[0:3]) for c in all_coords]
 
         dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)),
@@ -93,7 +92,7 @@ class AllostericLauncher:
                 else:
                     for ic in input_coords:
                         distances.append(abs(np.linalg.norm(np.array(c) - np.array(ic))))
-                    distances = [d for d in distances if d > 6]
+                    distances = [d for d in distances if d > 6]  # leave the radius up to the user in the future...?
                     if distances:
                         inputs.append(f)
                         input_coords.append(c)
