@@ -107,7 +107,7 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     - "A:106:OH"
     - "Z:1123:C13"
 
-**We strongly recommend running a test first to ensure all your input files are valid.** Simply include ``test: true`` in your input.yaml and launch the simulation. If it finishes correctly, you can remove the test flag and start a full production run.
+**We strongly recommend running a test first to ensure all your input files are valid.** Simply include ``test: true`` in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test flag and start a full production run.
 Otherwise, inspect the logs and correct any mistakes indicated in the error codes.
 
 4. Launching the simulation
@@ -132,6 +132,8 @@ Example slurm file:
 
     python -m pele_platform.main input.yaml
 
+You can download ready slurm files for :download:`MareNostrum<../files/slurm_mn.sh>` and the :download:`NBD cluster <../files/slurm_nbd.sh>`.
+If you are running the simulation on the NBD cluster, you have to include ``usesrun: true`` in your input.yaml!
 
 5. Analysis of the results
 ++++++++++++++++++++++++++++

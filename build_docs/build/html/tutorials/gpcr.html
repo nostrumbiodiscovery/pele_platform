@@ -286,7 +286,7 @@ in your working directory. You can close Maestro now.</p>
 <span class="p p-Indicator">-</span> <span class="s">&quot;Z:401:C13&quot;</span>
 </pre></div>
 </div>
-<p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong> Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation. If it finishes correctly, you can remove the test flag and start a full production run.
+<p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong> Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test flag and start a full production run.
 Otherwise, inspect the logs and correct any mistakes indicated in the error codes.</p>
 </div>
 <div class="section" id="launching-the-simulation">
@@ -309,6 +309,8 @@ Otherwise, inspect the logs and correct any mistakes indicated in the error code
 <span class="go">python -m pele_platform.main input.yaml</span>
 </pre></div>
 </div>
+<p>You can download ready slurm files for <a class="reference download internal" download="" href="../_downloads/e1799872b6b01a8161f3297a942b3ca7/slurm_mn.sh"><code class="xref download docutils literal notranslate"><span class="pre">MareNostrum</span></code></a> and the <a class="reference download internal" download="" href="../_downloads/51ffa2cd16e8f3ac43fd04d7826f47f0/slurm_nbd.sh"><code class="xref download docutils literal notranslate"><span class="pre">NBD</span> <span class="pre">cluster</span></code></a>.
+If you are running the simulation on the NBD cluster, you have to include <code class="docutils literal notranslate"><span class="pre">usesrun:</span> <span class="pre">true</span></code> in your input.yaml!</p>
 </div>
 <div class="section" id="analysis-of-the-results">
 <h2>5. Analysis of the results<a class="headerlink" href="#analysis-of-the-results" title="Permalink to this headline">¶</a></h2>
