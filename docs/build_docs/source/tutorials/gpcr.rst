@@ -145,6 +145,12 @@ following line at the end:
 All relevant simulation results, including best energy poses, clusters and plots are located in ``LIG_Pele/results`` directory. We will now explore
 the content of each folder.
 
+If you want to understand more about the content of ``LIG_Pele`` directory, you can refer to the PELE++ documentation:
+
+    - `Data folder <https://eapm-bsc.github.io/PELE-repo/molecularParameters.html>`_
+    - `pele.conf <https://eapm-bsc.github.io/PELE-repo/GeneralStructure/GeneralStructure.html>`_
+    - `adaptive.conf <https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline>`_
+
 a. Plots
 ----------
 

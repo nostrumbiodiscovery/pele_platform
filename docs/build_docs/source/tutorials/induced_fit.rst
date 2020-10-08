@@ -77,6 +77,12 @@ If you are running the simulation on the NBD cluster, you have to include ``uses
 Inside your ``LIG_Pele`` directory, you will find several folders containing simulation configuration and data, raw output as well as ``results`` folder, which
 we will be mostly concerned with in this tutorial.
 
+If you want to understand more about the content of the ``LIG_Pele`` directory, you can refer to the PELE++ documentation:
+
+    - `Data folder <https://eapm-bsc.github.io/PELE-repo/molecularParameters.html>`_
+    - `pele.conf <https://eapm-bsc.github.io/PELE-repo/GeneralStructure/GeneralStructure.html>`_
+    - `adaptive.conf <https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline>`_
+
 a. Plots
 -------------
 
