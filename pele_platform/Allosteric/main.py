@@ -59,7 +59,6 @@ class AllostericLauncher:
         simulation_path = os.path.join(self.global_simulation.pele_dir, self.global_simulation.output)
         n_best_poses = int(self.global_simulation.iterations * self.global_simulation.pele_steps * (
                 self.global_simulation.cpus - 1) * 0.75)
-        n_inputs = int((self.global_simulation.cpus - 1) * 0.75)
 
         if not self.args.debug:
             with cd(simulation_path):
@@ -70,39 +69,45 @@ class AllostericLauncher:
         snapshot = 0
         files_out = [os.path.join(self.global_simulation.pele_dir, "results", f) for f in files_out]
         input_pool = [[f, snapshot, self.global_simulation.residue, self.global_simulation.topology] for f in files_out]
-        
         all_coords = parallelize(_extract_coords, input_pool, self.global_simulation.cpus)
         coords = [list(c[0:3]) for c in all_coords]
 
         dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)),
                                  columns=["File", "Binding energy", "1st atom coordinates"])
-        dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
+        self.dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
+
+        inputs = self._check_ligand_distances()
+        directory = os.path.join(self.working_folder, "refinement_input")
+     
+        if not os.path.isdir(directory):
+            os.makedirs(directory, exist_ok=True)
+        for i in inputs:
+            os.system("cp {} {}/.".format(i, directory))
+    
+    def _check_ligand_distances(self):
 
         inputs = []
         input_coords = []
         distances = []
+        n_inputs = self.global_simulation.cpus - 1
 
         while len(inputs) < n_inputs:
-            for i in range(len(dataframe)):
-                f = dataframe.loc[i, "File"]
-                c = dataframe.loc[i, "1st atom coordinates"]
+            for f, c in zip(self.dataframe['File'], self.dataframe['1st atom coordinates']):
+                print("File:", f, "Coords:", c)
                 if not input_coords:
                     inputs.append(f)
                     input_coords.append(c)
                 else:
                     for ic in input_coords:
                         distances.append(abs(np.linalg.norm(np.array(c) - np.array(ic))))
-                    distances = [d for d in distances if d > 6]  # leave the radius up to the user in the future...?
-                    if distances:
+                    print("distances", distances)
+                    distances_bool = [d > 6 for d in distances]  # leave the radius up to the user in the future...? 6 is the default box_radius for induced fit
+                    print("distances bool", distances_bool)
+                    if all(distances_bool):
                         inputs.append(f)
                         input_coords.append(c)
-
-        directory = os.path.join(self.working_folder, "refinement_input")
-
-        if not os.path.isdir(directory):
-            os.makedirs(directory, exist_ok=True)
-        for i in inputs:
-            os.system("cp {} {}/.".format(i, directory))
+            break  # make sure it stops after running out of file to check
+        return inputs
 
     def _set_params_refinement(self):
 
