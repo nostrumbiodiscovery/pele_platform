@@ -25,5 +25,5 @@ All tutorial files are available in ``pele_platform/Examples/tutorials``.
    :hidden:
 
 .. toctree::
-   /outputs/outputs.rst
+   outputs.rst
    :hidden:
