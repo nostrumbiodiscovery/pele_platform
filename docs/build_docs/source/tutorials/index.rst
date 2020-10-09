@@ -12,6 +12,7 @@ We assume you have already installed the software and have access to Schrödinge
 
 All tutorial files are available in ``pele_platform/Examples/tutorials``.
 
+For further information about the outputs obtained, refear :doc:`here: <outputs.rst>`
 .. toctree::
    ppi.rst
    :hidden:
