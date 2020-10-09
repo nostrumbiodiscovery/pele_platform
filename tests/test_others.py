@@ -203,3 +203,13 @@ def test_atom_string_error(yaml=yaml):
         assert str(e).strip("'") == "The specified atom is wrong '157:A:N'. Should be 'chain:resnumber:atomname"
         return
     assert False
+
+yaml = os.path.join(test_path, "checker/input_unk.yaml")
+def test_unk_error():
+    
+    try:
+        job = main.run_platform(yaml)
+    except ce.LigandNameNotSupported as e:
+        assert str(e) == "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'"
+        return
+    assert False
