@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
-from pele_platform.Allosteric.main import run_allosteric
+import pele_platform.Allosteric.main as al
 import pele_platform.gpcr.main as gpcr
 import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
@@ -38,7 +38,7 @@ class Launcher:
         elif package == self.out_in:
             job_variables = outin.OutInLauncher(self._args).run_gpcr_simulation()
         elif package == self.allosteric:
-            job_variables = run_allosteric(self._args)
+            job_variables = al.AllostericLauncher(self._args).run_allosteric()
         elif package == self.ppi:
             job_variables = run_ppi(self._args)
         elif package == self.frag:
