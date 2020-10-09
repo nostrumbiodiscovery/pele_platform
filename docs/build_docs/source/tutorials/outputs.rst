@@ -24,9 +24,14 @@ Considerations when using Pele Platform
 #. It is recommended to first run the program with the test flag. Thus, the simulation will run using 5 CPU's.
 
 Related Topics
-#####
+#################
 
 * `Installation <installation/index.rst>`
 * Prepare your own simulation
 * Common errors
 * Versions
+
+.. toctree::
+   installation/index.rst
+   :hidden::
+
