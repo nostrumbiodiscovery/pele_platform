@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pele_platform.Errors.custom_errors import LigandNameNotSupported
 from difflib import SequenceMatcher
 import os
 import yaml
@@ -14,6 +15,7 @@ class YamlParser(object):
     def read(self) -> None:
         self.data = self._parse_yaml()
         self._check()
+        self._check_residue()
         self._parse()
 
     def _parse_yaml(self) -> dict:
@@ -31,6 +33,10 @@ class YamlParser(object):
         for key in self.data.keys():
             if key not in self.valid_flags.values():
                 raise KeyError(self._recommend(key))
+
+    def _check_residue(self) -> None:
+        if self.data['resname'] == "UNK":
+            raise LigandNameNotSupported("'UNK' ligand name is not supported, please rename it, e.g. 'LIG'.")
 
     def _recommend(self, key):
         most_similar_flag = None
