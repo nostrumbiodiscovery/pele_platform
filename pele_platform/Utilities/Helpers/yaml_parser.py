@@ -35,8 +35,9 @@ class YamlParser(object):
                 raise KeyError(self._recommend(key))
 
     def _check_residue(self) -> None:
-        if self.data['resname'] == "UNK":
-            raise LigandNameNotSupported("'UNK' ligand name is not supported, please rename it, e.g. 'LIG'.")
+        if 'resname' in self.data.keys():
+            if self.data['resname'] == "UNK":
+                raise LigandNameNotSupported("'UNK' ligand name is not supported, please rename it, e.g. 'LIG'.")
 
     def _recommend(self, key):
         most_similar_flag = None
