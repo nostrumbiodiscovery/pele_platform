@@ -219,6 +219,6 @@ def test_unk_error():
     try:
         job = main.run_platform(yaml)
     except ce.LigandNameNotSupported as e:
-        assert str(e) == "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'"
+        assert str(e) == "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
         return
     assert False
