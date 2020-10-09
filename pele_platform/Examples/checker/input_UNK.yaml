@@ -1,0 +1,7 @@
+usesrun: true
+system: 'complex.pdb'
+chain: 'Z'
+resname: 'UNK'
+allosteric: true
+test: true
+seed: 12345
