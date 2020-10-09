@@ -26,7 +26,7 @@ Considerations when using Pele Platform
 Related Topics
 #################
 
-* `Installation <installation/index.rst>`
+* `Installation <installation/index.rst>`_
 * Prepare your own simulation
 * Common errors
 * Versions
