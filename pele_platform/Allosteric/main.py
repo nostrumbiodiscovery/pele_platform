@@ -44,8 +44,7 @@ class AllostericLauncher:
                 working_folder)
         else:
             self.working_folder = os.path.abspath(self.args.folder)
-        self.args.folder = os.path.join(working_folder, "1_global_exploration")
-
+        self.args.folder = os.path.join(self.working_folder, "1_global_exploration")
         self.args.full = True  # needed for global exploration
 
     def _launch_global(self):
@@ -59,30 +58,29 @@ class AllostericLauncher:
         simulation_path = os.path.join(self.global_simulation.pele_dir, self.global_simulation.output)
         n_best_poses = int(self.global_simulation.iterations * self.global_simulation.pele_steps * (
                 self.global_simulation.cpus - 1) * 0.75)
-
+        
         if not self.args.debug:
             with cd(simulation_path):
                 files_out, _, _, _, output_energy = bs.main(str(self.args.be_column), n_structs=n_best_poses, path=".",
                                                             topology=self.global_simulation.topology,
                                                             logger=self.global_simulation.logger)
 
-        snapshot = 0
-        files_out = [os.path.join(self.global_simulation.pele_dir, "results", f) for f in files_out]
-        input_pool = [[f, snapshot, self.global_simulation.residue, self.global_simulation.topology] for f in files_out]
-        all_coords = parallelize(_extract_coords, input_pool, self.global_simulation.cpus)
-        coords = [list(c[0:3]) for c in all_coords]
+                snapshot = 0
+                files_out = [os.path.join(self.global_simulation.pele_dir, "results", f) for f in files_out]
+                input_pool = [[f, snapshot, self.global_simulation.residue, self.global_simulation.topology] for f in files_out]
+                all_coords = parallelize(_extract_coords, input_pool, self.global_simulation.cpus)
+                coords = [list(c[0:3]) for c in all_coords]
+                dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)),
+                                         columns=["File", "Binding energy", "1st atom coordinates"])
+                self.dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
 
-        dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)),
-                                 columns=["File", "Binding energy", "1st atom coordinates"])
-        self.dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
-
-        inputs = self._check_ligand_distances()
-        directory = os.path.join(self.working_folder, "refinement_input")
+                inputs = self._check_ligand_distances()
+                directory = os.path.join(self.working_folder, "refinement_input")
      
-        if not os.path.isdir(directory):
-            os.makedirs(directory, exist_ok=True)
-        for i in inputs:
-            os.system("cp {} {}/.".format(i, directory))
+                if not os.path.isdir(directory):
+                    os.makedirs(directory, exist_ok=True)
+                for i in inputs:
+                    os.system("cp {} {}/.".format(i, directory))
     
     def _check_ligand_distances(self):
 
@@ -93,16 +91,13 @@ class AllostericLauncher:
 
         while len(inputs) < n_inputs:
             for f, c in zip(self.dataframe['File'], self.dataframe['1st atom coordinates']):
-                print("File:", f, "Coords:", c)
                 if not input_coords:
                     inputs.append(f)
                     input_coords.append(c)
                 else:
                     for ic in input_coords:
                         distances.append(abs(np.linalg.norm(np.array(c) - np.array(ic))))
-                    print("distances", distances)
                     distances_bool = [d > 6 for d in distances]  # leave the radius up to the user in the future...? 6 is the default box_radius for induced fit
-                    print("distances bool", distances_bool)
                     if all(distances_bool):
                         inputs.append(f)
                         input_coords.append(c)
@@ -110,7 +105,6 @@ class AllostericLauncher:
         return inputs
 
     def _set_params_refinement(self):
-
         self.args.system = os.path.join(self.working_folder, "refinement_input/*.pdb")
         self.args.folder = os.path.join(self.working_folder, "2_refinement_simulation")
         self.args.full = None
@@ -121,13 +115,13 @@ class AllostericLauncher:
 
         if not self.args.test:
             self.args.iterations = 20
-            self.args.pele_steps = 10
         self.args.box_center = self.global_simulation.box_center
         self.args.box_radius = self.global_simulation.box_radius
 
     def _launch_refinement(self):
 
         with cd(self.original_dir):
+        #with cd(self.working_folder):
             if not self.args.debug:
                 sim_params = si.run_adaptive(self.args)
             else:
