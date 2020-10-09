@@ -12,7 +12,7 @@ We assume you have already installed the software and have access to Schrödinge
 
 All tutorial files are available in ``pele_platform/Examples/tutorials``.
 
-For further information about the outputs obtained, refear `here`__.
+For further information about the outputs obtained, refear `here <outputs.rst>`_
 
 .. toctree::
    ppi.rst
@@ -26,4 +26,6 @@ For further information about the outputs obtained, refear `here`__.
    gpcr.rst
    :hidden:
 
-.. _here: <outputs.rst>
+.. here: 
+   <outputs.rst>
+   :hidden:
