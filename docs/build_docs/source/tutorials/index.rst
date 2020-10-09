@@ -23,3 +23,7 @@ All tutorial files are available in ``pele_platform/Examples/tutorials``.
 .. toctree::
    gpcr.rst
    :hidden:
+
+.. toctree::
+   /outputs/outputs.rst
+   :hidden:
