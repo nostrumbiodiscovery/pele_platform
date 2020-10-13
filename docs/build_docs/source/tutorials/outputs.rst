@@ -21,7 +21,7 @@ Considerations when using Pele Platform
 	* adaptive.conf: See `Control file outline <https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline>`_
 	* input.yaml: PELE input file
 	* pele.conf: Control file. See `General structure of a control file <https://eapm-bsc.github.io/PELE-repo/GeneralStructure/GeneralStructure.html>`_
-#. It is recommended to first run the program with the test flag. Thus, the simulation will run using 5 CPU's.
+#. It is recommended to first run the program with the test flag. Thus, the simulation will run using 5 CPUs.
 
 Related Topics
 #################
