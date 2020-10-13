@@ -5,7 +5,7 @@ import os
 from rdkit import Chem
 import time
 from multiprocessing import Pool
-
+import pele_platform.constants.constants as cs
 
 def retrieve_files(path):
     sdf_path = os.path.join(path, "*.sdf")
@@ -34,7 +34,19 @@ def is_aromatic(props):
     return True if props.AROM > 0 else False
 
 def is_toxic(mol):
-    pass
+    
+    is_toxic = []
+
+    for frag in cs.toxic_frags:
+        pattern = Chem.MolFromSmarts(frag)
+        if mol.HasSubstructMatch(pattern):
+            is_toxic.append(mol)
+            print("{} has a toxic fragment".format(mol.GetProp("_Name")))
+
+    if is_toxic:
+        return True
+    else:
+        return False
 
 def filter_fragments(f):
     
