@@ -10,7 +10,6 @@ Considerations when using Pele Platform
 
 #. When performing a simulation, a folder will be created. If the simulation is repeated, the folder won't be deleted and a new one will be created.
    The processed input, control files and the simulation folder will be stored there. The default name is: *resname_Pele_X*, where X is a number.
-
 #. The created folder will be organized as:
 	* DataLocal (folder): See `PELE Molecular Parameters <https://eapm-bsc.github.io/PELE-repo/molecularParameters.html>`_ 
 	* Lig.mae: Rotamer library
