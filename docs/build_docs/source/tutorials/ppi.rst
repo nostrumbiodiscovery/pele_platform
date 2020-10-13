@@ -202,4 +202,6 @@ the superposition of 10 lowest energy structures (green) with the native pose (p
   :width: 400
   :align: center
 
-For more informatin about the outputs of this tutorial, please refear here :ref: 'Outputs'
+
+For more information regarding the outputs of the tutorial see `Output files <outputs.html>`_
+
