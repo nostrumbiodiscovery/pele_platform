@@ -18,9 +18,9 @@ Considerations when using Pele Platform
 	* ligand.pdb: PDB of the ligand
 	* receptor.pdb: PDB of the receptor
 	* LIG.log: Log file 
-	* adaptive.conf: Control file outline
+	* `adaptive.conf <https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline>`_: Control file outline
 	* input.yaml: PELE input file
-	* pele.conf: Control file
+	* `pele.conf <https://eapm-bsc.github.io/PELE-repo/GeneralStructure/GeneralStructure.html>`_: Control file
 #. It is recommended to first run the program with the test flag. Thus, the simulation will run using 5 CPU's.
 
 Related Topics
