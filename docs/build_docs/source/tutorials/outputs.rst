@@ -5,8 +5,8 @@ Output files
 
 
 
-Considerations when using Pele Platform
-###########################################
+Information about the output of your simulation
+###################################################
 
 #. When performing a simulation, a folder will be created. If the simulation is repeated, the folder won't be deleted and a new one will be created.
    The processed input, control files and the simulation folder will be stored there. The default name is: *resname_Pele_X*, where X is a number.
