@@ -12,7 +12,7 @@ Considerations when using Pele Platform
    The processed input, control files and the simulation folder will be stored there. The default name is: *resname_Pele_X*, where X is a number.
 
 #. The created folder will be organized as:
-	* DataLocal (folder): See PELE Molecular Parameters
+	* DataLocal (folder): See `PELE Molecular Parameters <https://eapm-bsc.github.io/PELE-repo/molecularParameters.html>`_ 
 	* Lig.mae: Rotamer library
 	* docking.pdb: PDB of the docked molecules
 	* ligand.pdb: PDB of the ligand
