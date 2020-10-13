@@ -210,5 +210,13 @@ def test_atom_string_underscore(yaml=yaml):
         job = main.run_platform(yaml)
     except ce.WrongAtomStringFormat as e:
         assert str(e).strip("'") == "The specified atom is wrong 'A_106:OH'. Should be 'chain:resnumber:atomname"
+
+yaml = os.path.join(test_path, "checker/input_unk.yaml")
+def test_unk_error():
+    
+    try:
+        job = main.run_platform(yaml)
+    except ce.LigandNameNotSupported as e:
+        assert str(e) == "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
         return
     assert False
