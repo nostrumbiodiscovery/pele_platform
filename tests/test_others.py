@@ -204,6 +204,13 @@ def test_atom_string_error(yaml=yaml):
         return
     assert False
 
+yaml = os.path.join(test_path,"checker/input_underscore.yaml")
+def test_atom_string_underscore(yaml=yaml):
+    try:
+        job = main.run_platform(yaml)
+    except ce.WrongAtomStringFormat as e:
+        assert str(e).strip("'") == "The specified atom is wrong 'A_106:OH'. Should be 'chain:resnumber:atomname"
+
 yaml = os.path.join(test_path, "checker/input_unk.yaml")
 def test_unk_error():
     
