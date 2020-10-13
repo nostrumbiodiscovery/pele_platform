@@ -28,14 +28,20 @@ Related Topics
 
 * `Installation <../installation/index.rst>`_
 * `Prepare your own simulation <../packages/index.rst>`
-* Common errors
-* Versions
+* `Common errors <../errors/index.rst>`
+* `Versions <../changelog/index.rst>`
 
 .. toctree::
    installation/index.rst
    :hidden::
 .. toctree::
    packages/index.rst
+   :hidden::
+.. toctree::
+   errors/index.rst
+   :hidden::
+.. toctree::
+   changelog/index.rst
    :hidden::
 
 
