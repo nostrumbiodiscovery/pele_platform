@@ -17,10 +17,10 @@ Considerations when using Pele Platform
 	* docking.pdb: PDB of the docked molecules
 	* ligand.pdb: PDB of the ligand
 	* receptor.pdb: PDB of the receptor
-	* LIG.log: 
+	* LIG.log: log file 
 	* adaptive.conf: Control file outline
-	* input.yaml
-	* pele.conf
+	* input.yaml: PELE input file
+	* pele.conf: Control file
 #. It is recommended to first run the program with the test flag. Thus, the simulation will run using 5 CPU's.
 
 Related Topics
