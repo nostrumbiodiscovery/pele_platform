@@ -25,22 +25,9 @@ Considerations when using Pele Platform
 Related Topics
 #################
 
-* `Installation <../installation/index.rst>`_
-* `Prepare your own simulation <../packages/index.rst>`_
-* `Common errors <../errors/index.rst>`_
-* `Versions <../changelog/index.rst>`_
-
-.. toctree::
-   installation/index.rst
-   :hidden::
-.. toctree::
-   packages/index.rst
-   :hidden::
-.. toctree::
-   errors/index.rst
-   :hidden::
-.. toctree::
-   changelog/index.rst
-   :hidden::
+* `Installation <../installation/index.html>`_
+* `Prepare your own simulation <../packages/index.html>`_
+* `Common errors <../errors/index.html>`_
+* `Versions <../changelog/index.html>`_
 
 
