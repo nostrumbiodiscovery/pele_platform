@@ -35,13 +35,13 @@ Related Topics
    installation/index.rst
    :hidden::
 .. toctree::
-   packages/index.rst
+   ../packages/index.rst
    :hidden::
 .. toctree::
-   errors/index.rst
+   ../errors/index.rst
    :hidden::
 .. toctree::
-   changelog/index.rst
+   ../changelog/index.rst
    :hidden::
 
 
