@@ -202,7 +202,7 @@ the superposition of 10 lowest energy structures (green) with the native pose (p
   :width: 400
   :align: center
 
-For more information regarding the outputs of the tutorial see 'Output files <outputs.rst>`_
+For more information regarding the outputs of the tutorial see `Output files <outputs.rst>`_
 
 .. toctree::
    outputs.rst
