@@ -17,7 +17,7 @@ Considerations when using Pele Platform
 	* docking.pdb: PDB of the docked molecules
 	* ligand.pdb: PDB of the ligand
 	* receptor.pdb: PDB of the receptor
-	* LIG.log: log file 
+	* LIG.log: Log file 
 	* adaptive.conf: Control file outline
 	* input.yaml: PELE input file
 	* pele.conf: Control file
