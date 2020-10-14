@@ -37,11 +37,17 @@ def is_toxic(mol):
     
     is_toxic = []
 
-    for frag in cs.toxic_frags:
+    for index, frag in enumerate(cs.toxic_frags):
         pattern = Chem.MolFromSmarts(frag)
-        if mol.HasSubstructMatch(pattern):
-            is_toxic.append(mol)
-            print("{} has a toxic fragment".format(mol.GetProp("_Name")))
+
+        if frag == "[#16](=[#8])(-[#6])-[#6]": # make sure thioketone is filtered out but not C-SO2-C
+            if mol.HasSubstructMatch(pattern) and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]-[#16](-[#6])(=[#8])=[#8]")):
+                is_toxic.append(mol)
+                print("{} has a toxic fragment".format(mol.GetProp("_Name")), "Fragment match:", index, frag)
+        else:
+            if mol.HasSubstructMatch(pattern):
+                is_toxic.append(mol)
+                print("{} has a toxic fragment".format(mol.GetProp("_Name")), "Fragment match:", index, frag)
 
     if is_toxic:
         return True
@@ -63,7 +69,8 @@ def filter_fragments(f):
         if mol:
             atoms = mol.GetAtoms()
             qed = QED.properties(mol)
-            if is_donor(qed) and is_acceptor(qed) and is_psa(qed, 0, 10000) and is_logp(qed, -100, 100) and is_mw(qed, 200) and is_rotb(qed, 200) and is_aromatic(qed):
+            if is_mw(qed, 10000):
+            #if is_donor(qed) and is_acceptor(qed) and is_psa(qed, 0, 10000) and is_logp(qed, -100, 100) and is_mw(qed, 200) and is_rotb(qed, 200) and is_aromatic(qed):
                 if not is_toxic(mol):
                     writer.write(mol)
 
