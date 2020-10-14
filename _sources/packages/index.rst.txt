@@ -16,6 +16,7 @@ The next packages are included in the PELE Platform:
     - `GPCR orthosteric site simulation <gpcr/index.html>`_ (6h)
     - `Biased Simulation <bias/index.html>`_ (3h)
     - `Conformational change simulation  <pca/index.html>`_ (5h)
+    - `Minimization package <minimization/index.html>`_ (30min)
 
 
 .. toctree::
