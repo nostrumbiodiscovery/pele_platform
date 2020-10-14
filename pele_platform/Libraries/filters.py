@@ -58,18 +58,24 @@ def filter_fragments(f):
     
     restart_folder = "output"
     restart_output = os.path.join(restart_folder, os.path.basename(f))
-    
+    print("Running", f)
+    if os.path.exists(restart_output):
+        return # catch already scanned files
     if not os.path.exists(restart_folder):
         os.mkdir(restart_folder)
     
     writer = Chem.SDWriter(restart_output)
-    mols = Chem.SDMolSupplier(f, removeHs=False)
     
+    try:
+        mols = Chem.SDMolSupplier(f, removeHs=False)
+    except OSError:
+        return # catch empty files
+
     for mol in mols:
         if mol:
             atoms = mol.GetAtoms()
             qed = QED.properties(mol)
-            if is_mw(qed, 10000):
+            if is_mw(qed, 150) and is_donor(qed):
             #if is_donor(qed) and is_acceptor(qed) and is_psa(qed, 0, 10000) and is_logp(qed, -100, 100) and is_mw(qed, 200) and is_rotb(qed, 200) and is_aromatic(qed):
                 if not is_toxic(mol):
                     writer.write(mol)
