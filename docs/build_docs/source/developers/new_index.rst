@@ -2,7 +2,7 @@
 Developers
 ================
 
-This section contains information for developers on how to generate your on mode and developing the documentation of the platform. 
+This section contains information for developers on how to generate your own mode and developing the documentation of the platform. 
 
 - `Developers: Add your own mode <index.html>`_
 - `Documentation Protocol <protocol.html>`_
