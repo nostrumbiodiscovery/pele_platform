@@ -55,7 +55,7 @@ Requirements
    :hidden:
 
 .. toctree::
-   developers/index.rst
+   developers/new_index.rst
    :hidden:
 
 .. toctree::
