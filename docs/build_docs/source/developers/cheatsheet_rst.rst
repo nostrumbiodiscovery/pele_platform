@@ -6,7 +6,7 @@ The reStructuredText Cheat Sheet: Basic Syntax
 Headings
 **********
 When writing a title, make sure to write as many symbols (=,-,~,*,^) as there are characters in the title.
-Titles are underlines (but also can be overlined) with one of the previous symbols. Any non-alphanumeric character can be used but the usual convention is:
+Titles are underlined (but also can be overlined) with one of the previous symbols. Any non-alphanumeric character can be used but the usual convention is:
 
 * ``#`` with overline, for parts.
 * ``*`` with overline, for chapters.
