@@ -31,7 +31,7 @@ Additionally, you can create your own interactive plots. Go to the ``output`` fo
 
 .. code-block:: console
 
- python -m pele_platform.Analysis.interactive_plot 5 6
+ python -m pele_platform.Analysis.interactive_plot 6 5
 
 The script requires two integer arguments indicating the numbers of report columns you would like to plot, in this
 case we used columns 5 and 6 corresponding to the binding energy and SASA of the ligand. You can click on data points to get the file names of the structures.
