@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Optative flags &mdash; pele platform 1.5.1 documentation</title>
+  <title>Analysis &mdash; pele platform 1.5.1 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="All PELE packages" href="all_packages/index.html" />
-    <link rel="prev" title="Simulate big conformational moves of your receptor with PCA-PELE" href="../packages/pca/index.html" /> 
+    <link rel="next" title="Developers: Add your own mode" href="../developers/index.html" />
+    <link rel="prev" title="GPCR tutorial" href="../tutorials/gpcr.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,21 +92,18 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Optative flags</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="all_packages/index.html">All PELE packages</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ppi/index.html">PPI parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pocket_exploration/index.html">Allosteric parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frag/index.html">FragPELE parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="water/index.html">Water perturbation</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 </ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#output-folders">Output folders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-plots">Interactive plots</a></li>
+</ul>
+</li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers: Add your own mode</a></li>
@@ -162,13 +159,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Optative flags</li>
+      <li>Analysis</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/documentation/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/analysis/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -181,27 +178,38 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="optative-flags">
-<h1>Optative flags<a class="headerlink" href="#optative-flags" title="Permalink to this headline">¶</a></h1>
-<p>Optional flags for each package:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference external" href="all_packages/index.html">All packages</a></p></li>
-<li><p><a class="reference external" href="ppi/index.html">Protein-Protein Inhibitors</a></p></li>
-<li><p><a class="reference external" href="pocket_exploration/index.html">Pocket Exploration (Allosteric)</a></p></li>
-<li><p><a class="reference external" href="frag/index.html">HT-Fragment Growing</a></p></li>
-<li><p><a class="reference external" href="water/index.html">AquaPELE (water perturbation)</a></p></li>
+  <div class="section" id="analysis">
+<h1>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="output-folders">
+<h2>Output folders<a class="headerlink" href="#output-folders" title="Permalink to this headline">¶</a></h2>
+<p>Each simulation will create a number of output folders, as indicated on the tree below.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">.</span>
+<span class="go">└── LIG_Pele</span>
+<span class="go">    ├── output</span>
+<span class="go">    └── results</span>
+<span class="go">        ├── BestStructs</span>
+<span class="go">        ├── Plots</span>
+<span class="go">        └── clusters</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">output</span></code> folder contains raw output files such as detailed metrics reports and trajectory snapshots for every step, whereas the
+<code class="docutils literal notranslate"><span class="pre">results</span></code> directory holds a more user-friendly, curated output comprising of three separate folders:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BestStructs</span></code> - top 100 lowest binding energy structures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Plots</span></code> - plots of multiple metrics selected by the user</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clusters</span></code> - lowest binding energy cluster representatives.</p></li>
 </ul>
-</div></blockquote>
-<div class="toctree-wrapper compound">
 </div>
-<div class="toctree-wrapper compound">
+<div class="section" id="interactive-plots">
+<h2>Interactive plots<a class="headerlink" href="#interactive-plots" title="Permalink to this headline">¶</a></h2>
+<p>Additionally, you can create your own interactive plots. Go to the <code class="docutils literal notranslate"><span class="pre">output</span></code> folder and run the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.Analysis.interactive_plot 5 6</span>
+</pre></div>
 </div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
+<p>The script requires two integer arguments indicating the numbers of report columns you would like to plot, in this
+case we used columns 5 and 6 corresponding to the binding energy and SASA of the ligand. You can click on data points to get the file names of the structures.</p>
+<a class="reference internal image-reference" href="../_images/interactive_plot.png"><img alt="../_images/interactive_plot.png" class="align-center" src="../_images/interactive_plot.png" style="width: 400px;" /></a>
+<p>For more advanced interactive plots, please refer to <a class="reference external" href="https://eapm-bsc.github.io/PELE-repo/intro/GeneralAnalysis/GeneralAnalysis.html">PELE++ documentation</a>.</p>
 </div>
 </div>
 
@@ -213,10 +221,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="all_packages/index.html" class="btn btn-neutral float-right" title="All PELE packages" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers: Add your own mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../packages/pca/index.html" class="btn btn-neutral float-left" title="Simulate big conformational moves of your receptor with PCA-PELE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../tutorials/gpcr.html" class="btn btn-neutral float-left" title="GPCR tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
