@@ -43,16 +43,11 @@ def is_toxic(mol):
         if frag == "[#16](=[#8])(-[#6])-[#6]": # make sure thioketone is filtered out but not C-SO2-C
             if mol.HasSubstructMatch(pattern) and not mol.HasSubstructMatch(Chem.MolFromSmarts("[#6]-[#16](-[#6])(=[#8])=[#8]")):
                 is_toxic.append(mol)
-                print("{} has a toxic fragment".format(mol.GetProp("_Name")), "Fragment match:", index, frag)
         else:
             if mol.HasSubstructMatch(pattern):
                 is_toxic.append(mol)
-                print("{} has a toxic fragment".format(mol.GetProp("_Name")), "Fragment match:", index, frag)
 
-    if is_toxic:
-        return True
-    else:
-        return False
+    return True if is_toxic else False
 
 def filter_fragments(f):
     
@@ -84,13 +79,11 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dir", type=str, required=True, help="Directory with fragment SD files")
     parser.add_argument("--cpus", type=int, help="CPUS to use", default=1)
-    parser.add_argument("--save", type=str, required=False, help="SD file name, if you want to save the filtered output.")
-
     args = parser.parse_args()
-    return os.path.abspath(args.dir), args.cpus, args.save
+    return os.path.abspath(args.dir), args.cpus
 
 def main():
-    sdf_dir, cpus, save = parse_args()
+    sdf_dir, cpus = parse_args()
     sdf_list = retrieve_files(sdf_dir)
     with Pool(cpus) as p:
         p.map(filter_fragments, sdf_list)
