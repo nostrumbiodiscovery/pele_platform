@@ -53,20 +53,16 @@ def parse_args():
     parser.add_argument("crit1", type=int, help="First Criteria we want to rank and output the strutures for. Must be a column of the report. i.e: Binding Energy", default=5)
     parser.add_argument("crit2", type=int, help="Second Criteria we want to rank and output the strutures for. Must be a column of the report. i.e: Binding Energy", default=6)
     parser.add_argument("--topology", type=str, help="PDB file with topology located in output/topologies folder", default=None, required=False)
-   # parser.add_argument("ad_steps", type=int, help="Adaptive Steps i.e: self.ad_steps", default=8)
-   # parser.add_argument("--path", type=str, help="Path to Pele's results root folder i.e: path=/Pele/results/", default=DIR)
-   # parser.add_argument("--ofreq", "-f", type=int, help="Every how many steps the trajectory were outputted on PELE i.e: self.ad_steps", default=FREQ)
-   # parser.add_argument("--out", "-o", type=str, help="Output Path. i.e: BindingEnergies_apo", default=OUTPUT_FOLDER)
-   # parser.add_argument("--numfolders", "-nm", action="store_true", help="Not to parse non numerical folders")
-   # parser.add_argument("--top", "-t", type=str, help="Topology file for xtc", default=None)
-   # parser.add_argument("--first", action="store_true", help="Skip first line")
-   # parser.add_argument("--zcol", type=int, help="Thirs Criteria we want to rank and output the strutures for. Must be a column of the report. i.e: SASA", default=2)
-   # parser.add_argument("--resname", type=str, help="Resname of the ligand. Resquested for clusterization", default="LIG")
-   # parser.add_argument("--xlim", nargs='+', type=float, help="Xrange. i.e --xlim 0 3", default=None)
-   # parser.add_argument("--ylim", nargs='+', type=float, help="Yrange. i.e --ylim 0 3", default=None)
+    parser.add_argument("--path", type=str, help="Path to Pele's results root folder i.e: path=/Pele/results/", default=DIR)
+    parser.add_argument("--ofreq", "-f", type=int, help="Every how many steps the trajectory were outputted on PELE i.e: self.ad_steps", default=FREQ)
+    parser.add_argument("--out", "-o", type=str, help="Output Path. i.e: BindingEnergies_apo", default=OUTPUT_FOLDER)
+    parser.add_argument("--numfolders", "-nm", action="store_true", help="Not to parse non numerical folders")
+    parser.add_argument("--first", action="store_true", help="Skip first line")
+    parser.add_argument("--resname", type=str, help="Resname of the ligand. Resquested for clusterization", default="LIG")
+    parser.add_argument("--xlim", nargs='+', type=float, help="Xrange. i.e --xlim 0 3", default=None)
+    parser.add_argument("--ylim", nargs='+', type=float, help="Yrange. i.e --ylim 0 3", default=None)
     args = parser.parse_args()
-    return args.crit1, args.crit2, args.topology
-   # return args.crit1, args.crit2, args.zcol, args.ad_steps, os.path.abspath(args.path), args.ofreq, args.out, args.numfolders, args.top, args.first, args.resname, args.xlim, args.ylim
+    return args.crit1, args.crit2, args.topology, os.path.abspath(args.path), args.ofreq, args.out, args.numfolders, args.first, args.resname, args.xlim, args.ylim
 
 
 def is_adaptive():
@@ -92,7 +88,7 @@ class DataHandler(object):
     self.axis = axis
     self.resname = resname
     self.descompose_values()
-    self.topology = topology if topology else None
+    self.topology = topology
 
   def descompose_values(self):
     self.paths = self.metrics[DIR].tolist()
@@ -253,6 +249,8 @@ class DataHandler(object):
         for epoch, step, report, value1, value2 in zip(epochs, step_indexes, file_ids, values1, values2)]
     for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
         f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.xtc".format(f_id)))
+        if len(f_in) == 0:
+            sys.exit("Do not pass a topology file, if not using XTC trajectories.")
         found = st.main(output, f_in, topology, [step % self.ad_steps/out_freq+1], template=f_out)
         if found:
             print("MODEL {} has been selected".format(f_out))
@@ -287,7 +285,7 @@ def toggle_selector(event):
         toggle_selector.RS.set_active(False)
 
 
-def main(criteria1, criteria2, criteria3=None, ad_steps=AD_STEPS, path=DIR, out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, topology=None, skip_first=False,
+def main(criteria1, criteria2, topology=None,  path=DIR, out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, skip_first=False,
     resname="LIG", xlim=None, ylim=None):
     """
 
@@ -328,6 +326,7 @@ def main(criteria1, criteria2, criteria3=None, ad_steps=AD_STEPS, path=DIR, out_
     fig, current_ax = plt.subplots()
 
     # Plot data
+    ad_steps=AD_STEPS
     data = DataHandler(min_values, crit1_name, crit2_name, criteria1, criteria2, steps, adaptive, ad_steps, current_ax, resname, topology)
 
     # Plot axis
@@ -495,7 +494,6 @@ def clusterize(paths, snapshots, all_coordinates, values1, values2, topology=Non
     print(t1-t0)
         
 
-
 if __name__ == "__main__":
-    criteria1, criteria2, topology = parse_args()
-    main(criteria1, criteria2, topology)
+    criteria1, criteria2, topology, path, out_freq, output, numfolders, skip_first, resname, xlim, ylim = parse_args()
+    main(criteria1, criteria2, topology, path, out_freq, output, numfolders, skip_first, resname, xlim, ylim)
