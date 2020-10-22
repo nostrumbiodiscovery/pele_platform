@@ -32,7 +32,7 @@ def _extract_coords(info):
             coords.extend(traj.xyz[0][atom_num].tolist())
         except IndexError:
             continue
-    return np.array(coords).ravel()
+    return np.array(coords).ravel() * 10
 
 
 class PostProcessor:
