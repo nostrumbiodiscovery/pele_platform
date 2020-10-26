@@ -181,6 +181,7 @@ class YamlParser(object):
         self.selection_to_perturb = data.get(valid_flags["selection_to_perturb"], None)
         self.mae = data.get(valid_flags["mae"], None)
         self.constrain_smiles = data.get(valid_flags["constrain_smiles"], None)
+        self.constrain_smiles_spring = data.get(valid_flags["constrain_smiles_spring"], 50.0)
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.spawning_condition = data.get(valid_flags["spawning_condition"], None)
         self.external_constraints = data.get(valid_flags["external_constraints"], [])
