@@ -32,14 +32,20 @@ class SmilesConstraints:
             self.ligand = Chem.rdmolops.SplitMolByPDBResidues(complex)[self.resname]
         else:
             self._backup_ligand_extraction()
-    
+
     def _substructure_search(self):
         self.substructures = self.ligand.GetSubstructMatches(self.pattern)
         if not self.substructures:
-            # try to convert molecule to SMARTS, manually remove aromatic bonds and load again as substructure pattern
-            self.pattern = Chem.MolToSmarts(self.pattern).replace(":", "-")
-            self.pattern = Chem.MolFromSmarts(self.pattern)
-            self.substructures = self.ligand.GetSubstructMatches(self.pattern)
+            self.substructures = self._change_smarts(":", "-")  # removing aromatic bonds
+            if not self.substructures:
+                self.substructures = self._change_smarts("=", "-")  # removing double bonds
+            if not self.substructures:
+                self.substructures = self._change_smarts("@", "")  # removing stereochemistry
+
+    def _change_smarts(self, old, new):
+        self.pattern = Chem.MolToSmarts(self.pattern).replace(old, new)
+        self.pattern = Chem.MolFromSmarts(self.pattern)
+        return self.ligand.GetSubstructMatches(self.pattern)
 
     def _build_constraints(self):
         self.constraints = []
