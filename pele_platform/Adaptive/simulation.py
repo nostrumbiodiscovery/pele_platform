@@ -13,6 +13,7 @@ import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
+import pele_platform.Utilities.Helpers.smiles_constraints as smi
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
@@ -72,7 +73,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                 else:
                     input_proc = os.path.basename(ppp.main(input_path, env.pele_dir, output_pdb=["" , ],
                                 charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter,
-                                constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)[0])
+                                constrain_smiles=None, ligand_pdb=env.ligand_ref)[0])
                 env.inputs_simulation.append(input_proc)
                 hp.silentremove([input_path])
             env.adap_ex_input = ", ".join(['"' + input + '"' for input in env.inputs_simulation]).strip('"')
@@ -89,7 +90,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             else:
                 receptor = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ],
                             charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter,
-                            constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)[0]
+                            constrain_smiles=None, ligand_pdb=env.ligand_ref)[0]
             inputs = rd.join(receptor, ligand_positions, env.residue, output_folder=env.pele_dir)
             env.adap_ex_input = ", ".join(['"' + os.path.basename(input) + '"' for input in inputs]).strip('"')
             hp.silentremove(ligand_positions)
@@ -109,7 +110,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                 shutil.copy(env.system, env.pele_dir)
         else:
             env.nonstandard.extend(hp.find_nonstd_residue(syst.system))
-            env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=env.constrain_smiles, ligand_pdb=env.ligand_ref)
+            env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=None, ligand_pdb=env.ligand_ref)
 
         # Metal constraints
         if not args.no_metal_constraints:
@@ -153,6 +154,13 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         if env.pca_traj:
             pca_obj = pca.PCA(env.pca_traj, env.pele_dir)
             env.pca = pca_obj.generate(env.logger)
+        
+        # Core constraints based on SMILES string
+        if env.constrain_smiles:
+            smiles_input_pdb = os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0])
+            smiles = smi.SmilesConstraints(smiles_input_pdb, env.constrain_smiles, env.residue, env.chain, env.constrain_smiles_spring)
+            smi_constraint = smiles.run()
+            env.constraints = env.constraints[0:1] + smi_constraint + env.constraints[1:]
         
         ####### Add waters, if needed
         input_waters = [input.strip().strip('"') for input in env.adap_ex_input.split(",")]
