@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tutorials &mdash; pele platform 1.5.1 documentation</title>
+  <title>Output files &mdash; pele platform 1.5.1 documentation</title>
   
 
   
@@ -35,9 +35,7 @@
 
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Protein-protein interaction tutorial" href="ppi.html" />
-    <link rel="prev" title="Water perturbation" href="../documentation/water/index.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,13 +93,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gpcr.html">GPCR tutorial</a></li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
@@ -160,13 +153,13 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Tutorials</li>
+      <li>Output files</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/tutorials/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tutorials/outputs.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -179,25 +172,39 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="tutorials">
-<h1>Tutorials<a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h1>
-<p>This section contains step-by-step tutorials to familiarise users with all aspects of running PELE software,
-from protein preparation to understanding output files.</p>
-<p>We assume you have already installed the software and have access to Schrödinger Maestro.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference external" href="ppi.html">Disturbing protein-protein interaction between a bromodomain and a histone</a></p></li>
-<li><p><a class="reference external" href="induced_fit.html">Glide docking pose refinement in hemagglutinin binding site</a></p></li>
-<li><p><a class="reference external" href="gpcr.html">GPCR simulation of BU72 agonist of the μ-opioid receptor</a></p></li>
+  <div class="section" id="output-files">
+<h1>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="information-about-the-output-of-your-simulation">
+<h2>Information about the output of your simulation<a class="headerlink" href="#information-about-the-output-of-your-simulation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><p>When performing a simulation, a folder will be created. If the simulation is repeated, the folder won’t be deleted and a new one will be created.
+The processed input, control files and the simulation folder will be stored there. The default name is: <em>resname_Pele_X</em>, where X is a number.</p></li>
+<li><dl class="simple">
+<dt>The created folder will be organized as:</dt><dd><ul class="simple">
+<li><p>DataLocal (folder): See <a class="reference external" href="https://eapm-bsc.github.io/PELE-repo/molecularParameters.html">PELE Molecular Parameters</a></p></li>
+<li><p>Lig.mae: Rotamer library</p></li>
+<li><p>docking.pdb: PDB of the docked molecules</p></li>
+<li><p>ligand.pdb: PDB of the ligand</p></li>
+<li><p>receptor.pdb: PDB of the receptor</p></li>
+<li><p>LIG.log: Log file</p></li>
+<li><p>adaptive.conf: See <a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline">Control file outline</a></p></li>
+<li><p>input.yaml: PELE input file</p></li>
+<li><p>pele.conf: Control file. See <a class="reference external" href="https://eapm-bsc.github.io/PELE-repo/GeneralStructure/GeneralStructure.html">General structure of a control file</a></p></li>
 </ul>
-</div></blockquote>
-<p>All tutorial files are available in <code class="docutils literal notranslate"><span class="pre">pele_platform/Examples/tutorials</span></code>.</p>
-<p>For further information about the outputs obtained, refear <a class="reference external" href="outputs.rst">here</a></p>
-<div class="toctree-wrapper compound">
+</dd>
+</dl>
+</li>
+<li><p>It is recommended to first run the program with the test flag. Thus, the simulation will run using 5 CPUs.</p></li>
+</ol>
 </div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
+<div class="section" id="related-topics">
+<h2>Related Topics<a class="headerlink" href="#related-topics" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="../installation/index.html">Installation</a></p></li>
+<li><p><a class="reference external" href="../packages/index.html">Prepare your own simulation</a></p></li>
+<li><p><a class="reference external" href="../errors/index.html">Common errors</a></p></li>
+<li><p><a class="reference external" href="../changelog/index.html">Versions</a></p></li>
+</ul>
 </div>
 </div>
 
@@ -206,15 +213,6 @@ from protein preparation to understanding output files.</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="ppi.html" class="btn btn-neutral float-right" title="Protein-protein interaction tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../documentation/water/index.html" class="btn btn-neutral float-left" title="Water perturbation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
