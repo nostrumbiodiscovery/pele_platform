@@ -19,6 +19,7 @@ PELE packages:
     - `Binding Events <packages/binding/index.html>`_ (6h)
     - `Biased Simulation <packages/bias/index.html>`_ (10h)
     - `Conformational change simulation <packages/pca/index.html>`_ (6h)
+    - `Minimization <packages/minimization/index.html>`_ (30min)
 
 
 Github : https://github.com/NostrumBioDiscovery/pele_platform
@@ -55,7 +56,11 @@ Requirements
    :hidden:
 
 .. toctree::
-   developers/new_index.rst
+   analysis/index.rst
+   :hidden:
+
+.. toctree::
+   developers/index.rst
    :hidden:
 
 .. toctree::
