@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Developers: Add your own mode &mdash; pele platform 1.5.1 documentation</title>
+  <title>Developers &mdash; pele platform 1.5.1 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Common errors" href="../errors/index.html" />
+    <link rel="next" title="Developers: Add your own mode" href="own_mode.html" />
     <link rel="prev" title="Analysis" href="../analysis/index.html" /> 
 </head>
 
@@ -102,11 +102,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Developers: Add your own mode</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#generate-your-own-mode">1. Generate your own mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#include-it-in-the-pipeline">2. Include it in the pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#add-an-input-option">3. Add an input option</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-your-mode">4. Run your mode</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="own_mode.html">Developers: Add your own mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocol.html">Documentation Protocol</a></li>
 </ul>
 </li>
 </ul>
@@ -161,7 +159,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Developers: Add your own mode</li>
+      <li>Developers</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -180,48 +178,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="developers-add-your-own-mode">
-<h1>Developers: Add your own mode<a class="headerlink" href="#developers-add-your-own-mode" title="Permalink to this headline">¶</a></h1>
-<p>If your simulation set up requires tweaking a lot of parameters, you can add a new <strong>feature</strong> to the platform.</p>
-<div class="section" id="generate-your-own-mode">
-<h2>1. Generate your own mode<a class="headerlink" href="#generate-your-own-mode" title="Permalink to this headline">¶</a></h2>
-<p>Add a new feature with your own defaults to <code class="docutils literal notranslate"><span class="pre">pele_platform/features/adaptive.py</span></code> (below line 27), e.g.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;induced_fit_exhaustive&quot;</span> <span class="p">:</span> <span class="p">{</span><span class="s2">&quot;spawning_type&quot;</span><span class="p">:</span> <span class="s2">&quot;independent&quot;</span><span class="p">,</span> <span class="s2">&quot;bias_column&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;epsilon&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="s2">&quot;null&quot;</span><span class="p">,</span>
-         <span class="s2">&quot;simulation_type&quot;</span><span class="p">:</span> <span class="s2">&quot;pele&quot;</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;pele_steps&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
-         <span class="s2">&quot;cluster_values&quot;</span><span class="p">:</span> <span class="s2">&quot;[1.75, 2.5, 4, 6]&quot;</span><span class="p">,</span> <span class="s2">&quot;cluster_conditions&quot;</span><span class="p">:</span> <span class="s2">&quot;[1, 0.6, 0.4, 0.0]&quot;</span><span class="p">,</span>
-         <span class="s2">&quot;steric_trials&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;overlap_factor&quot;</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">pcs</span><span class="o">.</span><span class="n">INDUCED_FIT</span><span class="p">,</span>
-         <span class="s2">&quot;box_radius&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="include-it-in-the-pipeline">
-<h2>2. Include it in the pipeline<a class="headerlink" href="#include-it-in-the-pipeline" title="Permalink to this headline">¶</a></h2>
-<p>Set the type of the simulation in <code class="docutils literal notranslate"><span class="pre">pele_platform/features/adaptive.py</span></code> (after line 79), e.g.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">induced_fit_fast</span><span class="p">:</span>
-    <span class="n">type_simulation</span> <span class="o">=</span> <span class="s2">&quot;induced_fit_fast&quot;</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="add-an-input-option">
-<h2>3. Add an input option<a class="headerlink" href="#add-an-input-option" title="Permalink to this headline">¶</a></h2>
-<p>A new input flag will not be recognised by the platform, unless you add it to:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">_parse</span></code> function in <code class="docutils literal notranslate"><span class="pre">pele_platform/Utilities/Helpers/yaml_parser.py</span></code> and set the default to False</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">VALID_FLAGS_PLATFORM</span></code> dictionary in <code class="docutils literal notranslate"><span class="pre">pele_platform/Checker/valid_flags.py</span></code></p></li>
+  <div class="section" id="developers">
+<h1>Developers<a class="headerlink" href="#developers" title="Permalink to this headline">¶</a></h1>
+<p>This section contains information for developers on how to generate your own mode and developing the documentation of the platform.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="own_mode.html">Developers: Add your own mode</a></p></li>
+<li><p><a class="reference external" href="protocol.html">Documentation Protocol</a></p></li>
 </ul>
-</div></blockquote>
-<p>Example in <code class="docutils literal notranslate"><span class="pre">yaml_parser.py</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">induced_fit_fast</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;induced_fit_fast&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-</pre></div>
+<div class="toctree-wrapper compound">
 </div>
-</div>
-<div class="section" id="run-your-mode">
-<h2>4. Run your mode<a class="headerlink" href="#run-your-mode" title="Permalink to this headline">¶</a></h2>
-<p>To run your simulation mode in the input file, include the previously generated YAML flag, for example:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</pre></div>
-</div>
+<div class="toctree-wrapper compound">
 </div>
 </div>
 
@@ -233,7 +199,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../errors/index.html" class="btn btn-neutral float-right" title="Common errors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="own_mode.html" class="btn btn-neutral float-right" title="Developers: Add your own mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../analysis/index.html" class="btn btn-neutral float-left" title="Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
