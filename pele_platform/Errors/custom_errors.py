@@ -49,3 +49,6 @@ class WrongYamlFile(Exception):
 
 class LigandNameNotSupported(Exception):
     pass
+
+class SubstructureError(Exception):
+    pass
