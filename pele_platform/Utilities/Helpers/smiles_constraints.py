@@ -28,7 +28,10 @@ class SmilesConstraints:
 
     def _extract_ligand(self):
         complex = Chem.MolFromPDBFile(self.input_pdb)
-        self.ligand = Chem.rdmolops.SplitMolByPDBResidues(complex)[self.resname]
+        if complex is not None:
+            self.ligand = Chem.rdmolops.SplitMolByPDBResidues(complex)[self.resname]
+        else:
+            self._backup_ligand_extraction()
     
     def _substructure_search(self):
         self.substructures = self.ligand.GetSubstructMatches(self.pattern)
@@ -46,4 +49,16 @@ class SmilesConstraints:
             for m in self.substructures[0]:
                 atom = self.ligand.GetAtomWithIdx(m).GetMonomerInfo()
                 template = '{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
-                self.constraints.append(template.format(self.spring_constant, self.chain, atom.GetResidueNumber(), atom.GetName().strip()))
+                self.constraints.append(template.format(self.spring_constant, self.chain, atom.GetResidueNumber(), atom.GetName().replace(" ", "_")))
+
+    def _backup_ligand_extraction(self):
+        ligand_lines = []
+
+        with open(self.input_pdb, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                if (line.startswith("ATOM") or line.startswith("HETATM")) and line[17:20].strip() == self.resname:
+                    ligand_lines.append(line)
+
+        ligand_block = "".join(ligand_lines)
+        self.ligand = Chem.MolFromPDBBlock(ligand_block)
