@@ -34,16 +34,19 @@ class SmilesConstraints:
             self._backup_ligand_extraction()
 
     def _substructure_search(self):
+        print("Ligand SMARTS", Chem.MolToSmarts(self.ligand))
         self.substructures = self.ligand.GetSubstructMatches(self.pattern)
+        print("Original pattern", Chem.MolToSmarts(self.pattern))
         if not self.substructures:
             self.substructures = self._change_smarts(":", "-")  # removing aromatic bonds
             if not self.substructures:
                 self.substructures = self._change_smarts("=", "-")  # removing double bonds
-            if not self.substructures:
-                self.substructures = self._change_smarts("@", "")  # removing stereochemistry
+                if not self.substructures:
+                    self.substructures = self._change_smarts("@", "")  # removing stereochemistry
 
     def _change_smarts(self, old, new):
         self.pattern = Chem.MolToSmarts(self.pattern).replace(old, new)
+        print("Trying pattern", self.pattern)
         self.pattern = Chem.MolFromSmarts(self.pattern)
         return self.ligand.GetSubstructMatches(self.pattern)
 
