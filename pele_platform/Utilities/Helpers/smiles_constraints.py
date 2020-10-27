@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from rdkit import Chem
+import re
 import pele_platform.Errors.custom_errors as ce
 
 @dataclass
@@ -14,7 +15,7 @@ class SmilesConstraints:
     def run(self):
         self._convert_to_smarts()
         self._extract_ligand()
-        self._substructure_search()
+        self._get_matches()
         if self.substructures:
             self._build_constraints()
             return self.constraints
@@ -23,8 +24,8 @@ class SmilesConstraints:
     
     def _convert_to_smarts(self):
         self.pattern = Chem.MolFromSmiles(self.constrain_smiles)
-        Chem.SanitizeMol(self.pattern)
-        Chem.MolToSmarts(self.pattern)
+        self.smarts = Chem.MolToSmarts(self.pattern)
+        print("self.smarts", self.smarts)
 
     def _extract_ligand(self):
         complex = Chem.MolFromPDBFile(self.input_pdb)
@@ -33,21 +34,37 @@ class SmilesConstraints:
         else:
             self._backup_ligand_extraction()
 
-    def _substructure_search(self):
+    def _get_matches(self):
         print("Ligand SMARTS", Chem.MolToSmarts(self.ligand))
-        self.substructures = self.ligand.GetSubstructMatches(self.pattern)
-        print("Original pattern", Chem.MolToSmarts(self.pattern))
+        self.substructures = self._substructure_search()
         if not self.substructures:
-            self.substructures = self._change_smarts(":", "-")  # removing aromatic bonds
+            self.substructures = self._substructure_search(":", "-")  # removing aromatic bonds
             if not self.substructures:
-                self.substructures = self._change_smarts("=", "-")  # removing double bonds
+                self.substructures = self._substructure_search("=", "-")  # removing double bonds
                 if not self.substructures:
-                    self.substructures = self._change_smarts("@", "")  # removing stereochemistry
+                    self.substructures = self._substructure_search(regex_remove=True)  # remove hydrogens with regex
+                    if not self.substructures:
+                        self.substructures = self._substructure_search(rdkit_remove=True)  # remove hydrogens by iterating through all atoms
 
-    def _change_smarts(self, old, new):
-        self.pattern = Chem.MolToSmarts(self.pattern).replace(old, new)
-        print("Trying pattern", self.pattern)
-        self.pattern = Chem.MolFromSmarts(self.pattern)
+    def _substructure_search(self, old="", new="", regex_remove=False, rdkit_remove=False):
+        
+        if regex_remove:
+            self.smarts = re.sub(r"H\d?","",self.smarts)
+        else:
+            self.smarts = self.smarts.replace(old, new)
+        print("Trying SMARTS", self.smarts)        
+        self.pattern = Chem.MolFromSmarts(self.smarts) 
+        
+        if rdkit_remove:
+            print("RDkit")
+            idx_to_remove = []
+            for atom in self.pattern.GetAtoms():
+                if atom.GetSymbol() == "H":
+                    idx_to_remove.append(atom.GetIdx())
+            for i in idx_to_remove:
+                self.pattern.RemoveAtom(i)
+            print(len(self.pattern.GetAtoms()))
+
         return self.ligand.GetSubstructMatches(self.pattern)
 
     def _build_constraints(self):
