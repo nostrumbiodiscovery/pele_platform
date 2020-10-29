@@ -156,9 +156,9 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             env.pca = pca_obj.generate(env.logger)
         
         # Core constraints based on SMILES string
-        if env.constrain_smiles:
+        if env.constrain_core:
             smiles_input_pdb = os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0])
-            smiles = smi.SmilesConstraints(smiles_input_pdb, env.constrain_smiles, env.residue, env.chain, env.constrain_smiles_spring)
+            smiles = smi.SmilesConstraints(smiles_input_pdb, env.constrain_core, env.residue, env.chain, env.constrain_core_spring)
             smi_constraint = smiles.run()
             env.constraints = env.constraints[0:1] + smi_constraint + env.constraints[1:]
         
