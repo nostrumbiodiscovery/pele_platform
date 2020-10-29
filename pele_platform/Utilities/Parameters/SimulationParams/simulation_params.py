@@ -147,8 +147,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.constraints = None
         self.external_constraints = hp.retrieve_constraints_for_pele(args.external_constraints, self.system) if args.external_constraints else []
         self.permissive_metal_constr = args.permissive_metal_constr if args.permissive_metal_constr else []
-        self.constrain_smiles = args.constrain_smiles if args.constrain_smiles else self.simulation_params.get("constrain_smiles", None)
-        self.constrain_smiles_spring = args.constrain_smiles_spring if args.constrain_smiles_spring else 50.0
+        self.constrain_core = args.constrain_core if args.constrain_core else self.simulation_params.get("constrain_core", None)
+        self.constrain_core_spring = args.constrain_core_spring if args.constrain_core_spring else 50.0
         self.no_ppp = args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
 
     def ligand_params(self, args):
