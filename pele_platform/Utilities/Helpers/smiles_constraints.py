@@ -20,7 +20,7 @@ class SmilesConstraints:
             self._build_constraints()
             return self.constraints
         else:
-            raise ce.SubstructureError("Could not find {} substructure in the ligand {}.".format(self.constrain_smiles, Chem.MolToSmiles(self.ligand)))
+            raise ce.SubstructureError("Could not recognise the substructure specified in 'constrain_core'. This might be due to differences in ionisation states. Check, if the charges are identical and adjust your pattern, if necessary.\nCore SMARTS: {}\nLigand SMARTS: {}".format(self.smarts, Chem.MolToSmarts(self.ligand)))
     
     def _convert_to_smarts(self):
         self.pattern = Chem.MolFromSmiles(self.constrain_smiles)
