@@ -7,7 +7,7 @@ import pele_platform.Errors.custom_errors as ce
 class SmilesConstraints:
 
     input_pdb: str
-    constrain_smiles: str
+    constrain_core: str
     resname: str
     chain: str
     spring_constant: float = 50.0
@@ -23,9 +23,12 @@ class SmilesConstraints:
             raise ce.SubstructureError("Could not recognise the substructure specified in 'constrain_core'. This might be due to differences in ionisation states. Check, if the charges are identical and adjust your pattern, if necessary.\nCore SMARTS: {}\nLigand SMARTS: {}".format(self.smarts, Chem.MolToSmarts(self.ligand)))
     
     def _convert_to_smarts(self):
-        self.pattern = Chem.MolFromSmiles(self.constrain_smiles)
-        self.smarts = Chem.MolToSmarts(self.pattern)
-        print("self.smarts", self.smarts)
+        if ("C" or "c") in self.constrain_core:  # if the pattern is SMILES
+            self.pattern = Chem.MolFromSmiles(self.constrain_core)
+            self.smarts = Chem.MolToSmarts(self.pattern)
+        else:  # if the pattern is SMARTS
+            self.pattern = Chem.MolFromSmarts(self.constrain_core)
+            self.smarts = self.constrain_core
 
     def _extract_ligand(self):
         complex = Chem.MolFromPDBFile(self.input_pdb)
