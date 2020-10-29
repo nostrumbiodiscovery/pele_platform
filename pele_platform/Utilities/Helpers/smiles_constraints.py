@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from rdkit import Chem
 import re
 import pele_platform.Errors.custom_errors as ce
 
@@ -13,6 +12,7 @@ class SmilesConstraints:
     spring_constant: float = 50.0
 
     def run(self):
+        from rdkit import Chem
         self._convert_to_smarts()
         self._extract_ligand()
         self._get_matches()
@@ -23,6 +23,7 @@ class SmilesConstraints:
             raise ce.SubstructureError("Could not recognise the substructure specified in 'constrain_core'. This might be due to differences in ionisation states. Check, if the charges are identical and adjust your pattern, if necessary.\nCore SMARTS: {}\nLigand SMARTS: {}".format(self.smarts, Chem.MolToSmarts(self.ligand)))
     
     def _convert_to_smarts(self):
+        from rdkit import Chem
         if ("C" or "c") in self.constrain_core:  # if the pattern is SMILES
             self.pattern = Chem.MolFromSmiles(self.constrain_core)
             self.smarts = Chem.MolToSmarts(self.pattern)
@@ -31,6 +32,7 @@ class SmilesConstraints:
             self.smarts = self.constrain_core
 
     def _extract_ligand(self):
+        from rdkit import Chem
         complex = Chem.MolFromPDBFile(self.input_pdb)
         if complex is not None:
             self.ligand = Chem.rdmolops.SplitMolByPDBResidues(complex)[self.resname]
@@ -38,7 +40,6 @@ class SmilesConstraints:
             self._backup_ligand_extraction()
 
     def _get_matches(self):
-        print("Ligand SMARTS", Chem.MolToSmarts(self.ligand))
         self.substructures = self._substructure_search()
         if not self.substructures:
             self.substructures = self._substructure_search(":", "-")  # removing aromatic bonds
@@ -50,7 +51,7 @@ class SmilesConstraints:
                         self.substructures = self._substructure_search(rdkit_remove=True)  # remove hydrogens by iterating through all atoms
 
     def _substructure_search(self, old="", new="", regex_remove=False, rdkit_remove=False):
-        
+        from rdkit import Chem
         if regex_remove:
             self.smarts = re.sub(r"H\d?","",self.smarts)
         else:
@@ -81,6 +82,7 @@ class SmilesConstraints:
                 self.constraints.append(template.format(self.spring_constant, self.chain, atom.GetResidueNumber(), atom.GetName().replace(" ", "_")))
 
     def _backup_ligand_extraction(self):
+        from rdkit import Chem
         ligand_lines = []
 
         with open(self.input_pdb, "r") as f:
