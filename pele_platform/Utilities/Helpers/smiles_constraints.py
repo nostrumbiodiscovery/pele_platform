@@ -24,7 +24,7 @@ class SmilesConstraints:
     
     def _convert_to_smarts(self):
         from rdkit import Chem
-        if ("C" or "c") in self.constrain_core:  # if the pattern is SMILES
+        if "C" in self.constrain_core or "c" in self.constrain_core:  # if the pattern is SMILES
             self.pattern = Chem.MolFromSmiles(self.constrain_core)
             self.smarts = Chem.MolToSmarts(self.pattern)
         else:  # if the pattern is SMARTS
@@ -56,18 +56,15 @@ class SmilesConstraints:
             self.smarts = re.sub(r"H\d?","",self.smarts)
         else:
             self.smarts = self.smarts.replace(old, new)
-        print("Trying SMARTS", self.smarts)        
         self.pattern = Chem.MolFromSmarts(self.smarts) 
         
         if rdkit_remove:
-            print("RDkit")
             idx_to_remove = []
             for atom in self.pattern.GetAtoms():
                 if atom.GetSymbol() == "H":
                     idx_to_remove.append(atom.GetIdx())
             for i in idx_to_remove:
                 self.pattern.RemoveAtom(i)
-            print(len(self.pattern.GetAtoms()))
 
         return self.ligand.GetSubstructMatches(self.pattern)
 
