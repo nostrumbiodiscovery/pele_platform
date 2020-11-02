@@ -30,6 +30,18 @@ PPP_CONSTR = [
     '"constrainThisAtom": "B:247:_CA_" }'
 ]
 
+SMILES_CONSTR = [
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C7_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N1_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C1_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C2_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N2_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C3_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',                                                         
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',                                                           
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',                                                           
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },'
+]
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
@@ -222,3 +234,17 @@ def test_unk_error():
         assert str(e) == "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
         return
     assert False
+
+def test_constrain_smiles():
+    yaml = os.path.join(test_path,"constraints/input_constrain_smiles.yaml")
+    errors = []
+    job = main.run_platform(yaml)
+    errors = tk.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
+    assert not errors
+
+def test_constrain_smarts():
+    yaml = os.path.join(test_path,"constraints/input_constrain_smarts.yaml")
+    errors = []
+    job = main.run_platform(yaml)
+    errors = tk.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
+    assert not errors
