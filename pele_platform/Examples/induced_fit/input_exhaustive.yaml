@@ -9,6 +9,6 @@ atom_dist:
 - 33
 test: true
 ca_constr: 3
-constrain_smiles: "C2CCC1CCCCC1C2"
+constrain_core: "C2CCC1CCCCC1C2"
 
 
