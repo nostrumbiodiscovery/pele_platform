@@ -248,3 +248,10 @@ def test_constrain_smarts():
     job = main.run_platform(yaml)
     errors = tk.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
     assert not errors
+
+def test_substructure_error():
+    yaml = os.path.join(test_path,"constraints/input_smiles_error.yaml")
+    try:
+        job = main.run_platform(yaml)
+    except ce.SubstructureError as e:
+        assert str(e).strip("'") == "More than one substructure found in your ligand. Make sure SMILES constrain pattern is not ambiguous!"
