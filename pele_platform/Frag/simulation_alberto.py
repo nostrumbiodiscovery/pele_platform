@@ -6,10 +6,9 @@ import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.checker as ch
 import pele_platform.Frag.parameters.main as mn
 import pele_platform.Errors.custom_errors as ce
+import frag_pele.main as frag
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
-import frag_pele.main as frag
-
 
 class FragRunner(mn.FragParameters):
 
@@ -21,16 +20,19 @@ class FragRunner(mn.FragParameters):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()
+        self._analysis_to_point()
 
     def _launch(self):
         if self.ligands:  # Full ligands as sdf
-            fragment_files = self._prepare_input_file(logger=self.logger)
+            fragment_files = self._prepare_input_file()
         elif self.frag_library:
             self.input = lb.main(self.frag_library_core, self.frag_library)
         else:
             fragment_files = None
-        self._run()
-        
+
+        if not self.only_analysis:
+            self._run()
+
         if self.cleanup and fragment_files:
             self._clean_up(fragment_files)
 
@@ -76,9 +78,9 @@ class FragRunner(mn.FragParameters):
                           self.only_prepare, self.only_grow, self.no_check, self.debug, srun=self.usesrun)
             except Exception as e:
                 print("Skipped - FragPELE will not run.")
-                print(e)
+                print("Exception", e)
 
-    def _prepare_input_file(self, logger=None):
+    def _prepare_input_file(self):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
 
@@ -95,7 +97,6 @@ class FragRunner(mn.FragParameters):
         except KeyError:
             raise ce.MissResidueFlag("Missing residue flag to specify the ligand core residue name. i.e resname: 'LIG'")
             
-
         # Get sdf full grown ligands
         ligands_grown = Chem.SDMolSupplier(self.ligands, removeHs=False)
         fragment_files = []
@@ -106,7 +107,7 @@ class FragRunner(mn.FragParameters):
         for ligand in ligands_grown:
             Chem.AssignAtomChiralTagsFromStructure(ligand)
             try:
-                line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, logger=logger)
+                line, fragment = self._create_fragment_from_ligand(ligand, ligand_core)
             except Exception as e:
                 try:
                     line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, substructure=False)
@@ -118,7 +119,7 @@ class FragRunner(mn.FragParameters):
                             # Try with second substructure search
                         line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
 
-            logger.info(f"Ligand {fragment.file} preprocessed")
+            print(f"Ligand {fragment.file} preprocessed")
             fragment_files.append(fragment.file)
             with open(self.input, "a") as fout:
                 fout.write(line + "\n")
@@ -148,6 +149,10 @@ class FragRunner(mn.FragParameters):
             print("Ligand incorrect")
         return line, fragment
         
+    def _analysis_to_point(self):
+        self.analysis_to_point = self.args.analysis_to_point
+        if self.analysis_to_point and self.folder:
+            ana.main(path=self.folder, atomCoords=self.analysis_to_point)
 
     def _clean_up(self, fragment_files):
 

@@ -1,5 +1,5 @@
 """
-Dictionary with valid flags for platform in input.yalm
+Dictionary with valid flags for platform in input.yaml
 """
 
 
@@ -171,4 +171,7 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "cleanup": "cleanup",
 "polarize_metals": "polarize_metals",
 "polarization_factor": "polarization_factor",
-"constrain_core_spring": "constrain_core_spring"}
+"constrain_core_spring": "constrain_core_spring",
+"frag_library": "frag_library",
+"frag_library_core": "frag_library_core",
+"analysis_to_point": "analysis_to_point"}
