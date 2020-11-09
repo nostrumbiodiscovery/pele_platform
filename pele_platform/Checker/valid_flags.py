@@ -172,5 +172,5 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "polarize_metals": "polarize_metals",
 "polarization_factor": "polarization_factor",
 "frag_library": "frag_library",
-"frag_library_core": "frag_library_core",
+"frag_core_atom": "frag_core_atom",
 "analysis_to_point": "analysis_to_point"}
