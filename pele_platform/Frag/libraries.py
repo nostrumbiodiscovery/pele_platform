@@ -1,18 +1,15 @@
-from rdkit import Chem
-import yaml, glob, argparse, os
-from string import Template
-
-InBond = "$BOND"
+import glob
+import os
 
 
-def growing_sites(fragment):
+def growing_sites(fragment, user_bond):
     """
-    Function that obtains the possible starting points to grow a ligand. 
-    Entrance: File to obtain the possible bonds of a protein to commence the growth
-    Exit: List of strings which represent possible starting bonds
+    Retrieves all possible growing sites (hydrogens) on the fragment. Takes PDB fragment file as input.
+    Output - list of strings represeting sites, e.g. "benzene.pdb C6-H6 C1-H2"
     """
+    from rdkit import Chem
     bonds = []
-        
+
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
     if mol:
         heavy_atoms = [a for a in mol.GetAtoms() if a.GetSymbol() != "H"]
@@ -21,58 +18,56 @@ def growing_sites(fragment):
             at_name = a.GetMonomerInfo().GetName().strip()
             for h in hydrogens:
                 h_name = h.GetMonomerInfo().GetName().strip()
-                bonds.append("{}-{}".format(at_name, h_name)) 
+                bonds.append("{} {} {}-{}".format(fragment, user_bond, at_name, h_name))
     return bonds
 
 
-def input_file(fragment_pdb, core_atom, growing_site, output="input.conf", createFile=True):
-    """
-    Function that creates the input.conf file to for the FragPELE module.
-    Arguments:
-        -Fragment_pdb: The file of the protein to be grown.
-        -Core_atom: The starting bond of the fragment to grown.
-        -Growing_site: list of bonds where the fragment growing will happen.
-        -Output: file name to save the configuration, default input.conf.
-        -CreateFile: Parameter used to create a new input.conf file or append to an existing one. 
-    """
-    if createFile:
-        with open(output, "w+") as file:
-            output = write_File(file, False, fragment_pdb, core_atom, growing_site, output)
-    else:
-        with open(output, "a+") as file:
-            output = write_File(file, True, fragment_pdb, core_atom, growing_site, output)
+def extract_from_sdf(file_list):
+
+    from rdkit import Chem
+    output = []
+
+    for f in file_list:
+        mols = Chem.SDMolSupplier(f)
+        for m in mols:
+            file_name = "{}.pdb".format(m.GetProp('_Name'))
+            writer = Chem.PDBWriter(file_name)
+            writer.write(m)
+            output.extend(file_name)
     return output
 
 
-def write_File(file, isAppending, fragment_pdb, core_atom, growing_site, output):
-    StrForFile = ""
-    for bond in growing_site:
-        if isAppending:
-            StrForFile += ("\n" + fragment_pdb + " $BOND " + bond + "\n")
-            isAppending = False
-        else:
-            StrForFile += (fragment_pdb + " $BOND " + bond + "\n")
-    s = Template(StrForFile)
-    s = s.safe_substitute(BOND=core_atom)
-    file.write(s[:-1])
-    return file
-
 def main(user_bond, frag_library):
-    directory = os.path.dirname(__file__)
-    path = frag_library if os.path.exists(frag_library) else os.path.join(directory, "Libraries", frag_library.strip(), "Core,*.pdb")
-    
+
+    # get absolute path to the fragments library
+    directory = os.getcwd()
+    path = frag_library if os.path.exists(frag_library) else os.path.join(directory, "Libraries", frag_library.strip())
+    path = os.path.abspath(path)
     if not os.path.exists(path):
         raise OSError("Cannot find the library.")
-    
-    path = os.path.abspath(path)
-    firstTime = True
-    fragment_files = glob.glob(os.path.join(path, "*.pdb"))
+
+    # get fragment files
+    fragment_files = []
+    extensions = ['*.pdb', '*.sdf', '*.PDB', '*.SDF']
+    for e in extensions:
+        fragment_files.extend(glob.glob(os.path.join(path, e)))
     print("Retrieved {} fragment files.".format(len(fragment_files)))
-    for file in fragment_files:
-        listaBonds = growing_sites(file)
-        if firstTime:
-            output = input_file(file, user_bond, listaBonds)
-            firstTime = False
-        else:
-            output = input_file(file, user_bond, listaBonds, createFile=False)
-    return output.name
+
+    # convert SDF to PDB, if necessary
+    sdf_files = [elem for elem in fragment_files if "sdf" in elem.lower()]
+    all_files = [elem for elem in fragment_files if "pdb" in elem.lower()]
+
+    if sdf_files:
+        all_files.extend(extract_from_sdf(sdf_files))
+
+    # scan fragments for attachment points and write to input.conf
+    bond_list = []
+    for file in all_files:
+        bond_list.extend(growing_sites(file, user_bond))
+
+    output_name = os.path.join(directory, "input.conf")
+    with open(output_name, "w+") as conf_file:
+        for line in bond_list:
+            conf_file.write(line+"\n")
+
+    return output_name
