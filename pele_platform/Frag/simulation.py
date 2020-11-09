@@ -21,13 +21,13 @@ class FragRunner(mn.FragParameters):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()
-        self._analysis_to_point()
+        self._analysis()
 
     def _launch(self):
         if self.ligands:  # Full ligands as sdf
             fragment_files = self._prepare_input_file(logger=self.logger)
         elif self.frag_library:
-            self.input = lb.main(self.frag_library_core, self.frag_library)
+            self.input = lb.main(self.frag_core_atom, self.frag_library)
         else:
             fragment_files = None
         
@@ -151,13 +151,12 @@ class FragRunner(mn.FragParameters):
             print("Ligand incorrect")
         return line, fragment
        
-    def _analysis_to_point(self):                                                                                                                                                       
+    def _analysis(self):                                                                                                                                                       
         self.analysis_to_point = self.args.analysis_to_point                                                                                                                            
         if self.analysis_to_point and self.folder:                                                                                                                                      
             ana.main(path=self.folder, atomCoords=self.analysis_to_point, pattern=self.system)  
 
     def _clean_up(self, fragment_files):
-
         for file in fragment_files:
             if os.path.isfile(file):
                 os.remove(file)

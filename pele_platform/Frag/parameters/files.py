@@ -6,7 +6,7 @@ import PPP.main as ppp
 class FragInputParameters:
     def __init__(self, args):
         self.input = args.frag_input
-        self.frag_library_core = args.frag_library_core
+        self.frag_core_atom = args.frag_core_atom
 
 # If using input + series_file ligands
 class FragFromCoreParameters:
