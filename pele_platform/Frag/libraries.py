@@ -11,8 +11,12 @@ def growing_sites(fragment, user_bond):
     from rdkit.Chem import AllChem
     bonds = []
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
+    print(fragment)
     if mol:
-        AllChem.EmbedMolecule(mol)
+        print("mol", mol)
+        print("atoms")
+        for a in mol.GetAtoms():
+            print(a)
         heavy_atoms = [a for a in mol.GetAtoms() if a.GetSymbol() != "H"]
         for a in heavy_atoms:
             hydrogens = [n for n in a.GetNeighbors() if n.GetSymbol() == "H"]
@@ -32,7 +36,7 @@ def extract_from_sdf(file_list, path):
 
     # setting monomer info to be used for all fragments
     res_info = Chem.AtomPDBResidueInfo()
-    res_info.SetResidueName('GRW')
+    res_info.SetResidueName(' GRW')
     res_info.SetChainId('L')
     res_info.SetResidueNumber(1)
     res_info.SetIsHeteroAtom(True)
@@ -47,7 +51,7 @@ def extract_from_sdf(file_list, path):
                 n = elem_count.get(a.GetSymbol(), 0)
                 n += 1
                 elem_count[a.GetSymbol()] = n
-                atom_name = a.GetSymbol().strip()+str(n)
+                atom_name = " "+a.GetSymbol().strip()+str(n)
                 res_info.SetName(atom_name)
                 a.SetMonomerInfo(res_info)
             
