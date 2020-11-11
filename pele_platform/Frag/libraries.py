@@ -51,7 +51,9 @@ def extract_from_sdf(file_list, path):
                 n = elem_count.get(a.GetSymbol(), 0)
                 n += 1
                 elem_count[a.GetSymbol()] = n
-                atom_name = " "+a.GetSymbol().strip()+str(n)
+                atom_name = a.GetSymbol().strip()+str(n)
+                if len(atom_name) == 2:  # add space, if PDB atom name has only two characters
+                    atom_name = " "+atom_name
                 res_info.SetName(atom_name)
                 a.SetMonomerInfo(res_info)
             
