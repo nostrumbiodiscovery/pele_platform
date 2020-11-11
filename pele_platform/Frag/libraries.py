@@ -11,12 +11,7 @@ def growing_sites(fragment, user_bond):
     from rdkit.Chem import AllChem
     bonds = []
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
-    print(fragment)
     if mol:
-        print("mol", mol)
-        print("atoms")
-        for a in mol.GetAtoms():
-            print(a)
         heavy_atoms = [a for a in mol.GetAtoms() if a.GetSymbol() != "H"]
         for a in heavy_atoms:
             hydrogens = [n for n in a.GetNeighbors() if n.GetSymbol() == "H"]
@@ -24,8 +19,6 @@ def growing_sites(fragment, user_bond):
             for h in hydrogens:
                 h_name = h.GetMonomerInfo().GetName().strip()
                 bonds.append("{} {} {}-{}".format(fragment, user_bond, at_name, h_name))
-    else:
-        print("Couldn't read in molecule from", fragment)
     return bonds
 
 
