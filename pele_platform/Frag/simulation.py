@@ -154,7 +154,7 @@ class FragRunner(mn.FragParameters):
     def _analysis(self):                                                                                                                                                       
         self.analysis_to_point = self.args.analysis_to_point                                                                                                                            
         if self.analysis_to_point and self.folder:                                                                                                                                      
-            ana.main(path=self.folder, atomCoords=self.analysis_to_point, pattern=self.system)  
+            ana.main(path=self.folder, atomCoords=self.analysis_to_point, pattern=os.path.basename(self.system))  
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
