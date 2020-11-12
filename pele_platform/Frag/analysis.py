@@ -89,8 +89,6 @@ def normalize_lists(distList, beList):
 def main(refFile='', path="", atomCoords='', resname="GRW", pattern=''):
     if atomCoords == '':
         atomCoords = getAtomFromRef(refFile).get_coord()
-    print("pattern", pattern)
-    print(os.path.splitext(pattern))
     pathSearch = os.path.join(path, "*{}*".format(os.path.splitext(pattern)[0]))
     configFiles = glob.glob(pathSearch)
     files = []
