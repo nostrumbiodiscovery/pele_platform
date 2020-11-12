@@ -12,6 +12,7 @@ import pele_platform.Errors.custom_errors as cs
 from multiprocessing import Pool
 from functools import partial
 
+
 def silentremove(*args, **kwargs):
     for files in args:
         for filename in files:
@@ -19,6 +20,7 @@ def silentremove(*args, **kwargs):
                 os.remove(filename)
             except OSError:
                 pass
+
 
 def create_dir(base_dir, extension=None):
     """
@@ -41,6 +43,7 @@ def create_dir(base_dir, extension=None):
             warnings.warn("Directory {} already exists.".format(base_dir), RuntimeWarning)
         else:
             os.makedirs(base_dir)
+
 
 class cd:
     """Context manager for changing the current working directory"""
@@ -135,6 +138,7 @@ def retrieve_atom_info(atom, pdb):
                 pass
         sys.exit(f"Check the atoms {atom} given to calculate the distance metric.")
 
+
 def retrieve_all_waters(pdb, exclude=False):
     with open(pdb, 'r') as f:
         waters = list(set(["{}:{}".format(line[21:22], line[22:26].strip()) for line in f if line and "HOH" in line]))
@@ -142,17 +146,18 @@ def retrieve_all_waters(pdb, exclude=False):
         waters = [water for water in waters if water not in exclude]
     return waters
 
+
 def retrieve_constraints_for_pele(constraints, pdb):
     CONSTR_ATOM_POINT = '{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
     CONSTR_ATOM_ATOM = '{{"type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom":  "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}"}},'
     final_constraints = []
     for constraint in constraints:
-        #Atom to point constraint: 2.2-A:123:2 or 2.2-1986
+        # Atom to point constraint: 2.2-A:123:2 or 2.2-1986
         if len(constraint.split("-")) == 2:
             spring_constant, atom_info = constraint.split("-")
             chain, residue, atom_name = retrieve_atom_info(atom_info, pdb).split(":")
             constraint = CONSTR_ATOM_POINT.format(spring_constant, chain, residue, atom_name)
-        #Atom to atom constraint: 2.2-2.75-A:123:2-B:2:7 or 2.2-2.74-1985-1962
+        # Atom to atom constraint: 2.2-2.75-A:123:2-B:2:7 or 2.2-2.74-1985-1962
         elif len(constraint.split("-")) == 4:
             spring_constant, eq_distance, atom1_info, atom2_info = constraint.split("-")
             chain1, residue1, atom_name1 = retrieve_atom_info(atom1_info, pdb).split(":")
@@ -160,7 +165,8 @@ def retrieve_constraints_for_pele(constraints, pdb):
             constraint =  CONSTR_ATOM_ATOM.format(spring_constant, eq_distance, chain1, residue1, atom_name1, chain2, residue2, atom_name2)
         final_constraints.append(constraint)
     return final_constraints
-        
+
+
 def retrieve_box(structure, residue_1, residue_2, weights=[0.5, 0.5]):
     # get center of interface (if PPI)
     coords1 = get_coords_from_residue(structure, residue_1)
@@ -169,6 +175,7 @@ def retrieve_box(structure, residue_1, residue_2, weights=[0.5, 0.5]):
     box_center = np.average([coords1, coords2], axis=0, weights=weights)
     box_radius = abs(np.linalg.norm(coords1-coords2))/2 + 4 #Sum 4 to give more space
     return list(box_center), box_radius
+
 
 def get_coords_from_residue(structure, original_residue):
     parser = PDBParser()
@@ -196,6 +203,7 @@ def backup_logger(logger, message):
     else:
         logger.info(message)
 
+
 def find_nonstd_residue(pdb):
     with open(pdb, "r") as f:
         resnames = list(set([line[17:20] for line in f \
@@ -209,3 +217,11 @@ def parallelize(func, iterable, n_workers, **kwargs):
     return pool.map(f, iterable)
     pool.close()
     pool.join()
+
+
+def is_rdkit():
+    try:
+        import rdkit
+        from rdkit import Chem
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError("This PELE package requires rdkit. Please install it by running: 'conda install -c conda-forge rdkit'")
