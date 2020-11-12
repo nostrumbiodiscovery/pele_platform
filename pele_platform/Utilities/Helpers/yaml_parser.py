@@ -27,9 +27,10 @@ class YamlParser(object):
             except yaml.YAMLError as exc:
                 raise(exc)
         return data
-    
+
     def _get_value_from_env(self):
         self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
+
 
     def _check(self) -> None:
         # Check if valids in yaml file are valids
