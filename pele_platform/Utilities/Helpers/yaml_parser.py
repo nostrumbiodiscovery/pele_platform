@@ -17,6 +17,7 @@ class YamlParser(object):
         self._check()
         self._check_residue()
         self._parse()
+        self._get_value_from_env()
 
     def _parse_yaml(self) -> dict:
         # Retrieve raw info from yaml
@@ -26,6 +27,9 @@ class YamlParser(object):
             except yaml.YAMLError as exc:
                 raise(exc)
         return data
+
+    def _get_value_from_env(self):
+        self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
 
 
     def _check(self) -> None:
