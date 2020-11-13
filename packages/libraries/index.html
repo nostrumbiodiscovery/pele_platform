@@ -269,6 +269,35 @@ proximity to a certain point, for example a side chain atom you would like your 
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
 </pre></div>
 </div>
+<p>The script will produce a <code class="docutils literal notranslate"><span class="pre">point_analysis.csv</span></code> file containing a number of columns:</p>
+<blockquote>
+<div><ul>
+<li><p><strong>File</strong>: Working folder</p></li>
+<li><p><strong>BestFileDistance</strong>: File with the best distance</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Distance: Best distance to the point</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>BestFileBE</strong>: File with the best energy of the simulation</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>BE: Best energy</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>BestFileNormalization</strong>: File with the best distance and energy of the simulation <strong>(recommended)</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>BestNormalization: Best sqrt(distance^2 + energy^2)</p></li>
+<li><p>DistanceBestNormalization: Best distance of the file above</p></li>
+<li><p>BEBestNormalization: Best energy of the file above</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
 </div>
 </div>
 

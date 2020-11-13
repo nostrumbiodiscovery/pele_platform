@@ -111,3 +111,21 @@ Example:
     analysis_to_point: [24.835,  73.161,  17.026]
     working_folder: "/home/username/LIG_Pele"
     cpus: 48
+
+The script will produce a ``point_analysis.csv`` file containing a number of columns:
+
+    - **File**: Working folder
+
+    - **BestFileDistance**: File with the best distance
+
+        - Distance: Best distance to the point
+
+    - **BestFileBE**: File with the best energy of the simulation
+
+        - BE: Best energy
+
+    - **BestFileNormalization**: File with the best distance and energy of the simulation **(recommended)**
+
+        - BestNormalization: Best sqrt(distance^2 + energy^2)
+        - DistanceBestNormalization: Best distance of the file above
+        - BEBestNormalization: Best energy of the file above
