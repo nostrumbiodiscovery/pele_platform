@@ -111,17 +111,3 @@ Example:
     analysis_to_point: [24.835,  73.161,  17.026]
     working_folder: "/home/username/LIG_Pele"
     cpus: 48
-
-The script will produce a ``point_analysis.csv`` file containing a number of columns:
-
-    - File
-    - BestFileDistance
-    - Distance
-    - BestFileBE
-    - BE
-    - BestFileNormalization
-    - BestNormalization
-    - DistanceBestNormalization
-    - BEBestNormalization
-
-DANI - HERE'S WHERE YOU COME IN WITH COLUMN EXPLANATION
