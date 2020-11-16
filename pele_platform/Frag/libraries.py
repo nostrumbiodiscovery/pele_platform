@@ -1,6 +1,8 @@
 import glob
 import os
+import subprocess
 
+from pele_platform.constants import constants as cs
 
 def growing_sites(fragment, user_bond):
     """
@@ -24,37 +26,39 @@ def growing_sites(fragment, user_bond):
 
 def extract_from_sdf(file_list, path):
 
-    from rdkit import Chem
+    converted = []
     output = []
 
-    # setting monomer info to be used for all fragments
-    res_info = Chem.AtomPDBResidueInfo()
-    res_info.SetResidueName(' GRW')
-    res_info.SetChainId('L')
-    res_info.SetResidueNumber(1)
-    res_info.SetIsHeteroAtom(True)
-    elem_count = {}
+    # convert all SDF to PDB
+    schrodinger_path = os.path.join(cs.SCHRODINGER, "utilities/structconvert")
+    command = "{} -isd {} -opdb {}"
 
     for f in file_list:
-        mols = Chem.SDMolSupplier(f, removeHs=False)
-        for m in mols:
-            m.SetProp("_Name", m.GetProp('_Name') + "_converted")
-            
-            for a in m.GetAtoms():
-                n = elem_count.get(a.GetSymbol(), 0)
-                n += 1
-                elem_count[a.GetSymbol()] = n
-                atom_name = a.GetSymbol().strip()+str(n)
-                if len(atom_name) == 2:  # add space, if PDB atom name has only two characters
-                    atom_name = " "+atom_name
-                res_info.SetName(atom_name)
-                a.SetMonomerInfo(res_info)
-            
-            # save to PDB file
-            file_name = os.path.join(path, "{}.pdb".format(m.GetProp('_Name')))
-            writer = Chem.PDBWriter(file_name)
-            writer.write(m)
-            output.append(file_name)
+        fout = os.path.splitext(os.path.basename(f))[0] + ".pdb"
+        fout_path = os.path.join(os.path.dirname(f), fout)
+        command = command.format(schrodinger_path, f, fout_path)
+        subprocess.call(command.split())
+        converted.append(fout_path)
+
+    # ~~~ If it's stupid but it works (?), it isn't stupid. ~~~
+    
+    # read in PDB file created by Schrodinger, substitute residue name and add chain ID
+    for c in converted:
+        with open(c, "r") as fin:
+            lines = fin.readlines()
+            new_lines = []
+            for line in lines:
+                if line.startswith("HETATM") or line.startswith("ATOM"):
+                    new_lines.append(line)
+        
+        new_lines = [l.replace("UNK", "GRW") for l in new_lines if "UNK" in l]
+        new_lines = [l[:21]+"L"+l[22:] for l in new_lines]
+
+        with open(c, "w") as fout:
+            for line in new_lines:
+                fout.write(line)
+                output.append(fout.name)
+
     return output
 
 
