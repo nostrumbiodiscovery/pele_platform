@@ -13,6 +13,7 @@ def growing_sites(fragment, user_bond):
     from rdkit.Chem import AllChem
     bonds = []
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
+    
     if mol:
         heavy_atoms = [a for a in mol.GetAtoms() if a.GetSymbol() != "H"]
         for a in heavy_atoms:
@@ -21,29 +22,47 @@ def growing_sites(fragment, user_bond):
             for h in hydrogens:
                 h_name = h.GetMonomerInfo().GetName().strip()
                 bonds.append("{} {} {}-{}".format(fragment, user_bond, at_name, h_name))
+
     return bonds
 
 
 def extract_from_sdf(file_list, path):
 
-    converted = []
+    converted_mae = []
     output = []
 
-    # convert all SDF to PDB
+    # convert all SDF to MAE
     schrodinger_path = os.path.join(cs.SCHRODINGER, "utilities/structconvert")
-    command = "{} -isd {} -opdb {}"
+    command_mae = "{} -isd {} -omae {}"
+    command_pdb = "{} -imae {} -opdb {}"
 
     for f in file_list:
-        fout = os.path.splitext(os.path.basename(f))[0] + ".pdb"
+        fout = os.path.splitext(os.path.basename(f))[0] + ".mae"
         fout_path = os.path.join(os.path.dirname(f), fout)
-        command = command.format(schrodinger_path, f, fout_path)
-        subprocess.call(command.split())
-        converted.append(fout_path)
-
+        try:
+            command_mae = command_mae.format(schrodinger_path, f, fout_path)
+            subprocess.call(command_mae.split())
+            converted_mae.append(fout_path)
+        except Exception as e:
+            print(e)
+    
+    # convert all MAE to PDB
+    for c in converted_mae:
+        fout = c.replace(".mae",".pdb")
+        try:
+            command_pdb = command_pdb.format(schrodinger_path, c, fout)
+            subprocess.call(command_pdb.split())
+            os.remove(c)
+        except Exception as e:
+            print(e)
+    
+    pdb_pattern = os.path.splitext(converted_mae[0])
+    converted_pdb = glob.glob(pdb_pattern[0]+"*"+".pdb")
+    
     # ~~~ If it's stupid but it works (?), it isn't stupid. ~~~
     
     # read in PDB file created by Schrodinger, substitute residue name and add chain ID
-    for c in converted:
+    for c in converted_pdb:
         with open(c, "r") as fin:
             lines = fin.readlines()
             new_lines = []
@@ -57,10 +76,7 @@ def extract_from_sdf(file_list, path):
         with open(c, "w") as fout:
             for line in new_lines:
                 fout.write(line)
-                output.append(fout.name)
-
-    return output
-
+    return converted_pdb
 
 def main(user_bond, frag_library):
 
