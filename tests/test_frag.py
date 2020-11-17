@@ -33,18 +33,18 @@ PDB_lines = [
 ]
 
 SDF_lines = [
-'../pele_platform/Examples/frag/sdf_test_lib/mol1_converted.pdb C3-H2 C1-H1',
-'../pele_platform/Examples/frag/sdf_test_lib/mol1_converted.pdb C3-H2 C1-H2',
-'../pele_platform/Examples/frag/sdf_test_lib/mol1_converted.pdb C3-H2 C1-H3',
-'../pele_platform/Examples/frag/sdf_test_lib/mol1_converted.pdb C3-H2 C2-H4',
-'../pele_platform/Examples/frag/sdf_test_lib/mol1_converted.pdb C3-H2 C2-H5',
-'../pele_platform/Examples/frag/sdf_test_lib/mol1_converted.pdb C3-H2 N1-H6',
-'../pele_platform/Examples/frag/sdf_test_lib/mol1_converted.pdb C3-H2 N1-H7',
-'../pele_platform/Examples/frag/sdf_test_lib/mol2_converted.pdb C3-H2 C3-H8',
-'../pele_platform/Examples/frag/sdf_test_lib/mol2_converted.pdb C3-H2 C3-H9',
-'../pele_platform/Examples/frag/sdf_test_lib/mol2_converted.pdb C3-H2 C3-H10',
-'../pele_platform/Examples/frag/sdf_test_lib/mol2_converted.pdb C3-H2 N2-H11',
-'../pele_platform/Examples/frag/sdf_test_lib/mol2_converted.pdb C3-H2 N2-H12'
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-1.pdb C3-H2 C1-H1',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-1.pdb C3-H2 C1-H2',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-1.pdb C3-H2 C1-H3',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-1.pdb C3-H2 C2-H4',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-1.pdb C3-H2 C2-H5',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-1.pdb C3-H2 N1-H6',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-1.pdb C3-H2 N1-H7',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-2.pdb C3-H2 C1-H1',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-2.pdb C3-H2 C1-H2',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-2.pdb C3-H2 C1-H3',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-2.pdb C3-H2 N1-H4',
+'../pele_platform/Examples/frag/sdf_test_lib/test_library-2.pdb C3-H2 N1-H5'
 ]
 
 point_analysis_lines = [
@@ -112,7 +112,6 @@ def test_pdb_libraries(ext_args=FRAG_PDB_LIBRARIES):
 def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     
     output = os.path.join(test_path, "frag/analysis_data")
-    point_analysis_lines
     job = main.run_platform(ext_args)
     errors = []
     errors = td.check_file(os.getcwd(), "point_analysis.csv", point_analysis_lines, errors)
