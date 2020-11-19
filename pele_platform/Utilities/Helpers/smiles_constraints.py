@@ -11,14 +11,13 @@ class SmilesConstraints:
     resname: str
     chain: str
     spring_constant: float = 50.0
-    hp.is_rdkit()
-
+    
     def run(self):
         self.smarts = self.convert_to_smarts(self.constrain_core)
         self.ligand = self.extract_ligand(self.input_pdb, self.resname)
-        self.substructures = self._get_matches()
+        self.substructures = self.get_matches(self.smarts)
         if self.substructures:
-            self.constraints = self._build_constraints()
+            self.constraints = self.build_constraints()
             return self.constraints
         else:
             raise ce.SubstructureError(
@@ -28,6 +27,8 @@ class SmilesConstraints:
                     self.smarts, Chem.MolToSmarts(self.ligand)))
 
     def convert_to_smarts(self, core):
+        if hp.is_rdkit():
+            from rdkit import Chem
         if "C" in core or "c" in core:  # if the pattern is SMILES
             pattern = Chem.MolFromSmiles(core)
             smarts = Chem.MolToSmarts(pattern)
@@ -36,6 +37,8 @@ class SmilesConstraints:
         return smarts
 
     def extract_ligand(self, pdb, resname):
+        if hp.is_rdkit():
+            from rdkit import Chem
         complex = Chem.MolFromPDBFile(pdb)
         if complex is not None:
             ligand = Chem.rdmolops.SplitMolByPDBResidues(complex)[resname]
@@ -43,20 +46,23 @@ class SmilesConstraints:
             ligand = self._backup_ligand_extraction(pdb, resname)
         return ligand
 
-    def _get_matches(self):
-        substructures = self._substructure_search()
+    def get_matches(self, smarts):
+        substructures = self._substructure_search(smarts)
         if not substructures:
-            substructures = self._substructure_search(":", "-")  # removing aromatic bonds
+            substructures = self._substructure_search(smarts, ":", "-")  # removing aromatic bonds
             if not substructures:
-                substructures = self._substructure_search("=", "-")  # removing double bonds
+                substructures = self._substructure_search(smarts, "=", "-")  # removing double bonds
                 if not substructures:
-                    substructures = self._substructure_search(regex_remove=True)  # remove hydrogens with regex
+                    substructures = self._substructure_search(smarts, regex_remove=True)  # remove hydrogens with regex
                     if not substructures:
-                        substructures = self._substructure_search(
+                        substructures = self._substructure_search(smarts,
                             rdkit_remove=True)  # remove hydrogens by iterating through all atoms
         return substructures
 
-    def _substructure_search(self, old="", new="", regex_remove=False, rdkit_remove=False):
+    def _substructure_search(self, smarts, old="", new="", regex_remove=False, rdkit_remove=False):
+        if hp.is_rdkit():
+            from rdkit import Chem
+        self.smarts = smarts
         if regex_remove:
             self.smarts = re.sub(r"H\d?", "", self.smarts)
         else:
@@ -73,7 +79,9 @@ class SmilesConstraints:
 
         return self.ligand.GetSubstructMatches(self.pattern)
 
-    def _build_constraints(self):
+    def build_constraints(self):
+        if hp.is_rdkit():
+            from rdkit import Chem
         constraints = []
         if len(self.substructures) > 1:
             raise ce.SubstructureError(
@@ -92,6 +100,8 @@ class SmilesConstraints:
         Extracts ligand lines from PDB file and loads them directly. Sometimes rdkit refuses to read in PDB files
         because of random valence errors, hence the need for a backup if extract_ligand fails.
         """
+        if hp.is_rdkit():
+            from rdkit import Chem
         ligand_lines = []
 
         with open(pdb, "r") as f:
