@@ -222,6 +222,7 @@ def parallelize(func, iterable, n_workers, **kwargs):
 def is_rdkit():
     try:
         import rdkit
+        from rdkit import Chem
         return True
     except:
         raise ModuleNotFoundError("Please install rdkit with the following command: conda install -c conda-forge rdkit")
