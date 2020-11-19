@@ -27,7 +27,7 @@ class FragRunner(mn.FragParameters):
         if self.ligands:  # Full ligands as sdf
             fragment_files = self._prepare_input_file(logger=self.logger)
         elif self.frag_library:
-            self.input = lb.main(self.frag_core_atom, self.frag_library)
+            self.input = lb.main(self.frag_core_atom, self.frag_library, self.logger)
         else:
             fragment_files = None
         
