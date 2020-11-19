@@ -14,8 +14,8 @@ class SmilesConstraints:
     hp.is_rdkit()
 
     def run(self):
-        self.smarts = self._convert_to_smarts()
-        self.ligand = self._extract_ligand()
+        self.smarts = self.convert_to_smarts(self.constrain_core)
+        self.ligand = self.extract_ligand(self.input_pdb, self.resname)
         self.substructures = self._get_matches()
         if self.substructures:
             self.constraints = self._build_constraints()
@@ -27,20 +27,20 @@ class SmilesConstraints:
                 "Core SMARTS: {}\nLigand SMARTS: {}".format(
                     self.smarts, Chem.MolToSmarts(self.ligand)))
 
-    def _convert_to_smarts(self):
-        if "C" in self.constrain_core or "c" in self.constrain_core:  # if the pattern is SMILES
-            pattern = Chem.MolFromSmiles(self.constrain_core)
+    def convert_to_smarts(self, core):
+        if "C" in core or "c" in core:  # if the pattern is SMILES
+            pattern = Chem.MolFromSmiles(core)
             smarts = Chem.MolToSmarts(pattern)
         else:  # if the pattern is SMARTS
-            smarts = self.constrain_core
+            smarts = core
         return smarts
 
-    def _extract_ligand(self):
-        complex = Chem.MolFromPDBFile(self.input_pdb)
+    def extract_ligand(self, pdb, resname):
+        complex = Chem.MolFromPDBFile(pdb)
         if complex is not None:
-            ligand = Chem.rdmolops.SplitMolByPDBResidues(complex)[self.resname]
+            ligand = Chem.rdmolops.SplitMolByPDBResidues(complex)[resname]
         else:
-            ligand = self._backup_ligand_extraction()
+            ligand = self._backup_ligand_extraction(pdb, resname)
         return ligand
 
     def _get_matches(self):
@@ -87,17 +87,17 @@ class SmilesConstraints:
 
         return constraints
 
-    def _backup_ligand_extraction(self):
+    def _backup_ligand_extraction(self, pdb, resname):
         """
         Extracts ligand lines from PDB file and loads them directly. Sometimes rdkit refuses to read in PDB files
-        because of random valence errors, hence the need for a backup if _extract_ligand fails.
+        because of random valence errors, hence the need for a backup if extract_ligand fails.
         """
         ligand_lines = []
 
-        with open(self.input_pdb, "r") as f:
+        with open(pdb, "r") as f:
             lines = f.readlines()
             for line in lines:
-                if (line.startswith("ATOM") or line.startswith("HETATM")) and line[17:20].strip() == self.resname:
+                if (line.startswith("ATOM") or line.startswith("HETATM")) and line[17:20].strip() == resname:
                     ligand_lines.append(line)
 
         ligand_block = "".join(ligand_lines)
