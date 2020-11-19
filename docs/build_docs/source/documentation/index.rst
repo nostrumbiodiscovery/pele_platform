@@ -383,8 +383,8 @@ The default spring constant is 50 but you can choose your own.
 
 ..  code-block:: yaml
 
-    constrain_core: "CN(C)C(=O)c1ccc(F)cc1" # SMILES or SMARTS pattern
-    constrain_core_spring:  # optional, default 50.0
+    constrain_core: "CN(C)C(=O)c1ccc(F)cc1"  # SMILES or SMARTS pattern
+    constrain_core_spring: 30  # optional, default 50.0
 
 WaterPerturbation
 ======================
