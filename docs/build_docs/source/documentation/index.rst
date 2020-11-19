@@ -241,8 +241,8 @@ Algorithm to automatically set metal constraints around the ligand.
     constrain_all_metals: true
     external_constraints:
         - "50-2.34-A:1:H-L:1:MG" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
-
-
+    constrain_core: "CN(C)C(=O)c1ccc(F)cc1"  # SMILES or SMARTS pattern
+    constrain_core_spring: 30  # optional, default 50.0
 
 
 WaterPerturbation
