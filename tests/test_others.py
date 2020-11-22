@@ -10,6 +10,8 @@ import pele_platform.Utilities.Helpers.protein_wizard as pp
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Checker.main as mn
+from pele_platform.Utilities.Helpers import smiles_constraints as smi
+
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
@@ -253,3 +255,14 @@ def test_substructure_error():
         job = main.run_platform(yaml)
     except ce.SubstructureError as e:
         assert str(e).strip("'") == "More than one substructure found in your ligand. Make sure SMILES constrain pattern is not ambiguous!"
+
+def test_SmilesConstraints_class():
+    obj = smi.SmilesConstraints("../pele_platform/Examples/constraints/4qnr_prep.pdb", "CN1CC[NH+](CC1)CCO", "LIG", "Z", 33.5)
+    smarts = obj.convert_to_smarts("CN1CC[NH+](CC1)CCO")
+    ligand = obj.extract_ligand(obj.input_pdb, obj.resname)
+    matches = obj.get_matches(smarts, ligand)
+    constraints = obj.build_constraints(matches, ligand, obj.spring_constant, obj.chain)
+
+    assert smarts == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+    assert matches == ((9, 0, 1, 2, 3, 4, 5, 6, 7, 8),)
+    assert constraints == SMILES_CONSTR
