@@ -237,13 +237,6 @@ def test_unk_error():
         return
     assert False
 
-def test_constrain_smiles():
-    yaml = os.path.join(test_path,"constraints/input_constrain_smiles.yaml")
-    errors = []
-    job = main.run_platform(yaml)
-    errors = tk.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
-    assert not errors
-
 def test_constrain_smarts():
     yaml = os.path.join(test_path,"constraints/input_constrain_smarts.yaml")
     errors = []
@@ -260,11 +253,12 @@ def test_substructure_error():
 
 def test_SmilesConstraints_class():
     obj = smi.SmilesConstraints("../pele_platform/Examples/constraints/4qnr_prep.pdb", "CN1CC[NH+](CC1)CCO", "LIG", "Z", 33.5)
-    smarts = obj.convert_to_smarts("CN1CC[NH+](CC1)CCO")
+    smarts_from_smiles = obj.convert_to_smarts("CN1CC[NH+](CC1)CCO")
+    smarts_from_smarts = obj.convert_to_smarts("[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]")
     ligand = obj.extract_ligand(obj.input_pdb, obj.resname)
-    matches = obj.get_matches(smarts, ligand)
+    matches = obj.get_matches(smarts_from_smiles, ligand)
     constraints = obj.build_constraints(matches, ligand, obj.spring_constant, obj.chain)
 
-    assert smarts == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+    assert smarts_from_smiles == smarts_from_smarts == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
     assert matches == ((9, 0, 1, 2, 3, 4, 5, 6, 7, 8),)
     assert constraints == SMILES_CONSTR
