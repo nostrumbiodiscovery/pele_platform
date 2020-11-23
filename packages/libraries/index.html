@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Grow your own fragment library &mdash; pele platform 1.5.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Optative flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/index.html">Analysis</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Grow your own fragment library</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/packages/libraries/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="grow-your-own-fragment-library">
+<h1>Grow your own fragment library<a class="headerlink" href="#grow-your-own-fragment-library" title="Permalink to this headline">¶</a></h1>
+<p>FragPELE is now able to grow fragments from custom-made libraries, all you have to do is provide it with a directory
+containing your fragments (in PDB or SDF format) and a docked core.</p>
+<p><strong>Input</strong> (further explained below):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>protein-scaffold PDB file</p></li>
+<li><p>directory with fragment files (SDF or PDB)</p></li>
+<li><p>input.yaml configuration file</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Output</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ranking of the fragments</p></li>
+<li><p>ranked binding modes within each fragment</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Computational time</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>30min/3h per fragment (depends on how many rotatable bonds the fragment has)</p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="complex-preparation">
+<h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
+<p><strong>Protein-scaffold PDB file</strong> should be preprocessed with Maestro Protein Preparation Wizard.
+We would usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
+and ions as well as filling in missing loops and side chains.</p>
+<p>The file must contain protein in complex with a fragment (scaffold), e.g. an X-ray structure or a docked pose. Additionally, ensure the ligand has:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>unique chain ID</p></li>
+<li><p>no atom names with spaces or single letters (occasionally Maestro adds hydrogens named <code class="docutils literal notranslate"><span class="pre">H1</span> <span class="pre">2</span></code>, these need to be corrected)</p></li>
+<li><p>any unique residue name, except for UNK</p></li>
+<li><p>well-defined aromatic bonds.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Directory with fragments</strong> which should be preprocessed using Schrodinger LigPrep (default settings should be sufficient) and have unique molecule names.</p>
+</div>
+<div class="section" id="input-preparation">
+<h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
+<p>Prepare input.yaml file:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span>  <span class="c1"># Protein-scaffold complex</span>
+<span class="nt">frag_library</span><span class="p">:</span> <span class="s">&quot;/home/username/aromatic_library&quot;</span>  <span class="c1"># Folder containing fragment files</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>  <span class="c1"># Ligand scaffold residue name</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>  <span class="c1"># Ligand scaffold chain ID</span>
+<span class="nt">frag_core_atom</span><span class="p">:</span> <span class="s">&quot;C6-H6&quot;</span>  <span class="c1"># Connection point from which you want to grow the fragments</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
+</pre></div>
+</div>
+<p>Not sure how to define <code class="docutils literal notranslate"><span class="pre">frag_core_atom</span></code>?
+Open your PDB file in Schrodinger Maestro and hover over the atoms to see their PDB names on the panel below.
+The starting point for fragment growing should consist of a heavy atom and a hydrogen, e.g. “C6-H6” on the picture below.</p>
+<a class="reference internal image-reference" href="../../_images/libraries_2.png"><img alt="../../_images/libraries_2.png" class="align-center" src="../../_images/libraries_2.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="run-simulation">
+<h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
+<p>To run the system launch the simulation with the following command:</p>
+<p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
+</div>
+<div class="section" id="output">
+<h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>The simulation will create a TSV file with scored fragments as well as a number of fragment folders, the names of which will consist of the scaffold and molecule names.</p>
+<p><strong>Scored fragments</strong></p>
+<p>The list of all grown fragments together with their associated scores (average binding energy of the top 25% of all poses)
+can be found in:</p>
+<p><code class="docutils literal notranslate"><span class="pre">simulation_score.tsv</span></code></p>
+<p><strong>Top poses</strong></p>
+<p>Each fragment folder contains a top_results folder with PDB files corresponding to the best poses for that fragment:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fragment_folder/top_results/</span></code></p>
+</div>
+<div class="section" id="analysis">
+<h2>5. Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+<p>Once your simulation is finished, you can run an automated analysis to retrieve most promising fragments based on their
+proximity to a certain point, for example a side chain atom you would like your fragment to interact with.</p>
+<p>All you have to do is adjust your input.yaml and launch it as before. Ensure you:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>provide PELE with the path to your working folder, i.e. where you launched your simulation in the first place</p></li>
+<li><p>set <code class="docutils literal notranslate"><span class="pre">only_analysis:</span> <span class="pre">true</span></code></p></li>
+<li><p>set your desired coordinates in <code class="docutils literal notranslate"><span class="pre">analysis_to_point</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>Example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span>  <span class="c1"># Protein-scaffold complex</span>
+<span class="nt">frag_library</span><span class="p">:</span> <span class="s">&quot;/home/username/aromatic_library&quot;</span>  <span class="c1"># Folder containing fragment files</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>  <span class="c1"># Ligand scaffold residue name</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>  <span class="c1"># Ligand scaffold chain ID</span>
+<span class="nt">frag_core_atom</span><span class="p">:</span> <span class="s">&quot;C6-H6&quot;</span>  <span class="c1"># Connection point from which you want to grow the fragments</span>
+<span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">analysis_to_point</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">24.835</span><span class="p p-Indicator">,</span>  <span class="nv">73.161</span><span class="p p-Indicator">,</span>  <span class="nv">17.026</span><span class="p p-Indicator">]</span>
+<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;/home/username/LIG_Pele&quot;</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
+</pre></div>
+</div>
+<p>The script will produce a <code class="docutils literal notranslate"><span class="pre">point_analysis.csv</span></code> file containing a number of columns:</p>
+<blockquote>
+<div><ul>
+<li><p><strong>File</strong>: Working folder</p></li>
+<li><p><strong>BestFileDistance</strong>: File with the best distance</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Distance: Best distance to the point</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>BestFileBE</strong>: File with the best energy of the simulation</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>BE: Best energy</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>BestFileNormalization</strong>: File with the best distance and energy of the simulation <strong>(recommended)</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>BestNormalization: Best sqrt(distance^2 + energy^2)</p></li>
+<li><p>DistanceBestNormalization: Best distance of the file above</p></li>
+<li><p>BEBestNormalization: Best energy of the file above</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Daniel Soler Viladrich
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

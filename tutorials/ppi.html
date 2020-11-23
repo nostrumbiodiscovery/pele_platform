@@ -1,0 +1,427 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Protein-protein interaction tutorial &mdash; pele platform 1.5.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Docking pose refinement tutorial" href="induced_fit.html" />
+    <link rel="prev" title="Tutorials" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Protein-protein interaction tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#protein-preparation">1. Protein preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">2. Ligand preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-input-file">3. PELE input file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launching-the-simulation">4. Launching the simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis-of-the-results">5. Analysis of the results</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-plots">a. Plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-selected-binding-modes">b. Selected binding modes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gpcr.html">GPCR tutorial</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>Protein-protein interaction tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/ppi.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="protein-protein-interaction-tutorial">
+<h1>Protein-protein interaction tutorial<a class="headerlink" href="#protein-protein-interaction-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial we will set up a <strong>protein-protein interaction</strong> simulation aimed to elucidate a binding pocket of a bromodomain-histone
+inhibitor. We will be using bromodomain-containing protein 9/histone 4 X-ray structure (PDB code 4YY6) and
+a ligand from PDB 4UIT co-crystal.</p>
+<div class="section" id="protein-preparation">
+<h2>1. Protein preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
+<p>We will import the complex from Protein Data Bank and preprocess it using Schrödinger Maestro (release 2020-1).</p>
+<p>a. Launch Maestro and <strong>import the structure from PDB</strong> by clicking <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB...</span></code>, type in your PDB ID, e.g. <code class="docutils literal notranslate"><span class="pre">4YY6</span></code>,
+and click <code class="docutils literal notranslate"><span class="pre">Download</span></code>. The protein structure should appear in your workspace.</p>
+<a class="reference internal image-reference" href="../_images/allosteric_tutorial_1a.png"><img alt="../_images/allosteric_tutorial_1a.png" class="align-center" src="../_images/allosteric_tutorial_1a.png" style="width: 400px;" /></a>
+<p>b. <strong>Preprocess the protein</strong> using Protein Preparation Wizard. Click on <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> and search <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Preparation</span> <span class="pre">Wizard</span></code>.
+Check the following options and hit <code class="docutils literal notranslate"><span class="pre">Preprocess</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Fill in missing side chain using Prime*</p></li>
+<li><p>Fill in missing loops using Prime*</p></li>
+<li><p>Delete waters beyond 0.0 Å from het groups (i.e. all waters in the system)</p></li>
+</ul>
+</div></blockquote>
+<p>*If you do not have Prime license, you can skip those steps.</p>
+<a class="reference internal image-reference" href="../_images/allosteric_tutorial_1b.png"><img alt="../_images/allosteric_tutorial_1b.png" class="align-center" src="../_images/allosteric_tutorial_1b.png" style="width: 400px;" /></a>
+<p>The preprocessing might take a few minutes. Upon completion, you should see <code class="docutils literal notranslate"><span class="pre">4YY6</span> <span class="pre">-</span> <span class="pre">preprocessed</span></code> on the entry list.</p>
+<ol class="loweralpha simple" start="3">
+<li><p><strong>Select the centre of interface</strong> between the two proteins to guide the simulation, in this case we chose <code class="docutils literal notranslate"><span class="pre">A:106:OH</span></code>.</p></li>
+</ol>
+<p>The atom strings need to follow <code class="docutils literal notranslate"><span class="pre">chain</span> <span class="pre">ID:residue</span> <span class="pre">number:atom</span> <span class="pre">name</span></code> format, you can easily check those values on the
+bottom panel in Maestro by hovering the mouse pointer over a specific atom.</p>
+<a class="reference internal image-reference" href="../_images/ppi_tutorial_1e1.png"><img alt="../_images/ppi_tutorial_1e1.png" class="align-center" src="../_images/ppi_tutorial_1e1.png" style="width: 400px;" /></a>
+<p>d. <strong>Export structure</strong> by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures...</span></code> and save all workspace atoms as <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>
+in your working directory.</p>
+</div>
+<div class="section" id="ligand-preparation">
+<h2>2. Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
+<p>a. Import and preprocess PDB structure <code class="docutils literal notranslate"><span class="pre">4UIT</span></code>. You can ignore multiple occupancy issues, since we are only interested in
+the ligand.</p>
+<ol class="loweralpha simple" start="2">
+<li><dl class="simple">
+<dt><strong>Extract the ligand</strong></dt><dd><ul class="simple">
+<li><p>Click on <code class="docutils literal notranslate"><span class="pre">Select</span> <span class="pre">-&gt;</span> <span class="pre">Set</span> <span class="pre">pick</span> <span class="pre">level</span> <span class="pre">-&gt;</span> <span class="pre">Residues</span></code>, then select the ligand with a mouse click</p></li>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">Build</span></code> window and click <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">selected</span> <span class="pre">atoms</span> <span class="pre">to</span> <span class="pre">new</span> <span class="pre">entry</span></code></p></li>
+<li><p>Select the extracted residue again and in <code class="docutils literal notranslate"><span class="pre">Build</span></code> window, choose <code class="docutils literal notranslate"><span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">atom</span> <span class="pre">properties...</span></code></p></li>
+<li><p>Set residue name to <code class="docutils literal notranslate"><span class="pre">LIG</span></code> and chain name to <code class="docutils literal notranslate"><span class="pre">Z</span></code></p></li>
+<li><p>Choose <code class="docutils literal notranslate"><span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">name</span></code> from the drop down list and select <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">unique</span> <span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">names</span> <span class="pre">within</span> <span class="pre">residues</span></code></p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Apply</span></code> and close the window.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<a class="reference internal image-reference" href="../_images/allosteric_tutorial_1c1.png"><img alt="../_images/allosteric_tutorial_1c1.png" class="align-center" src="../_images/allosteric_tutorial_1c1.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/allosteric_tutorial_1c2.png"><img alt="../_images/allosteric_tutorial_1c2.png" class="align-center" src="../_images/allosteric_tutorial_1c2.png" style="width: 400px;" /></a>
+<p>c. <strong>Pick atom</strong> to track progress. One of the metrics we use to follow the simulation is the distance between two
+selected atoms. In this case, we will pick ligand atom <code class="docutils literal notranslate"><span class="pre">Z:1123:C13</span></code>, then track the distance between that and the centre of interface. It will help us assess whether
+the ligand is forming expected interactions at the protein-protein interface or elsewhere.</p>
+<p>d. <strong>Export the ligand</strong> by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures...</span></code> and save all workspace atoms as <code class="docutils literal notranslate"><span class="pre">ligand.pdb</span></code>
+in your working directory.</p>
+<p>You can close Maestro now.</p>
+</div>
+<div class="section" id="pele-input-file">
+<h2>3. PELE input file<a class="headerlink" href="#pele-input-file" title="Permalink to this headline">¶</a></h2>
+<p>Create <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file in your working directory, it should contain the following flags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>system</strong> - path to the protein-protein PDB file</p></li>
+<li><p><strong>ligand_pdb</strong> - PDB file with the ligand</p></li>
+<li><p><strong>chain</strong> - ligand chain ID, which we set as <code class="docutils literal notranslate"><span class="pre">Z</span></code> in step 2b</p></li>
+<li><p><strong>resname</strong> - ligand residue name, in our case <code class="docutils literal notranslate"><span class="pre">LIG</span></code></p></li>
+<li><p><strong>protein</strong> - chain ID of the protein chain to be kept (<code class="docutils literal notranslate"><span class="pre">A</span></code>, since we picked the centre of interface on A, the other chain will be automatically removed)</p></li>
+<li><p><strong>center_of_interface</strong> - atom at the centre of the protein-protein interface <code class="docutils literal notranslate"><span class="pre">(chain</span> <span class="pre">ID:residue</span> <span class="pre">number:atom</span> <span class="pre">name)</span></code></p></li>
+<li><p><strong>ppi</strong> - flag to run PPI simulation</p></li>
+<li><p><strong>steps</strong> - number of steps in each PELE iteration (optional)</p></li>
+<li><p><strong>atom_dist</strong> - strings representing atoms selected in points 1c and 2c, used to track the progress of the simulation</p></li>
+<li><p><strong>seed</strong> - random seed used in Monte Carlo steps, you should keep it consistent to ensure reproducibility of the results</p></li>
+<li><p><strong>cpus</strong> - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;complex.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span>
+<span class="nt">protein</span><span class="p">:</span> <span class="s">&#39;A&#39;</span>
+<span class="nt">ligand_pdb</span><span class="p">:</span> <span class="s">&quot;ligand.pdb&quot;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<span class="nt">center_of_interface</span><span class="p">:</span> <span class="s">&quot;A:106:OH&quot;</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<span class="nt">ppi</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="nt">atom_dist</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:106:OH&quot;</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;Z:1123:C13&quot;</span>
+</pre></div>
+</div>
+<p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong> Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test flag and start a full production run.
+Otherwise, inspect the logs and correct any mistakes indicated in the error codes.</p>
+</div>
+<div class="section" id="launching-the-simulation">
+<h2>4. Launching the simulation<a class="headerlink" href="#launching-the-simulation" title="Permalink to this headline">¶</a></h2>
+<p>Once you have <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>, <code class="docutils literal notranslate"><span class="pre">ligand.pdb</span></code> and <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> in your working directory, you can launch the simulation using one of the following methods:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>directly</strong> on command line using <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yaml</span></code></p></li>
+<li><p>submit a slurm file to the <strong>queue system</strong> (ask your IT manager, if you are not sure how to do it). In our case, the slurm file is called <code class="docutils literal notranslate"><span class="pre">run.sl</span></code> and we can launch it on the command line using <code class="docutils literal notranslate"><span class="pre">sbatch</span> <span class="pre">slurm.sl</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Example slurm file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>!/bin/bash
+<span class="gp">#</span>SBATCH -J PELE
+<span class="gp">#</span>SBATCH --output<span class="o">=</span>mpi_%j.out
+<span class="gp">#</span>SBATCH --error<span class="o">=</span>mpi_%j.err
+<span class="gp">#</span>SBATCH --ntasks<span class="o">=</span><span class="m">60</span>
+<span class="gp">#</span>SBATCH --mem-per-cpu<span class="o">=</span><span class="m">1000</span>
+
+<span class="go">python -m pele_platform.main input.yaml</span>
+</pre></div>
+</div>
+<p>You can download ready slurm files for <a class="reference download internal" download="" href="../_downloads/e1799872b6b01a8161f3297a942b3ca7/slurm_mn.sh"><code class="xref download docutils literal notranslate"><span class="pre">MareNostrum</span></code></a> and the <a class="reference download internal" download="" href="../_downloads/51ffa2cd16e8f3ac43fd04d7826f47f0/slurm_nbd.sh"><code class="xref download docutils literal notranslate"><span class="pre">NBD</span> <span class="pre">cluster</span></code></a>.
+If you are running the simulation on the NBD cluster, you have to include <code class="docutils literal notranslate"><span class="pre">usesrun:</span> <span class="pre">true</span></code> in your input.yaml!</p>
+</div>
+<div class="section" id="analysis-of-the-results">
+<h2>5. Analysis of the results<a class="headerlink" href="#analysis-of-the-results" title="Permalink to this headline">¶</a></h2>
+<p>The PPI exploration consists of two steps. Initially, the position of the ligand is randomised all around the protein
+to perform <strong>interface exploration</strong>. Then, all results are clustered based on ligand coordinates and the best binding energy
+representative of each cluster is selected as input for the <strong>refinement simulation</strong>.</p>
+<p>For the analysis part, we will only be concerned with the refinement simulation output, however, the same rules would apply to
+the global exploration output or any other PELE simulation.</p>
+<p>If you want to understand more about the content of <code class="docutils literal notranslate"><span class="pre">LIG_Pele</span></code> directory, you can refer to the PELE++ documentation:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://eapm-bsc.github.io/PELE-repo/molecularParameters.html">Data folder</a></p></li>
+<li><p><a class="reference external" href="https://eapm-bsc.github.io/PELE-repo/GeneralStructure/GeneralStructure.html">pele.conf</a></p></li>
+<li><p><a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline">adaptive.conf</a></p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="a-plots">
+<h3>a. Plots<a class="headerlink" href="#a-plots" title="Permalink to this headline">¶</a></h3>
+<p>1. Got to <code class="docutils literal notranslate"><span class="pre">LIG_Pele/2_refinement_simulation/results/Plots/</span></code> folder. It should contain a number of plots which allow you to get a
+general idea of the progression of the simulation.</p>
+<p>2. Examine <code class="docutils literal notranslate"><span class="pre">distance0.5_Binding_Energy_plot.png</span></code> showing the relationship between the binding energy and the distance between two selected atoms.
+Note there are few local binding energy minima, which indicates the software discovered multiple binding pockets.</p>
+<a class="reference internal image-reference" href="../_images/ppi_distance0.5_Binding_Energy_plot.png"><img alt="../_images/ppi_distance0.5_Binding_Energy_plot.png" class="align-center" src="../_images/ppi_distance0.5_Binding_Energy_plot.png" style="width: 400px;" /></a>
+<p>3. Take a look at <code class="docutils literal notranslate"><span class="pre">currentEnergy_Binding_Energy_sasaLig_plot.png</span></code> and observe how ligand’s solvent exposed surface area influences
+the binding energy.</p>
+<a class="reference internal image-reference" href="../_images/ppi_currentEnergy_Binding_Energy_sasaLig_plot.png"><img alt="../_images/ppi_currentEnergy_Binding_Energy_sasaLig_plot.png" class="align-center" src="../_images/ppi_currentEnergy_Binding_Energy_sasaLig_plot.png" style="width: 400px;" /></a>
+<p>Feel free to explore other plots as well.</p>
+</div>
+<div class="section" id="b-selected-binding-modes">
+<h3>b. Selected binding modes<a class="headerlink" href="#b-selected-binding-modes" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p>Go to <code class="docutils literal notranslate"><span class="pre">LIG_Pele/2_refinement_simulation/results</span></code> folder, which contains the best binding poses split into two categories:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">clusters</span></code> contains the best binding energy representatives of each cluster</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BestStructs</span></code>  holds top 100 best binding energy structures.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ol>
+<p>2. In the <code class="docutils literal notranslate"><span class="pre">clusters</span></code> folder you will find best binding energy representatives of each cluster together with a plot giving
+you a general overview of the binding energy distribution and median in each group. Note that most clusters have relatively high
+binding energies, however, cluster 3 seems to be well-populated and its representative is likely to have favourable interactions judging
+on the lowest energies.</p>
+<a class="reference internal image-reference" href="../_images/ppi_clusters_Binding_Energy_boxplot.png"><img alt="../_images/ppi_clusters_Binding_Energy_boxplot.png" class="align-center" src="../_images/ppi_clusters_Binding_Energy_boxplot.png" style="width: 400px;" /></a>
+<p>Examine <code class="docutils literal notranslate"><span class="pre">cluster2_epoch0_trajectory_33.13_BindingEnergy-61.6811</span></code> structure in Maestro. Mind that PDB files are indexed starting from zero, whereas
+cluster numbering starts from 1, therefore cluster 2 PDB structure is, in fact, cluster 3 on the plot.</p>
+<p>For comparison, we superposed the cluster representative structure (green) with the native pose (pink, PDB code 4UIT). The simulation was
+able to predict the binding pose almost perfectly, taking into account H-bonding interactions with Asn100 and Arg101 as well as pi-stacking
+with Tyr106.</p>
+<a class="reference internal image-reference" href="../_images/ppi_cluster2.png"><img alt="../_images/ppi_cluster2.png" class="align-center" src="../_images/ppi_cluster2.png" style="width: 400px;" /></a>
+<p>3. The <code class="docutils literal notranslate"><span class="pre">BestStructs</span></code> folder contains 100 PDB files with the lowest binding energy protein-ligand complexes. The picture below shows
+the superposition of 10 lowest energy structures (green) with the native pose (pink).</p>
+<a class="reference internal image-reference" href="../_images/ppi_BestStructs.png"><img alt="../_images/ppi_BestStructs.png" class="align-center" src="../_images/ppi_BestStructs.png" style="width: 400px;" /></a>
+<p>For more information regarding the outputs of the tutorial see <a class="reference external" href="outputs.html">Output files</a></p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="induced_fit.html" class="btn btn-neutral float-right" title="Docking pose refinement tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Daniel Soler Viladrich
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
