@@ -17,6 +17,7 @@ class YamlParser(object):
         self._check()
         self._check_residue()
         self._parse()
+        self._get_value_from_env()
 
     def _parse_yaml(self) -> dict:
         # Retrieve raw info from yaml
@@ -26,6 +27,9 @@ class YamlParser(object):
             except yaml.YAMLError as exc:
                 raise(exc)
         return data
+
+    def _get_value_from_env(self):
+        self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
 
 
     def _check(self) -> None:
@@ -220,6 +224,9 @@ class YamlParser(object):
         self.frag_criteria = data.get(valid_flags["frag_criteria"], False)
         self.frag_output_folder = data.get(valid_flags["frag_output_folder"], False)
         self.frag_cluster_folder = data.get(valid_flags["frag_cluster_folder"], False)
+        self.frag_library = data.get(valid_flags["frag_library"], None)
+        self.frag_core_atom = data.get(valid_flags["frag_core_atom"], None)
+        self.analysis_to_point = data.get(valid_flags["analysis_to_point"], None)
 
         #PPI
         self.n_components = data.get(valid_flags["n_components"], None)

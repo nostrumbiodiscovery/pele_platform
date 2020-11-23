@@ -6,7 +6,7 @@ import PPP.main as ppp
 class FragInputParameters:
     def __init__(self, args):
         self.input = args.frag_input
-
+        self.frag_core_atom = args.frag_core_atom
 
 # If using input + series_file ligands
 class FragFromCoreParameters:
@@ -31,7 +31,7 @@ class FragFromSDFParameters:
 
     def __init__(self, args):
         self.ligands = args.frag_ligands
-
+        self.frag_library = args.frag_library
 
 # Base class control all input file parameters
 class FragInputFiles(FragInputParameters, FragFromCoreParameters, FragFromSDFParameters):
