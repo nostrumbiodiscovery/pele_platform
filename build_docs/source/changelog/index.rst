@@ -1,28 +1,7 @@
 Versions
 ############
 
-Here we report the main changes for each version.
-
-v1.5.1
-==========================
-
-- AquaPELE
-
-- High-throughput fragment screening
-
-- Improved out-in exploration
-
-- Support for non-standard residues
-
-- Automatic metal constraints
-
-- Metal polarisation
-
-- Tutorials
-
-- Outliers removed from plots
-
-- Improved documentation
+Here we report the main changes for each version
 
 v1.5.0 (19/06/2020)
 ==========================

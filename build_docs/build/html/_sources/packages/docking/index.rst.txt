@@ -1,33 +1,33 @@
-Refine docking poses by accounting for receptor flexibility
+Refine docking poses by accounting with receptor flexibility
 #####################################################################
 
-The induced fit simulation aims to enhance docking poses by taking into account the
-receptor flexibility. In order to achieve this, we developed a curated side chain prediction and ANM
-algorithms, which were benchmarked against standard docking techniques.
+This simulation aims to enhance docking poses by having into account
+receptor flexibility. To do this, a curated side chain prediction and ANM
+algorithms were developed and benchmarked against standard docking techniques.
 
 **Article**: https://www.ncbi.nlm.nih.gov/pubmed/27545443 
 
 **Input** (further explained below):
 
-    - protein-ligand complex PDB file
+    - Protein-ligand.pdb
 
 **Output** (further explained below):
 
-    - ranked binding modes
+    - Ranked binding modes
 
 **Computational time**: 2h 
 
 1. Complex Preparation
 ========================
    
-Prepare the system consisting of protein and docked ligand with Schrödinger Protein Preparation Wizard. We would usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
-and ions as well as filling in missing loops and side chains.
+Prepare the system with maestro (Protein Preparation Wizard) and output a complex.pdb. The complex.pdb must contain the docked protein-ligand.
+
 
 Make sure the ligand has:
 
- - unique chain ID
- - unique PDB atom names with no spaces or single letters
- - any residue name except for ``UNK``
+ - Unique chain
+ - No atomnames with spaces or single letter
+ - Any residuename except UNK
 
 2. Input Preparation
 =====================
@@ -36,47 +36,34 @@ Prepare the input file ``input.yml``:
 
 ..  code-block:: yaml
 
-    system: 'docking2grid6n4b_thc.pdb' # Protein-ligand PDB
-    chain: 'L' # Ligand chain ID
+    system: 'docking2grid6n4b_thc.pdb' #Protein ligand pdb
+    chain: 'L' #Ligand chain name
     resname: 'THC' # Ligand residue name
     seed: 12345
-    # Distance between two atoms to track the simulation
+    #Distance to track along the simulation
     atom_dist:
-    - "A:2:CA" # First atom (chain ID:residue number:atom name)
-    - "B:3:CG" # Second atom
+    - "A:2:CA" #First atom to make the distance to
+    - "B:3:CG" #Second atom to make the distance to
     cpus: 60
-    induced_fit_fast: true # less sampling but faster (2-3 h)
-    #induced_fit_exhaustive: true # 6h simulation but a lot more sampling
+    induced_fit_fast: true #2-3h less sampling but faster
+    #induced_fit_exhaustive: true #6h sim but much more sampling
 
-For more optional flags please refer to `optative flags <../../documentation/index.html>`_
+For more optional flags please refer to `optative falgs <../../documentation/index.html>`_
 
 3. Run simulation
 ====================
 
-To run the system launch the simulation with the following command:
+To run the system launch the simulation with the next command:
 
 ``python -m pele_platform.main input.yml``
 
 4. Output
 =================
 
-Raw output
-+++++++++++++
-Trajectory and report files for each simulation are located in ``working_folder/output``. That's where you can find
-detailed information on each snapshot (PDB file, binding energy, metrics, etc.).
-
-Selected poses
-++++++++++++++++
-
-**Clusters**
-
-Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
-Ranked cluster representatives can be found in:
+Best ranked clusters:
 
 ``working_folder/results/clusters``
 
-**Best snapshots**
+Best ranked poses:
 
-In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
-
-``working_folder/results/BestStructs``
+``working_folder/results/BestStructs/``
