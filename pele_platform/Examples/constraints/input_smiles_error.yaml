@@ -1,0 +1,7 @@
+system: "../pele_platform/Examples/constraints/complex_smiles_error.pdb"
+chain: "Z"
+resname: "LIG"
+induced_fit_fast: True
+test: True
+constrain_core_spring: 20
+constrain_core: "c1ccccc1"

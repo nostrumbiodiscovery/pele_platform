@@ -19,6 +19,8 @@ jobs:
       run: |
         echo ::add-path::$CONDA/bin
         echo ::add-path::$CONDA/condabin
+      env:
+        ACTIONS_ALLOW_UNSECURE_COMMANDS: true
     - name: Install dependencies
       run: |
         conda install numpy cython

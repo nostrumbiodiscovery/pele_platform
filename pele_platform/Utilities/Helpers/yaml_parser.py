@@ -27,10 +27,9 @@ class YamlParser(object):
             except yaml.YAMLError as exc:
                 raise(exc)
         return data
-
+    
     def _get_value_from_env(self):
         self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
-
 
     def _check(self) -> None:
         # Check if valids in yaml file are valids
@@ -184,7 +183,8 @@ class YamlParser(object):
         self.analyse = data.get(valid_flags["analyse"], None)
         self.selection_to_perturb = data.get(valid_flags["selection_to_perturb"], None)
         self.mae = data.get(valid_flags["mae"], None)
-        self.constrain_smiles = data.get(valid_flags["constrain_smiles"], None)
+        self.constrain_core = data.get(valid_flags["constrain_core"], None)
+        self.constrain_core_spring = data.get(valid_flags["constrain_core_spring"], 50.0)
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.spawning_condition = data.get(valid_flags["spawning_condition"], None)
         self.external_constraints = data.get(valid_flags["external_constraints"], [])

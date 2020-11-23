@@ -375,7 +375,16 @@ Algorithm to automatically set metal constraints around the ligand.
         - "50-2.34-A:1:H-L:1:MG" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
 
 
+Core constraints
++++++++++++++++++++++
 
+You can constrain the core of your ligand by specifying either SMILES or SMARTS pattern using ``constrain_core`` flag.
+The default spring constant is 50 but you can choose your own.
+
+..  code-block:: yaml
+
+    constrain_core: "CN(C)C(=O)c1ccc(F)cc1"  # SMILES or SMARTS pattern
+    constrain_core_spring: 30  # optional, default 50.0
 
 WaterPerturbation
 ======================
