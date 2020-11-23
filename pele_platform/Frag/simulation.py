@@ -6,6 +6,8 @@ import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.checker as ch
 import pele_platform.Frag.parameters.main as mn
 import pele_platform.Errors.custom_errors as ce
+import pele_platform.Frag.libraries as lb
+import pele_platform.Frag.analysis as ana
 import frag_pele.main as frag
 
 
@@ -19,13 +21,18 @@ class FragRunner(mn.FragParameters):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()
+        self._analysis()
 
     def _launch(self):
         if self.ligands:  # Full ligands as sdf
             fragment_files = self._prepare_input_file(logger=self.logger)
+        elif self.frag_library:
+            self.input = lb.main(self.frag_core_atom, self.frag_library, self.logger)
         else:
             fragment_files = None
-        self._run()
+        
+        if not self.only_analysis:
+            self._run()
         
         if self.cleanup and fragment_files:
             self._clean_up(fragment_files)
@@ -70,8 +77,9 @@ class FragRunner(mn.FragParameters):
                           self.translation_low, self.rotation_low, self.explorative, self.frag_radius,
                           self.sampling_control, self.pele_data, self.pele_documents,
                           self.only_prepare, self.only_grow, self.no_check, self.debug, srun=self.usesrun)
-            except Exception:
+            except Exception as e:
                 print("Skipped - FragPELE will not run.")
+                print(e)
 
     def _prepare_input_file(self, logger=None):
         from rdkit import Chem
@@ -142,10 +150,13 @@ class FragRunner(mn.FragParameters):
         if not correct:
             print("Ligand incorrect")
         return line, fragment
-        
+       
+    def _analysis(self):                                                                                                                                                       
+        self.analysis_to_point = self.args.analysis_to_point                                                                                                                            
+        if self.analysis_to_point and self.folder:                                                                                                                                      
+            ana.main(path=self.folder, atomCoords=self.analysis_to_point, pattern=os.path.basename(self.system))  
 
     def _clean_up(self, fragment_files):
-
         for file in fragment_files:
             if os.path.isfile(file):
                 os.remove(file)
