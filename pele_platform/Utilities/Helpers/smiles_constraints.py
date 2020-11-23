@@ -12,9 +12,6 @@ class SmilesConstraints:
     chain: str
     spring_constant: float = 50.0
 
-    if hp.is_rdkit():
-        from rdkit import Chem
-
     def run(self):
         self.smarts = self.convert_to_smarts(self.constrain_core)
         self.ligand = self.extract_ligand(self.input_pdb, self.resname)
@@ -27,20 +24,22 @@ class SmilesConstraints:
                 "Could not recognise the substructure specified in 'constrain_core'. This might be due to differences "
                 "in ionisation states. Check, if the charges are identical and adjust your pattern, if necessary.\n"
                 "Core SMARTS: {}\nLigand SMARTS: {}".format(
-                    self.smarts, self.Chem.MolToSmarts(self.ligand)))
+                    self.smarts, Chem.MolToSmarts(self.ligand)))
 
     def convert_to_smarts(self, core):
+        from rdkit import Chem
         if "C" in core or "c" in core:  # if the pattern is SMILES
-            pattern = self.Chem.MolFromSmiles(core)
-            smarts = self.Chem.MolToSmarts(pattern)
+            pattern = Chem.MolFromSmiles(core)
+            smarts = Chem.MolToSmarts(pattern)
         else:  # if the pattern is SMARTS
             smarts = core
         return smarts
 
     def extract_ligand(self, pdb, resname):
-        complex = self.Chem.MolFromPDBFile(pdb)
+        from rdkit import Chem
+        complex = Chem.MolFromPDBFile(pdb)
         if complex is not None:
-            ligand = self.Chem.rdmolops.SplitMolByPDBResidues(complex)[resname]
+            ligand = Chem.rdmolops.SplitMolByPDBResidues(complex)[resname]
         else:
             ligand = self._backup_ligand_extraction(pdb, resname)
         return ligand
@@ -59,12 +58,13 @@ class SmilesConstraints:
         return substructures
 
     def _substructure_search(self, smarts, ligand, old="", new="", regex_remove=False, rdkit_remove=False):
+        from rdkit import Chem
         self.smarts = smarts
         if regex_remove:
             self.smarts = re.sub(r"H\d?", "", self.smarts)
         else:
             self.smarts = self.smarts.replace(old, new)
-        self.pattern = self.Chem.MolFromSmarts(self.smarts)
+        self.pattern = Chem.MolFromSmarts(self.smarts)
 
         if rdkit_remove:
             idx_to_remove = []
@@ -76,6 +76,7 @@ class SmilesConstraints:
         return ligand.GetSubstructMatches(self.pattern)
 
     def build_constraints(self, substructures, ligand, spring_constant, chain):
+        from rdkit import Chem
         constraints = []
         if len(substructures) > 1:
             raise ce.SubstructureError(
@@ -93,6 +94,7 @@ class SmilesConstraints:
         Extracts ligand lines from PDB file and loads them directly. Sometimes rdkit refuses to read in PDB files
         because of random valence errors, hence the need for a backup if extract_ligand fails.
         """
+        from rdkit import Chem
         ligand_lines = []
 
         with open(pdb, "r") as f:
@@ -101,5 +103,5 @@ class SmilesConstraints:
                 if (line.startswith("ATOM") or line.startswith("HETATM")) and line[17:20].strip() == resname:
                     ligand_lines.append(line)
         ligand_block = "".join(ligand_lines)
-        ligand = self.Chem.MolFromPDBBlock(ligand_block)
+        ligand = Chem.MolFromPDBBlock(ligand_block)
         return ligand
