@@ -18,7 +18,7 @@ class AllostericLauncher:
         self.global_simulation = bb.GlobalExploration(self.args).run()
 
         if not self.args.skip_refinement:
-            self.refinement_simulation = bb.InducedFitExhaustive(self.args).run()
+            self.refinement_simulation = bb.InducedFitExhaustive(self.global_simulation).run()
         else:
             self.refinement_simulation = None
 
