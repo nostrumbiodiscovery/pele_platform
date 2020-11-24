@@ -53,7 +53,7 @@ class PostProcessor:
 
     def retrive_data(self, separator=","):
         summary_csv_filename = os.path.join(self.simulation_path, "summary.csv")
-        if not os.path.exists(summary_csv_filename):
+        if not os.path.exists(summary_csv_filename) or self._moved_folder(summary_csv_filename):
             try:
                 sp.concat_reports_in_csv(adaptive_results_path=self.simulation_path,
                                          output_file_path=summary_csv_filename,
@@ -202,6 +202,17 @@ class PostProcessor:
 
     def _get_column_name(self, df, column_digit):
         return list(df)[int(column_digit) - 1]
+
+    def _moved_folder(self, input_file):
+        if not os.path.exists(input_file):
+            return True
+        else:
+            with open(input_file, "r") as f:
+                if self.simulation_path in "".join(f.readlines()):
+                    return False
+                else:
+                    return True
+            
 
 
 def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True,
