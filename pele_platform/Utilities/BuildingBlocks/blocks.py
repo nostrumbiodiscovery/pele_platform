@@ -90,7 +90,7 @@ class InducedFitExhaustive:
             self.args.iterations = 20
 
     def set_working_folder(self):
-        self.args.working_folder = self.args.pele_dir
+        self.args.working_folder = os.path.dirname(self.args.folder)
         self.args.folder = os.path.join(self.args.working_folder, "2_induced_fit_exhaustive")
 
 
