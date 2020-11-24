@@ -3,7 +3,7 @@ import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
 import pele_platform.Allosteric.main as al
-import pele_platform.gpcr.main as gpcr
+import pele_platform.GPCR.main as gpcr
 import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
 import pele_platform.Utilities.Parameters.pele_env as pv
@@ -34,7 +34,7 @@ class Launcher:
         if package == self.adaptive:
             job_variables = ad.run_adaptive(self._args)
         elif package == self.gpcr_orth:
-            job_variables = gpcr.GpcrLauncher(self._args).run_gpcr_simulation()
+            job_variables = gpcr.GPCRLauncher(self._args).run_gpcr_simulation()
         elif package == self.out_in:
             job_variables = outin.OutInLauncher(self._args).run_gpcr_simulation()
         elif package == self.allosteric:
