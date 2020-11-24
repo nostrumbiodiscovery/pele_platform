@@ -1,5 +1,4 @@
 import os
-import glob
 from pele_platform.Allosteric.cluster import cluster_best_structures
 from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
@@ -8,8 +7,7 @@ import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
 
 
-def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
-
+def run(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
 
     # Let user choose working folder
     original_dir = os.path.abspath(os.getcwd())

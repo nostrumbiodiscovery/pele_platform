@@ -5,7 +5,7 @@ import pele_platform.Adaptive.simulation as ad
 import pele_platform.Allosteric.main as al
 import pele_platform.GPCR.main as gpcr
 import pele_platform.out_in.main as outin
-from pele_platform.PPI.main import run_ppi
+import pele_platform.PPI.main as ppi
 import pele_platform.Utilities.Parameters.pele_env as pv
 import argparse
 
@@ -14,12 +14,12 @@ import argparse
 class Launcher:
 
     _args: argparse.ArgumentParser
-    frag: str="frag"
-    ppi: str="PPI"
-    allosteric: str="allosteric"
-    gpcr_orth: str="gpcr_orth"
-    out_in: str="out_in"
-    adaptive: str="adaptive"
+    frag: str = "frag"
+    ppi: str = "PPI"
+    allosteric: str = "allosteric"
+    gpcr_orth: str = "gpcr_orth"
+    out_in: str = "out_in"
+    adaptive: str = "adaptive"
 
     def launch(self) -> pv.EnviroBuilder:
         # Launch package from input.yaml
@@ -34,13 +34,13 @@ class Launcher:
         if package == self.adaptive:
             job_variables = ad.run_adaptive(self._args)
         elif package == self.gpcr_orth:
-            job_variables = gpcr.GPCRLauncher(self._args).run_gpcr_simulation()
+            job_variables = gpcr.GPCRLauncher(self._args).run()
         elif package == self.out_in:
-            job_variables = outin.OutInLauncher(self._args).run_gpcr_simulation()
+            job_variables = outin.OutInLauncher(self._args).run()
         elif package == self.allosteric:
-            job_variables = al.AllostericLauncher(self._args).run_allosteric()
+            job_variables = al.AllostericLauncher(self._args).run()
         elif package == self.ppi:
-            job_variables = run_ppi(self._args)
+            job_variables = ppi.run(self._args)
         elif package == self.frag:
             # Set variables and input ready
             job_variables = fr.FragRunner(self._args).run_simulation()
