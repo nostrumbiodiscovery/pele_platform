@@ -37,11 +37,11 @@ class GlobalExploration:
         self.original_dir = os.path.abspath(os.getcwd())
         working_folder = os.path.abspath("{}_Pele".format(self.args.residue))
         if not self.args.folder:
-            self.working_folder = is_repeated(working_folder) if not self.args.adaptive_restart else is_last(
+            self.args.working_folder = is_repeated(working_folder) if not self.args.adaptive_restart else is_last(
                 working_folder)
         else:
-            self.working_folder = os.path.abspath(self.args.folder)
-        self.args.folder = os.path.join(self.working_folder, "1_global_exploration")
+            self.args.working_folder = os.path.abspath(self.args.folder)
+        self.args.folder = os.path.join(self.args.working_folder, "1_global_exploration")
 
 
 @dataclass
@@ -74,8 +74,8 @@ class InducedFitExhaustive:
     args: pv.EnviroBuilder
 
     def run(self):
-        self.set_params()
         self.set_working_folder()
+        self.set_params()
         choose_refinement_input(self.args)
         simulation_params = si.run_adaptive(self.args)
         return simulation_params
@@ -84,13 +84,13 @@ class InducedFitExhaustive:
         self.args.full = None  # in case it was passed from previous building block
         self.args.poses = None
         self.args.induced_fit_exhaustive = True
-
-        self.args.system = os.path.join(self.args.working_folder, "refinement_input/*.pdb")
+        self.args.system = os.path.join(self.args.working_folder, "induced_fit_input/*.pdb")
 
         if not self.args.test:
             self.args.iterations = 20
 
     def set_working_folder(self):
+        self.args.working_folder = self.args.pele_dir
         self.args.folder = os.path.join(self.args.working_folder, "2_induced_fit_exhaustive")
 
 
@@ -147,7 +147,7 @@ def _check_ligand_distances(simulation_params, dataframe):
     inputs = []
     input_coords = []
     distances = []
-    n_inputs = simulation_params.global_simulation.cpus - 1
+    n_inputs = simulation_params.cpus - 1
 
     while len(inputs) < n_inputs:
         for f, c in zip(dataframe['File'], dataframe['1st atom coordinates']):
