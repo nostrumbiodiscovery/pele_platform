@@ -8,6 +8,7 @@ import pele_platform.Analysis.plots as pt
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
+data = "data"
 REPORT_NAME = "report_"
 TRAJ_NAME = "trajectory_"
 ANALYSIS_ARGS = os.path.join(test_path, "analysis/input.yaml")
@@ -35,6 +36,14 @@ def test_best_structs(simulation_path=simulation_path, report_name=REPORT_NAME, 
     analysis.top_poses(5, n_structs, output_folder)
     files = glob.glob(os.path.join(output_folder, "*"))
     assert len(files) == 1
+
+def test_csv_move_folder(simulation_path=simulation_path, report_name=REPORT_NAME, traj_name=TRAJ_NAME, n_structs=1):
+    output_folder="copy_folder"
+    shutil.copytree(simulation_path, output_folder)
+    analysis = pt.PostProcessor(report_name, traj_name, output_folder, 1)
+    analysis.logger = logging.getLogger('logger')
+    analysis.top_poses(5, n_structs, output_folder)
+    shutil.rmtree(output_folder)
 
 def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
     job = main.run_platform(ext_args)
