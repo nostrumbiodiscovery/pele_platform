@@ -73,7 +73,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.sidechain_resolution = args.sidechain_resolution if args.sidechain_resolution else self.simulation_params.get("sidechain_resolution", 30)
         self.proximityDetection = "false" if args.proximityDetection is False else self.simulation_params.get("proximityDetection", "true")
         self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", 250)
-        self.ca_constr = args.ca_constr if args.ca_constr is not None else self.simulation_params.get("ca_constr", 0.5)
+        self.ca_constr = args.ca_constr if args.ca_constr is not None else self.simulation_params.get("ca_constr", 5)
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", 0.65)
         self.steering= args.steering if args.steering else self.simulation_params.get("steering", 0)
         self.perturbation = "" if args.perturbation is False else self.simulation_params.get("perturbation", cs.PERTURBATION)
