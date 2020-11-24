@@ -8,7 +8,8 @@ Prepare your own simulation
 
 The next packages are included in the PELE Platform:
 
-    - `Docking Refinement <docking/index.html>`_ (1-2h)
+    - `Docking Refinement <docking/index.html>`_ (2-3h)
+    - `Pose Scorer <packages/rescoring/index.html>`_ (1-2h)
     - `Protein-Protein Inhibitors <ppi/index.html>`_ (10h)
     - `Pocket Exploration <pocket_exploration/index.html>`_ (24h)
     - `HT-Fragment Growing <frag/index.html>`_ (30 min/fragment)
@@ -21,6 +22,11 @@ The next packages are included in the PELE Platform:
 
 .. toctree::
    docking/index.rst
+   :hidden:
+
+
+.. toctree::
+   rescoring/index.rst
    :hidden:
 
 .. toctree::
