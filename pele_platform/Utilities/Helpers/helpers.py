@@ -58,7 +58,7 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def is_repited(pele_dir):
+def is_repeated(pele_dir):
 
     original_dir = None
     split_dir = pele_dir.split("_")
@@ -77,7 +77,7 @@ def is_repited(pele_dir):
         i = 1
     if os.path.isdir(pele_dir):
                 new_pele_dir = "{}_Pele_{}".format(original_dir, i)
-                new_pele_dir = is_repited(new_pele_dir)
+                new_pele_dir = is_repeated(new_pele_dir)
                 return new_pele_dir
     else:
                 return pele_dir
