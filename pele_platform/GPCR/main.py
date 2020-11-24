@@ -8,7 +8,7 @@ import pele_platform.Utilities.Parameters.pele_env as pv
 class GPCRLauncher:
     args: pv.EnviroBuilder
 
-    def run_gpcr_simulation(self) -> pv.EnviroBuilder:
+    def run(self) -> pv.EnviroBuilder:
         # Set parameters for GPCR and launch simulation
         self._set_parameters()
         simulation_parameters = si.run_adaptive(self.args)

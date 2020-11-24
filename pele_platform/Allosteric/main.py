@@ -14,13 +14,12 @@ import pele_platform.Adaptive.simulation as si
 class AllostericLauncher:
     args: pv.EnviroBuilder
 
-    def run_allosteric(self) -> (pv.EnviroBuilder, pv.EnviroBuilder):
+    def run(self) -> (pv.EnviroBuilder, pv.EnviroBuilder):
         """
         Launch allosteric simulation.
         1) Run global exploration to identify the most important pockets
         2) Run induced fit simulation to find deep pockets
         """
-
         self._set_params_global()
         self.global_simulation = self._launch_global()
 

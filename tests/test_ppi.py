@@ -2,7 +2,7 @@ import pandas as pd
 import glob
 import os
 import shutil
-from pele_platform.PPI.main import run_ppi
+from pele_platform.PPI.main import run
 from pele_platform.PPI.preparation import prepare_structure 
 from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 from pele_platform.constants import constants as cs
