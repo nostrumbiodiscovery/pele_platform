@@ -39,6 +39,9 @@ Prepare the input file ``input.yml``:
     initial_site: "A:577:N"
     final_site: "A:867:CB"
 
+**Note:** PELE will automatically place the ligand around the specified initial site, and will use
+the final_site to build the simulation box. Then simulation will start.
+
 For more optional flags please refer to `optional flags <../../documentation/index.html>`_
 
 

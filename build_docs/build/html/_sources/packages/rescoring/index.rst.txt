@@ -1,23 +1,30 @@
-Prepare your own binding simulation
-####################################
+Rank multiple putative poses
+#####################################################################
 
-This simulation aims to find the binding path of a small molecule to a given receptor.
+The rescoring simulation aims to rank poses. In order to achieve this, we developed a curated side chain prediction and minimization algorithm
+to relax the system. This simulation is generally used when having multiple plausible poses in order to discriminate between them.
 
 **Input** (further explained below):
 
-    - protein-ligand PDB file
+    - protein-ligand complex/es PDB file/s
 
 **Output** (further explained below):
 
-    - ranked binding modes of the chosen small molecule with the desired protein
+    - ranked binding modes
 
-**Computational Time**: 6h
+**Computational time**: 2h 
 
 1. Complex Preparation
-======================
+========================
    
-Prepare the system with maestro (Protein Preparation Wizard)
-and output a complex.pdb. The complex.pdb must contain the protein-ligand in the desired initial conformation. If the binding site is known, the ligand must be set as close as possible to the protein surface on that side of the protein.
+Prepare the system consisting of protein and docked ligand with Schrödinger Protein Preparation Wizard. We would usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
+and ions as well as filling in missing loops and side chains.
+
+Make sure the ligand has:
+
+ - unique chain ID
+ - unique PDB atom names with no spaces or single letters
+ - any residue name except for ``UNK``
 
 2. Input Preparation
 =====================
@@ -26,24 +33,18 @@ Prepare the input file ``input.yml``:
 
 ..  code-block:: yaml
 
-    system: 'docking2grid6n4b_thc.pdb' # Protein ligand PDB
+    system: 'poses*.pdb' # Protein-ligand poseS!
     chain: 'L' # Ligand chain ID
     resname: 'THC' # Ligand residue name
     seed: 12345
-    # Distance to track along the simulation
+    # Distance between two atoms to track the simulation
     atom_dist:
     - "A:2:CA" # First atom (chain ID:residue number:atom name)
     - "B:3:CG" # Second atom
     cpus: 60
-    out_in: true
-    initial_site: "A:577:N"
-    final_site: "A:867:CB"
+    rescoring: true # only relaxation part of the algorithm
 
-**Note:** PELE will automatically place the ligand around the specified initial site, and will use
-the final_site to build the simulation box. Then simulation will start.
-
-For more optional flags please refer to `optional flags <../../documentation/index.html>`_
-
+For more optional flags please refer to `optative flags <../../documentation/index.html>`_
 
 3. Run simulation
 ====================

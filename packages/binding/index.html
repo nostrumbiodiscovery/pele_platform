@@ -92,6 +92,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Prepare your own simulation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Refine docking poses by accounting for receptor flexibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../rescoring/index.html">Rank multiple putative poses</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Prepare your own Pocket Exploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Prepare your own Fragment Growing</a></li>
@@ -234,6 +235,8 @@ and output a complex.pdb. The complex.pdb must contain the protein-ligand in the
 <span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;A:867:CB&quot;</span>
 </pre></div>
 </div>
+<p><strong>Note:</strong> PELE will automatically place the ligand around the specified initial site, and will use
+the final_site to build the simulation box. Then simulation will start.</p>
 <p>For more optional flags please refer to <a class="reference external" href="../../documentation/index.html">optional flags</a></p>
 </div>
 <div class="section" id="run-simulation">

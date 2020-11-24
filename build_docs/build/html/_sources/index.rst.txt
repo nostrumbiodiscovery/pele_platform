@@ -12,6 +12,7 @@ solutions to drug discovery problems in matter of hours.
 PELE packages:
 
     - `Docking Refinement <packages/docking/index.html>`_ (1-2h)
+    - `Pose Scorer <packages/rescoring/index.html>`_ (1-2h)
     - `Pocket Exploration <packages/pocket_exploration/index.html>`_ (24h)
     - `Protein-Protein Inhibitors <packages/ppi/index.html>`_ (10h)
     - `HT-Fragment Growing <packages/frag/index.html>`_ (30min/fragment)
