@@ -139,6 +139,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.pele_documents = args.pele_documents if args.pele_documents else os.path.join(cs.PELE, "Documents")
         self.polarize_metals = args.polarize_metals if args.polarize_metals else False
         self.polarization_factor = args.polarization_factor if args.polarization_factor else 2.0
+        self.skip_refinement = args.skip_refinement if args.skip_refinement else False
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
@@ -146,7 +147,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.constraints = None
         self.external_constraints = hp.retrieve_constraints_for_pele(args.external_constraints, self.system) if args.external_constraints else []
         self.permissive_metal_constr = args.permissive_metal_constr if args.permissive_metal_constr else []
-        self.constrain_smiles = args.constrain_smiles if args.constrain_smiles else self.simulation_params.get("constrain_smiles", None)
+        self.constrain_core = args.constrain_core if args.constrain_core else self.simulation_params.get("constrain_core", None)
+        self.constrain_core_spring = args.constrain_core_spring if args.constrain_core_spring else 50.0
         self.no_ppp = args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
 
     def ligand_params(self, args):

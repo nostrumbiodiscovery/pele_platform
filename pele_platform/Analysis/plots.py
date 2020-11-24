@@ -32,7 +32,7 @@ def _extract_coords(info):
             coords.extend(traj.xyz[0][atom_num].tolist())
         except IndexError:
             continue
-    return np.array(coords).ravel()
+    return np.array(coords).ravel() * 10
 
 
 class PostProcessor:
@@ -61,7 +61,7 @@ class PostProcessor:
                                          separator_out=separator)
             except ValueError:
                 raise ValueError("Not report found under {}. Did you point to the right folder?".format(os.getcwd()))
-        dataframe = pd.read_csv(summary_csv_filename, sep=separator, engine='python', header=0)
+        dataframe = pd.read_csv(summary_csv_filename, sep=separator, header=0, float_precision='round_trip')
         dataframe_filtered = self._remove_outliers(dataframe)
         
         return dataframe_filtered
@@ -123,7 +123,6 @@ class PostProcessor:
         files_out = [
             "epoch{}_trajectory_{}.{}_{}{}.pdb".format(epoch, report, int(step), metric.replace(" ", ""), value) \
             for epoch, step, report, value in zip(epochs, step_indexes, file_ids, values)]
-
         # Read trajectory and output snapshot
         for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
             if not self.topology:
