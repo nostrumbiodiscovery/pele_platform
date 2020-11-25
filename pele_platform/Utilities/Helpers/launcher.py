@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
@@ -24,6 +25,8 @@ class Launcher:
     def launch(self) -> pv.EnviroBuilder:
         # Launch package from input.yaml
         self._define_package_to_run()
+        self.env = pele.EnviroBuilder()
+        self.env.build_adaptive_variables(self._args)
         job_variables = self.launch_package(self._args.package, no_check=self._args.no_check)
         return job_variables
 
@@ -38,7 +41,7 @@ class Launcher:
         elif package == self.out_in:
             job_variables = outin.OutInLauncher(self._args).run()
         elif package == self.allosteric:
-            job_variables = al.AllostericLauncher(self._args).run()
+            job_variables = al.AllostericLauncher(self.env).run()
         elif package == self.ppi:
             job_variables = ppi.run(self._args)
         elif package == self.frag:

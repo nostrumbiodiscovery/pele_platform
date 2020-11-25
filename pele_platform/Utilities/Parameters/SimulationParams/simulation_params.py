@@ -75,6 +75,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", 250)
         self.ca_constr = args.ca_constr if args.ca_constr is not None else self.simulation_params.get("ca_constr", 5)
         self.ca_interval = args.ca_interval if args.ca_interval is not None else self.simulation_params.get("ca_interval", 5)
+        self.charge_ter = args.charge_ter if args.charge_ter is not None else self.simulation_params.get("charge_ter", False)
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", 0.65)
         self.steering= args.steering if args.steering else self.simulation_params.get("steering", 0)
         self.perturbation = "" if args.perturbation is False else self.simulation_params.get("perturbation", cs.PERTURBATION)
