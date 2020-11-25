@@ -76,6 +76,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.ca_constr = args.ca_constr if args.ca_constr is not None else self.simulation_params.get("ca_constr", 5)
         self.ca_interval = args.ca_interval if args.ca_interval is not None else self.simulation_params.get("ca_interval", 5)
         self.charge_ter = args.charge_ter if args.charge_ter is not None else self.simulation_params.get("charge_ter", False)
+        self.gaps_ter = args.gaps_ter if args.gaps_ter is not None else self.simulation_params.get("gaps_ter", False)
         self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", 0.65)
         self.steering= args.steering if args.steering else self.simulation_params.get("steering", 0)
         self.perturbation = "" if args.perturbation is False else self.simulation_params.get("perturbation", cs.PERTURBATION)
@@ -142,6 +143,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.polarize_metals = args.polarize_metals if args.polarize_metals else False
         self.polarization_factor = args.polarization_factor if args.polarization_factor else 2.0
         self.skip_refinement = args.skip_refinement if args.skip_refinement else False
+        self.native = args.native if args.native else False
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
@@ -151,6 +153,8 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.permissive_metal_constr = args.permissive_metal_constr if args.permissive_metal_constr else []
         self.constrain_core = args.constrain_core if args.constrain_core else self.simulation_params.get("constrain_core", None)
         self.constrain_core_spring = args.constrain_core_spring if args.constrain_core_spring else 50.0
+        self.no_metal_constraints = args.no_metal_constraints if args.no_metal_constraints else False
+        self.constrain_all_metals = args.constrain_all_metals if args.constrain_all_metals else False
         self.no_ppp = args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
 
     def ligand_params(self, args):
@@ -215,3 +219,4 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.be_column = args.be_column
         self.te_column = args.te_column
         self.limit_column = args.limit_column
+        self.atom_dist = args.atom_dist if args.atom_dist else []
