@@ -19,6 +19,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
 
     def build_adaptive_variables(self, args):
         #DEFINE MAIN PATH
+        self.yamlfile = args.yamlfile
         pele_dir = os.path.abspath("{}_Pele".format(args.residue))
         if not args.folder:
             self.pele_dir = hp.is_repeated(pele_dir) if args.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
@@ -51,6 +52,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             self.create_logger()
         else:
             self.create_logger()
+        shutil.copy(self.yamlfile, self.pele_dir)
 
     def create_folders(self):
         """
