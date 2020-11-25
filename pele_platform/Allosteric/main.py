@@ -1,8 +1,4 @@
-from dataclasses import dataclass
-import os
-
 from pele_platform.Utilities.BuildingBlocks import blocks as bb
-import pele_platform.Utilities.Parameters.pele_env as pv
 
 
 class AllostericLauncher:
@@ -17,10 +13,6 @@ class AllostericLauncher:
         2) Run induced fit simulation to find deep pockets
         """
         self.env.package = "allosteric"
-        result = Pipeline([bb.GlobalExploration, bb.InducedFitExhaustive], self.env)
+        result = bb.Pipeline([bb.GlobalExploration, bb.InducedFitExhaustive], self.env)
 
         return result
-
-def Pipeline(iterable, env):
-    for simulation in iterable:
-        env = simulation(env).run()
