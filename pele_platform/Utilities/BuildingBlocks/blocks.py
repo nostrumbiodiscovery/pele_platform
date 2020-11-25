@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import shutil
 import numpy as np
 import os
 import pandas as pd
@@ -10,10 +11,20 @@ from pele_platform.Utilities.Helpers.helpers import is_repeated, is_last, cd, pa
 import pele_platform.Utilities.Parameters.pele_env as pv
 
 
-@dataclass
-class GlobalExploration:
+"""COMMUN CLASSS"""
+class Linker():
 
-    args: pv.EnviroBuilder
+    def finish_state(value):
+        self.env.next_step = value
+
+    def set_params():
+
+
+@dataclass
+class GlobalExploration(Linker):
+
+
+    env: pv.EnviroBuilder
 
     def run(self):
         """
@@ -21,27 +32,34 @@ class GlobalExploration:
         """
         self.set_params()
         self.set_working_folder()
-        simulation_params = si.run_adaptive(self.args)
+        simulation_params = si.run_adaptive(self.env)
+        #self.finish_state()
         return simulation_params
 
-    def set_params(self):
+
+    #####INherit from parent class so you don't have to repeat########
+    def set_params(self, package="global"):
         """
         Set parameters for global exploration.
         """
-        self.args.full = True
+        ###convert to one that control them all!!!
+        self.env.full = package
+        self.env.type_simulation = package
+        ###create_files_and_folders
+        self.env.create_files_and_folders()
 
     def set_working_folder(self):
         """
         Set working folder. Users can pick their own.
         """
         self.original_dir = os.path.abspath(os.getcwd())
-        working_folder = os.path.abspath("{}_Pele".format(self.args.residue))
-        if not self.args.folder:
-            self.args.working_folder = is_repeated(working_folder) if not self.args.adaptive_restart else is_last(
+        working_folder = os.path.abspath("{}_Pele".format(self.env.residue))
+        if not self.env.folder:
+            self.env.working_folder = is_repeated(working_folder) if not self.env.adaptive_restart else is_last(
                 working_folder)
         else:
-            self.args.working_folder = os.path.abspath(self.args.folder)
-        self.args.folder = os.path.join(self.args.working_folder, "1_global_exploration")
+            self.env.working_folder = os.path.abspath(self.env.folder)
+        self.env.folder = os.path.join(self.env.working_folder, "1_global_exploration")
 
 
 @dataclass
