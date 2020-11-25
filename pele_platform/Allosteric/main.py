@@ -5,9 +5,10 @@ from pele_platform.Utilities.BuildingBlocks import blocks as bb
 import pele_platform.Utilities.Parameters.pele_env as pv
 
 
-@dataclass
 class AllostericLauncher:
-    args: pv.EnviroBuilder
+
+    def __init__(self, env):
+        self.env = env
 
     def run(self):
         """
@@ -15,11 +16,11 @@ class AllostericLauncher:
         1) Run global exploration to identify the most important pockets
         2) Run induced fit simulation to find deep pockets
         """
-        self.global_simulation = bb.GlobalExploration(self.args).run()
+        self.env.package = "allosteric"
+        result = Pipeline([bb.GlobalExploration, bb.InducedFitExhaustive], self.env)
 
-        if not self.args.skip_refinement:
-            self.refinement_simulation = bb.InducedFitExhaustive(self.global_simulation).run()
-        else:
-            self.refinement_simulation = None
+        return result
 
-        return self.global_simulation, self.refinement_simulation
+def Pipeline(iterable, env):
+    for simulation in iterable:
+        env = simulation(env).run()
