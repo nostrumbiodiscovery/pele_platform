@@ -6,6 +6,26 @@ FragPELE is a new tool for in silico hit-to-lead drug design, capable of growing
 
 This tutorial aims to describe the general protocol to run FragPELE.
 
+Installation
+-----------------------
+1. **Conda**
+.. code-block:: console
+   conda install -c NostrumBiodiscovery -c conda-forge frag_pele --yes
+
+2. **PyPi**
+
+.. code-block:: console
+   pip install frag_pele
+
+3. **Source Code**
+
+.. code-block:: console
+   git clone https://github.com/carlesperez94/frag_pele.git
+   cd frag_pele
+   pip install numpy cython #in case not to have them
+   python setup.py install
+
+
 Previous Requisites
 -----------------------
 
@@ -44,6 +64,18 @@ Select the number of steps in this sampling simulation unsing the flag **-es**.
 
 .. code-block:: console
    python frag_pele.main -cp core.pdb -sef serie_file.conf -sc /path/to/control-personalized.conf
-4. **Prepare PDB files:** FragPELE gives the option to only prepare the PDB files. 
+4. **Prepare PDB files:** FragPELE gives the option to only prepare the PDB files. To prepare the PDB files use the flag **-op**.
 
+.. code-block:: console
+   python frag_pele.main -cp core.pdb -sef serie_file.conf -op
+
+5. **Only grow fragments:** FragPELE offers the option to only perform the growing of the fragment, if the PDB files were previously prepared. To only execute the growing part of the code use the flag **-og**.
+
+.. code-block:: console
+   python frag_pele.main -cp core.pdb -sef serie_file.conf -og
+
+Analysis Tools
+------------------
+
+FragPELE also offers several tools to analyse the simulations. All of the analysis tools are available on te path **frag_pele/Analysis**
 
