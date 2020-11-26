@@ -26,7 +26,7 @@ class Launcher:
         # Launch package from input.yaml
         self._define_package_to_run()
         self.env = pele.EnviroBuilder()
-        self.env.build_adaptive_variables(self._args)
+        self.env.initial_args = self._args  # to keep the original args
         job_variables = self.launch_package(self._args.package, no_check=self._args.no_check)
         return job_variables
 

@@ -21,9 +21,7 @@ class Simulation:
     env: pv.EnviroBuilder
 
     def set_params(self, simulation_type):
-        self.env.type_simulation = simulation_type
-        self.env.create_files_and_folders()
-        self.set_working_folder(folder_name=None)
+        setattr(self.env, simulation_type, True)
 
     def finish_state(self, value):
         self.env.next_step = value
@@ -33,14 +31,10 @@ class Simulation:
         Set working folder. Users can pick their own.
         """
         self.original_dir = os.path.abspath(os.getcwd())
-        working_folder = os.path.abspath("{}_Pele".format(self.env.residue))
-        if not self.env.folder:
-            self.env.working_folder = is_repeated(working_folder) if not self.env.adaptive_restart else is_last(
-                working_folder)
-        else:
-            self.env.working_folder = os.path.abspath(self.env.folder)
-        self.env.folder = os.path.join(self.env.working_folder, folder_name)
+        self.env.folder_name = folder_name
 
+    def create_folders(self):
+        self.env.create_files_and_folders()
 
 @dataclass
 class GlobalExploration(Simulation):
@@ -51,8 +45,11 @@ class GlobalExploration(Simulation):
         """
         Launch global exploration.
         """
+        print("AAA Running GlobalExploration")
         self.set_params(simulation_type="full")
         self.set_working_folder(self.folder_name)
+        self.env.build_adaptive_variables(self.env.initial_args)
+        self.create_folders()
         simulation_params = si.run_adaptive(self.env)
         self.finish_state(simulation_params.output)
         return simulation_params
@@ -83,6 +80,7 @@ class InducedFitExhaustive(Simulation):
     folder_name: str
 
     def run(self):
+        print("AAA Running InducedFitExhaustive")
         self.set_params(simulation_type="induced_fit_exhaustive")
         self.set_working_folder(self.folder_name)
         simulation_params = si.run_adaptive(self.env)
@@ -169,10 +167,11 @@ class Selection:
 @dataclass
 class Pipeline:
 
-    def __init__(self, iterable, env):
-        self.iterable = iterable
-        self.env = env
+    iterable: list
+    env: pv.EnviroBuilder
 
+    def run(self):
         for simulation in self.iterable:
             folder = "Simulation_step_{}".format(self.iterable.index(simulation) + 1)
             self.env = simulation(self.env, folder).run()
+        return self.env
