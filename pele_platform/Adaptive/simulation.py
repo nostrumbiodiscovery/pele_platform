@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 import AdaptivePELE.adaptiveSampling as adt
@@ -39,6 +40,11 @@ def run_adaptive(env: pv.EnviroBuilder) -> pv.EnviroBuilder:
 
     # Build Folders and Logging and env variable that will contain
     # all main attributes of the simulation
+
+    if not hasattr(env, 'logger'):
+        logger = logging.getLogger('logger')
+        logger.setLevel(logging.INFO)
+        env.logger = logger
 
     if env.adaptive_restart and not env.only_analysis:
         with helpers.cd(env.pele_dir):
