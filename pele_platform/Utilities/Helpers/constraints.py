@@ -39,11 +39,9 @@ class ConstraintBuilder(object):
                             residues["initial"] = [chain, line[22:26].strip()]
                             initial_res = True
                             continue
-                        # Apply constraint every 10 residues
-                        elif int(resnum) % interval != 1:
-                            residues["terminal"] = [chain, line[22:26].strip()]
                         elif int(resnum) % interval == 1 and line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
                             residues[resnum] = chain
+                        residues["terminal"] = [chain, line[22:26].strip()]
                     except ValueError:
                         continue
         return residues

@@ -154,6 +154,7 @@ class YamlParser(object):
         self.induced_fit_fast = data.get(valid_flags["induced_fit_fast"], None)
         self.frag = data.get(valid_flags["frag"], None)
         self.ca_constr=data.get(valid_flags["ca_constr"], None)
+        self.ca_interval=data.get(valid_flags["ca_interval"], None)
         self.one_exit=data.get(valid_flags["one_exit"], None)
         self.box_type=data.get(valid_flags["box_type"], None)
         self.box_metric = data.get(valid_flags["box_metric"], None)
