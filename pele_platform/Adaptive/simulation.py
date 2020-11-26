@@ -101,7 +101,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             missing_residues = []
             gaps = {}
             metals = {}
-            env.constraints = ct.retrieve_constraints(env.system, gaps, metals, back_constr=env.ca_constr)
+            env.constraints = ct.retrieve_constraints(env.system, gaps, metals, back_constr=env.ca_constr, interval=env.ca_interval)
             if env.input:
                 # If we have more than one input
                 for input in env.input:
