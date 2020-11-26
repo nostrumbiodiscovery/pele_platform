@@ -13,7 +13,7 @@ class AllostericLauncher:
         2) Run induced fit simulation to find deep pockets
         """
         self.env.package = "allosteric"
-        result = bb.Pipeline([bb.GlobalExploration, bb.InducedFitExhaustive], self.env).run()
+        result = bb.Pipeline([bb.GlobalExploration, bb.Selection, bb.InducedFitExhaustive], self.env).run()
 
         return result
 

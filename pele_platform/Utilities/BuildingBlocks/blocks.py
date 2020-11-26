@@ -6,7 +6,7 @@ import pandas as pd
 import pele_platform.Adaptive.simulation as si
 from pele_platform.Analysis.plots import _extract_coords
 from pele_platform.Utilities.Helpers import bestStructs as bs
-from pele_platform.Utilities.Helpers.helpers import is_repeated, is_last, cd, parallelize
+from pele_platform.Utilities.Helpers.helpers import cd, parallelize
 import pele_platform.Utilities.Parameters.pele_env as pv
 
 
@@ -35,6 +35,7 @@ class Simulation:
 
     def create_folders(self):
         self.env.create_files_and_folders()
+
 
 @dataclass
 class GlobalExploration(Simulation):
@@ -80,9 +81,14 @@ class InducedFitExhaustive(Simulation):
     folder_name: str
 
     def run(self):
+        if self.env.next_step:
+            self.env.system = self.env.next_step
         print("AAA Running InducedFitExhaustive")
+        print("system", self.env.system)
         self.set_params(simulation_type="induced_fit_exhaustive")
         self.set_working_folder(self.folder_name)
+        self.env.build_adaptive_variables(self.env.initial_args)
+        self.create_folders()
         simulation_params = si.run_adaptive(self.env)
         self.finish_state(simulation_params.output)
         return simulation_params
@@ -107,6 +113,9 @@ class Rescoring(Simulation):
 @dataclass
 class Selection:
     simulation_params: pv.EnviroBuilder
+
+    def __init__(self):
+        self.choose_refinement_input()
 
     def choose_refinement_input(self):
         """
@@ -140,6 +149,8 @@ class Selection:
                 os.makedirs(directory, exist_ok=True)
             for i in inputs:
                 os.system("cp {} {}/.".format(i, directory))
+
+            self.next_step = os.path.join(directory, "*.pdb")
 
     def _check_ligand_distances(self, dataframe):
 
