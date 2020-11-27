@@ -1,35 +1,16 @@
-========================================
 FRAG_PELE
 ========================================
 
-FragPELE is a new tool for in silico hit-to-lead drug design, capable of growing a fragment from a bound core while exploring the protein-ligand conformational space. 
+FragPELE is a new tool for in silico hit-to-lead drug design, capable of growing a fragment from a bound core while exploring the protein-ligand conformational space.
 
 This tutorial aims to describe the general protocol to run FragPELE.
-
-Installation
------------------------
-1. **Conda**
-.. code-block:: console
-   conda install -c NostrumBiodiscovery -c conda-forge frag_pele --yes
-
-2. **PyPi**
-
-.. code-block:: console
-   pip install frag_pele
-
-3. **Source Code**
-
-.. code-block:: console
-   git clone https://github.com/carlesperez94/frag_pele.git
-   cd frag_pele
-   pip install numpy cython #in case not to have them
-   python setup.py install
 
 
 Previous Requisites
 -----------------------
 
-* **Complex PDB:** The PDB processed file. Prepare the system with the **Schrödinger Protein Preparation Wizard**. It is recommended to delete water molecules more than 5a away from ligands and ions as well as filling in missing loops and side chains.
+* **Complex PDB:** The PDB processed file. Prepare the system with the **Schrödinger Protein Prepaation Wizard**. It is recommended to delete water molecules more than 5a away from ligands and ions as well as filling in missii
+ng loops and side chains.
 It is obligatory that the protein is protonated.
 Furthermore, make sure the ligand has:
         * A unique chain ID.
@@ -43,39 +24,70 @@ Furthermore, make sure the ligand has:
 Launch a FragPELE simulation
 ---------------------------------
 
-The default simulation on FragPele is 10 growing steps of 6 Pele steps, and a final simulation of 20 Pele steps. 
+The default simulation on FragPele is 10 growing steps of 6 Pele steps, and a final simulation of 20 Pele steps.
+
+1. Protein Preparation
+-----------------------
+
+	a. Launch Schrodinger Maestro.
+ 	b. click ``File -> Get PDB`` and type your PDB Id to import the structure.
+	c. To preprocess the protein, go to ``Tasks`` and search for ``Protein Preparation Wizard``. Select the following options:
+	   Click ``Preprocess`` to start the preprocessing of the protein. 
+	d. Change the ligand chain ID ans the residue name.
+		#. Go to ``Select -> Set pick level -> Residues``.
+		#. Select the ligand with a mouse click.
+		#. Go to ``Build`` and click on `` Other edits -> Change atom properties``.
+		#. Change ``Residue Name`` to ``LIG``.
+		#. Change ``Chain Name`` to ``Z``.
+		#. Select ``PDB atom name`` from the drop down list and select ``Set unique PDB atom names within residues``.
+		#. Click ``Apply``.
+		#. Close the window.
+	e. Finally, export the structure by going to ``File -> Export structures`` and save it to your working directory. 
+
+2. Ligand Preparation
+------------------------
+	a. Select the ligand with a mouse click and extract it to a separate entry opening ``Build`` and clicking ``Copy selected atoms to new entry``. 
+	b. Now define the R-groups:
+		#. Hit ``Select -> Set pick level -> Atoms``.
+		#. Click on nay hydrogen atoms adjacent to Nitrogen.
+		#. Go to ``Tasks -> Enumeration -> Custom R-Group``.
+		#. Choose ``R-groups to Create a Hydrogen Bond`` from the drop down list.
+		#. Click ``Run`` to submit the job. 
+	c. An new group on the entry list is created once the job finishes. Select all enumerated ligands by clicking on the group.
+	d. Go to ``Tasks -> LigPrep``
+	e. Check the following options and hit ``Run``.
+	f. A new group on the entry list is created after LigPrep finishes. Select all the netries of the group as in step ``2e``.
+	g. Go to ``Export -> Structures`` and save the file as ``ligands.sdf`` in your working directory.
+
+3. YAML Input File
+----------------------
 
 
-Flags
--------
+4. Launching FragPELE
+-----------------------
 
-1. **High Throughput:** To run in High Throughput use the flap **-HT**. When using this flag FragPELE will perform 3 growing steps of 3 Pele steps anda a final exploration of 20 Pele steps. 
+5. Results
+--------------
 
-.. code-block:: console
-   python frag_pele.main -cp core.pdb -sef serie_file.conf -HT
-2. **Standard Precision:** To run in Standard Precision mode us the default values. FragPELE will perform 6 growing steps of 6 Pele steps and a final exploration of 20 Pele steps.
-
-3. **Explorative:** To run in Explorative mode use the flag **-EX**. FragPELE will perform a standard growing simulation with a sampling simulation of:
-        * 2 steering
-        * 0.5/ 0.3 translation
-        * 0.4/0.15 rotation
-        * 25 box radius
-Select the number of steps in this sampling simulation unsing the flag **-es**.
-
-.. code-block:: console
-   python frag_pele.main -cp core.pdb -sef serie_file.conf -sc /path/to/control-personalized.conf
-4. **Prepare PDB files:** FragPELE gives the option to only prepare the PDB files. To prepare the PDB files use the flag **-op**.
-
-.. code-block:: console
-   python frag_pele.main -cp core.pdb -sef serie_file.conf -op
-
-5. **Only grow fragments:** FragPELE offers the option to only perform the growing of the fragment, if the PDB files were previously prepared. To only execute the growing part of the code use the flag **-og**.
-
-.. code-block:: console
-   python frag_pele.main -cp core.pdb -sef serie_file.conf -og
-
-Analysis Tools
+Optative Flags
 ------------------
 
-FragPELE also offers several tools to analyse the simulations. All of the analysis tools are available on te path **frag_pele/Analysis**
+These flags are **exclusive to FragPELE** modes.
 
+- **growing_steps**: Number of steps to grow the fragment with.
+
+- **steps_in_gs**: Number of pele steps within each growing step
+
+- **sampling_steps**: Number of pele steps in the final sampling simulation
+
+- **protocol**: Type of protocol. options = [HT, ES]. For more info please refere here.
+        - **HT:** To run FragPELE in **high throughput** mode. 
+        - **ES:** 
+
+..  code-block:: yaml
+
+    growing_steps: 6
+    steps_in_gs: 6
+    sampling_steps: 20
+    protocol: HT
+    cpus: 24
