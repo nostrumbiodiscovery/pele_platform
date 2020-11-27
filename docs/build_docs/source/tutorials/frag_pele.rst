@@ -87,9 +87,13 @@ The input file ``input.yaml`` must contain:
 
 4. Launching FragPELE
 -----------------------
+To run the system launch the simulation with the following command:
 
+.. code-block: python
 
-5. Results
+   python -m pele_platform.main input.yaml
+
+%. Results
 --------------
 
 Optative Flags
