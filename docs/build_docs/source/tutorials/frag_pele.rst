@@ -61,10 +61,33 @@ The default simulation on FragPele is 10 growing steps of 6 Pele steps, and a fi
 
 3. YAML Input File
 ----------------------
+The input file ``input.yaml`` must contain:
+Â	1. **frag_core:** Path to the processed PDB file containing the protein and docket scaffols.
+	2. **frag_ligands:** Path to the SD file wit fully grown and preprocessed ligands.
+	3. **resname:** Unique residue name of the scaffold.
+	4. **chain_core:** Unique chain ID of the scaffols.
+	5. **cpus:** Number of CPUs to use.
+.. code-block: yaml
 
+    frag_core: "scaffold.pdb"
+    frag_ligands: "ligands.sdf"
+    resname: "LIG"
+    chain_core: "Z"
+    cpus: 50
+
+**Note:** It is recommended to first run the simulation includind **test:true** in the ``input.yaml`` file to check that everything works. The test will be executed with 5 CPUs.
+
+.. code-block: yaml
+
+    frag_core: "scaffold.pdb"
+    frag_ligands: "ligands.sdf"
+    resname: "LIG"
+    chain_core: "Z"
+    test: true
 
 4. Launching FragPELE
 -----------------------
+
 
 5. Results
 --------------
