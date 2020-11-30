@@ -18,7 +18,6 @@ LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
     inout_params.InOutParams, pca.PCAParams, allosteric.AllostericParams, ppi.PPIParams): # rna.RNAParams
 
-
     def __init__(self, args):
         self.set_simulation_type(args)
         self.main_pele_params(args)
@@ -32,7 +31,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.output_params(args)
         self.analysis_params(args)
 
-        #Create all simulation types (could be more efficient --> chnage in future) 
+        # Create all simulation types (could be more efficient --> chnage in future)
         super().generate_msm_params(args)
         super().generate_glide_params(args)
         super().generate_bias_params(args)
@@ -40,13 +39,13 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         super().generate_pca_params(args)
         super().generate_allosteric_params(args)
         super().generate_ppi_params(args)
-        #rna.RNAParams.__init__(self, args)
+        # rna.RNAParams.__init__(self, args)
 
 
     def set_simulation_type(self, args):
-        self.adaptive = True if args.package in ["allosteric", "adaptive", "PPI"]  else None
+        self.adaptive = True if args.package in ["allosteric", "adaptive", "PPI"] else None
         self.frag_pele = True if args.package == "frag" else None
-        # Trick to let frag handle control fodler parameters --> Improve
+        # Trick to let frag handle control folder parameters --> Improve
         self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
         self.frag_pele_steps = "$STEPS" if self.frag_pele else "$PELE_STEPS"
         self.output_path = "$RESULTS_PATH" if self.frag_pele else "$OUTPUT_PATH"
@@ -132,7 +131,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.cpus = args.cpus = args.cpus if args.cpus else self.simulation_params.get("cpus", 60)
         self.restart = args.restart if args.restart else self.simulation_params.get("restart", "all")
         self.test = args.test 
-        #+1 to avoid being 0 
+        # +1 to avoid being 0
         self.equil_steps = int(args.eq_steps/self.cpus) + 1 if args.eq_steps else self.simulation_params.get("equilibration_steps", 1)
         self.equilibration = "true" if args.equilibration else self.simulation_params.get("equilibration", "false")
         self.adaptive_restart = args.adaptive_restart
