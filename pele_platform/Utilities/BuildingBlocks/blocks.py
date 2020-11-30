@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import glob
 import numpy as np
 import os
 import pandas as pd
@@ -27,11 +28,10 @@ class Simulation:
         self.env.next_step = value
 
     def set_working_folder(self, folder_name):
-        """
-        Set working folder. Users can pick their own.
-        """
         self.original_dir = os.path.abspath(os.getcwd())
         self.env.folder_name = folder_name
+        if hasattr(self.env, "pele_dir"):
+            self.env.initial_args.folder = os.path.join(os.path.dirname(self.env.pele_dir), self.env.folder_name)
 
     def create_folders(self):
         self.env.create_files_and_folders()
@@ -46,30 +46,29 @@ class GlobalExploration(Simulation):
         """
         Launch global exploration.
         """
-        print("AAA Running GlobalExploration")
         self.set_params(simulation_type="full")
         self.set_working_folder(self.folder_name)
         self.env.build_adaptive_variables(self.env.initial_args)
         self.create_folders()
-        simulation_params = si.run_adaptive(self.env)
-        self.finish_state(simulation_params.output)
-        return simulation_params
+        self.env = si.run_adaptive(self.env)
+        self.finish_state(self.env.output)
+        return self.env
 
 
-@dataclass
-class InducedFitFast(Simulation):
-    env: pv.EnviroBuilder
-    folder_name: str
-
-    def run(self):
-        """
-        Launch induced fit fast.
-        """
-        self.set_params(simulation_type="induced_fit_fast")
-        self.set_working_folder(self.folder_name)
-        simulation_params = si.run_adaptive(self.env)
-        self.finish_state(simulation_params.output)
-        return simulation_params
+#@dataclass
+#class InducedFitFast(Simulation):
+#    env: pv.EnviroBuilder
+#    folder_name: str
+#
+#    def run(self):
+#        """
+#        Launch induced fit fast.
+#        """
+#        self.set_params(simulation_type="induced_fit_fast")
+#        self.set_working_folder(self.folder_name)
+#        simulation_params = si.run_adaptive(self.env)
+#        self.finish_state(simulation_params.output)
+#        return simulation_params
 
 
 @dataclass
@@ -81,41 +80,42 @@ class InducedFitExhaustive(Simulation):
     folder_name: str
 
     def run(self):
-        if self.env.next_step:
-            self.env.system = self.env.next_step
-        print("AAA Running InducedFitExhaustive")
-        print("system", self.env.system)
         self.set_params(simulation_type="induced_fit_exhaustive")
         self.set_working_folder(self.folder_name)
         self.env.build_adaptive_variables(self.env.initial_args)
         self.create_folders()
-        simulation_params = si.run_adaptive(self.env)
-        self.finish_state(simulation_params.output)
-        return simulation_params
+        #self.env.system = self.env.next_step
+        self.env.input = glob.glob(self.env.next_step)
+        self.env = si.run_adaptive(self.env)
+        self.finish_state(self.env.output)
+        return self.env
 
 
-@dataclass
-class Rescoring(Simulation):
-    """
-    Launch rescoring simulation.
-    """
-    env: pv.EnviroBuilder
-    folder_name: str
-
-    def run(self):
-        self.set_params(simulation_type="rescoring")
-        self.set_working_folder(self.folder_name)
-        simulation_params = si.run_adaptive(self.env)
-        self.finish_state(simulation_params.output)
-        return simulation_params
+#@dataclass
+#class Rescoring(Simulation):
+#    """
+#    Launch rescoring simulation.
+#    """
+#    env: pv.EnviroBuilder
+#    folder_name: str
+#
+#    def run(self):
+#        self.set_params(simulation_type="rescoring")
+#        self.set_working_folder(self.folder_name)
+#        simulation_params = si.run_adaptive(self.env)
+#        self.finish_state(simulation_params.output)
+#        return simulation_params
 
 
 @dataclass
 class Selection:
-    simulation_params: pv.EnviroBuilder
 
-    def __init__(self):
+    simulation_params: pv.EnviroBuilder
+    folder: str
+        
+    def run(self):
         self.choose_refinement_input()
+        return self.simulation_params
 
     def choose_refinement_input(self):
         """
@@ -142,15 +142,14 @@ class Selection:
                                      columns=["File", "Binding energy", "1st atom coordinates"])
             dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
 
-            inputs = self._check_ligand_distances(self.simulation_params, dataframe)
-            directory = os.path.join(self.simulation_params.folder, "refinement_input")
-
+            inputs = self._check_ligand_distances(dataframe)
+            directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder)   ######### this needs to be done with setting working folder like in Simulation I guess
             if not os.path.isdir(directory):
                 os.makedirs(directory, exist_ok=True)
             for i in inputs:
                 os.system("cp {} {}/.".format(i, directory))
 
-            self.next_step = os.path.join(directory, "*.pdb")
+            self.simulation_params.next_step = os.path.join(directory, "*.pdb")
 
     def _check_ligand_distances(self, dataframe):
 
@@ -183,6 +182,6 @@ class Pipeline:
 
     def run(self):
         for simulation in self.iterable:
-            folder = "Simulation_step_{}".format(self.iterable.index(simulation) + 1)
+            folder = "{}_{}".format(self.iterable.index(simulation) + 1, simulation.__name__)
             self.env = simulation(self.env, folder).run()
         return self.env
