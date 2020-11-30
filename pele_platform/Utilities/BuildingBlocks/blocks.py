@@ -50,25 +50,31 @@ class GlobalExploration(Simulation):
         self.set_working_folder(self.folder_name)
         self.env.build_adaptive_variables(self.env.initial_args)
         self.create_folders()
+        if hasattr(self.env, "next_step"):
+                self.env.input = glob.glob(self.env.next_step)
         self.env = si.run_adaptive(self.env)
         self.finish_state(self.env.output)
         return self.env
 
 
-#@dataclass
-#class InducedFitFast(Simulation):
-#    env: pv.EnviroBuilder
-#    folder_name: str
-#
-#    def run(self):
-#        """
-#        Launch induced fit fast.
-#        """
-#        self.set_params(simulation_type="induced_fit_fast")
-#        self.set_working_folder(self.folder_name)
-#        simulation_params = si.run_adaptive(self.env)
-#        self.finish_state(simulation_params.output)
-#        return simulation_params
+@dataclass                                                                                                                                                                              
+class InducedFitFast(Simulation):                                                                                                                                                 
+    """                                                                                                                                                                                 
+    Launch induced fit fast.                                                                                                                                                      
+    """                                                                                                                                                                                 
+    env: pv.EnviroBuilder                                                                                                                                                               
+    folder_name: str                                                                                                                                                                    
+                                                                                                                                                                                        
+    def run(self):                                                                                                                                                                      
+        self.set_params(simulation_type="induced_fit_fast")                                                                                                                       
+        self.set_working_folder(self.folder_name)                                                                                                                                       
+        self.env.build_adaptive_variables(self.env.initial_args)                                                                                                                        
+        self.create_folders()
+        if hasattr(self.env, "next_step"):                                                                                                                                                           
+                self.env.input = glob.glob(self.env.next_step)                                                                                                                                  
+        self.env = si.run_adaptive(self.env)                                                                                                                                            
+        self.finish_state(self.env.output)                                                                                                                                              
+        return self.env    
 
 
 @dataclass
@@ -84,27 +90,31 @@ class InducedFitExhaustive(Simulation):
         self.set_working_folder(self.folder_name)
         self.env.build_adaptive_variables(self.env.initial_args)
         self.create_folders()
-        #self.env.system = self.env.next_step
-        self.env.input = glob.glob(self.env.next_step)
+        if hasattr(self.env, "next_step"):
+                self.env.input = glob.glob(self.env.next_step)
         self.env = si.run_adaptive(self.env)
         self.finish_state(self.env.output)
         return self.env
 
 
-#@dataclass
-#class Rescoring(Simulation):
-#    """
-#    Launch rescoring simulation.
-#    """
-#    env: pv.EnviroBuilder
-#    folder_name: str
-#
-#    def run(self):
-#        self.set_params(simulation_type="rescoring")
-#        self.set_working_folder(self.folder_name)
-#        simulation_params = si.run_adaptive(self.env)
-#        self.finish_state(simulation_params.output)
-#        return simulation_params
+@dataclass                                                                                                                                                                              
+class Rescoring(Simulation):                                                                                                                                                 
+    """                                                                                                                                                                                 
+    Launch rescoring simulation.                                                                                                                                                     
+    """                                                                                                                                                                                 
+    env: pv.EnviroBuilder
+    folder_name: str
+
+    def run(self):
+        self.set_params(simulation_type="rescoring")
+        self.set_working_folder(self.folder_name)
+        self.env.build_adaptive_variables(self.env.initial_args)
+        self.create_folders()
+        if hasattr(self.env, "next_step"):
+                self.env.input = glob.glob(self.env.next_step)
+        self.env = si.run_adaptive(self.env)
+        self.finish_state(self.env.output)
+        return self.env
 
 
 @dataclass
