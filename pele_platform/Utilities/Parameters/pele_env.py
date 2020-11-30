@@ -27,7 +27,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             if self.folder_name:
                 self.pele_dir = os.path.join(self.pele_dir, self.folder_name)
         else:
-            self.pele_dir = os.path.abspath(self.folder)
+            self.pele_dir = os.path.abspath(args.folder)
         #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
         for key, value in adfs.retrieve_software_settings(args, self.pele_dir).items():
             setattr(self, key, value)
