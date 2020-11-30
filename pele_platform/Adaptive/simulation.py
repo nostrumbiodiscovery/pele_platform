@@ -4,7 +4,6 @@ import shutil
 import AdaptivePELE.adaptiveSampling as adt
 import PPP.main as ppp
 from pele_platform.Utilities.Helpers import helpers
-import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.simulation as ad
@@ -23,11 +22,9 @@ import pele_platform.Adaptive.ligand_parametrization as lg
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
 import pele_platform.Adaptive.pca as pca
-# import pele_platform.RNA.prep as pr
 
 
-
-####NEED TO CHANGE ALL ARGS TO ENV!!
+# NEED TO CHANGE ALL ARGS TO ENV!
 def run_adaptive(env: pv.EnviroBuilder) -> pv.EnviroBuilder:
     """
     Main function to prepare and launch simulation
@@ -68,7 +65,7 @@ def run_adaptive(env: pv.EnviroBuilder) -> pv.EnviroBuilder:
         if env.input:
             env.inputs_simulation = []
             for input in env.input:
-                input_path  = os.path.join(env.pele_dir, os.path.basename(input))
+                input_path = os.path.join(env.pele_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
                 
                 if env.no_ppp:
