@@ -181,7 +181,9 @@ class Pipeline:
     env: pv.EnviroBuilder
 
     def run(self):
+        output = []
         for simulation in self.iterable:
             folder = "{}_{}".format(self.iterable.index(simulation) + 1, simulation.__name__)
             self.env = simulation(self.env, folder).run()
-        return self.env
+            output.append(self.env)
+        return output
