@@ -31,15 +31,50 @@ The default simulation on FragPele is 10 growing steps of 6 Pele steps, and a fi
 
 	a. Launch Schrodinger Maestro.
  	b. click ``File -> Get PDB`` and type your PDB Id to import the structure.
+
+.. image:: ../img/frag_pele_tutorial_1b.png
+  :width: 400
+  :align: center
+
+.. image:: ../img/frag_pele_1b.2.png
+  :width: 400
+  :align: center
+
 	c. To preprocess the protein, go to ``Tasks`` and search for ``Protein Preparation Wizard``. Select the following options:
+
+.. image:: ../img/frag_pele_tutorial_1c.png
+  :width: 400
+  :align: center
+
 	   Click ``Preprocess`` to start the preprocessing of the protein. 
+
 	d. Change the ligand chain ID ans the residue name.
 		#. Go to ``Select -> Set pick level -> Residues``.
+
+.. image:: ../img/frag_pele_tutorial_1d.1.png
+  :width: 400
+  :align: center
+
 		#. Select the ligand with a mouse click.
 		#. Go to ``Build`` and click on `` Other edits -> Change atom properties``.
+
+.. image:: ../img/frag_pele_tutorial_1d.3.png
+  :width: 400
+  :align: center
+
 		#. Change ``Residue Name`` to ``LIG``.
 		#. Change ``Chain Name`` to ``Z``.
+
+.. image:: ../img/frag_pele_tutorial_1d.4.png
+  :width: 400
+  :align: center
+
 		#. Select ``PDB atom name`` from the drop down list and select ``Set unique PDB atom names within residues``.
+
+.. image:: ../img/frag_pele_tutorial_1d.5.png
+  :width: 400
+  :align: center
+
 		#. Click ``Apply``.
 		#. Close the window.
 	e. Finally, export the structure by going to ``File -> Export structures`` and save it to your working directory. 
@@ -49,13 +84,28 @@ The default simulation on FragPele is 10 growing steps of 6 Pele steps, and a fi
 	a. Select the ligand with a mouse click and extract it to a separate entry opening ``Build`` and clicking ``Copy selected atoms to new entry``. 
 	b. Now define the R-groups:
 		#. Hit ``Select -> Set pick level -> Atoms``.
-		#. Click on nay hydrogen atoms adjacent to Nitrogen.
+รง
+.. image:: ../img/frag_pele_tutorial_2b.2.png
+  :width: 400
+  :align: center
+
+		#. Click on any hydrogen atoms adjacent to Nitrogen.
 		#. Go to ``Tasks -> Enumeration -> Custom R-Group``.
 		#. Choose ``R-groups to Create a Hydrogen Bond`` from the drop down list.
-		#. Click ``Run`` to submit the job. 
+ร
+.. image:: ../img/frag_pele_tutorial_2b.4.png
+  :width: 400
+  :align: center
+
+		#. Click ``Run`` to submit the job with the following options.
 	c. An new group on the entry list is created once the job finishes. Select all enumerated ligands by clicking on the group.
 	d. Go to ``Tasks -> LigPrep``
 	e. Check the following options and hit ``Run``.
+
+.. image:: ../img/frag_pele_tutorial_2e.png
+  :width: 400
+  :align: center
+
 	f. A new group on the entry list is created after LigPrep finishes. Select all the netries of the group as in step ``2e``.
 	g. Go to ``Export -> Structures`` and save the file as ``ligands.sdf`` in your working directory.
 
@@ -93,9 +143,22 @@ To run the system launch the simulation with the following command:
 
    python -m pele_platform.main input.yaml
 
-%. Results
+5. Results
 --------------
 
+The simulation will create a folder with the following organization:
+	#. **pregrow:**
+	#. **growing_steps:** There is a folder for each growing step from the simulation. In each of these folderes, there are:
+		#. A report file for each CPU launched. This report contains the infromation of the number of the task, the number of accepted Pele steps, the current energy and binding energy of each step and the sasaLig, which is the solvent accesible surface area.
+		#. A pdb file of the trajectory. 
+	#. **sampling_result:** Growed fragment from each trajectory. 
+	#. **top_result:** Top results from each trajectory.
+	#. **clustering_PDBs:** There is a folder for each growing step from the simulation. In each of the folders there are:
+		#. Initial PDb file for each trajectory.  
+	#. **control_folder:** Conf file for each growing step from the simulation.
+	#. **DataLocal:**
+	#. **pele_template.conf:**
+	#. **top_result.pdb:**
 Optative Flags
 ------------------
 
@@ -107,7 +170,7 @@ These flags are **exclusive to FragPELE** modes.
 
 - **sampling_steps**: Number of pele steps in the final sampling simulation
 
-- **protocol**: Type of protocol. options = [HT, ES]. For more info please refere here.
+- **protocol**: Type of protocol. options = [HT, ES].
         - **HT:** To run FragPELE in **high throughput** mode. 
         - **ES:** 
 
@@ -117,4 +180,4 @@ These flags are **exclusive to FragPELE** modes.
     steps_in_gs: 6
     sampling_steps: 20
     protocol: HT
-    cpus: 24
+    cpus: 50
