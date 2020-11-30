@@ -19,13 +19,22 @@ class Simulation:
 
     One class to rule them all, one class to find them, one class to bring them all and in PELE bind them.
     """
+    keyword: str
     env: pv.EnviroBuilder
+    folder_name: str
+
+    def run(self):
+        self.set_params(simulation_type=self.keyword)
+        self.set_working_folder(self.folder_name)
+        self.env.build_adaptive_variables(self.env.initial_args)
+        self.create_folders()
+        if hasattr(self.env, "next_step"):
+            self.env.input = glob.glob(self.env.next_step)
+        self.env = si.run_adaptive(self.env)
+        return self.env
 
     def set_params(self, simulation_type):
         setattr(self.env, simulation_type, True)
-
-    def finish_state(self, value):
-        self.env.next_step = value
 
     def set_working_folder(self, folder_name):
         self.original_dir = os.path.abspath(os.getcwd())
@@ -38,86 +47,6 @@ class Simulation:
 
 
 @dataclass
-class GlobalExploration(Simulation):
-    env: pv.EnviroBuilder
-    folder_name: str
-
-    def run(self):
-        """
-        Launch global exploration.
-        """
-        self.set_params(simulation_type="full")
-        self.set_working_folder(self.folder_name)
-        self.env.build_adaptive_variables(self.env.initial_args)
-        self.create_folders()
-        if hasattr(self.env, "next_step"):
-                self.env.input = glob.glob(self.env.next_step)
-        self.env = si.run_adaptive(self.env)
-        self.finish_state(self.env.output)
-        return self.env
-
-
-@dataclass                                                                                                                                                                              
-class InducedFitFast(Simulation):                                                                                                                                                 
-    """                                                                                                                                                                                 
-    Launch induced fit fast.                                                                                                                                                      
-    """                                                                                                                                                                                 
-    env: pv.EnviroBuilder                                                                                                                                                               
-    folder_name: str                                                                                                                                                                    
-                                                                                                                                                                                        
-    def run(self):                                                                                                                                                                      
-        self.set_params(simulation_type="induced_fit_fast")                                                                                                                       
-        self.set_working_folder(self.folder_name)                                                                                                                                       
-        self.env.build_adaptive_variables(self.env.initial_args)                                                                                                                        
-        self.create_folders()
-        if hasattr(self.env, "next_step"):                                                                                                                                                           
-                self.env.input = glob.glob(self.env.next_step)                                                                                                                                  
-        self.env = si.run_adaptive(self.env)                                                                                                                                            
-        self.finish_state(self.env.output)                                                                                                                                              
-        return self.env    
-
-
-@dataclass
-class InducedFitExhaustive(Simulation):
-    """
-    Launch induced fit exhaustive.
-    """
-    env: pv.EnviroBuilder
-    folder_name: str
-
-    def run(self):
-        self.set_params(simulation_type="induced_fit_exhaustive")
-        self.set_working_folder(self.folder_name)
-        self.env.build_adaptive_variables(self.env.initial_args)
-        self.create_folders()
-        if hasattr(self.env, "next_step"):
-                self.env.input = glob.glob(self.env.next_step)
-        self.env = si.run_adaptive(self.env)
-        self.finish_state(self.env.output)
-        return self.env
-
-
-@dataclass                                                                                                                                                                              
-class Rescoring(Simulation):                                                                                                                                                 
-    """                                                                                                                                                                                 
-    Launch rescoring simulation.                                                                                                                                                     
-    """                                                                                                                                                                                 
-    env: pv.EnviroBuilder
-    folder_name: str
-
-    def run(self):
-        self.set_params(simulation_type="rescoring")
-        self.set_working_folder(self.folder_name)
-        self.env.build_adaptive_variables(self.env.initial_args)
-        self.create_folders()
-        if hasattr(self.env, "next_step"):
-                self.env.input = glob.glob(self.env.next_step)
-        self.env = si.run_adaptive(self.env)
-        self.finish_state(self.env.output)
-        return self.env
-
-
-@dataclass
 class Selection:
 
     simulation_params: pv.EnviroBuilder
@@ -125,6 +54,7 @@ class Selection:
         
     def run(self):
         self.choose_refinement_input()
+        self.simulation_params.next_step = os.path.join(self.directory, "*.pdb")
         return self.simulation_params
 
     def choose_refinement_input(self):
@@ -153,13 +83,11 @@ class Selection:
             dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
 
             inputs = self._check_ligand_distances(dataframe)
-            directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder)   ######### this needs to be done with setting working folder like in Simulation I guess
-            if not os.path.isdir(directory):
-                os.makedirs(directory, exist_ok=True)
+            self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder)
+            if not os.path.isdir(self.directory):
+                os.makedirs(self.directory, exist_ok=True)
             for i in inputs:
-                os.system("cp {} {}/.".format(i, directory))
-
-            self.simulation_params.next_step = os.path.join(directory, "*.pdb")
+                os.system("cp {} {}/.".format(i, self.directory))
 
     def _check_ligand_distances(self, dataframe):
 
