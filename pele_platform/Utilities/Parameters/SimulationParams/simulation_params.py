@@ -20,7 +20,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
 
 
     def __init__(self, args):
-        self.simulation_type(args)
+        self.set_simulation_type(args)
         self.main_pele_params(args)
         self.main_adaptive_params(args)
         self.optative_params(args)
@@ -43,7 +43,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         #rna.RNAParams.__init__(self, args)
 
 
-    def simulation_type(self, args):
+    def set_simulation_type(self, args):
         self.adaptive = True if args.package in ["allosteric", "adaptive", "PPI"]  else None
         self.frag_pele = True if args.package == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
