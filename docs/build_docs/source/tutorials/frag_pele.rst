@@ -172,12 +172,17 @@ The simulation will create a folder with the following organization:
         #. A pdb file of the trajectory. 
     #. **sampling_result:** Growed fragment from each trajectory. 
 	#. **top_result:** Top results from each trajectory.
+
+.. image:: ../img/top_result_frag_pele.png
+  :width: 400
+  :align: center
+
 	#. **clustering_PDBs:** There is a folder for each growing step from the simulation. In each of the folders there are:
 		#. Initial PDb file for each trajectory.  
     #. **control_folder:** Conf file for each growing step from the simulation.
-    #. **DataLocal:**
-    #. **pele_template.conf:**
-    #. **top_result.pdb:**
+    #. **DataLocal**
+    #. **pele_template.conf**
+    #. **top_result.pdb: PDB file of the top result from the simulation.**
 Optative Flags
 ------------------
 
