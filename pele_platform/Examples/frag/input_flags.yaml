@@ -1,5 +1,6 @@
 frag_core: "../pele_platform/Examples/water/water_processed.pdb"
 frag_input: "../pele_platform/Examples/frag/flags.conf"
+ca_interval: 1
 chain_core : "J"
 resname: "SB4"
 steering: 3
