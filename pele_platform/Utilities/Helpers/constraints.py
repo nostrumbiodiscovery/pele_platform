@@ -39,7 +39,7 @@ class ConstraintBuilder(object):
                             residues["initial"] = [chain, line[22:26].strip()]
                             initial_res = True
                             continue
-                        elif int(resnum) % interval == 1 and line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
+                        elif (int(resnum) % interval == 1 or interval==1) and line.startswith("ATOM") and resname in AMINOACIDS and atomtype == "CA":
                             residues[resnum] = chain
                         residues["terminal"] = [chain, line[22:26].strip()]
                     except ValueError:
