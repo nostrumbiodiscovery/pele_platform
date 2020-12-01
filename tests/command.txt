@@ -1,3 +1,5 @@
+export LD_LIBRARY_PATH="/scratch/PELE-compilation/PELE-dependencies/boost-1.52.0/lib/"
+export PELE="/scratch/PELE-repo/"
 export PYTHONPATH=/home/dsoler/repos/pele_platform/
 rm -r LIG_Pele* SB4_Pele* STR_Pele* LIG_Pele* AS4_Pele* IK1_Pele* allosteric NOR_solvent_OBC/ PCA_result/  API_Pele* 1w7h_preparation_structure_2w_processed*
 rm -r *.xml
