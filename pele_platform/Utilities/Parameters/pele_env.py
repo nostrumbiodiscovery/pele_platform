@@ -23,7 +23,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         pele_dir = os.path.abspath("{}_Pele".format(args.residue))
         if not args.folder:
             self.pele_dir = hp.is_repeated(pele_dir) if args.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
-            self.pele_dir = hp.is_repeated(pele_dir) if not self.adaptive_restart else hp.is_last(pele_dir)
+            self.pele_dir = hp.is_repeated(pele_dir) if not hasattr(self, "adaptive_restart") else hp.is_last(pele_dir)
             if self.folder_name:
                 self.pele_dir = os.path.join(self.pele_dir, self.folder_name)
         else:
