@@ -193,4 +193,4 @@ The simulation will create a folder with the following organization:
 Optative Flags
 ------------------
 
-See `here <../documentation/frag/index.rst>`_ the optative flags for FragPELE.
+See `here <../documentation/frag/index.html>`_ the optative flags for FragPELE.
