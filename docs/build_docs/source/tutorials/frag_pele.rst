@@ -158,7 +158,7 @@ The input file ``input.yaml`` must contain:
 -----------------------
 To run the system launch the simulation with the following command:
 
-.. code-block: python
+.. code-block:: python
    python -m pele_platform.main input.yaml
 
 5. Results
