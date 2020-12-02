@@ -1,0 +1,6 @@
+rot assign res API &
+   sidelib FREE10 _C2_ _C1_ &
+     newgrp &
+   sidelib FREE30 _N2_ _C6_ &
+   sidelib FREE30 _C6_ _C7_ &
+   sidelib FREE30 _C12 _N3_ &
