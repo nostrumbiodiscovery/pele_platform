@@ -165,19 +165,25 @@ To run the system launch the simulation with the following command:
 --------------
 
 The simulation will create a folder with the following organization:
-    - **pregrow:**
+    - **pregrow:** Contains the initial PDB files.
     - **growing_steps:** There is a folder for each growing step from the simulation. In each of these folderes, there are:
+
         - A report file for each CPU launched. This report contains the infromation of the number of the task, the number of accepted Pele steps, the current energy and binding energy of each step and the sasaLig, which is the solvent accesible surface area.
         - A pdb file of the trajectory. 
+
     - **sampling_result:** Growed fragment from each trajectory. 
+
 	- **top_result:** Top results from each trajectory.
 
     .. image:: ../img/top_result_frag_pele.png
       :width: 400
       :align: center
 
+
     - **clustering_PDBs:** There is a folder for each growing step from the simulation. In each of the folders there are:
+
         - Initial PDb file for each trajectory.  
+
     - **control_folder:** Conf file for each growing step from the simulation.
     - **DataLocal:** Contains the ligand templates. When you run a simulation, the ligands are parametrized and stored in this folder.
     - **pele_template.conf**
