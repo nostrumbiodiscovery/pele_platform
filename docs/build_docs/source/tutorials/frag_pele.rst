@@ -1,7 +1,7 @@
 FRAG_PELE
 ========================================
 
-FragPELE is a new tool for in silico hit-to-lead drug design, capable of growing a fragment from a bound core while exploring the protein-ligand conformational space.
+`FragPELE <https://pubmed.ncbi.nlm.nih.gov/32027130/>`_  is a new tool for in silico hit-to-lead drug design, capable of growing a fragment from a bound core while exploring the protein-ligand conformational space.
 
 This tutorial aims to describe the general protocol to run FragPELE.
 
@@ -23,7 +23,7 @@ Furthermore, make sure the ligand has:
 Launch a FragPELE simulation
 ---------------------------------
 
-The default simulation on FragPele is 10 growing steps of 6 Pele steps, and a final simulation of 20 Pele steps.
+The default simulation on FragPELE is 10 growing steps of 6 Pele steps, and a final simulation of 20 Pele steps.
 
 1. Protein Preparation
 -----------------------
@@ -159,7 +159,6 @@ The input file ``input.yaml`` must contain:
 To run the system launch the simulation with the following command:
 
 .. code-block: python
-
    python -m pele_platform.main input.yaml
 
 5. Results
@@ -173,35 +172,18 @@ The simulation will create a folder with the following organization:
     - **sampling_result:** Growed fragment from each trajectory. 
 	- **top_result:** Top results from each trajectory.
 
-.. image:: ../img/top_result_frag_pele.png
-  :width: 400
-  :align: center
+    .. image:: ../img/top_result_frag_pele.png
+      :width: 400
+      :align: center
 
     - **clustering_PDBs:** There is a folder for each growing step from the simulation. In each of the folders there are:
         - Initial PDb file for each trajectory.  
     - **control_folder:** Conf file for each growing step from the simulation.
-    - **DataLocal**
+    - **DataLocal:** Contains the ligand templates. When you run a simulation, the ligands are parametrized and stored in this folder.
     - **pele_template.conf**
     - **top_result.pdb:** PDB file of the top result from the simulation.**
+
 Optative Flags
 ------------------
 
-These flags are **exclusive to FragPELE** modes.
-
-- **growing_steps**: Number of steps to grow the fragment with.
-
-- **steps_in_gs**: Number of pele steps within each growing step
-
-- **sampling_steps**: Number of pele steps in the final sampling simulation
-
-- **protocol**: Type of protocol. options = [HT, ES].
-        - **HT:** To run FragPELE in **high throughput** mode. 
-        - **ES:** 
-
-..  code-block:: yaml
-
-    growing_steps: 6
-    steps_in_gs: 6
-    sampling_steps: 20
-    protocol: HT
-    cpus: 50
+See `here <../documentation/frag/index.rst>`_ the optative flags for FragPELE.
