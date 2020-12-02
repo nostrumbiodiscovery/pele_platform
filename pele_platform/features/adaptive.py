@@ -35,7 +35,7 @@ def retrieve_software_settings(args, pele_dir):
                                       "cluster_values": "[1.75, 2.5, 4]", "cluster_conditions": "[0.7, 0.4, 0.0]",
                                       "steric_trials": 100, "overlap_factor": 0.65, "epsilon": 0.25,
                                       "bias_column": 6, "params": pcs.GPCR_ORTH, "box_radius": 15, "ca_constr": 5},
-                             "global": {"spawning_type": "inverselyProportional", "bias_column": 5, "epsilon":0.25, "density": "continuous",
+                             "full": {"spawning_type": "inverselyProportional", "bias_column": 5, "epsilon":0.25, "density": "continuous",
                                       "simulation_type": "pele", "iterations": 100, "pele_steps": 4, 
                                       "cluster_values": "[2.5, 5, 7]", "cluster_conditions": "[1, 0.6, 0.0]",
                                       "steric_trials": 200, "overlap_factor": 0.65, "params": pcs.GLOBAL,
@@ -77,7 +77,7 @@ def retrieve_software_settings(args, pele_dir):
         
         software_setings = SOFTWARE_CONSTANTS
         if args.full:
-            type_simulation = "global"
+            type_simulation = "full"
         elif args.in_out:
             type_simulation = "in_out"
         elif args.in_out_soft:
