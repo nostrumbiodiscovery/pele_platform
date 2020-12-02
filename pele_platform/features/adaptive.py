@@ -7,7 +7,9 @@ Description of the file: This file specifies what files to use
 for each job.
 
 """
-    
+
+all_simulations = ["full", "induced_fit_exhaustive", "induced_fit_fast", "rescoring", "in_out", "in_out_soft", "out_in", "gpcr_orth"]
+
 def retrieve_software_settings(args, pele_dir):
 
         SOFTWARE_CONSTANTS = {

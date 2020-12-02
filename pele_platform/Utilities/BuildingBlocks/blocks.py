@@ -9,7 +9,7 @@ from pele_platform.Analysis.plots import _extract_coords
 from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Utilities.Helpers.helpers import cd, parallelize
 import pele_platform.Utilities.Parameters.pele_env as pv
-
+import pele_platform.features.adaptive as ft
 
 @dataclass
 class Simulation:
@@ -45,7 +45,7 @@ class Simulation:
 
         all_simulations = ["full", "induced_fit_exhaustive", "induced_fit_fast", "rescoring", "in_out", "in_out_soft", "out_in", "gpcr_orth"]
 
-        for sim in all_simulations:  # make sure everything else is False
+        for sim in ft.all_simulations:  # make sure everything else is False
             setattr(self.env, sim, False)
         setattr(self.env, simulation_type, True)  # set the simulation you need
 
