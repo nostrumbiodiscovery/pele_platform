@@ -17,7 +17,6 @@ Furthermore, make sure the ligand has:
     * NO residue name except for UNK.
 
 * **Fragment PDB:** The PDB with the desired fragment. The chain of the fragment **must be renamed to "L"**.
-* **Serie file:** File with the instructions that explain how the growing is produced and stored. It must have the following format:
 
 
 Launch a FragPELE simulation
@@ -27,7 +26,7 @@ Launch a FragPELE simulation
 -----------------------
 
 a. Launch Schrödinger Maestro.
-b. click ``File -> Get PDB`` and type your PDB ID to import the structure.
+b. Click ``File -> Get PDB`` and type your PDB ID to import the structure.
 
 
 .. image:: ../img/frag_pele_tutorial_1b.png
@@ -115,7 +114,7 @@ b. Now define the R-groups:
 
     - Click ``Run`` to submit the job.
 
-c. An new group on the entry list is created once the job finishes. Select all enumerated ligands by clicking on the group.
+c. A new group on the entry list is created once the job finishes. Select all enumerated ligands by clicking on the group.
 d. Go to ``Tasks -> LigPrep``
 e. Check the following options and hit ``Run``.
 
@@ -132,7 +131,7 @@ g. Go to ``Export -> Structures`` and save the file as ``ligands.sdf`` in your w
 ----------------------
 The input file ``input.yaml`` must contain:
 
-	1. **frag_core:** Path to the processed PDB file containing the protein and docket scaffols.
+	1. **frag_core:** Path to the processed PDB file containing the protein and docket scaffolds.
 	2. **frag_ligands:** Path to the SD file wit fully grown and preprocessed ligands.
 	3. **resname:** Unique residue name of the scaffold.
 	4. **chain_core:** Unique chain ID of the scaffolds.
@@ -146,7 +145,7 @@ The input file ``input.yaml`` must contain:
     chain_core: "Z"
     cpus: 50
 
-**Note:** It is recommended to first run the simulation includind **test:true** in the ``input.yaml`` file to check that everything works. The test will be executed with 5 CPUs.
+**Note:** It is recommended to first run the simulation including **test:true** in the ``input.yaml`` file to check that everything works. The test will be executed with 5 CPUs.
 
 .. code-block:: yaml
 
