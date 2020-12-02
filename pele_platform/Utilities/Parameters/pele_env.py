@@ -33,12 +33,13 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             else:
                 self.pele_dir = os.path.join(os.path.dirname(self.pele_dir), self.folder_name)
         # Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
-        for key, value in adfs.retrieve_software_settings(args, self.pele_dir).items():
+        for key, value in adfs.retrieve_software_settings(self, self.pele_dir).items():
             setattr(self, key, value)
         # Initialize all variables by combining default and user input
         simulation_params.SimulationParams.__init__(self, args)
         simulation_folders.SimulationPaths.__init__(self, args)
-        for key, value in adfs.retrieve_software_settings(args, self.pele_dir).items():
+        for key, value in adfs.retrieve_software_settings(self, self.pele_dir).items():
+            print("adfs.retrieve_software_settings", key, value)
             setattr(self, key, value)
 
     def build_frag_variables(self, args):
