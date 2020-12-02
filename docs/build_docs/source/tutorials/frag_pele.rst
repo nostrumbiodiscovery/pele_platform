@@ -139,6 +139,7 @@ The input file ``input.yaml`` must contain:
 	5. **cpus:** Number of CPUs to use.
 
 .. code-block:: yaml
+    
     frag_core: "scaffold.pdb"
     frag_ligands: "ligands.sdf"
     resname: "LIG"
@@ -147,7 +148,7 @@ The input file ``input.yaml`` must contain:
 
 **Note:** It is recommended to first run the simulation includind **test:true** in the ``input.yaml`` file to check that everything works. The test will be executed with 5 CPUs.
 
-.. code-block: yaml
+.. code-block:: yaml
 
     frag_core: "scaffold.pdb"
     frag_ligands: "ligands.sdf"
