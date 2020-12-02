@@ -23,11 +23,15 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         pele_dir = os.path.abspath("{}_Pele".format(args.residue))
         if not args.folder:
             self.pele_dir = hp.is_repeated(pele_dir) if args.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
-            self.pele_dir = hp.is_repeated(pele_dir) if not args.adaptive_restart else hp.is_last(pele_dir)
+            self.pele_dir = hp.is_repeated(pele_dir) if not self.adaptive_restart else hp.is_last(pele_dir)
             if self.folder_name:
                 self.pele_dir = os.path.join(self.pele_dir, self.folder_name)
         else:
-            self.pele_dir = os.path.abspath(args.folder)
+            if not hasattr(self, "pele_dir"):
+                if self.folder_name:
+                    self.pele_dir = os.path.join(os.path.abspath(args.folder), self.folder_name)
+            else:
+                self.pele_dir = os.path.join(os.path.dirname(self.pele_dir), self.folder_name)
         # Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
         for key, value in adfs.retrieve_software_settings(args, self.pele_dir).items():
             setattr(self, key, value)
@@ -48,12 +52,9 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         self.create_logger(".")
 
     def create_files_and_folders(self):
-        if not self.adaptive_restart:
-            self.create_folders()
-            self.create_files()
-            self.create_logger()
-        else:
-            self.create_logger()
+        self.create_folders()
+        self.create_files()
+        self.create_logger()
         shutil.copy(self.yamlfile, self.pele_dir)
 
     def create_folders(self):
@@ -61,7 +62,9 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
             Create pele folders
         """
         for folder in self.folders:
-            hp.create_dir(self.pele_dir, folder)
+            temp = os.path.join(self.pele_dir, folder)
+            if not os.path.exists(temp):
+                hp.create_dir(self.pele_dir, folder)
 
     def create_files(self):
         """
@@ -70,7 +73,9 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
 
         # Actions
         for file, destination_name in zip(self.files, self.file_names):
-            shutil.copy(file, os.path.join(self.pele_dir, destination_name))
+            temp = os.path.join(self.pele_dir, destination_name)
+            if not os.path.exists(temp):
+                shutil.copy(file, os.path.join(self.pele_dir, destination_name))
 
     def create_logger(self, directory=None):
         directory = directory if directory else self.pele_dir
@@ -79,7 +84,7 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         self.logger.setLevel(logging.INFO)
         self.logger.propagate = False
         formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
-        if not self.adaptive_restart:
+        if not os.path.exists(log_name):
             file_handler = logging.FileHandler(log_name, mode='w')
         else:
             file_handler = logging.FileHandler(log_name, mode='a')
