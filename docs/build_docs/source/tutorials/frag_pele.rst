@@ -9,7 +9,7 @@ This tutorial aims to describe the general protocol to run FragPELE.
 Previous Requisites
 -----------------------
 
-* **Complex PDB:** The PDB processed file. Prepare the system with the **Schrödinger Protein Prepaation Wizard**. It is recommended to delete water molecules more than 5a away from ligands and ions as well as filling in missing loops and side chains.
+* **Complex PDB:** The PDB processed file. Prepare the system with the **Schrödinger Protein Preparation Wizard**. It is recommended to delete all water molecules as well as filling in missing loops and side chains.
 It is obligatory that the protein is protonated.
 Furthermore, make sure the ligand has:
     * A unique chain ID.
@@ -23,13 +23,11 @@ Furthermore, make sure the ligand has:
 Launch a FragPELE simulation
 ---------------------------------
 
-The default simulation on FragPELE is 10 growing steps of 6 Pele steps, and a final simulation of 20 Pele steps.
-
 1. Protein Preparation
 -----------------------
 
-a. Launch Schrodinger Maestro.
-b. click ``File -> Get PDB`` and type your PDB Id to import the structure.
+a. Launch Schrödinger Maestro.
+b. click ``File -> Get PDB`` and type your PDB ID to import the structure.
 
 
 .. image:: ../img/frag_pele_tutorial_1b.png
@@ -52,7 +50,8 @@ c. To preprocess the protein, go to ``Tasks`` and search for ``Protein Preparati
 
 Click ``Preprocess`` to start the preprocessing of the protein. 
 
-d. Change the ligand chain ID ans the residue name.
+
+d. Change the ligand chain ID and the residue name.
     - Go to ``Select -> Set pick level -> Residues``.
 
 
@@ -62,7 +61,7 @@ d. Change the ligand chain ID ans the residue name.
 
 
     - Select the ligand with a mouse click.
-    - Go to ``Build`` and click on `` Other edits -> Change atom properties``.
+    - Go to ``Build`` and click on ``Other edits -> Change atom properties``.
 
     .. image:: ../img/frag_pele_tutorial_1d.3.png
       :width: 400
@@ -93,7 +92,9 @@ e. Finally, export the structure by going to ``File -> Export structures`` and s
 2. Ligand Preparation
 ------------------------
 a. Select the ligand with a mouse click and extract it to a separate entry opening ``Build`` and clicking ``Copy selected atoms to new entry``. 
+
 b. Now define the R-groups:
+
     -  Hit ``Select -> Set pick level -> Atoms``.
 
 
@@ -102,7 +103,7 @@ b. Now define the R-groups:
       :align: center
 
 
-    -  Click on any hydrogen atoms adjacent to Nitrogen.
+    -  Click on any hydrogen atoms adjacent to a Nitrogen.
     -  Go to ``Tasks -> Enumeration -> Custom R-Group``.
     -  Choose ``R-groups to Create a Hydrogen Bond`` from the drop down list.
 
@@ -112,7 +113,8 @@ b. Now define the R-groups:
       :align: center
 
 
-    - Click ``Run`` to submit the job with the following options.
+    - Click ``Run`` to submit the job.
+
 c. An new group on the entry list is created once the job finishes. Select all enumerated ligands by clicking on the group.
 d. Go to ``Tasks -> LigPrep``
 e. Check the following options and hit ``Run``.
@@ -123,7 +125,7 @@ e. Check the following options and hit ``Run``.
   :align: center
 
 
-f. A new group on the entry list is created after LigPrep finishes. Select all the netries of the group as in step ``2e``.
+f. A new group on the entry list is created after LigPrep finishes. Select all the entries of the group as in step ``2c``.
 g. Go to ``Export -> Structures`` and save the file as ``ligands.sdf`` in your working directory.
 
 3. YAML Input File
@@ -133,11 +135,10 @@ The input file ``input.yaml`` must contain:
 	1. **frag_core:** Path to the processed PDB file containing the protein and docket scaffols.
 	2. **frag_ligands:** Path to the SD file wit fully grown and preprocessed ligands.
 	3. **resname:** Unique residue name of the scaffold.
-	4. **chain_core:** Unique chain ID of the scaffols.
+	4. **chain_core:** Unique chain ID of the scaffolds.
 	5. **cpus:** Number of CPUs to use.
 
-.. code-block: yaml
-
+.. code-block:: yaml
     frag_core: "scaffold.pdb"
     frag_ligands: "ligands.sdf"
     resname: "LIG"
@@ -167,10 +168,10 @@ To run the system launch the simulation with the following command:
 
 The simulation will create a folder with the following organization:
     - **pregrow:** Contains the initial PDB files.
-    - **growing_steps:** There is a folder for each growing step from the simulation. In each of these folderes, there are:
+    - **growing_steps:** There is a folder for each growing step from the simulation. In each of these folderes, there is:
 
-        - A report file for each CPU launched. This report contains the infromation of the number of the task, the number of accepted Pele steps, the current energy and binding energy of each step and the sasaLig, which is the solvent accesible surface area.
-        - A pdb file of the trajectory. 
+        - A report file for each CPU launched. This report contains the information of the number of the task, the number of accepted Pele steps, the current energy and binding energy of each step and the sasaLig, which is the solvent accesible surface area.
+        - A PDB file of the trajectory. 
 
     - **sampling_result:** Growed fragment from each trajectory. 
 
@@ -181,14 +182,14 @@ The simulation will create a folder with the following organization:
       :align: center
 
 
-    - **clustering_PDBs:** There is a folder for each growing step from the simulation. In each of the folders there are:
+    - **clustering_PDBs:** There is a folder for each growing step from the simulation. In each of the folders there is:
 
-        - Initial PDb file for each trajectory.  
+        - Initial PDB file for each trajectory.  
 
-    - **control_folder:** Conf file for each growing step from the simulation.
+    - **control_folder:** ``conf`` file for each growing step from the simulation.
     - **DataLocal:** Contains the ligand templates. When you run a simulation, the ligands are parametrized and stored in this folder.
+    - **top_result.pdb:** PDB file of the top result from the simulation.
     - **pele_template.conf**
-    - **top_result.pdb:** PDB file of the top result from the simulation.**
 
 Optative Flags
 ------------------
