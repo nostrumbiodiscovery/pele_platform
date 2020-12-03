@@ -42,9 +42,6 @@ class Simulation:
             self.env.adaptive_restart = False
 
     def set_params(self, simulation_type):
-
-        all_simulations = ["full", "induced_fit_exhaustive", "induced_fit_fast", "rescoring", "in_out", "in_out_soft", "out_in", "gpcr_orth"]
-
         for sim in ft.all_simulations:  # make sure everything else is False
             setattr(self.env, sim, False)
         setattr(self.env, simulation_type, True)  # set the simulation you need
