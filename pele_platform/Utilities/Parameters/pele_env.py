@@ -2,6 +2,7 @@ import os
 import shutil
 import logging
 import pele_platform.constants.constants as cs
+import pele_platform.Errors.custom_errors as ce
 import pele_platform.features.adaptive as adfs
 import pele_platform.features.frag as frfs
 import pele_platform.Utilities.Helpers.helpers as hp
@@ -78,6 +79,12 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         if not self.adaptive_restart:
             file_handler = logging.FileHandler(log_name, mode='w')
         else:
-            file_handler = logging.FileHandler(log_name, mode='a')
+            try:
+                file_handler = logging.FileHandler(log_name, mode='a')
+            except:
+                raise ce.WrongYamlFile("""
+                1) Looks like you are trying to restart a simulation that does not exist. Remove adaptive_restart flag in your input.yaml.\n
+                2) Adaptive_restart: true is so far not supported with PPI and Allosteric. However, if you run the simulation again without it, it will automatically restart from where you left it
+                """)
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
