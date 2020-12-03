@@ -26,8 +26,6 @@ export SRUN=1  # this is to avoid having to set usesrun: true in input.yaml
 
 # CHANGE - these paths should point to your own repository
 export PYTHONPATH="/home/agruzka/work_pele_platform:$PYTHONPATH"
-export PYTHONPATH="/shared/home-nbdcalc01/agruzka/frag_pele:$PYTHONPATH"
-export PYTHONPATH="/shared/home-nbdcalc01/agruzka/lib_prep:$PYTHONPATH"
 
 # to run a single test
 python -m pytest test_*
