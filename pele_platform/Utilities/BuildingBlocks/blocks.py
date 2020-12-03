@@ -7,7 +7,7 @@ import pandas as pd
 import pele_platform.Adaptive.simulation as si
 from pele_platform.Analysis.plots import _extract_coords
 from pele_platform.Utilities.Helpers import bestStructs as bs
-from pele_platform.Utilities.Helpers.helpers import cd, parallelize
+from pele_platform.Utilities.Helpers.helpers import cd, parallelize, retrieve_box
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.features.adaptive as ft
 
@@ -117,6 +117,32 @@ class Rescoring(Simulation):
     def run(self):
         self.env = self.run_simulation("rescoring", self.folder_name)
         return self.env
+
+
+@dataclass
+class GPCR(Simulation):
+    env: pv.EnviroBuilder
+    folder_name: str
+
+    def __init__(self, env, folder_name):
+        self.env = env
+        self.folder_name = folder_name
+
+    def run(self):
+        self.set_gpcr_params()
+        self.env = self.run_simulation("gpcr_orth", self.folder_name)
+        return self.env
+
+    def set_gpcr_params(self):
+        # Set box and initial ligand position
+        self.env.orthosteric_site = self.initial_args.orthosteric_site
+        self.env.initial_site = self.initial_args.initial_site
+        self.env.center_of_interface = self.initial_site
+        box_center, box_radius = retrieve_box(self.env.system, self.env.initial_site, self.env.orthosteric_site,
+                                              weights=[0.35, 0.65])
+        self.env.box_center = self.initial_args.box_center if self.initial_args.box_center else box_center
+        self.env.box_radius = self.initial_args.box_radius if self.initial_args.box_radius else box_radius
+        self.env.randomize = True
 
 
 @dataclass
