@@ -39,7 +39,6 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         simulation_params.SimulationParams.__init__(self, args)
         simulation_folders.SimulationPaths.__init__(self, args)
         for key, value in adfs.retrieve_software_settings(self, self.pele_dir).items():
-            print("adfs.retrieve_software_settings", key, value)
             setattr(self, key, value)
 
     def build_frag_variables(self, args):
