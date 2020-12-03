@@ -86,7 +86,7 @@ WATER_VALUES = [
 
 GPCR_VALUES = [
      '"radius": 19.970223159033843,',
-     '"fixedCenter": [-71.78435134887695,-13.431749963760375,-42.46209926605225]'
+     '"fixedCenter": [-71.78435134887695, -13.431749963760375, -42.46209926605225]'
 ]
 
 def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
@@ -197,10 +197,9 @@ def check_file(folder, filename, values, errors):
 
 def test_gpcr(args=GPCR_ARGS):
     errors = []
-    job = main.run_platform(args)
-    folder = job.pele_dir
-    errors = check_file(folder, "pele.conf", GPCR_VALUES, errors)
-    input_file = os.path.join(folder, "complex_processed.pdb")
+    job1, sel, job2 = main.run_platform(args)
+    errors = check_file(job1.pele_dir, "pele.conf", GPCR_VALUES, errors)
+    input_file = os.path.join(job1.pele_dir, "complex_processed.pdb")
     if not os.path.exists(input_file):
         errors.append("skip_ppp")
     assert not errors
