@@ -122,6 +122,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
         self.usesrun = "true" if args.usesrun else "false"
         self.mpi_params = f'"mpiParameters": "{args.mpi_params}",' if args.mpi_params else ""
+        self.randomize = args.randomize if args.randomize else self.simulation_params.get("randomize", False)
 
     def optative_params(self, args):
         self.input = args.input
