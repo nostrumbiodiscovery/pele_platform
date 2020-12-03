@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from copy import deepcopy
 import glob
 import numpy as np
 import os
@@ -29,6 +30,12 @@ class Simulation:
         if hasattr(self.env, "next_step"):
             self.env.input = glob.glob(self.env.next_step)
         self.restart_checker()
+        
+        # check for special params
+        if keyword == "gpcr_orth":
+            self.set_gpcr_params()
+        
+        # launch simulation
         self.env = si.run_adaptive(self.env)
         self.finish_state(self.env.output)
         return self.env
@@ -129,19 +136,17 @@ class GPCR(Simulation):
         self.folder_name = folder_name
 
     def run(self):
-        self.set_gpcr_params()
         self.env = self.run_simulation("gpcr_orth", self.folder_name)
         return self.env
 
     def set_gpcr_params(self):
-        # Set box and initial ligand position
-        self.env.orthosteric_site = self.initial_args.orthosteric_site
-        self.env.initial_site = self.initial_args.initial_site
-        self.env.center_of_interface = self.initial_site
+        self.env.orthosteric_site = self.env.initial_args.orthosteric_site
+        self.env.initial_site = self.env.initial_args.initial_site
+        self.env.center_of_interface = self.env.initial_site
         box_center, box_radius = retrieve_box(self.env.system, self.env.initial_site, self.env.orthosteric_site,
                                               weights=[0.35, 0.65])
-        self.env.box_center = self.initial_args.box_center if self.initial_args.box_center else box_center
-        self.env.box_radius = self.initial_args.box_radius if self.initial_args.box_radius else box_radius
+        self.env.box_center = self.env.initial_args.box_center if self.env.initial_args.box_center else box_center
+        self.env.box_radius = self.env.initial_args.box_radius if self.env.initial_args.box_radius else box_radius
         self.env.randomize = True
 
 
@@ -223,6 +228,7 @@ class Pipeline:
         for simulation in self.iterable:
             folder = "{}_{}".format(self.iterable.index(simulation) + 1, simulation.__name__)
             self.env = simulation(self.env, folder).run()
-            output.append(self.env)
+            output.append(deepcopy(self.env))
+
         return output
 
