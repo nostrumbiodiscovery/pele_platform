@@ -37,7 +37,7 @@ class Launcher:
         if package == self.adaptive:
             job_variables = ad.run_adaptive(self._args)
         elif package == self.gpcr_orth:
-            job_variables = gpcr.GPCRLauncher(self._args).run()
+            job_variables = gpcr.GPCRLauncher(self.env).run()
         elif package == self.out_in:
             job_variables = outin.OutInLauncher(self._args).run()
         elif package == self.allosteric:
