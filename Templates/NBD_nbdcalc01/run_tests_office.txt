@@ -15,7 +15,7 @@ export LD_LIBRARY_PATH=/scratch/PELE-compilation/PELE-dependencies/boost-1.52.0/
 rm -r LIG_Pele* SB4_Pele* STR_Pele* LIG_Pele* AS4_Pele* IK1_Pele* allosteric NOR_solvent_OBC/ PCA_result/ *.pdb *.log API_Pele* 1w7h_preparation_structure_2w_processed*
 
 # to run a single test or file
-python -m pytest test_*
+/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pytest test_*
 
 # to run coverage
-#nohup pytest --cov-config=.coveragerc --cov .. --cov-report xml test_* > log.txt &
+#nohup /shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/pytest --cov-config=.coveragerc --cov .. --cov-report xml test_* > log.txt &
