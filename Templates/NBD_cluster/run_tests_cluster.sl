@@ -25,11 +25,11 @@ export SRUN=1  # this is to avoid having to set usesrun: true in input.yaml
 export PYTHONPATH="/home/agruzka/work_pele_platform:$PYTHONPATH"
 
 # to run a single test
-#/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml -m pytest test_*
+#/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pytest test_*
 
 # to run coverage
-#/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml -m pytest --cov=../ -s --cov-report=xml test*
+#/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pytest --cov=../ -s --cov-report=xml test*
 
 #to run production
-#/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml
+#/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pele_platform.main input.yaml
 
