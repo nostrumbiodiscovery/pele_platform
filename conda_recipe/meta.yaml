@@ -40,6 +40,7 @@ requirements:
     - frag_pele==2.2.1
     - lib_prep
     - peleffy
+    - drug_learning
 test:
   imports:
     - pele_platform
