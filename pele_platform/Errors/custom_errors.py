@@ -46,3 +46,9 @@ class WrongAtomStringFormat(Exception):
 
 class WrongYamlFile(Exception):
     pass
+
+class LigandNameNotSupported(Exception):
+    pass
+
+class SubstructureError(Exception):
+    pass

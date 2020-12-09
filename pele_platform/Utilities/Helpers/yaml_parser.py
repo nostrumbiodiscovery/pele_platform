@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from pele_platform.Errors.custom_errors import LigandNameNotSupported
 from difflib import SequenceMatcher
 import os
 import yaml
@@ -14,7 +15,9 @@ class YamlParser(object):
     def read(self) -> None:
         self.data = self._parse_yaml()
         self._check()
+        self._check_residue()
         self._parse()
+        self._get_value_from_env()
 
     def _parse_yaml(self) -> dict:
         # Retrieve raw info from yaml
@@ -24,13 +27,20 @@ class YamlParser(object):
             except yaml.YAMLError as exc:
                 raise(exc)
         return data
-
+    
+    def _get_value_from_env(self):
+        self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
 
     def _check(self) -> None:
         # Check if valids in yaml file are valids
         for key in self.data.keys():
             if key not in self.valid_flags.values():
                 raise KeyError(self._recommend(key))
+
+    def _check_residue(self) -> None:
+        if 'resname' in self.data.keys():
+            if self.data['resname'] == "UNK":
+                raise LigandNameNotSupported("'UNK' ligand name is not supported, please rename it, e.g. 'LIG'.")
 
     def _recommend(self, key):
         most_similar_flag = None
@@ -143,6 +153,7 @@ class YamlParser(object):
         self.induced_fit_fast = data.get(valid_flags["induced_fit_fast"], None)
         self.frag = data.get(valid_flags["frag"], None)
         self.ca_constr=data.get(valid_flags["ca_constr"], None)
+        self.ca_interval=data.get(valid_flags["ca_interval"], None)
         self.one_exit=data.get(valid_flags["one_exit"], None)
         self.box_type=data.get(valid_flags["box_type"], None)
         self.box_metric = data.get(valid_flags["box_metric"], None)
@@ -173,7 +184,8 @@ class YamlParser(object):
         self.analyse = data.get(valid_flags["analyse"], None)
         self.selection_to_perturb = data.get(valid_flags["selection_to_perturb"], None)
         self.mae = data.get(valid_flags["mae"], None)
-        self.constrain_smiles = data.get(valid_flags["constrain_smiles"], None)
+        self.constrain_core = data.get(valid_flags["constrain_core"], None)
+        self.constrain_core_spring = data.get(valid_flags["constrain_core_spring"], 50.0)
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.spawning_condition = data.get(valid_flags["spawning_condition"], None)
         self.external_constraints = data.get(valid_flags["external_constraints"], [])
@@ -213,6 +225,9 @@ class YamlParser(object):
         self.frag_criteria = data.get(valid_flags["frag_criteria"], False)
         self.frag_output_folder = data.get(valid_flags["frag_output_folder"], False)
         self.frag_cluster_folder = data.get(valid_flags["frag_cluster_folder"], False)
+        self.frag_library = data.get(valid_flags["frag_library"], None)
+        self.frag_core_atom = data.get(valid_flags["frag_core_atom"], None)
+        self.analysis_to_point = data.get(valid_flags["analysis_to_point"], None)
 
         #PPI
         self.n_components = data.get(valid_flags["n_components"], None)
