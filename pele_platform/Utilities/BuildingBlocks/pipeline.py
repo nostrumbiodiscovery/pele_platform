@@ -24,4 +24,4 @@ class Pipeline:
         """
         if self.env.initial_args.debug:
             self.env.debug = self.env.initial_args.debug
-            self.iterable = [self.iterable[0]]  # 1st simualtion in the Pipeline only
+            self.iterable = [self.iterable[0]]  # 1st simulation in the Pipeline only
