@@ -30,6 +30,8 @@ class Simulation:
         # check for special params
         if keyword == "gpcr_orth":
             self.set_gpcr_params()
+        elif keyword == "out_in":
+            self.set_outin_params()
         
         # launch simulation
         self.env = si.run_adaptive(self.env)
@@ -233,6 +235,7 @@ class OutIn(Simulation):
         self.folder_name = folder_name
 
     def run(self):
+        self._check_mandatory_fields()
         self.env = self.run_simulation("out_in", self.folder_name)
         return self.env
 
