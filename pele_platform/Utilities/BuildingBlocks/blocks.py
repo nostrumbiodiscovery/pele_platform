@@ -32,7 +32,6 @@ class Simulation:
         
         # launch simulation
         self.env = si.run_adaptive(self.env)
-        self.finish_state(self.env.output)
         return self.env
 
     def restart_checker(self):
@@ -47,9 +46,6 @@ class Simulation:
         for sim in ft.all_simulations:  # make sure everything else is False
             setattr(self.env, sim, False)
         setattr(self.env, simulation_type, True)  # set the simulation you need
-
-    def finish_state(self, value):
-        self.env.next_step = value
 
     def set_working_folder(self, folder_name):
         self.original_dir = os.path.abspath(os.getcwd())
