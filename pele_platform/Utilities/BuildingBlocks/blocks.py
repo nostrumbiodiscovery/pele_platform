@@ -3,6 +3,7 @@ import glob
 import os
 
 import pele_platform.Adaptive.simulation as si
+import pele_platform.Errors.custom_errors as ce
 from pele_platform.Utilities.Helpers.helpers import retrieve_box
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.features.adaptive as ft
@@ -222,4 +223,34 @@ class Pipeline:
             output.append(deepcopy(self.env))
 
         return output
+
+class OutIn(Simulation):
+    env: pv.EnviroBuilder
+    folder_name: str
+
+    def __init__(self, env, folder_name):
+        self.env = env
+        self.folder_name = folder_name
+
+    def run(self):
+        self.env = self.run_simulation("out_in", self.folder_name)
+        return self.env
+
+    def _check_mandatory_fields(self):
+        compulsory_flags = ["final_site", "initial_site"]
+        for flag in compulsory_flags:
+            if getattr(self.env.initial_args, flag) is None:
+                raise ce.OutInError(f"Flag {flag} must be specified for out_in package.")
+
+    def set_outin_params(self):
+        self.env.final_site = self.env.initial_args.final_site
+        self.env.initial_site = self.env.initial_args.initial_site
+        self.env.center_of_interface = self.env.initial_site
+        box_center, box_radius = retrieve_box(
+            self.env.initial_args.system, self.env.initial_site, self.env.final_site,
+            weights=[0.35, 0.65])
+        self.env.box_center = self.env.initial_args.box_center if self.env.initial_args.box_center else box_center
+        self.env.box_radius = self.env.initial_args.box_radius if self.env.initial_args.box_radius else box_radius
+        self.env.randomize = True
+
 
