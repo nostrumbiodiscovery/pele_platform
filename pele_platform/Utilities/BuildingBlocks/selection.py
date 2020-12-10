@@ -36,6 +36,8 @@ class Selection:
             files_out, _, _, _, output_energy = bs.main(str(self.simulation_params.be_column), n_structs=n_best_poses,
                                                         path=".", topology=self.simulation_params.topology,
                                                         logger=self.simulation_params.logger)
+        
+        files_out = [os.path.join(self.simulation_params.pele_dir, "results", f) for f in files_out]
         return files_out, output_energy
 
     def extract_all_coords(self, files_out):
@@ -45,6 +47,11 @@ class Selection:
         all_coords = pool.map(_extract_coords, input_pool)
 
         return all_coords
+
+    def rename_folder(self):
+
+        index, name = self.folder.split("_")
+        return "{}_Selection".format(index)
 
 
 @dataclass
@@ -57,6 +64,7 @@ class LowestEnergy5(Selection):
     folder: str
 
     def run(self):
+        self.folder = self.rename_folder()
         files_out, output_energy = self.extract_poses(percentage=0.05)
         self.choose_refinement_input(files_out, output_energy)
         self.copy_files()
@@ -104,6 +112,7 @@ class Scatter6(Selection):
     folder: str
 
     def run(self):
+        self.folder = self.rename_folder()
         files_out, output_energy = self.extract_poses(percentage=0.75)
         self.choose_refinement_input(files_out, output_energy)
         self.copy_files()
