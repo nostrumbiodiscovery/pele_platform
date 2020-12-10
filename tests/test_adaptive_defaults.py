@@ -136,7 +136,7 @@ WATER_PARAMS_DEFAULTS_PELE = [
 
 GPCR_DEFAULTS_PELE = [
      '"radius": 19.970223159033843,',
-     '"fixedCenter": [-71.78435134887695,-13.431749963760375,-42.46209926605225]',
+     '"fixedCenter": [-71.78435134887695, -13.431749963760375, -42.46209926605225]',
      '"numberOfStericTrials": 100,',
      pp.GPCR_ORTH
 ]
@@ -153,7 +153,7 @@ GPCR_DEFAULTS_ADAPTIVE = [
 
 GPCR2_DEFAULTS_PELE = [
      '"radius": 10,',
-     '"fixedCenter": [10,10,10]',
+     '"fixedCenter": [10, 10, 10]',
      '"numberOfStericTrials": 100,',
      pp.GPCR_ORTH
 ]
@@ -223,14 +223,14 @@ def test_rescoring_defaults(ext_args=RESCORING_ARGS):
 
 def test_gpcr_defaults(ext_args=GPCR_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job, = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GPCR_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GPCR_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_gpcr2_defaults(ext_args=GPCR2_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job, = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GPCR_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GPCR2_DEFAULTS_PELE, errors)
     assert not errors
