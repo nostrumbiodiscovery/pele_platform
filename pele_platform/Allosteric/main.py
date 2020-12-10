@@ -1,4 +1,6 @@
-from pele_platform.Utilities.BuildingBlocks import blocks as bb
+from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
+from pele_platform.Utilities.BuildingBlocks.selection import Scatter6
+from pele_platform.Utilities.BuildingBlocks.blocks import GlobalExploration, InducedFitExhaustive
 
 
 class AllostericLauncher:
@@ -14,8 +16,8 @@ class AllostericLauncher:
         """
         self.env.package = "allosteric"
         if not self.env.initial_args.skip_refinement:
-            result = bb.Pipeline([bb.GlobalExploration, bb.Selection, bb.InducedFitExhaustive], self.env).run()
+            result = Pipeline([GlobalExploration, Scatter6, InducedFitExhaustive], self.env).run()
         else:
-            result = bb.Pipeline([bb.GlobalExploration], self.env).run()
+            result = Pipeline([GlobalExploration], self.env).run()
 
         return result

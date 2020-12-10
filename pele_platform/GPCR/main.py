@@ -1,4 +1,6 @@
-from pele_platform.Utilities.BuildingBlocks import blocks as bb
+from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
+from pele_platform.Utilities.BuildingBlocks.selection import Scatter6
+from pele_platform.Utilities.BuildingBlocks.blocks import GPCR, Rescoring
 
 
 class GPCRLauncher:
@@ -9,5 +11,5 @@ class GPCRLauncher:
     def run(self):
         self.env.package = "gpcr_orth"
 
-        result = bb.Pipeline([bb.GPCR, bb.Selection, bb.Rescoring], self.env).run()
+        result = Pipeline([GPCR, Scatter6, Rescoring], self.env).run()
         return result
