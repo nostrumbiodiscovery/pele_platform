@@ -1,14 +1,9 @@
 from dataclasses import dataclass
-from copy import deepcopy
 import glob
-import numpy as np
 import os
-import pandas as pd
 
 import pele_platform.Adaptive.simulation as si
-from pele_platform.Analysis.plots import _extract_coords
-from pele_platform.Utilities.Helpers import bestStructs as bs
-from pele_platform.Utilities.Helpers.helpers import cd, parallelize, retrieve_box
+from pele_platform.Utilities.Helpers.helpers import retrieve_box
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.features.adaptive as ft
 
