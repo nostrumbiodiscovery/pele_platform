@@ -203,9 +203,9 @@ def test_rotamer_error(yaml=yaml):
 yaml = os.path.join(test_path, "out_in/input_flag_error.yaml") 
 def test_out_in_flag(yaml=yaml):
     try:
-        job = main.run_platform(yaml)
+        job, = main.run_platform(yaml)
     except ce.OutInError as e:
-        assert str(e).strip("'") == "flag final_site must be specified for out_in package"
+        assert str(e).strip("'") == "Flag final_site must be specified for out_in package."
         return
     assert False
 

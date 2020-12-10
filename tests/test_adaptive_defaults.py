@@ -203,7 +203,7 @@ def test_water_lig_defaults(ext_args=WATERLIG_ARGS):
 
 def test_out_in_defaults(ext_args=OUT_IN_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job, = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", OUT_IN_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", OUT_IN_DEFAULTS_PELE, errors)
     assert not errors
