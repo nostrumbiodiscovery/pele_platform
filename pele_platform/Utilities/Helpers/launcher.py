@@ -5,6 +5,7 @@ import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
 import pele_platform.Allosteric.main as al
 import pele_platform.GPCR.main as gpcr
+import pele_platform.InducedFit.main as ind
 import pele_platform.out_in.main as outin
 import pele_platform.PPI.main as ppi
 import pele_platform.Utilities.Parameters.pele_env as pv
@@ -44,6 +45,8 @@ class Launcher:
             job_variables = al.AllostericLauncher(self.env).run()
         elif package == self.ppi:
             job_variables = ppi.run(self._args)
+        elif package == self.induced_fit_fast or package == self.induced_fit_exhaustive:
+            job_variables = ind.InducedFitLauncher(self.env).run()
         elif package == self.frag:
             # Set variables and input ready
             job_variables = fr.FragRunner(self._args).run_simulation()
@@ -61,5 +64,9 @@ class Launcher:
             self._args.package = self.gpcr_orth
         elif self._args.out_in:
             self._args.package = self.out_in
+        elif self._args.induced_fit_fast:
+            self._args.package = self.induced_fit_fast
+        elif self._args.induced_fit_exhaustive:
+            self._args.package = self.induced_fit_exhaustive
         else: 
             self._args.package = self.adaptive
