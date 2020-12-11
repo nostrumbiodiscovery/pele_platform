@@ -22,6 +22,9 @@ class Launcher:
     gpcr_orth: str = "gpcr_orth"
     out_in: str = "out_in"
     adaptive: str = "adaptive"
+    induced_fit_exhaustive: str = "induced_fit_exhaustive"
+    induced_fit_fast: str = "induced_fit_fast"
+
 
     def launch(self) -> pv.EnviroBuilder:
         # Launch package from input.yaml
@@ -45,8 +48,10 @@ class Launcher:
             job_variables = al.AllostericLauncher(self.env).run()
         elif package == self.ppi:
             job_variables = ppi.run(self._args)
-        elif package == self.induced_fit_fast or package == self.induced_fit_exhaustive:
-            job_variables = ind.InducedFitLauncher(self.env).run()
+        elif package == self.induced_fit_fast:
+            job_variables = ind.InducedFitFastLauncher(self.env).run()
+        elif package == self.induced_fit_exhaustive:
+            job_variables = ind.InducedFitExhaustiveLauncher(self.env).run()
         elif package == self.frag:
             # Set variables and input ready
             job_variables = fr.FragRunner(self._args).run_simulation()

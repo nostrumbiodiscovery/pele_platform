@@ -161,14 +161,14 @@ GPCR2_DEFAULTS_PELE = [
 
 def test_induced_exhaustive_defaults(ext_args=INDUCED_EX_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job, = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", INDUCE_FIT_PELE, errors)
     assert not errors
 
 def test_induced_fast_defaults(ext_args=INDUCED_FAST_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job, = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", INDUCE_FIT_FAST_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", INDUCE_FIT_PELE, errors)
     assert not errors
