@@ -1,5 +1,5 @@
 from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
-from pele_platform.Utilities.BuildingBlocks.selection import Scatter6
+from pele_platform.Utilities.BuildingBlocks.selection import GMM
 from pele_platform.Utilities.BuildingBlocks.blocks import Rescoring, InducedFitExhaustive
 
 
@@ -12,7 +12,7 @@ class PPILauncher:
         self.env.package = "ppi"
 
         if not self.env.initial_args.skip_refinement:
-            result = Pipeline([InducedFitExhaustive, Scatter6, Rescoring], self.env).run()
+            result = Pipeline([InducedFitExhaustive, GMM, Rescoring], self.env).run()
         else:
             result = Pipeline([InducedFitExhaustive], self.env).run()
         return result
