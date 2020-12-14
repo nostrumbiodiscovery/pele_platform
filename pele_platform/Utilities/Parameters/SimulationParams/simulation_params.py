@@ -172,6 +172,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.mae_lig = args.mae_lig
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
         self.gridres = args.gridres
+        self.ligand_pdb = args.ligand_pdb if args.ligand_pdb else None
 
     def water_params(self, args):
         self.water_temp = args.water_temp if args.water_temp else self.simulation_params.get("water_temp", 5000)
