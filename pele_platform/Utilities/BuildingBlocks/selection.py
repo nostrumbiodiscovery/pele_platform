@@ -7,7 +7,7 @@ from sklearn.mixture import GaussianMixture
 
 from pele_platform.Analysis.plots import _extract_coords
 from pele_platform.Utilities.Helpers import bestStructs as bs
-from pele_platform.Utilities.Helpers.helpers import cd, parallelize
+from pele_platform.Utilities.Helpers.helpers import cd
 from pele_platform.Utilities.Parameters import pele_env as pv
 
 
@@ -19,6 +19,9 @@ class Selection:
     simulation_params: pv.EnviroBuilder
 
     def copy_files(self):
+
+        self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder)
+
         if not os.path.isdir(self.directory):
             os.makedirs(self.directory, exist_ok=True)
         for i in self.inputs:
@@ -48,6 +51,24 @@ class Selection:
 
         return all_coords
 
+    def gaussian_mixture(self, files_out, output_energy):
+
+        # extract coordinates from poses
+        all_coords = self.extract_all_coords(files_out)
+
+        # run Gaussian Mixture
+        cluster = GaussianMixture(self.simulation_params.cpus-1, covariance_type='full', random_state=42)
+        labels = cluster.fit_predict(all_coords)
+
+        # get lowest energy representative of each cluster
+        clustered_lig = pd.DataFrame(list(zip(files_out, labels, output_energy)), columns=["file_name", "cluster_ID", "binding_energy"])
+        clustered_lig = clustered_lig.sort_values("binding_energy", ascending=True).groupby("cluster_ID").first()
+
+        # save CSV file
+        clustered_lig.to_csv("clustering_output.csv")
+
+        return clustered_lig["file_name"].values.tolist()
+
     def rename_folder(self):
 
         index, name = self.folder.split("_")
@@ -74,32 +95,30 @@ class LowestEnergy5(Selection):
     def choose_refinement_input(self, files_out, output_energy):
 
         n_inputs = self.simulation_params.cpus - 1
-        self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder)
 
         if len(files_out) > n_inputs:  # pick lowest energy poses to fill all CPU slots
-            self.inputs = self.cluster_poses(files_out, output_energy)
+            self.inputs = self.gaussian_mixture(files_out, output_energy)
         elif len(files_out) < 1:  # if top 5% happen to be less than 1 (e.g. when running tests)
             self.inputs, _ = self.extract_poses(percentage=1, n_poses=1)
         else:  # if number of CPUs matches the number of files in top 5%
             self.inputs = files_out
 
-    def cluster_poses(self, files_out, output_energy):
 
-        # extract coordinates from poses
-        all_coords = self.extract_all_coords(files_out)
+@dataclass
+class GMM(Selection):
+    """
 
-        # run Gaussian Mixture
-        cluster = GaussianMixture(self.simulation_params.cpus-1, covariance_type='full', random_state=42)
-        labels = cluster.fit_predict(all_coords)
+    """
+    simulation_params: pv.EnviroBuilder
+    folder: str
 
-        # get lowest energy representative of each cluster
-        clustered_lig = pd.DataFrame(list(zip(files_out, labels, output_energy)),
-                                     columns=["file_name", "cluster_ID", "binding_energy"])
-        clustered_lig = clustered_lig.sort_values("binding_energy", ascending=True).groupby("cluster_ID").first()
-
-        output_files = clustered_lig["file_name"].values.tolist()
-
-        return output_files
+    def run(self):
+        self.folder = self.rename_folder()
+        files_out, output_energy = self.extract_poses(percentage=0.05, n_poses=1000)
+        self.inputs = self.gaussian_mixture(files_out, output_energy)
+        self.copy_files()
+        self.set_next_step()
+        return self.simulation_params
 
 
 @dataclass
@@ -130,8 +149,6 @@ class Scatter6(Selection):
         dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
 
         self.inputs = self._check_ligand_distances(dataframe, distance)
-        self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir),
-                                      self.folder)
 
     def _check_ligand_distances(self, dataframe, distance):
 
