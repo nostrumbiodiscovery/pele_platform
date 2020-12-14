@@ -5,6 +5,7 @@ import os
 import pele_platform.Adaptive.simulation as si
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.Utilities.Helpers.helpers import retrieve_box
+from pele_platform.Utilities.BuildingBlocks.preparation import prepare_structure
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.features.adaptive as ft
 
@@ -118,6 +119,8 @@ class InducedFitExhaustive(Simulation):
         self.folder_name = folder_name
 
     def run(self):
+        if hasattr(self.env.initial_args, "ppi"):
+            self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein, remove_water=False)
         self.env = self.run_simulation("induced_fit_exhaustive", self.folder_name)
         return self.env
 
