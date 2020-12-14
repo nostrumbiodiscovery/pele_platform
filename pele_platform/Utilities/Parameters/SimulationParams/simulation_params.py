@@ -144,6 +144,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.polarization_factor = args.polarization_factor if args.polarization_factor else 2.0
         self.skip_refinement = args.skip_refinement if args.skip_refinement else False
         self.native = args.native if args.native else False
+        self.protein = args.protein if args.protein else None
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)

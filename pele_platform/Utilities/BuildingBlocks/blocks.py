@@ -20,19 +20,23 @@ class Simulation:
     env: pv.EnviroBuilder
 
     def run_simulation(self, keyword, folder_name):
+        self.keyword = keyword
         self.set_params(simulation_type=keyword)
         self.set_working_folder(folder_name)
         self.env.build_adaptive_variables(self.env.initial_args)
         self.create_folders()
         if hasattr(self.env, "next_step"):
             self.env.input = glob.glob(self.env.next_step)
+        if self.env.initial_args.ppi == True and keyword == "induced_fit_exhaustive":  # I don't really like this, any ideas?
+            self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein, remove_water=False)
+        
         self.restart_checker()
         self.water_handler()
 
         # check for special params
-        if keyword == "gpcr_orth":
+        if self.keyword == "gpcr_orth":
             self.set_gpcr_params()
-        elif keyword == "out_in":
+        elif self.keyword == "out_in":
             self.set_outin_params()
 
         # launch simulation
@@ -64,18 +68,19 @@ class Simulation:
     def water_handler(self):
         """
         In the PPI package, water perturbation is only executed in the refinement simulation.
-        If the original input.yaml has n_waters, the flag should remain hidden until the refinement simulation.
-        If a hidden n_waters attr already exists, it means the refinement simulation is being executed and n_waters
-        should be reinstated.
         """
-        if self.env.package == "ppi":
-
-            if hasattr(self.env, "n_waters"):
+        if self.env.package == "ppi" and hasattr(self.env.initial_args, "n_waters"):
+            if self.keyword == "induced_fit_exhaustive":
                 self.env._n_waters = self.env.n_waters
-                self.env.n_waters = None
-
-            elif hasattr(self.env, "_n_waters"):
-                self.env.n_waters = self.env._n_waters
+                self.env.n_waters = 0
+                self.env.water_arg = None
+            else:
+                if self.env._n_waters !=0:
+                    self.env.waters = "all_waters"
+                    self.env.n_waters = n_waters
+                else:
+                    self.env.waters = None
+                    self.env.n_waters = self.env._n_waters
 
 
 @dataclass
@@ -119,8 +124,8 @@ class InducedFitExhaustive(Simulation):
         self.folder_name = folder_name
 
     def run(self):
-        if hasattr(self.env.initial_args, "ppi"):
-            self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein, remove_water=False)
+        if self.env.package == "ppi":
+            self.env.water_arg = None
         self.env = self.run_simulation("induced_fit_exhaustive", self.folder_name)
         return self.env
 

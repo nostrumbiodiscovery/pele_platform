@@ -52,7 +52,6 @@ class Selection:
         return all_coords
 
     def gaussian_mixture(self, files_out, output_energy):
-
         # extract coordinates from poses
         all_coords = self.extract_all_coords(files_out)
 
@@ -65,7 +64,8 @@ class Selection:
         clustered_lig = clustered_lig.sort_values("binding_energy", ascending=True).groupby("cluster_ID").first()
 
         # save CSV file
-        clustered_lig.to_csv("clustering_output.csv")
+        csv_location = os.path.join(self.simulation_params.pele_dir, "output", "clustering_output.csv")
+        clustered_lig.to_csv(csv_location)
 
         return clustered_lig["file_name"].values.tolist()
 

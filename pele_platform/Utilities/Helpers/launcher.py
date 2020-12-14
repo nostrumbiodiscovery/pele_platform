@@ -47,7 +47,7 @@ class Launcher:
         elif package == self.allosteric:
             job_variables = al.AllostericLauncher(self.env).run()
         elif package == self.ppi:
-            job_variables = ppi.run(self._args)
+            job_variables = ppi.PPILauncher(self.env).run()
         elif package == self.induced_fit_fast:
             job_variables = ind.InducedFitFastLauncher(self.env).run()
         elif package == self.induced_fit_exhaustive:
