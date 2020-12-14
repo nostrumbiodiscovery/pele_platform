@@ -26,13 +26,14 @@ class Simulation:
         if hasattr(self.env, "next_step"):
             self.env.input = glob.glob(self.env.next_step)
         self.restart_checker()
-        
+        self.water_handler()
+
         # check for special params
         if keyword == "gpcr_orth":
             self.set_gpcr_params()
         elif keyword == "out_in":
             self.set_outin_params()
-        
+
         # launch simulation
         self.env = si.run_adaptive(self.env)
         return self.env
@@ -58,6 +59,22 @@ class Simulation:
 
     def create_folders(self):
         self.env.create_files_and_folders()
+
+    def water_handler(self):
+        """
+        In the PPI package, water perturbation is only executed in the refinement simulation.
+        If the original input.yaml has n_waters, the flag should remain hidden until the refinement simulation.
+        If a hidden n_waters attr already exists, it means the refinement simulation is being executed and n_waters
+        should be reinstated.
+        """
+        if self.env.package == "ppi":
+
+            if hasattr(self.env, "n_waters"):
+                self.env._n_waters = self.env.n_waters
+                self.env.n_waters = None
+
+            elif hasattr(self.env, "_n_waters"):
+                self.env.n_waters = self.env._n_waters
 
 
 @dataclass
@@ -116,8 +133,22 @@ class Rescoring(Simulation):
         self.folder_name = folder_name
 
     def run(self):
+        if self.env.package == "ppi":
+            self.set_ppi_params()
         self.env = self.run_simulation("rescoring", self.folder_name)
         return self.env
+
+    def set_ppi_params(self):
+        """
+        Overrides default Rescoring parameters if running PPI.
+        """
+        if not self.env.test:
+            self.env.iterations = 1
+            self.env.steps = 100
+            self.env.box_radius = 100
+
+        if self.env._n_waters:
+            self.env.n_waters = self.env._n_waters
 
 
 @dataclass
@@ -255,5 +286,3 @@ class OutIn(Simulation):
         self.env.box_center = self.env.initial_args.box_center if self.env.initial_args.box_center else box_center
         self.env.box_radius = self.env.initial_args.box_radius if self.env.initial_args.box_radius else box_radius
         self.env.randomize = True
-
-
