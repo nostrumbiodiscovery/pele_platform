@@ -18,7 +18,7 @@ rm -r LIG_Pele* SB4_Pele* STR_Pele* LIG_Pele* AS4_Pele* IK1_Pele* allosteric NOR
 /shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pytest test_*
 
 # to run coverage
-#nohup /shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/pytest --cov-config=.coveragerc --cov .. --cov-report xml test_* > log.txt &
+#nohup /shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pytest --cov-config=.coveragerc --cov .. --cov-report xml test_* > log.txt &
 
 #production run
 #/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pele_platform.main input.yaml
