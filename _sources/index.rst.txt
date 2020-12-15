@@ -3,8 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Pele Platform
+PELE Platform
 ===========================================
+
+.. image:: img/pele_logo.png
+    :width: 30%
+    :align: center
 
 Pele platform is a suit of packages that enables users to find novel
 solutions to drug discovery problems in matter of hours.
