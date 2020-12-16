@@ -24,14 +24,17 @@ class EnviroBuilder(simulation_params.SimulationParams, simulation_folders.Simul
         if not args.folder:
             self.pele_dir = hp.is_repeated(pele_dir) if args.restart in cs.FIRST_RESTART else hp.is_last(pele_dir)
             self.pele_dir = hp.is_repeated(pele_dir) if not hasattr(self, "adaptive_restart") else hp.is_last(pele_dir)
-            if self.folder_name:
+            if hasattr(self, "folder_name"):
                 self.pele_dir = os.path.join(self.pele_dir, self.folder_name)
         else:
             if not hasattr(self, "pele_dir"):
-                if self.folder_name:
+                if hasattr(self, "folder_name"):
                     self.pele_dir = os.path.join(os.path.abspath(args.folder), self.folder_name)
+                else:
+                    self.pele_dir = os.path.abspath(args.folder)
             else:
                 self.pele_dir = os.path.join(os.path.dirname(self.pele_dir), self.folder_name)
+
         # Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
         for key, value in adfs.retrieve_software_settings(self, self.pele_dir).items():
             setattr(self, key, value)
