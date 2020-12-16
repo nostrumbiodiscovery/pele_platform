@@ -3,6 +3,7 @@ import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
+import pele_platform.Adaptive.main as adp
 import pele_platform.Allosteric.main as al
 import pele_platform.GPCR.main as gpcr
 import pele_platform.InducedFit.main as ind
@@ -24,6 +25,8 @@ class Launcher:
     adaptive: str = "adaptive"
     induced_fit_exhaustive: str = "induced_fit_exhaustive"
     induced_fit_fast: str = "induced_fit_fast"
+    full: str = "full"
+    in_out: str = "in_out"
 
 
     def launch(self) -> pv.EnviroBuilder:
@@ -39,7 +42,7 @@ class Launcher:
         if not no_check:
             ck.check_executable_and_env_variables(self._args)
         if package == self.adaptive:
-            job_variables = ad.run_adaptive(self._args)
+            job_variables = adp.AdaptiveLauncher(self.env).run()
         elif package == self.gpcr_orth:
             job_variables = gpcr.GPCRLauncher(self.env).run()
         elif package == self.out_in:
