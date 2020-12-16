@@ -5,6 +5,10 @@ import os
 import shutil
 from pele_platform.constants import constants as cs
 from pele_platform import main
+import pytest
+import socket
+
+machine = socket.gethostbyname(socket.gethostname())
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -47,6 +51,8 @@ def test_allosteric_xtc(yaml=yaml):
 
 
 yaml = os.path.join(test_path, "Allosteric/input_restart.yaml")
+
+@pytest.mark.xfail(machine == "10.10.2.3", reason = "Fails on nbdcalc01 due to mpi. Mock simulation folder was prepared with srun.")
 def test_allosteric_restart(yaml=yaml):
 
     if os.path.exists('allosteric'):

@@ -47,14 +47,14 @@ SMILES_CONSTR = [
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job, _, _ = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
     assert not errors
 
 
 def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job,  = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", PPP_CONSTR, errors)
     assert not errors
 
@@ -238,7 +238,7 @@ def test_unk_error():
 def test_constrain_smarts():
     yaml = os.path.join(test_path,"constraints/input_constrain_smarts.yaml")
     errors = []
-    job = main.run_platform(yaml)
+    job, _, _ = main.run_platform(yaml)
     errors = tk.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
     assert not errors
 

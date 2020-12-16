@@ -29,7 +29,7 @@ def test_water(yaml=yaml):
     water_output = []
 
     # Function to test
-    job = main.run_platform(yaml)
+    job, _, _ = main.run_platform(yaml)
 
     # checkpoints
     output = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/epoch0_trajectory_1.0*"))[0]

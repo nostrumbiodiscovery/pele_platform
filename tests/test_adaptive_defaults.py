@@ -210,7 +210,7 @@ def test_out_in_defaults(ext_args=OUT_IN_ARGS):
 
 def test_bias_defaults(ext_args=BIAS_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job, = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", BIAS_DEFAULTS_ADAPTIVE, errors)
     assert not errors
 
