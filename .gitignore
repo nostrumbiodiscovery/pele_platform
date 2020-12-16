@@ -50,6 +50,9 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 
+# Files changed during tests
+pele_platform/Examples/analysis/data
+
 # Translations
 *.mo
 *.pot
