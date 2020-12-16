@@ -96,7 +96,7 @@ def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
     main.run_platform(ext_args)
 
 def test_n_water(ext_args=NWATER_ARGS):
-    job = main.run_platform(ext_args)
+    job, sel, job2 = main.run_platform(ext_args)
     results = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/*.pdb"))
     error = False
     #Result has waters
@@ -167,13 +167,12 @@ def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     errors = check_file(folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors)
     assert not errors
 
-
 def test_pca(ext_args=PCA_ARGS, output="PCA_result"):
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
     errors = []
-    job = main.run_platform(ext_args)
-    folder = job.folder
+    job, sel, job2 = main.run_platform(ext_args)
+    folder = job.pele_dir
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
 
@@ -181,8 +180,8 @@ def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
     errors = []
-    job = main.run_platform(ext_args)
-    folder = job.folder
+    job, sel, job2 = main.run_platform(ext_args)
+    folder = job.pele_dir
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
 
