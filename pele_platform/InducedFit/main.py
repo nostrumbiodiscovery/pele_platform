@@ -10,7 +10,6 @@ class InducedFitExhaustiveLauncher:
 
     def run(self):
         self.env.package = "induced_fit_exhaustive"
-
         result = Pipeline([InducedFitExhaustive, LowestEnergy5, Rescoring], self.env).run()
         return result
 
@@ -22,6 +21,5 @@ class InducedFitFastLauncher:
 
     def run(self):
         self.env.package = "induced_fit_fast"
-
         result = Pipeline([InducedFitFast, LowestEnergy5, Rescoring], self.env).run()
         return result

@@ -19,11 +19,10 @@ class Pipeline:
             output.append(deepcopy(self.env))
         return output
 
-
     def check_pipeline(self):
-        
+
         block_types = [block.__bases__[-1].__name__ for block in self.iterable]
-        
+
         if len(block_types) == 0:
             raise ce.PipelineError("Pipeline doesn't contain any BuildingBlocks.")
 
@@ -32,8 +31,9 @@ class Pipeline:
 
         for index, block in enumerate(block_types):
             if (index % 2 == 0 and block != "Simulation") or (index % 2 == 1 and block != "Selection"):
-                raise ce.PipelineError("There is something wrong with your Pipeline.\n1. It should begin and end with a Simulation block, e.g. GlobalExploration.\n2. Simulation blocks should be separated by Selection blocks.")
-            
+                raise ce.PipelineError(
+                    "There is something wrong with your Pipeline.\n1. It should begin and end with a Simulation "
+                    "block, e.g. GlobalExploration.\n2. Simulation blocks should be separated by Selection blocks.")
 
     def check_debug(self):
         """

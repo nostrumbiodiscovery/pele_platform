@@ -107,7 +107,7 @@ class LowestEnergy5(Selection):
 @dataclass
 class GMM(Selection):
     """
-
+    Perform Gaussian Mixture (full covariance) clustering on best binding energy poses.
     """
     simulation_params: pv.EnviroBuilder
     folder: str
