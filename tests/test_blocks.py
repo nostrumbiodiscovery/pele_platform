@@ -1,12 +1,13 @@
 import os
 import pytest
+import shutil
 
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.constants import constants as cs
 import pele_platform.Utilities.BuildingBlocks.blocks as bb
 from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
-from pele_platform.Utilities.BuildingBlocks.selection import Scatter6
+from pele_platform.Utilities.BuildingBlocks.selection import Scatter6, LowestEnergy5, GMM
 import pele_platform.Checker.valid_flags as vf
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 from . import test_adaptive as tk
@@ -55,6 +56,22 @@ Rescoring_lines = [
     '"conditions": [1, 0.6, 0.4, 0.0]'
 ]
 
+Scatter6_inputs = ['/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb']
+
+LowestEnergy5_inputs = [
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_2.1_BindingEnergy-102.463.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.2_BindingEnergy-99.0239.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_2.4_BindingEnergy-97.3843.pdb',
+]
+
+GMM_inputs = [
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_2.1_BindingEnergy-64.1978.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_1.5_BindingEnergy-62.9806.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_3.4_BindingEnergy-43.7304.pdb'
+]
+
 
 @pytest.mark.parametrize("iterable", [([Scatter6, bb.Rescoring]), ([bb.GPCR, bb.Rescoring]), ([])])
 def test_pipeline_checker(iterable):
@@ -96,4 +113,32 @@ def test_simulation_blocks(yaml, package, block, expected):
     errors = []
     errors = tk.check_file(directory, "adaptive.conf", expected, errors)
     assert not errors
+
+
+@pytest.fixture
+def mock_simulation_env():
+    env = pv.EnviroBuilder()                                                                                                                                                            
+    env.pele_dir = os.path.join(test_path, "Blocks/mock_simulation")                                                                                                                    
+    env.output = "output"                                                                                                                                                               
+    env.iterations = 2                                                                                                                                                                  
+    env.pele_steps = 12                                                                                                                                                                 
+    env.cpus = 5                                                                                                                                                                        
+    env.be_column = 5                                                                                                                                                                   
+    env.topology = None                                                                                                                                                                 
+    env.logger = None                                                                                                                                                                   
+    env.residue = "LIG"
+
+    selection_path = os.path.join(os.path.dirname(env.pele_dir), "test_Selection")
+    if os.path.exists(selection_path):
+        shutil.rmtree(selection_path)
+    return env
+
+
+@pytest.mark.parametrize(("selection_block", "expected"), [(Scatter6, Scatter6_inputs), (LowestEnergy5, LowestEnergy5_inputs), (GMM, GMM_inputs)])
+def test_selection_blocks(mock_simulation_env, selection_block, expected):
+
+    selection = selection_block(mock_simulation_env, "test_folder")
+    selection.run()
+
+    assert selection.inputs == expected
 
