@@ -1,0 +1,5 @@
+cluster_ID,file_name,binding_energy
+0,/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_2.1_BindingEnergy-64.1978.pdb,-64.1978
+1,/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb,-107.584
+2,/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_1.5_BindingEnergy-62.9806.pdb,-62.9806
+3,/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_3.4_BindingEnergy-43.7304.pdb,-43.7304
