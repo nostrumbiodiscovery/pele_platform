@@ -16,7 +16,7 @@ LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams, pca.PCAParams, allosteric.AllostericParams, ppi.PPIParams): # rna.RNAParams
+    inout_params.InOutParams, pca.PCAParams, allosteric.AllostericParams, ppi.PPIParams):  # rna.RNAParams
 
     def __init__(self, args):
         self.set_simulation_type(args)
@@ -144,7 +144,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.polarization_factor = args.polarization_factor if args.polarization_factor else 2.0
         self.skip_refinement = args.skip_refinement if args.skip_refinement else False
         self.native = args.native if args.native else False
-        self.protein = args.protein if args.protein else None
+        self.workflow = args.workflow if args.workflow else None
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
@@ -180,8 +180,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_overlap = args.water_overlap if args.water_overlap else self.simulation_params.get("water_overlap", 0.78)
         self.water_constr = args.water_constr if args.water_constr else self.simulation_params.get("water_constr", 0)
         self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
-
-       
         self.allow_empty_selectors = '"allowEmptyWaterSelectors": true,' if args.water_empty_selector else ""
         self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters  # IDs of waters
         self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", 0)
@@ -190,7 +188,6 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.water_center = None
         self.water = ""
         self.water_energy = None
-
 
     def box_params(self, args):
         self.box_radius = args.box_radius if args.box_radius else self.simulation_params.get("box_radius", None)
