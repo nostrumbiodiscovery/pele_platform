@@ -27,7 +27,7 @@ class Launcher:
     induced_fit_fast: str = "induced_fit_fast"
     full: str = "full"
     in_out: str = "in_out"
-
+    workflow: str = "workflow"
 
     def launch(self) -> pv.EnviroBuilder:
         # Launch package from input.yaml
@@ -43,6 +43,8 @@ class Launcher:
             ck.check_executable_and_env_variables(self._args)
         if package == self.adaptive:
             job_variables = adp.AdaptiveLauncher(self.env).run()
+        elif package == self.workflow:
+            job_variables = adp.WorkflowLauncher(self.env).run()
         elif package == self.gpcr_orth:
             job_variables = gpcr.GPCRLauncher(self.env).run()
         elif package == self.out_in:
@@ -76,5 +78,7 @@ class Launcher:
             self._args.package = self.induced_fit_fast
         elif self._args.induced_fit_exhaustive:
             self._args.package = self.induced_fit_exhaustive
+        elif self._args.workflow:
+            self._args.package = self.workflow
         else: 
             self._args.package = self.adaptive
