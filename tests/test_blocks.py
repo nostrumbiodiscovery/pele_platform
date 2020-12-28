@@ -1,7 +1,9 @@
+import glob
 import os
 import pytest
 import shutil
 
+from pele_platform import main
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.constants import constants as cs
@@ -142,3 +144,23 @@ def test_selection_blocks(mock_simulation_env, selection_block, expected):
 
     assert selection.inputs == expected
 
+
+def test_workflow():
+    yaml = os.path.join(test_path, "Blocks/input_workflow.yaml")
+    output = main.run_platform(yaml)
+    rescoring_params = output[-1]
+    rescoring_output = os.path.join(rescoring_params.pele_dir, rescoring_params.output, "*/trajectory*.pdb")
+    output_files = glob.glob(rescoring_output)
+    
+    assert os.path.exists(rescoring_params.pele_dir)
+    assert output_files
+
+
+def test_workflow_checker():
+    yaml = os.path.join(test_path, "Blocks/input_wrong_workflow.yaml")
+    try:
+        output = main.run_platform(yaml)
+    except ce.PipelineError:                                                                                                                                                            
+        assert True                                                                                                                                                                     
+        return 
+    assert False
