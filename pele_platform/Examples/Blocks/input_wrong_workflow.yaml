@@ -1,0 +1,9 @@
+system: '../pele_platform/Examples/Allosteric/complex.pdb'
+chain: 'Z'
+resname: 'API'
+seed: 12345
+workflow:
+  - GlobalExploration
+  - RandomNonsense
+  - Rescoring
+test: true

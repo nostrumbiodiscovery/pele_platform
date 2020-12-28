@@ -4,7 +4,9 @@ import pele_platform.Adaptive.simulation as si
 import pele_platform.features.adaptive as ft
 from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
 import pele_platform.Utilities.BuildingBlocks.selection as selection
+from pele_platform.Utilities.BuildingBlocks.selection import *
 import pele_platform.Utilities.BuildingBlocks.blocks as blocks
+from pele_platform.Utilities.BuildingBlocks.blocks import GlobalExploration, InducedFitExhaustive, Rescoring
 import pele_platform.Errors.custom_errors as ce
 
 
@@ -38,17 +40,16 @@ class WorkflowLauncher:
     def run(self):
         self.env.package = "workflow"
         self.check_blocks()
-
-        result = Pipeline([self.iterable], self.env).run()
+        result = Pipeline(self.iterable, self.env).run()
         return result
 
     def check_blocks(self):
-        available = {**inspect.getmembers(selection), **inspect.getmembers(blocks)}
-
+        available = {**dict((name, func) for name, func in inspect.getmembers(selection)), **dict((name, func) for name, func in inspect.getmembers(blocks))}
+        
         for i in self.iterable:
-            if not (i in available.values() or inspect.isclass(i)):
+            if not (i in available.keys() or inspect.isclass(i)):
                 raise ce.PipelineError(
                     "Block {} cannot be found. Please check spelling and refer to the PELE Platform documentation "
-                    "for an up-to-date list of available BuildingBlocks")
-            else:
-                i = eval(i)
+                    "for an up-to-date list of available BuildingBlocks".format(i))
+
+        self.iterable = [eval(elem) for elem in self.iterable]

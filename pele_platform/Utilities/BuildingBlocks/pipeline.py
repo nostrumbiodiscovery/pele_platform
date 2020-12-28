@@ -20,7 +20,6 @@ class Pipeline:
         return output
 
     def check_pipeline(self):
-
         block_types = [block.__bases__[-1].__name__ for block in self.iterable]
 
         if len(block_types) == 0:
