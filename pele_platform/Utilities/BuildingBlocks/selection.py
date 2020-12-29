@@ -134,19 +134,19 @@ class Clusters(Selection):
 
     def run(self):
         self.folder = self.rename_folder()
-        self.inputs = self.get_clusters()
+        self.get_clusters()
         self.copy_files()
         self.set_next_step()
         return self.simulation_params
 
     def get_clusters(self):
 
-        clusters_dir = os.path.join(self.simulation_params.pele_dir, "results/")
+        clusters_dir = os.path.join(self.simulation_params.pele_dir, "results/clusters/*.pdb")
         clusters_files = glob.glob(clusters_dir)
         self.n_inputs = self.simulation_params.cpus - 1
 
-        if len(clusters_files) > n_inputs:
-            self.inputs = filter_energies(clusters_files)
+        if len(clusters_files) > self.n_inputs:
+            self.inputs = self.filter_energies(clusters_files)
         elif len(clusters_files) == 0:
             raise OSError("No files found in {}".format(clusters_dir))
         else:
@@ -154,11 +154,10 @@ class Clusters(Selection):
 
     def filter_energies(self, files):
         pattern = r"BindingEnergy([\-0-9]+\.[0-9]+)"
-        energies = [re.findall(pattern, file) for file in files]
+        energies = [float(re.findall(pattern, file)[0]) for file in files]
         zipped = zip(files, energies)
-        zipped = sorted(zipped, key=lambda x: x[1])
-        files, energies = zipped
-        output = files[0:self.n_inputs]
+        zipped_list = sorted(zipped, key=lambda x: x[1])
+        output = [f for f, e in zipped_list[0:self.n_inputs]]
         return output
 
 

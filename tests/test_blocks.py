@@ -78,10 +78,10 @@ GMM_inputs = [
 ]
 
 Clusters_inputs = [
-    'cluster1_epoch0_trajectory_3.1_BindingEnergy-76.1823.pdb',
-    'cluster4_epoch1_trajectory_1.1_BindingEnergy-65.8932.pdb',
-    'cluster6_epoch0_trajectory_1.3_BindingEnergy-96.088.pdb',
-    'cluster8_epoch0_trajectory_1.1_BindingEnergy-107.584.pdb'
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster8_epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster6_epoch0_trajectory_1.3_BindingEnergy-96.088.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster1_epoch0_trajectory_3.1_BindingEnergy-76.1823.pdb',
+    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster4_epoch1_trajectory_1.1_BindingEnergy-65.8932.pdb'
 ]
 
 
@@ -151,7 +151,7 @@ def test_selection_blocks(mock_simulation_env, selection_block, expected):
 
     selection = selection_block(mock_simulation_env, "test_folder")
     selection.run()
-
+    
     assert selection.inputs == expected
 
 
