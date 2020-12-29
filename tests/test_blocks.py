@@ -9,7 +9,7 @@ import pele_platform.Errors.custom_errors as ce
 from pele_platform.constants import constants as cs
 import pele_platform.Utilities.BuildingBlocks.blocks as bb
 from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
-from pele_platform.Utilities.BuildingBlocks.selection import Scatter6, LowestEnergy5, GMM
+from pele_platform.Utilities.BuildingBlocks.selection import Scatter6, LowestEnergy5, GMM, Clusters
 import pele_platform.Checker.valid_flags as vf
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 from . import test_adaptive as tk
@@ -69,9 +69,19 @@ LowestEnergy5_inputs = [
 
 GMM_inputs = [
     '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_2.1_BindingEnergy-64.1978.pdb',
+ 
+    
+    
     '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
     '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_1.5_BindingEnergy-62.9806.pdb',
     '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_3.4_BindingEnergy-43.7304.pdb'
+]
+
+Clusters_inputs = [
+    'cluster1_epoch0_trajectory_3.1_BindingEnergy-76.1823.pdb',
+    'cluster4_epoch1_trajectory_1.1_BindingEnergy-65.8932.pdb',
+    'cluster6_epoch0_trajectory_1.3_BindingEnergy-96.088.pdb',
+    'cluster8_epoch0_trajectory_1.1_BindingEnergy-107.584.pdb'
 ]
 
 
@@ -136,7 +146,7 @@ def mock_simulation_env():
     return env
 
 
-@pytest.mark.parametrize(("selection_block", "expected"), [(Scatter6, Scatter6_inputs), (LowestEnergy5, LowestEnergy5_inputs), (GMM, GMM_inputs)])
+@pytest.mark.parametrize(("selection_block", "expected"), [(Scatter6, Scatter6_inputs), (LowestEnergy5, LowestEnergy5_inputs), (GMM, GMM_inputs), (Clusters, Clusters_inputs)])
 def test_selection_blocks(mock_simulation_env, selection_block, expected):
 
     selection = selection_block(mock_simulation_env, "test_folder")
