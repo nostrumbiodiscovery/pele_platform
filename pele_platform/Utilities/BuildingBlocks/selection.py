@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+import glob
 from multiprocessing import Pool
 import numpy as np
 import os
 import pandas as pd
+import re
 from sklearn.mixture import GaussianMixture
 
 from pele_platform.Analysis.plots import _extract_coords
@@ -119,6 +121,45 @@ class GMM(Selection):
         self.copy_files()
         self.set_next_step()
         return self.simulation_params
+
+
+@dataclass
+class Clusters(Selection):
+    """
+    Select cluster representatives from 'results' folder as input for the next simulation. If there are more inputs
+    than available CPUs, choose the ones with the lowest binding energy.
+    """
+    simulation_params: pv.EnviroBuilder
+    folder: str
+
+    def run(self):
+        self.folder = self.rename_folder()
+        self.inputs = self.get_clusters()
+        self.copy_files()
+        self.set_next_step()
+        return self.simulation_params
+
+    def get_clusters(self):
+
+        clusters_dir = os.path.join(self.simulation_params.pele_dir, "results/")
+        clusters_files = glob.glob(clusters_dir)
+        self.n_inputs = self.simulation_params.cpus - 1
+
+        if len(clusters_files) > n_inputs:
+            self.inputs = filter_energies(clusters_files)
+        elif len(clusters_files) == 0:
+            raise OSError("No files found in {}".format(clusters_dir))
+        else:
+            self.inputs = clusters_files
+
+    def filter_energies(self, files):
+        pattern = r"BindingEnergy([\-0-9]+\.[0-9]+)"
+        energies = [re.findall(pattern, file) for file in files]
+        zipped = zip(files, energies)
+        zipped = sorted(zipped, key=lambda x: x[1])
+        files, energies = zipped
+        output = files[0:self.n_inputs]
+        return output
 
 
 @dataclass
