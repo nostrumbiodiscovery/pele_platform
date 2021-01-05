@@ -23,7 +23,7 @@ export SRUN=1  # this is to avoid having to set usesrun: true in input.yaml
 ###################################################################
 
 # CHANGE - these paths should point to your own repository
-export PYTHONPATH="/home/agruzka/work_pele_platform:$PYTHONPATH"
+export PYTHONPATH="/path/to/your/pele/repository:$PYTHONPATH"
 
 # to run a single test
 #/shared/work/NBD_Utilities/PELE/PELE_Softwares/PelePlatform/depend/bin/python -m pytest test_*
