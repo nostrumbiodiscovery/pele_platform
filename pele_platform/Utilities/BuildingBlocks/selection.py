@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import glob
 from multiprocessing import Pool
@@ -14,14 +15,13 @@ from pele_platform.Utilities.Parameters import pele_env as pv
 
 
 @dataclass
-class Selection:
+class Selection(ABC):
     """
     Base class to handle all input selection algorithms, copy files, set next_step, etc.
     """
     simulation_params: pv.EnviroBuilder
 
     def copy_files(self):
-
         self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder)
 
         if not os.path.isdir(self.directory):
@@ -41,7 +41,7 @@ class Selection:
             files_out, _, _, _, output_energy = bs.main(str(self.simulation_params.be_column), n_structs=n_best_poses,
                                                         path=".", topology=self.simulation_params.topology,
                                                         logger=self.simulation_params.logger)
-        
+
         files_out = [os.path.join(self.simulation_params.pele_dir, "results", f) for f in files_out]
         return files_out, output_energy
 
@@ -58,11 +58,12 @@ class Selection:
         all_coords = self.extract_all_coords(files_out)
 
         # run Gaussian Mixture
-        cluster = GaussianMixture(self.simulation_params.cpus-1, covariance_type='full', random_state=42)
+        cluster = GaussianMixture(self.simulation_params.cpus - 1, covariance_type='full', random_state=42)
         labels = cluster.fit_predict(all_coords)
 
         # get lowest energy representative of each cluster
-        clustered_lig = pd.DataFrame(list(zip(files_out, labels, output_energy)), columns=["file_name", "cluster_ID", "binding_energy"])
+        clustered_lig = pd.DataFrame(list(zip(files_out, labels, output_energy)),
+                                     columns=["file_name", "cluster_ID", "binding_energy"])
         clustered_lig = clustered_lig.sort_values("binding_energy", ascending=True).groupby("cluster_ID").first()
 
         # save CSV file
@@ -72,9 +73,20 @@ class Selection:
         return clustered_lig["file_name"].values.tolist()
 
     def rename_folder(self):
-
         index, name = self.folder.split("_")
-        return "{}_Selection".format(index)
+        self.folder = "{}_Selection".format(index)
+
+    @abstractmethod
+    def get_inputs(self):
+        pass
+
+    def run(self):
+        self.rename_folder()
+        self.n_inputs = self.simulation_params.cpus - 1
+        self.get_inputs()
+        self.copy_files()
+        self.set_next_step()
+        return self.simulation_params
 
 
 @dataclass
@@ -86,19 +98,12 @@ class LowestEnergy5(Selection):
     simulation_params: pv.EnviroBuilder
     folder: str
 
-    def run(self):
-        self.folder = self.rename_folder()
+    def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.05)
         self.choose_refinement_input(files_out, output_energy)
-        self.copy_files()
-        self.set_next_step()
-        return self.simulation_params
 
     def choose_refinement_input(self, files_out, output_energy):
-
-        n_inputs = self.simulation_params.cpus - 1
-
-        if len(files_out) > n_inputs:  # pick lowest energy poses to fill all CPU slots
+        if len(files_out) > self.n_inputs:  # pick lowest energy poses to fill all CPU slots
             self.inputs = self.gaussian_mixture(files_out, output_energy)
         elif len(files_out) < 1:  # if top 5% happen to be less than 1 (e.g. when running tests)
             self.inputs, _ = self.extract_poses(percentage=1, n_poses=1)
@@ -114,13 +119,9 @@ class GMM(Selection):
     simulation_params: pv.EnviroBuilder
     folder: str
 
-    def run(self):
-        self.folder = self.rename_folder()
+    def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.05, n_poses=1000)
         self.inputs = self.gaussian_mixture(files_out, output_energy)
-        self.copy_files()
-        self.set_next_step()
-        return self.simulation_params
 
 
 @dataclass
@@ -132,18 +133,9 @@ class Clusters(Selection):
     simulation_params: pv.EnviroBuilder
     folder: str
 
-    def run(self):
-        self.folder = self.rename_folder()
-        self.get_clusters()
-        self.copy_files()
-        self.set_next_step()
-        return self.simulation_params
-
-    def get_clusters(self):
-
+    def get_inputs(self):
         clusters_dir = os.path.join(self.simulation_params.pele_dir, "results/clusters/*.pdb")
         clusters_files = glob.glob(clusters_dir)
-        self.n_inputs = self.simulation_params.cpus - 1
 
         if len(clusters_files) > self.n_inputs:
             self.inputs = self.filter_energies(clusters_files)
@@ -170,16 +162,11 @@ class Scatter6(Selection):
     simulation_params: pv.EnviroBuilder
     folder: str
 
-    def run(self):
-        self.folder = self.rename_folder()
+    def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.75)
         self.choose_refinement_input(files_out, output_energy)
-        self.copy_files()
-        self.set_next_step()
-        return self.simulation_params
 
     def choose_refinement_input(self, files_out, output_energy):
-
         distance = 6
         all_coords = self.extract_all_coords(files_out)
         coords = [list(c[0:3]) for c in all_coords]
@@ -187,17 +174,14 @@ class Scatter6(Selection):
         dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)),
                                  columns=["File", "Binding energy", "1st atom coordinates"])
         dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
-
         self.inputs = self._check_ligand_distances(dataframe, distance)
 
     def _check_ligand_distances(self, dataframe, distance):
-
         inputs = []
         input_coords = []
         distances = []
-        n_inputs = self.simulation_params.cpus - 1
 
-        while len(inputs) < n_inputs:
+        while len(inputs) < self.n_inputs:
             for f, c in zip(dataframe['File'], dataframe['1st atom coordinates']):
                 if not input_coords:
                     inputs.append(f)
