@@ -27,7 +27,7 @@ class Simulation:
         self.create_folders()
         if hasattr(self.env, "next_step"):
             self.env.input = glob.glob(self.env.next_step)
-        if self.env.initial_args.ppi == True and keyword == "induced_fit_exhaustive":  # I don't really like this, any ideas?
+        if self.env.initial_args.ppi is True and keyword == "induced_fit_exhaustive":  # I don't really like this, any ideas?
             self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein, remove_water=False)
         
         self.restart_checker()
@@ -89,10 +89,6 @@ class GlobalExploration(Simulation):
     env: pv.EnviroBuilder
     folder_name: str
 
-    def __init__(self, env, folder_name):
-        self.env = env
-        self.folder_name = folder_name
-
     def run(self):
         self.env = self.run_simulation("full", self.folder_name)
         return self.env
@@ -104,10 +100,6 @@ class InducedFitFast(Simulation):
     env: pv.EnviroBuilder
     folder_name: str
 
-    def __init__(self, env, folder_name):
-        self.env = env
-        self.folder_name = folder_name
-
     def run(self):
         self.env = self.run_simulation("induced_fit_fast", self.folder_name)
         return self.env
@@ -118,10 +110,6 @@ class InducedFitExhaustive(Simulation):
 
     env: pv.EnviroBuilder
     folder_name: str
-
-    def __init__(self, env, folder_name):
-        self.env = env
-        self.folder_name = folder_name
 
     def run(self):
         if self.env.package == "ppi":
@@ -135,10 +123,6 @@ class Rescoring(Simulation):
 
     env: pv.EnviroBuilder
     folder_name: str
-
-    def __init__(self, env, folder_name):
-        self.env = env
-        self.folder_name = folder_name
 
     def run(self):
         if self.env.package == "ppi":
@@ -163,10 +147,6 @@ class Rescoring(Simulation):
 class GPCR(Simulation):
     env: pv.EnviroBuilder
     folder_name: str
-
-    def __init__(self, env, folder_name):
-        self.env = env
-        self.folder_name = folder_name
 
     def run(self):
         self.env = self.run_simulation("gpcr_orth", self.folder_name)
@@ -268,10 +248,6 @@ class Pipeline:
 class OutIn(Simulation):
     env: pv.EnviroBuilder
     folder_name: str
-
-    def __init__(self, env, folder_name):
-        self.env = env
-        self.folder_name = folder_name
 
     def run(self):
         self._check_mandatory_fields()
