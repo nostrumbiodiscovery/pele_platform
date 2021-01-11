@@ -19,7 +19,7 @@ PACKAGES = dict(
     gpcr_orth=gpcr.GPCRLauncher,
     out_in=outin.OutInLauncher,
     adaptive=adp.AdaptiveLauncher,
-    induced_fit_exhausive=ind.InducedFitExhaustiveLauncher,
+    induced_fit_exhaustive=ind.InducedFitExhaustiveLauncher,
     induced_fit_fast=ind.InducedFitFastLauncher,
     workflow=adp.WorkflowLauncher,
 )
@@ -35,13 +35,14 @@ class Launcher:
         self.env.initial_args = self._args  # to keep the original args
         return self.launch_package()
 
-    def launch_package(self, package: str, no_check=False) -> pv.EnviroBuilder:
+    def launch_package(self) -> pv.EnviroBuilder:
         if not self._args.no_check:
             ck.check_executable_and_env_variables(self._args)
         # Launch package from API
-        for package_name, package in PACKAGES:
+        for package_name, package in PACKAGES.items():
             if getattr(self._args, package_name):
                 break
         else:
             package = adp.AdaptiveLauncher
+        self._args.package = package_name
         return package(self.env).run()
