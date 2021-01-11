@@ -43,6 +43,7 @@ class Launcher:
             if getattr(self._args, package_name):
                 break
         else:
+            package_name = "adaptive"
             package = adp.AdaptiveLauncher
-        self._args.package = package_name
+        self.env.package = self._args.package = package_name
         return package(self.env).run()
