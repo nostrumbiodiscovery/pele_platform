@@ -2,19 +2,14 @@ import inspect
 
 import pele_platform.Adaptive.simulation as si
 import pele_platform.features.adaptive as ft
-from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
+from pele_platform.Utilities.Helpers.launcher_base import LauncherBase
 import pele_platform.Utilities.BuildingBlocks.selection as selection
 from pele_platform.Utilities.BuildingBlocks.selection import *
 import pele_platform.Utilities.BuildingBlocks.blocks as blocks
-from pele_platform.Utilities.BuildingBlocks.blocks import GlobalExploration, InducedFitExhaustive, Rescoring
 import pele_platform.Errors.custom_errors as ce
 
 
-class AdaptiveLauncher:
-
-    def __init__(self, env):
-        self.env = env
-        self.env.package = "adaptive"
+class AdaptiveLauncher(LauncherBase):
 
     def run(self):
         self.set_simulation_type()
@@ -31,25 +26,16 @@ class AdaptiveLauncher:
                 setattr(self.env, arg, value)
 
 
-class WorkflowLauncher:
+class WorkflowLauncher(LauncherBase):
 
-    def __init__(self, env):
-        self.env = env
-        self.iterable = self.env.initial_args.workflow
-
-    def run(self):
-        self.env.package = "workflow"
-        self.check_blocks()
-        result = Pipeline(self.iterable, self.env).run()
-        return result
-
-    def check_blocks(self):
+    @property
+    def steps(self):
         available = {**dict((name, func) for name, func in inspect.getmembers(selection)), **dict((name, func) for name, func in inspect.getmembers(blocks))}
-        
-        for i in self.iterable:
+        iterable = self.env.initial_args.workflow
+        for i in iterable:
             if not (i in available.keys() or inspect.isclass(i)):
                 raise ce.PipelineError(
                     "Block {} cannot be found. Please check spelling and refer to the PELE Platform documentation "
                     "for an up-to-date list of available BuildingBlocks".format(i))
 
-        self.iterable = [eval(elem) for elem in self.iterable]
+        return [eval(elem) for elem in iterable]
