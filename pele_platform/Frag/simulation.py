@@ -13,11 +13,13 @@ import frag_pele.main as frag
 
 class FragRunner(mn.FragParameters):
 
-    def __init__(self, args):
+    def __init__(self, env):
+        self.env = env
+        args = env.initial_args
         args.system = args.frag_core
-        mn.FragParameters.__init__(self, args)
+        super().__init__(self, args)
 
-    def run_simulation(self):
+    def run(self):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()
