@@ -154,7 +154,7 @@ class Clusters(Selection):
 
 
 @dataclass
-class Scatter6(Selection):
+class ScatterN(Selection):
     """
     Choose input for refinement simulation after the first stage of Allosteric, GPCR and out_in simulations.
     Scan top 75% binding energies, pick n best ones as long as ligand COMs are >= 6 A away from each other.
