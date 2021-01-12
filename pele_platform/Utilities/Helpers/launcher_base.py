@@ -13,6 +13,6 @@ class LauncherBase:
         if not self.env.initial_args.skip_refinement:
             steps += self.refinement_steps
 
-        result = Pipeline(self.steps, self.env).run()
+        result = Pipeline(steps, self.env).run()
         return result
 
