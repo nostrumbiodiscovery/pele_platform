@@ -9,7 +9,7 @@ import pele_platform.Errors.custom_errors as ce
 from pele_platform.constants import constants as cs
 import pele_platform.Utilities.BuildingBlocks.blocks as bb
 from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
-from pele_platform.Utilities.BuildingBlocks.selection import Scatter6, LowestEnergy5, GMM, Clusters
+from pele_platform.Utilities.BuildingBlocks.selection import ScatterN, LowestEnergy5, GMM, Clusters
 import pele_platform.Checker.valid_flags as vf
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 from . import test_adaptive as tk
@@ -85,7 +85,7 @@ Clusters_inputs = [
 ]
 
 
-@pytest.mark.parametrize("iterable", [([Scatter6, bb.Rescoring]), ([bb.GPCR, bb.Rescoring]), ([])])
+@pytest.mark.parametrize("iterable", [([ScatterN, bb.Rescoring]), ([bb.GPCR, bb.Rescoring]), ([])])
 def test_pipeline_checker(iterable):
     try:
         env = pv.EnviroBuilder()
@@ -146,7 +146,7 @@ def mock_simulation_env():
     return env
 
 
-@pytest.mark.parametrize(("selection_block", "expected"), [(Scatter6, Scatter6_inputs), (LowestEnergy5, LowestEnergy5_inputs), (GMM, GMM_inputs), (Clusters, Clusters_inputs)])
+@pytest.mark.parametrize(("selection_block", "expected"), [(ScatterN, Scatter6_inputs), (LowestEnergy5, LowestEnergy5_inputs), (GMM, GMM_inputs), (Clusters, Clusters_inputs)])
 def test_selection_blocks(mock_simulation_env, selection_block, expected):
 
     selection = selection_block(mock_simulation_env, "test_folder")
