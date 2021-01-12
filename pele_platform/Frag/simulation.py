@@ -17,7 +17,7 @@ class FragRunner(mn.FragParameters):
         self.env = env
         args = env.initial_args
         args.system = args.frag_core
-        super().__init__(self, args)
+        mn.FragParameters.__init__(self, args)
 
     def run(self):
         self._set_test_variables()

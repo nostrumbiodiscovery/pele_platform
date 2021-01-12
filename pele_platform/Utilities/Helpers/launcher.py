@@ -13,7 +13,7 @@ import pele_platform.Utilities.Parameters.pele_env as pv
 import argparse
 
 PACKAGES = dict(
-    frag=fr.FragRunner,
+    frag_core=fr.FragRunner,
     ppi=ppi.PPILauncher,
     allosteric=al.AllostericLauncher,
     gpcr_orth=gpcr.GPCRLauncher,
