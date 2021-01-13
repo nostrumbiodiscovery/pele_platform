@@ -23,32 +23,39 @@ def test_allosteric_skipref(yaml=yaml):
 
 def test_allosteric_pdb():
     yaml = os.path.join(test_path, "Allosteric/input_global.yaml")
-    job, _, _ = main.run_platform(yaml)
+    output = main.run_platform(yaml)
+    job = output[0]  # taking 1st out of 5 BB
+    rescoring = output[-1]
 
     # checkpoints
     refinement_input = glob.glob(os.path.join(os.path.dirname(job.pele_dir), "2_Selection/*.pdb"))
     nfiles_refinement = len(glob.glob(os.path.join(job.pele_dir, "results/BestStructs/epoch*")))
     best_energy_input = os.path.join(os.path.dirname(job.pele_dir), "2_Selection",  "epoch0_trajectory_3.1_BindingEnergy-1.5142.pdb")
-    
+    rescoring_output = glob.glob(os.path.join(rescoring.pele_dir, rescoring.output, "*/*.pdb"))
+
     # test
     assert best_energy_input in refinement_input
     assert nfiles_refinement > 0
+    assert len(rescoring_output) > 1
 
 
 yaml = os.path.join(test_path, "Allosteric/input_global_xtc.yaml")
 def test_allosteric_xtc(yaml=yaml):
 
-    job, _, _ = main.run_platform(yaml)
+    output = main.run_platform(yaml)
+    job = output[0]
+    rescoring = output[-1]
 
     # checkpoints
     best_energy_input = os.path.join(os.path.dirname(job.pele_dir), "2_Selection",  "epoch0_trajectory_3.1_BindingEnergy-1.5142.pdb")
     refinement_input = glob.glob(os.path.join(os.path.dirname(job.pele_dir), "2_Selection/*.pdb"))
     nfiles_refinement = len(glob.glob(os.path.join(job.pele_dir, "results/BestStructs/epoch*")))
+    rescoring_output = glob.glob(os.path.join(rescoring.pele_dir, rescoring.output, "*/*.pdb"))
 
     # test
     assert best_energy_input in refinement_input 
     assert nfiles_refinement > 0
-
+    assert len(rescoring_output) > 1
 
 yaml = os.path.join(test_path, "Allosteric/input_restart.yaml")
 

@@ -71,7 +71,8 @@ POLARISATION = ["    1   1.6445   0.8750  0.200000 0.9545   0.8222   0.005000000
 def test_metal_constraints(ext_args=METAL_CONSTR_ARGS):
     # checks metal constraints without any flags
     errors = []
-    job, _, _ = main.run_platform(ext_args)
+    output = main.run_platform(ext_args)
+    job = output[0]
     errors = tk.check_file(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
     assert not errors
 
