@@ -3,9 +3,10 @@ chain: 'Z'
 resname: 'API'
 seed: 12345
 workflow:
-  - GlobalExploration
-  - Scatter6
-  - InducedFitExhaustive
-  - LowestEnergy5
-  - Rescoring
+  InducedFitFast:
+    box_radius: 10.0
+  ScatterN:
+    distance: 3.0
+  Rescoring:
+    box_radius: 5.0
 test: true
