@@ -204,6 +204,7 @@ class YamlParser(object):
         self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
         self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
         self.workflow = data.get(valid_flags["workflow"], None) 
+        self.distance = data.get(valid_flags["distance"], None)
 
         # Metal constraints
         self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
