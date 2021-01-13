@@ -1,6 +1,6 @@
 from pele_platform.Utilities.Helpers.launcher_base import LauncherBase
 from pele_platform.Utilities.BuildingBlocks.selection import LowestEnergy5
-from pele_platform.Utilities.BuildingBlocks.blocks import InducedFitExhaustive, InducedFitFast, Rescoring
+from pele_platform.Utilities.BuildingBlocks.simulation import InducedFitExhaustive, InducedFitFast, Rescoring
 
 
 class InducedFitExhaustiveLauncher(LauncherBase):

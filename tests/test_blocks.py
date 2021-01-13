@@ -7,7 +7,7 @@ from pele_platform import main
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.constants import constants as cs
-import pele_platform.Utilities.BuildingBlocks.blocks as bb
+import pele_platform.Utilities.BuildingBlocks.simulation as bb
 from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
 from pele_platform.Utilities.BuildingBlocks.selection import ScatterN, LowestEnergy5, GMM, Clusters
 import pele_platform.Checker.valid_flags as vf

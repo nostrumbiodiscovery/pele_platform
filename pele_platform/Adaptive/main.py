@@ -5,8 +5,8 @@ import pele_platform.features.adaptive as ft
 from pele_platform.Utilities.Helpers.launcher_base import LauncherBase
 import pele_platform.Utilities.BuildingBlocks.selection as selection
 from pele_platform.Utilities.BuildingBlocks.selection import *
-from pele_platform.Utilities.BuildingBlocks.blocks import *
-import pele_platform.Utilities.BuildingBlocks.blocks as blocks
+from pele_platform.Utilities.BuildingBlocks.simulation import *
+import pele_platform.Utilities.BuildingBlocks.simulation as blocks
 import pele_platform.Errors.custom_errors as ce
 
 
