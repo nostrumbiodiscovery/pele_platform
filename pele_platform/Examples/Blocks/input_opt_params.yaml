@@ -1,0 +1,11 @@
+system: '../pele_platform/Examples/Allosteric/complex.pdb'
+chain: 'Z'
+resname: 'API'
+seed: 12345
+workflow:
+  - GlobalExploration
+  - Scatter6
+  - InducedFitExhaustive
+  - LowestEnergy5
+  - Rescoring
+test: true
