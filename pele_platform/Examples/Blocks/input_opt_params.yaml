@@ -3,22 +3,13 @@ chain: 'Z'
 resname: 'API'
 seed: 12345
 workflow:
-  Step1:
-    type: 'GlobalExploration'
+  - type: 'InducedFitFast'
     options:
-      iterations: 5
-  Step2:
-    type: 'ScatterN'
+      box_radius: 10.0
+  - type: 'ScatterN'
     options:
-      distance: 5.0
-  Step3:
-    type: 'InducedFitFast'
-    options:
-      box_radius: 3.0
-  Step4:
-    type: 'ScatterN'
-    options:
-      distance: 1.0
-  Step5:
-    type: 'Rescoring'
+      distance: 3.0
+   - type: 'Rescoring'
+     options:
+       box_radius: 5.0
 test: true
