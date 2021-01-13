@@ -20,6 +20,7 @@ class Selection(ABC):
     Base class to handle all input selection algorithms, copy files, set next_step, etc.
     """
     simulation_params: pv.EnviroBuilder
+    options: dict
 
     def copy_files(self):
         self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder)
@@ -96,6 +97,7 @@ class LowestEnergy5(Selection):
     Use to select inputs for Rescoring after InducedFitExhaustive and InducedFitFast.
     """
     simulation_params: pv.EnviroBuilder
+    options: dict
     folder: str
 
     def get_inputs(self):
@@ -117,6 +119,7 @@ class GMM(Selection):
     Perform Gaussian Mixture (full covariance) clustering on best binding energy poses.
     """
     simulation_params: pv.EnviroBuilder
+    options: dict
     folder: str
 
     def get_inputs(self):
@@ -131,6 +134,7 @@ class Clusters(Selection):
     than available CPUs, choose the ones with the lowest binding energy.
     """
     simulation_params: pv.EnviroBuilder
+    options: dict
     folder: str
 
     def get_inputs(self):
@@ -160,6 +164,7 @@ class ScatterN(Selection):
     Scan top 75% binding energies, pick n best ones as long as ligand COMs are >= 6 A away from each other.
     """
     simulation_params: pv.EnviroBuilder
+    options: dict
     folder: str
 
     def get_inputs(self):
@@ -167,7 +172,7 @@ class ScatterN(Selection):
         self.choose_refinement_input(files_out, output_energy)
 
     def choose_refinement_input(self, files_out, output_energy):
-        distance = 6
+        distance = self.options.get('distance', 6)
         all_coords = self.extract_all_coords(files_out)
         coords = [list(c[0:3]) for c in all_coords]
         files_out = [os.path.join(self.simulation_params.pele_dir, "results", f) for f in files_out]

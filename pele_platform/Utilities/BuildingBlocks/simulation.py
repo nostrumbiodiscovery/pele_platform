@@ -18,10 +18,12 @@ class Simulation:
     One class to rule them all, one class to find them, one class to bring them all and in PELE bind them.
     """
     env: pv.EnviroBuilder
+    options: dict
 
     def run_simulation(self, keyword, folder_name):
         self.keyword = keyword
         self.set_params(simulation_type=keyword)
+        self.set_user_params()
         self.set_working_folder(folder_name)
         self.env.build_adaptive_variables(self.env.initial_args)
         self.create_folders()
@@ -62,6 +64,13 @@ class Simulation:
             setattr(self.env, sim, False)
         setattr(self.env, simulation_type, True)  # set the simulation you need
 
+    def set_user_params(self):
+        """
+        Overriding default pele_env variables by user-defined parameters from input.yaml.
+        """
+        for key, value in self.options:
+            setattr(self.env, key, value)
+
     def set_working_folder(self, folder_name):
         self.original_dir = os.path.abspath(os.getcwd())
         self.env.folder_name = folder_name
@@ -93,6 +102,7 @@ class Simulation:
 class GlobalExploration(Simulation):
 
     env: pv.EnviroBuilder
+    options: dict
     folder_name: str
 
     def run(self):
@@ -104,6 +114,7 @@ class GlobalExploration(Simulation):
 class InducedFitFast(Simulation):
 
     env: pv.EnviroBuilder
+    options: dict
     folder_name: str
 
     def run(self):
@@ -115,6 +126,7 @@ class InducedFitFast(Simulation):
 class InducedFitExhaustive(Simulation):
 
     env: pv.EnviroBuilder
+    options: dict
     folder_name: str
 
     def run(self):
@@ -128,6 +140,7 @@ class InducedFitExhaustive(Simulation):
 class Rescoring(Simulation):
 
     env: pv.EnviroBuilder
+    options: dict
     folder_name: str
 
     def run(self):
@@ -152,6 +165,7 @@ class Rescoring(Simulation):
 @dataclass
 class GPCR(Simulation):
     env: pv.EnviroBuilder
+    options: dict
     folder_name: str
 
     def run(self):
@@ -253,6 +267,7 @@ class Pipeline:
 
 class OutIn(Simulation):
     env: pv.EnviroBuilder
+    options: dict
     folder_name: str
 
     def run(self):
