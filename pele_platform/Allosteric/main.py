@@ -1,8 +1,11 @@
 from pele_platform.Utilities.Helpers.launcher_base import LauncherBase
-from pele_platform.Utilities.BuildingBlocks.selection import ScatterN
-from pele_platform.Utilities.BuildingBlocks.simulation import GlobalExploration, InducedFitExhaustive, Rescoring
 
 
 class AllostericLauncher(LauncherBase):
-    steps = [GlobalExploration]
-    refinement_steps = [ScatterN, InducedFitExhaustive, ScatterN, Rescoring]
+    steps = [{'type': 'GlobalExploration'}]
+
+    refinement_steps = [
+        {'type': 'ScatterN', 'options': {"distance": 6.0}},
+        {'type': 'InducedFitExhaustive'},
+        {'type': 'ScatterN', 'options': {"distance": 3.0}},
+        {'type': 'Rescoring'}]
