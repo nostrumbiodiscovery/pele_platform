@@ -2,18 +2,8 @@ system: '../pele_platform/Examples/Allosteric/complex.pdb'
 chain: 'Z'
 resname: 'API'
 seed: 12345
-
 workflow:
-  Step1:
-    type: 'Global Exploration'
-  Step2:
-    type: 'ScatterN'
-    options:
-      distance: 6.0
-  Step3:
-    type: 'InducedFitExhaustive'
-  Step4:
-    type: 'LowestEnergy5'
-  Step5:
-    type: 'Rescoring'
+  - type: 'InducedFitExhaustive'
+  - type: 'LowestEnergy5'
+  - type: 'Rescoring'
 test: true
