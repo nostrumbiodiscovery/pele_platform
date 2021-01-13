@@ -9,7 +9,7 @@ workflow:
   - type: 'ScatterN'
     options:
       distance: 3.0
-   - type: 'Rescoring'
-     options:
-       box_radius: 5.0
+  - type: 'Rescoring'
+    options:
+      box_radius: 5.0
 test: true
