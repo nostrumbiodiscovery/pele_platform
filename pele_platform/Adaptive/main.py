@@ -33,10 +33,12 @@ class WorkflowLauncher(LauncherBase):
     def steps(self):
         available = {**dict((name, func) for name, func in inspect.getmembers(selection)), **dict((name, func) for name, func in inspect.getmembers(blocks))}
         iterable = self.env.initial_args.workflow
-        for i in iterable:
+        simulation_blocks = [i.get('type', None) for i in iterable]
+
+        for i in simulation_blocks:
             if not (i in available.keys() or inspect.isclass(i)):
                 raise ce.PipelineError(
                     "Block {} cannot be found. Please check spelling and refer to the PELE Platform documentation "
                     "for an up-to-date list of available BuildingBlocks".format(i))
 
-        return [eval(elem) for elem in iterable]
+        return iterable
