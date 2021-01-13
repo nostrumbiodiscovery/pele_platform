@@ -77,6 +77,11 @@ class Selection(ABC):
         index, name = self.folder.split("_")
         self.folder = "{}_Selection".format(index)
 
+    def set_optional_params(self):
+        if self.options:
+            for key, value in self.options.items():
+                setattr(self.simulation_params, key, value)
+
     @abstractmethod
     def get_inputs(self):
         pass
@@ -84,6 +89,7 @@ class Selection(ABC):
     def run(self):
         self.rename_folder()
         self.n_inputs = self.simulation_params.cpus - 1
+        self.set_optional_params()
         self.get_inputs()
         self.copy_files()
         self.set_next_step()
@@ -172,7 +178,7 @@ class ScatterN(Selection):
         self.choose_refinement_input(files_out, output_energy)
 
     def choose_refinement_input(self, files_out, output_energy):
-        distance = self.options.get('distance', 6)
+        distance = self.simulation_params.distance
         all_coords = self.extract_all_coords(files_out)
         coords = [list(c[0:3]) for c in all_coords]
         files_out = [os.path.join(self.simulation_params.pele_dir, "results", f) for f in files_out]

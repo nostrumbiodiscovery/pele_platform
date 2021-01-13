@@ -23,9 +23,9 @@ class Simulation:
     def run_simulation(self, keyword, folder_name):
         self.keyword = keyword
         self.set_params(simulation_type=keyword)
-        self.set_user_params()
         self.set_working_folder(folder_name)
         self.env.build_adaptive_variables(self.env.initial_args)
+        self.set_user_params()
         self.create_folders()
         if hasattr(self.env, "next_step"):
             self.env.input = glob.glob(self.env.next_step)
@@ -68,7 +68,7 @@ class Simulation:
         """
         Overriding default pele_env variables by user-defined parameters from input.yaml.
         """
-        for key, value in self.options:
+        for key, value in self.options.items():
             setattr(self.env, key, value)
 
     def set_working_folder(self, folder_name):
