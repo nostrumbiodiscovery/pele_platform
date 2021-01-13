@@ -2,7 +2,6 @@ from dataclasses import dataclass
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
-import pele_platform.Adaptive.simulation as ad
 import pele_platform.Adaptive.main as adp
 import pele_platform.Allosteric.main as al
 import pele_platform.GPCR.main as gpcr
