@@ -174,4 +174,5 @@ VALID_FLAGS_PLATFORM = {"system": "system",
                         "frag_library": "frag_library",
                         "frag_core_atom": "frag_core_atom",
                         "analysis_to_point": "analysis_to_point",
-                        "workflow": "workflow"}
+                        "workflow": "workflow",
+                        "distance": "distance"}

@@ -145,6 +145,7 @@ class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_para
         self.skip_refinement = args.skip_refinement if args.skip_refinement else False
         self.native = args.native if args.native else False
         self.workflow = args.workflow if args.workflow else None
+        self.distance = args.distance if args.distance else None
 
     def system_preparation_params(self, args):
         self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
