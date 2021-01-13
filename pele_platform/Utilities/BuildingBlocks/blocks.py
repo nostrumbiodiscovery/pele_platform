@@ -39,12 +39,14 @@ class Simulation:
         elif self.keyword == "out_in":
             self.set_outin_params()
 
-        # launch simulation
         self.env = si.run_adaptive(self.env)
         return self.env
 
     def restart_checker(self):
-
+        """
+        Check if we should run restart based on the presence of the output folder and 'adaptive_restart' flag in
+        input.yaml.
+        """
         output_dir = os.path.join(self.env.pele_dir, self.env.output)
         if self.env.adaptive_restart and os.path.exists(output_dir):
             self.env.adaptive_restart = True
@@ -52,6 +54,10 @@ class Simulation:
             self.env.adaptive_restart = False
 
     def set_params(self, simulation_type):
+        """
+        Make sure all simulations are set to False, then set the one you need to True. This is to avoid scenarios where
+        we have induced_fit_fast: true and rescoring: true, because some random parameters were carried over.
+        """
         for sim in ft.all_simulations:  # make sure everything else is False
             setattr(self.env, sim, False)
         setattr(self.env, simulation_type, True)  # set the simulation you need
