@@ -174,3 +174,12 @@ def test_workflow_checker():
         assert True                                                                                                                                                                     
         return 
     assert False
+
+
+def test_optional_params():
+    yaml = os.path.join(test_path, "Blocks/input_opt_params.yaml")
+    induced, scatter, rescoring = main.run_platform(yaml)
+
+    assert induced.box_radius == 10.0
+    assert scatter.distance == 3.0
+    assert rescoring.box_radius == 5.0
