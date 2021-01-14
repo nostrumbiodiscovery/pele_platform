@@ -182,7 +182,13 @@ def test_optional_params():
     yaml = os.path.join(test_path, "Blocks/input_opt_params.yaml")
     induced, scatter, rescoring = main.run_platform(yaml)
 
+    folders = [os.path.join(os.path.dirname(induced.pele_dir), "Custom_Folder_Name"), os.path.join(os.path.dirname(induced.pele_dir), "ThisIsSelection")]
+
     assert induced.box_radius == 10.0
+    assert induced.folder_name == "Custom_Folder_Name"
     assert scatter.distance == 3.0
+    assert scatter.folder_name == "ThisIsSelection"
     assert rescoring.box_radius == 5.0
 
+    for f in folders:
+        assert os.path.exists(f)
