@@ -9,6 +9,7 @@ from pele_platform.Utilities.BuildingBlocks.preparation import prepare_structure
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.features.adaptive as ft
 
+
 @dataclass
 class Simulation:
     """
@@ -29,9 +30,12 @@ class Simulation:
         self.create_folders()
         if hasattr(self.env, "next_step"):
             self.env.input = glob.glob(self.env.next_step)
-        if self.env.initial_args.ppi is True and keyword == "induced_fit_exhaustive":  # I don't really like this, any ideas?
-            self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein, remove_water=False)
-        
+
+        # I don't really like this, any ideas?
+        if self.env.initial_args.ppi is True and keyword == "induced_fit_exhaustive":
+            self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein,
+                                                remove_water=False)
+
         self.restart_checker()
         self.water_handler()
 
@@ -73,9 +77,11 @@ class Simulation:
                 setattr(self.env, key, value)
 
     def set_working_folder(self, folder_name):
+        """
+        Check if user specified a custom folder name for this simulation block. If not, use the automatically
+        generated one.
+        """
         self.original_dir = os.path.abspath(os.getcwd())
-        
-        # Check if user specified a custom folder name for this simulation block. If not, use the automatically generated one.
         if self.options:
             user_folder = self.options.get("working_folder", None)
             self.env.folder_name = user_folder if user_folder else folder_name
@@ -98,17 +104,12 @@ class Simulation:
                 self.env.n_waters = 0
                 self.env.water_arg = None
             else:
-                if self.env._n_waters !=0:
-                    self.env.waters = "all_waters"
-                    self.env.n_waters = n_waters
-                else:
-                    self.env.waters = None
-                    self.env.n_waters = self.env._n_waters
+                self.env.n_waters = self.env._n_waters
+                self.env.waters = "all_waters" if self.env._n_waters != 0 else None
 
 
 @dataclass
 class GlobalExploration(Simulation):
-
     env: pv.EnviroBuilder
     options: dict
     folder_name: str
@@ -120,7 +121,6 @@ class GlobalExploration(Simulation):
 
 @dataclass
 class InducedFitFast(Simulation):
-
     env: pv.EnviroBuilder
     options: dict
     folder_name: str
@@ -132,7 +132,6 @@ class InducedFitFast(Simulation):
 
 @dataclass
 class InducedFitExhaustive(Simulation):
-
     env: pv.EnviroBuilder
     options: dict
     folder_name: str
@@ -146,7 +145,6 @@ class InducedFitExhaustive(Simulation):
 
 @dataclass
 class Rescoring(Simulation):
-
     env: pv.EnviroBuilder
     options: dict
     folder_name: str
@@ -190,88 +188,6 @@ class GPCR(Simulation):
         self.env.box_radius = self.env.initial_args.box_radius if self.env.initial_args.box_radius else box_radius
         self.env.randomize = True
 
-
-@dataclass
-class Selection:
-
-    simulation_params: pv.EnviroBuilder
-    folder: str
-
-    def run(self):
-        self.choose_refinement_input()
-        return self.simulation_params
-
-    def choose_refinement_input(self):
-        """
-        Choose input for refinement simulation.
-        Scan top 75% binding energies, pick n best ones as long as ligand COMs are >= 6 A away from each other.
-        """
-        simulation_path = os.path.join(self.simulation_params.pele_dir, self.simulation_params.output)
-        n_best_poses = int(self.simulation_params.iterations * self.simulation_params.pele_steps * (
-                self.simulation_params.cpus - 1) * 0.75)
-        with cd(simulation_path):
-            files_out, _, _, _, output_energy = bs.main(str(self.simulation_params.be_column), n_structs=n_best_poses,
-                                                        path=".",
-                                                        topology=self.simulation_params.topology,
-                                                        logger=self.simulation_params.logger)
-
-            snapshot = 0
-            files_out = [os.path.join(self.simulation_params.pele_dir, "results", f) for f in files_out]
-            input_pool = [[f, snapshot, self.simulation_params.residue, self.simulation_params.topology] for f in
-                          files_out]
-            all_coords = parallelize(_extract_coords, input_pool, self.simulation_params.cpus)
-            coords = [list(c[0:3]) for c in all_coords]
-            dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)),
-                                     columns=["File", "Binding energy", "1st atom coordinates"])
-            dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
-
-            inputs = self._check_ligand_distances(dataframe)
-            directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir),
-                                     self.folder)
-            if not os.path.isdir(directory):
-                os.makedirs(directory, exist_ok=True)
-            for i in inputs:
-                os.system("cp {} {}/.".format(i, directory))
-
-            self.simulation_params.next_step = os.path.join(directory, "*.pdb")
-
-    def _check_ligand_distances(self, dataframe):
-
-        inputs = []
-        input_coords = []
-        distances = []
-        n_inputs = self.simulation_params.cpus - 1
-        
-        while len(inputs) < n_inputs:
-            for f, c in zip(dataframe['File'], dataframe['1st atom coordinates']):
-                if not input_coords:
-                    inputs.append(f)
-                    input_coords.append(c)
-                else:
-                    for ic in input_coords:
-                        distances.append(abs(np.linalg.norm(np.array(c) - np.array(ic))))
-                    distances_bool = [d > 6 for d in distances]
-                    if all(distances_bool):
-                        inputs.append(f)
-                        input_coords.append(c)
-            break  # make sure it stops after running out of files to check
-        
-        return inputs
-
-
-@dataclass
-class Pipeline:
-    iterable: list
-    env: pv.EnviroBuilder
-
-    def run(self):
-        output = []
-        for simulation in self.iterable:
-            folder = "{}_{}".format(self.iterable.index(simulation) + 1, simulation.__name__)
-            self.env = simulation(self.env, folder).run()
-            output.append(deepcopy(self.env))
-
-        return output
 
 class OutIn(Simulation):
     env: pv.EnviroBuilder
