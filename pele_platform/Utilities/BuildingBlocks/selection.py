@@ -23,7 +23,7 @@ class Selection(ABC):
     options: dict
 
     def copy_files(self):
-        self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder)
+        self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder_name)
 
         if not os.path.isdir(self.directory):
             os.makedirs(self.directory, exist_ok=True)
@@ -74,9 +74,16 @@ class Selection(ABC):
         return clustered_lig["file_name"].values.tolist()
 
     def rename_folder(self):
-        index, name = self.folder.split("_")
-        self.folder = "{}_Selection".format(index)
+        user_folder = self.options.get('working_folder', None) if self.options else None
+        
+        if not user_folder:
+            index, name = self.folder_name.split("_")
+            self.folder_name = "{}_Selection".format(index)
+        else:
+            self.folder_name = user_folder
 
+        self.simulation_params.folder_name = self.folder_name  # to make it consistent with simulation BBs
+    
     def set_optional_params(self):
         if self.options:
             for key, value in self.options.items():
@@ -87,9 +94,9 @@ class Selection(ABC):
         pass
 
     def run(self):
-        self.rename_folder()
         self.n_inputs = self.simulation_params.cpus - 1
         self.set_optional_params()
+        self.rename_folder()
         self.get_inputs()
         self.copy_files()
         self.set_next_step()
@@ -104,7 +111,7 @@ class LowestEnergy5(Selection):
     """
     simulation_params: pv.EnviroBuilder
     options: dict
-    folder: str
+    folder_name: str
 
     def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.05)
@@ -126,7 +133,7 @@ class GMM(Selection):
     """
     simulation_params: pv.EnviroBuilder
     options: dict
-    folder: str
+    folder_name: str
 
     def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.05, n_poses=1000)
@@ -141,7 +148,7 @@ class Clusters(Selection):
     """
     simulation_params: pv.EnviroBuilder
     options: dict
-    folder: str
+    folder_name: str
 
     def get_inputs(self):
         clusters_dir = os.path.join(self.simulation_params.pele_dir, "results/clusters/*.pdb")
@@ -171,7 +178,7 @@ class ScatterN(Selection):
     """
     simulation_params: pv.EnviroBuilder
     options: dict
-    folder: str
+    folder_name: str
 
     def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.75)

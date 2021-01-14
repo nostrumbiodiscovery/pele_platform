@@ -68,12 +68,20 @@ class Simulation:
         """
         Overriding default pele_env variables by user-defined parameters from input.yaml.
         """
-        for key, value in self.options.items():
-            setattr(self.env, key, value)
+        if self.options:
+            for key, value in self.options.items():
+                setattr(self.env, key, value)
 
     def set_working_folder(self, folder_name):
         self.original_dir = os.path.abspath(os.getcwd())
-        self.env.folder_name = folder_name
+        
+        # Check if user specified a custom folder name for this simulation block. If not, use the automatically generated one.
+        if self.options:
+            user_folder = self.options.get("working_folder", None)
+            self.env.folder_name = user_folder if user_folder else folder_name
+        else:
+            self.env.folder_name = folder_name
+
         if hasattr(self.env, "pele_dir"):
             self.env.initial_args.folder = os.path.join(os.path.dirname(self.env.pele_dir), self.env.folder_name)
 
