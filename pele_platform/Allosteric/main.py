@@ -9,3 +9,4 @@ class AllostericLauncher(LauncherBase):
         {'type': 'InducedFitExhaustive'},
         {'type': 'ScatterN', 'options': {"distance": 3.0}},
         {'type': 'Rescoring'}]
+
