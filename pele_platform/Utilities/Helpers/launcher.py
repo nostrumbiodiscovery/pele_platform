@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+
+import pele_platform.DrugDesign.package_launchers
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
@@ -13,14 +15,14 @@ import argparse
 
 PACKAGES = dict(
     frag_core=fr.FragRunner,
-    ppi=ppi.PPILauncher,
-    allosteric=al.AllostericLauncher,
-    gpcr_orth=gpcr.GPCRLauncher,
-    out_in=outin.OutInLauncher,
-    adaptive=adp.AdaptiveLauncher,
-    induced_fit_exhaustive=ind.InducedFitExhaustiveLauncher,
-    induced_fit_fast=ind.InducedFitFastLauncher,
-    workflow=adp.WorkflowLauncher,
+    ppi=pele_platform.DrugDesign.package_launchers.PPILauncher,
+    allosteric=pele_platform.DrugDesign.package_launchers.AllostericLauncher,
+    gpcr_orth=pele_platform.DrugDesign.package_launchers.GPCRLauncher,
+    out_in=pele_platform.DrugDesign.package_launchers.OutInLauncher,
+    adaptive=pele_platform.DrugDesign.package_launchers.AdaptiveLauncher,
+    induced_fit_exhaustive=pele_platform.DrugDesign.package_launchers.InducedFitExhaustiveLauncher,
+    induced_fit_fast=pele_platform.DrugDesign.package_launchers.InducedFitFastLauncher,
+    workflow=pele_platform.DrugDesign.package_launchers.WorkflowLauncher,
 )
 
 
@@ -43,6 +45,6 @@ class Launcher:
                 break
         else:
             package_name = "adaptive"
-            package = adp.AdaptiveLauncher
+            package = pele_platform.DrugDesign.package_launchers.AdaptiveLauncher
         self.env.package = self._args.package = package_name
         return package(self.env).run()
