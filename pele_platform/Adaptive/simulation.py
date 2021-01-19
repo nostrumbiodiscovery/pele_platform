@@ -105,7 +105,7 @@ def run_adaptive(env: pv.EnviroBuilder) -> pv.EnviroBuilder:
                 shutil.copy(env.system, env.pele_dir)
         else:
             env.nonstandard.extend(hp.find_nonstd_residue(syst.system))
-            env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=None, ligand_pdb=env.ligand_ref, ca_interval=env.ca_interval)
+            env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=env.charge_ter, no_gaps_ter=env.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=None, ligand_pdb=env.ligand_ref, ca_interval=env.ca_interval)
 
         # Metal constraints
         if not env.no_metal_constraints:
