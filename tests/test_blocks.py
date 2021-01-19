@@ -59,28 +59,27 @@ Rescoring_lines = [
 ]
 
 Scatter6_inputs = [
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb']
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb']
 
 LowestEnergy5_inputs = [
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_2.1_BindingEnergy-102.463.pdb',
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.2_BindingEnergy-99.0239.pdb',
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_2.4_BindingEnergy-97.3843.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_2.1_BindingEnergy-102.463.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.2_BindingEnergy-99.0239.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_2.4_BindingEnergy-97.3843.pdb',
 ]
 
 GMM_inputs = [
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_2.1_BindingEnergy-64.1978.pdb',
-
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_1.5_BindingEnergy-62.9806.pdb',
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_3.4_BindingEnergy-43.7304.pdb'
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_2.1_BindingEnergy-64.1978.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_1.5_BindingEnergy-62.9806.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_3.4_BindingEnergy-43.7304.pdb'
 ]
 
 Clusters_inputs = [
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster8_epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster6_epoch0_trajectory_1.3_BindingEnergy-96.088.pdb',
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster1_epoch0_trajectory_3.1_BindingEnergy-76.1823.pdb',
-    '/home/agruzka/work_pele_platform/pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster4_epoch1_trajectory_1.1_BindingEnergy-65.8932.pdb'
+    'pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster8_epoch0_trajectory_1.1_BindingEnergy-107.584.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster6_epoch0_trajectory_1.3_BindingEnergy-96.088.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster1_epoch0_trajectory_3.1_BindingEnergy-76.1823.pdb',
+    'pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster4_epoch1_trajectory_1.1_BindingEnergy-65.8932.pdb'
 ]
 
 
@@ -153,8 +152,11 @@ def mock_simulation_env():
 def test_selection_blocks(mock_simulation_env, selection_block, options, expected):
     selection = selection_block(mock_simulation_env, options, "test_folder")
     selection.run()
-
-    assert selection.inputs == expected
+    
+    for i in selection.inputs:
+        correct = [elem for elem in expected if elem in i]
+        assert correct
+    assert len(selection.inputs) == len(expected)
 
 
 def test_workflow():

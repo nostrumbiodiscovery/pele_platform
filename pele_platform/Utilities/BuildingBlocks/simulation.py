@@ -189,6 +189,7 @@ class GPCR(Simulation):
         self.env.randomize = True
 
 
+@dataclass
 class OutIn(Simulation):
     env: pv.EnviroBuilder
     options: dict
