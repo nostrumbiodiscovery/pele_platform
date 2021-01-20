@@ -68,7 +68,7 @@ class AllostericLauncher:
                 snapshot = 0
                 files_out = [os.path.join(self.global_simulation.pele_dir, "results", f) for f in files_out]
                 input_pool = [[f, snapshot, self.global_simulation.residue, self.global_simulation.topology] for f in files_out]
-                all_coords = parallelize(_extract_coords, input_pool, self.global_simulation.cpus)
+                all_coords = parallelize(_extract_coords, input_pool, 1)
                 coords = [list(c[0:3]) for c in all_coords]
                 dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)),
                                          columns=["File", "Binding energy", "1st atom coordinates"])
