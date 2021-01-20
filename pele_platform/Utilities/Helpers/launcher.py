@@ -4,12 +4,6 @@ import pele_platform.DrugDesign.package_launchers
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
-import pele_platform.Adaptive.main as adp
-import pele_platform.Allosteric.main as al
-import pele_platform.GPCR.main as gpcr
-import pele_platform.InducedFit.main as ind
-import pele_platform.out_in.main as outin
-import pele_platform.PPI.main as ppi
 import pele_platform.Utilities.Parameters.pele_env as pv
 import argparse
 
