@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 import glob
 import os
@@ -11,7 +12,7 @@ import pele_platform.features.adaptive as ft
 
 
 @dataclass
-class Simulation:
+class Simulation(ABC):
     """
     Base Simulation class to run all simulation types.
     Both input and output should always be EnviroBuilder.
@@ -20,33 +21,28 @@ class Simulation:
     """
     env: pv.EnviroBuilder
     options: dict
+    folder_name: str
 
-    def run_simulation(self, keyword, folder_name):
-        self.keyword = keyword
-        self.set_params(simulation_type=keyword)
-        self.set_working_folder(folder_name)
+    def run(self):
+        self.simulation_setup()
+        self.env = si.run_adaptive(self.env)
+        return self.env
+
+    def simulation_setup(self):
+        self.set_params(simulation_type=self.keyword)
+        self.set_working_folder()
         self.env.build_adaptive_variables(self.env.initial_args)
+        self.set_package_params()
         self.set_user_params()
         self.create_folders()
         if hasattr(self.env, "next_step"):
             self.env.input = glob.glob(self.env.next_step)
-
-        # I don't really like this, any ideas?
-        if self.env.initial_args.ppi is True and keyword == "induced_fit_exhaustive":
-            self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein,
-                                                remove_water=False)
-
         self.restart_checker()
         self.water_handler()
 
-        # check for special params
-        if self.keyword == "gpcr_orth":
-            self.set_gpcr_params()
-        elif self.keyword == "out_in":
-            self.set_outin_params()
-
-        self.env = si.run_adaptive(self.env)
-        return self.env
+    @abstractmethod
+    def set_package_params(self):
+        pass
 
     def restart_checker(self):
         """
@@ -76,7 +72,7 @@ class Simulation:
             for key, value in self.options.items():
                 setattr(self.env, key, value)
 
-    def set_working_folder(self, folder_name):
+    def set_working_folder(self):
         """
         Check if user specified a custom folder name for this simulation block. If not, use the automatically
         generated one.
@@ -84,9 +80,9 @@ class Simulation:
         self.original_dir = os.path.abspath(os.getcwd())
         if self.options:
             user_folder = self.options.get("working_folder", None)
-            self.env.folder_name = user_folder if user_folder else folder_name
+            self.env.folder_name = user_folder if user_folder else self.folder_name
         else:
-            self.env.folder_name = folder_name
+            self.env.folder_name = self.folder_name
 
         if hasattr(self.env, "pele_dir"):
             self.env.initial_args.folder = os.path.join(os.path.dirname(self.env.pele_dir), self.env.folder_name)
@@ -110,50 +106,38 @@ class Simulation:
 
 @dataclass
 class GlobalExploration(Simulation):
-    env: pv.EnviroBuilder
-    options: dict
-    folder_name: str
+    keyword: str = "full"
 
-    def run(self):
-        self.env = self.run_simulation("full", self.folder_name)
-        return self.env
+    def set_package_params(self):
+        pass
 
 
 @dataclass
 class InducedFitFast(Simulation):
-    env: pv.EnviroBuilder
-    options: dict
-    folder_name: str
+    keyword: str = "induced_fit_fast"
 
-    def run(self):
-        self.env = self.run_simulation("induced_fit_fast", self.folder_name)
-        return self.env
+    def set_package_params(self):
+        pass
 
 
 @dataclass
 class InducedFitExhaustive(Simulation):
-    env: pv.EnviroBuilder
-    options: dict
-    folder_name: str
+    keyword: str = "induced_fit_exhaustive"
 
-    def run(self):
+    def set_package_params(self):
         if self.env.package == "ppi":
             self.env.water_arg = None
-        self.env = self.run_simulation("induced_fit_exhaustive", self.folder_name)
-        return self.env
+            self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein,
+                                                remove_water=False)
 
 
 @dataclass
 class Rescoring(Simulation):
-    env: pv.EnviroBuilder
-    options: dict
-    folder_name: str
+    keyword: str = "rescoring"
 
-    def run(self):
+    def set_package_params(self):
         if self.env.package == "ppi":
             self.set_ppi_params()
-        self.env = self.run_simulation("rescoring", self.folder_name)
-        return self.env
 
     def set_ppi_params(self):
         """
@@ -164,21 +148,15 @@ class Rescoring(Simulation):
             self.env.steps = 100
             self.env.box_radius = 100
 
-        if self.env._n_waters:
+        if hasattr(self.env, "_n_waters"):
             self.env.n_waters = self.env._n_waters
 
 
 @dataclass
 class GPCR(Simulation):
-    env: pv.EnviroBuilder
-    options: dict
-    folder_name: str
+    keyword: str = "gpcr_orth"
 
-    def run(self):
-        self.env = self.run_simulation("gpcr_orth", self.folder_name)
-        return self.env
-
-    def set_gpcr_params(self):
+    def set_package_params(self):
         self.env.orthosteric_site = self.env.initial_args.orthosteric_site
         self.env.initial_site = self.env.initial_args.initial_site
         self.env.center_of_interface = self.env.initial_site
@@ -191,14 +169,11 @@ class GPCR(Simulation):
 
 @dataclass
 class OutIn(Simulation):
-    env: pv.EnviroBuilder
-    options: dict
-    folder_name: str
+    keyword: str = "out_in"
 
-    def run(self):
+    def set_package_params(self):
         self._check_mandatory_fields()
-        self.env = self.run_simulation("out_in", self.folder_name)
-        return self.env
+        self.set_outin_params()
 
     def _check_mandatory_fields(self):
         compulsory_flags = ["final_site", "initial_site"]
@@ -216,3 +191,4 @@ class OutIn(Simulation):
         self.env.box_center = self.env.initial_args.box_center if self.env.initial_args.box_center else box_center
         self.env.box_radius = self.env.initial_args.box_radius if self.env.initial_args.box_radius else box_radius
         self.env.randomize = True
+
