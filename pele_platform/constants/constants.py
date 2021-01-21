@@ -79,6 +79,20 @@ DISTANCE_ATOMS =     '''
                      }}
                      }},
                      '''
+
+DISTANCE_ATOMS_TAG = '''
+                     {{
+                     "type":"com_distance",
+                     "tag":"{2}",
+                     "selection_group_1":{{
+                     "atoms": {{ "ids":["{0}"]}}
+                     }},
+                     "selection_group_2":{{
+                     "atoms": {{ "ids":["{1}"]}}
+                     }}
+                     }},
+                     '''
+
 BOX = '''
 
                 "Box": {{
@@ -140,7 +154,14 @@ SASA='''
                         },
 '''
 
+STRUCTURAL_CONSTRAINTS='''
+,
 
+"structuralConstraints":
+[
+	"{0}"
+]
+'''
 
 LIGAND = '"ligandResname" : "$LIG_RES",'
 
