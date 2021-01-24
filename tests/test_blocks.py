@@ -15,7 +15,6 @@ from pele_platform.Utilities.BuildingBlocks.selection import (
     GMM,
     Clusters,
 )
-import pele_platform.Checker.valid_flags as vf
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 from . import test_adaptive as tk
 
@@ -146,7 +145,7 @@ def test_simulation_blocks(yaml, package, block, expected):
     """
     # get YamlParser ready
     yaml_file = os.path.join(test_path, yaml)
-    yaml = yp.YamlParser(yaml_file, vf.VALID_FLAGS_PLATFORM)
+    yaml = yp.YamlParser(yaml_file)
     yaml.read()
 
     # create pele environment

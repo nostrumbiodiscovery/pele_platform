@@ -5,6 +5,9 @@ scipy
 matplotlib
 pandas
 pytest
+pytest-xdist
+pytest-sugar
+pydantic
 AdaptivePELE
 PPPele==1.0.2
 ploprottemp==1.0.1

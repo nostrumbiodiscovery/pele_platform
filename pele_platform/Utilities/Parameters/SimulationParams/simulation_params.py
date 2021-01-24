@@ -1,222 +1,130 @@
-import random
-import os
-import glob
-import pele_platform.constants.constants as cs
-from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
-from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
-from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
-from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
-from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
-from pele_platform.Utilities.Parameters.SimulationParams.Allosteric import allosteric
-from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
-#from pele_platform.Utilities.Parameters.SimulationParams.RNA import rna
+from pele_platform.Models.simulation_params_model import SimulationParamsModel
+from pele_platform.Models.utils import PydanticProxy
+from pele_platform.Models.yaml_parser_model import YamlParserModel
 import pele_platform.Utilities.Helpers.helpers as hp
+import pele_platform.constants.constants as cs
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
+class SimulationParams(PydanticProxy):
+    model_class = SimulationParamsModel
 
-class SimulationParams(msm_params.MSMParams, glide_params.GlideParams, bias_params.BiasParams, 
-    inout_params.InOutParams, pca.PCAParams, allosteric.AllostericParams, ppi.PPIParams):  # rna.RNAParams
+    def __init__(self, args: YamlParserModel):
+        _args = args.model.dict()
+        self.model_class.simulation_params = self.simulation_params
+        self.initialize_model(_args)
+        self.parse_args(args)
 
-    def __init__(self, args):
-        self.set_simulation_type(args)
-        self.main_pele_params(args)
-        self.main_adaptive_params(args)
+    def parse_args(self, args):
         self.optative_params(args)
         self.system_preparation_params(args)
-        self.ligand_params(args)
-        self.anm_params(args)
         self.water_params(args)
-        self.box_params(args)
-        self.output_params(args)
-        self.analysis_params(args)
+        self.generate_inout_params(args)
+        self.generate_pca_params(args)
 
-        # Create all simulation types (could be more efficient --> chnage in future)
-        super().generate_msm_params(args)
-        super().generate_glide_params(args)
-        super().generate_bias_params(args)
-        super().generate_inout_params(args)
-        super().generate_pca_params(args)
-        super().generate_allosteric_params(args)
-        super().generate_ppi_params(args)
-        # rna.RNAParams.__init__(self, args)
-
-
-    def set_simulation_type(self, args):
-        self.adaptive = True if args.package in ["allosteric", "adaptive", "PPI"] else None
-        self.frag_pele = True if args.package == "frag" else None
-        # Trick to let frag handle control folder parameters --> Improve
-        self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
-        self.frag_pele_steps = "$STEPS" if self.frag_pele else "$PELE_STEPS"
-        self.output_path = "$RESULTS_PATH" if self.frag_pele else "$OUTPUT_PATH"
-
-    def main_pele_params(self,args):
-        if "*" in args.system:
-            self.system = glob.glob(args.system)[0]
-            args.input = glob.glob(args.system)
+    def generate_inout_params(self, args):
+        # If User inputs exit condition or when doing an exit simulation
+        if args.exit or args.in_out or args.in_out_soft:
+            self.exit_value = (
+                args.exit_value
+                if args.exit_value
+                else self.simulation_params.get("exit_value", 0.9)
+            )
+            self.exit_condition = (
+                args.exit_condition
+                if args.exit_condition
+                else self.simulation_params.get("exit_condition", ">")
+            )
+            self.exit_trajnum = (
+                args.exit_trajnum
+                if args.exit_trajnum
+                else self.simulation_params.get("exit_trajnum", 4)
+            )
+            self.bias_column = (
+                args.bias_column
+                if args.bias_column
+                else self.simulation_params.get("bias_column", 6)
+            )
+            self.unbinding_block = cs.UNBINDING.format(
+                self.bias_column,
+                self.exit_value,
+                self.exit_condition,
+                self.exit_trajnum,
+            )
+            self.equilibration = "false"  # Lots of problems look into it
         else:
-            self.system = args.system
-        self.residue = args.residue
-        self.chain = args.chain
-        if self.adaptive:
-            assert self.system and self.residue and self.chain, "User must define input, residue and chain"
-        self.debug = args.debug if args.debug else False
-        self.pele_steps = args.pele_steps if args.pele_steps else self.simulation_params.get("pele_steps", 8)
-        self.logfile =  LOGFILE if args.log else ""
-        self.license = args.pele_license if args.pele_license else os.path.join(cs.PELE, "licenses")
-        self.anm_freq = args.anm_freq if args.anm_freq is not None else self.simulation_params.get("anm_freq", 4)
-        self.sidechain_freq = args.sidechain_freq if args.sidechain_freq is not None else self.simulation_params.get("sidechain_freq", 2)
-        self.min_freq = args.min_freq if args.min_freq is not None else self.simulation_params.get("min_freq", 1)
-        self.water_freq = args.water_freq if args.water_freq is not None else self.simulation_params.get("water_freq", 1)
-        self.temperature = args.temperature if args.temperature else self.simulation_params.get("temperature", 1500)
-        self.sidechain_resolution = args.sidechain_resolution if args.sidechain_resolution else self.simulation_params.get("sidechain_resolution", 30)
-        self.proximityDetection = "false" if args.proximityDetection is False else self.simulation_params.get("proximityDetection", "true")
-        self.steric_trials = args.steric_trials if args.steric_trials else self.simulation_params.get("steric_trials", 250)
-        self.ca_constr = args.ca_constr if args.ca_constr is not None else self.simulation_params.get("ca_constr", 5)
-        self.ca_interval = args.ca_interval if args.ca_interval is not None else self.simulation_params.get("ca_interval", 5)
-        self.charge_ter = args.charge_ter if args.charge_ter is not None else self.simulation_params.get("charge_ter", False)
-        self.gaps_ter = args.gaps_ter if args.gaps_ter is not None else self.simulation_params.get("gaps_ter", False)
-        self.overlap_factor = args.overlap_factor if args.overlap_factor else self.simulation_params.get("overlap_factor", 0.65)
-        self.steering= args.steering if args.steering else self.simulation_params.get("steering", 0)
-        self.perturbation = "" if args.perturbation is False else self.simulation_params.get("perturbation", cs.PERTURBATION)
-        self.perturbation_params(args)
-        self.com = args.com if args.com else self.simulation_params.get("COMligandConstraint", 0)
+            self.unbinding_block = ""
 
-    def anm_params(self, args):
-        self.anm_displacement = args.anm_displacement if args.anm_displacement else self.simulation_params.get("anm_displacement", 0.75)
-        self.anm_modes_change = args.anm_modes_change if args.anm_modes_change else self.simulation_params.get("anm_modes_change", 4)
-        self.anm_direction = args.anm_direction if args.anm_direction else self.simulation_params.get("anm_direction", "random")
-        self.anm_mix_modes = args.anm_mix_modes if args.anm_mix_modes else self.simulation_params.get("anm_mix_modes", "mixMainModeWithOthersModes")
-        self.anm_picking_mode = args.anm_picking_mode if args.anm_picking_mode else self.simulation_params.get("anm_picking_mode", "RANDOM_MODE")
-        self.anm_num_of_modes = args.anm_num_of_modes  if args.anm_num_of_modes else self.simulation_params.get("anm_num_of_modes", 6)
-        self.anm_relaxation_constr = args.anm_relaxation_constr if args.anm_relaxation_constr else self.simulation_params.get("anm_relaxation_constr", 0.5)
-        self.remove_constraints = args.remove_constraints if args.remove_constraints is not None else self.simulation_params.get("remove_constraints", False)
-
-    def perturbation_params(self, args):
-        if self.perturbation:
-            self.selection_to_perturb = args.selection_to_perturb if args.selection_to_perturb else self.simulation_params.get("selection_to_perturb", cs.SELECTION_TO_PERTURB)
-            self.parameters = args.parameters  if args.parameters else self.simulation_params.get("params", True)
-            self.ligand = cs.LIGAND if self.perturbation else ""
-            self.binding_energy = args.binding_energy if args.binding_energy else self.simulation_params.get("binding_energy", cs.BE)
-            self.sasa = args.sasa if args.sasa else self.simulation_params.get("sasa", cs.SASA)
-        else:
-            self.selection_to_perturb = ""
-            self.parameters = ""
-            self.ligand = ""
-            self.binding_energy = ""
-            self.sasa = ""
-
-
-    def main_adaptive_params(self, args):
-        self.spawning = args.spawning if args.spawning else self.simulation_params.get("spawning_type", "independent")
-        self.spawning_condition = args.spawning_condition if args.spawning_condition else self.simulation_params.get("spawning_condition", None)
-        self.spawning_condition = '"condition": "{}",'.format(self.spawning_condition) if self.spawning_condition else ""
-        self.density = args.density if args.density else self.simulation_params.get("density", "null")
-        self.simulation_type = args.simulation_type if args.simulation_type else self.simulation_params.get("simulation_type", "pele")
-        iterations = 1 if self.spawning == "independent" else 30
-        self.iterations = args.iterations if args.iterations else self.simulation_params.get("iterations", iterations)
-        self.clust_type = args.clust_type if args.clust_type else self.simulation_params.get("clust_type", "rmsd")
-        self.cluster_values = args.cluster_values if args.cluster_values else self.simulation_params.get("cluster_values", "[1.75, 2.5, 4, 6]")
-        self.cluster_conditions = args.cluster_conditions if args.cluster_conditions else self.simulation_params.get("cluster_conditions", "[1, 0.6, 0.4, 0.0]")
-        self.seed = args.seed if args.seed else random.randrange(1, 70000)
-        self.templates = os.path.abspath(os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates"))
-        self.usesrun = "true" if args.usesrun else "false"
-        self.mpi_params = f'"mpiParameters": "{args.mpi_params}",' if args.mpi_params else ""
-        self.randomize = args.randomize if args.randomize else self.simulation_params.get("randomize", False)
+    def generate_pca_params(self, args):
+        if self.pca or self.pca_traj:
+            self.anm_direction = (
+                args.anm_direction
+                if args.anm_direction
+                else self.simulation_params.get("anm_direction", "oscillate")
+            )
+            self.anm_mix_modes = (
+                args.anm_mix_modes
+                if args.anm_mix_modes
+                else self.simulation_params.get("anm_mix_modes", "doNotMixModes")
+            )
+            self.anm_picking_mode = (
+                args.anm_picking_mode
+                if args.anm_picking_mode
+                else self.simulation_params.get("anm_picking_mode", "LOWEST_MODE")
+            )
+            self.anm_displacement = (
+                args.anm_displacement
+                if args.anm_displacement
+                else self.simulation_params.get("anm_displacement", 2.0)
+            )
+            self.anm_modes_change = (
+                args.anm_modes_change
+                if args.anm_modes_change
+                else self.simulation_params.get("anm_modes_change", 50)
+            )
+            self.anm_num_of_modes = (
+                args.anm_num_of_modes
+                if args.anm_num_of_modes
+                else self.simulation_params.get("anm_num_of_modes", 1)
+            )
+            self.anm_relaxation_constr = (
+                args.anm_relaxation_constr
+                if args.anm_relaxation_constr
+                else self.simulation_params.get("anm_relaxation_constr", 2)
+            )
+            self.remove_constraints = (
+                args.remove_constraints
+                if args.remove_constraints is not None
+                else self.simulation_params.get("remove_constraints", True)
+            )
+            self.anm_freq = (
+                args.anm_freq
+                if args.anm_freq
+                else self.simulation_params.get("anm_freq", 1)
+            )
 
     def optative_params(self, args):
-        self.input = args.input
-        self.forcefield = args.forcefield if args.forcefield else self.simulation_params.get("forcefield", "OPLS2005")
-        self.solvent = args.solvent if args.solvent else self.simulation_params.get("solvent", "VDGBNP") 
-        self.verbose = "true" if args.verbose else self.simulation_params.get("verbose", "false")
-        self.cpus = args.cpus = args.cpus if args.cpus else self.simulation_params.get("cpus", 60)
-        self.restart = args.restart if args.restart else self.simulation_params.get("restart", "all")
-        self.test = args.test 
-        # +1 to avoid being 0
-        self.equil_steps = int(args.eq_steps/self.cpus) + 1 if args.eq_steps else self.simulation_params.get("equilibration_steps", 1)
-        self.equilibration = "true" if args.equilibration else self.simulation_params.get("equilibration", "false")
-        self.adaptive_restart = args.adaptive_restart
-        self.poses = args.poses if args.poses else self.simulation_params.get("poses", self.cpus-1)
-        self.pele_exec = args.pele_exec if args.pele_exec else os.path.join(cs.PELE, "bin/Pele_mpi")
-        self.pele_data = args.pele_data if args.pele_data else os.path.join(cs.PELE, "Data")
-        self.pele_documents = args.pele_documents if args.pele_documents else os.path.join(cs.PELE, "Documents")
-        self.polarize_metals = args.polarize_metals if args.polarize_metals else False
-        self.polarization_factor = args.polarization_factor if args.polarization_factor else 2.0
-        self.skip_refinement = args.skip_refinement if args.skip_refinement else False
-        self.native = args.native if args.native else False
-        self.workflow = args.workflow if args.workflow else None
-        self.distance = args.distance if args.distance else None
+        self.equil_steps = (
+            int(args.eq_steps / self.cpus) + 1
+            if args.eq_steps
+            else self.simulation_params.get("equilibration_steps", 1)
+        )
+        self.poses = (
+            args.poses
+            if args.poses
+            else self.simulation_params.get("poses", self.cpus - 1)
+        )
 
     def system_preparation_params(self, args):
-        self.skip_prep = args.skip_prep if args.skip_prep else self.simulation_params.get("skip_prep", False)
-        self.nonstandard = args.nonstandard if args.nonstandard else self.simulation_params.get("nonstandard", [])
-        self.constraints = None
-        self.external_constraints = hp.retrieve_constraints_for_pele(args.external_constraints, self.system) if args.external_constraints else []
-        self.permissive_metal_constr = args.permissive_metal_constr if args.permissive_metal_constr else []
-        self.constrain_core = args.constrain_core if args.constrain_core else self.simulation_params.get("constrain_core", None)
-        self.constrain_core_spring = args.constrain_core_spring if args.constrain_core_spring else 50.0
-        self.no_metal_constraints = args.no_metal_constraints if args.no_metal_constraints else False
-        self.constrain_all_metals = args.constrain_all_metals if args.constrain_all_metals else False
-        self.no_ppp = args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
-
-    def ligand_params(self, args):
-        self.spython = os.path.join(cs.SCHRODINGER, "utilities/python")
-        if not os.path.exists(self.spython):
-            self.spython = os.path.join(cs.SCHRODINGER, "run")
-        self.mae_lig = args.mae_lig if args.mae_lig else self.simulation_params.get("mae_lig", None)
-        self.external_template = args.template if args.template else self.simulation_params.get("template", [])
-        self.external_rotamers = args.rotamers if args.rotamers else self.simulation_params.get("rotamers", [])
-        self.skip_ligand_prep = args.skip_ligand_prep if args.skip_ligand_prep else self.simulation_params.get("args.skip_ligand_prep", [])
-        self.core = args.core
-        self.n = args.n
-        self.mtor = args.mtor
-        self.forcefield = args.forcefield
-        self.mae_lig = args.mae_lig
-        self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
-        self.gridres = args.gridres
-        self.ligand_pdb = args.ligand_pdb if args.ligand_pdb else None
+        self.external_constraints = (
+            hp.retrieve_constraints_for_pele(args.external_constraints, self.system)
+            if args.external_constraints
+            else []
+        )
 
     def water_params(self, args):
-        self.water_temp = args.water_temp if args.water_temp else self.simulation_params.get("water_temp", 5000)
-        self.water_overlap = args.water_overlap if args.water_overlap else self.simulation_params.get("water_overlap", 0.78)
-        self.water_constr = args.water_constr if args.water_constr else self.simulation_params.get("water_constr", 0)
-        self.water_trials = args.water_trials if args.water_trials  else self.simulation_params.get("water_trials", 10000)
-        self.allow_empty_selectors = '"allowEmptyWaterSelectors": true,' if args.water_empty_selector else ""
-        self.water_arg = hp.retrieve_all_waters(self.system) if args.waters == "all_waters" else args.waters  # IDs of waters
-        self.n_waters = args.n_waters if args.n_waters  else self.simulation_params.get("n_waters", 0)
-        self.waters = args.waters if args.waters else self.simulation_params.get("waters", [])
-        self.water_radius = args.water_radius if args.water_radius else 6
-        self.water_center = None
-        self.water = ""
-        self.water_energy = None
-
-    def box_params(self, args):
-        self.box_radius = args.box_radius if args.box_radius else self.simulation_params.get("box_radius", None)
-        if args.box_center:
-            if ":" in args.box_center:
-                self.box_center = [str(coord) for coord in hp.get_coords_from_residue(self.system, args.box_center)]
-                self.box_center = "[" + ", ".join(self.box_center) + "]"
-            else:
-                self.box_center = [str(x) for x in args.box_center] 
-                self.box_center = "["+ ",".join([str(coord) for coord in self.box_center]) + "]"
-        else:
-            self.box_center = self.simulation_params.get("box_center", None)
-
-    def output_params(self, args):
-        self.folder = args.folder
-        self.output = args.output if args.output is not None else "output"
-        self.report_name = args.report_name if args.report_name else "report"
-        self.traj_name = args.traj_name if args.traj_name else "trajectory.pdb"
-        self.xtc = self.traj_name.endswith(".xtc")
-        self.pdb = self.traj_name.endswith(".pdb")
-
-    def analysis_params(self, args):
-        self.analyse = args.analyse if args.analyse else True
-        self.mae = args.mae if args.mae else False
-        self.only_analysis = args.only_analysis
-        self.analysis_nclust = args.analysis_nclust
-        self.overwrite = args.overwrite
-        self.be_column = args.be_column
-        self.te_column = args.te_column
-        self.limit_column = args.limit_column
-        self.atom_dist = args.atom_dist if args.atom_dist else []
+        self.water_arg = (
+            hp.retrieve_all_waters(self.system)
+            if args.waters == "all_waters"
+            else args.waters
+        )  # IDs of waters

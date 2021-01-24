@@ -55,6 +55,10 @@ Requirements
    :hidden:
 
 .. toctree::
+   developers/yaml.rst
+   :hidden:
+
+.. toctree::
    changelog/index.rst
    :hidden:
 

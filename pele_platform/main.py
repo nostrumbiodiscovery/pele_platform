@@ -5,9 +5,6 @@ pv.check_python_version() #Avoid python2
 from argparse import ArgumentParser
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Utilities.Helpers.launcher as lc
-import pele_platform.Utilities.Parameters.pele_env as pv
-import pele_platform.Checker.valid_flags as vf
-import pele_platform.Errors.custom_errors as ce
 
 
 
@@ -27,11 +24,8 @@ def run_platform(input_yaml):
     2) Launch job
     3) Return job parametrs
     '''
-    yaml_obj = yp.YamlParser(input_yaml, vf.VALID_FLAGS_PLATFORM)
-    try:
-        yaml_obj.read()
-    except AttributeError:
-        raise ce.WrongYamlFile("Input file: {} does not look like a correct yml file".format(input_yaml))
+    yaml_obj = yp.YamlParser(input_yaml)
+    yaml_obj.read()
     job_params = lc.Launcher(yaml_obj).launch()
     return job_params
 

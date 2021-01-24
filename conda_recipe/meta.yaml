@@ -30,6 +30,9 @@ requirements:
     - scipy
     - pandas
     - pytest
+    - pytest-xdist
+    - pytest-sugar
+    - pydantic
     - adaptive_pele
     - ploprottemp==1.0.0
     - pyyaml
