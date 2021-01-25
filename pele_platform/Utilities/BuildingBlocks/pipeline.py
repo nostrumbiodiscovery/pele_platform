@@ -36,7 +36,7 @@ class Pipeline:
         for element in self.iterable:
             if 'type' not in element.keys():
                 raise ce.PipelineError("It seems that you forgot to specify simulation type in one of the workflow "
-                                       "steps, for example - type: 'InducedFitExhaustive'")
+                                       "steps, for example - type: 'LocalExplorationExhaustive'")
             if element['type'] == "ScatterN":
                 dist = element.get('options', {}).get('distance', None)
                 if not(isinstance(dist, float) or isinstance(dist, int)):

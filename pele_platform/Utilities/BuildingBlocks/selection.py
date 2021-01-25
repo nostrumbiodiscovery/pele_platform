@@ -107,7 +107,7 @@ class Selection(ABC):
 class LowestEnergy5(Selection):
     """
     Choose 5% lowest binding energy poses as input for the next simulation.
-    Use to select inputs for Rescoring after InducedFitExhaustive and InducedFitFast.
+    Use to select inputs for Rescoring after LocalExplorationExhaustive and LocalExplorationFast.
     """
     simulation_params: pv.EnviroBuilder
     options: dict

@@ -100,9 +100,9 @@ def test_pipeline_checker(iterable):
                           ("global/input_defaults.yaml", "global", bb.GlobalExploration, GlobalExploration_lines),
                           ("out_in/input_default.yaml", "out_in", bb.OutIn, OutIn_lines),
                           ("induced_fit/input_exhaustive_defaults.yaml", "induced_fit_exhaustive",
-                           bb.InducedFitExhaustive,
+                           bb.LocalExplorationExhaustive,
                            InducedFitExhaustive_lines),
-                          ("induced_fit/input_fast_defaults.yaml", "induced_fit_fast", bb.InducedFitFast,
+                          ("induced_fit/input_fast_defaults.yaml", "induced_fit_fast", bb.LocalExplorationFast,
                            InducedFitFast_lines),
                           ("rescoring/input_defaults.yaml", "rescoring", bb.Rescoring, Rescoring_lines)])
 def test_simulation_blocks(yaml, package, block, expected):
