@@ -3,7 +3,7 @@ chain: 'Z'
 resname: 'API'
 seed: 12345
 workflow:
-  - type: 'InducedFitExhaustive'
+  - type: 'LocalExplorationExhaustive'
   - type: 'LowestEnergy5'
   - type: 'Rescoring'
 test: true

@@ -45,7 +45,7 @@ class AllostericLauncher(LauncherBase):
     steps = [{'type': 'GlobalExploration'}]
     refinement_steps = [
         {'type': 'ScatterN', 'options': {"distance": 6.0}},
-        {'type': 'InducedFitExhaustive'},
+        {'type': 'LocalExplorationExhaustive'},
         {'type': 'ScatterN', 'options': {"distance": 3.0}},
         {'type': 'Rescoring'}]
 
@@ -58,13 +58,13 @@ class GPCRLauncher(LauncherBase):
 
 
 class InducedFitFastLauncher(LauncherBase):
-    steps = [{'type': 'InducedFitFast'},
+    steps = [{'type': 'LocalExplorationFast'},
              {'type': 'LowestEnergy5'},
              {'type': 'Rescoring'}]
 
 
 class InducedFitExhaustiveLauncher(LauncherBase):
-    steps = [{'type': 'InducedFitExhaustive'},
+    steps = [{'type': 'LocalExplorationExhaustive'},
              {'type': 'LowestEnergy5'},
              {'type': 'Rescoring'}]
 
@@ -76,7 +76,7 @@ class OutInLauncher(LauncherBase):
 
 
 class PPILauncher(LauncherBase):
-    steps = [{'type': 'InducedFitExhaustive'}]
+    steps = [{'type': 'LocalExplorationExhaustive'}]
     refinement_steps = [
         {'type': 'GMM'},
         {'type': 'Rescoring'}]

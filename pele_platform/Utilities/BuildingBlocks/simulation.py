@@ -113,7 +113,7 @@ class GlobalExploration(Simulation):
 
 
 @dataclass
-class InducedFitFast(Simulation):
+class LocalExplorationFast(Simulation):
     keyword: str = "induced_fit_fast"
 
     def set_package_params(self):
@@ -121,7 +121,7 @@ class InducedFitFast(Simulation):
 
 
 @dataclass
-class InducedFitExhaustive(Simulation):
+class LocalExplorationExhaustive(Simulation):
     keyword: str = "induced_fit_exhaustive"
 
     def set_package_params(self):
