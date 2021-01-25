@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from dataclasses import dataclass
 import glob
 import os
@@ -7,12 +7,13 @@ import pele_platform.Adaptive.simulation as si
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.Utilities.Helpers.helpers import retrieve_box
 from pele_platform.Utilities.BuildingBlocks.preparation import prepare_structure
+from pele_platform.Utilities.BuildingBlocks import blocks
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.features.adaptive as ft
 
 
 @dataclass
-class Simulation(ABC):
+class Simulation(blocks.Block):
     """
     Base Simulation class to run all simulation types.
     Both input and output should always be EnviroBuilder.
