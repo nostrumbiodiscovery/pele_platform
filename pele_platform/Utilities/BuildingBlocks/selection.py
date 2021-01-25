@@ -1,4 +1,4 @@
-from abc import ABC, abstractmethod
+from abc import abstractmethod
 from dataclasses import dataclass
 import glob
 from multiprocessing import Pool
@@ -9,13 +9,14 @@ import re
 from sklearn.mixture import GaussianMixture
 
 from pele_platform.Analysis.plots import _extract_coords
+from pele_platform.Utilities.BuildingBlocks import blocks
 from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Utilities.Helpers.helpers import cd
 from pele_platform.Utilities.Parameters import pele_env as pv
 
 
 @dataclass
-class Selection(ABC):
+class Selection(blocks.Block):
     """
     Base class to handle all input selection algorithms, copy files, set next_step, etc.
     """
@@ -23,6 +24,9 @@ class Selection(ABC):
     options: dict
 
     def copy_files(self):
+        """
+        Copies files selected as self.inputs into a Selection directory.
+        """
         self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder_name)
 
         if not os.path.isdir(self.directory):
@@ -31,9 +35,15 @@ class Selection(ABC):
             os.system("cp {} {}/.".format(i, self.directory))
 
     def set_next_step(self):
+        """
+        Sets self.next step so that the inputs can be used by the next Simulation block.
+        """
         self.simulation_params.next_step = os.path.join(self.directory, "*.pdb")
 
     def extract_poses(self, percentage, n_poses=None):
+        """
+        Extracts n lowest binding energy poses.
+        """
         simulation_path = os.path.join(self.simulation_params.pele_dir, self.simulation_params.output)
         n_best_poses = n_poses if n_poses else int(
             self.simulation_params.iterations * self.simulation_params.pele_steps * (
@@ -47,6 +57,9 @@ class Selection(ABC):
         return files_out, output_energy
 
     def extract_all_coords(self, files_out):
+        """
+        Extracts ligand coordinates from the previously selected lowest binding energy poses.
+        """
         snapshot = 0
         pool = Pool(self.simulation_params.cpus)
         input_pool = [[f, snapshot, self.simulation_params.residue, self.simulation_params.topology] for f in files_out]
@@ -75,7 +88,7 @@ class Selection(ABC):
 
     def rename_folder(self):
         user_folder = self.options.get('working_folder', None) if self.options else None
-        
+
         if not user_folder:
             index, name = self.folder_name.split("_")
             self.folder_name = "{}_Selection".format(index)
@@ -83,17 +96,27 @@ class Selection(ABC):
             self.folder_name = user_folder
 
         self.simulation_params.folder_name = self.folder_name  # to make it consistent with simulation BBs
-    
+
     def set_optional_params(self):
+        """
+        Sets optional params provided by the user in nested yaml (when using 'workflow' flag).
+        """
         if self.options:
             for key, value in self.options.items():
                 setattr(self.simulation_params, key, value)
 
     @abstractmethod
     def get_inputs(self):
+        """
+        Method that will set selected files as self.inputs, ensuring the number of self.inputs is not greater than
+        self.n_inputs.
+        """
         pass
 
     def run(self):
+        """
+        Runs the whole Selection block.
+        """
         self.n_inputs = self.simulation_params.cpus - 1
         self.set_optional_params()
         self.rename_folder()
