@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 import glob
-from multiprocessing import Pool
 import numpy as np
 import os
 import pandas as pd
@@ -10,8 +9,7 @@ from sklearn.mixture import GaussianMixture
 
 from pele_platform.Analysis.plots import _extract_coords
 from pele_platform.Utilities.BuildingBlocks import blocks
-from pele_platform.Utilities.Helpers import bestStructs as bs
-from pele_platform.Utilities.Helpers.helpers import cd
+from pele_platform.Utilities.Helpers import helpers, bestStructs
 from pele_platform.Utilities.Parameters import pele_env as pv
 
 
@@ -60,8 +58,9 @@ class Selection(blocks.Block):
                 * percentage
             )
         )
-        with cd(simulation_path):
-            files_out, _, _, _, output_energy = bs.main(
+
+        with helpers.cd(simulation_path):
+            files_out, _, _, _, output_energy = bestStructs.main(
                 str(self.simulation_params.be_column),
                 n_structs=n_best_poses,
                 path=".",
@@ -80,7 +79,6 @@ class Selection(blocks.Block):
         Extracts ligand coordinates from the previously selected lowest binding energy poses.
         """
         snapshot = 0
-        pool = Pool(self.simulation_params.cpus)
         input_pool = [
             [
                 f,
@@ -90,8 +88,8 @@ class Selection(blocks.Block):
             ]
             for f in files_out
         ]
-        all_coords = pool.map(_extract_coords, input_pool)
 
+        all_coords = helpers.parallelize(_extract_coords, input_pool, 1)
         return all_coords
 
     def gaussian_mixture(self, files_out, output_energy):
