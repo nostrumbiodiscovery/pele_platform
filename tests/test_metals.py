@@ -158,14 +158,14 @@ def test_polarisation(
     1. Tests to check that no metal template is added to DataLocal when no metal polarization is required.
     2. Ensures polarize_metals flag works and adds a template with new metal charges to DataLocal.
     """
-    job = main.run_platform(ext_args_false)
+    job, = main.run_platform(ext_args_false)
     mg_template_file_false = glob.glob(
         os.path.join(job.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz")
     )
     assert not mg_template_file_false
 
     errors = []
-    job2 = main.run_platform(ext_args_true)
+    job2, = main.run_platform(ext_args_true)
     errors = tk.check_file(
         job2.pele_dir,
         "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz",
