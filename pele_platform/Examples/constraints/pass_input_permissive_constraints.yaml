@@ -5,4 +5,5 @@ seed: 12345
 induced_fit_fast: true
 permissive_metal_constr: true
 test: true
+debug: true
 traj: trajectory.xtc

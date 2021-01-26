@@ -5,6 +5,7 @@ restart: false
 seed: 12345
 induced_fit_fast: true
 test: true
+debug: true
 external_constraints:
 - "5-A:1:H" ##constraint of 10 at atom with chain A residuenumber 1 and atomname H
 - "50-2.34-A:1:H-L:1:C21" #constraint of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
