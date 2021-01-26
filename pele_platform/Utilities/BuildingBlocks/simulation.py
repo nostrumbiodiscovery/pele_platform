@@ -20,6 +20,7 @@ class Simulation(blocks.Block):
 
     One class to rule them all, one class to find them, one class to bring them all and in PELE bind them.
     """
+
     env: pv.EnviroBuilder
     options: dict
     folder_name: str
@@ -86,23 +87,45 @@ class Simulation(blocks.Block):
             self.env.folder_name = self.folder_name
 
         if hasattr(self.env, "pele_dir"):
-            self.env.initial_args.folder = os.path.join(os.path.dirname(self.env.pele_dir), self.env.folder_name)
+            self.env.initial_args.folder = os.path.join(
+                os.path.dirname(self.env.pele_dir), self.env.folder_name
+            )
 
     def create_folders(self):
         self.env.create_files_and_folders()
 
     def water_handler(self):
         """
-        In the PPI package, water perturbation is only executed in the refinement simulation.
+        In the PPI and Allosteric packages, water perturbation is only executed in the refinement simulation. We
+        temporarily hide n_waters parameter to avoid adding water molecules to the global/interface exploration.
         """
-        if self.env.package == "ppi" and hasattr(self.env.initial_args, "n_waters"):
-            if self.keyword == "induced_fit_exhaustive":
-                self.env._n_waters = self.env.n_waters
-                self.env.n_waters = 0
-                self.env.water_arg = None
-            else:
-                self.env.n_waters = self.env._n_waters
-                self.env.waters = "all_waters" if self.env._n_waters != 0 else None
+        if getattr(self.env.initial_args, "n_waters", None):
+            if (self.keyword == "full" and self.env.package == "allosteric") or (
+                self.keyword == "inducef_fit_exhaustive" and self.env.package == "ppi"
+            ):
+                self.hide_water()
+            elif (
+                self.keyword == "induced_fit_exhaustive"
+                and self.env.package == "allosteric"
+            ) or (self.keyword == "rescoring" and self.env.package == "ppi"):
+                self.add_water()
+
+    def hide_water(self):
+        """
+        Temporarily hide n_waters as _n_waters, so that water perturbation is not performed during global/interface
+        exploration.
+        """
+        self.env._n_waters = self.env.n_waters
+        self.env.n_waters = 0
+        self.env.water_arg = None
+        self.env.waters = None
+
+    def add_water(self):
+        """
+        Reinstate hidden n_waters.
+        """
+        self.env.n_waters = getattr(self.env, "_n_waters", None)
+        self.env.waters = "all_waters"
 
 
 @dataclass
@@ -128,8 +151,12 @@ class LocalExplorationExhaustive(Simulation):
     def set_package_params(self):
         if self.env.package == "ppi":
             self.env.water_arg = None
-            self.env.system = prepare_structure(self.env.system, self.env.ligand_pdb, self.env.protein,
-                                                remove_water=False)
+            self.env.system = prepare_structure(
+                self.env.system,
+                self.env.ligand_pdb,
+                self.env.protein,
+                remove_water=False,
+            )
 
 
 @dataclass
@@ -161,10 +188,22 @@ class GPCR(Simulation):
         self.env.orthosteric_site = self.env.initial_args.orthosteric_site
         self.env.initial_site = self.env.initial_args.initial_site
         self.env.center_of_interface = self.env.initial_site
-        box_center, box_radius = retrieve_box(self.env.system, self.env.initial_site, self.env.orthosteric_site,
-                                              weights=[0.35, 0.65])
-        self.env.box_center = self.env.initial_args.box_center if self.env.initial_args.box_center else box_center
-        self.env.box_radius = self.env.initial_args.box_radius if self.env.initial_args.box_radius else box_radius
+        box_center, box_radius = retrieve_box(
+            self.env.system,
+            self.env.initial_site,
+            self.env.orthosteric_site,
+            weights=[0.35, 0.65],
+        )
+        self.env.box_center = (
+            self.env.initial_args.box_center
+            if self.env.initial_args.box_center
+            else box_center
+        )
+        self.env.box_radius = (
+            self.env.initial_args.box_radius
+            if self.env.initial_args.box_radius
+            else box_radius
+        )
         self.env.randomize = True
 
 
@@ -180,16 +219,28 @@ class OutIn(Simulation):
         compulsory_flags = ["final_site", "initial_site"]
         for flag in compulsory_flags:
             if getattr(self.env.initial_args, flag) is None:
-                raise ce.OutInError(f"Flag {flag} must be specified for out_in package.")
+                raise ce.OutInError(
+                    f"Flag {flag} must be specified for out_in package."
+                )
 
     def set_outin_params(self):
         self.env.final_site = self.env.initial_args.final_site
         self.env.initial_site = self.env.initial_args.initial_site
         self.env.center_of_interface = self.env.initial_site
         box_center, box_radius = retrieve_box(
-            self.env.initial_args.system, self.env.initial_site, self.env.final_site,
-            weights=[0.35, 0.65])
-        self.env.box_center = self.env.initial_args.box_center if self.env.initial_args.box_center else box_center
-        self.env.box_radius = self.env.initial_args.box_radius if self.env.initial_args.box_radius else box_radius
+            self.env.initial_args.system,
+            self.env.initial_site,
+            self.env.final_site,
+            weights=[0.35, 0.65],
+        )
+        self.env.box_center = (
+            self.env.initial_args.box_center
+            if self.env.initial_args.box_center
+            else box_center
+        )
+        self.env.box_radius = (
+            self.env.initial_args.box_radius
+            if self.env.initial_args.box_radius
+            else box_radius
+        )
         self.env.randomize = True
-

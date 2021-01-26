@@ -9,11 +9,20 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
         lines = file.readlines()
 
         for line in lines:
-            if ((line.startswith("ATOM") or line.startswith("HETATM")) and line[21:22].strip() not in chain) or \
-                    line.startswith("END") or line.startswith("TER") or line.startswith("CONECT"):
+            if (
+                (
+                    (line.startswith("ATOM") or line.startswith("HETATM"))
+                    and line[21:22].strip() not in chain
+                )
+                or line.startswith("END")
+                or line.startswith("TER")
+                or line.startswith("CONECT")
+            ):
                 to_remove.append(line)
             if remove_water:
-                if (line.startswith("ATOM") or line.startswith("HETATM")) and line[17:20].strip() == "HOH":
+                if (line.startswith("ATOM") or line.startswith("HETATM")) and line[
+                    17:20
+                ].strip() == "HOH":
                     to_remove.append(line)
 
         protein = [line for line in lines if line not in to_remove]
