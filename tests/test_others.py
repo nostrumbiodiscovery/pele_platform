@@ -11,7 +11,9 @@ from . import test_adaptive as tk
 
 test_path = os.path.join(cs.DIR, "Examples")
 
-EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
+EXTERNAL_CONSTR_ARGS = os.path.join(
+    test_path, "constraints/input_external_constraints.yaml"
+)
 PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
 ARGS_SMARTS_CONSTR = os.path.join(test_path, "constraints/input_constrain_smarts.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
@@ -82,32 +84,32 @@ def test_constraints(yaml_file, expected):
         (ATOM_STRING, ce.WrongAtomStringFormat, None),
         (FLAG_SIMILARITY, KeyError, "Incorrect flag posis. Did you mean poses?"),
         (
-                ATOM_GPCR_ERROR_ARGS,
-                ce.WrongAtomSpecified,
-                "Atom A:114:CM could not be found in structure",
+            ATOM_GPCR_ERROR_ARGS,
+            ce.WrongAtomSpecified,
+            "Atom A:114:CM could not be found in structure",
         ),
         (INPUT_TEMPLATE, ce.TemplateFileNotFound, "File mgadeaz not found"),
         (WRONG_YAML, ce.WrongYamlFile, None),
         (
-                UNK_LIGAND,
-                ce.LigandNameNotSupported,
-                "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'.",
+            UNK_LIGAND,
+            ce.LigandNameNotSupported,
+            "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'.",
         ),
         (ROTAMER, ce.RotamersFileNotFound, "File mgadeaz not found"),
         (
-                OUT_IN,
-                ce.OutInError,
-                "Flag final_site must be specified for out_in package.",
+            OUT_IN,
+            ce.OutInError,
+            "Flag final_site must be specified for out_in package.",
         ),
         (
-                UNDERSCORE,
-                ce.WrongAtomStringFormat,
-                "The specified atom is wrong 'A_106:OH'. Should be 'chain:resnumber:atomname",
+            UNDERSCORE,
+            ce.WrongAtomStringFormat,
+            "The specified atom is wrong 'A_106:OH'. Should be 'chain:resnumber:atomname'",
         ),
         (
-                SUBSTRUCTURE_ERROR,
-                ce.SubstructureError,
-                "More than one substructure found in your ligand. Make sure SMILES constrain pattern is not ambiguous!",
+            SUBSTRUCTURE_ERROR,
+            ce.SubstructureError,
+            "More than one substructure found in your ligand. Make sure SMILES constrain pattern is not ambiguous!",
         ),
     ],
 )
@@ -121,13 +123,20 @@ def test_errors(yaml_file, expected_error, error_string):
     except expected_error as e:
         assert expected_error
         if error_string:
-            assert str(e) == error_string  # or str(e).strip("'") == error_string  # stupid, but works
+            assert (str(e) == error_string) or str(e).strip(
+                "'"
+            ) == error_string  # stupid, but works
         return
     assert False
 
 
-@pytest.mark.parametrize("complex", [os.path.join(test_path, "preparation/6qmk_correct.pdb"),
-                                     os.path.join(test_path, "preparation/6qmk_repeated.pdb")])
+@pytest.mark.parametrize(
+    "complex",
+    [
+        os.path.join(test_path, "preparation/6qmk_correct.pdb"),
+        os.path.join(test_path, "preparation/6qmk_repeated.pdb"),
+    ],
+)
 def test_proteinwizard(complex):
     """
     Checks if protein wizard function correctly preprocesses the protein, sets a unique ligand chain, etc.
@@ -139,7 +148,9 @@ def test_proteinwizard(complex):
         lines = f.readlines()
         for line in lines:
             lig_chains = [line[21:22].strip() for line in lines if line[17:20] == "J8H"]
-            lig_atomnames = [line[12:16].strip() for line in lines if line[17:20] == "J8H"]
+            lig_atomnames = [
+                line[12:16].strip() for line in lines if line[17:20] == "J8H"
+            ]
 
     assert all(elem == "Z" for elem in lig_chains)
     assert len(set(lig_atomnames)) == len(lig_atomnames)
@@ -159,7 +170,9 @@ def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
 
 
 def test_python_version_error():
-    p = Popen("/usr/bin/python -m pele_platform.main -h".split(), stdout=PIPE, stderr=PIPE)
+    p = Popen(
+        "/usr/bin/python -m pele_platform.main -h".split(), stdout=PIPE, stderr=PIPE
+    )
     output, error = p.communicate()
     if "OldPythonVersion" in error.decode():
         assert True
@@ -188,7 +201,9 @@ def test_smiles_constraints_class(mol_string):
     matches = obj.get_matches(smarts_from_smiles, ligand)
     constraints = obj.build_constraints(matches, ligand, obj.spring_constant, obj.chain)
 
-    assert smarts_from_smiles == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+    assert (
+        smarts_from_smiles == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+    )
     assert matches == ((9, 0, 1, 2, 3, 4, 5, 6, 7, 8),)
     assert constraints == SMILES_CONSTR
 

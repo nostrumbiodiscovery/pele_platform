@@ -12,6 +12,16 @@ test_path = os.path.join(cs.DIR, "Examples")
 yaml = os.path.join(test_path, "water/input_induced.yaml")
 yaml_previous_water = os.path.join(test_path, "water/input_previous_water.yaml")
 
+WATERLIG_ARGS = os.path.join(test_path, "water/input_lig.yaml")
+ALL_WATER_ARGS = os.path.join(test_path, "water/input_all.yaml")
+NWATER_ARGS = os.path.join(test_path, "water/input_nwaters.yaml")
+
+ALL_WATER_VALUES = ["WaterPerturbation::parameters", '"M:1"', '"M:2"']
+WATER_VALUES = [
+    "WaterPerturbation::parameters",
+    '"M:1"',
+]
+
 
 def test_water(yaml=yaml):
 
@@ -188,7 +198,7 @@ def test_all_waters(ext_args=ALL_WATER_ARGS):
     errors = []
     job = main.run_platform(ext_args)
     folder = job.pele_dir
-    errors = check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
+    errors = tk.check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
     assert not errors
 
 
@@ -196,5 +206,5 @@ def test_water_lig(ext_args=WATERLIG_ARGS):
     errors = []
     job = main.run_platform(ext_args)
     folder = job.pele_dir
-    errors = check_file(folder, "pele.conf", WATER_VALUES, errors)
+    errors = tk.check_file(folder, "pele.conf", WATER_VALUES, errors)
     assert not errors

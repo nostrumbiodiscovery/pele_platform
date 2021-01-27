@@ -9,15 +9,12 @@ test_path = os.path.join(cs.DIR, "Examples")
 OUT_IN_ARGS = os.path.join(test_path, "out_in/input.yaml")
 INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive.yaml")
 INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast.yaml")
-NWATER_ARGS = os.path.join(test_path, "water/input_nwaters.yaml")
 GLOBAL_ARGS = os.path.join(test_path, "global/input.yaml")
 INPUTS_GLOBAL_ARGS = os.path.join(test_path, "global/input_inputs.yaml")
 INPUTS_AST_ARGS = os.path.join(test_path, "global/input_inputs_asterisc.yaml")
 EXIT_ARGS = os.path.join(test_path, "exit/input.yaml")
 EXITSOFT_ARGS = os.path.join(test_path, "exit_soft/input.yaml")
 WATER_ARGS = os.path.join(test_path, "water/input_bs.yaml")
-ALL_WATER_ARGS = os.path.join(test_path, "water/input_all.yaml")
-WATERLIG_ARGS = os.path.join(test_path, "water/input_lig.yaml")
 RESTART_ARGS = os.path.join(test_path, "restart/input.yaml")
 MSM_ARGS = os.path.join(test_path, "Msm/input.yaml")
 MAE_ARGS = os.path.join(test_path, "induced_fit/input_mae.yaml")
@@ -91,13 +88,6 @@ PCA_VALUES = [
     '"pickingCase" : "LOWEST_MODE"',
     '"numberOfModes": 1',
     '"relaxationSpringConstant" : 2',
-]
-
-ALL_WATER_VALUES = ["WaterPerturbation::parameters", '"M:1"', '"M:2"']
-
-WATER_VALUES = [
-    "WaterPerturbation::parameters",
-    '"M:1"',
 ]
 
 
