@@ -8,3 +8,4 @@ test: true
 constrain_core: "CN1CC[NH+](CC1)CCO"
 constrain_core_spring: 33.5
 traj: trajectory.xtc
+debug: true

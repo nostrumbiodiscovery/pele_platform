@@ -8,3 +8,4 @@ atom_dist:
 - 10
 test: true
 posis: true
+debug: true
