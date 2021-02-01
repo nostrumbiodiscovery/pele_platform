@@ -69,7 +69,7 @@ class Selection(blocks.Block):
             )
 
         files_out = [
-            os.path.join(self.simulation_params.pele_dir, "results", f)
+            os.path.join(self.simulation_params.pele_dir, self.simulation_params.output, f)
             for f in files_out
         ]
         return files_out, output_energy
@@ -78,6 +78,7 @@ class Selection(blocks.Block):
         """
         Extracts ligand coordinates from the previously selected lowest binding energy poses.
         """
+        print("Starting coord extraction.")
         snapshot = 0
         input_pool = [
             [
@@ -90,6 +91,7 @@ class Selection(blocks.Block):
         ]
 
         all_coords = helpers.parallelize(_extract_coords, input_pool, 1)
+        print("Finished extracting coordinates!")
         return all_coords
 
     def gaussian_mixture(self, files_out, output_energy):
@@ -249,6 +251,7 @@ class ScatterN(Selection):
     simulation_params: pv.EnviroBuilder
     options: dict
     folder_name: str
+    print("Scatter initialised.")
 
     def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.75)
@@ -258,36 +261,42 @@ class ScatterN(Selection):
         distance = self.simulation_params.distance
         all_coords = self.extract_all_coords(files_out)
         coords = [list(c[0:3]) for c in all_coords]
-        files_out = [
-            os.path.join(self.simulation_params.pele_dir, "results", f)
-            for f in files_out
-        ]
+        # files_out = [
+        #     os.path.join(self.simulation_params.pele_dir, "results", f)
+        #     for f in files_out
+        # ]
         dataframe = pd.DataFrame(
             list(zip(files_out, output_energy, coords)),
             columns=["File", "Binding energy", "1st atom coordinates"],
         )
+        dataframe['Binding energy'] = dataframe['Binding energy'].map(lambda x: float(x))
         dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
+        dataframe.to_csv("scatter6_data.csv")
         self.inputs = self._check_ligand_distances(dataframe, distance)
 
     def _check_ligand_distances(self, dataframe, distance):
         inputs = []
         input_coords = []
-        distances = []
 
-        while len(inputs) < self.n_inputs:
-            for f, c in zip(dataframe["File"], dataframe["1st atom coordinates"]):
-                if not input_coords:
-                    inputs.append(f)
-                    input_coords.append(c)
-                else:
-                    for ic in input_coords:
-                        distances.append(
-                            abs(np.linalg.norm(np.array(c) - np.array(ic)))
-                        )
-                    distances_bool = [d > distance for d in distances]
-                    if all(distances_bool):
-                        inputs.append(f)
-                        input_coords.append(c)
-            break  # make sure it stops after running out of files to check
+        for file, coord in zip(dataframe["File"], dataframe["1st atom coordinates"]):
+
+            if len(inputs) == self.n_inputs:  # get out of the loop, if we have enough inputs already
+                break
+
+            if not input_coords:  # first loop
+                inputs.append(file)
+                input_coords.append(coord)
+
+            else:
+                distances = []
+                for ic in input_coords:
+                    distances.append(
+                        abs(np.linalg.norm(np.array(coord) - np.array(ic))))
+                print("file: {}, 1st atom coord {}, n of distances {}".format(file, coord, len(distances)))
+
+                distances_bool = [d > distance for d in distances]
+                if all(distances_bool):
+                    inputs.append(file)
+                    input_coords.append(coord)
 
         return inputs
