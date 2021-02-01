@@ -66,7 +66,6 @@ class AllostericLauncher:
                                                             logger=self.global_simulation.logger)
 
                 snapshot = 0
-                #files_out = [os.path.join(self.global_simulation.pele_dir, "results", f) for f in files_out]
                 files_out = [os.path.join(self.global_simulation.pele_dir, self.global_simulation.output, f) for f in files_out]
                 input_pool = [[f, snapshot, self.global_simulation.residue, self.global_simulation.topology] for f in files_out]
                 all_coords = parallelize(_extract_coords, input_pool, 1)
@@ -87,22 +86,28 @@ class AllostericLauncher:
 
         inputs = []
         input_coords = []
-        distances = []
         n_inputs = self.global_simulation.cpus - 1
 
-        while len(inputs) < n_inputs:
-            for f, c in zip(self.dataframe['File'], self.dataframe['1st atom coordinates']):
-                if not input_coords:
-                    inputs.append(f)
-                    input_coords.append(c)
-                else:
-                    for ic in input_coords:
-                        distances.append(abs(np.linalg.norm(np.array(c) - np.array(ic))))
-                    distances_bool = [d > 6 for d in distances]  # leave the radius up to the user in the future...? 6 is the default box_radius for induced fit
-                    if all(distances_bool):
-                        inputs.append(f)
-                        input_coords.append(c)
-            break  # make sure it stops after running out of file to check
+        for file, coord in zip(self.dataframe['File'], self.dataframe['1st atom coordinates']):
+
+            if len(inputs) == n_inputs:  # get out of the loop, if we have enough inputs already
+                break
+
+            if not input_coords:
+                inputs.append(file)
+                input_coords.append(coord)
+
+            else:
+                distances = []
+
+                for ic in input_coords:
+                    distances.append(abs(np.linalg.norm(np.array(coord) - np.array(ic))))
+                distances_bool = [d > 6 for d in distances]
+
+                if all(distances_bool):
+                    inputs.append(file)
+                    input_coords.append(coord)
+
         return inputs
 
     def _set_params_refinement(self):
