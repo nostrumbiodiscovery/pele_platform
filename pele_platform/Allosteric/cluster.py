@@ -1,21 +1,20 @@
 import os
 import pandas as pd
 from sklearn.mixture import GaussianMixture
-from pele_platform.Utilities.Helpers import bestStructs as bs
+from pele_platform.Utilities.Helpers import bestStructs, helpers
 from pele_platform.Analysis.plots import _extract_coords
 from multiprocessing import Pool
 
 
 def cluster_best_structures(be_column: int, residue="LIG", topology=None, cpus=20, n_components=10, n_structs=1000, directory=".", logger=None):
 
-    files_out, _, _, _, output_energy = bs.main(be_column, n_structs=n_structs, path=".", topology=topology, logger=logger)
+    files_out, _, _, _, output_energy = bestStructs.main(be_column, n_structs=n_structs, path=".", topology=topology, logger=logger)
     n_files = len(files_out)
     logger.info("Extracting data from {} files.".format(n_files))
 
     snapshot = 0
-    pool = Pool(cpus)
     input_pool = [[f, snapshot, residue, topology] for f in files_out]  
-    all_coords = pool.map(_extract_coords, input_pool)
+    all_coords = helpers.parallelize(_extract_coords, input_pool, 1)
 
     # cluster
     logger.info("Creating clusters.")
