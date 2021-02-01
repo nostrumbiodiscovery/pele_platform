@@ -19,9 +19,9 @@ class AdaptiveLauncher(LauncherBase):
     def set_simulation_type(self):
         # NEEDS IMPROVEMENT. Ensuring it doesn't crash in features.adaptive
         # with something like ('EnviroBuilder' object has no attribute 'full'), do you have a better idea?
-        for arg, value in self.env.initial_args.__dict__.items():
+        for arg in dir(self.env.initial_args):
             if arg in ft.all_simulations:
-                setattr(self.env, arg, value)
+                setattr(self.env, arg, getattr(self.env.initial_args, arg))
 
 
 class WorkflowLauncher(LauncherBase):

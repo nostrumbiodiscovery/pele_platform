@@ -6,7 +6,10 @@ import sys
 import warnings
 import pele_platform.Errors.custom_errors as cs
 import pele_platform.constants.constants as const
-import PPP.global_variables as gv
+try:
+    import PPP.global_variables as gv
+except ImportError:
+    logging.exception("Failed to import PPP.")
 from Bio.PDB import PDBParser
 import pele_platform.Errors.custom_errors as cs
 from multiprocessing import Pool
