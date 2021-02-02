@@ -1,8 +1,8 @@
-{% set data = load_setup_py_data() %}
+{ % set data = load_setup_py_data() % }
 # must do conda install -c NostrumBioDiscovery pele_platform 
 package:
   name: pele_platform
-  version: {{ data.get('version') }}
+  version: { { data.get('version') } }
 
 about:
   home: https://github.com/nostrumbiodiscovery/pele_platform
@@ -44,7 +44,7 @@ requirements:
     - lib_prep
     - peleffy
     - drug_learning
-    - jinja2
+    - Jinja2
 test:
   imports:
     - pele_platform
