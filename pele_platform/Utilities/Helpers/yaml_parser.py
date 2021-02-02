@@ -5,6 +5,7 @@ from pele_platform.Models.utils import PydanticProxy
 from pele_platform.Models.yaml_parser_model import YamlParserModel
 import yaml
 
+
 @dataclass
 class YamlParser(PydanticProxy):
     yamlfile: str
@@ -35,7 +36,7 @@ class YamlParser(PydanticProxy):
             try:
                 data = yaml.safe_load(stream)
             except yaml.YAMLError as exc:
-                raise (exc)
+                raise exc
         return data
 
     def _check(self, data) -> None:
@@ -47,7 +48,7 @@ class YamlParser(PydanticProxy):
     def _recommend(self, key):
         most_similar_flag = None
         for valid_key in self.valid_flags:
-            flag = Most_Similar_Flag(valid_key)
+            flag = MostSimilarFlag(valid_key)
             flag.calculate_distance(key)
             if not most_similar_flag:
                 most_similar_flag = flag
@@ -58,7 +59,7 @@ class YamlParser(PydanticProxy):
 
 
 @dataclass
-class Most_Similar_Flag:
+class MostSimilarFlag:
 
     name: str
 
