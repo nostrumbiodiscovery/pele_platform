@@ -1,6 +1,6 @@
 import os
 import random
-
+import re
 from typing import Any, Optional
 from pydantic import BaseModel, validator
 
@@ -375,3 +375,15 @@ class YamlParserModel(BaseModel):
     @validator("usesrun", always=True)
     def set_usesrun(cls, v):
         return bool(os.environ.get("SRUN", v))
+
+    @validator("initial_site", "orthosteric_site", "final_site")
+    def validate_atom_string(cls, v):
+        if v:
+            pattern = r"([A-z]\:\d{1,4}\:[A-Z0-9]{1,4})"
+            if not re.match(pattern, v):
+                raise custom_errors.WrongAtomStringFormat(
+                    "Atom string set in {} does not seem to have the right format. It should follow chain:residue "
+                    "number:atom name patter, e.g. 'A:105:CA'".format(
+                        v
+                    )
+                )
