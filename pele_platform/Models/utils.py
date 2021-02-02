@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, List
 from pydantic import BaseModel, Field as PydanticField
 
 
@@ -11,6 +11,8 @@ def Field(
     simulation_params_default=None,
     can_be_falsy=False,
     tests_value=None,
+    categories: List[str] = None,
+    candidate_for_deprecation=False,
     **kwargs,
 ):
     """Extend signature for autocomplete."""
@@ -25,6 +27,8 @@ def Field(
         simulation_params_default=simulation_params_default,
         can_be_falsy=can_be_falsy,
         tests_value=tests_value,
+        categories=categories,
+        candidate_for_deprecation=candidate_for_deprecation,
         **kwargs,
     )
     return PydanticField(*args, **kwargs)
