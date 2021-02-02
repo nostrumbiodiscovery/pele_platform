@@ -35,7 +35,8 @@ class Launcher:
             ck.check_executable_and_env_variables(self._args)
         # Launch package from API
         for package_name, package in PACKAGES.items():
-            if getattr(self._args, package_name):
+            selected_package = getattr(self._args, package_name)
+            if selected_package:
                 break
         else:
             package_name = "adaptive"
