@@ -87,7 +87,6 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("input", always=True)
     def set_input_glob(cls, v, values):
-        print("Validating system input")
         system = values.get("system")
         if system and "*" in system:
             return glob.glob(system)
@@ -95,7 +94,6 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("system", always=True)
     def set_system_glob(cls, v):
-        print("Validating system system")
         if v and "*" in v:
             return glob.glob(v)[0]
         return v
