@@ -9,6 +9,10 @@ from pele_platform.Models.utils import Field
 from pele_platform.constants import constants
 
 
+def generate_random_seed():
+    return random.randrange(1, 70000)
+
+
 class YamlParserModel(BaseModel):
     class Config:
         allow_population_by_field_name = True
@@ -328,7 +332,7 @@ class YamlParserModel(BaseModel):
     time: Any = Field()
     nosasa: Any = Field()
     perc_sasa: Any = Field()
-    seed: int = Field(default_factory=lambda: random.randrange(1, 70000))
+    seed: int = Field(default_factory=generate_random_seed)
     pdb: Any = Field()
     log: Any = Field()
     nonrenum: Any = Field()
@@ -406,7 +410,11 @@ class YamlParserModel(BaseModel):
     license: Any = Field(value_from="pele_license")
     schrodinger: str = Field()
     no_check: bool = Field(default=False)
-    cleanup: bool = Field(default=False, categories=["FragPELE"], description="Automatically cleans up fragment files, only applicable to FragPELE.")
+    cleanup: bool = Field(
+        default=False,
+        categories=["FragPELE"],
+        description="Automatically cleans up fragment files, only applicable to FragPELE.",
+    )
     water_empty_selector: Any = Field(default=False, categories=["Water"])
     polarize_metals: bool = Field(default=False, categories=["Metals"])
     polarization_factor: float = Field(default=2.0, categories=["Metals"])
