@@ -11,7 +11,7 @@ def Field(
     simulation_params_default=None,
     can_be_falsy=False,
     tests_value=None,
-    categories: List[str] = None,
+    categories: List[str] = ["Other"],
     candidate_for_deprecation=False,
     **kwargs,
 ):
