@@ -1,16 +1,23 @@
 YAML Model
 ==========
 
+{% for category, fields in categories.items() %}
+*******************************************************
+{{category}}
+*******************************************************
+
 {% for field in fields %}
 {{field.title}}
 ########################################################################
-
 {% if field.description is none %}
-Description missing.
+{# Description missing. #}
 {% else %}
 {{field.description}}
 {% endif %}
-
+{% if field.candidate_for_deprecation %}
+.. warning::
+    This is a candidate for deprecation.
+{% endif %}
 {% if field.from_simulation_params %}
 :YAML key: None, value calculated in simulation params
 {% else %}
@@ -23,7 +30,7 @@ Description missing.
 :Parser key: {{field.name}}
 :Type: ``{{field.type_}}``
 {% if field.default is not none %}
-:Default value: ``{{ field.default }}``
+:Default: ``{{ field.default }}``
 {% endif %}
 {% if field.tests_value is not none %}
 :Tests value: ``{{ field.tests_value }}``
@@ -43,4 +50,5 @@ Processors:{% for validator in field.validators %}
 {% endfor %}
 {% endif %}
 
+{% endfor %}
 {% endfor %}

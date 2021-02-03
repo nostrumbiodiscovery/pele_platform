@@ -1,3 +1,4 @@
+from collections import defaultdict
 from pele_platform.Utilities.Helpers.yaml_parser import YamlParserModel
 from pele_platform.Utilities.Parameters.SimulationParams.simulation_params import (
     SimulationParamsModel,
@@ -25,6 +26,7 @@ def parse_field(field):
     extra = field.field_info.extra
     vfsp = extra.get("value_from_simulation_params")
     return {
+        "categories": extra.get("categories"),
         "title": field.field_info.title
         if field.field_info.title
         else (
@@ -34,8 +36,8 @@ def parse_field(field):
         "name": field.name,
         "alias": field.alias,
         "description": field.field_info.description,
-        "default": repr(field.default) if field.default is not None else None,
-        "type_": field.type_,
+        "default": repr(field.default) if field.default is not None else f"{field.default_factory.__name__}()" if field.default_factory is not None else None,
+        "type_": field.type_.__name__ if type(field.type_) == type else str(field.type_).replace('typing.',''),
         **extra,
         "tests_value": repr(extra.get("tests_value"))
         if extra.get("tests_value") is not None
@@ -61,5 +63,11 @@ def parse_field(field):
 
 def render_yaml_parser():
     fields = [parse_field(field) for field in SimulationParamsModel.__fields__.values()]
+
+    categories = defaultdict(list)
+    for field in fields:
+        for category in field['categories']:
+            categories[category].append(field)
+
     template = get_template("./docgen.rst")
-    return template.render(fields=fields)
+    return template.render(categories=categories)
