@@ -67,7 +67,7 @@ class SiteFinderLauncher:
             self.global_simulation.iterations
             * self.global_simulation.pele_steps
             * (self.global_simulation.cpus - 1)
-            * 0.75
+            * 0.25
         )
 
         if not self.args.debug:
@@ -120,7 +120,7 @@ class SiteFinderLauncher:
 
         inputs = []
         input_coords = []
-        n_inputs = self.global_simulation.cpus - 1
+        n_inputs = 10
 
         for file, coord in zip(
             self.dataframe["File"], self.dataframe["1st atom coordinates"]
