@@ -241,8 +241,8 @@ class YamlParser(object):
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
         self.n_waters = data.get(valid_flags["n_waters"], 0)
 
-        #Allosteric
-        self.allosteric = data.get(valid_flags["allosteric"], None)
+        #site_finder
+        self.site_finder = data.get(valid_flags["site_finder"], None)
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
 
         #RNA
