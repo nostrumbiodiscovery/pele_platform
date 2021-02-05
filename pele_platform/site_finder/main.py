@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import numpy as np
 import os
 import pandas as pd
+import shutil
 
 from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last, parallelize
@@ -27,6 +28,7 @@ class SiteFinderLauncher:
         if not self.args.skip_refinement:
             self._choose_refinement_input()
             self._set_params_refinement()
+            self._clean_temp_files()
             self.refinement_simulation = self._launch_refinement()
         else:
             self.refinement_simulation = None
@@ -161,6 +163,13 @@ class SiteFinderLauncher:
             self.args.iterations = 20
         self.args.box_center = self.global_simulation.box_center
         self.args.box_radius = self.global_simulation.box_radius
+
+    def _clean_temp_files(self):
+        output_dir = os.path.join(self.global_simulation.pele_dir, self.global_simulation.output)
+        temp_bs_dir = os.path.join(output_dir, "BestStructs")
+
+        if os.path.exists(temp_bs_dir):
+            shutil.rmtree(temp_bs_dir)
 
     def _launch_refinement(self):
 

@@ -60,10 +60,14 @@ def test_site_finder_xtc():
         glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/epoch*"))
     )
 
+    # checking if all temporary BestStructs (needed to select refinement input) were removed
+    temp_bs_dir = os.path.join(job.pele_dir, job.output, "BestStructs")
+
     # test
     assert best_energy_input in refinement_input
     assert len(refinement_input) == 3
     assert nfiles_refinement > 0
+    assert not os.path.exists(temp_bs_dir)
 
 
 def test_working_folder(output="site_finder"):
