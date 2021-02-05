@@ -76,7 +76,7 @@ class YamlParserModel(BaseModel):
     temp: int = Field(
         value_from="temperature", candidate_for_deprecation=True
     )  # probably get rid of it
-    sidechain_resolution: int = Field(  # int add validator? 360 %% v == 0
+    sidechain_resolution: int = Field(
         alias="sidechain_res",
         value_from_simulation_params=True,
         simulation_params_default=30,
@@ -189,7 +189,7 @@ class YamlParserModel(BaseModel):
     )
     gridres: int = Field(
         default=10, categories=["Ligand preparation"]
-    )  # alias="ligand_resolution" ? validator for 360 modulus
+    )  # alias="ligand_resolution"
     core: int = Field(default=-1, categories=["Ligand preparation"])
 
     ################################################################################################ start from here
@@ -198,7 +198,7 @@ class YamlParserModel(BaseModel):
     n: int = Field(
         default=10000,
         categories=["Ligand preparation"],
-        description="Maximum number of flexible sidechains in the ligand.",
+        description="Maximum number of flexible side chains in the ligand.",
     )
     template: List[str] = Field(
         alias="templates"
@@ -218,6 +218,7 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default=False,
         categories=["Protein preparation"],
+        candidate_for_deprecation=True,
     )
     skip_prep: bool = Field(
         alias="skip_preprocess",
@@ -230,16 +231,20 @@ class YamlParserModel(BaseModel):
         can_be_falsy=True,
         value_from_simulation_params=True,
         simulation_params_default=False,
+        categories=["Protein preparation"],
     )
     charge_ter: bool = Field(
         alias="charge_ters",
         can_be_falsy=True,
         value_from_simulation_params=True,
         simulation_params_default=False,
+        categories=["Protein preparation"],
     )
-    mpi_params: Any = Field()  # WTF - what type is that supposed to be?
+    mpi_params: str = Field()  # cp desc from Adaptive docs mpiParameters
     nonstandard: List[str] = Field(
-        value_from_simulation_params=True, simulation_params_default=[]
+        value_from_simulation_params=True,
+        simulation_params_default=[],
+        categories=["Protein preparation"],
     )
     prepwizard: bool = Field()
     box_radius: float = Field(  # should be a float but tests fail --> FLOAT YES
@@ -248,9 +253,9 @@ class YamlParserModel(BaseModel):
     box_center: Union[List[float], str] = Field(categories=["Box settings"])
     box: Any = Field(categories=["Box settings"])
     native: str = Field(alias="rmsd_pdb", default=False, categories=["Metrics"])
-    atom_dist: Union[List[str], List[int]] = Field(
+    atom_dist: List[str] = Field(
         default_factory=list, categories=["Metrics"]
-    )  # can be atom numbers or strings
+    )  # deprecate atom numbers
     debug: bool = Field(default=False, categories=["General settings"])
     folder: str = Field(alias="working_folder", categories=["General settings"])
     output: str = Field(default="output", categories=["General settings"])
@@ -260,35 +265,32 @@ class YamlParserModel(BaseModel):
         categories=["Global Exploration", "Simulation parameters"],
     )
     full: bool = Field(alias="global", categories=["Global Exploration"])
-    proximityDetection: bool = Field()  # WTF?
+    proximityDetection: bool = Field()  # description from PELE++
     poses: int = Field()
-    precision_glide: Any = Field(candidate_for_deprecation=True)
-    msm: Any = Field()
-    precision: Any = Field(candidate_for_deprecation=True)  # WTF
-    clust: Any = Field(
+    msm: bool = Field(candidate_for_deprecation=True, categories=["MSM"])
+    clust: int = Field(
         alias="exit_clust", tests_value=2, candidate_for_deprecation=True
     )
 
-    # WTF?
-    restart: Any = Field(
+    restart: Union[bool, str] = Field(
         value_from_simulation_params=True, simulation_params_default="all"
     )
-    lagtime: Any = Field(candidate_for_deprecation=True)  # WTF?
-    msm_clust: Any = Field()
-    rescoring: bool = Field()
-    in_out: bool = Field()
-    in_out_soft: bool = Field()
-    exit: Any = Field()  # WTF?
-    exit_value: float = Field()
-    exit_condition: str = Field()
-    exit_trajnum: int = Field()
+    lagtime: Any = Field(candidate_for_deprecation=True, categories=["MSM"])  # WTF?
+    msm_clust: Any = Field(candidate_for_deprecation=True, categories=["MSM"])
+    rescoring: bool = Field(categories=["Rescoring"])
+    in_out: bool = Field(categories=["In Out"])
+    in_out_soft: bool = Field(categories=["In Out"])
+    exit: bool = Field(categories=["In Out"])
+    exit_value: float = Field(categories=["In Out"])
+    exit_condition: str = Field(categories=["In Out"])
+    exit_trajnum: int = Field(categories=["In Out"])
     waters: Union[str, List[str]] = Field(
         value_from_simulation_params=True,
         simulation_params_default=[],
         categories=["Water"],
     )
     water_center: Union[List[float], str] = Field(categories=["Water"])
-    water_temp: Any = Field(
+    water_temp: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=5000,
         categories=["Water"],
@@ -298,22 +300,22 @@ class YamlParserModel(BaseModel):
         simulation_params_default=0.78,
         categories=["Water"],
     )
-    water_constr: Any = Field(
+    water_constr: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=0,
         categories=["Water"],
     )
-    water_trials: Any = Field(
+    water_trials: int = Field(
         value_from_simulation_params=True,
         simulation_params_default=10000,
         categories=["Water"],
     )
-    water_radius: int = Field(
+    water_radius: float = Field(
         default=6, categories=["Water"]
     )  # WTF tests expects int but should be a float perhaps
     induced_fit_exhaustive: bool = Field(categories=["Induced fit"])
     induced_fit_fast: bool = Field(categories=["Induced fit"])
-    frag: Any = Field(categories=["FragPELE"])
+    frag: bool = Field(categories=["FragPELE"], candidate_for_deprecation=True)
     ca_constr: int = Field(
         can_be_falsy=True,
         value_from_simulation_params=True,
@@ -326,20 +328,20 @@ class YamlParserModel(BaseModel):
         simulation_params_default=5,
         categories=["Constraints"],
     )
-    one_exit: Any = Field()
-    box_type: Any = Field()
-    box_metric: Any = Field()
-    time: Any = Field()
-    nosasa: Any = Field()
-    perc_sasa: Any = Field()
-    seed: int = Field(default_factory=generate_random_seed)
-    pdb: Any = Field()
-    log: Any = Field()
-    nonrenum: Any = Field()
+    one_exit: Any = Field(candidate_for_deprecation=True)
+    box_type: str = Field(categories=["Box settings"])
+    box_metric: Any = Field(candidate_for_deprecation=True)
+    time: Any = Field(candidate_for_deprecation=True)
+    nosasa: Any = Field(candidate_for_deprecation=True)
+    perc_sasa: Any = Field(candidate_for_deprecation=True)
+    seed: int = Field(default_factory=generate_random_seed, tests_value=12345)
+    pdb: str = Field(categories=["RNA"])
+    log: Any = Field(candidate_for_deprecation=True)
+    nonrenum: Any = Field(candidate_for_deprecation=True)
     pele_exec: str = Field(default=os.path.join(constants.PELE, "bin/Pele_mpi"))
     pele_data: str = Field(default=os.path.join(constants.PELE, "Data"))
     pele_documents: str = Field(default=os.path.join(constants.PELE, "Documents"))
-    pca: Any = Field()
+    pca: str = Field(description="Path to PCA file", categories=["PCA"])
     anm_direction: str = Field(
         value_from_simulation_params=True,
         simulation_params_default="random",
@@ -355,7 +357,7 @@ class YamlParserModel(BaseModel):
     anm_displacement: float = Field(
         value_from_simulation_params=True, simulation_params_default=0.75
     )
-    anm_modes_change: Any = Field(
+    anm_modes_change: int = Field(
         value_from_simulation_params=True, simulation_params_default=4
     )
     anm_num_of_modes: int = Field(
@@ -370,30 +372,43 @@ class YamlParserModel(BaseModel):
         simulation_params_default=False,
     )
     pca_traj: List[str] = Field()
-    perturbation: Any = Field()
+    perturbation: str = Field(categories=["Advanced"])
     sasa: str = Field(
-        value_from_simulation_params=True, simulation_params_default=constants.SASA
+        value_from_simulation_params=True,
+        simulation_params_default=constants.SASA,
+        categories=["Advanced"],
     )
     binding_energy: str = Field(
-        value_from_simulation_params=True, simulation_params_default=constants.BE
+        value_from_simulation_params=True,
+        simulation_params_default=constants.BE,
+        categories=["Advanced"],
     )
     parameters: str = Field(
-        value_from_simulation_params="params", simulation_params_default=True
+        value_from_simulation_params="params",
+        simulation_params_default=True,
+        categories=["Advanced"],
     )
-    analyse: Any = Field(default=True)
+    analyse: bool = Field(default=True)
     selection_to_perturb: str = Field(
         value_from_simulation_params=True,
         simulation_params_default=constants.SELECTION_TO_PERTURB,
+        categories=["Advanced"],
     )
-    mae: Any = Field(default=False)
-    constrain_core: Any = Field(value_from_simulation_params=True)
-    constrain_core_spring: int = Field(default=50.0, categories=["Constraints"])
+    mae: bool = Field(default=False)
+    constrain_core: str = Field(
+        value_from_simulation_params=True,
+        description="String of SMILES or SMARTS to constrain.",
+        categories=["Constraints"],
+    )
+    constrain_core_spring: float = Field(default=50.0, categories=["Constraints"])
     skip_ligand_prep: List[str] = Field(
         value_from_simulation_params="args.skip_ligand_prep",
         simulation_params_default=[],
         categories=["Ligand preparation"],
     )
-    spawning_condition: Any = Field(value_from_simulation_params=True)
+    spawning_condition: str = Field(
+        value_from_simulation_params=True, description="For min or maximising epsilon"
+    )
     external_constraints: List[str] = Field(default=[], categories=["Constraints"])
     only_analysis: bool = Field(default=False, categories=["Analysis"])
     overwrite: bool = Field(alias="overwrite_analysis", default=True)
@@ -401,13 +416,14 @@ class YamlParserModel(BaseModel):
     te_column: int = Field(default=4)
     be_column: int = Field(default=5)
     limit_column: int = Field(default=6)
-    com: Any = Field(
+    com: float = Field(
         alias="COMligandConstraint",
         value_from_simulation_params="COMligandConstraint",
         simulation_params_default=0,
+        categories=["FragPELE"],
     )
     pele_license: str = Field(default=os.path.join(constants.PELE, "licenses"))
-    license: Any = Field(value_from="pele_license")
+    license: str = Field(value_from="pele_license")
     schrodinger: str = Field()
     no_check: bool = Field(default=False)
     cleanup: bool = Field(
@@ -415,16 +431,16 @@ class YamlParserModel(BaseModel):
         categories=["FragPELE"],
         description="Automatically cleans up fragment files, only applicable to FragPELE.",
     )
-    water_empty_selector: Any = Field(default=False, categories=["Water"])
+    water_empty_selector: bool = Field(default=False, categories=["Water"])
     polarize_metals: bool = Field(default=False, categories=["Metals"])
     polarization_factor: float = Field(default=2.0, categories=["Metals"])
     workflow: List[Any] = Field(categories=["Custom workflows"])
     distance: float = Field(categories=["Custom workflows"])
-    permissive_metal_constr: Any = Field(
+    permissive_metal_constr: bool = Field(
         default_factory=list, categories=["Constraints"]
     )
-    constrain_all_metals: Any = Field(default=False, categories=["Constraints"])
-    no_metal_constraints: Any = Field(default=False, categories=["Constraints"])
+    constrain_all_metals: bool = Field(default=False, categories=["Constraints"])
+    no_metal_constraints: bool = Field(default=False, categories=["Constraints"])
     frag_run: bool = Field(default=True, categories=["FragPELE"])
     frag_core: str = Field(categories=["FragPELE"])
     frag_input: str = Field(default=False, categories=["FragPELE"])
@@ -443,9 +459,7 @@ class YamlParserModel(BaseModel):
     frag_output_folder: str = Field(default=False, categories=["FragPELE"])
     frag_cluster_folder: str = Field(default=False, categories=["FragPELE"])
     frag_library: str = Field(categories=["FragPELE"])
-    frag_core_atom: str = Field(
-        categories=["FragPELE"]
-    )  # we could add a validator as well, e.g. C3-H2
+    frag_core_atom: str = Field(categories=["FragPELE"])
     analysis_to_point: Optional[List[float]] = Field(categories=["FragPELE"])
 
     n_components: int = Field(
@@ -453,6 +467,7 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default=10,
         categories=["PPI", "Allosteric"],
+        candidate_for_deprecation=True,
     )
     ppi: bool = Field(categories=["PPI"])
     center_of_interface: str = Field(categories=["PPI"])
@@ -473,16 +488,20 @@ class YamlParserModel(BaseModel):
 
     @validator("*", pre=True, always=True)
     def set_tests_values(cls, v, values, field):
+        """
+        Adjusts values of parameters when running tests.
+        """
         if values.get("test"):
             test_value = field.field_info.extra.get("tests_value")
             if test_value is not None:
                 return test_value
         return v
 
-    # TODO: do we automatically swap floats to ints?
-
     @validator("*", pre=True, always=True)
     def set_value_from(cls, v, values, field):
+        """
+        Gets value from an a duplicated parameter, e.g. steps and pele_steps.
+        """
         value_from = field.field_info.extra.get("value_from")
         if value_from is not None:
             return values.get(value_from)
@@ -490,10 +509,16 @@ class YamlParserModel(BaseModel):
 
     @validator("system", "mae_lig")
     def construct_path(cls, v):
+        """
+        Gets absolute path to the file.
+        """
         return os.path.abspath(v) if v else None
 
     @validator("residue")
     def validate_residue(cls, v):
+        """
+        Checks the residue name for unsupported 'UNK' value.
+        """
         if v == "UNK":
             raise custom_errors.LigandNameNotSupported(
                 "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
@@ -502,15 +527,52 @@ class YamlParserModel(BaseModel):
 
     @validator("usesrun", always=True)
     def set_usesrun(cls, v):
+        """
+        Gets SRUN from the environment.
+        """
         return bool(os.environ.get("SRUN", v))
 
-    @validator("initial_site", "orthosteric_site", "final_site", "center_of_interface")
-    def validate_atom_string(cls, v):
+    @validator(
+        "initial_site",
+        "orthosteric_site",
+        "final_site",
+        "center_of_interface",
+        "atom_dist",
+    )
+    def validate_atom_string(cls, *v):
+        """
+        Checks if a list of strings fits a regex pattern describing an atom.
+        """
+        pattern = r"([A-z]\:\d{1,4}\:[A-Z0-9]{1,4})"
+
         if v:
-            pattern = r"([A-z]\:\d{1,4}\:[A-Z0-9]{1,4})"
-            if not re.match(pattern, v):
-                raise custom_errors.WrongAtomStringFormat(
-                    "Atom string set in {} does not seem to have the right format. It should follow chain:residue "
-                    "number:atom name patter, e.g. 'A:105:CA'".format(v)
-                )
+            for string in v:
+                if not re.match(pattern, string):
+                    raise custom_errors.WrongAtomStringFormat(
+                        "Atom string set in {} does not seem to have the right format. It should follow chain:residue "
+                        "number:atom name patter, e.g. 'A:105:CA'".format(string)
+                    )
+        return v
+
+    @validator("frag_core_atom")
+    def validate_frag_core_atom(cls, *v):
+        """
+        Checks if a list of strings fits a regex pattern indicating the core atom,e.g. C3-H2.
+        """
+        pattern = r"([A-Z]{1,2}\d{1,2}\-H[A-Z]?\d{1,2})"
+
+        if v:
+            for string in v:
+                if not re.match(pattern, string):
+                    raise custom_errors.WrongAtomStringFormat(
+                        "Atom string set in {} does not seem to have the right format. It should follow C atom name: H atom name format".format(
+                            string
+                        )
+                    )
+        return v
+
+    @validator("sidechain_resolution", "gridres")
+    def check_divisibility(cls, v):
+        if not 360 % v == 0:
+            raise ValueError("The value should be easily multiplied to obtain 360, e.g. 30, 45 or 10 would be valid.")
         return v
