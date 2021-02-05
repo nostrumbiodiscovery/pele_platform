@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
-import pele_platform.Allosteric.main as al
+import pele_platform.site_finder.main as al
 import pele_platform.gpcr.main as gpcr
 import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
@@ -14,12 +14,12 @@ import argparse
 class Launcher:
 
     _args: argparse.ArgumentParser
-    frag: str="frag"
-    ppi: str="PPI"
-    allosteric: str="allosteric"
-    gpcr_orth: str="gpcr_orth"
-    out_in: str="out_in"
-    adaptive: str="adaptive"
+    frag: str = "frag"
+    ppi: str = "PPI"
+    site_finder: str = "site_finder"
+    gpcr_orth: str = "gpcr_orth"
+    out_in: str = "out_in"
+    adaptive: str = "adaptive"
 
     def launch(self) -> pv.EnviroBuilder:
         # Launch package from input.yaml
@@ -37,8 +37,8 @@ class Launcher:
             job_variables = gpcr.GpcrLauncher(self._args).run_gpcr_simulation()
         elif package == self.out_in:
             job_variables = outin.OutInLauncher(self._args).run_gpcr_simulation()
-        elif package == self.allosteric:
-            job_variables = al.AllostericLauncher(self._args).run_allosteric()
+        elif package == self.site_finder:
+            job_variables = al.SiteFinderLauncher(self._args).run_site_finder()
         elif package == self.ppi:
             job_variables = run_ppi(self._args)
         elif package == self.frag:
@@ -52,8 +52,8 @@ class Launcher:
             self._args.package = self.frag
         elif self._args.ppi:
             self._args.package = self.ppi
-        elif self._args.allosteric:
-            self._args.package = self.allosteric
+        elif self._args.site_finder:
+            self._args.package = self.site_finder
         elif self._args.gpcr_orth:
             self._args.package = self.gpcr_orth
         elif self._args.out_in:
