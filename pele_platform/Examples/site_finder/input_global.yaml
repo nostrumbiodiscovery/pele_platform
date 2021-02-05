@@ -1,8 +1,8 @@
-system: '../pele_platform/Examples/Allosteric/complex.pdb'
+system: '../pele_platform/Examples/site_finder/complex.pdb'
 chain: 'Z'
 resname: 'API'
 seed: 12345
-allosteric: true
+site_finder: true
 poses: 3
 atom_dist:
 - 4555
