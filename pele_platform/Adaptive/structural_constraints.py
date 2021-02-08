@@ -13,12 +13,14 @@ class StructuralConstraintsBuilder():
         for i in range (0, len(constraints_conf)):
             actual = constraints_conf[i]
             name = ""
-            if 'name' in actual:
-                name = actual['name']
-            if 'condition' in actual:
-                self.conditions.append(actual['condition'])
-            if 'type' in actual:
-                self._add_metric (pdb, actual['type'], actual['values'], name)
+            if 'distance' in actual:
+                name = "distance" + str(i)
+                self._add_metric (pdb, "atom_dist", actual['atoms'], name)
+                self._create_conditions (actual['distance'], name)
+            if 'angle' in actual:
+                name = "angle" + str(i)
+                self._add_metric (pdb, "atom_angle", actual['atoms'], name)
+                self._create_conditions (actual['angle'], name)
 
     def conditions_to_json (self):
         return cs.STRUCTURAL_CONSTRAINTS.format('",\n\t"'.join(self.conditions))
@@ -31,3 +33,14 @@ class StructuralConstraintsBuilder():
                 atom1 = hp.retrieve_atom_info(values[0], pdb)
                 atom2 = hp.retrieve_atom_info(values[1], pdb)
                 self.metrics.append(cs.DISTANCE_ATOMS_TAG.format(atom1, atom2, name))
+        if (type == "atom_angle"):
+                atom1 = hp.retrieve_atom_info(values[0], pdb)
+                atom2 = hp.retrieve_atom_info(values[1], pdb)
+                atom3 = hp.retrieve_atom_info(values[2], pdb)
+                self.metrics.append(cs.ANGLE_ATOMS_TAG.format(atom1, atom2, atom3, name))
+
+    def _create_conditions (self, values, name):
+        if 'min' in values:
+            self.conditions.append(name + " > " + str (values['min']))
+        if 'max' in values:
+            self.conditions.append(name + " < " + str (values['max']))
