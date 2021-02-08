@@ -116,11 +116,16 @@ class SiteFinderLauncher:
                 for i in inputs:
                     os.system("cp {} {}/.".format(i, directory))
 
+    def get_n_inputs(self):
+        maximum_inputs = self.global_simulation.cpus - 1
+        n_inputs = 20 if maximum_inputs > 20 else maximum_inputs
+        return n_inputs
+
     def _check_ligand_distances(self):
 
         inputs = []
         input_coords = []
-        n_inputs = 10
+        n_inputs = self.get_n_inputs()
 
         for file, coord in zip(
             self.dataframe["File"], self.dataframe["1st atom coordinates"]
