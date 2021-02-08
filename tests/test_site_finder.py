@@ -39,7 +39,6 @@ def test_site_finder_pdb():
 
     # test
     assert best_energy_input in refinement_input
-    assert len(refinement_input) == 3
     assert nfiles_refinement > 0
 
 
@@ -65,7 +64,6 @@ def test_site_finder_xtc():
 
     # test
     assert best_energy_input in refinement_input
-    assert len(refinement_input) == 3
     assert nfiles_refinement > 0
     assert not os.path.exists(temp_bs_dir)
 
@@ -78,7 +76,7 @@ def test_working_folder(output="site_finder"):
     assert os.path.exists(job.folder)
 
 
-@pytest.mark.xfail(reason="Implemented in pele_platform 2.0.")
+@pytest.mark.skip(reason="Implemented in pele_platform 2.0.")
 def test_site_finder_restart():
     yaml_file = os.path.join(test_path, "site_finder/input_restart.yaml")
     job, job2 = main.run_platform(yaml_file)
