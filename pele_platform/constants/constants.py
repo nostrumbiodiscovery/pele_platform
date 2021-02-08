@@ -93,6 +93,23 @@ DISTANCE_ATOMS_TAG = '''
                      }},
                      '''
 
+ANGLE_ATOMS_TAG = '''
+                     {{
+                     "type":"atomsAngle",
+                     "tag":"{3}",
+                     "selection_group_1":{{
+                     "atoms": {{ "ids":["{0}"]}}
+                     }},
+                     "selection_group_2":{{
+                     "atoms": {{ "ids":["{1}"]}}
+                     }},
+                     "selection_group_3":{{
+                     "atoms": {{ "ids":["{2}"]}}
+                     }}
+                     }},
+                     '''
+
+
 BOX = '''
 
                 "Box": {{
