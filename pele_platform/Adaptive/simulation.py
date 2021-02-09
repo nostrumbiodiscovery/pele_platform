@@ -28,14 +28,12 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
     """
     Main function to prepare and launch simulation
 
-    1) Crate working folders and inputs
+    1) Create EnviroBuilder - variables, folders, logger...
     2) Prepare ligand and receptor
     3) Launch simulation
     4) Analyse simulation
     """
 
-    # Build Folders and Logging and env variable that will contain
-    # all main attributes of the simulation
     env = pele.EnviroBuilder()
     env.software = "Adaptive"
     env.build_adaptive_variables(args)
@@ -54,26 +52,25 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             )
         )
 
+        # Create inputs directory
+        if not os.path.exists(env.inputs_dir):
+            os.mkdir(env.inputs_dir)
+
         if env.perturbation:
             syst = sp.SystemBuilder.build_system(
-                env.system, args.mae_lig, args.residue, env.pele_dir
+                env.system, args.mae_lig, args.residue, env.pele_dir, inputs_dir=env.inputs_dir
             )
         else:
-            syst = sp.SystemBuilder(env.system, None, None, env.pele_dir)
+            syst = sp.SystemBuilder(env.system, None, None, env.pele_dir, inputs_dir=env.inputs_dir)
 
         env.logger.info("Prepare complex {}".format(syst.system))
-
-        # Create inputs directory
-        inputs_dir = os.path.join(env.pele_dir, "inputs")
-        if not os.path.exists(inputs_dir):
-            os.mkdir(inputs_dir)
 
         # If user overrides 'system' with 'input'
         if env.input:
             env.inputs_simulation = []
 
             for input in env.input:
-                input_path = os.path.join(inputs_dir, os.path.basename(input))
+                input_path = os.path.join(env.inputs_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
 
                 if env.no_ppp:
@@ -82,7 +79,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                     input_proc = os.path.basename(
                         ppp.main(
                             input_path,
-                            inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
+                            env.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
                             output_pdb=[
                                 "",
                             ],
@@ -92,7 +89,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                             ligand_pdb=env.ligand_ref,
                         )[0]
                     )
-                input_proc = os.path.join(inputs_dir, input_proc)
+                input_proc = os.path.join(env.inputs_dir, input_proc)
                 env.inputs_simulation.append(input_proc)
             env.adap_ex_input = ", ".join(
                 ['"' + input + '"' for input in env.inputs_simulation]
@@ -103,7 +100,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(
                 env.ligand_ref,
                 env.receptor,
-                outputfolder=inputs_dir,
+                outputfolder=env.inputs_dir,
                 nposes=env.poses,
                 test=env.test,
                 user_center=env.center_of_interface,
@@ -117,7 +114,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             else:
                 receptor = ppp.main(
                     syst.system,
-                    inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
+                    env.inputs_dir,  # to ensure it goes to pele_dir/input, not pele_dir
                     output_pdb=[
                         "",
                     ],
@@ -127,8 +124,10 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                     ligand_pdb=env.ligand_ref,
                 )[0]
             inputs = rd.join(
-                receptor, ligand_positions, env.residue, output_folder=inputs_dir
+                receptor, ligand_positions, env.residue, output_folder=env.inputs_dir
             )
+
+            inputs = [os.path.join(env.inputs_dir, inp) for inp in inputs]
 
             env.adap_ex_input = ", ".join(
                 ['"' + input + '"' for input in inputs]
@@ -147,12 +146,12 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                 back_constr=env.ca_constr,
                 interval=env.ca_interval,
             )
-            shutil.copy(env.system, env.pele_dir)
+            shutil.copy(env.system, env.inputs_dir)
         else:
             env.nonstandard.extend(hp.find_nonstd_residue(syst.system))
             env.system, missing_residues, gaps, metals, env.constraints = ppp.main(
                 syst.system,
-                env.pele_dir,
+                env.inputs_dir,
                 output_pdb=[
                     "",
                 ],
@@ -171,7 +170,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             metal_constraints, env.external_constraints = mc.main(
                 args.external_constraints,
                 os.path.join(
-                    env.pele_dir, env.adap_ex_input.split(",")[0].strip().strip('"')
+                    env.inputs_dir, env.adap_ex_input.split(",")[0].strip().strip('"')
                 ),
                 syst.system,
                 permissive=env.permissive_metal_constr,
@@ -234,7 +233,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         # Core constraints based on SMILES string
         if env.constrain_core:
             smiles_input_pdb = os.path.join(
-                env.pele_dir, env.adap_ex_input.split(",")[0]
+                env.inputs_dir, env.adap_ex_input.split(",")[0]
             )
             smiles = smi.SmilesConstraints(
                 smiles_input_pdb,
@@ -252,7 +251,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         input_waters = [
             input.strip().strip('"') for input in env.adap_ex_input.split(",")
         ]
-        input_waters = [os.path.join(env.pele_dir, inp) for inp in input_waters]
+        input_waters = [os.path.join(env.inputs_dir, inp) for inp in input_waters]
         water_obj = wt.WaterIncluder(
             input_waters,
             env.n_waters,
@@ -282,6 +281,9 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             mp.change_metal_charges(
                 env.template_folder, env.forcefield, env.polarization_factor, env.system
             )
+
+        # Point adaptive.conf to input dir
+        env.adap_ex_input = os.path.join(env.inputs_dir, env.adap_ex_input)
 
         # Fill in simulation templates
         adaptive = ad.SimulationBuilder(
