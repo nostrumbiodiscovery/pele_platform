@@ -30,14 +30,18 @@ class InteractionRestrictionsBuilder():
 
     def _add_metric (self, pdb, type, values, name):
         if (type == "atom_dist"):
-                atom1 = hp.retrieve_atom_info(values[0], pdb)
-                atom2 = hp.retrieve_atom_info(values[1], pdb)
-                self.metrics.append(cs.DISTANCE_ATOMS_TAG.format(atom1, atom2, name))
+            if len(values) != 2:
+                raise SyntaxError("Must specify a list of two atoms in distance restriction.")
+            atom1 = hp.retrieve_atom_info(values[0], pdb)
+            atom2 = hp.retrieve_atom_info(values[1], pdb)
+            self.metrics.append(cs.DISTANCE_ATOMS_TAG.format(atom1, atom2, name))
         if (type == "atom_angle"):
-                atom1 = hp.retrieve_atom_info(values[0], pdb)
-                atom2 = hp.retrieve_atom_info(values[1], pdb)
-                atom3 = hp.retrieve_atom_info(values[2], pdb)
-                self.metrics.append(cs.ANGLE_ATOMS_TAG.format(atom1, atom2, atom3, name))
+            if len(values) != 3:
+                raise SyntaxError("Must specify a list of three atoms in angle restriction.")
+            atom1 = hp.retrieve_atom_info(values[0], pdb)
+            atom2 = hp.retrieve_atom_info(values[1], pdb)
+            atom3 = hp.retrieve_atom_info(values[2], pdb)
+            self.metrics.append(cs.ANGLE_ATOMS_TAG.format(atom1, atom2, atom3, name))
 
     def _create_conditions (self, values, name):
         if 'min' in values:
