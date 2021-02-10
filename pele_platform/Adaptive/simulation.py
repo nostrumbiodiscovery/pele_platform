@@ -22,7 +22,7 @@ import pele_platform.Adaptive.ligand_parametrization as lg
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
 import pele_platform.Adaptive.pca as pca
-import pele_platform.Adaptive.structural_constraints as sc
+import pele_platform.Adaptive.interaction_restrictions as ir
 # import pele_platform.RNA.prep as pr
 
 
@@ -187,15 +187,15 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         else:
             env.native = ""
 
-        #structural constraints
-        structural_constraints = sc.StructuralConstraintsBuilder()
-        if args.structural_constraints:
-            structural_constraints.parse_structural_metrics(env.system, args.structural_constraints)
-            env.met_structural_constraints = structural_constraints.metrics_to_json()
-            env.structural_constraints = structural_constraints.conditions_to_json()
+        #interaction restrictions
+        interaction_restrictions = ir.InteractionRestrictionsBuilder()
+        if args.interaction_restrictions:
+            interaction_restrictions.parse_interaction_restrictions(env.system, args.interaction_restrictions)
+            env.met_interaction_restrictions = interaction_restrictions.metrics_to_json()
+            env.interaction_restrictions = interaction_restrictions.conditions_to_json()
         else:
-            env.met_structural_constraints = ""
-            env.structural_constraints = ""
+            env.met_interaction_restrictions = ""
+            env.interaction_restrictions = ""
 
         # metal polarisation
         if env.polarize_metals:

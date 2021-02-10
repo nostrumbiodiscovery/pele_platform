@@ -176,4 +176,4 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "frag_library": "frag_library",
 "frag_core_atom": "frag_core_atom",
 "analysis_to_point": "analysis_to_point",
-"structural_constraints": "structural_constraints"}
+"interaction_restrictions": "interaction_restrictions"}
