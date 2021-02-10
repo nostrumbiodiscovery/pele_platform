@@ -171,10 +171,10 @@ SASA='''
                         },
 '''
 
-STRUCTURAL_CONSTRAINTS='''
+INTERACTION_RESTRICTIONS='''
 ,
 
-"structuralConstraints":
+"interactionRestrictions":
 [
 	"{0}"
 ]

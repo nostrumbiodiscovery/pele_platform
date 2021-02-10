@@ -3,13 +3,13 @@ import pele_platform.constants.constants as cs
 import os
 
 
-class StructuralConstraintsBuilder():
+class InteractionRestrictionsBuilder():
 
     def __init__(self):
         self.metrics = []
         self.conditions = []
 
-    def parse_structural_metrics (self, pdb, constraints_conf):
+    def parse_interaction_restrictions (self, pdb, constraints_conf):
         for i in range (0, len(constraints_conf)):
             actual = constraints_conf[i]
             name = ""
@@ -23,7 +23,7 @@ class StructuralConstraintsBuilder():
                 self._create_conditions (actual['angle'], name)
 
     def conditions_to_json (self):
-        return cs.STRUCTURAL_CONSTRAINTS.format('",\n\t"'.join(self.conditions))
+        return cs.INTERACTION_RESTRICTIONS.format('",\n\t"'.join(self.conditions))
 
     def metrics_to_json (self):
         return "\n".join(self.metrics)
