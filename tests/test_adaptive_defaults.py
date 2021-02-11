@@ -53,10 +53,10 @@ BIAS_DEFAULTS_ADAPTIVE = [
 
 GLOBAL_DEFAULTS_ADAPTIVE = [
     '"type" : "inverselyProportional"',
-    '"peleSteps" : 4,',
+    '"peleSteps" : 8,',
     '"iterations" : 100,',
     '"processors" : 250,',
-    '[2.5, 5, 7]',
+    '[2.0, 5, 7]',
     '[1, 0.6, 0.0]'
 ]
 
