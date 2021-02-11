@@ -34,7 +34,7 @@ def test_site_finder_pdb():
     best_energy_input = os.path.join(
         os.path.dirname(job.pele_dir),
         "refinement_input",
-        "epoch0_trajectory_3.1_BindingEnergy-1.5142.pdb",
+        "epoch0_trajectory_3.1_BindingEnergy-1.24648.pdb",
     )
 
     # test
@@ -50,7 +50,7 @@ def test_site_finder_xtc():
     best_energy_input = os.path.join(
         os.path.dirname(job.pele_dir),
         "refinement_input",
-        "epoch0_trajectory_3.1_BindingEnergy-1.5142.pdb",
+        "epoch0_trajectory_3.1_BindingEnergy-1.24648.pdb",
     )
     refinement_input = glob.glob(
         os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")
