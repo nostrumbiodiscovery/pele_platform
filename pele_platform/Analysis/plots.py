@@ -24,7 +24,7 @@ def _extract_coords(info):
     # Most time consuming step 0.1
     traj = mdtraj.load_frame(p, v, top=topology)
     atoms_info = traj.topology.to_dataframe()[0]
-    condition = atoms_info['resName'] == resname
+    condition = atoms_info["resName"] == resname
     atom_numbers_ligand = atoms_info[condition].index.tolist()
     coords = []
     for atom_num in atom_numbers_ligand:
@@ -36,9 +36,19 @@ def _extract_coords(info):
 
 
 class PostProcessor:
-
-    def __init__(self, report_name, traj_name, simulation_path, cpus, topology=False, residue=False,
-                 be_column=4, limit_column=6, te_column=3, logger=None):
+    def __init__(
+        self,
+        report_name,
+        traj_name,
+        simulation_path,
+        cpus,
+        topology=False,
+        residue=False,
+        be_column=4,
+        limit_column=6,
+        te_column=3,
+        logger=None,
+    ):
         self.report_name = report_name
         self.traj_name = traj_name
         self.simulation_path = simulation_path
@@ -53,60 +63,118 @@ class PostProcessor:
 
     def retrive_data(self, separator=","):
         summary_csv_filename = os.path.join(self.simulation_path, "summary.csv")
-        if not os.path.exists(summary_csv_filename) or self._moved_folder(summary_csv_filename):
+        if not os.path.exists(summary_csv_filename) or self._moved_folder(
+            summary_csv_filename
+        ):
             try:
-                sp.concat_reports_in_csv(adaptive_results_path=self.simulation_path,
-                                         output_file_path=summary_csv_filename,
-                                         report_prefix=self.report_name, trajectory_prefix=self.traj_name,
-                                         separator_out=separator)
+                sp.concat_reports_in_csv(
+                    adaptive_results_path=self.simulation_path,
+                    output_file_path=summary_csv_filename,
+                    report_prefix=self.report_name,
+                    trajectory_prefix=self.traj_name,
+                    separator_out=separator,
+                )
             except ValueError:
-                raise ValueError("Not report found under {}. Did you point to the right folder?".format(os.getcwd()))
-        dataframe = pd.read_csv(summary_csv_filename, sep=separator, header=0, float_precision='round_trip')
+                raise ValueError(
+                    "Not report found under {}. Did you point to the right folder?".format(
+                        os.getcwd()
+                    )
+                )
+        dataframe = pd.read_csv(
+            summary_csv_filename, sep=separator, header=0, float_precision="round_trip"
+        )
         dataframe_filtered = self._remove_outliers(dataframe)
-        
+
         return dataframe_filtered
 
     def _remove_outliers(self, dataframe):
 
         cols = list(dataframe.columns)
-        n_points_to_remove = int(len(dataframe[cols[0]]) * 0.02) # remove top 2% of each energy
-        dataframe_filtered = dataframe.sort_values(cols[3], ascending=False).iloc[n_points_to_remove:]
-        dataframe_filtered = dataframe_filtered.sort_values(cols[4], ascending=False).iloc[n_points_to_remove:]
+        n_points_to_remove = int(
+            len(dataframe[cols[0]]) * 0.02
+        )  # remove top 2% of each energy
+        dataframe_filtered = dataframe.sort_values(cols[3], ascending=False).iloc[
+            n_points_to_remove:
+        ]
+        dataframe_filtered = dataframe_filtered.sort_values(
+            cols[4], ascending=False
+        ).iloc[n_points_to_remove:]
 
         return dataframe_filtered
 
-    def plot_two_metrics(self, column_to_x, column_to_y, column_to_z=False, output_name=None, output_folder="."):
+    def plot_two_metrics(
+        self,
+        column_to_x,
+        column_to_y,
+        column_to_z=None,
+        output_name=None,
+        output_folder=".",
+    ):
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
-        column_to_x = column_to_x if not str(column_to_x).isdigit() else self._get_column_name(self.data, column_to_x)
-        column_to_y = column_to_y if not str(column_to_y).isdigit() else self._get_column_name(self.data, column_to_y)
-        
+        column_to_x = (
+            column_to_x
+            if not str(column_to_x).isdigit()
+            else self._get_column_name(self.data, column_to_x)
+        )
+        column_to_y = (
+            column_to_y
+            if not str(column_to_y).isdigit()
+            else self._get_column_name(self.data, column_to_y)
+        )
+
         fig, ax = plt.subplots()
         if column_to_z:
-            column_to_z = column_to_z if not str(column_to_z).isdigit() else self._get_column_name(self.data, column_to_z)
-            output_name = output_name if output_name else "{}_{}_{}_plot.png".format(column_to_x, column_to_y, column_to_z)
-            output_name = os.path.join(output_folder,output_name).replace(" ", "_")
-            
-            pts = ax.scatter(self.data[column_to_x], self.data[column_to_y], c=self.data[column_to_z], s=20)
+            column_to_z = (
+                column_to_z
+                if not str(column_to_z).isdigit()
+                else self._get_column_name(self.data, column_to_z)
+            )
+            output_name = (
+                output_name
+                if output_name
+                else "{}_{}_{}_plot.png".format(column_to_x, column_to_y, column_to_z)
+            )
+            output_name = os.path.join(output_folder, output_name).replace(" ", "_")
+
+            pts = ax.scatter(
+                self.data[column_to_x],
+                self.data[column_to_y],
+                c=self.data[column_to_z],
+                s=20,
+            )
             cbar = plt.colorbar(pts)
             cbar.ax.set_ylabel(column_to_z)
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
-            backup_logger(self.logger, "Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z))
+            backup_logger(
+                self.logger,
+                "Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z),
+            )
         else:
-            output_name = output_name if output_name else "{}_{}_plot.png".format(column_to_x, column_to_y)
-            output_name = os.path.join(output_folder,output_name).replace(" ", "_")
+            output_name = (
+                output_name
+                if output_name
+                else "{}_{}_plot.png".format(column_to_x, column_to_y)
+            )
+            output_name = os.path.join(output_folder, output_name).replace(" ", "_")
             ax.scatter(self.data[column_to_x], self.data[column_to_y], s=20)
             ax.set_xlabel(column_to_x)
             ax.set_ylabel(column_to_y)
             plt.savefig(output_name)
-            backup_logger(self.logger, "Plotted {} vs {}".format(column_to_x, column_to_y))
+            backup_logger(
+                self.logger, "Plotted {} vs {}".format(column_to_x, column_to_y)
+            )
         return output_name
 
     def top_poses(self, metric, n_structs, output="BestStructs"):
-        metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
+        metric = (
+            metric
+            if not str(metric).isdigit()
+            else self._get_column_name(self.data, metric)
+        )
         best_poses = self.data.nsmallest(n_structs, metric)
         self._extract_poses(best_poses, metric, output)
 
@@ -120,23 +188,64 @@ class PostProcessor:
         steps = self._get_column_name(self.data, STEPS)
         step_indexes = poses[steps].tolist()
         out_freq = 1
-        files_out = [
-            "epoch{}_trajectory_{}.{}_{}{}.pdb".format(epoch, report, int(step), metric.replace(" ", ""), value) \
-            for epoch, step, report, value in zip(epochs, step_indexes, file_ids, values)]
+
+        distance_key = "distance0.5"
+        if distance_key in poses.columns:
+            dist_values = poses[distance_key].tolist()
+            filename_template = "epoch{}_traj{}.{}_BindEner{:.2f}_AtomDist{:.2f}.pdb"
+            files_out = [
+                filename_template.format(epoch, report, int(step), value, dist)
+                for epoch, step, report, value, dist in zip(
+                    epochs, step_indexes, file_ids, values, dist_values
+                )
+            ]
+        else:
+            filename_template = "epoch{}_traj{}.{}_BindEner{:.2f}.pdb"
+            files_out = [
+                filename_template.format(epoch, report, int(step), value)
+                for epoch, step, report, value in zip(
+                    epochs, step_indexes, file_ids, values
+                )
+            ]
+
         # Read trajectory and output snapshot
         for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
             if not self.topology:
                 try:
-                    bs.extract_snapshot_from_pdb(path, f_id, output, self.topology, step, out_freq, f_out, self.logger)
+                    bs.extract_snapshot_from_pdb(
+                        path,
+                        f_id,
+                        output,
+                        self.topology,
+                        step,
+                        out_freq,
+                        f_out,
+                        self.logger,
+                    )
                 except UnicodeDecodeError:
                     raise Exception(
-                        "XTC output being treated as PDB. Please specify XTC with the next flag. traj: 'trajectory_name.xtc' in the input.yaml")
+                        "XTC output being treated as PDB. Please specify XTC with the next flag. traj: "
+                        "'trajectory_name.xtc' in the input.yaml "
+                    )
             else:
-                bs.extract_snapshot_from_xtc(path, f_id, output, self.topology, step, out_freq, f_out, self.logger)
+                bs.extract_snapshot_from_xtc(
+                    path,
+                    f_id,
+                    output,
+                    self.topology,
+                    step,
+                    out_freq,
+                    f_out,
+                    self.logger,
+                )
 
     def cluster_poses(self, n_structs, metric, output, nclusts=10):
         assert self.residue, "Set residue ligand name to clusterize"
-        metric = metric if not str(metric).isdigit() else self._get_column_name(self.data, metric)
+        metric = (
+            metric
+            if not str(metric).isdigit()
+            else self._get_column_name(self.data, metric)
+        )
         best_poses = self.data.nsmallest(n_structs, metric)
         clusters = self._cluster(best_poses, metric, output, nclusts)
         return clusters
@@ -152,27 +261,39 @@ class PostProcessor:
 
         # Extract coords
         pool = Pool(processes=self.cpus)
-        input_pool = [[p, v, self.residue, self.topology] for p, v in zip(paths, snapshots)]
+        input_pool = [
+            [p, v, self.residue, self.topology] for p, v in zip(paths, snapshots)
+        ]
         all_coords = pool.map(_extract_coords, input_pool)
 
-        # Clusterize
+        # Cluster
         assert all_coords[0][
-            0], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
+            0
+        ], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
         try:
-            clf = mixture.GaussianMixture(n_components=nclusts, covariance_type='full')
+            clf = mixture.GaussianMixture(n_components=nclusts, covariance_type="full")
             labels = clf.fit_predict(all_coords)
             indexes = labels
         except ValueError:
             indexes = [1]
         n_clusters = len(set(indexes))
-        files_out = ["cluster{}_epoch{}_trajectory_{}.{}_{}{}.pdb".format(cluster, epoch, report, int(step),
-                                                                          metric.replace(" ", ""), value) \
-                     for epoch, step, report, value, cluster in zip(epochs, snapshots, file_ids, values, indexes)]
+        files_out = [
+            "cluster{}_epoch{}_trajectory_{}.{}_{}{}.pdb".format(
+                cluster, epoch, report, int(step), metric.replace(" ", ""), value
+            )
+            for epoch, step, report, value, cluster in zip(
+                epochs, snapshots, file_ids, values, indexes
+            )
+        ]
         all_metrics = []
         output_clusters = []
 
         for n_cluster in range(n_clusters - 1):
-            metrics = {value: idx for idx, (value, cluster) in enumerate(zip(values, indexes)) if n_cluster == cluster}
+            metrics = {
+                value: idx
+                for idx, (value, cluster) in enumerate(zip(values, indexes))
+                if n_cluster == cluster
+            }
             out_freq = 1
             cluster_metrics = list(metrics.keys())
             max_idx = metrics[np.min(cluster_metrics)]
@@ -181,18 +302,34 @@ class PostProcessor:
             output_traj = files_out[max_idx]
             input_traj = file_ids[max_idx]
             if not self.topology:
-                bs.extract_snapshot_from_pdb(max_traj, input_traj, output, self.topology, max_snapshot, out_freq,
-                                             output_traj, logger=self.logger)
+                bs.extract_snapshot_from_pdb(
+                    max_traj,
+                    input_traj,
+                    output,
+                    self.topology,
+                    max_snapshot,
+                    out_freq,
+                    output_traj,
+                    logger=self.logger,
+                )
             else:
-                bs.extract_snapshot_from_xtc(max_traj, input_traj, output, self.topology, max_snapshot, out_freq,
-                                             output_traj, logger=self.logger)
+                bs.extract_snapshot_from_xtc(
+                    max_traj,
+                    input_traj,
+                    output,
+                    self.topology,
+                    max_snapshot,
+                    out_freq,
+                    output_traj,
+                    logger=self.logger,
+                )
             all_metrics.append(cluster_metrics)
             output_clusters.append(os.path.join(output, output_traj))
         fig, ax = plt.subplots()
         try:
             ax.boxplot(all_metrics)
         except IndexError:
-            logger.info("Samples to disperse to produce a cluster")
+            self.logger.info("Samples to disperse to produce a cluster")
             return
         ax.set_ylabel(metric)
         ax.set_xlabel("Cluster number")
@@ -211,22 +348,48 @@ class PostProcessor:
                     return False
                 else:
                     return True
-            
 
 
-def analyse_simulation(report_name, traj_name, simulation_path, residue, output_folder=".", cpus=5, clustering=True,
-                       mae=False, nclusts=10, overwrite=False, topology=False, be_column=4, limit_column=6, te_column=3,
-                       logger=None):
+def analyse_simulation(
+    report_name,
+    traj_name,
+    simulation_path,
+    residue,
+    output_folder=".",
+    cpus=5,
+    clustering=True,
+    mae=False,
+    nclusts=10,
+    overwrite=False,
+    topology=False,
+    be_column=4,
+    limit_column=6,
+    te_column=3,
+    logger=None,
+):
     results_folder = os.path.join(output_folder, "results")
     if os.path.exists(results_folder):
         if not overwrite:
             raise ValueError(
-                "Analysis folder {} already exists. Use the option overwrite_analysis: true".format(results_folder))
+                "Analysis folder {} already exists. Use the option overwrite_analysis: true".format(
+                    results_folder
+                )
+            )
         else:
             shutil.rmtree(os.path.join(output_folder, "results"))
-    analysis = PostProcessor(report_name, traj_name, simulation_path, cpus, residue=residue, topology=topology,
-                             be_column=be_column, limit_column=limit_column, te_column=te_column, logger=logger)
-    
+    analysis = PostProcessor(
+        report_name,
+        traj_name,
+        simulation_path,
+        cpus,
+        residue=residue,
+        topology=topology,
+        be_column=be_column,
+        limit_column=limit_column,
+        te_column=te_column,
+        logger=logger,
+    )
+
     metrics = len(list(analysis.data)) - 1  # Discard epoch as metric
     be = analysis.be_column
     total_energy = analysis.te_column
@@ -245,7 +408,9 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
     # Plot metrics
     while current_metric <= metrics - 1:
         try:
-            analysis.plot_two_metrics(total_energy, be, current_metric, output_folder=plots_folder)
+            analysis.plot_two_metrics(
+                total_energy, be, current_metric, output_folder=plots_folder
+            )
             analysis.plot_two_metrics(current_metric, be, output_folder=plots_folder)
 
         except ValueError:
@@ -267,16 +432,25 @@ def analyse_simulation(report_name, traj_name, simulation_path, residue, output_
         top_poses = glob.glob(os.path.join(top_poses_folder, "*"))
         python_file = os.path.join(cs.DIR, "Analysis/to_mae.py")
         for poses in top_poses + clusters:
-            command = "{} {} {} --schr {} {}".format(sch_python, python_file, poses, cs.SCHRODINGER, "--remove")
+            command = "{} {} {} --schr {} {}".format(
+                sch_python, python_file, poses, cs.SCHRODINGER, "--remove"
+            )
             logger.info(command)
             try:
                 subprocess.check_call(command.split())
             except ValueError:
                 raise ValueError(
-                    "Binding energy is not in the default report column (4). Please specify the column by means of the next flag. be_column: N")
+                    "Binding energy is not in the default report column (4). Please specify the column by means of "
+                    "the next flag. be_column: N "
+                )
     plots = glob.glob(os.path.join(plots_folder, "*.png"))
     poses = glob.glob(os.path.join(top_poses_folder, "*"))
     clusters = glob.glob(os.path.join(clusters_folder, "*.png"))
-    report = pr.create_report(plots, clusters, poses, analysis.best_energies,
-                              output=os.path.join(output_folder, "summary_results.pdf"))
+    report = pr.create_report(
+        plots,
+        clusters,
+        poses,
+        analysis.best_energies,
+        output=os.path.join(output_folder, "summary_results.pdf"),
+    )
     return report
