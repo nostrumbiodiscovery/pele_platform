@@ -8,7 +8,7 @@ v1.5.0 (19/06/2020)
 
 - PPI package
 
-- Allosteric package
+- Site finder (pocket exploration) package
 
 - GPCR orthosteric package
 
