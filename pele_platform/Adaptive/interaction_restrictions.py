@@ -1,6 +1,5 @@
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.constants as cs
-import os
 
 
 class InteractionRestrictionsBuilder():
