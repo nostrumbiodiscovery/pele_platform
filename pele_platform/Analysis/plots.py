@@ -192,7 +192,7 @@ class PostProcessor:
         distance_key = "distance0.5"
         if distance_key in poses.columns:
             dist_values = poses[distance_key].tolist()
-            filename_template = "epoch{}_traj{}.{}_BindEner{:.2f}_AtomDist{:.2f}.pdb"
+            filename_template = "{}.{}.{}_BindEner{:.2f}_AtomDist{:.2f}.pdb"
             files_out = [
                 filename_template.format(epoch, report, int(step), value, dist)
                 for epoch, step, report, value, dist in zip(
@@ -200,7 +200,7 @@ class PostProcessor:
                 )
             ]
         else:
-            filename_template = "epoch{}_traj{}.{}_BindEner{:.2f}.pdb"
+            filename_template = "{}.{}.{}_BindEner{:.2f}.pdb"
             files_out = [
                 filename_template.format(epoch, report, int(step), value)
                 for epoch, step, report, value in zip(

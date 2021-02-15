@@ -2,8 +2,9 @@ import os
 import argparse
 import schrodinger.structure as st
 
-####Here because otherwise need to charge helpers with PPP
-####and schrodinger does not have that module
+# Here because otherwise need to charge helpers with PPP and schrodinger does not have that module
+
+
 class cd:
     """Context manager for changing the current working directory"""
 
@@ -21,21 +22,19 @@ class cd:
 def pdb_to_mae(fname, schr_path, mae_output_file=None, remove=False):
     directory = os.path.dirname(fname)
     fname = os.path.basename(fname)
+
     with cd(directory):
-        file_info = fname.split("_")
-        binding_energy = float(
-            file_info[-1].replace("BindEner", "").replace(".pdb", "")
-        )
-        trajectory = int(file_info[-2].replace("traj", "").split(".")[0])
-        snapshot = int(file_info[-2].replace("traj", "").split(".")[1])
-        epoch = int(file_info[0].split("epoch")[-1])
+        file_info = os.path.splitext(fname)[0].split("_")
+        epoch, trajectory, snapshot = [int(a) for a in file_info[0].split(".")]
+        binding_energy, = [float(a.replace("BindEner", "")) for a in file_info if "BindEner" in a]
+
         properties = {
             "BindingEnergy": binding_energy,
             "trajectory": trajectory,
             "snapshot": snapshot,
             "epoch": epoch,
         }
-        title = fname.split("_")
+
         traj = "{}_{}_{}".format(epoch, trajectory, snapshot)
         pele_energy = binding_energy
         cmd = (
