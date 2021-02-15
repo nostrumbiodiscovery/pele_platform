@@ -29,7 +29,7 @@ def test_site_finder_pdb():
         os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")
     )
     nfiles_refinement = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/epoch*"))
+        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/*.pdb"))
     )
     best_energy_input = os.path.join(
         os.path.dirname(job.pele_dir),
@@ -56,7 +56,7 @@ def test_site_finder_xtc():
         os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")
     )
     nfiles_refinement = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/epoch*"))
+        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/*.pdb"))
     )
 
     # checking if all temporary BestStructs (needed to select refinement input) were removed
@@ -85,7 +85,7 @@ def test_site_finder_restart():
         glob.glob(os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb"))
     )
     nfiles_refinement = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/epoch*"))
+        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/*.pdb"))
     )
     # test
     assert nfiles == job.n_components
