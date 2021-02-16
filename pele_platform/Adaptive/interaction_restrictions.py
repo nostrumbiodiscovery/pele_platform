@@ -3,6 +3,12 @@ import pele_platform.constants.constants as cs
 
 
 class InteractionRestrictionsBuilder:
+    '''
+    Base class to generate interaction restrictions
+    1) Parse interaction restrictions block (metrics and conditions)
+    2) Generate json format for pele_template.conf
+    '''
+
     def __init__(self):
         self.metrics = []
         self.conditions = []
