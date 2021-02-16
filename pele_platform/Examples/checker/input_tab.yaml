@@ -1,0 +1,4 @@
+system: '../pele_platform/Examples/site_finder/complex.pdb'	# tab after path
+chain: 'Z'
+resname: 'API'
+debug: true
