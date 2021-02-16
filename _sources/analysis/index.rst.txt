@@ -40,4 +40,4 @@ case we used columns 5 and 6 corresponding to the binding energy and SASA of the
   :width: 400
   :align: center
 
-For more advanced interactive plots, please refer to `PELE++ documentation <https://eapm-bsc.github.io/PELE-repo/intro/GeneralAnalysis/GeneralAnalysis.html>`_.
+For more advanced interactive plots, please refer to `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html>`_.
