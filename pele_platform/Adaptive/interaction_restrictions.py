@@ -1,7 +1,7 @@
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.constants as cs
 
-metrics_config = {
+restrictions_config = {
     "distance": {
         "template": cs.DISTANCE_ATOMS_TAG,
         "description": "distance",
@@ -25,11 +25,13 @@ class InteractionRestrictionsBuilder:
     def parse_interaction_restrictions(self, pdb, constraints_conf):
         for i in range(0, len(constraints_conf)):
             actual = constraints_conf[i]
-            for metric in metrics_config.keys():
-                if metric in actual:
-                    name = metric + str(i)
-                    self._add_metric(pdb, metrics_config[metric], actual["atoms"], name)
-                    self._create_conditions(actual[metric], name)
+            restriction = set(restrictions_config.keys()).intersection(actual.keys())
+            if len(restriction) == 1:
+                id = restriction.pop()
+                name = id + str(i)
+                self._add_metric(pdb, restrictions_config[id], actual["atoms"], name)
+                self._create_conditions(actual[id], name)
+
 
     def conditions_to_json(self):
         return cs.INTERACTION_RESTRICTIONS.format('",\n\t"'.join(self.conditions))
@@ -49,7 +51,7 @@ class InteractionRestrictionsBuilder:
             )
         atoms = []
         for i in range(num_atoms):
-            atoms.append(hp.retrieve_atom_info(values[i - 1], pdb))
+            atoms.append(hp.retrieve_atom_info(values[i], pdb))
         self.metrics.append(config["template"].format(name, *atoms))
 
     def _create_conditions(self, values, name):

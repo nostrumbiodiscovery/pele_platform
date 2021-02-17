@@ -83,12 +83,12 @@ DISTANCE_ATOMS =     '''
 DISTANCE_ATOMS_TAG = '''
                      {{
                      "type":"com_distance",
-                     "tag":"{2}",
+                     "tag":"{0}",
                      "selection_group_1":{{
-                     "atoms": {{ "ids":["{0}"]}}
+                     "atoms": {{ "ids":["{1}"]}}
                      }},
                      "selection_group_2":{{
-                     "atoms": {{ "ids":["{1}"]}}
+                     "atoms": {{ "ids":["{2}"]}}
                      }}
                      }},
                      '''
@@ -96,15 +96,15 @@ DISTANCE_ATOMS_TAG = '''
 ANGLE_ATOMS_TAG = '''
                      {{
                      "type":"atomsAngle",
-                     "tag":"{3}",
+                     "tag":"{0}",
                      "selection_group_1":{{
-                     "atoms": {{ "ids":["{0}"]}}
-                     }},
-                     "selection_group_2":{{
                      "atoms": {{ "ids":["{1}"]}}
                      }},
-                     "selection_group_3":{{
+                     "selection_group_2":{{
                      "atoms": {{ "ids":["{2}"]}}
+                     }},
+                     "selection_group_3":{{
+                     "atoms": {{ "ids":["{3}"]}}
                      }}
                      }},
                      '''
