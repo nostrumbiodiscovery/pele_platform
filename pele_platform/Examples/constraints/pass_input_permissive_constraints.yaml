@@ -6,3 +6,4 @@ induced_fit_fast: true
 permissive_metal_constr: true
 test: true
 traj: trajectory.xtc
+debug: true
