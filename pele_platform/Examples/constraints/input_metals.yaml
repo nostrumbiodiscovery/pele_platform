@@ -4,3 +4,4 @@ resname: 'LIG'
 seed: 12345
 allosteric: true
 test: true
+debug: true
