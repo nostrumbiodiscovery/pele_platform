@@ -1,7 +1,7 @@
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.constants as cs
 
-restrictions_config = {
+RESTRICTIONS_CONFIG = {
     "distance": {
         "template": cs.DISTANCE_ATOMS_TAG,
         "description": "distance",
@@ -9,6 +9,9 @@ restrictions_config = {
     },
     "angle": {"template": cs.ANGLE_ATOMS_TAG, "description": "angle", "num_elems": 3},
 }
+"""
+Configuration of valid metrics for restrictions
+"""
 
 
 class InteractionRestrictionsBuilder:
@@ -25,11 +28,11 @@ class InteractionRestrictionsBuilder:
     def parse_interaction_restrictions(self, pdb, constraints_conf):
         for i in range(0, len(constraints_conf)):
             actual = constraints_conf[i]
-            restriction = set(restrictions_config.keys()).intersection(actual.keys())
+            restriction = set(RESTRICTIONS_CONFIG.keys()).intersection(actual.keys())
             if len(restriction) == 1:
                 id = restriction.pop()
                 name = id + str(i)
-                self._add_metric(pdb, restrictions_config[id], actual["atoms"], name)
+                self._add_metric(pdb, RESTRICTIONS_CONFIG[id], actual["atoms"], name)
                 self._create_conditions(actual[id], name)
 
 
