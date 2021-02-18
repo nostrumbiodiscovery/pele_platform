@@ -77,7 +77,13 @@ def test_get_coords_from_line(line, expected_output):
 
 
 @pytest.mark.parametrize(
-    ("atom_number", "expected_output"), [(428, ["A:40:CA"]), (7715, ["Z:201:C1"])]
+    ("atom_number", "expected_output"),
+    [
+        (428, ["A:40:CA"]),
+        (7715, ["Z:201:C1"]),
+        ("A:40:CA", ["A:40:CA"]),
+        ([7715, "Z:201:C1"], ["Z:201:C1", "Z:201:C1"]),
+    ],
 )
 def test_atom_number_to_atom_string(atom_number, expected_output):
 
