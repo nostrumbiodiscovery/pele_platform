@@ -35,7 +35,6 @@ class InteractionRestrictionsBuilder:
                 self._add_metric(pdb, RESTRICTIONS_CONFIG[id], actual["atoms"], name)
                 self._create_conditions(actual[id], name)
 
-
     def conditions_to_json(self):
         return cs.INTERACTION_RESTRICTIONS.format('",\n\t"'.join(self.conditions))
 
