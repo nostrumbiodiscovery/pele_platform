@@ -47,8 +47,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pele platform'
-copyright = '2020, Daniel Soler Viladrich'
-author = 'Daniel Soler Viladrich'
+copyright = '2021, NBD | Nostrum Biodiscovery'
+author = 'Nostrum Biodiscovery'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
