@@ -2,12 +2,11 @@ from dataclasses import dataclass
 import numpy as np
 import os
 import pandas as pd
-
-from pele_platform.Utilities.Helpers import bestStructs as bs
-from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last, parallelize
-from pele_platform.Analysis.plots import _extract_coords
+from pele_platform.Utilities.Helpers.helpers import cd, is_repeated, is_last, parallelize
+import pele_platform.Utilities.Helpers.bestStructs as bs
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
+from pele_platform.Analysis.plots import _extract_coords
 
 
 @dataclass
@@ -40,7 +39,7 @@ class AllostericLauncher:
         self.original_dir = os.path.abspath(os.getcwd())
         working_folder = os.path.abspath("{}_Pele".format(self.args.residue))
         if not self.args.folder:
-            self.working_folder = is_repited(working_folder) if not self.args.adaptive_restart else is_last(
+            self.working_folder = is_repeated(working_folder) if not self.args.adaptive_restart else is_last(
                 working_folder)
         else:
             self.working_folder = os.path.abspath(self.args.folder)
@@ -127,7 +126,6 @@ class AllostericLauncher:
     def _launch_refinement(self):
 
         with cd(self.original_dir):
-        #with cd(self.working_folder):
             if not self.args.debug:
                 sim_params = si.run_adaptive(self.args)
             else:

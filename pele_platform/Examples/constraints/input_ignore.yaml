@@ -7,3 +7,4 @@ external_constraints:
 - "50-2.34-A:2002:MG-A:2005:S"
 test: true
 traj: trajectory.xtc
+debug: true

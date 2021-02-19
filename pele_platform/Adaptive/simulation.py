@@ -2,6 +2,8 @@ import os
 import shutil
 import AdaptivePELE.adaptiveSampling as adt
 import PPP.main as ppp
+
+from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
 from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Parameters.pele_env as pele
 import pele_platform.Utilities.Helpers.constraints as ct
@@ -175,7 +177,10 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         water_obj.run()
         env.parameters = water_obj.ligand_perturbation_params
 
-        #metrics
+        # Check if atoms need mapping due to preprocessing
+        args = AtomMapper(args, env, syst.system).run()
+
+        # metrics
         metrics = mt.MetricBuilder()
         if args.atom_dist:
             env.metrics = metrics.distance_to_atom_json(env.system, args.atom_dist)
