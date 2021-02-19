@@ -74,7 +74,6 @@ def sdf_to_pdb(file_list, path, logger, tmpdirname):
         # ~~~ If it's stupid but it works (?), it isn't stupid. ~~~
         
         # read in PDB file created by Schrodinger, substitute residue name and add chain ID
-        out = []
         for c in converted_pdb:
             with open(c, "r") as fin:
                 lines = fin.readlines()
