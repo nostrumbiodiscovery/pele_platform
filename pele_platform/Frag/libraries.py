@@ -107,7 +107,7 @@ def sdf_to_pdb(file_list, path, logger, tmpdirname):
             with open(c, "w") as fout:
                 for line in new_lines:
                     fout.write(line)
-            out = converted_pdb
+        out = converted_pdb
     return out
 
 def get_library(frag_library):
