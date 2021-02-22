@@ -1,13 +1,33 @@
 import glob
 import os
 import subprocess
-import tempfile
 import shutil
+import tempfile
 
 from pele_platform.constants import constants as cs
 import pele_platform.Utilities.Helpers.helpers as hp
 
 OUTPUT = "input.conf"
+
+
+def getSymmetryGroups(mol):
+    """
+    Computes the symmetry class for each atom and returns a list with the idx of non-symmetric atoms.
+    """
+    rank = {} 
+    symmetryList=[] 
+    symmetryRankList=[]
+    counter=0
+    # For each atom we store its index and its symmetry class.
+    for atom in mol.GetAtoms():
+        rank[atom.GetIdx()] = list(Chem.CanonicalRankAtoms(mol,breakTies=False))[counter]
+        counter += 1
+    # Finally we store in a list an atom index for each symettry class, in order to not have two atoms of the same symmetry class.
+    for idx, symmetryRank in rank.items():
+        if symmetryRank not in symmetryRankList:
+            symmetryRankList.append(symmetryRank)
+            symmetryList.append(idx)
+    return symmetryList
 
 def growing_sites(fragment, user_bond):
     """
@@ -18,22 +38,23 @@ def growing_sites(fragment, user_bond):
         from rdkit import Chem
 
     bonds = []
+    rank = {}
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
-    
+    symmetryList = getSymmetryGroups(mol)
     if mol:
         heavy_atoms = [a for a in mol.GetAtoms() if a.GetSymbol() != "H"]
         for a in heavy_atoms:
-            hydrogens = [n for n in a.GetNeighbors() if n.GetSymbol() == "H"]
+            hydrogens = [n for n in a.GetNeighbors() if n.GetSymbol() == "H" and n.GetIdx() in symmetryList]
             at_name = a.GetMonomerInfo().GetName().strip()
             for h in hydrogens:
                 h_name = h.GetMonomerInfo().GetName().strip()
                 bonds.append("{} {} {}-{}".format(fragment, user_bond, at_name, h_name))
-
     return bonds
 
-
 def sdf_to_pdb(file_list, path, logger, tmpdirname):
+
     out = []
+
     if file_list:
         converted_mae = []
         output = []
@@ -42,6 +63,7 @@ def sdf_to_pdb(file_list, path, logger, tmpdirname):
         schrodinger_path = os.path.join(cs.SCHRODINGER, "utilities/structconvert")
         command_mae = "{} -isd {} -omae {}"
         command_pdb = "{} -imae {} -opdb {}"
+
         for f in file_list:
             shutil.copy(f,tmpdirname)
             fout = os.path.splitext(os.path.basename(f))[0] + ".mae"
@@ -58,6 +80,7 @@ def sdf_to_pdb(file_list, path, logger, tmpdirname):
             shutil.move(c,tmpdirname)
             c = tmpdirname + '/' + c
             fout = c.replace(".mae",".pdb")
+            
             try:
                 command_pdb = command_pdb.format(schrodinger_path, c, fout)
                 subprocess.call(command_pdb.split())
