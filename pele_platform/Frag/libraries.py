@@ -4,6 +4,7 @@ import subprocess
 import shutil
 import tempfile
 
+from rdkit import Chem
 from pele_platform.constants import constants as cs
 import pele_platform.Utilities.Helpers.helpers as hp
 
@@ -18,11 +19,11 @@ def getSymmetryGroups(mol):
     symmetryList=[] 
     symmetryRankList=[]
     counter=0
-    # For each atom we store its index and its symmetry class.
+    
     for atom in mol.GetAtoms():
         rank[atom.GetIdx()] = list(Chem.CanonicalRankAtoms(mol,breakTies=False))[counter]
         counter += 1
-    # Finally we store in a list an atom index for each symettry class, in order to not have two atoms of the same symmetry class.
+    
     for idx, symmetryRank in rank.items():
         if symmetryRank not in symmetryRankList:
             symmetryRankList.append(symmetryRank)
@@ -36,7 +37,6 @@ def growing_sites(fragment, user_bond):
     """
     if hp.is_rdkit():
         from rdkit import Chem
-
     bonds = []
     rank = {}
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
@@ -104,7 +104,7 @@ def sdf_to_pdb(file_list, path, logger, tmpdirname):
             new_lines = [l.replace("UNK", "GRW") for l in new_lines if "UNK" in l]
             new_lines = [l[:21]+"L"+l[22:] for l in new_lines]
 
-            with open(c, "r+") as fout:
+            with open(c, "w") as fout:
                 for line in new_lines:
                     fout.write(line)
             out = converted_pdb
