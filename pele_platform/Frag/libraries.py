@@ -35,10 +35,7 @@ def growing_sites(fragment, user_bond):
     Retrieves all possible growing sites (hydrogens) on the fragment. Takes PDB fragment file as input.
     Output - list of strings represeting sites, e.g. "benzene.pdb C6-H6 C1-H2"
     """
-    if hp.is_rdkit():
-        from rdkit import Chem
     bonds = []
-    rank = {}
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
     symmetryList = getSymmetryGroups(mol)
     if mol:
