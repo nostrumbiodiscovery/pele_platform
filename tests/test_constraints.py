@@ -90,13 +90,13 @@ def test_ca_constraints_builder(
     """
     Test the alpha carbon constraint builder with various parameters.
     """
-    obj = constraints.ConstraintBuilder(
+    obj = constraints.AlphaConstraints(
         os.path.join(test_path, "constraints/ca_constraints.pdb"),
         interval=interval,
         backbone_spring=backbone_spring,
         terminal_spring=terminal_spring,
     )
-    obj.create_constraints()
+    obj.build_constraints()
 
     assert obj.terminal_constraints == expected_ter_lines
 
