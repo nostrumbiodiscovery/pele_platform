@@ -32,7 +32,7 @@ def test_water(yaml=yaml):
     job = main.run_platform(yaml)
 
     # checkpoints
-    output = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/epoch0_trajectory_1.0*"))[0]
+    output = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/0.1.0*"))[0]
 
     with open(output, "r") as file:
         lines = file.readlines()

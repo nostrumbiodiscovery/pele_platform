@@ -1,0 +1,5 @@
+system:'../pele_platform/Examples/Allosteric/complex.pdb'  # missing space after colon
+chain: 'Z'
+resname: 'API'
+seed: 12345
+debug: true
