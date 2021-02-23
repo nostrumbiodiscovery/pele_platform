@@ -14,7 +14,10 @@ CONSTR_DIST = """{{ "type": "constrainAtomsDistance", "springConstant": {}, "equ
 CONSTR_CALPHA = """{{ "type": "constrainAtomToPosition", "springConstant": {2}, "equilibriumDistance": 0.0, "constrainThisAtom": "{0}:{1}:_CA_" }},"""
 
 
-class ConstraintBuilder(object):
+class AlphaConstraints(object):
+    """
+    Class to parse alpha carbons in the PDB file and constrain them according to the user-defined settings.
+    """
     def __init__(self, pdb, interval, backbone_spring, terminal_spring):
         self.pdb = pdb
         self.interval = interval
@@ -24,12 +27,37 @@ class ConstraintBuilder(object):
         self.interval_residues = self._apply_interval()
         self.gaps = self.find_gaps()
 
-    def create_constraints(self):
+    def build_constraints(self):
+        """
+        Run the whole carbon alpha constraints pipeline, including terminals, gaps and interval backbone.
+
+        Returns:
+            A list of string constraints ready to be injected into the PELE configuration file.
+        """
         return self.constraints
+
+    @staticmethod
+    def add_constraints(chain, resnum, spring=0.5):
+        """
+        Allow the user to create their own constraints by passing chain, residue number and spring constant.
+
+        Args:
+            chain (str): chain ID, e.g. "B"
+            resnum (str of int): residue number, e.g. 123
+            spring (Union[int, float], default=0.5: spring constant to constrain the atom.
+
+        Returns:
+            A string to constrain selected carbon alpha with user-defined spring value.
+        """
+        return CONSTR_CALPHA.format(chain, resnum, spring)
 
     def get_all_residues(self):
         """
-        Retrieves all alpha carbons in the protein.
+        Scans the protein and retrieves all alpha carbons.
+
+        Returns:
+            A dictionary of carbons where chain ID is the key and values are a list of residue numbers,
+            e.g. {'A': [1, 2, 3]}.
         """
         output = defaultdict(list)
 
@@ -57,7 +85,11 @@ class ConstraintBuilder(object):
 
     def _apply_interval(self):
         """
-        Takes a list of all alpha carbons and returns only the ones that satisfy the interval requirement.
+        Takes a dict of all alpha carbons and returns only the ones that satisfy the interval requirement.
+
+        Returns:
+            An amended dictionary of backbone residues where chain ID is the key and values are a list of residue
+            numbers
         """
         output = defaultdict(list)
 
@@ -72,17 +104,26 @@ class ConstraintBuilder(object):
 
     def find_gaps(self):
         """
-        Finds gaps in the protein chain based on the distance between N of the current residue and the
-        C of the previous one, uses PPP.
+        Scans all residues in the protein and checks whether the N of the current residue and the C of the previous one
+        are within peptide bond distance (1.50 A) in order to find any gaps in the backbone.
+
+        Returns:
+            Two dictionaries, first one containing the residues involved in the gaps, second one with all the remaining
+            residues. Each of them has the chain as key and the residues numbers (previous, current) involved in a bond
+            as values.
         """
         structure = parsePDB(self.pdb)
-        output, _ = CheckforGaps(structure, 1.55)
-        return output
+        gaps, no_gaps = CheckforGaps(structure, 1.50)
+        return gaps
 
     @property
     def constraints(self):
         """
         Fills out the constrain templates and makes sure the final output generates a valid JSON.
+
+        Returns:
+            A list of string constraints (backbone, gaps and terminal) ready to be injected into the PELE configuration
+            file (pele.conf).
         """
         json_start = [
             """"constraints":[""",
@@ -109,7 +150,8 @@ class ConstraintBuilder(object):
         Constrains the first and the last residue's carbon alpha in each chain with the default
         terminal_spring_constant.
 
-        output: List[str] - constraints lines ready to be injected into JSON
+        Returns:
+            A list of carbon alpha (CA) constraints on the terminals.
         """
         output = []
 
@@ -130,7 +172,10 @@ class ConstraintBuilder(object):
     @property
     def gaps_constraints(self):
         """
-        Constraints all gaps.
+        Constraints terminal CAs of any gaps detected in the protein.
+
+        Returns:
+            A list of gap constraints.
         """
         gaps_constr = []
         for chain, residues in self.gaps.items():
@@ -145,6 +190,9 @@ class ConstraintBuilder(object):
     def backbone_constraints(self):
         """
         Constraints all alpha carbons extracted earlier.
+
+        Returns:
+            A list of backbone constraints at a specified interval (omitting the terminal CAs).
         """
         output = []
 
@@ -166,6 +214,17 @@ def retrieve_constraints(
         back_constr=backbone_constr_spring,
         ter_constr=terminal_constr_spring,
 ):
-    constr = ConstraintBuilder(pdb_file, interval, back_constr, ter_constr)
-    constraints = constr.create_constraints()
+    """
+    Runs the full AlphaConstraints pipeline to return a list of constraints ready to inject into JSON.
+    Args:
+        pdb_file (str): PDB file with the protein
+        interval (int): interval at which the backbone CAs are supposed to be constrained
+        back_constr (Union[float, int]): spring constant for the backbone constraints
+        ter_constr (Union[float, int]):  spring constant for the terminal constraints
+
+    Returns:
+        A list of string constraints ready to be injected into the PELE configuration file.
+    """
+    constr = AlphaConstraints(pdb_file, interval, back_constr, ter_constr)
+    constraints = constr.build_constraints()
     return constraints
