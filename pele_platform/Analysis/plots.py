@@ -192,7 +192,7 @@ class PostProcessor:
         try:
             ax.boxplot(all_metrics)
         except IndexError:
-            logger.info("Samples to disperse to produce a cluster")
+            self.logger.info("Samples to disperse to produce a cluster")
             return
         ax.set_ylabel(metric)
         ax.set_xlabel("Cluster number")

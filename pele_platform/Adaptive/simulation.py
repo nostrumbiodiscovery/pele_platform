@@ -6,8 +6,7 @@ import PPP.main as ppp
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
 from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Parameters.pele_env as pele
-import pele_platform.Utilities.Helpers.alpha_constraints as alpha_constraints
-import pele_platform.constants.constants as cs
+import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.missing_residues as mr
@@ -15,7 +14,7 @@ import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
-import pele_platform.Utilities.Helpers.smiles_constraints as smi
+import pele_platform.Utilities.Helpers.constraints.smiles_constraints as smiles_constraints
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
@@ -158,7 +157,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         # Core constraints based on SMILES string
         if env.constrain_core:
             smiles_input_pdb = os.path.join(env.pele_dir, env.adap_ex_input.split(",")[0])
-            smiles = smi.SmilesConstraints(smiles_input_pdb, env.constrain_core, env.residue, env.chain, env.constrain_core_spring)
+            smiles = smiles_constraints.SmilesConstraints(smiles_input_pdb, env.constrain_core, env.residue, env.chain, env.constrain_core_spring)
             smi_constraint = smiles.run()
             env.constraints = env.constraints[0:1] + smi_constraint + env.constraints[1:]
         

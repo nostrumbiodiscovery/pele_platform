@@ -2,7 +2,7 @@ import os
 import pytest
 
 import pele_platform.constants.constants as constants
-import pele_platform.Utilities.Helpers.alpha_constraints as alpha_constraints
+import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 from pele_platform import main
 from . import test_adaptive as ta
 
