@@ -2,7 +2,7 @@ import os
 import pytest
 
 import pele_platform.constants.constants as constants
-import pele_platform.Utilities.Helpers.constraints as constraints
+import pele_platform.Utilities.Helpers.alpha_constraints as alpha_constraints
 from pele_platform import main
 from . import test_adaptive as ta
 
@@ -60,7 +60,7 @@ custom_ter_lines = [
 )
 def test_ca_constraints_production(input_yaml):
     """
-    Tests backbone and terminal constraints in debug mode, both with and without PPP preprocessing.
+    Tests backbone and terminal alpha_constraints in debug mode, both with and without PPP preprocessing.
     """
     errors = []
     job = main.run_platform(input_yaml)
@@ -90,7 +90,7 @@ def test_ca_constraints_builder(
     """
     Test the alpha carbon constraint builder with various parameters.
     """
-    obj = constraints.AlphaConstraints(
+    obj = alpha_constraints.AlphaConstraints(
         os.path.join(test_path, "constraints/ca_constraints.pdb"),
         interval=interval,
         backbone_spring=backbone_spring,

@@ -6,7 +6,7 @@ import PPP.main as ppp
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
 from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Parameters.pele_env as pele
-import pele_platform.Utilities.Helpers.constraints as ct
+import pele_platform.Utilities.Helpers.alpha_constraints as alpha_constraints
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.system_prep as sp
@@ -111,7 +111,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             env.nonstandard.extend(hp.find_nonstd_residue(syst.system))
             env.system, missing_residues, _, _, _ = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=None, ligand_pdb=env.ligand_ref, ca_interval=env.ca_interval)
 
-        env.constraints = ct.retrieve_constraints(env.system, interval=env.ca_interval, back_constr=env.ca_constr)
+        env.constraints = alpha_constraints.retrieve_constraints(env.system, interval=env.ca_interval, back_constr=env.ca_constr)
 
         # Metal constraints
         if not args.no_metal_constraints:
