@@ -1,4 +1,4 @@
-import pele_platform.Utilities.Helpers.alpha_constraints as alpha_constraints
+import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 import pele_platform.constants.constants as cs
 
 

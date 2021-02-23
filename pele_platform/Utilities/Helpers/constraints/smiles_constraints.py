@@ -13,6 +13,7 @@ class SmilesConstraints:
     spring_constant: float = 50.0
 
     def run(self):
+        from rdkit import Chem
         self.smarts = self.convert_to_smarts(self.constrain_core)
         self.ligand = self.extract_ligand(self.input_pdb, self.resname)
         self.substructures = self.get_matches(self.smarts, self.ligand)

@@ -1,6 +1,5 @@
 from collections import defaultdict
 from prody.proteins.pdbfile import parsePDB
-
 import pele_platform.constants.constants as constants
 import pele_platform.Utilities.Helpers.map_atoms as map_atoms
 from PPP.checks_module import CheckforGaps
