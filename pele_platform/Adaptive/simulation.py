@@ -273,11 +273,10 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         water_obj.run()
         env.parameters = water_obj.ligand_perturbation_params
 
-        # Metrics builder - RMSD PDB, atom_dist
         # Check if atoms need mapping due to preprocessing
         args = AtomMapper(args, env, syst.system).run()
 
-        # metrics
+        # Metrics builder - builds JSON strings for PELE to be able to track atom distances, RMSD, etc.
         metrics = mt.MetricBuilder()
         env.metrics = metrics.distance_to_atom_json(env.system, args.atom_dist) if args.atom_dist else ""
         env.native = metrics.rsmd_to_json(args.native, env.chain) if args.native else ""

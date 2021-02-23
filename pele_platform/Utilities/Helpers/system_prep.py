@@ -69,7 +69,7 @@ class SystemBuilder(object):
 
         if not receptor_text or not ligand_text:
             raise ValueError(
-                "The ligand_pdb was not properly created check your mae file"
+                "The ligand_pdb was not properly created. Check your MAE file."
             )
 
         complex_content.extend(receptor_text + ["TER\n"] + ligand_text + ["END"])

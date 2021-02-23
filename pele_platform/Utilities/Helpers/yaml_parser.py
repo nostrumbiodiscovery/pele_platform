@@ -7,6 +7,10 @@ import warnings
 
 
 def _yaml_error_wrapper(error):
+    """
+    Wraps YAML errors into a more human-friendly format, making customs suggestions about potential issues.
+    This should be expanded in the future when more issues get reported by the users.
+    """
     custom_errors = {
         "expected '<document start>', but found '<block mapping start>'": "Please ensure every key in input.yaml is "
         "followed by a colon and "
