@@ -15,7 +15,6 @@ from pele_platform.Utilities.Helpers import smiles_constraints as smi
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
-PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
 ATOM_GPCR_ERROR_ARGS = os.path.join(test_path, "gpcr/input_atom_error.yaml")
@@ -28,12 +27,6 @@ EXT_CONSTR = [
     '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"}'
 ]
 
-PPP_CONSTR = [
-    '"constrainThisAtom": "B:207:_CA_" }',
-    '"constrainThisAtom": "A:1:_CA_" }',
-    '"constrainThisAtom": "B:247:_CA_" }'
-]
-
 SMILES_CONSTR = [
         '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C7_" },',
         '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N1_" },',
@@ -41,9 +34,9 @@ SMILES_CONSTR = [
         '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C2_" },',
         '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N2_" },',
         '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C3_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',                                                         
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',                                                           
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',                                                           
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',
         '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },'
 ]
 
@@ -51,13 +44,6 @@ def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
     job = main.run_platform(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
-    assert not errors
-
-
-def test_ppp_constraints(ext_args=PPP_CONSTR_ARGS):
-    errors = []
-    job = main.run_platform(ext_args)
-    errors = tk.check_file(job.pele_dir, "pele.conf", PPP_CONSTR, errors)
     assert not errors
 
 
@@ -208,7 +194,7 @@ def test_rotamer_error(yaml=yaml):
     assert False
 
 
-yaml = os.path.join(test_path, "out_in/input_flag_error.yaml") 
+yaml = os.path.join(test_path, "out_in/input_flag_error.yaml")
 def test_out_in_flag(yaml=yaml):
     try:
         job = main.run_platform(yaml)
@@ -218,7 +204,7 @@ def test_out_in_flag(yaml=yaml):
     assert False
 
 
-yaml = os.path.join(test_path, "checker/input_atom_string.yaml") 
+yaml = os.path.join(test_path, "checker/input_atom_string.yaml")
 def test_atom_string_error(yaml=yaml):
     try:
         job = main.run_platform(yaml)

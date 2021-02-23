@@ -150,8 +150,17 @@ water_H1 = "HETATM {}  1HW HOH {}{:>4}     {}  1.00  0.00           H\n"
 water_H2 = "HETATM {}  2HW HOH {}{:>4}     {}  1.00  0.00           H\n"
 water = [water_O, water_H1, water_H2]
 
+# Amino acids
+AMINO_ACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
+              "SER", "ASP", "LYS", "MET", "GLN",
+              "TRP", "ARG", "ALA", "THR", "PRO",
+              "PHE", "GLU", "HIS", "HIP", "TYR",
+              "CYS", "HID"]
 
-# METALS
+# Nucleotides
+NUCLEOTIDES = ["G", "U", "A", "C"]
+
+# Metals
 metals = ['LI', 'BE', 'NA', 'MG', 'AL', 'K', 'CA', 'SC', 'TI', 'V', 'CR', 'MN', 'FE', 'CO', 'NI', 'CU', 'ZN', 'GA', 'RB', 'SR', 'Y', 'ZR', 'NB', 'MO', 'TC', 'RU', 'RH', 'PD', 'AG', 'CD', 'IN', 'SN', 'CS', 'BA', 'LA', 'CE', 'PR', 'ND', 'PM', 'SM', 'EU', 'GD', 'TB', 'DY', 'HO', 'ER', 'TM', 'YB', 'LU', 'HF', 'TA', 'W', 'RE', 'OS', 'IR', 'PT', 'AU', 'HG', 'TL', 'PB', 'BI', 'PO', 'FR', 'RA', 'AC', 'TH', 'PA', 'U', 'NP', 'PU', 'AM', 'CM', 'BK', 'CF', 'ES', 'FM', 'MD', 'NO', 'LR', 'RF', 'DB', 'SG', 'BH', 'HS', 'MT', 'DS', 'RG', 'CN', 'NH', 'FL', 'MC', 'LV']
 
 # FLAGS WITH ATOM STRINGS

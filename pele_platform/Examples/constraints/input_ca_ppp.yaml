@@ -1,0 +1,5 @@
+system: '../pele_platform/Examples/constraints/ca_constraints.pdb'
+chain: 'Z'
+resname: 'LIG'
+rescoring: true
+debug: true
