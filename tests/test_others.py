@@ -1,4 +1,5 @@
 import os
+import pytest
 from subprocess import Popen, PIPE
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
