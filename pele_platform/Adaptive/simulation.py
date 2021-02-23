@@ -101,9 +101,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
         # Prepare System
         if env.no_ppp:
             missing_residues = []
-            gaps = {}
-            metals = {}
-            env.constraints = ct.retrieve_constraints(env.system, gaps, metals, back_constr=env.ca_constr, interval=env.ca_interval)
             if env.input:
                 # If we have more than one input
                 for input in env.input:
@@ -112,7 +109,9 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                 shutil.copy(env.system, env.pele_dir)
         else:
             env.nonstandard.extend(hp.find_nonstd_residue(syst.system))
-            env.system, missing_residues, gaps, metals, env.constraints = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=None, ligand_pdb=env.ligand_ref, ca_interval=env.ca_interval)
+            env.system, missing_residues, _, _, _ = ppp.main(syst.system, env.pele_dir, output_pdb=["" , ], charge_terminals=args.charge_ter, no_gaps_ter=args.gaps_ter, mid_chain_nonstd_residue=env.nonstandard, skip=env.skip_prep, back_constr=env.ca_constr, constrain_smiles=None, ligand_pdb=env.ligand_ref, ca_interval=env.ca_interval)
+
+        env.constraints = ct.retrieve_constraints(env.system, interval=env.ca_interval, back_constr=env.ca_constr)
 
         # Metal constraints
         if not args.no_metal_constraints:
@@ -128,7 +127,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             env.constraints = env.constraints[0:1] + env.external_constraints + env.constraints[1:]
         if env.remove_constraints:
             env.constraints = ""
-        env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
         env.logger.info("Complex {} prepared\n\n".format(env.system))
 
         # Ligand parameters and simulation box
