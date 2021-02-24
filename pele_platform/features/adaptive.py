@@ -68,7 +68,7 @@ def retrieve_software_settings(args, pele_dir):
                 "simulation_type": "pele",
                 "iterations": 100,
                 "pele_steps": 8,
-                "cluster_values": "[2.5, 5, 7]",
+                "cluster_values": "[2.0, 5, 7]",
                 "cluster_conditions": "[1, 0.6, 0.0]",
                 "steric_trials": 200,
                 "overlap_factor": 0.65,

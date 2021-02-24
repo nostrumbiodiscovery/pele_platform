@@ -8,13 +8,12 @@ from . import test_adaptive as tk
 import pele_platform.Utilities.Helpers.protein_wizard as pp
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
-import pele_platform.Checker.main as mn
-from pele_platform.Utilities.Helpers import smiles_constraints as smi
+from pele_platform.Utilities.Helpers.constraints import smiles_constraints as smi
 
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(
-    test_path, "constraints/input_external_constraints.yaml"
+    test_path, "constraints/input_external_constraints.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
 ATOM_GPCR_ERROR_ARGS = os.path.join(test_path, "gpcr/input_atom_error.yaml")
