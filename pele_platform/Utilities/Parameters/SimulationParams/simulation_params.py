@@ -20,7 +20,7 @@ class SimulationParams(
     bias_params.BiasParams,
     inout_params.InOutParams,
     pca.PCAParams,
-    allosteric.AllostericParams,
+    site_finder.SiteFinderParams,
     ppi.PPIParams,
     site_finder.SiteFinderParams
 ):
