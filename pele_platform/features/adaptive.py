@@ -56,8 +56,8 @@ def retrieve_software_settings(args, pele_dir):
                 "bias_column": 6,
                 "params": pcs.GPCR_ORTH,
                 "box_radius": 15,
-                "ca_constraint": 5.0,
-                "terminal_constraint": 5.0,
+                "ca_constr": 5.0,
+                "terminal_constr": 5.0,
                 "ca_interval": 5,
             },
             "global": {
@@ -156,8 +156,8 @@ def retrieve_software_settings(args, pele_dir):
                 "temperature": 1000,
                 "anm_displacement": 0.5,
                 "anm_modes_change": 3,
-                "ca_constraint": 2.5,
-                "terminal_constraint": 5.0,
+                "ca_constr": 2.5,
+                "terminal_constr": 5.0,
                 "ca_interval": 8,
             },
             "anm": {

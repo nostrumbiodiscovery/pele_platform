@@ -185,8 +185,13 @@ FOURTH_RESTART = ["all", "adaptive", "pele", "msm"]
 DIR = os.path.dirname(os.path.dirname(__file__))
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
 
-#MESSAGES&ERRORS
+# MESSAGES & ERRORS
 #-----------------
 
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
 SYSTEM = "\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"
+
+constraint_levels = {0: {"ca_constr": 0.0, "terminal_constr": 0.0, "ca_interval": 0},
+                     1: {"ca_constr": 0.5, "terminal_constr": 5.0, "ca_interval": 10},
+                     2: {"ca_constr": 2.5, "terminal_constr": 5.0, "ca_interval": 8},
+                     3: {"ca_constr": 5.0, "terminal_constr": 5.0, "ca_interval": 5}}
