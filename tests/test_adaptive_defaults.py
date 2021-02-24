@@ -95,7 +95,11 @@ REF_DEFAULTS_PELE = [
     '"temperature": 1000',
     '"displacementFactor" : 0.5',
     '"modesChangeFrequency" : 3,',
-    pp.RESCORING
+    pp.RESCORING,
+    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:251:_CA_" }',
+    '{ "type": "constrainAtomToPosition", "springConstant": 2.5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:9:_CA_" }',
+    '{ "type": "constrainAtomToPosition", "springConstant": 2.5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:17:_CA_" }',
 ]
 
 EXIT_DEFAULTS_ADAPTIVE = [
@@ -155,7 +159,11 @@ GPCR2_DEFAULTS_PELE = [
      '"radius": 10,',
      '"fixedCenter": [10,10,10]',
      '"numberOfStericTrials": 100,',
-     pp.GPCR_ORTH
+     pp.GPCR_ORTH,
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:65:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:70:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:60:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:347:_CA_" }'
 ]
 
 

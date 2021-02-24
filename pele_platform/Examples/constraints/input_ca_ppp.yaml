@@ -1,5 +1,5 @@
 system: '../pele_platform/Examples/constraints/ca_constraints.pdb'
 chain: 'Z'
 resname: 'LIG'
-rescoring: true
+induced_fit_fast: true
 debug: true

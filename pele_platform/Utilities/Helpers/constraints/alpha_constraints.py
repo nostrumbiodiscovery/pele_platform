@@ -153,7 +153,6 @@ class AlphaConstraints(object):
             A list of carbon alpha (CA) constraints on the terminals.
         """
         output = []
-
         for chain, residue_numbers in self.residues.items():
             output.append(
                 CONSTR_CALPHA.format(
