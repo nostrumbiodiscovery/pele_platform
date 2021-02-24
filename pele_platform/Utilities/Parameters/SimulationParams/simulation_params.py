@@ -7,7 +7,7 @@ from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glid
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
-from pele_platform.Utilities.Parameters.SimulationParams.Allosteric import allosteric
+from pele_platform.Utilities.Parameters.SimulationParams.site_finder import site_finder
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 import pele_platform.Utilities.Helpers.helpers as hp
 
@@ -22,7 +22,7 @@ class SimulationParams(
     pca.PCAParams,
     allosteric.AllostericParams,
     ppi.PPIParams,
-):  # rna.RNAParams
+):
     def __init__(self, args):
         self.simulation_type(args)
         self.main_pele_params(args)
@@ -43,14 +43,12 @@ class SimulationParams(
         super().generate_bias_params(args)
         super().generate_inout_params(args)
         super().generate_pca_params(args)
-        super().generate_allosteric_params(args)
+        super().generate_site_finder_params(args)
         super().generate_ppi_params(args)
         # rna.RNAParams.__init__(self, args)
 
     def simulation_type(self, args):
-        self.adaptive = (
-            True if args.package in ["allosteric", "adaptive", "PPI"] else None
-        )
+        self.adaptive = True if args.package in ["site_finder", "adaptive", "PPI"]  else None
         self.frag_pele = True if args.package == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"

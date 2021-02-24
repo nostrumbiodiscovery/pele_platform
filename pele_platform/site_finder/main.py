@@ -2,20 +2,22 @@ from dataclasses import dataclass
 import numpy as np
 import os
 import pandas as pd
+import shutil
+
+from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Utilities.Helpers.helpers import cd, is_repeated, is_last, parallelize
-import pele_platform.Utilities.Helpers.bestStructs as bs
+from pele_platform.Analysis.plots import _extract_coords
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
-from pele_platform.Analysis.plots import _extract_coords
 
 
 @dataclass
-class AllostericLauncher:
+class SiteFinderLauncher:
     args: pv.EnviroBuilder
 
-    def run_allosteric(self) -> (pv.EnviroBuilder, pv.EnviroBuilder):
+    def run_site_finder(self) -> (pv.EnviroBuilder, pv.EnviroBuilder):
         """
-        Launch allosteric simulation.
+        Launch site_finder simulation.
         1) Run global exploration to identify the most important pockets
         2) Run induced fit simulation to find deep pockets
         """
@@ -26,6 +28,7 @@ class AllostericLauncher:
         if not self.args.skip_refinement:
             self._choose_refinement_input()
             self._set_params_refinement()
+            self._clean_temp_files()
             self.refinement_simulation = self._launch_refinement()
         else:
             self.refinement_simulation = None
@@ -39,8 +42,11 @@ class AllostericLauncher:
         self.original_dir = os.path.abspath(os.getcwd())
         working_folder = os.path.abspath("{}_Pele".format(self.args.residue))
         if not self.args.folder:
-            self.working_folder = is_repeated(working_folder) if not self.args.adaptive_restart else is_last(
-                working_folder)
+            self.working_folder = (
+                is_repeated(working_folder)
+                if not self.args.adaptive_restart
+                else is_last(working_folder)
+            )
         else:
             self.working_folder = os.path.abspath(self.args.folder)
         self.args.folder = os.path.join(self.working_folder, "1_global_exploration")
@@ -54,42 +60,80 @@ class AllostericLauncher:
         """
         Scan top 75% best binding energies, pick n best ones as long as ligand COMs are >= box radius away from each other.
         """
-        simulation_path = os.path.join(self.global_simulation.pele_dir, self.global_simulation.output)
-        n_best_poses = int(self.global_simulation.iterations * self.global_simulation.pele_steps * (
-                self.global_simulation.cpus - 1) * 0.75)
-        
+        simulation_path = os.path.join(
+            self.global_simulation.pele_dir, self.global_simulation.output
+        )
+        n_best_poses = int(
+            self.global_simulation.iterations
+            * self.global_simulation.pele_steps
+            * (self.global_simulation.cpus - 1)
+            * 0.25
+        )
+
         if not self.args.debug:
             with cd(simulation_path):
-                files_out, _, _, _, output_energy = bs.main(str(self.args.be_column), n_structs=n_best_poses, path=".",
-                                                            topology=self.global_simulation.topology,
-                                                            logger=self.global_simulation.logger)
+                files_out, _, _, _, output_energy = bs.main(
+                    str(self.args.be_column),
+                    n_structs=n_best_poses,
+                    path=".",
+                    topology=self.global_simulation.topology,
+                    logger=self.global_simulation.logger,
+                )
 
                 snapshot = 0
-                files_out = [os.path.join(self.global_simulation.pele_dir, self.global_simulation.output, f) for f in files_out]
-                input_pool = [[f, snapshot, self.global_simulation.residue, self.global_simulation.topology] for f in files_out]
+                files_out = [
+                    os.path.join(
+                        self.global_simulation.pele_dir,
+                        self.global_simulation.output,
+                        f,
+                    )
+                    for f in files_out
+                ]
+                input_pool = [
+                    [
+                        f,
+                        snapshot,
+                        self.global_simulation.residue,
+                        self.global_simulation.topology,
+                    ]
+                    for f in files_out
+                ]
                 all_coords = parallelize(_extract_coords, input_pool, 1)
                 coords = [list(c[0:3]) for c in all_coords]
-                dataframe = pd.DataFrame(list(zip(files_out, output_energy, coords)),
-                                         columns=["File", "Binding energy", "1st atom coordinates"])
-                self.dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
+                dataframe = pd.DataFrame(
+                    list(zip(files_out, output_energy, coords)),
+                    columns=["File", "Binding energy", "1st atom coordinates"],
+                )
+                self.dataframe = dataframe.sort_values(
+                    ["Binding energy"], ascending=True
+                )
 
                 inputs = self._check_ligand_distances()
                 directory = os.path.join(self.working_folder, "refinement_input")
-     
+
                 if not os.path.isdir(directory):
                     os.makedirs(directory, exist_ok=True)
                 for i in inputs:
                     os.system("cp {} {}/.".format(i, directory))
-    
+
+    def get_n_inputs(self):
+        maximum_inputs = self.global_simulation.cpus - 1
+        n_inputs = 20 if maximum_inputs > 20 else maximum_inputs
+        return n_inputs
+
     def _check_ligand_distances(self):
 
         inputs = []
         input_coords = []
-        n_inputs = self.global_simulation.cpus - 1
+        n_inputs = self.get_n_inputs()
 
-        for file, coord in zip(self.dataframe['File'], self.dataframe['1st atom coordinates']):
+        for file, coord in zip(
+            self.dataframe["File"], self.dataframe["1st atom coordinates"]
+        ):
 
-            if len(inputs) == n_inputs:  # get out of the loop, if we have enough inputs already
+            if (
+                len(inputs) == n_inputs
+            ):  # get out of the loop, if we have enough inputs already
                 break
 
             if not input_coords:
@@ -100,7 +144,9 @@ class AllostericLauncher:
                 distances = []
 
                 for ic in input_coords:
-                    distances.append(abs(np.linalg.norm(np.array(coord) - np.array(ic))))
+                    distances.append(
+                        abs(np.linalg.norm(np.array(coord) - np.array(ic)))
+                    )
                 distances_bool = [d > 6 for d in distances]
 
                 if all(distances_bool):
@@ -123,9 +169,17 @@ class AllostericLauncher:
         self.args.box_center = self.global_simulation.box_center
         self.args.box_radius = self.global_simulation.box_radius
 
+    def _clean_temp_files(self):
+        output_dir = os.path.join(self.global_simulation.pele_dir, self.global_simulation.output)
+        temp_bs_dir = os.path.join(output_dir, "BestStructs")
+
+        if os.path.exists(temp_bs_dir):
+            shutil.rmtree(temp_bs_dir)
+
     def _launch_refinement(self):
 
         with cd(self.original_dir):
+            # with cd(self.working_folder):
             if not self.args.debug:
                 sim_params = si.run_adaptive(self.args)
             else:
