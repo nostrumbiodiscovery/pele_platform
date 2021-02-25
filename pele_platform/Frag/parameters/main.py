@@ -28,7 +28,7 @@ class FragParameters(pele.EnviroBuilder, water.FragWaterParams,
         # Frag Optional Parameters
         opcionals.FragOpcionalParameters.__init__(self, args)
 
-	# Interaction restrictions Parameters (only used by adaptive)
+        # Interaction restrictions Parameters (only used by adaptive)
         self.interaction_restrictions = ""
         self.met_interaction_restrictions = ""
 
