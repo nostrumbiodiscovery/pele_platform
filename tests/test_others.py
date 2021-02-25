@@ -1,17 +1,12 @@
 import os
 from subprocess import Popen, PIPE
-import glob
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
 from . import test_adaptive as tk
-import pytest
 import pele_platform.Utilities.Helpers.protein_wizard as pp
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
-import pele_platform.Checker.main as mn
-from pele_platform.Utilities.Helpers import smiles_constraints as smi
-
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_external_constraints.yaml")
@@ -32,18 +27,6 @@ PPP_CONSTR = [
     '"constrainThisAtom": "B:247:_CA_" }'
 ]
 
-SMILES_CONSTR = [
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C7_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N1_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C1_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C2_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N2_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C3_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',                                                         
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',                                                           
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',                                                           
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },'
-]
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
@@ -217,46 +200,3 @@ def test_atom_string_error(yaml=yaml):
         assert str(e).strip("'") == "The specified atom is wrong '157:A:N'. Should be 'chain:resnumber:atomname"
         return
     assert False
-
-yaml = os.path.join(test_path,"checker/input_underscore.yaml")
-def test_atom_string_underscore(yaml=yaml):
-    try:
-        job = main.run_platform(yaml)
-    except ce.WrongAtomStringFormat as e:
-        assert str(e).strip("'") == "The specified atom is wrong 'A_106:OH'. Should be 'chain:resnumber:atomname"
-
-yaml = os.path.join(test_path, "checker/input_unk.yaml")
-def test_unk_error():
-    
-    try:
-        job = main.run_platform(yaml)
-    except ce.LigandNameNotSupported as e:
-        assert str(e) == "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
-        return
-    assert False
-
-def test_constrain_smarts():
-    yaml = os.path.join(test_path,"constraints/input_constrain_smarts.yaml")
-    errors = []
-    job = main.run_platform(yaml)
-    errors = tk.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
-    assert not errors
-
-def test_substructure_error():
-    yaml = os.path.join(test_path,"constraints/input_smiles_error.yaml")
-    try:
-        job = main.run_platform(yaml)
-    except ce.SubstructureError as e:
-        assert str(e).strip("'") == "More than one substructure found in your ligand. Make sure SMILES constrain pattern is not ambiguous!"
-
-def test_SmilesConstraints_class():
-    obj = smi.SmilesConstraints("../pele_platform/Examples/constraints/4qnr_prep.pdb", "CN1CC[NH+](CC1)CCO", "LIG", "Z", 33.5)
-    smarts_from_smiles = obj.convert_to_smarts("CN1CC[NH+](CC1)CCO")
-    smarts_from_smarts = obj.convert_to_smarts("[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]")
-    ligand = obj.extract_ligand(obj.input_pdb, obj.resname)
-    matches = obj.get_matches(smarts_from_smiles, ligand)
-    constraints = obj.build_constraints(matches, ligand, obj.spring_constant, obj.chain)
-
-    assert smarts_from_smiles == smarts_from_smarts == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
-    assert matches == ((9, 0, 1, 2, 3, 4, 5, 6, 7, 8),)
-    assert constraints == SMILES_CONSTR

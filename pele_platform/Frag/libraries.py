@@ -1,38 +1,65 @@
 import glob
 import os
 import subprocess
+<<<<<<< HEAD
 import tempfile
 import shutil
+=======
+import shutil
+import tempfile
+>>>>>>> b7f571f96e011da3ac9ff8c25f899f25d40a34a6
 
+from rdkit import Chem
 from pele_platform.constants import constants as cs
 import pele_platform.Utilities.Helpers.helpers as hp
 
 OUTPUT = "input.conf"
+
+
+def getSymmetryGroups(mol):
+    """
+    Computes the symmetry class for each atom and returns a list with the idx of non-symmetric atoms.
+    """
+    rank = {} 
+    symmetryList=[] 
+    symmetryRankList=[]
+    counter=0
+    
+    for atom in mol.GetAtoms():
+        rank[atom.GetIdx()] = list(Chem.CanonicalRankAtoms(mol,breakTies=False))[counter]
+        counter += 1
+    
+    for idx, symmetryRank in rank.items():
+        if symmetryRank not in symmetryRankList:
+            symmetryRankList.append(symmetryRank)
+            symmetryList.append(idx)
+    return symmetryList
 
 def growing_sites(fragment, user_bond):
     """
     Retrieves all possible growing sites (hydrogens) on the fragment. Takes PDB fragment file as input.
     Output - list of strings represeting sites, e.g. "benzene.pdb C6-H6 C1-H2"
     """
-    if hp.is_rdkit():
-        from rdkit import Chem
-
     bonds = []
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
-    
+    symmetryList = getSymmetryGroups(mol)
     if mol:
         heavy_atoms = [a for a in mol.GetAtoms() if a.GetSymbol() != "H"]
         for a in heavy_atoms:
-            hydrogens = [n for n in a.GetNeighbors() if n.GetSymbol() == "H"]
+            hydrogens = [n for n in a.GetNeighbors() if n.GetSymbol() == "H" and n.GetIdx() in symmetryList]
             at_name = a.GetMonomerInfo().GetName().strip()
             for h in hydrogens:
                 h_name = h.GetMonomerInfo().GetName().strip()
                 bonds.append("{} {} {}-{}".format(fragment, user_bond, at_name, h_name))
-
     return bonds
 
+<<<<<<< HEAD
 
 def sdf_to_pdb(file_list, path, logger, tmpdirname):
+=======
+def sdf_to_pdb(file_list, path, logger, tmpdirname):
+
+>>>>>>> b7f571f96e011da3ac9ff8c25f899f25d40a34a6
     out = []
     if file_list:
         converted_mae = []
@@ -58,6 +85,7 @@ def sdf_to_pdb(file_list, path, logger, tmpdirname):
             shutil.move(c,tmpdirname)
             c = tmpdirname + '/' + c
             fout = c.replace(".mae",".pdb")
+            
             try:
                 command_pdb = command_pdb.format(schrodinger_path, c, fout)
                 subprocess.call(command_pdb.split())
@@ -84,7 +112,11 @@ def sdf_to_pdb(file_list, path, logger, tmpdirname):
             with open(c, "r+") as fout:
                 for line in new_lines:
                     fout.write(line)
+<<<<<<< HEAD
             out = converted_pdb
+=======
+        out = converted_pdb
+>>>>>>> b7f571f96e011da3ac9ff8c25f899f25d40a34a6
     return out
 
 def get_library(frag_library):
