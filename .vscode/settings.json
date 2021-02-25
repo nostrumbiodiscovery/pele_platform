@@ -1,0 +1,5 @@
+{
+    "python.pythonPath": "env/bin/python",
+    "python.linting.pep8Enables": true,
+    "python.linting.pylintenabled": true
+}
