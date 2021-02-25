@@ -28,7 +28,7 @@ class FragParameters(parameters.ParametersBuilder, water.FragWaterParams,
         # Frag Optional Parameters
         optional.FragOptionalParameters.__init__(self, args)
 
-	# Interaction restrictions Parameters (only used by adaptive)
+        # Interaction restrictions Parameters (only used by adaptive)
         self.interaction_restrictions = ""
         self.met_interaction_restrictions = ""
 
