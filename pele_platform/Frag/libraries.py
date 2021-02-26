@@ -15,20 +15,19 @@ def get_symmetry_groups(mol):
 
     Parameters
     ----------
-    mol: rdkit molecule object.
+    mol: Rdkit molecule object.
 
     Returns
     -------
-    symmetry_list: list with atom indices.
+    symmetry_list: List with atom indices.
     """
     rank = {} 
     symmetry_list = []
     symmetry_rank_list = []
     counter = 0
     
-    for atom in mol.GetAtoms():
+    for counter, atom in enumerate(mol.GetAtoms()):
         rank[atom.GetIdx()] = list(Chem.CanonicalRankAtoms(mol, breakTies=False))[counter]
-        counter += 1
     
     for idx, symmetry_rank in rank.items():
         if symmetry_rank not in symmetry_rank_list:
@@ -49,7 +48,7 @@ def growing_sites(fragment,
 
     Returns
     -------
-    bonds: list of strings representing sites, e.g. "benzene.pdb C6-H6 C1-H2"
+    bonds: List of strings representing sites, e.g. "benzene.pdb C6-H6 C1-H2"
     """
     bonds = []
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
