@@ -12,6 +12,14 @@ OUTPUT = "input.conf"
 def get_symmetry_groups(mol):
     """
     Computes the symmetry class for each atom and returns a list with the idx of non-symmetric atoms.
+
+    Parameters
+    ----------
+    mol: rdkit molecule object.
+
+    Returns
+    -------
+    symmetry_list: list with atom indices.
     """
     rank = {} 
     symmetry_list = []
@@ -33,7 +41,15 @@ def growing_sites(fragment,
                   user_bond):
     """
     Retrieves all possible growing sites (hydrogens) on the fragment. Takes PDB fragment file as input.
-    Output - list of strings representing sites, e.g. "benzene.pdb C6-H6 C1-H2"
+
+    Parameters
+    ----------
+    fragment: Path to fragment pdb file.
+    user_bond: Connection point from which the user wants to grow the fragments.
+
+    Returns
+    -------
+    bonds: list of strings representing sites, e.g. "benzene.pdb C6-H6 C1-H2"
     """
     bonds = []
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
@@ -50,12 +66,24 @@ def growing_sites(fragment,
 
 
 def sdf_to_pdb(file_list,
-               path, logger, tmpdirname):
+               logger, tmpdirname):
+    """
+    Converts sdf files to pdb.
+
+    Parameters
+    ----------
+    file_list: List of paths of fragments in sdf format.
+    logger: File with status messages
+    tmpdirname: Path of temporary directory.
+
+    Returns
+    -------
+    out: List of paths with converted sdf files.
+    """
 
     out = []
     if file_list:
         converted_mae = []
-        output = []
 
         # convert all SDF to MAE
         schrodinger_path = os.path.join(cs.SCHRODINGER, "utilities/structconvert")
@@ -109,6 +137,17 @@ def sdf_to_pdb(file_list,
 
 
 def get_library(frag_library):
+    """
+    Checks the path of the fragment library provided on the input.yaml file.
+
+    Parameters
+    ----------
+    frag_library: Path to fragment library.
+
+    Returns
+    -------
+    path: Path to the fragment library.
+    """
     directory = os.path.dirname(os.path.abspath(__file__))                                                                                                                              
     path = frag_library if os.path.exists(frag_library) else os.path.join(directory, "Libraries", frag_library.strip())                                                                 
     if not os.path.exists(path):                                                                                                                                                        
@@ -116,8 +155,21 @@ def get_library(frag_library):
     return path
 
 
-def get_fragment_files(path, logger, tmpdirname):
+def get_fragment_files(path,
+                       logger, tmpdirname):
+    """
+    Gets all pdb and sdf files of each fragment in the library.
 
+    Parameters
+    ----------
+    path: Path to the fragment library.
+    logger: File with status messages.
+    tmpdirname: Path of temporary directory.
+
+    Returns
+    -------
+    all_files: List of paths of the fragments in the fragment library.
+    """
     fragment_files = []                                                                                                                                                                 
     extensions = ['*.pdb', '*.sdf']                                                                                                                                                     
     
@@ -128,20 +180,23 @@ def get_fragment_files(path, logger, tmpdirname):
     # convert SDF to PDB, if necessary                                                                                                                                                  
     sdf_files = [elem for elem in fragment_files if ".sdf" in elem.lower()]                                                                                                             
     pdb_files = [elem for elem in fragment_files if ".pdb" in elem.lower()]                                                                                                             
-    all_files = pdb_files + sdf_to_pdb(sdf_files, path, logger, tmpdirname)                                                                                                                                                                               
+    all_files = pdb_files + sdf_to_pdb(sdf_files, logger, tmpdirname)
     return all_files
 
 
 def write_config_file(output_name,
                       bond_list):
+    """
+    Generates the configuration file.
+    """
 
     with open(output_name, "w+") as conf_file:
         for line in bond_list:
             conf_file.write(line+"\n")
 
 
-def main(user_bond, frag_library, logger, tmpdirname):
-
+def main(user_bond,
+         frag_library, logger, tmpdirname):
     # find the library and extract fragments
     path = get_library(frag_library)
     all_files = get_fragment_files(path, logger, tmpdirname) 
