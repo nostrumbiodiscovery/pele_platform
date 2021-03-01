@@ -8,7 +8,6 @@ from pele_platform.constants import constants as cs
 
 OUTPUT = "input.conf"
 
-
 def get_symmetry_groups(mol):
     """
     Computes the symmetry class for each atom and returns a list with the idx of non-symmetric atoms.
