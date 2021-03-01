@@ -34,7 +34,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
     3) Launch simulation
     4) Analyse simulation
     """
-
     env = pele.EnviroBuilder()
     env.software = "Adaptive"
     env.build_adaptive_variables(args)
@@ -193,8 +192,9 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             env.external_constraints = hp.retrieve_constraints_for_pele(
                 env.external_constraints, env.system
             )
+
             metal_constraints_json = hp.retrieve_constraints_for_pele(
-                metal_constraints, env.system
+                metal_constraints, os.path.join(env.inputs_dir, env.adap_ex_input.split(",")[0].strip().strip('"'))
             )
             env.external_constraints.extend(metal_constraints_json)
         else:

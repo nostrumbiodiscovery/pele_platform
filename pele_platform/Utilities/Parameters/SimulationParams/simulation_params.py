@@ -1,6 +1,7 @@
 import random
 import os
 import glob
+
 import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
@@ -58,9 +59,10 @@ class SimulationParams(
     def main_pele_params(self, args):
         if "*" in args.system:
             self.system = glob.glob(args.system)[0]
-            args.input = glob.glob(args.system)
+            self.input = glob.glob(args.system) if not args.input else args.input
         else:
             self.system = args.system
+            self.input = args.input
         self.residue = args.residue
         self.chain = args.chain
         if self.adaptive:
@@ -272,7 +274,6 @@ class SimulationParams(
         )
 
     def optative_params(self, args):
-        self.input = args.input
         self.forcefield = (
             args.forcefield
             if args.forcefield
@@ -289,6 +290,9 @@ class SimulationParams(
         self.cpus = args.cpus = (
             args.cpus if args.cpus else self.simulation_params.get("cpus", 60)
         )
+
+        self.cpus_per_mutation = args.cpus_per_mutation if args.cpus_per_mutation else 0
+
         self.restart = (
             args.restart
             if args.restart
@@ -468,7 +472,7 @@ class SimulationParams(
         self.pdb = self.traj_name.endswith(".pdb")
 
     def analysis_params(self, args):
-        self.analyse = args.analyse if args.analyse else True
+        self.analyse = args.analyse if args.analyse is not None else True
         self.mae = args.mae if args.mae else False
         self.only_analysis = args.only_analysis
         self.analysis_nclust = args.analysis_nclust
