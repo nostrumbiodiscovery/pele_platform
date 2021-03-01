@@ -1,9 +1,6 @@
 import os
 import tempfile
-<<<<<<< HEAD
-=======
 import shutil
->>>>>>> b7f571f96e011da3ac9ff8c25f899f25d40a34a6
 
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Frag.helpers as hp
