@@ -6,8 +6,7 @@ import PPP.main as ppp
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
 from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Parameters.pele_env as pele
-import pele_platform.Utilities.Helpers.constraints as ct
-import pele_platform.constants.constants as cs
+import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.missing_residues as mr
@@ -15,7 +14,7 @@ import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
-import pele_platform.Utilities.Helpers.smiles_constraints as smi
+import pele_platform.Utilities.Helpers.constraints.smiles_constraints as smiles_constraints
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
@@ -35,7 +34,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
     3) Launch simulation
     4) Analyse simulation
     """
-
     env = pele.EnviroBuilder()
     env.software = "Adaptive"
     env.build_adaptive_variables(args)
@@ -60,10 +58,16 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
 
         if env.perturbation:
             syst = sp.SystemBuilder.build_system(
-                env.system, args.mae_lig, args.residue, env.pele_dir, inputs_dir=env.inputs_dir
+                env.system,
+                args.mae_lig,
+                args.residue,
+                env.pele_dir,
+                inputs_dir=env.inputs_dir,
             )
         else:
-            syst = sp.SystemBuilder(env.system, None, None, env.pele_dir, inputs_dir=env.inputs_dir)
+            syst = sp.SystemBuilder(
+                env.system, None, None, env.pele_dir, inputs_dir=env.inputs_dir
+            )
 
         env.logger.info("Prepare complex {}".format(syst.system))
 
@@ -137,21 +141,19 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             hp.silentremove(ligand_positions)
 
         # Prepare System
-        if env.no_ppp or env.input:  # No need to run system through PPP, if we already preprocessed env.input
+        if (
+            env.no_ppp or env.input
+        ):  # No need to run system through PPP, if we already preprocessed env.input
             missing_residues = []
-            gaps = {}
-            metals = {}
-            env.constraints = ct.retrieve_constraints(
-                env.system,
-                gaps,
-                metals,
-                back_constr=env.ca_constr,
-                interval=env.ca_interval,
-            )
-            shutil.copy(env.system, env.inputs_dir)
+            if env.input:
+                # If we have more than one input
+                for input in env.input:
+                    shutil.copy(input, env.inputs_dir)
+            else:
+                shutil.copy(env.system, env.inputs_dir)
         else:
             env.nonstandard.extend(hp.find_nonstd_residue(syst.system))
-            env.system, missing_residues, gaps, metals, env.constraints = ppp.main(
+            env.system, missing_residues, _, _, _ = ppp.main(
                 syst.system,
                 env.inputs_dir,
                 output_pdb=[
@@ -166,6 +168,13 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
                 ligand_pdb=env.ligand_ref,
                 ca_interval=env.ca_interval,
             )
+
+        env.constraints = alpha_constraints.retrieve_constraints(
+            env.system,
+            interval=env.ca_interval,
+            back_constr=env.ca_constr,
+            ter_constr=env.terminal_constr,
+        )
 
         # Metal constraints
         if not args.no_metal_constraints:
@@ -183,8 +192,9 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             env.external_constraints = hp.retrieve_constraints_for_pele(
                 env.external_constraints, env.system
             )
+
             metal_constraints_json = hp.retrieve_constraints_for_pele(
-                metal_constraints, env.system
+                metal_constraints, os.path.join(env.inputs_dir, env.adap_ex_input.split(",")[0].strip().strip('"'))
             )
             env.external_constraints.extend(metal_constraints_json)
         else:
@@ -199,7 +209,6 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             )
         if env.remove_constraints:
             env.constraints = ""
-        env.logger.info(cs.SYSTEM.format(missing_residues, gaps, metals))
         env.logger.info("Complex {} prepared\n\n".format(env.system))
 
         # Ligand parameters and simulation box
@@ -237,7 +246,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             smiles_input_pdb = os.path.join(
                 env.inputs_dir, env.adap_ex_input.split(",")[0]
             )
-            smiles = smi.SmilesConstraints(
+            smiles = smiles_constraints.SmilesConstraints(
                 smiles_input_pdb,
                 env.constrain_core,
                 env.residue,
@@ -278,7 +287,11 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
 
         # Metrics builder - builds JSON strings for PELE to be able to track atom distances, RMSD, etc.
         metrics = mt.MetricBuilder()
-        env.metrics = metrics.distance_to_atom_json(env.system, args.atom_dist) if args.atom_dist else ""
+        env.metrics = (
+            metrics.distance_to_atom_json(env.system, args.atom_dist)
+            if args.atom_dist
+            else ""
+        )
         env.native = metrics.rsmd_to_json(args.native, env.chain) if args.native else ""
 
         # metal polarisation

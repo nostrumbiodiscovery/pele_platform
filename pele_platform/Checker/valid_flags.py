@@ -175,4 +175,8 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "constrain_core_spring": "constrain_core_spring",
 "frag_library": "frag_library",
 "frag_core_atom": "frag_core_atom",
-"analysis_to_point": "analysis_to_point"}
+"analysis_to_point": "analysis_to_point",
+"constraint_level": "constraint_level",
+"terminal_constr": "terminal_constr",
+"saturated_mutagenesis": "saturated_mutagenesis",
+"cpus_per_mutation": "cpus_per_mutation"}

@@ -181,6 +181,8 @@ class YamlParser(object):
         self.frag = data.get(valid_flags["frag"], None)
         self.ca_constr = data.get(valid_flags["ca_constr"], None)
         self.ca_interval = data.get(valid_flags["ca_interval"], None)
+        self.constraint_level = data.get(valid_flags["constraint_level"], None)
+        self.terminal_constr = data.get(valid_flags["terminal_constr"], None)
         self.one_exit = data.get(valid_flags["one_exit"], None)
         self.box_type = data.get(valid_flags["box_type"], None)
         self.box_metric = data.get(valid_flags["box_metric"], None)
@@ -285,6 +287,10 @@ class YamlParser(object):
 
         # OUTIN
         self.final_site = data.get(valid_flags["final_site"], None)
+
+        # Mutagenesis
+        self.saturated_mutagenesis = data.get(valid_flags["saturated_mutagenesis"], None)
+        self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
 
         if self.test:
             warnings.warn(
