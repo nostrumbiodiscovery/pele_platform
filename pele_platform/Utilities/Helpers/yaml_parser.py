@@ -289,6 +289,10 @@ class YamlParser(object):
         # OUTIN
         self.final_site = data.get(valid_flags["final_site"], None)
 
+        # Mutagenesis
+        self.saturated_mutagenesis = data.get(valid_flags["saturated_mutagenesis"], None)
+        self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
+
         if self.test:
             warnings.warn(
                 "WARNING: This simulation is a test do not use the input files to run production simulations"
