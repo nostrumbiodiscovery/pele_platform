@@ -28,7 +28,8 @@ def get_symmetry_groups(mol):
     
     for counter, atom in enumerate(mol.GetAtoms()):
         rank[atom.GetIdx()] = list(Chem.CanonicalRankAtoms(mol, breakTies=False))[counter]
-    
+    print(rank)
+    sys.exit() 
     for idx, symmetry_rank in rank.items():
         if symmetry_rank not in symmetry_rank_list:
             symmetry_rank_list.append(symmetry_rank)
