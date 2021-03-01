@@ -128,7 +128,7 @@ def sdf_to_pdb(file_list,
             new_lines = [l.replace("UNK", "GRW") for l in new_lines if "UNK" in l]
             new_lines = [l[:21]+"L"+l[22:] for l in new_lines]
 
-            with open(c, "r+") as fout:
+            with open(c, "w") as fout:
                 for line in new_lines:
                     fout.write(line)
         out = converted_pdb
