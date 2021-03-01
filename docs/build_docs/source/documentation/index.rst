@@ -347,7 +347,9 @@ Constraints
 Carbon-alpha constraints
 +++++++++++++++++++++++++
 
-The platform provides the users with several different levels of constraining the alpha carbons of the protein backbone with varying spring constants and intervals:
+Each package in the platform has its own predefined constraint parameters which are likely to be the best choice in each
+type of study. However, the platform provides the users with several different levels of constraining the alpha carbons
+of the protein backbone with varying spring constants and intervals:
 
 - **level 0** - no constraints
 
@@ -371,6 +373,9 @@ Alternatively, advanced users can manipulate the constraint parameters individua
 - **ca_constr** - sets the spring constant for the remaining C-alphas in the backbone, default = 0.5 kcal/mol
 
 - **ca_interval** - interval at which the backbone C-alphas should be constrained, default = 10 (i.e. every 10 residues).
+
+Take into account that specific modifiers of constraint parameters will prevail over the settings coming from the
+constraints levels and those predefined in each package.
 
 ..  code-block:: yaml
 

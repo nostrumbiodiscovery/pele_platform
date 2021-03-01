@@ -14,10 +14,22 @@ CONSTR_CALPHA = """{{ "type": "constrainAtomToPosition", "springConstant": {2}, 
 
 
 class AlphaConstraints(object):
-    """
-    Class to parse alpha carbons in the PDB file and constrain them according to the user-defined settings.
-    """
+
     def __init__(self, pdb, interval, backbone_spring, terminal_spring):
+        """
+        Class to parse alpha carbons in the PDB file and constrain them according to the user-defined settings.
+
+        Parameters
+        ----------
+        pdb: str
+            path to the system PDB
+        interval: int
+            interval at which backbone CA are supposed to be constrainte
+        backbone_spring: float
+            spring constant for backbone CA constraints
+        terminal_spring: float
+            spring constant for terminal CA constraints
+        """
         self.pdb = pdb
         self.interval = interval
         self.backbone_spring_constant = backbone_spring
@@ -214,13 +226,20 @@ def retrieve_constraints(
 ):
     """
     Runs the full AlphaConstraints pipeline to return a list of constraints ready to inject into JSON.
-    Args:
-        pdb_file (str): PDB file with the protein
-        interval (int): interval at which the backbone CAs are supposed to be constrained
-        back_constr (Union[float, int]): spring constant for the backbone constraints
-        ter_constr (Union[float, int]):  spring constant for the terminal constraints
 
-    Returns:
+    Parameters
+    ----------
+    pdb_file: str
+        PDB file with the protein
+    interval: int
+        interval at which the backbone CAs are supposed to be constrained
+    back_constr: float
+        spring constant for the backbone constraints
+    ter_constr: float
+        spring constant for the terminal constraints
+
+    Returns
+    -------
         A list of string constraints ready to be injected into the PELE configuration file.
     """
     constr = AlphaConstraints(pdb_file, interval, back_constr, ter_constr)
