@@ -2,7 +2,10 @@ import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.constants as cs
 
 """
-Configuration of valid metrics for restrictions
+Configuration of valid metrics for restrictions:
+    - template: constant with json template for this metric.
+    - description: string with a description about this metric.
+    - num_elems: num of atoms required for this metric.
 """
 RESTRICTIONS_CONFIG = {
     "distance": {
@@ -26,6 +29,15 @@ class InteractionRestrictionsBuilder:
         self.conditions = []
 
     def parse_interaction_restrictions(self, pdb, constraints_conf):
+        """
+        Parse interaction_restrictions (metrics and conditions) from configuration.
+
+        Parameters
+        ----------
+        pdb : System pdb. Used to locate atoms.
+        constraints_conf : Configuration parameters for interaction restrictions.
+        """
+
         for i, constraint_conf in enumerate(constraints_conf):
             if constraint_conf:
                 restriction = set(RESTRICTIONS_CONFIG.keys()).intersection(
@@ -46,12 +58,36 @@ class InteractionRestrictionsBuilder:
                 )
 
     def conditions_to_json(self):
+        """
+        Represent conditions for interaction restrictions in JSON format.
+
+        Returns
+        ----------
+        json_string : conditions formatted in JSON.
+        """
         return cs.INTERACTION_RESTRICTIONS.format('",\n\t"'.join(self.conditions))
 
     def metrics_to_json(self):
+        """
+        Represent metrics for interaction restrictions in JSON format.
+
+        Returns
+        ----------
+        json_string : metrics formatted in JSON.
+        """
         return "\n".join(self.metrics)
 
     def _add_metric(self, pdb, config, values, name):
+        """
+        Internal use only. Create a new metric.
+
+        Parameters
+        ----------
+        pdb : System pdb. Used to locate atoms.
+        config : Standard configuration for the metric.
+        values : List of atoms.
+        name : Name for the new metric.
+        """
         num_atoms = config["num_elems"]
         if len(values) != num_atoms:
             raise SyntaxError(
@@ -63,6 +99,14 @@ class InteractionRestrictionsBuilder:
         self.metrics.append(config["template"].format(name, *atoms))
 
     def _create_conditions(self, values, name):
+        """
+        Internal use only. Create a new restriction condition.
+
+        Parameters
+        ----------
+        values : Limits to apply in the condition (min and max).
+        name : Name of the related metric.
+        """
         if "min" in values:
             self.conditions.append(name + " > " + str(values["min"]))
         if "max" in values:

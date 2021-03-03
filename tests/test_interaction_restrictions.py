@@ -50,6 +50,17 @@ METRIC_ANGLE_PELE = [
 
 
 def test_interaction_restrictions(ext_args=ARGS_1):
+    """
+    Test the pele.conf generated from a simulation with interaction restrictions.
+
+    Parameters
+    ----------
+    ext_args : Path of the input.yaml file.
+
+    Returns
+    ----------
+    boolean : result of the test.
+    """
     errors = []
     job = main.run_platform(ext_args)
     errors = check_file(
@@ -61,6 +72,13 @@ def test_interaction_restrictions(ext_args=ARGS_1):
 
 
 def test_metrics_to_json():
+    """
+    Unit test for the metrics_to_json method.
+
+    Returns
+    ----------
+    boolean : result of the test.
+    """
     # Parse yaml file
     yaml_obj = yp.YamlParser(ARGS_1, vf.VALID_FLAGS_PLATFORM)
     yaml_obj.read()
@@ -75,6 +93,13 @@ def test_metrics_to_json():
 
 
 def test_conditions_to_json():
+    """
+    Unit test for the conditions_to_json method.
+
+    Returns
+    ----------
+    boolean : result of the test.
+    """
     # Parse yaml file
     yaml_obj = yp.YamlParser(ARGS_1, vf.VALID_FLAGS_PLATFORM)
     yaml_obj.read()
@@ -89,14 +114,28 @@ def test_conditions_to_json():
 
 
 def test_SyntaxError_exception_1():
+    """
+    Unit test to throw an exception in a syntax error in input file (wrong number
+    of atoms).
+    """
     check_SyntaxError_exception(ARGS_2)
 
 
 def test_SyntaxError_exception_2():
+    """
+    Unit test to throw an exception in a syntax error in input file (poorly defined metric).
+    """
     check_SyntaxError_exception(ARGS_3)
 
 
 def check_SyntaxError_exception(file):
+    """
+    Function to test an input file that should throw a Syntax Error exception.
+
+    Parameters
+    ----------
+    file : Path of the input.yaml file.
+    """
     # Parse yaml file
     yaml_obj = yp.YamlParser(file, vf.VALID_FLAGS_PLATFORM)
     yaml_obj.read()
