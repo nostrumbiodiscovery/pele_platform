@@ -188,8 +188,8 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             env.native = ""
 
         #interaction restrictions
-        interaction_restrictions = ir.InteractionRestrictionsBuilder()
         if args.interaction_restrictions:
+            interaction_restrictions = ir.InteractionRestrictionsBuilder()
             interaction_restrictions.parse_interaction_restrictions(env.system, args.interaction_restrictions)
             env.met_interaction_restrictions = interaction_restrictions.metrics_to_json()
             env.interaction_restrictions = interaction_restrictions.conditions_to_json()
