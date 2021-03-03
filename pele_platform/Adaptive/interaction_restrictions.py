@@ -58,8 +58,8 @@ class InteractionRestrictionsBuilder:
                 f"Must specify a list of {num_atoms} atoms in {config['description']} restriction."
             )
         atoms = []
-        for i in range(num_atoms):
-            atoms.append(hp.retrieve_atom_info(values[i], pdb))
+        for atom in values:
+            atoms.append(hp.retrieve_atom_info(atom, pdb))
         self.metrics.append(config["template"].format(name, *atoms))
 
     def _create_conditions(self, values, name):
