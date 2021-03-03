@@ -1,6 +1,9 @@
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.constants as cs
 
+"""
+Configuration of valid metrics for restrictions
+"""
 RESTRICTIONS_CONFIG = {
     "distance": {
         "template": cs.DISTANCE_ATOMS_TAG,
@@ -9,9 +12,6 @@ RESTRICTIONS_CONFIG = {
     },
     "angle": {"template": cs.ANGLE_ATOMS_TAG, "description": "angle", "num_elems": 3},
 }
-"""
-Configuration of valid metrics for restrictions
-"""
 
 
 class InteractionRestrictionsBuilder:
@@ -26,14 +26,24 @@ class InteractionRestrictionsBuilder:
         self.conditions = []
 
     def parse_interaction_restrictions(self, pdb, constraints_conf):
-        for i in range(0, len(constraints_conf)):
-            actual = constraints_conf[i]
-            restriction = set(RESTRICTIONS_CONFIG.keys()).intersection(actual.keys())
+        for i, constraint_conf in enumerate(constraints_conf):
+            if constraint_conf:
+                restriction = set(RESTRICTIONS_CONFIG.keys()).intersection(
+                    constraint_conf.keys()
+                )
             if len(restriction) == 1:
                 id = restriction.pop()
                 name = id + str(i)
-                self._add_metric(pdb, RESTRICTIONS_CONFIG[id], actual["atoms"], name)
-                self._create_conditions(actual[id], name)
+                self._add_metric(
+                    pdb, RESTRICTIONS_CONFIG[id], constraint_conf["atoms"], name
+                )
+                self._create_conditions(constraint_conf[id], name)
+            else:
+                raise SyntaxError(
+                    f"Must define only one valid metric in each restriction. The valid "
+                    f"metrics are: {list(RESTRICTIONS_CONFIG)}. You defined {len(restriction)} "
+                    f"in {constraint_conf}."
+                )
 
     def conditions_to_json(self):
         return cs.INTERACTION_RESTRICTIONS.format('",\n\t"'.join(self.conditions))
@@ -45,11 +55,7 @@ class InteractionRestrictionsBuilder:
         num_atoms = config["num_elems"]
         if len(values) != num_atoms:
             raise SyntaxError(
-                "Must specify a list of "
-                + str(num_atoms)
-                + " atoms in "
-                + config["description"]
-                + " restriction."
+                f"Must specify a list of {num_atoms} atoms in {config['description']} restriction."
             )
         atoms = []
         for i in range(num_atoms):
