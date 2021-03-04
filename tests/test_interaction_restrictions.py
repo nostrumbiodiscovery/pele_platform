@@ -71,9 +71,9 @@ def test_interaction_restrictions(ext_args=ARGS_1):
     assert not errors
 
 
-def test_metrics_to_json():
+def test_metrics_and_conditions_to_json():
     """
-    Unit test for the metrics_to_json method.
+    Test for the metrics_to_json and conditions_to_json methods.
 
     Returns
     ----------
@@ -87,30 +87,24 @@ def test_metrics_to_json():
     interaction_restrictions.parse_interaction_restrictions(
         PDB_FILE, yaml_obj.interaction_restrictions
     )
+
+    errors = []
     # Check metrics json output
-    expected_output = open(EXPECTED_METRICS, "r")
-    assert interaction_restrictions.metrics_to_json() == expected_output.read()
+    metrics = interaction_restrictions.metrics_to_json()
+    expected_metrics_output = open(EXPECTED_METRICS, "r").read()
+    if not metrics == expected_metrics_output:
+        errors.append(f"Error in metrics json: {metrics} == {expected_metrics_output} ")
 
+    # Check conditions json output
+    conditions = interaction_restrictions.conditions_to_json()
+    expected_conditions_output = open(EXPECTED_CONDITIONS, "r").read()
+    if not conditions == expected_conditions_output:
+        errors.append(
+            f"conditions json assert: {conditions} == {expected_conditions_output} "
+        )
 
-def test_conditions_to_json():
-    """
-    Unit test for the conditions_to_json method.
-
-    Returns
-    ----------
-    boolean : result of the test.
-    """
-    # Parse yaml file
-    yaml_obj = yp.YamlParser(ARGS_1, vf.VALID_FLAGS_PLATFORM)
-    yaml_obj.read()
-    # Build interaction restrictions
-    interaction_restrictions = ir.InteractionRestrictionsBuilder()
-    interaction_restrictions.parse_interaction_restrictions(
-        PDB_FILE, yaml_obj.interaction_restrictions
-    )
-    # Check metrics json output
-    expected_output = open(EXPECTED_CONDITIONS, "r")
-    assert interaction_restrictions.conditions_to_json() == expected_output.read()
+    # assert no error message has been registered, else print messages
+    assert not errors
 
 
 def test_SyntaxError_exception_1():
