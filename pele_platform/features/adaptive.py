@@ -178,6 +178,9 @@ def retrieve_software_settings(args, pele_dir):
             "covalent_docking": {
                 "steric_trials": 20,
                 "overlap_factor": 0.6,
+                "anm_freq": 5,
+                "sidechain_freq": 1,
+                "min_freq": 1,
             }
         },
     }
