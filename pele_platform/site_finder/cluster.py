@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.mixture import GaussianMixture
 from pele_platform.Utilities.Helpers import bestStructs, helpers
 from pele_platform.Analysis.plots import _extract_coords
-from multiprocessing import Pool
 
 
 def cluster_best_structures(

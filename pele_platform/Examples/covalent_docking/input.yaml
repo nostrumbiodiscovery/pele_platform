@@ -1,0 +1,10 @@
+system: "../pele_platform/Examples/covalent_docking/2hwo_prepared.pdb"
+resname: "GRW"
+chain: "A"
+covalent_residue: "A:345"  # chain and residue number
+number_of_trials: 12  # number of trials for covalent docking
+nonbonding_radius: 5  # radius for non-bonding energy metric
+sidechain_gridres: 30  # grid resolution for covalent docking
+refinement_distance: 15  # refinement distance for the second stage simulation
+overlap_factor: 0.77
+debug: true

@@ -43,15 +43,14 @@ NATIVE = '''
        
        
             '''
-        
-WATER_ENERGY =             '''
+
+WATER_ENERGY = '''
                             {{
                             "type": "bindingEnergy",\n\
                             "boundPartSelection": {{ "chains": {{ "names": ["{0}"] }} }},\n\
                             "tag": "water{0}"\n\
                             }},\n\
                            '''
-
 
 UNBINDING = '''
             "modeMovingBox" : "unbinding",
@@ -66,8 +65,7 @@ UNBINDING = '''
             }},
             '''
 
-
-DISTANCE_ATOMS =     '''
+DISTANCE_ATOMS = '''
                      {{
                      "type":"com_distance",
                      "tag":"distance{2}",
@@ -79,6 +77,15 @@ DISTANCE_ATOMS =     '''
                      }}
                      }},
                      '''
+
+LOCAL_NONBONDING_ENERGY = """
+                     {{
+                     "type": "localNonBondingEnergy",
+                     "selection": {{ "links": {{ "ids": ["{}"] }} }},
+                      "radius": {}
+                      }},
+"""
+
 BOX = '''
 
                 "Box": {{
@@ -86,7 +93,7 @@ BOX = '''
                     "radius": {0},
                     "fixedCenter": {1}
                 }},
-'''                     
+'''
 
 WATER = '''
          "WaterPerturbation":
@@ -106,8 +113,22 @@ WATER = '''
 
 PCA = '''"preloadedModesIn" : "{}",'''
 
+SIDECHAIN_PERTURBATION = """
+         "SideChainPerturbation":{
+                        "sideChainsToPerturb": { "links": {"ids": ["$COVALENT_RESIDUE"] } },
+                        "parameters":{
+                                "overlapFactor": $OVERLAP,
+                                "numberOfStericTrials": $STERIC_TRIALS,
+                                "numberOfTrials": $TRIALS,
+                                "gridResolution": $GRIDRES,
+                                $REFINEMENT_DISTANCE
+                                "atLeastOneSelectedTrial": true 
+                        }
+                },
+"""
 
 SELECTION_TO_PERTURB = '"selectionToPerturb" : { "chains" : { "names" : [ "$CHAIN" ] } },'
+
 PERTURBATION = '''
           "Perturbation": {
                 $BOX
@@ -130,7 +151,7 @@ BE = '''
                         },
 '''
 
-SASA='''
+SASA = '''
                         { "type": "sasa",
 
                            "tag": "sasaLig",
@@ -140,53 +161,66 @@ SASA='''
                         },
 '''
 
+SASA_COVALENT = '''
+                        {{ "type": "sasa",
 
+                           "tag": "sasaLig",
+
+                           "selection": {{ "links": {{ "ids": ["{}"] }} }}
+
+                        }},
+'''
 
 LIGAND = '"ligandResname" : "$LIG_RES",'
 
 # PPI waters
-water_O =  "HETATM {}  OW  HOH {}{:>4}     {}  1.00  0.00           O\n"
+water_O = "HETATM {}  OW  HOH {}{:>4}     {}  1.00  0.00           O\n"
 water_H1 = "HETATM {}  1HW HOH {}{:>4}     {}  1.00  0.00           H\n"
 water_H2 = "HETATM {}  2HW HOH {}{:>4}     {}  1.00  0.00           H\n"
 water = [water_O, water_H1, water_H2]
 
 # Amino acids
 AMINO_ACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
-              "SER", "ASP", "LYS", "MET", "GLN",
-              "TRP", "ARG", "ALA", "THR", "PRO",
-              "PHE", "GLU", "HIS", "HIP", "TYR",
-              "CYS", "HID"]
+               "SER", "ASP", "LYS", "MET", "GLN",
+               "TRP", "ARG", "ALA", "THR", "PRO",
+               "PHE", "GLU", "HIS", "HIP", "TYR",
+               "CYS", "HID"]
 
 # Nucleotides
 NUCLEOTIDES = ["G", "U", "A", "C"]
 
 # Metals
-metals = ['LI', 'BE', 'NA', 'MG', 'AL', 'K', 'CA', 'SC', 'TI', 'V', 'CR', 'MN', 'FE', 'CO', 'NI', 'CU', 'ZN', 'GA', 'RB', 'SR', 'Y', 'ZR', 'NB', 'MO', 'TC', 'RU', 'RH', 'PD', 'AG', 'CD', 'IN', 'SN', 'CS', 'BA', 'LA', 'CE', 'PR', 'ND', 'PM', 'SM', 'EU', 'GD', 'TB', 'DY', 'HO', 'ER', 'TM', 'YB', 'LU', 'HF', 'TA', 'W', 'RE', 'OS', 'IR', 'PT', 'AU', 'HG', 'TL', 'PB', 'BI', 'PO', 'FR', 'RA', 'AC', 'TH', 'PA', 'U', 'NP', 'PU', 'AM', 'CM', 'BK', 'CF', 'ES', 'FM', 'MD', 'NO', 'LR', 'RF', 'DB', 'SG', 'BH', 'HS', 'MT', 'DS', 'RG', 'CN', 'NH', 'FL', 'MC', 'LV']
+metals = ['LI', 'BE', 'NA', 'MG', 'AL', 'K', 'CA', 'SC', 'TI', 'V', 'CR', 'MN', 'FE', 'CO', 'NI', 'CU', 'ZN', 'GA',
+          'RB', 'SR', 'Y', 'ZR', 'NB', 'MO', 'TC', 'RU', 'RH', 'PD', 'AG', 'CD', 'IN', 'SN', 'CS', 'BA', 'LA', 'CE',
+          'PR', 'ND', 'PM', 'SM', 'EU', 'GD', 'TB', 'DY', 'HO', 'ER', 'TM', 'YB', 'LU', 'HF', 'TA', 'W', 'RE', 'OS',
+          'IR', 'PT', 'AU', 'HG', 'TL', 'PB', 'BI', 'PO', 'FR', 'RA', 'AC', 'TH', 'PA', 'U', 'NP', 'PU', 'AM', 'CM',
+          'BK', 'CF', 'ES', 'FM', 'MD', 'NO', 'LR', 'RF', 'DB', 'SG', 'BH', 'HS', 'MT', 'DS', 'RG', 'CN', 'NH', 'FL',
+          'MC', 'LV']
 
 # FLAGS WITH ATOM STRINGS
 atom_string_flags = ["atom_dist", "final_site", "orthosteric_site", "initial_site", "center_of_interface"]
 
-#TEMPLATE KEYWORDS
-#------------------
+# TEMPLATE KEYWORDS
+# ------------------
 
 GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
 
-#RESTARTS:
-#-----------
+# RESTARTS:
+# -----------
 
-FIRST_RESTART = ["all",]
+FIRST_RESTART = ["all", ]
 SECOND_RESTART = ["all", "adaptive"]
 THIRD_RESTART = ["all", "adaptive", "pele"]
-FOURTH_RESTART = ["all", "adaptive", "pele", "msm"] 
+FOURTH_RESTART = ["all", "adaptive", "pele", "msm"]
 
-#PATHS
-#-------
+# PATHS
+# -------
 
 DIR = os.path.dirname(os.path.dirname(__file__))
 ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
 
 # MESSAGES & ERRORS
-#-----------------
+# -----------------
 
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
 SYSTEM = "\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"

@@ -292,6 +292,13 @@ class YamlParser(object):
         self.saturated_mutagenesis = data.get(valid_flags["saturated_mutagenesis"], None)
         self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
 
+        # Covalent docking
+        self.covalent_residue = data.get(valid_flags["covalent_residue"], None)
+        self.nonbonding_radius = data.get(valid_flags["nonbonding_radius"], None)
+        self.number_of_trials = data.get(valid_flags["number_of_trials"], None)
+        self.sidechain_gridres = data.get(valid_flags["sidechain_gridres"], None)
+        self.refinement_distance = data.get(valid_flags["refinement_distance"], None)
+
         if self.test:
             warnings.warn(
                 "WARNING: This simulation is a test do not use the input files to run production simulations"

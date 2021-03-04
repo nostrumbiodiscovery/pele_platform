@@ -292,7 +292,12 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
             if args.atom_dist
             else ""
         )
+
         env.native = metrics.rsmd_to_json(args.native, env.chain) if args.native else ""
+
+        if args.covalent_residue:
+            env.local_nonbonding_energy = metrics.local_nonbonding_energy_json(args.covalent_residue, args.nonbonding_radius)
+            env.metrics = env.metrics + env.local_nonbonding_energy
 
         # metal polarisation
         if env.polarize_metals:

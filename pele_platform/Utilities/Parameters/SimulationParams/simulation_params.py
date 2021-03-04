@@ -1,6 +1,7 @@
 import random
 import os
 import glob
+from string import Template
 
 import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
@@ -37,6 +38,7 @@ class SimulationParams(
         self.output_params(args)
         self.analysis_params(args)
         self.constraints_params(args)
+        self.covalent_docking_params(args)
 
         # Create all simulation types (could be more efficient --> chnage in future)
         super().generate_msm_params(args)
@@ -49,7 +51,9 @@ class SimulationParams(
         # rna.RNAParams.__init__(self, args)
 
     def simulation_type(self, args):
-        self.adaptive = True if args.package in ["site_finder", "adaptive", "PPI"]  else None
+        self.adaptive = (
+            True if args.package in ["site_finder", "adaptive", "PPI"] else None
+        )
         self.frag_pele = True if args.package == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
@@ -67,7 +71,7 @@ class SimulationParams(
         self.chain = args.chain
         if self.adaptive:
             assert (
-                self.system and self.residue and self.chain
+                    self.system and self.residue and self.chain
             ), "User must define input, residue and chain"
         self.debug = args.debug if args.debug else False
         self.pele_steps = (
@@ -395,7 +399,11 @@ class SimulationParams(
         self.forcefield = args.forcefield
         self.mae_lig = args.mae_lig
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
-        self.gridres = args.gridres
+        self.gridres = (
+            args.gridres
+            if args.gridres is not None
+            else self.simulation_params.get("gridres", 10)
+        )
 
     def water_params(self, args):
         self.water_temp = (
@@ -458,7 +466,7 @@ class SimulationParams(
             else:
                 self.box_center = [str(x) for x in args.box_center]
                 self.box_center = (
-                    "[" + ",".join([str(coord) for coord in self.box_center]) + "]"
+                        "[" + ",".join([str(coord) for coord in self.box_center]) + "]"
                 )
         else:
             self.box_center = self.simulation_params.get("box_center", None)
@@ -514,3 +522,52 @@ class SimulationParams(
                     flag, self.simulation_params.get(flag, defaults[flag])
                 )
             setattr(self, flag, flag_value)
+
+    def covalent_docking_params(self, args):
+        self.covalent_residue = args.covalent_residue if args.covalent_residue else None
+        self.sidechain_perturbation = (
+            "" if not args.covalent_residue else cs.SIDECHAIN_PERTURBATION
+        )
+        self.refinement_distance = (
+            args.refinement_distance
+            if args.refinement_distance is not None
+            else self.simulation_params.get("refinement_distance", None)
+        )
+
+        self.refinement_distance_template = '"refinementDistance": {},'.format(
+            self.refinement_distance) if self.refinement_distance is not None else ""
+
+        self.sidechain_gridres = (
+            args.sidechain_gridres
+            if args.sidechain_gridres is not None
+            else self.simulation_params.get("sidechain_gridres", 10)
+        )
+        self.nonbonding_radius = (
+            args.nonbonding_radius
+            if args.nonbonding_radius is not None
+            else self.simulation_params.get("nonbonding_radius", 20.0)
+        )
+        self.number_of_trials = (
+            args.number_of_trials
+            if args.number_of_trials is not None
+            else self.simulation_params.get("number_of_trials", 20)
+        )
+
+        if self.covalent_residue:
+            self.sasa = cs.SASA_COVALENT.format(self.covalent_residue)
+
+        self._fill_sidechain_template()
+
+    def _fill_sidechain_template(self):
+        """
+        Fills the template string for side chain perturbation.
+        """
+        variables = {"COVALENT_RESIDUE": self.covalent_residue,
+                     "OVERLAP": self.overlap_factor,
+                     "STERIC_TRIALS": self.steric_trials,
+                     "TRIALS": self.number_of_trials,
+                     "GRIDRES": self.sidechain_gridres,
+                     "REFINEMENT_DISTANCE": self.refinement_distance_template}
+
+        template = Template(str(self.sidechain_perturbation))
+        self.sidechain_perturbation = template.safe_substitute(variables)
