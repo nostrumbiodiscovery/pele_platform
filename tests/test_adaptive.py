@@ -1,4 +1,6 @@
 import os
+import math
+import sys
 import glob
 import shutil
 import pele_platform.constants.constants as cs
@@ -186,13 +188,35 @@ def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
 
-def check_file(folder, filename, values, errors):
+def truncate(f, n):
+    return math.floor(f * 10 ** n) / 10 ** n
+
+def check_file(folder, filename, values, errors, subdelimiter=None, truncate_digits_to=4):
    filename = os.path.join(folder, filename)
+   print(values)
+   print('---------------------')
+   print('filename:', filename)
    with open(filename, "r") as f:
       lines = f.readlines()
-      for value in values:
-          if value not in "".join(lines):
-              errors.append(value) 
+      print('lines:',lines)
+      if subdelimiter is None:
+          for value in values:
+              if value not in "".join(lines):
+                  errors.append(value)
+
+      elif isinstance(subdelimiter, str):
+          for value in values:
+              splitted_values = value.split(subdelimiter)
+          for splitted_value in splitted_values:
+             if splitted_value.replace('.','').replace('-','').isnumeric():
+                 if str(truncate(float(splitted_value), truncate_digits_to)) not in "".join(lines): 
+                     errors.append(value)
+             else:
+                 if splitted_value not in "".join(lines):
+                     errors.append(splitted_value)
+      else:
+          raise TypeError("Wrong subdelimiter type")
+
    return errors
 
 def test_gpcr(args=GPCR_ARGS):
