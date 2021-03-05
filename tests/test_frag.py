@@ -46,18 +46,47 @@ point_analysis_lines = [
 ]
 
 
-def test_frag_sim(ext_args=FRAG_SIM_ARGS, output="1w7h_preparation_structure_2w_aminoC1N1"):
+def test_frag_sim(ext_args=FRAG_SIM_ARGS,
+                  output="1w7h_preparation_structure_2w_aminoC1N1"):
+    """
+    Runs FragPELE test simulation.
+
+    Parameters
+    ----------
+    ext_args: PELE input file.
+    output: Output folder name.
+
+    """
     if os.path.exists(output):
         shutil.rmtree(output)
     job = main.run_platform(ext_args)
 
 
-def test_frag_core(ext_args=FRAG_CORE_ARGS, output="1w7h_preparation_structure_2w_aminoC1N1"):
+def test_frag_core(ext_args=FRAG_CORE_ARGS,
+                   output="1w7h_preparation_structure_2w_aminoC1N1"):
+    """
+    Tests FragPELE growing method using an SDF with full ligands.
+
+    Parameters
+    ----------
+    ext_args: PELE input file.
+    output: Output folder name.
+    """
     if os.path.exists(output):
         shutil.rmtree(output)
     job = main.run_platform(ext_args)
 
-def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
+
+def test_flags(ext_args=FLAGS_ARGS,
+               output="water_processed_aminoCA1N1"):
+    """
+    Checks input file flags.
+
+    Parameters
+    ----------
+    ext_args: PELE input file.
+    output: Output folder name.
+    """
     FRAG_FLAGS = ['"seed" : 3000',]
     errors = []
     if os.path.exists(output): shutil.rmtree(output, ignore_errors=True)
@@ -68,6 +97,13 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     assert not errors
 
 def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
+    """
+    Tests the SDF joiner.
+
+    Parameters
+    ----------
+    ext_args: PELE input file.
+    """
     files = glob.glob(ext_args)
     for file in files:
         try:
@@ -76,7 +112,13 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
             assert False
 
 def test_sdf_libraries(ext_args=FRAG_SDF_LIBRARIES):
-    
+    """
+    Tests the growing of fragments from a custom-made SDF library.
+
+    Parameters
+    ----------
+    ext_args: PELE input file.
+    """
     if os.path.exists("input.conf"):
         os.remove("input.conf")
     
@@ -87,7 +129,13 @@ def test_sdf_libraries(ext_args=FRAG_SDF_LIBRARIES):
     
 
 def test_pdb_libraries(ext_args=FRAG_PDB_LIBRARIES):
-    
+    """
+    Tests the growing of fragments from a custom-made PDB library.
+
+    Parameters
+    ----------
+    ext_args: PELE input file.
+    """
     if os.path.exists("input.conf"):
         os.remove("input.conf")
     
@@ -96,20 +144,34 @@ def test_pdb_libraries(ext_args=FRAG_PDB_LIBRARIES):
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
 
+
 def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
-    
+    """
+    Tests the automated analysis to retrieve most promising fragments
+    from a custom-made library based on their proximity to a certain point.
+
+    Parameters
+    ----------
+    ext_args: PELE input file.
+    """
     output = os.path.join(test_path, "frag/analysis_data")
     job = main.run_platform(ext_args)
     errors = []
     errors = td.check_file(os.getcwd(), "point_analysis.csv", point_analysis_lines, errors, ",", 4)
     assert not errors
 
+
 def test_symmetry(ext_args=FRAG_SYMMETRY):
+    """
+    Tests the asymmetric hydrogen detector.
+
+    Parameters
+    ----------
+    ext_args: PELE input file.
+    """
     if os.path.exists("input.conf"):
         os.remove("input.conf")
-    
     job = main.run_platform(ext_args)
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
-
