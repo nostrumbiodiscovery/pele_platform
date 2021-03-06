@@ -13,9 +13,9 @@ import pele_platform.Adaptive.simulation as si
 
 @dataclass
 class SiteFinderLauncher:
-    args: pv.EnviroBuilder
+    args: pv.ParametersBuilder
 
-    def run_site_finder(self) -> (pv.EnviroBuilder, pv.EnviroBuilder):
+    def run_site_finder(self) -> (pv.ParametersBuilder, pv.ParametersBuilder):
         """
         Launch site_finder simulation.
         1) Run global exploration to identify the most important pockets

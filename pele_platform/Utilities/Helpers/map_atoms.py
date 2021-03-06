@@ -22,8 +22,8 @@ class AtomMapper:
 
     def __init__(
         self,
-        args: pele_env.EnviroBuilder,
-        env: pele_env.EnviroBuilder,
+        args: pele_env.ParametersBuilder,
+        env: pele_env.ParametersBuilder,
         original_system: str,
         flags_to_check: List[str] = None,
     ) -> None:
@@ -40,7 +40,7 @@ class AtomMapper:
             if getattr(self.args, arg, None) is not None
         ]
 
-    def run(self) -> pele_env.EnviroBuilder:
+    def run(self) -> pele_env.ParametersBuilder:
         """
         Run the whole mapping process.
 

@@ -8,7 +8,7 @@ import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.simulation as si
 
 
-def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
+def run_ppi(parsed_yaml: dict) -> (pv.ParametersBuilder, pv.ParametersBuilder):
 
 
     # Let user choose working folder

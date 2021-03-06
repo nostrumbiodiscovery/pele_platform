@@ -3,9 +3,9 @@ import pele_platform.Utilities.Parameters.pele_env as pele
 
 
 
-class FragParameters(pele.EnviroBuilder, water.FragWaterParams,
-    files.FragInputFiles, simulation.FragSimulationParameters,
-    metrics.FragMetrics):
+class FragParameters(pele.ParametersBuilder, water.FragWaterParams,
+                     files.FragInputFiles, simulation.FragSimulationParameters,
+                     metrics.FragMetrics):
 
     def __init__(self, args):
         self.software = "Frag"

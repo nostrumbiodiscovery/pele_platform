@@ -15,7 +15,7 @@ class LigandParametrization:
     2) Copy user's external files
     '''
 
-    env: pv.EnviroBuilder
+    env: pv.ParametersBuilder
 
     def generate(self) -> None:
         #Generate ligand forcefield parameters
