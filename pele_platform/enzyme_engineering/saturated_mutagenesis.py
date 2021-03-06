@@ -33,7 +33,7 @@ class SaturatedMutagenesis:
     subset_folder: str
     See Also folder name, default = "Subset_"
     """
-    env: pele_env.EnviroBuilder
+    env: pele_env.ParametersBuilder
     already_computed: List = field(default_factory=list)
     all_jobs: List = field(default_factory=list)
     original_dir: str = os.path.abspath(os.getcwd())
@@ -104,7 +104,7 @@ class SaturatedMutagenesis:
 
         Parameters
         ----------
-        job: pele_env.EnviroBuilder
+        job: pele_env.ParametersBuilder
             Output job parameters.
         """
         output_path = os.path.join(job.pele_dir, job.output)
@@ -130,7 +130,7 @@ class SaturatedMutagenesis:
 
         Parameters
         ----------
-        job: pele_env.EnviroBuilder
+        job: pele_env.ParametersBuilder
             Object returned from simulation.run_adaptive
         """
         logger_file = os.path.join(self.working_folder, "completed_mutations.log")

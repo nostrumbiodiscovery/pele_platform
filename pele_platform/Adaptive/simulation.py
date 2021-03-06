@@ -25,7 +25,7 @@ import pele_platform.Adaptive.solvent as sv
 import pele_platform.Adaptive.pca as pca
 
 
-def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
+def run_adaptive(args: pv.ParametersBuilder) -> pv.ParametersBuilder:
     """
     Main function to prepare and launch simulation
 
@@ -34,7 +34,7 @@ def run_adaptive(args: pv.EnviroBuilder) -> pv.EnviroBuilder:
     3) Launch simulation
     4) Analyse simulation
     """
-    env = pele.EnviroBuilder()
+    env = pele.ParametersBuilder()
     env.software = "Adaptive"
     env.build_adaptive_variables(args)
     env.create_files_and_folders()

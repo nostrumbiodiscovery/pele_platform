@@ -6,7 +6,7 @@ matplotlib
 pandas
 pytest
 AdaptivePELE
-PPPele==1.0.2
+PPPele==1.0.5
 ploprottemp==1.0.1
 scikit-learn>0.20
 fpdf

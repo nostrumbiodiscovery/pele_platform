@@ -13,7 +13,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
     pele_file: str
     topology: str
 
-    def generate_inputs(self, env: pv.EnviroBuilder, water_obj: wt.WaterIncluder) -> None:
+    def generate_inputs(self, env: pv.ParametersBuilder, water_obj: wt.WaterIncluder) -> None:
         # Fill in simulation template with 
         # simulation parameters specified in  
         # pv.EnviroBuilder
@@ -27,7 +27,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             self.run()
         env.logger.info("Simulation run successfully (:\n\n")
 
-    def fill_pele_template(self, env: pv.EnviroBuilder, water_obj: wt.WaterIncluder) -> None:
+    def fill_pele_template(self, env: pv.ParametersBuilder, water_obj: wt.WaterIncluder) -> None:
         # Fill in PELE template
         self.pele_keywords = { "PERTURBATION": env.perturbation, "SELECTION_TO_PERTURB": env.selection_to_perturb,
                         "BE": env.binding_energy, "SASA": env.sasa,
@@ -47,7 +47,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
-    def fill_adaptive_template(self, env: pv.EnviroBuilder) -> None:
+    def fill_adaptive_template(self, env: pv.ParametersBuilder) -> None:
         # Fill in adaptive template
         self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.output, "INPUT":env.adap_ex_input,
                 "CPUS":env.cpus, "PELE_CFILE": os.path.basename(self.pele_file), "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,
