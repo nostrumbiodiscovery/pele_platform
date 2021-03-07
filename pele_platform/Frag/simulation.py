@@ -8,32 +8,18 @@ import pele_platform.Frag.parameters.main as mn
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
-from pele_platform.Utilities.Parameters import pele_env
-from pele_platform.Frag.parameters import (files, simulation, opcionals,
+
+from pele_platform.Frag.parameters import (files, simulation, optional,
                                            water, metrics)
 
 
-class FragRunner(mn.FragParameters):
+class FragRunner(object):
 
     def __init__(self, args):
-        builder = pele_env.ParametersBuilder()
+        from pele_platform.Utilities.Parameters import ParametersBuilder
+
+        builder = ParametersBuilder()
         parameters = builder.build_frag_variables(args)
-
-        # Water Parameters
-        water.FragWaterParams.__init__(parameters, args.frag_core)
-
-        # Frag Input_files parameters
-        files.FragInputFiles.__init__(parameters, args)
-
-        # Frag Simulation Parameters
-        simulation.FragSimulationParameters.__init__(parameters, args)
-
-        # Frag Metric Parameters
-        metrics.FragMetrics.__init__(parameters, args)
-
-        # Frag Optional Parameters
-        opcionals.FragOpcionalParameters.__init__(parameters, args)
-
         self._parameters = parameters
 
     @property

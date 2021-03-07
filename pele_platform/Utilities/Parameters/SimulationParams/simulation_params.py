@@ -25,7 +25,6 @@ class SimulationParams(
     ppi.PPIParams,
 ):
     def __init__(self, args):
-        print('ep4321')
         self.simulation_type(args)
         self.main_pele_params(args)
         self.main_adaptive_params(args)

@@ -1,13 +1,15 @@
-import os
-import shutil
-import logging
-from collections import OrderedDict
-from pele_platform.constants import constants
-from pele_platform.features import adaptive
-from pele_platform.features import frag
-from pele_platform.Utilities.Helpers import helpers
-from pele_platform.Utilities.Parameters.SimulationParams import simulation_params
-from pele_platform.Utilities.Parameters.SimulationFolders import simulation_folders
+"""
+This module holds the classes and methods to build and manage the parameters
+that are required by the PELE Platform to run the different workflows.
+"""
+
+__all__ = ["ParametersBuilder", "Parameters"]
+
+
+from pele_platform.Utilities.Parameters.SimulationParams import \
+    simulation_params
+from pele_platform.Utilities.Parameters.SimulationFolders import \
+    simulation_folders
 
 
 class ParametersBuilder(object):
@@ -40,6 +42,10 @@ class ParametersBuilder(object):
         parameters : a Parameters object
             The Parameters object containing the parameters for PELE
         """
+        import os
+        from pele_platform.constants import constants
+        from pele_platform.features import adaptive
+        from pele_platform.Utilities.Helpers import helpers
 
         # Define main PELE directory
         main_dir = os.path.abspath("{}_Pele".format(args.residue))
@@ -104,13 +110,38 @@ class ParametersBuilder(object):
         parameters : a Parameters object
             The Parameters object containing the parameters for PELE
         """
-        # Retrieve the specific args for adaptive
+        from pele_platform.features import frag
+        from pele_platform.Frag.parameters import FragWaterParams
+        from pele_platform.Frag.parameters import FragInputFiles
+        from pele_platform.Frag.parameters import FragSimulationParameters
+        from pele_platform.Frag.parameters import FragMetrics
+        from pele_platform.Frag.parameters import FragOptionalParameters
+
+        # Retrieve the specific args for FragPELE
         specific_args = frag.retrieve_software_settings(args)
 
         # Initialize Parameters object
         self._parameters = Parameters(args, specific_args,
                                       initialize_simulation_paths=False)
         self._initialized = True
+
+        # Initialize water parameters for FragPELE
+        FragWaterParams(self.parameters, args)
+
+        # Initialize file parameters for FragPELE
+        FragInputFiles(self.parameters, args)
+
+        # Initialize simulation parameters for FragPELE
+        FragSimulationParameters(self.parameters, args)
+
+        # Initialize metrics parameters for FragPELE
+        FragMetrics(self.parameters, args)
+
+        # Initialize optional parameters for FragPELE
+        FragOptionalParameters(self.parameters, args)
+
+        # Keep initial arguments
+        self.parameters.args = args
 
         # Create logger
         self.parameters.create_logger(".")
@@ -233,6 +264,8 @@ class Parameters(simulation_params.SimulationParams,
         """
             Create pele folders
         """
+        from pele_platform.Utilities.Helpers import helpers
+
         for folder in self.folders:
             helpers.create_dir(self.pele_dir, folder)
 
@@ -240,12 +273,26 @@ class Parameters(simulation_params.SimulationParams,
         """
             Copy templates
         """
+        import os
+        import shutil
 
         # Actions
         for file, destination_name in zip(self.files, self.file_names):
             shutil.copy(file, os.path.join(self.pele_dir, destination_name))
 
     def create_logger(self, directory=None):
+        """
+        Given a directory, it initiates a logger in that place.
+
+        Parameters
+        ----------
+        directory : str
+            The directory where the logger will be stored. Default uses the
+            main PELE directory
+        """
+        import os
+        import logging
+
         directory = directory if directory else self.pele_dir
         log_name = os.path.join(directory, "{}.log".format(self.residue))
         self.logger = logging.getLogger(__name__)
@@ -294,6 +341,8 @@ class Parameters(simulation_params.SimulationParams,
         parameters_dict : an OrderedDict object
             The dictionary representation of the current Parameters object.
         """
+        from collections import OrderedDict
+
         parameters_dict = OrderedDict()
 
         for attribute, value in self.__dict__.items():

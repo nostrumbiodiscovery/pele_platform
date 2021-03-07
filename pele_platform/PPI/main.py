@@ -4,7 +4,7 @@ from pele_platform.site_finder.cluster import cluster_best_structures
 from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
 from pele_platform.Utilities.Helpers.helpers import cd, is_repeated, is_last
-import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Adaptive.simulation as si
 
 
