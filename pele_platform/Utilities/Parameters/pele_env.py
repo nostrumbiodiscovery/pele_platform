@@ -1,6 +1,7 @@
 import os
 import shutil
 import logging
+from collections import OrderedDict
 from pele_platform.constants import constants
 from pele_platform.features import adaptive
 from pele_platform.features import frag
@@ -13,16 +14,13 @@ class ParametersBuilder(object):
     """
     It builds a Parameters instance and it creates the required folders and
     files
-
-    .. todo::
-       * Consider removing the functionality about the creation of files
-         and folders outside this method.
     """
+
     def __init__(self):
         """
         It initializes a ParametersBuilder object.
         """
-        self.parameters = None
+        self._parameters = None
         self._initialized = False
 
     def build_adaptive_variables(self, args):
@@ -33,33 +31,195 @@ class ParametersBuilder(object):
 
         Parameters
         ----------
-        args :
+        args : a YamlParser object
+            The YamlParser object containing the input parameters chosen
+            by the user
+
+        Returns
+        -------
+        parameters : a Parameters object
+            The Parameters object containing the parameters for PELE
         """
-        # Define main path
-        pele_dir = os.path.abspath("{}_Pele".format(args.residue))
+
+        # Define main PELE directory
+        main_dir = os.path.abspath("{}_Pele".format(args.residue))
+
+        # Set the PELE directory
+        # In case that folder is not set by the user, we will try to suggest
+        # the best candidate considering whether we want to restart a previous
+        # simulation or we want to run a new one from scratch.
         if not args.folder:
-            self.pele_dir = helpers.is_repeated(pele_dir) if args.restart in constants.FIRST_RESTART else helpers.is_last(pele_dir)
-            self.pele_dir = helpers.is_repeated(pele_dir) if not args.adaptive_restart else helpers.is_last(pele_dir)
+            # Check if the simulation is being restarted or not
+            # TODO the restart flag is undocumented and counterintuitive
+            #      since it apparently is doing the opposite of
+            #      adaptive_restart
+            if args.restart in constants.FIRST_RESTART:
+                pele_dir = helpers.is_repeated(main_dir)
+            else:
+                pele_dir = helpers.is_last(main_dir)
+
+            # Check if the adaptive simulation is being restarted or not
+            if not args.adaptive_restart:
+                # In case of a fresh start: get a new folder name
+                pele_dir = helpers.is_repeated(main_dir)
+            else:
+                # In case of a restart: take the last folder name
+                pele_dir = helpers.is_last(main_dir)
+
+        # In case that the user has specified the output folder, we will
+        # use it, regardless it already exists.
         else:
-            self.pele_dir = os.path.abspath(args.folder)
-        #####Define default variables, files and folder "HIDING VARIABLES " --> CHANGE#########
-        for key, value in adaptive.retrieve_software_settings(args, self.pele_dir).items():
-            setattr(self, key, value)
-        #####Initialize all variables by combining default and user input######
-        simulation_params.SimulationParams.__init__(self, args)
-        simulation_folders.SimulationPaths.__init__(self, args)
-        for key, value in adaptive.retrieve_software_settings(args, self.pele_dir).items():
-            setattr(self, key, value)
+            pele_dir = os.path.abspath(args.folder)
+
+        # Retrieve the specific args for adaptive
+        specific_args = adaptive.retrieve_software_settings(args,
+                                                            pele_dir)
+
+        # Add pele_dir
+        specific_args['pele_dir'] = pele_dir
+
+        # Initialize Parameters object
+        self._parameters = Parameters(args, specific_args)
+        self._initialized = True
+
+        # Set software
+        self.parameters.software = "Adaptive"
+
+        return self.parameters
 
     def build_frag_variables(self, args):
-        # Define default variables, files and folder "HIDING VARIABLES " --> CHANGE
-        for key, value in frag.retrieve_software_settings(args).items():
+        """
+        It builds the parameters for frag, according to the arguments
+        that are supplied, and returns the corresponding Parameters
+        instance.
+
+        Parameters
+        ----------
+        args : a YamlParser object
+            The YamlParser object containing the input parameters chosen
+            by the user
+
+        Returns
+        -------
+        parameters : a Parameters object
+            The Parameters object containing the parameters for PELE
+        """
+        # Retrieve the specific args for adaptive
+        specific_args = frag.retrieve_software_settings(args)
+
+        # Initialize Parameters object
+        self._parameters = Parameters(args, specific_args,
+                                      initialize_simulation_paths=False)
+        self._initialized = True
+
+        # Create logger
+        self.parameters.create_logger(".")
+
+        # Set software
+        self.parameters.software = "Frag"
+
+        return self.parameters
+
+    @property
+    def initialized(self):
+        """
+        It returns the initialization state of the builder. If this builder
+        has already built a Parameters object before, it will return a True.
+        Otherwise, it will return a False.
+
+        Returns
+        -------
+        initialized : bool
+            Whether this ParametersBuilder has already been used to build
+            a Parameters object or not
+        """
+        return self._initialized
+
+    @property
+    def parameters(self):
+        """
+        It returns the Parameters object that has been built by the current
+        ParametersBuilder instance, if any. In case that it has not been built
+        yet (ParametersBuilder not initialized), it will return None.
+
+        Returns
+        -------
+        _parameters : a Parameters object
+            The Parameters object containing the right parameters according
+            to the input given by the user
+        """
+        return self._parameters
+
+
+class Parameters(simulation_params.SimulationParams,
+                 simulation_folders.SimulationPaths):
+    """
+    Base parameters class where the PELE Platform parameters are stored
+    and manipulated.
+
+    .. todo ::
+       * This class should be serializable. For example, we should be able to
+         represent it as a json format at any time. We need to implement
+         an abstract class for this purpose, something like in:
+         https://github.com/openforcefield/openff-toolkit/blob/master/openff/toolkit/utils/serialization.py#L25
+
+        * The args parameter that is required must be refactored. Among other
+          things, it must support a Python API and its initialization and
+          modification must be as easy and straightforward as possible.
+
+       * Consider moving the functionality about the creation of files
+         and folders outside this method.
+    """
+
+    def __init__(self, args, specific_args=None,
+                 initialize_simulation_params=True,
+                 initialize_simulation_paths=True):
+        """
+        It initializes a Parameters object.
+
+        .. todo ::
+           * We need to refactor the inheritance from
+              - simulation_params.SimulationParams and
+              - simulation_folders.SimulationPaths
+             since the parameters initialization is currently very
+             complex and confusing.
+
+        Parameters
+        ----------
+        args : a YamlParser object
+            The YamlParser object containing the input parameters chosen
+            by the user
+        specific_args : dict
+            The dictionary containing the specific parameters for this
+            Parameter object
+        initialize_simulation_params : bool
+            Whether to initialize the simulation parameters or not. Default
+            is True
+        initialize_simulation_paths : bool
+            Whether to initialize the simulation paths or not. Default
+            is True
+        """
+        # CA interval is first initialized to None
+        self.ca_interval = None
+
+        # If specific_args is not defined, assign and empty dictionary
+        if specific_args is None:
+            specific_args = dict()
+
+        # Set specific parameters, they need to be set before initializing
+        # the rest
+        for key, value in specific_args.items():
             setattr(self, key, value)
-        # Initialize all variables by combining default and user input
-        simulation_params.SimulationParams.__init__(self, args)
-        for key, value in frag.retrieve_software_settings(args).items():
+
+        # Initialize the parameters from parent classes
+        if initialize_simulation_params:
+            simulation_params.SimulationParams.__init__(self, args)
+        if initialize_simulation_paths:
+            simulation_folders.SimulationPaths.__init__(self, args)
+
+        # We need to set the specific arguments again
+        for key, value in specific_args.items():
             setattr(self, key, value)
-        self.create_logger(".")
 
     def create_files_and_folders(self):
         if not self.adaptive_restart:
@@ -99,45 +259,48 @@ class ParametersBuilder(object):
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
 
-    @property
-    def initialized(self):
+    def to_json(self, indent=None):
         """
-        It returns the initialization state of the builder. If this builder
-        has already built a Parameters object before, it will return a True.
-        Otherwise, it will return a False.
+        Return a JSON serialized representation.
+        Specification: https://www.json.org/
 
-        Returns
-        -------
-        initialized : bool
-            Whether this ParametersBuilder has already been used to build
-            a Parameters object or not
-        """
-        return self._initialized
-
-
-class Parameters(simulation_params.SimulationParams,
-                 simulation_folders.SimulationPaths):
-    """
-    Base parameters class where the PELE Platform parameters are stored
-    and manipulated.
-
-    .. todo::
-       * This class should be serializable. For example, we should be able to
-         represent it as a json format at any time. We need to implement
-         an abstract class for this purpose, something like in:
-         https://github.com/openforcefield/openff-toolkit/blob/master/openff/toolkit/utils/serialization.py#L25
-    """
-
-    def __init__(self, args):
-        """
-        It initializes a Parameters object.
+    .. todo ::
+       * Consider moving this method to a general abstract class to
+         serialize classes.
 
         Parameters
         ----------
-        args : The
-        """
-        # Initialize the parameters from parent classes
-        super().__init__()
+        indent : int, optional, default=None
+            If not None, will pretty-print with specified number of spaces
+            for indentation
 
-        # CA interval is initialized to None
-        self.ca_interval = None
+        Returns
+        -------
+        serialized : str
+            A JSON serialized representation of the object
+        """
+        import json
+
+        d = self.to_dict()
+
+        return json.dumps(d, indent=indent)
+
+    def to_dict(self):
+        """
+        Return a dictionary representation of the Parameters object.
+
+        Returns
+        -------
+        parameters_dict : an OrderedDict object
+            The dictionary representation of the current Parameters object.
+        """
+        parameters_dict = OrderedDict()
+
+        for attribute, value in self.__dict__.items():
+            # Skip special and private attributes
+            if attribute.startswith('__') and attribute.endswith('__'):
+                continue
+
+            parameters_dict[attribute] = value
+
+        return parameters_dict

@@ -5,7 +5,7 @@ import PPP.main as ppp
 
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
 from pele_platform.Utilities.Helpers import helpers
-import pele_platform.Utilities.Parameters.pele_env as pele
+from pele_platform.Utilities.Parameters import pele_env
 import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.system_prep as sp
@@ -18,14 +18,13 @@ import pele_platform.Utilities.Helpers.constraints.smiles_constraints as smiles_
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Analysis.plots as pt
-import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Adaptive.ligand_parametrization as lg
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
 import pele_platform.Adaptive.pca as pca
 
 
-def run_adaptive(args: pv.ParametersBuilder) -> pv.ParametersBuilder:
+def run_adaptive(args):
     """
     Main function to prepare and launch simulation
 
@@ -34,11 +33,14 @@ def run_adaptive(args: pv.ParametersBuilder) -> pv.ParametersBuilder:
     3) Launch simulation
     4) Analyse simulation
     """
-    env = pele.ParametersBuilder()
-    env.software = "Adaptive"
-    env.build_adaptive_variables(args)
-    env.create_files_and_folders()
-    shutil.copy(args.yamlfile, env.pele_dir)
+    builder = pele_env.ParametersBuilder()
+    parameters = builder.build_adaptive_variables(args)
+    parameters.create_files_and_folders()
+    shutil.copy(args.yamlfile, parameters.pele_dir)
+
+    # TODO replace env references with parameters and remove following line
+    env = parameters
+    print(env.ca_interval)
 
     if env.adaptive_restart and not env.only_analysis:
         with helpers.cd(env.pele_dir):

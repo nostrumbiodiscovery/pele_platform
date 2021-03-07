@@ -101,9 +101,9 @@ if __name__ == "__main__":
     matplotlib.use("Agg")
 
     # Avoid Python2
-    from pele_platform.Checker import python_version
+    from .Checker.python_version import check_python_version
 
-    python_version.check_python_version()
+    check_python_version()
 
     # Parse yaml file from command-line arguments
     yaml_file = parse_args()
