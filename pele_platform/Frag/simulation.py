@@ -8,14 +8,37 @@ import pele_platform.Frag.parameters.main as mn
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
-import frag_pele.main as frag
+from pele_platform.Utilities.Parameters import pele_env
+from pele_platform.Frag.parameters import (files, simulation, opcionals,
+                                           water, metrics)
 
 
 class FragRunner(mn.FragParameters):
 
     def __init__(self, args):
-        args.system = args.frag_core
-        mn.FragParameters.__init__(self, args)
+        builder = pele_env.ParametersBuilder()
+        parameters = builder.build_frag_variables(args)
+
+        # Water Parameters
+        water.FragWaterParams.__init__(parameters, args.frag_core)
+
+        # Frag Input_files parameters
+        files.FragInputFiles.__init__(parameters, args)
+
+        # Frag Simulation Parameters
+        simulation.FragSimulationParameters.__init__(parameters, args)
+
+        # Frag Metric Parameters
+        metrics.FragMetrics.__init__(parameters, args)
+
+        # Frag Optional Parameters
+        opcionals.FragOpcionalParameters.__init__(parameters, args)
+
+        self._parameters = parameters
+
+    @property
+    def parameters(self):
+        return self._parameters
 
     def run_simulation(self):
         self._set_test_variables()
@@ -23,60 +46,82 @@ class FragRunner(mn.FragParameters):
         self._launch()
         self._analysis()
 
+        return self.parameters
+
     def _launch(self):
-        if self.ligands:  # Full ligands as sdf
-            fragment_files = self._prepare_input_file(logger=self.logger)
-        elif self.frag_library:
-            self.input = lb.main(self.frag_core_atom, self.frag_library, self.logger)
-        else:
-            fragment_files = None
+        params = self.parameters
+
+        fragment_files = None
+
+        if params.ligands:  # Full ligands as sdf
+            fragment_files = self._prepare_input_file(logger=params.logger)
+        elif params.frag_library:
+            params.input = lb.main(params.frag_core_atom,
+                                   params.frag_library,
+                                   params.logger)
         
-        if not self.only_analysis:
+        if not params.only_analysis:
             self._run()
         
-        if self.cleanup and fragment_files:
+        if params.cleanup and fragment_files:
             self._clean_up(fragment_files)
 
     def _prepare_control_file(self):
-        # Create tmp folder with frag control_file 
+        # Create tmp folder with frag control_file
+        params = self.parameters
+
         tmp_dir = tempfile.mkdtemp()
-        tmp_control_file = os.path.join(tmp_dir, os.path.basename(self.control_file))
-        shutil.copy(self.control_file, tmp_control_file)
-        adaptive = ad.SimulationBuilder("", tmp_control_file, self)
+        tmp_control_file = os.path.join(tmp_dir,
+                                        os.path.basename(params.control_file))
+        shutil.copy(params.control_file, tmp_control_file)
+        adaptive = ad.SimulationBuilder("", tmp_control_file, params)
         # Fill to time because we have flags inside flags
-        adaptive.fill_pele_template(self, self.water_object)
-        adaptive.fill_pele_template(self, self.water_object)
-        self.control_file = tmp_control_file
-        return self.control_file
+        adaptive.fill_pele_template(params, params.water_object)
+        adaptive.fill_pele_template(params, params.water_object)
+        self.parameters.control_file = tmp_control_file
+
+        return self.parameters.control_file
 
     def _set_test_variables(self):
-        if self.test:
-            self.gr_steps = 1
-            self.frag_steps = 2
-            self.frag_eq_steps = 1
-            self.temperature = 100000
-            self.anm_freq = 0
-            self.minimizatoon = 0
-            self.sidechain_freq = 0
-            self.water_freq = 0
-            self.cpus = 4
+        if self.parameters.test:
+            self.parameters.gr_steps = 1
+            self.parameters.frag_steps = 2
+            self.parameters.frag_eq_steps = 1
+            self.parameters.temperature = 100000
+            self.parameters.anm_freq = 0
+            self.parameters.minimizatoon = 0
+            self.parameters.sidechain_freq = 0
+            self.parameters.water_freq = 0
+            self.parameters.cpus = 4
         else:
             pass
 
     def _run(self):
-        if self.frag_run:
+        params = self.parameters
+
+        if params.frag_run:
             try:
-                frag.main(self.core_process, self.input, self.gr_steps, self.criteria, self.plop_path, self.spython,
-                          self.pele_exec, self.control_file, self.license, self.output_folder,
-                          self.report_name, "trajectory", self.cluster_folder, self.cpus, self.distcont, self.threshold,
-                          self.epsilon, self.condition, self.metricweights,
-                          self.nclusters, self.frag_eq_steps, self.frag_restart, self.min_overlap, self.max_overlap,
-                          self.chain_core, self.frag_chain, self.frag_steps, self.temperature, self.seed, self.gridres,
-                          self.banned, self.limit, self.mae,
-                          self.rename, self.threshold_clash, self.steering, self.translation_high, self.rotation_high,
-                          self.translation_low, self.rotation_low, self.explorative, self.frag_radius,
-                          self.sampling_control, self.pele_data, self.pele_documents,
-                          self.only_prepare, self.only_grow, self.no_check, self.debug, srun=self.usesrun)
+                frag.main(params.core_process, params.input, params.gr_steps,
+                          params.criteria, params.plop_path, params.spython,
+                          params.pele_exec, params.control_file,
+                          params.license, params.output_folder,
+                          params.report_name, "trajectory",
+                          params.cluster_folder, params.cpus, params.distcont,
+                          params.threshold, params.epsilon, params.condition,
+                          params.metricweights, params.nclusters,
+                          params.frag_eq_steps, params.frag_restart,
+                          params.min_overlap, params.max_overlap,
+                          params.chain_core, params.frag_chain,
+                          params.frag_steps, params.temperature, params.seed,
+                          params.gridres, params.banned, params.limit,
+                          params.mae, params.rename, params.threshold_clash,
+                          params.steering, params.translation_high,
+                          params.rotation_high, params.translation_low,
+                          params.rotation_low, params.explorative,
+                          params.frag_radius, params.sampling_control,
+                          params.pele_data, params.pele_documents,
+                          params.only_prepare, params.only_grow,
+                          params.no_check, params.debug, srun=params.usesrun)
             except Exception as e:
                 print("Skipped - FragPELE will not run.")
                 print(e)
@@ -85,45 +130,60 @@ class FragRunner(mn.FragParameters):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
 
-        self.input = "input.conf"
+        self.parameters.input = "input.conf"
+
+        params = self.parameters
 
         # Check input file
         limit_atoms_ligand = 100
-        ch.check_limit_number_atoms(self.ligands, limit_atoms_ligand)
+        ch.check_limit_number_atoms(params.ligands, limit_atoms_ligand)
         
         # Get core of the ligand
-        mol = Chem.MolFromPDBFile(self.core)
+        mol = Chem.MolFromPDBFile(params.core)
         try:
-            ligand_core = rd.SplitMolByPDBResidues(mol)[self.residue]
+            ligand_core = rd.SplitMolByPDBResidues(mol)[params.residue]
         except KeyError:
-            raise ce.MissResidueFlag("Missing residue flag to specify the ligand core residue name. i.e resname: 'LIG'")
-            
+            raise ce.MissResidueFlag("Missing residue flag to specify " +
+                                     "the ligand core residue name. " +
+                                     "i.e resname: 'LIG'")
 
         # Get sdf full grown ligands
-        ligands_grown = Chem.SDMolSupplier(self.ligands, removeHs=False)
+        ligands_grown = Chem.SDMolSupplier(params.ligands, removeHs=False)
         fragment_files = []
         
         # For each full grown ligand create neutral fragment
-        with open(self.input, "w") as fout:
+        with open(params.input, "w") as fout:
             pass
         for ligand in ligands_grown:
             Chem.AssignAtomChiralTagsFromStructure(ligand)
             try:
-                line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, logger=logger)
+                line, fragment = \
+                    self._create_fragment_from_ligand(ligand,
+                                                      ligand_core,
+                                                      logger=logger)
             except Exception as e:
                 try:
-                    line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, substructure=False)
+                    line, fragment = \
+                        self._create_fragment_from_ligand(ligand,
+                                                          ligand_core,
+                                                          substructure=False)
                 except Exception as e:
                     try:
                         # Try to fix symmetry
-                        line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, symmetry=True)
+                        line, fragment = \
+                            self._create_fragment_from_ligand(ligand,
+                                                              ligand_core,
+                                                              symmetry=True)
                     except Exception as e:
-                            # Try with second substructure search
-                        line, fragment = self._create_fragment_from_ligand(ligand, ligand_core, result=1, substructure=False)
+                        # Try with second substructure search
+                        line, fragment = \
+                            self._create_fragment_from_ligand(
+                                ligand, ligand_core,
+                                result=1, substructure=False)
 
             logger.info(f"Ligand {fragment.file} preprocessed")
             fragment_files.append(fragment.file)
-            with open(self.input, "a") as fout:
+            with open(params.input, "a") as fout:
                 fout.write(line + "\n")
 
         return fragment_files
@@ -132,8 +192,12 @@ class FragRunner(mn.FragParameters):
         import rdkit.Chem.AllChem as rp
         from rdkit import Chem
 
-        fragment, old_atoms, hydrogen_core, atom_core, atom_frag, mapping, correct = hp._build_fragment_from_complex(
-            self.core, self.residue, ligand, ligand_core, result, substructure, symmetry)
+        params = self.parameters
+
+        fragment, old_atoms, hydrogen_core, atom_core, atom_frag, \
+            mapping, correct = hp._build_fragment_from_complex(
+                params.core, params.residue, ligand, ligand_core,
+                result, substructure, symmetry)
 
         # temporary override to fix segmentation faults
         filename = "temp.pdb"
@@ -151,10 +215,14 @@ class FragRunner(mn.FragParameters):
             print("Ligand incorrect")
         return line, fragment
        
-    def _analysis(self):                                                                                                                                                       
-        self.analysis_to_point = self.args.analysis_to_point                                                                                                                            
-        if self.analysis_to_point and self.folder:                                                                                                                                      
-            ana.main(path=self.folder, atomCoords=self.analysis_to_point, pattern=os.path.basename(self.system))  
+    def _analysis(self):
+        self.parameters.analysis_to_point = \
+            self.parameters.args.analysis_to_point
+
+        if self.parameters.analysis_to_point and self.parameters.folder:
+            ana.main(path=self.parameters.folder,
+                     atomCoords=self.parameters.analysis_to_point,
+                     pattern=os.path.basename(self.parameters.system))
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
