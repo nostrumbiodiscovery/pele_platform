@@ -5,7 +5,6 @@ import pele_platform.constants.constants as cs
 class SimulationPaths:
 
     def __init__(self, args):
-        print('ep1234')
         self.working_folder_paths(args)
         self.ligand_paths(args)
         self.complex_paths(args)

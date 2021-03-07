@@ -5,7 +5,7 @@ import PPP.main as ppp
 
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
 from pele_platform.Utilities.Helpers import helpers
-from pele_platform.Utilities.Parameters import pele_env
+from pele_platform.Utilities.Parameters import parameters
 import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.system_prep as sp
@@ -33,7 +33,7 @@ def run_adaptive(args):
     3) Launch simulation
     4) Analyse simulation
     """
-    builder = pele_env.ParametersBuilder()
+    builder = parameters.ParametersBuilder()
     parameters = builder.build_adaptive_variables(args)
     parameters.create_files_and_folders()
     shutil.copy(args.yamlfile, parameters.pele_dir)

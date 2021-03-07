@@ -7,7 +7,7 @@ import pele_platform.gpcr.main as gpcr
 import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
 from pele_platform.enzyme_engineering.saturated_mutagenesis import SaturatedMutagenesis
-import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Parameters.parameters as pv
 import argparse
 
 

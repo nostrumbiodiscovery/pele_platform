@@ -1,9 +1,9 @@
-from pele_platform.Frag.parameters import (files, simulation, opcionals,
+from pele_platform.Frag.parameters import (files, simulation, optional,
                                            water, metrics)
-from pele_platform.Utilities.Parameters import pele_env
+from pele_platform.Utilities.Parameters import parameters
 
 # TODO deprecated, can be removed
-class FragParameters(pele_env.ParametersBuilder, water.FragWaterParams,
+class FragParameters(parameters.ParametersBuilder, water.FragWaterParams,
                      files.FragInputFiles, simulation.FragSimulationParameters,
                      metrics.FragMetrics):
 
@@ -26,7 +26,7 @@ class FragParameters(pele_env.ParametersBuilder, water.FragWaterParams,
         metrics.FragMetrics.__init__(self, args)
 
         # Frag Optional Parameters
-        opcionals.FragOpcionalParameters.__init__(self, args)
+        optional.FragOptionalParameters.__init__(self, args)
 
         # Keep initial arguments
         self.args = args

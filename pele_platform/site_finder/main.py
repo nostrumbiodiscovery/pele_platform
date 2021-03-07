@@ -7,7 +7,7 @@ import shutil
 from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Utilities.Helpers.helpers import cd, is_repeated, is_last, parallelize
 from pele_platform.Analysis.plots import _extract_coords
-import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Adaptive.simulation as si
 
 

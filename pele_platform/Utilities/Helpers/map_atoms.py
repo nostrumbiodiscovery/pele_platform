@@ -1,7 +1,7 @@
 from typing import Any, List, Union
 
 from pele_platform.Utilities.Helpers import helpers
-from pele_platform.Utilities.Parameters import pele_env
+from pele_platform.Utilities.Parameters import parameters
 from pele_platform.constants import constants
 
 
@@ -22,8 +22,8 @@ class AtomMapper:
 
     def __init__(
         self,
-        args: pele_env.ParametersBuilder,
-        env: pele_env.ParametersBuilder,
+        args: parameters.ParametersBuilder,
+        env: parameters.ParametersBuilder,
         original_system: str,
         flags_to_check: List[str] = None,
     ) -> None:
@@ -40,7 +40,7 @@ class AtomMapper:
             if getattr(self.args, arg, None) is not None
         ]
 
-    def run(self) -> pele_env.ParametersBuilder:
+    def run(self) -> parameters.ParametersBuilder:
         """
         Run the whole mapping process.
 

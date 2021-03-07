@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import os
 import AdaptivePELE.adaptiveSampling as ad
 from pele_platform.Utilities.Helpers import helpers, template_builder
-import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Utilities.Helpers.water as wt
 
 
