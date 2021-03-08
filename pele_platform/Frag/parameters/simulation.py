@@ -30,6 +30,8 @@ class FragSimulationParameters(object):
 
         from pele_platform.constants import constants
 
+        parameters.system = args.frag_core
+
         # Set number of growing steps
         if args.growing_steps:
             parameters.gr_steps = args.growing_steps
