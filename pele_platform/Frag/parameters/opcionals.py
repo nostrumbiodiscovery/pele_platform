@@ -1,4 +1,4 @@
-import pele_platform.Utilities.Helpers.constraints as cst
+import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 import pele_platform.constants.constants as cs
 
 
@@ -8,7 +8,7 @@ class FragOpcionalParameters():
         # SIMULATION CONTROL
         self.frag_run = args.frag_run
         # CONSTRAINTS
-        self.constraints = cst.retrieve_constraints(self.core, {}, {}, self.ca_constr, interval=self.ca_interval)
+        self.constraints = alpha_constraints.retrieve_constraints(self.core, interval=self.ca_interval, back_constr=self.ca_constr, ter_constr=self.terminal_constr)
         # CHAIN
         self.chain_core = args.chain_core if args.chain_core else self.simulation_params.get("chain_core", "L")
         # BOX

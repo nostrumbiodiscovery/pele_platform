@@ -5,6 +5,7 @@ from pele_platform.Utilities.Helpers import helpers, template_builder
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Utilities.Helpers.water as wt
 
+
 @dataclass
 class SimulationBuilder(template_builder.TemplateBuilder):
 
@@ -44,7 +45,6 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "PCA": env.pca, "COMPLEXES": env.complexes, "PELE_STEPS": env.frag_pele_steps, "OUTPUT_PATH": env.output_path,
                         "COM": env.com, "STEERING": env.steering, "MET_INTERACTION_RESTRICTIONS":env.met_interaction_restrictions,
                         "INTERACTION_RESTRICTIONS": env.interaction_restrictions}
-
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 

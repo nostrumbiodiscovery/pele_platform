@@ -53,10 +53,10 @@ BIAS_DEFAULTS_ADAPTIVE = [
 
 GLOBAL_DEFAULTS_ADAPTIVE = [
     '"type" : "inverselyProportional"',
-    '"peleSteps" : 4,',
+    '"peleSteps" : 8,',
     '"iterations" : 100,',
     '"processors" : 250,',
-    '[2.5, 5, 7]',
+    '[2.0, 5, 7]',
     '[1, 0.6, 0.0]'
 ]
 
@@ -95,7 +95,11 @@ REF_DEFAULTS_PELE = [
     '"temperature": 1000',
     '"displacementFactor" : 0.5',
     '"modesChangeFrequency" : 3,',
-    pp.RESCORING
+    pp.RESCORING,
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:251:_CA_" }',
+    '{ "type": "constrainAtomToPosition", "springConstant": 2.5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:9:_CA_" }',
+    '{ "type": "constrainAtomToPosition", "springConstant": 2.5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:17:_CA_" }',
 ]
 
 EXIT_DEFAULTS_ADAPTIVE = [
@@ -155,7 +159,11 @@ GPCR2_DEFAULTS_PELE = [
      '"radius": 10,',
      '"fixedCenter": [10,10,10]',
      '"numberOfStericTrials": 100,',
-     pp.GPCR_ORTH
+     pp.GPCR_ORTH,
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:65:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:70:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:60:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:347:_CA_" }'
 ]
 
 
@@ -178,7 +186,7 @@ def test_global_defaults(ext_args=GLOBAL_ARGS):
     job = main.run_platform(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GLOBAL_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GLOBAL_DEFAULTS_PELE, errors)
-    assert len(glob.glob(os.path.join(job.pele_dir, "input*.pdb"))) == (job.cpus-1)
+    assert len(glob.glob(os.path.join(job.inputs_dir, "input*.pdb"))) == (job.cpus-1)
     assert not errors
 
 def test_exit_defaults(ext_args=EXIT_ARGS):
