@@ -107,22 +107,16 @@ def test_metrics_and_conditions_to_json():
     assert not errors
 
 
-def test_SyntaxError_exception_1():
-    """
-    Unit test to throw an exception in a syntax error in input file (wrong number
-    of atoms).
-    """
-    check_SyntaxError_exception(ARGS_2)
+"""
+First test to throw an exception in a syntax error in input file (wrong number
+of atoms).
+
+Second test to throw an exception in a syntax error in input file (poorly defined metric).
+"""
 
 
-def test_SyntaxError_exception_2():
-    """
-    Unit test to throw an exception in a syntax error in input file (poorly defined metric).
-    """
-    check_SyntaxError_exception(ARGS_3)
-
-
-def check_SyntaxError_exception(file):
+@pytest.mark.parametrize("file", [ARGS_2, ARGS_3])
+def test_check_SyntaxError_exception(file):
     """
     Function to test an input file that should throw a Syntax Error exception.
 
