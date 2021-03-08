@@ -4,13 +4,10 @@ import shutil
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.checker as ch
-import pele_platform.Frag.parameters.main as mn
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
-
-from pele_platform.Frag.parameters import (files, simulation, optional,
-                                           water, metrics)
+import frag_pele.main as frag
 
 
 class FragRunner(object):

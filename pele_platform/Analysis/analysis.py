@@ -2,6 +2,7 @@
 This module manages the analysis toolkit of the platform.
 """
 
+
 class Analysis(object):
     """
     General class to manage all analysis operations.

@@ -82,7 +82,7 @@ def run_platform(input_yaml):
             + "does not look like a correct yaml file")
 
     # Initialize job launcher
-    from pele_platform.Utilities.Helpers import Launcher
+    from pele_platform.Utilities.Helpers.launcher import Launcher
 
     launcher = Launcher(yaml_obj)
 
