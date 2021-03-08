@@ -79,6 +79,37 @@ DISTANCE_ATOMS =     '''
                      }}
                      }},
                      '''
+
+DISTANCE_ATOMS_TAG = '''
+                     {{
+                     "type":"com_distance",
+                     "tag":"{0}",
+                     "selection_group_1":{{
+                     "atoms": {{ "ids":["{1}"]}}
+                     }},
+                     "selection_group_2":{{
+                     "atoms": {{ "ids":["{2}"]}}
+                     }}
+                     }},
+                     '''
+
+ANGLE_ATOMS_TAG = '''
+                     {{
+                     "type":"atomsAngle",
+                     "tag":"{0}",
+                     "selection_group_1":{{
+                     "atoms": {{ "ids":["{1}"]}}
+                     }},
+                     "selection_group_2":{{
+                     "atoms": {{ "ids":["{2}"]}}
+                     }},
+                     "selection_group_3":{{
+                     "atoms": {{ "ids":["{3}"]}}
+                     }}
+                     }},
+                     '''
+
+
 BOX = '''
 
                 "Box": {{
@@ -140,7 +171,14 @@ SASA='''
                         },
 '''
 
+INTERACTION_RESTRICTIONS='''
+,
 
+"interactionRestrictions":
+[
+	"{0}"
+]
+'''
 
 LIGAND = '"ligandResname" : "$LIG_RES",'
 

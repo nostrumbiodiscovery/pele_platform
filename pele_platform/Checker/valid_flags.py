@@ -176,7 +176,9 @@ VALID_FLAGS_PLATFORM = {"system": "system",
 "frag_library": "frag_library",
 "frag_core_atom": "frag_core_atom",
 "analysis_to_point": "analysis_to_point",
+"interaction_restrictions": "interaction_restrictions",
 "constraint_level": "constraint_level",
 "terminal_constr": "terminal_constr",
 "saturated_mutagenesis": "saturated_mutagenesis",
 "cpus_per_mutation": "cpus_per_mutation"}
+
