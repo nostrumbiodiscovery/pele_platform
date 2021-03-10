@@ -1,6 +1,6 @@
 import os
 import shutil
-import AdaptivePELE.adaptiveSampling as adt
+from AdaptivePELE import adaptiveSampling
 import PPP.main as ppp
 
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
@@ -40,7 +40,7 @@ def run_adaptive(args):
 
     if parameters.adaptive_restart and not parameters.only_analysis:
         with helpers.cd(parameters.pele_dir):
-            adt.main(parameters.ad_ex_temp)
+            adaptiveSampling.main(parameters.ad_ex_temp)
             parameters.logger.info("Simulation run successfully (:\n\n")
 
     elif not parameters.only_analysis:
@@ -295,7 +295,8 @@ def run_adaptive(args):
         )
         parameters.native = metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
 
-        # interaction restrictions
+        #interaction restrictions
+        # TODO this is not the place to initialize parameters for the interaction restrictions
         if args.interaction_restrictions:
             interaction_restrictions = ir.InteractionRestrictionsBuilder()
             interaction_restrictions.parse_interaction_restrictions(parameters.system, args.interaction_restrictions)
@@ -319,6 +320,12 @@ def run_adaptive(args):
             parameters.ad_ex_temp, parameters.pele_exit_temp, parameters.topology
         )
         adaptive.generate_inputs(parameters, water_obj)
+
+        # Run simulation only if we are not in debug mode
+        if not parameters.debug:
+            parameters.logger.info("Running Simulation")
+            adaptive.run()
+            parameters.logger.info("Simulation run successfully (:\n\n")
 
     # Run analysis
     if parameters.analyse and not parameters.debug:
