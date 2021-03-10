@@ -8,12 +8,30 @@ class Analysis(object):
     General class to manage all analysis operations.
     """
 
-    def __init__(self, environment):
+    def __init__(self, parameters):
         """
         It initializes an Analysis instance which it depends on
-        the general environment class of the PELE Platform.
+        the general Parameters class of the PELE Platform.
 
         Parameters
         ----------
-        environment : a PELE
+        parameters : a Parameters object
+            The Parameters object containing the parameters that belong
+            to the simulation
         """
+        self._parameters = parameters
+
+    @property
+    def parameters(self):
+        """
+        It returns the Parameters object to analyze.
+
+        Returns
+        -------
+        parameters : a Parameters object
+            The Parameters object containing the parameters that belong
+            to the simulation
+        """
+        return self._parameters
+
+

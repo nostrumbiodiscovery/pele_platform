@@ -35,6 +35,34 @@ def _extract_coords(info):
     return np.array(coords).ravel() * 10
 
 
+def _extract_raw_coords(info):
+    """
+    This method attempts to be an alternative coordinate extraction with
+    fewer memory demands.
+
+    .. todo ::
+       * info parameter should be replaced by something more self-explanatory.
+
+    Parameters
+    ----------
+    info : tuple[str, int, str, str]
+        The information
+    """
+    p, v, resname, topology = info
+    # Most time consuming step 0.1
+    traj = mdtraj.load_frame(p, v, top=topology)
+    atoms_info = traj.topology.to_dataframe()[0]
+    condition = atoms_info["resName"] == resname
+    atom_numbers_ligand = atoms_info[condition].index.tolist()
+    coords = []
+    for atom_num in atom_numbers_ligand:
+        try:
+            coords.extend(traj.xyz[0][atom_num].tolist())
+        except IndexError:
+            continue
+    return np.array(coords).ravel() * 10
+
+
 class PostProcessor:
     def __init__(
             self,
@@ -263,11 +291,12 @@ class PostProcessor:
         snapshots = poses[steps].tolist()
 
         # Extract coords
-        pool = Pool(processes=self.cpus)
         input_pool = [
             [p, v, self.residue, self.topology] for p, v in zip(paths, snapshots)
         ]
-        self.all_coords = pool.map(_extract_coords, input_pool)
+
+        with Pool(processes=self.cpus) as pool:
+            self.all_coords = pool.map(_extract_coords, input_pool)
 
         # Cluster
         assert self.all_coords[0][

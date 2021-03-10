@@ -10,6 +10,8 @@ from multiprocessing import Pool
 from functools import partial
 
 
+__all__ = ["get_suffix"]
+
 
 def silentremove(*args, **kwargs):
     for files in args:
@@ -272,3 +274,26 @@ def is_rdkit():
         return True
     except:
         raise ModuleNotFoundError("Please install rdkit with the following command: conda install -c conda-forge rdkit")
+
+
+def get_suffix(filename, separator='_'):
+    """
+    Given a filename, it returns its corresponding suffix.
+
+    Parameters
+    ----------
+    filename : str
+        The filename path
+    separator : str
+        The pattern that is used to separate the name root from the suffix.
+        Default is '_'
+
+    Returns
+    -------
+    suffix : str
+        The suffix for the supplied filename
+    """
+    name = os.path.basename(filename)
+    suffix = name.split('_')[-1]
+
+    return suffix
