@@ -328,6 +328,15 @@ def run_adaptive(args):
             parameters.logger.info("Simulation run successfully (:\n\n")
 
     # Run analysis
+    from pele_platform.analysis import Analysis
+    from pele_platform.analysis.data import DataHandler
+
+    analysis = Analysis(parameters)
+    datahandler = DataHandler(parameters)
+    dataframe = datahandler.get_reports_dataframe()
+
+    print(dataframe)
+    """
     if parameters.analyse and not parameters.debug:
         report = pt.analyse_simulation(
             parameters.report_name,
@@ -347,4 +356,5 @@ def run_adaptive(args):
             logger=parameters.logger,
         )
         parameters.logger.info("Pdf summary report successfully written to: {}".format(report))
+    """
     return parameters
