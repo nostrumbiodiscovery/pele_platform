@@ -280,10 +280,8 @@ class PostProcessor:
             else:
                 clf = mixture.GaussianMixture(n_components=nclusts, covariance_type="full")
             labels = clf.fit_predict(all_coords)
-            print("AAAAAA bandwidth {}, labels {}".format(self.bandwidth, labels))
         except ValueError:
             labels = [1]
-        print(all_coords)
         n_clusters = len(set(labels))
         files_out = [
             "cluster{}_epoch{}_trajectory_{}.{}_{}{}.pdb".format(
