@@ -5,7 +5,7 @@ import subprocess
 import mdtraj
 import numpy as np
 import pandas as pd
-from sklearn import mixture
+from sklearn import mixture, cluster
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
 import AdaptivePELE.analysis.selectOnPlot as sp
@@ -37,17 +37,19 @@ def _extract_coords(info):
 
 class PostProcessor:
     def __init__(
-        self,
-        report_name,
-        traj_name,
-        simulation_path,
-        cpus,
-        topology=False,
-        residue=False,
-        be_column=4,
-        limit_column=6,
-        te_column=3,
-        logger=None,
+            self,
+            report_name,
+            traj_name,
+            simulation_path,
+            cpus,
+            topology=False,
+            residue=False,
+            be_column=4,
+            limit_column=6,
+            te_column=3,
+            clustering_method="GaussianMixture",
+            bandwidth=None,
+            logger=None,
     ):
         self.report_name = report_name
         self.traj_name = traj_name
@@ -59,12 +61,14 @@ class PostProcessor:
         self.limit_column = limit_column
         self.te_column = te_column
         self.cpus = cpus
+        self.clustering_method = clustering_method
+        self.bandwidth = bandwidth
         self.logger = logger
 
     def retrive_data(self, separator=","):
         summary_csv_filename = os.path.join(self.simulation_path, "summary.csv")
         if not os.path.exists(summary_csv_filename) or self._moved_folder(
-            summary_csv_filename
+                summary_csv_filename
         ):
             try:
                 sp.concat_reports_in_csv(
@@ -84,7 +88,6 @@ class PostProcessor:
             summary_csv_filename, sep=separator, header=0, float_precision="round_trip"
         )
         dataframe_filtered = self._remove_outliers(dataframe)
-
         return dataframe_filtered
 
     def _remove_outliers(self, dataframe):
@@ -94,8 +97,8 @@ class PostProcessor:
             len(dataframe[cols[0]]) * 0.02
         )  # remove top 2% of each energy
         dataframe_filtered = dataframe.sort_values(cols[3], ascending=False).iloc[
-            n_points_to_remove:
-        ]
+                             n_points_to_remove:
+                             ]
         dataframe_filtered = dataframe_filtered.sort_values(
             cols[4], ascending=False
         ).iloc[n_points_to_remove:]
@@ -103,12 +106,12 @@ class PostProcessor:
         return dataframe_filtered
 
     def plot_two_metrics(
-        self,
-        column_to_x,
-        column_to_y,
-        column_to_z=None,
-        output_name=None,
-        output_folder=".",
+            self,
+            column_to_x,
+            column_to_y,
+            column_to_z=None,
+            output_name=None,
+            output_folder=".",
     ):
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
@@ -271,18 +274,21 @@ class PostProcessor:
             0
         ], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
         try:
-            clf = mixture.GaussianMixture(n_components=nclusts, covariance_type="full")
+            if self.clustering_method == "MeanShift":
+                clf = cluster.MeanShift(bandwidth=self.bandwidth, cluster_all=True)
+            else:
+                clf = mixture.GaussianMixture(n_components=nclusts, covariance_type="full")
             labels = clf.fit_predict(all_coords)
-            indexes = labels
         except ValueError:
-            indexes = [1]
-        n_clusters = len(set(indexes))
+            labels = [1]
+
+        n_clusters = len(set(labels))
         files_out = [
             "cluster{}_epoch{}_trajectory_{}.{}_{}{}.pdb".format(
                 cluster, epoch, report, int(step), metric.replace(" ", ""), value
             )
             for epoch, step, report, value, cluster in zip(
-                epochs, snapshots, file_ids, values, indexes
+                epochs, snapshots, file_ids, values, labels
             )
         ]
         all_metrics = []
@@ -291,7 +297,7 @@ class PostProcessor:
         for n_cluster in range(n_clusters - 1):
             metrics = {
                 value: idx
-                for idx, (value, cluster) in enumerate(zip(values, indexes))
+                for idx, (value, cluster) in enumerate(zip(values, labels))
                 if n_cluster == cluster
             }
             out_freq = 1
@@ -301,6 +307,7 @@ class PostProcessor:
             max_snapshot = snapshots[max_idx]
             output_traj = files_out[max_idx]
             input_traj = file_ids[max_idx]
+
             if not self.topology:
                 bs.extract_snapshot_from_pdb(
                     max_traj,
@@ -333,7 +340,7 @@ class PostProcessor:
             return
         ax.set_ylabel(metric)
         ax.set_xlabel("Cluster number")
-        plt.savefig(os.path.join(output, "clusters_{}_boxplot.png".format(metric)))
+        plt.savefig(os.path.join(output, "clusters_{}_boxplot.png".format(metric.replace(" ", "_"))))
         return output_clusters
 
     def _get_column_name(self, df, column_digit):
@@ -351,21 +358,23 @@ class PostProcessor:
 
 
 def analyse_simulation(
-    report_name,
-    traj_name,
-    simulation_path,
-    residue,
-    output_folder=".",
-    cpus=5,
-    clustering=True,
-    mae=False,
-    nclusts=10,
-    overwrite=False,
-    topology=False,
-    be_column=4,
-    limit_column=6,
-    te_column=3,
-    logger=None,
+        report_name,
+        traj_name,
+        simulation_path,
+        residue,
+        output_folder=".",
+        cpus=5,
+        clustering=True,
+        mae=False,
+        nclusts=10,
+        overwrite=False,
+        topology=False,
+        be_column=4,
+        limit_column=6,
+        te_column=3,
+        clustering_method="GaussianMixture",
+        bandwidth=None,
+        logger=None,
 ):
     results_folder = os.path.join(output_folder, "results")
     if os.path.exists(results_folder):
@@ -387,6 +396,8 @@ def analyse_simulation(
         be_column=be_column,
         limit_column=limit_column,
         te_column=te_column,
+        clustering_method=clustering_method,
+        bandwidth=bandwidth,
         logger=logger,
     )
 
@@ -422,7 +433,7 @@ def analyse_simulation(
     analysis.top_poses(be, 100, top_poses_folder)
 
     # Clustering of best 2000 best structures
-    logger.info(f"Retrieve {nclusts} best cluster poses")
+    logger.info(f"Retrieve best cluster poses.")
     if clustering:
         clusters = analysis.cluster_poses(250, be, clusters_folder, nclusts=nclusts)
     if mae:

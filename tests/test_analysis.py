@@ -67,7 +67,7 @@ def test_analysis_mae(ext_args=ANALYSIS_MAE_ARGS):
     os.system("rm ../pele_platform/Examples/analysis/data/*/*summary*")
     main.run_platform(ext_args)
 
-def test_cluster():
+def test_cluster_default():
     output_folder = "clusters"
     n_clusts = 2
     if os.path.exists(output_folder): shutil.rmtree(output_folder)
@@ -79,3 +79,18 @@ def test_cluster():
     assert os.path.exists(output_folder)
     assert len(glob.glob(os.path.join(output_folder, "clust*.pdb"))) == n_clusts - 1
     
+
+def test_cluster_meanshift():
+    output_folder = "clusters_meanshift"
+    if os.path.exists(output_folder):
+        shutil.rmtree(output_folder)
+
+    analysis = pt.PostProcessor("report_", "trajectory_", "../pele_platform/Examples/clustering", 2,
+                                topology=None,
+                                residue="LIG", clustering_method="MeanShift")
+    analysis.logger = logging.getLogger('logger')
+    analysis.retrive_data()
+    analysis.cluster_poses(10, 5, output_folder)
+
+    created_clusters = glob.glob(os.path.join(output_folder, "cluster*pdb"))
+    assert len(created_clusters) == 3
