@@ -3,6 +3,9 @@ This module manages the analysis toolkit of the platform.
 """
 
 
+__all__ = ["Analysis"]
+
+
 class Analysis(object):
     """
     General class to manage all analysis operations.
@@ -33,5 +36,3 @@ class Analysis(object):
             to the simulation
         """
         return self._parameters
-
-
