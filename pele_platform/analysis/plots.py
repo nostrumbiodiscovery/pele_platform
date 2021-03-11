@@ -430,7 +430,7 @@ def analyse_simulation(
         if not os.path.exists(sch_python):
             sch_python = os.path.join(cs.SCHRODINGER, "run")
         top_poses = glob.glob(os.path.join(top_poses_folder, "*"))
-        python_file = os.path.join(cs.DIR, "Analysis/to_mae.py")
+        python_file = os.path.join(cs.DIR, "analysis/to_mae.py")
         for poses in top_poses + clusters:
             command = "{} {} {} --schr {} {}".format(
                 sch_python, python_file, poses, cs.SCHRODINGER, "--remove"
