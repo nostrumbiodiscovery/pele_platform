@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import AdaptivePELE.analysis.selectOnPlot as sp
 import pele_platform.Utilities.Helpers.bestStructs as bs
 from pele_platform.constants import constants as cs
-import pele_platform.Analysis.pdf_report as pr
+import pele_platform.analysis.pdf_report as pr
 from pele_platform.Utilities.Helpers.helpers import backup_logger
 
 EPOCH = "epoch"

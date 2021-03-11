@@ -16,7 +16,7 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-import pele_platform.Analysis.plots as pt
+import pele_platform.analysis.plots as pt
 import pele_platform.Adaptive.ligand_parametrization as lg
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
@@ -295,12 +295,12 @@ def run_adaptive(args):
         #interaction restrictions
         if args.interaction_restrictions:
             interaction_restrictions = ir.InteractionRestrictionsBuilder()
-            interaction_restrictions.parse_interaction_restrictions(env.system, args.interaction_restrictions)
-            env.met_interaction_restrictions = interaction_restrictions.metrics_to_json()
-            env.interaction_restrictions = interaction_restrictions.conditions_to_json()
+            interaction_restrictions.parse_interaction_restrictions(parameters.system, args.interaction_restrictions)
+            parameters.met_interaction_restrictions = interaction_restrictions.metrics_to_json()
+            parameters.interaction_restrictions = interaction_restrictions.conditions_to_json()
         else:
-            env.met_interaction_restrictions = ""
-            env.interaction_restrictions = ""
+            parameters.met_interaction_restrictions = ""
+            parameters.interaction_restrictions = ""
 
         # metal polarisation
         if parameters.polarize_metals:

@@ -101,6 +101,10 @@ class FragOptionalParameters(object):
         parameters.only_grow = False
         parameters.no_check = True
 
+        # Interaction restrictions Parameters (only used by adaptive)
+        parameters.interaction_restrictions = ""
+        parameters.met_interaction_restrictions = ""
+
         if args.cleanup:
             parameters.cleanup = args.cleanup
         else:
