@@ -60,11 +60,12 @@ class DataHandler(object):
         dataframe_lists = []
         for adaptive_epoch in sorted(epochs, key=int):
             folder = os.path.join(sim_path, str(adaptive_epoch))
-            report_dirs = glob.glob(os.path.join(folder, '{}_[0-9]*'))
+            report_dirs = glob.glob(os.path.join(folder,
+                                                 report_prefix + '_[0-9]*'))
 
             report_ids = [get_suffix(path) for path in report_dirs
                           if get_suffix(path).isdigit()]
-            report_list = [os.path.join(folder, report_prefix + i)
+            report_list = [os.path.join(folder, report_prefix + '_' + i)
                            for i in sorted(report_ids, key=int)]
 
             for i, report in enumerate(report_list, start=1):
