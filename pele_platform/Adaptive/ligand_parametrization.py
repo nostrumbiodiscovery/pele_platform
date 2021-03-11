@@ -2,7 +2,7 @@ import os
 from dataclasses import dataclass
 import subprocess
 import pele_platform.Utilities.Helpers.helpers as hp
-import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Utilities.Helpers.plop_launcher as plop
 import pele_platform.Errors.custom_errors as ce
 
@@ -15,7 +15,7 @@ class LigandParametrization:
     2) Copy user's external files
     '''
 
-    env: pv.EnviroBuilder
+    env: pv.ParametersBuilder
 
     def generate(self) -> None:
         #Generate ligand forcefield parameters

@@ -1,0 +1,6 @@
+system: '../pele_platform/Examples/constraints/ca_constraints.pdb'
+chain: 'Z'
+resname: 'LIG'
+induced_fit_fast: true
+debug: true
+skip_preprocess: true

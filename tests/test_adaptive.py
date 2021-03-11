@@ -41,8 +41,8 @@ PELE_VALUES = ['rep', 'traj.xtc',
                 '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:111:_CA_" },',
                 '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" }',
                 '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:13:_CA_" }',
-                '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
-                '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
                 '"radius": 3000',
                 '"fixedCenter": [30,30,30]',
                 'tests/native.pdb"',
@@ -198,9 +198,8 @@ def check_file(folder, filename, values, errors):
 def test_gpcr(args=GPCR_ARGS):
     errors = []
     job = main.run_platform(args)
-    folder = job.pele_dir
-    errors = check_file(folder, "pele.conf", GPCR_VALUES, errors)
-    input_file = os.path.join(folder, "complex_processed.pdb")
+    errors = check_file(job.pele_dir, "pele.conf", GPCR_VALUES, errors)
+    input_file = os.path.join(job.inputs_dir, "complex_processed.pdb")
     if not os.path.exists(input_file):
         errors.append("skip_ppp")
     assert not errors

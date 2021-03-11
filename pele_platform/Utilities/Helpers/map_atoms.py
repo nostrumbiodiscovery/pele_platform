@@ -1,7 +1,7 @@
 from typing import Any, List, Union
 
 from pele_platform.Utilities.Helpers import helpers
-from pele_platform.Utilities.Parameters import pele_env
+from pele_platform.Utilities.Parameters import parameters
 from pele_platform.constants import constants
 
 
@@ -22,8 +22,8 @@ class AtomMapper:
 
     def __init__(
         self,
-        args: pele_env.EnviroBuilder,
-        env: pele_env.EnviroBuilder,
+        args: parameters.ParametersBuilder,
+        env: parameters.ParametersBuilder,
         original_system: str,
         flags_to_check: List[str] = None,
     ) -> None:
@@ -40,7 +40,7 @@ class AtomMapper:
             if getattr(self.args, arg, None) is not None
         ]
 
-    def run(self) -> pele_env.EnviroBuilder:
+    def run(self) -> parameters.ParametersBuilder:
         """
         Run the whole mapping process.
 
@@ -127,14 +127,14 @@ class AtomMapper:
                     preprocessed_coords = get_coords_from_line(p)
 
                     if preprocessed_coords == initial_coords:
-                        new_atom_name, new_resnum, new_chain = get_atom_from_line(p)
+                        new_atom_name, new_resnum, _, new_chain = get_atom_from_line(p)
                         before = "{}:{}:{}".format(chain, resnum, atom_name)
                         after = "{}:{}:{}".format(new_chain, new_resnum, new_atom_name)
                         logger.info("Atom {} mapped to {}.".format(before, after))
                         return before, after
 
 
-def get_atom_from_line(line):
+def get_atom_from_line(line: str) -> (str, str, str, str):
     """
     Extracts atom name, residue number and chain ID from a PDB line.
 
@@ -144,12 +144,14 @@ def get_atom_from_line(line):
     Output
     atom_name: str - PDB atom name from the PDB line
     residue_number: str - residue number from the PDB line
+    residue_name: str - residue name from the PDB line, e.g. SER
     chain_id: str - chain ID from the PDB line
     """
     atom_name = line[12:16].strip()
     residue_number = line[22:26].strip()
+    residue_name = line[16:21].strip()
     chain_id = line[21].strip()
-    return atom_name, residue_number, chain_id
+    return atom_name, residue_number, residue_name, chain_id
 
 
 def get_coords_from_line(line):
@@ -190,7 +192,7 @@ def atom_number_to_atom_string(
                 if line[6:11].strip() == str(n) and (
                     line.startswith("HETATM") or line.startswith("ATOM")
                 ):
-                    atom_name, resnum, chain = get_atom_from_line(line)
+                    atom_name, resnum, _, chain = get_atom_from_line(line)
                     output.append("{}:{}:{}".format(chain, resnum, atom_name))
         else:
             output.append(n)
