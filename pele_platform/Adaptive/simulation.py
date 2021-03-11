@@ -140,7 +140,7 @@ def run_adaptive(args):
 
         # Prepare System
         if (
-            parameters.no_ppp or parameters.input
+                parameters.no_ppp or parameters.input
         ):  # No need to run system through PPP, if we already preprocessed parameters.input
             missing_residues = []
             if parameters.input:
@@ -192,7 +192,8 @@ def run_adaptive(args):
             )
 
             metal_constraints_json = hp.retrieve_constraints_for_pele(
-                metal_constraints, os.path.join(parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"'))
+                metal_constraints,
+                os.path.join(parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"'))
             )
             parameters.external_constraints.extend(metal_constraints_json)
         else:
@@ -203,7 +204,7 @@ def run_adaptive(args):
         # Keep JSON ordered by having first title and then constraints
         if parameters.external_constraints:
             parameters.constraints = (
-                parameters.constraints[0:1] + parameters.external_constraints + parameters.constraints[1:]
+                    parameters.constraints[0:1] + parameters.external_constraints + parameters.constraints[1:]
             )
         if parameters.remove_constraints:
             parameters.constraints = ""
@@ -253,7 +254,7 @@ def run_adaptive(args):
             )
             smi_constraint = smiles.run()
             parameters.constraints = (
-                parameters.constraints[0:1] + smi_constraint + parameters.constraints[1:]
+                    parameters.constraints[0:1] + smi_constraint + parameters.constraints[1:]
             )
 
         # Waters
@@ -286,13 +287,15 @@ def run_adaptive(args):
         # Metrics builder - builds JSON strings for PELE to be able to track atom distances, RMSD, etc.
         metrics = mt.MetricBuilder()
         parameters.metrics = (
-            metrics.distance_to_atom_json(parameters.system, args.atom_dist)
+            metrics.distance_to_atom_json(
+                os.path.join(parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"')),
+                args.atom_dist)
             if args.atom_dist
             else ""
         )
         parameters.native = metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
 
-        #interaction restrictions
+        # interaction restrictions
         if args.interaction_restrictions:
             interaction_restrictions = ir.InteractionRestrictionsBuilder()
             interaction_restrictions.parse_interaction_restrictions(parameters.system, args.interaction_restrictions)
