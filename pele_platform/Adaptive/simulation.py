@@ -323,6 +323,8 @@ def run_adaptive(args):
             be_column=parameters.be_column,
             limit_column=parameters.limit_column,
             te_column=parameters.te_column,
+            clustering_method=parameters.clustering_method,
+            bandwidth=parameters.meanshift_bandwidth,
             logger=parameters.logger,
         )
         parameters.logger.info("Pdf summary report successfully written to: {}".format(report))
