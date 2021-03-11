@@ -273,15 +273,17 @@ class PostProcessor:
         assert all_coords[0][
             0
         ], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
+
         try:
             if self.clustering_method == "MeanShift":
-                clf = cluster.MeanShift(bandwidth=self.bandwidth, cluster_all=True)
+                clf = cluster.MeanShift(bandwidth=self.bandwidth, cluster_all=False)
             else:
                 clf = mixture.GaussianMixture(n_components=nclusts, covariance_type="full")
             labels = clf.fit_predict(all_coords)
+            print("AAAAAA bandwidth {}, labels {}".format(self.bandwidth, labels))
         except ValueError:
             labels = [1]
-
+        print(all_coords)
         n_clusters = len(set(labels))
         files_out = [
             "cluster{}_epoch{}_trajectory_{}.{}_{}{}.pdb".format(
@@ -294,7 +296,9 @@ class PostProcessor:
         all_metrics = []
         output_clusters = []
 
-        for n_cluster in range(n_clusters - 1):
+        n_clusters = range(n_clusters - 1) if not self.clustering_method == "MeanShift" else range(n_clusters)
+
+        for n_cluster in n_clusters:
             metrics = {
                 value: idx
                 for idx, (value, cluster) in enumerate(zip(values, labels))
