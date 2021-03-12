@@ -19,7 +19,7 @@ def test_mutagenesis_production():
 
     # List of mutated PDBs expected in each job
     expected_pdbs = [('T454A_processed.pdb', 'T454D_processed.pdb'),
-                     ('T454E_processed.pdb')]
+                     ('T454E_processed.pdb', )]
 
     for i, job in enumerate(all_jobs):
         # Output files exist
@@ -41,4 +41,5 @@ def test_mutagenesis_production():
         # Check if the jobs were properly split between subsets based on available CPUs
         job_dir = os.path.join(job.pele_dir, "input", "*.pdb")
         job_input = [os.path.basename(file) for file in glob.glob(job_dir)]
-        assert expected_pdbs[i] in job_input
+        for expected_pdb in expected_pdbs[i]:
+            assert expected_pdb in job_input
