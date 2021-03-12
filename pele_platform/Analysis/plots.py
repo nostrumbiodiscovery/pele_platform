@@ -5,6 +5,7 @@ import subprocess
 import mdtraj
 import numpy as np
 import pandas as pd
+import hdbscan
 from sklearn import mixture, cluster
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
@@ -253,7 +254,7 @@ class PostProcessor:
         clusters = self._cluster(best_poses, metric, output, nclusts)
         return clusters
 
-    def _cluster(self, poses, metric, output, nclusts=10):
+    def _cluster(self, poses, metric, output, nclusts):
         # Extract metric values
         values = poses[metric].tolist()
         epochs = poses[EPOCH].tolist()
@@ -267,39 +268,41 @@ class PostProcessor:
         input_pool = [
             [p, v, self.residue, self.topology] for p, v in zip(paths, snapshots)
         ]
-        all_coords = pool.map(_extract_coords, input_pool)
+        self.all_coords = pool.map(_extract_coords, input_pool)
 
         # Cluster
-        assert all_coords[0][
+        assert self.all_coords[0][
             0
         ], "Ligand not found check the option --resname. i.e python interactive.py 5 6 7 --resname LIG"
 
         try:
-            if self.clustering_method == "MeanShift":
-                clf = cluster.MeanShift(bandwidth=self.bandwidth, cluster_all=False)
+            if self.clustering_method.lower() == "meanshift":
+                self.meanshift_clustering()
+            elif self.clustering_method.lower() == "dbscan":
+                self.hdbscan_clustering()
             else:
-                clf = mixture.GaussianMixture(n_components=nclusts, covariance_type="full")
-            labels = clf.fit_predict(all_coords)
+                self.gmm_clustering(nclusts)
         except ValueError:
-            labels = [1]
-        n_clusters = len(set(labels))
+            self.labels = [1]
+
+        n_clusters = len(set(self.labels))
+
         files_out = [
-            "cluster{}_epoch{}_trajectory_{}.{}_{}{}.pdb".format(
-                cluster, epoch, report, int(step), metric.replace(" ", ""), value
+            "cluster{}_{}.{}.{}_BindEner{:.2f}.pdb".format(
+                cluster, epoch, report, int(step), value
             )
             for epoch, step, report, value, cluster in zip(
-                epochs, snapshots, file_ids, values, labels
+                epochs, snapshots, file_ids, values, self.labels
             )
         ]
         all_metrics = []
         output_clusters = []
+        cluster_range = range(min(self.labels), min(self.labels) + n_clusters)
 
-        n_clusters = range(n_clusters - 1) if not self.clustering_method == "MeanShift" else range(n_clusters)
-
-        for n_cluster in n_clusters:
+        for n_cluster in cluster_range:
             metrics = {
                 value: idx
-                for idx, (value, cluster) in enumerate(zip(values, labels))
+                for idx, (value, cluster) in enumerate(zip(values, self.labels))
                 if n_cluster == cluster
             }
             out_freq = 1
@@ -357,6 +360,19 @@ class PostProcessor:
                     return False
                 else:
                     return True
+
+    def gmm_clustering(self, nclusts):
+        clf = mixture.GaussianMixture(n_components=nclusts, covariance_type="full")
+        self.labels = clf.fit_predict(self.all_coords).tolist()
+
+    def hdbscan_clustering(self):
+        clf = hdbscan.HDBSCAN(cluster_selection_epsilon=self.bandwidth)
+        clf.fit(self.all_coords)
+        self.labels = clf.labels_
+
+    def meanshift_clustering(self):
+        clf = cluster.MeanShift(bandwidth=self.bandwidth, cluster_all=False)
+        self.labels = clf.fit_predict(self.all_coords)
 
 
 def analyse_simulation(
