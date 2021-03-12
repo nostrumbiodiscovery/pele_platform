@@ -335,8 +335,8 @@ class SimulationParams(
             args.polarization_factor if args.polarization_factor else 2.0
         )
         self.skip_refinement = args.skip_refinement if args.skip_refinement else False
-        self.meanshift_bandwidth = args.meanshift_bandwidth if args.meanshift_bandwidth else self.simulation_params.get(
-            "meanshift_bandwidth", 2)
+        self.bandwidth = args.bandwidth if args.bandwidth else self.simulation_params.get(
+            "bandwidth", 5.0)
         self.clustering_method = args.clustering_method if args.clustering_method else self.simulation_params.get(
             "clustering_method", "GaussianMixture")
 
