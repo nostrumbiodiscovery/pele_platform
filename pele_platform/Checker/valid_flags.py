@@ -182,5 +182,5 @@ VALID_FLAGS_PLATFORM = {
     "saturated_mutagenesis": "saturated_mutagenesis",
     "cpus_per_mutation": "cpus_per_mutation",
     "clustering_method": "clustering_method",
-    "meanshift_bandwidth": "meanshift_bandwidth",
+    "bandwidth": "bandwidth",
 }

@@ -294,7 +294,7 @@ class YamlParser(object):
 
         # Analysis
         self.clustering_method = data.get(valid_flags["clustering_method"], None)
-        self.meanshift_bandwidth = data.get(valid_flags["meanshift_bandwidth"], None)
+        self.bandwidth = data.get(valid_flags["bandwidth"], None)
 
         if self.test:
             warnings.warn(
