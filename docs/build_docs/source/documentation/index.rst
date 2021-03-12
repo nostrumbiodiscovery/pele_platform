@@ -338,7 +338,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **only_analysis**: Analyse PELE simulation without running it.
 
-- **analysis_nclust**: Numbers of clusters out of the simulation. Default: 10
+- **analysis_nclust**: Numbers of clusters out of the simulation, if using the standard clustering method. Default: 10
 
 - **be_column**: Column of the binding energy in the reports starting by 1. Default: 5
 
@@ -349,6 +349,10 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 - **mae**: To extract the best energy and cluster poses as .mae files with the metrics as properties (schrodinger need it). Default: false
 
 - **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
+
+- **clustering_method**: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to ``MeanShift`` or ``DBSCAN``.
+
+- **bandwidth**: Value for the meanshift bandwith (when using the mean shift algorithm) or epsilon (when using the DBSCAN clustering); default = 5.0
 
 ..  code-block:: yaml
 
