@@ -21,6 +21,7 @@ import pele_platform.Adaptive.ligand_parametrization as lg
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
 import pele_platform.Adaptive.pca as pca
+import pele_platform.Adaptive.interaction_restrictions as ir
 
 
 def run_adaptive(args):
@@ -290,6 +291,16 @@ def run_adaptive(args):
             else ""
         )
         parameters.native = metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
+
+        #interaction restrictions
+        if args.interaction_restrictions:
+            interaction_restrictions = ir.InteractionRestrictionsBuilder()
+            interaction_restrictions.parse_interaction_restrictions(env.system, args.interaction_restrictions)
+            env.met_interaction_restrictions = interaction_restrictions.metrics_to_json()
+            env.interaction_restrictions = interaction_restrictions.conditions_to_json()
+        else:
+            env.met_interaction_restrictions = ""
+            env.interaction_restrictions = ""
 
         # metal polarisation
         if parameters.polarize_metals:

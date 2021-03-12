@@ -516,3 +516,35 @@ Configure the output
 
     working_folder: "NOR_solvent_OBC"
     output: "output_sim"
+
+
+Interaction restrictions
+=========================
+
+Interaction restrictions allow for biased exploration, we can limit the simulation results to those that fit the specified conditions.
+
+Can define two types of conditions:
+
+- **distance**: Limit distance between two atomnumbers to a maximum, a minimum, or both.
+
+    - The atoms can be specified via chain:resnum:atomname i.e. A:2:CA
+
+- **angle**: Limit angle between three atomnumbers to a maximum, a minimum, or both.
+
+    - The atoms can be specified via chain:resnum:atomname i.e. A:2:CA
+
+..  code-block:: yaml
+
+    interaction_restrictions:
+    - distance:
+        max: 3
+      atoms:
+        - "A:318:OG1"
+        - "Z:201:O3"
+    - angle:
+        min: 90
+        max: 180
+      atoms:
+        - "A:318:OG1"
+        - "A:318:HG1"
+        - "Z:201:O3"
