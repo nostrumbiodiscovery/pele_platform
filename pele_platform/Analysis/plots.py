@@ -5,7 +5,6 @@ import subprocess
 import mdtraj
 import numpy as np
 import pandas as pd
-import hdbscan
 from sklearn import mixture, cluster
 from multiprocessing import Pool
 import matplotlib.pyplot as plt
@@ -355,6 +354,22 @@ class PostProcessor:
 
     @staticmethod
     def write_report(output, cluster_indexes, output_clusters, all_metrics):
+        """
+        Writes a report with cluster metrics, such as population, mean binding energy, etc.
+        Parameters
+        ----------
+        output : str
+            directory to save the report
+        cluster_indexes : List[int]
+            list of cluster indexes
+        output_clusters : List[str]
+            list of cluster representatives
+        all_metrics : List[float]
+            list of lists containing binding energies for structures belonging to each cluster
+        Returns
+        -------
+            CSV report.
+        """
         report_name = os.path.join(output, "clustering_report.csv")
 
         data = {"Cluster_ID": cluster_indexes,
@@ -382,15 +397,38 @@ class PostProcessor:
                     return True
 
     def gmm_clustering(self, nclusts):
+        """
+        Performs GaussianMixture clustering on ligand coordinates, default number of clusters is 10.
+        Parameters
+        ----------
+        nclusts : int
+            Number of clusters
+        Returns
+        -------
+            List of cluster IDs.
+        """
         clf = mixture.GaussianMixture(n_components=nclusts, covariance_type="full")
         self.labels = clf.fit_predict(self.all_coords).tolist()
 
     def hdbscan_clustering(self):
+        """
+        Performs DBSCAN clustering on all ligand coordinates using user-defined epsilon (we reuse bandwidth flag).
+        Returns
+        -------
+            List of cluster IDs.
+        """
+        import hdbscan
         clf = hdbscan.HDBSCAN(cluster_selection_epsilon=self.bandwidth)
         clf.fit(self.all_coords)
         self.labels = clf.labels_
 
     def meanshift_clustering(self):
+        """
+        Performs meanshift clustering on all ligand coordinates using user-defined bandwidth.
+        Returns
+        -------
+            List of cluster IDs.
+        """
         clf = cluster.MeanShift(bandwidth=self.bandwidth, cluster_all=False)
         self.labels = clf.fit_predict(self.all_coords)
 
