@@ -129,6 +129,22 @@ def test_cluster_default():
     ("dbscan", 20, 1),
     ("meanshift", 100, 3)])
 def test_clustering_methods(method, bandwidth, n_clusters):
+    """
+    Checks built-in clustering methods and report generation.
+
+    Parameters
+    ----------
+    method : str
+        Built-in clustering method, e.g. "dbscan".
+    bandwidth : float
+        Bandwidth for meanshift (or epsilon for DBSCAN).
+    n_clusters : int
+        Number of clusters for the Gaussian mixture model.
+
+    Returns
+    -------
+        Folder with clusters and report.
+    """
     output_folder = "clustering"
     if os.path.exists(output_folder):
         shutil.rmtree(output_folder)
@@ -148,4 +164,6 @@ def test_clustering_methods(method, bandwidth, n_clusters):
     analysis.cluster_poses(10, 5, output_folder, nclusts=1)
 
     created_clusters = glob.glob(os.path.join(output_folder, "cluster*pdb"))
+    report = os.path.join(output_folder, "clustering_report.csv")
     assert len(created_clusters) == n_clusters
+    assert os.path.exists(report)
