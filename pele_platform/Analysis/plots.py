@@ -298,8 +298,10 @@ class PostProcessor:
         all_metrics = []
         output_clusters = []
         cluster_range = range(min(self.labels), min(self.labels) + n_clusters)
+        cluster_indexes = []
 
         for n_cluster in cluster_range:
+            cluster_indexes.append(n_cluster)
             metrics = {
                 value: idx
                 for idx, (value, cluster) in enumerate(zip(values, self.labels))
@@ -346,7 +348,25 @@ class PostProcessor:
         ax.set_ylabel(metric)
         ax.set_xlabel("Cluster number")
         plt.savefig(os.path.join(output, "clusters_{}_boxplot.png".format(metric.replace(" ", "_"))))
+
+        self.write_report(output, cluster_indexes, output_clusters, all_metrics)
+
         return output_clusters
+
+    @staticmethod
+    def write_report(output, cluster_indexes, output_clusters, all_metrics):
+        report_name = os.path.join(output, "clustering_report.csv")
+
+        data = {"Cluster_ID": cluster_indexes,
+                "Cluster_representative": output_clusters,
+                "Population": [len(element) for element in all_metrics],
+                "Mean_binding_energy": [np.mean(element) for element in all_metrics],
+                "Max_binding_energy": [max(element) for element in all_metrics],
+                "Min_binding_energy": [min(element) for element in all_metrics]}
+
+        clusters_report = pd.DataFrame.from_dict(data)
+        clusters_report.to_csv(report_name, index=False)
+        return report_name
 
     def _get_column_name(self, df, column_digit):
         return list(df)[int(column_digit) - 1]
