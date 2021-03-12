@@ -122,14 +122,14 @@ def test_cluster_default():
     analysis.retrive_data()
     analysis.cluster_poses(2, 5, output_folder, nclusts=n_clusts)
     assert os.path.exists(output_folder)
-    assert len(glob.glob(os.path.join(output_folder, "clust*.pdb"))) == n_clusts - 1
+    assert len(glob.glob(os.path.join(output_folder, "clust*.pdb"))) == n_clusts
 
 
-@pytest.mark.parametrize(("bandwidth", "n_clusters"), [
-    (None, 3),
-    (5, 3)])
-def test_cluster_meanshift(bandwidth, n_clusters):
-    output_folder = "clusters_meanshift"
+@pytest.mark.parametrize(("method", "bandwidth", "n_clusters"), [
+    ("dbscan", 20, 1),
+    ("meanshift", 100, 3)])
+def test_clustering_methods(method, bandwidth, n_clusters):
+    output_folder = "clustering"
     if os.path.exists(output_folder):
         shutil.rmtree(output_folder)
 
@@ -140,12 +140,12 @@ def test_cluster_meanshift(bandwidth, n_clusters):
         5,
         topology=None,
         residue="LIG",
-        clustering_method="MeanShift",
+        clustering_method=method,
         bandwidth=bandwidth,
     )
     analysis.logger = logging.getLogger("logger")
     analysis.retrive_data()
-    analysis.cluster_poses(10, 5, output_folder)
+    analysis.cluster_poses(10, 5, output_folder, nclusts=1)
 
     created_clusters = glob.glob(os.path.join(output_folder, "cluster*pdb"))
     assert len(created_clusters) == n_clusters

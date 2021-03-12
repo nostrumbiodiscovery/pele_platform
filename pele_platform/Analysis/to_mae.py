@@ -25,7 +25,10 @@ def pdb_to_mae(fname, schr_path, mae_output_file=None, remove=False):
 
     with cd(directory):
         file_info = os.path.splitext(fname)[0].split("_")
-        epoch, trajectory, snapshot = [int(a) for a in file_info[0].split(".")]
+        try:
+            epoch, trajectory, snapshot = [int(a) for a in file_info[0].split(".")]  # for BestStructs
+        except:
+            epoch, trajectory, snapshot = [int(a) for a in file_info[1].split(".")]  # clusters have different filenames
         binding_energy, = [float(a.replace("BindEner", "")) for a in file_info if "BindEner" in a]
 
         properties = {
