@@ -41,6 +41,7 @@ requirements:
     - lib_prep
     - peleffy
     - drug_learning
+    - hdbscan
 test:
   imports:
     - pele_platform
