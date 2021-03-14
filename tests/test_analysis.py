@@ -4,7 +4,7 @@ import glob
 import shutil
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
-import pele_platform.Analysis.plots as pt
+import pele_platform.analysis.plots as pt
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
