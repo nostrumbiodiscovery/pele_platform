@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 import AdaptivePELE.analysis.selectOnPlot as sp
 import pele_platform.Utilities.Helpers.bestStructs as bs
 from pele_platform.constants import constants as cs
-import pele_platform.Analysis.pdf_report as pr
+import pele_platform.analysis.pdf_report as pr
 from pele_platform.Utilities.Helpers.helpers import backup_logger
 
 EPOCH = "epoch"
@@ -517,7 +517,7 @@ def analyse_simulation(
         if not os.path.exists(sch_python):
             sch_python = os.path.join(cs.SCHRODINGER, "run")
         top_poses = glob.glob(os.path.join(top_poses_folder, "*"))
-        python_file = os.path.join(cs.DIR, "Analysis/to_mae.py")
+        python_file = os.path.join(cs.DIR, "analysis/to_mae.py")
         for poses in top_poses + clusters:
             command = "{} {} {} --schr {} {}".format(
                 sch_python, python_file, poses, cs.SCHRODINGER, "--remove"
