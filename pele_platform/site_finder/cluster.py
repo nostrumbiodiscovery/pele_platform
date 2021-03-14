@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from sklearn.mixture import GaussianMixture
 from pele_platform.Utilities.Helpers import bestStructs, helpers
-from pele_platform.analysis.plots import _extract_coords
+from pele_platform.analysis.plot import _extract_coords
 from multiprocessing import Pool
 
 

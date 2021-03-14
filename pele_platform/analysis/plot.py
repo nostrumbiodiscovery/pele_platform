@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 from sklearn import mixture, cluster
 from multiprocessing import Pool
-import matplotlib.pyplot as plt
 import AdaptivePELE.analysis.selectOnPlot as sp
 import pele_platform.Utilities.Helpers.bestStructs as bs
 from pele_platform.constants import constants as cs
@@ -35,240 +34,105 @@ def _extract_coords(info):
     return np.array(coords).ravel() * 10
 
 
-def _extract_raw_coords(info):
+
+
+class Plotter(object):
     """
-    This method attempts to be an alternative coordinate extraction with
-    fewer memory demands.
-
-    .. todo ::
-       * info parameter should be replaced by something more self-explanatory.
-
-    Parameters
-    ----------
-    info : tuple[str, int, str, str]
-        The information
+    It handles the plots.
     """
-    p, v, resname, topology = info
-    # Most time consuming step 0.1
-    traj = mdtraj.load_frame(p, v, top=topology)
-    atoms_info = traj.topology.to_dataframe()[0]
-    condition = atoms_info["resName"] == resname
-    atom_numbers_ligand = atoms_info[condition].index.tolist()
-    coords = []
-    for atom_num in atom_numbers_ligand:
-        try:
-            coords.extend(traj.xyz[0][atom_num].tolist())
-        except IndexError:
-            continue
-    return np.array(coords).ravel() * 10
 
+    def __init__(self, dataframe, logger=None):
+        """
+        It initializes the plotter with the dataframe that contains the
+        data to plot.
 
-class PostProcessor:
-    def __init__(
-            self,
-            report_name,
-            traj_name,
-            simulation_path,
-            cpus,
-            topology=False,
-            residue=False,
-            be_column=4,
-            limit_column=6,
-            te_column=3,
-            clustering_method="GaussianMixture",
-            bandwidth=None,
-            logger=None,
-    ):
-        self.report_name = report_name
-        self.traj_name = traj_name
-        self.simulation_path = simulation_path
-        self.data = self.retrive_data()
-        self.topology = topology
-        self.residue = residue
-        self.be_column = be_column
-        self.limit_column = limit_column
-        self.te_column = te_column
-        self.cpus = cpus
-        self.clustering_method = clustering_method
-        self.bandwidth = bandwidth
-        self.logger = logger
+        Parameters
+        ----------
+        dataframe : a pandas.DataFrame object
+            The dataframe containing the information from PELE reports
+        logger : a Logger object
+            The logger manager to stream out the log messages. Default is
+            None
+        """
+        self._dataframe = dataframe
+        self._logger = logger
 
-    def retrive_data(self, separator=","):
-        summary_csv_filename = os.path.join(self.simulation_path, "summary.csv")
-        if not os.path.exists(summary_csv_filename) or self._moved_folder(
-                summary_csv_filename
-        ):
-            try:
-                sp.concat_reports_in_csv(
-                    adaptive_results_path=self.simulation_path,
-                    output_file_path=summary_csv_filename,
-                    report_prefix=self.report_name,
-                    trajectory_prefix=self.traj_name,
-                    separator_out=separator,
-                )
-            except ValueError:
-                raise ValueError(
-                    "Not report found under {}. Did you point to the right folder?".format(
-                        os.getcwd()
-                    )
-                )
-        dataframe = pd.read_csv(
-            summary_csv_filename, sep=separator, header=0, float_precision="round_trip"
-        )
-        dataframe_filtered = self._remove_outliers(dataframe)
-        return dataframe_filtered
+    def plot_two_metrics(self, metric_to_x, metric_to_y, metric_to_z=None,
+                         output_name=None, output_folder="."):
+        """
+        Given 2 or 3 metrics, it generates the scatter plot. In case that
+        a 3rd metric is supplied, it will be represented as the color bar.
 
-    def _remove_outliers(self, dataframe):
-
-        cols = list(dataframe.columns)
-        n_points_to_remove = int(
-            len(dataframe[cols[0]]) * 0.02
-        )  # remove top 2% of each energy
-        dataframe_filtered = dataframe.sort_values(cols[3], ascending=False).iloc[
-                             n_points_to_remove:
-                             ]
-        dataframe_filtered = dataframe_filtered.sort_values(
-            cols[4], ascending=False
-        ).iloc[n_points_to_remove:]
-
-        return dataframe_filtered
-
-    def plot_two_metrics(
-            self,
-            column_to_x,
-            column_to_y,
-            column_to_z=None,
-            output_name=None,
-            output_folder=".",
-    ):
+        Parameters
+        ----------
+        metric_to_x : str or int
+            The metric id to plot in the X axis. It can be either a string
+            with the name of the metric or an integer with the column index
+        metric_to_y : str or int
+            The metric id to plot in the Y axis. It can be either a string
+            with the name of the metric or an integer with the column index
+        metric_to_z : str or int
+            The metric id to plot in the color bar. It can be either a string
+            with the name of the metric or an integer with the column index.
+            Default is None
+        output_name : str
+            The name that will be given to the resulting plot. Default is None
+        output_folder : str
+            The path where the plot will be saved. Default is '.', so it
+            will be stored in the local directory
+        """
+        # Ensure that output_folder exists
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
-        column_to_x = (
-            column_to_x
-            if not str(column_to_x).isdigit()
-            else self._get_column_name(self.data, column_to_x)
-        )
-        column_to_y = (
-            column_to_y
-            if not str(column_to_y).isdigit()
-            else self._get_column_name(self.data, column_to_y)
-        )
+        # Ensure that metrics are strings pointing to dataframe columns
+        if str(metric_to_x).isdigit():
+            metric_to_x = self._get_column_name(self._dataframe, metric_to_x)
+        if str(metric_to_y).isdigit():
+            metric_to_y = self._get_column_name(self._dataframe, metric_to_y)
+        if metric_to_z is not None and str(metric_to_z).isdigit():
+            metric_to_z = self._get_column_name(self._dataframe, metric_to_z)
+
+        # Prepare plot name
+        if output_name is None:
+            if metric_to_z is not None:
+                output_name = "{}_{}_{}_plot.png".format(metric_to_x,
+                                                         metric_to_y,
+                                                         metric_to_z)
+            else:
+                output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
+
+        # Replace whitespaces in the output name
+        output_name = os.path.join(output_folder, output_name).replace(" ", "_")
+
+        # Generate plot with matplotlib
+        from matplotlib import pyplot as plt
 
         fig, ax = plt.subplots()
-        if column_to_z:
-            column_to_z = (
-                column_to_z
-                if not str(column_to_z).isdigit()
-                else self._get_column_name(self.data, column_to_z)
-            )
-            output_name = (
-                output_name
-                if output_name
-                else "{}_{}_{}_plot.png".format(column_to_x, column_to_y, column_to_z)
-            )
-            output_name = os.path.join(output_folder, output_name).replace(" ", "_")
-
-            pts = ax.scatter(
-                self.data[column_to_x],
-                self.data[column_to_y],
-                c=self.data[column_to_z],
-                s=20,
-            )
-            cbar = plt.colorbar(pts)
-            cbar.ax.set_ylabel(column_to_z)
-            ax.set_xlabel(column_to_x)
-            ax.set_ylabel(column_to_y)
+        if metric_to_z is not None:
+            scatter = ax.scatter(self._dataframe[metric_to_x],
+                                 self._dataframe[metric_to_y],
+                                 c=self._dataframe[metric_to_z],
+                                 s=20)
+            cbar = plt.colorbar(scatter)
+            cbar.ax.set_ylabel(metric_to_z)
+            ax.set_xlabel(metric_to_x)
+            ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
-            backup_logger(
-                self.logger,
-                "Plotted {} vs {} vs {}".format(column_to_x, column_to_y, column_to_z),
-            )
+            backup_logger(self._logger,
+                          "Plotted {} vs {} vs {}".format(metric_to_x,
+                                                          metric_to_y,
+                                                          metric_to_z))
         else:
-            output_name = (
-                output_name
-                if output_name
-                else "{}_{}_plot.png".format(column_to_x, column_to_y)
-            )
-            output_name = os.path.join(output_folder, output_name).replace(" ", "_")
-            ax.scatter(self.data[column_to_x], self.data[column_to_y], s=20)
-            ax.set_xlabel(column_to_x)
-            ax.set_ylabel(column_to_y)
+            ax.scatter(self._dataframe[metric_to_x],
+                       self._dataframe[metric_to_y],
+                       s=20)
+            ax.set_xlabel(metric_to_x)
+            ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
-            backup_logger(
-                self.logger, "Plotted {} vs {}".format(column_to_x, column_to_y)
-            )
+            backup_logger(self._logger, "Plotted {} vs {}".format(metric_to_x,
+                                                                  metric_to_y))
         return output_name
-
-    def top_poses(self, metric, n_structs, output="BestStructs"):
-        metric = (
-            metric
-            if not str(metric).isdigit()
-            else self._get_column_name(self.data, metric)
-        )
-        best_poses = self.data.nsmallest(n_structs, metric)
-        self._extract_poses(best_poses, metric, output)
-
-    def _extract_poses(self, poses, metric, output):
-        # Process data to be outputted
-        values = poses[metric].tolist()
-        self.best_energies = values
-        paths = poses[TRAJECTORY].tolist()
-        epochs = poses[EPOCH].tolist()
-        file_ids = [traj[:-4].split("_")[-1] for traj in paths]
-        steps = self._get_column_name(self.data, STEPS)
-        step_indexes = poses[steps].tolist()
-        out_freq = 1
-
-        distance_key = "distance0.5"
-        if distance_key in poses.columns:
-            dist_values = poses[distance_key].tolist()
-            filename_template = "{}.{}.{}_BindEner{:.2f}_AtomDist{:.2f}.pdb"
-            files_out = [
-                filename_template.format(epoch, report, int(step), value, dist)
-                for epoch, step, report, value, dist in zip(
-                    epochs, step_indexes, file_ids, values, dist_values
-                )
-            ]
-        else:
-            filename_template = "{}.{}.{}_BindEner{:.2f}.pdb"
-            files_out = [
-                filename_template.format(epoch, report, int(step), value)
-                for epoch, step, report, value in zip(
-                    epochs, step_indexes, file_ids, values
-                )
-            ]
-
-        # Read trajectory and output snapshot
-        for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
-            if not self.topology:
-                try:
-                    bs.extract_snapshot_from_pdb(
-                        path,
-                        f_id,
-                        output,
-                        self.topology,
-                        step,
-                        out_freq,
-                        f_out,
-                        self.logger,
-                    )
-                except UnicodeDecodeError:
-                    raise Exception(
-                        "XTC output being treated as PDB. Please specify XTC with the next flag. traj: "
-                        "'trajectory_name.xtc' in the input.yaml "
-                    )
-            else:
-                bs.extract_snapshot_from_xtc(
-                    path,
-                    f_id,
-                    output,
-                    self.topology,
-                    step,
-                    out_freq,
-                    f_out,
-                    self.logger,
-                )
 
     def cluster_poses(self, n_structs, metric, output, nclusts=10):
         assert self.residue, "Set residue ligand name to clusterize"

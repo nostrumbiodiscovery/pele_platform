@@ -16,7 +16,7 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-import pele_platform.analysis.plots as pt
+import pele_platform.analysis.plot as pt
 import pele_platform.Adaptive.ligand_parametrization as lg
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
@@ -332,10 +332,11 @@ def run_adaptive(args):
     from pele_platform.analysis.data import DataHandler
 
     analysis = Analysis(parameters)
-    datahandler = DataHandler(parameters)
-    dataframe = datahandler.get_reports_dataframe()
+    #datahandler = DataHandler(parameters)
+    #dataframe = datahandler.get_reports_dataframe()
+    analysis_folder = os.path.join(parameters.pele_dir, "results")
+    analysis.generate(analysis_folder, clustering_type='?')
 
-    print(dataframe)
     """
     if parameters.analyse and not parameters.debug:
         report = pt.analyse_simulation(
