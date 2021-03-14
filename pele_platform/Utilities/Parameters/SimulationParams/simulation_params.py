@@ -49,7 +49,7 @@ class SimulationParams(
         # rna.RNAParams.__init__(self, args)
 
     def simulation_type(self, args):
-        self.adaptive = True if args.package in ["site_finder", "adaptive", "PPI"]  else None
+        self.adaptive = True if args.package in ["site_finder", "adaptive", "PPI"] else None
         self.frag_pele = True if args.package == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
@@ -67,7 +67,7 @@ class SimulationParams(
         self.chain = args.chain
         if self.adaptive:
             assert (
-                self.system and self.residue and self.chain
+                    self.system and self.residue and self.chain
             ), "User must define input, residue and chain"
         self.debug = args.debug if args.debug else False
         self.pele_steps = (
@@ -332,6 +332,10 @@ class SimulationParams(
             args.polarization_factor if args.polarization_factor else 2.0
         )
         self.skip_refinement = args.skip_refinement if args.skip_refinement else False
+        self.bandwidth = args.bandwidth if args.bandwidth else self.simulation_params.get(
+            "bandwidth", 5.0)
+        self.clustering_method = args.clustering_method if args.clustering_method else self.simulation_params.get(
+            "clustering_method", "GaussianMixture")
 
     def system_preparation_params(self, args):
         self.skip_prep = (
@@ -458,7 +462,7 @@ class SimulationParams(
             else:
                 self.box_center = [str(x) for x in args.box_center]
                 self.box_center = (
-                    "[" + ",".join([str(coord) for coord in self.box_center]) + "]"
+                        "[" + ",".join([str(coord) for coord in self.box_center]) + "]"
                 )
         else:
             self.box_center = self.simulation_params.get("box_center", None)

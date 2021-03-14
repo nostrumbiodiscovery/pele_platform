@@ -293,6 +293,10 @@ class YamlParser(object):
         self.saturated_mutagenesis = data.get(valid_flags["saturated_mutagenesis"], None)
         self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
 
+        # Analysis
+        self.clustering_method = data.get(valid_flags["clustering_method"], None)
+        self.bandwidth = data.get(valid_flags["bandwidth"], None)
+
         if self.test:
             warnings.warn(
                 "WARNING: This simulation is a test do not use the input files to run production simulations"
