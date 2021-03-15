@@ -10,7 +10,7 @@ from multiprocessing import Pool
 from functools import partial
 
 
-__all__ = ["get_suffix"]
+__all__ = ["get_suffix", "backup_logger"]
 
 
 def silentremove(*args, **kwargs):

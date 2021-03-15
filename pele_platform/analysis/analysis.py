@@ -104,10 +104,11 @@ class Analysis(object):
         """
         import os
 
-        summary_file = os.path.join(path, "summary.csv")
+        summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
         top_poses_folder = os.path.join(path, "top_poses")
         clusters_folder = os.path.join(path, "clusters")
+        report_file = os.path.join(path, "summary.pdf")
 
         if not os.path.exists(plots_folder):
             os.makedirs(plots_folder)
@@ -121,8 +122,11 @@ class Analysis(object):
 
         # Generate analysis results
         self.generate_plots(plots_folder)
-        self.generate_top_poses(top_poses_folder)
+        best_metrics = self.generate_top_poses(top_poses_folder)
         self.generate_clusters(clusters_folder, clustering_type)
+        self.generate_report(plots_folder, top_poses_folder,
+                             clusters_folder, best_metrics,
+                             report_file)
 
     def generate_plots(self, path):
         """
@@ -180,9 +184,15 @@ class Analysis(object):
         Parameters
         ----------
         path : str
-            The path where the plots will be saved
+            The path where the top poses will be saved
         n_poses : int
             The number of top poses to retrieve
+
+        Returns
+        -------
+        best_metrics : list[float]
+            The list that contains the metrics belonging to the extracted
+            best poses
         """
         # Get metrics and locate Interaction energy
         metrics = self._data_handler.get_metrics()
@@ -195,7 +205,9 @@ class Analysis(object):
         self.parameters.logger.info("Retrieve 100 Best Poses")
 
         top_poses = self._data_handler.get_top_entries(metric, n_poses)
-        self._extract_poses(top_poses, metric, path)
+        best_metrics = self._extract_poses(top_poses, metric, path)
+
+        return best_metrics
 
     def generate_clusters(self, path, clustering_type):
         """
@@ -204,7 +216,7 @@ class Analysis(object):
         Parameters
         ----------
         path : str
-            The path where the plots will be saved
+            The path where the clusters will be saved
         clustering_type : str
             The clustering method that will be used to generate the
             clusters
@@ -246,6 +258,39 @@ class Analysis(object):
                                os.path.join(path, 'info.csv'))
         self._save_clusters(clusters, dataframe, path)
 
+    def generate_report(self, plots_path, poses_path, clusters_path,
+                        best_metrics, filename):
+        """
+        It generates the final simulation report as a PDF file.
+
+        Parameters
+        ----------
+        plots_path : str
+            The path where the plots are saved
+        poses_path : str
+            The path where the top poses are saved
+        clusters_path : str
+            The path where the clusters are saved
+        best_metrics : list[float]
+            The list that contains the metrics belonging to the extracted
+            best poses
+        filename : str
+            The filename for the simulation report
+        """
+        import os
+        import glob
+        from pele_platform.analysis import pdf_report
+
+        plots = glob.glob(os.path.join(plots_path, "*.png"))
+        poses = glob.glob(os.path.join(poses_path, "*"))
+        clusters = glob.glob(os.path.join(clusters_path, "*.png"))
+
+        report = pdf_report.create_report(plots, clusters, poses,
+                                          best_metrics, filename)
+
+        self.parameters.logger.info(
+            "PDF summary report successfully written to: {}".format(report))
+
     def _extract_poses(self, dataframe, metric, output_path):
         """
         Given a dataframe, it extracts all the corresponding poses.
@@ -258,6 +303,12 @@ class Analysis(object):
             The metric to highlight in the filename
         output_path : str
             The path where the poses will be extracted
+
+        Returns
+        -------
+        values : list[float]
+            The list that contains the metrics belonging to the extracted
+            best poses
         """
         import os
         from pele_platform.Utilities.Helpers import get_suffix
@@ -311,6 +362,8 @@ class Analysis(object):
                                           step=step, out_freq=1,
                                           f_out=f_out,
                                           logger=self.parameters.logger)
+
+        return values
 
     def _analyze_clusters(self, clusters, dataframe, output_file):
         """
