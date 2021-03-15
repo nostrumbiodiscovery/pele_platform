@@ -328,37 +328,12 @@ def run_adaptive(args):
             parameters.logger.info("Simulation run successfully (:\n\n")
 
     # Run analysis
-    from pele_platform.analysis import Analysis
-    from pele_platform.analysis.data import DataHandler
-
-    analysis = Analysis(parameters)
-    #datahandler = DataHandler(parameters)
-    #dataframe = datahandler.get_reports_dataframe()
-    analysis_folder = os.path.join(parameters.pele_dir, "results")
-    analysis.generate(analysis_folder,
-                      clustering_type=parameters.clustering_method.lower())
-
-    """
     if parameters.analyse and not parameters.debug:
-        report = pt.analyse_simulation(
-            parameters.report_name,
-            parameters.traj_name[:-4] + "_",
-            os.path.join(parameters.pele_dir, parameters.output),
-            parameters.residue,
-            cpus=parameters.cpus,
-            output_folder=parameters.pele_dir,
-            clustering=parameters.perturbation,
-            mae=parameters.mae,
-            nclusts=parameters.analysis_nclust,
-            overwrite=parameters.overwrite,
-            topology=parameters.topology,
-            be_column=parameters.be_column,
-            limit_column=parameters.limit_column,
-            te_column=parameters.te_column,
-            clustering_method=parameters.clustering_method,
-            bandwidth=parameters.bandwidth,
-            logger=parameters.logger,
-        )
-        parameters.logger.info("Pdf summary report successfully written to: {}".format(report))
-    """
+        from pele_platform.analysis import Analysis
+
+        analysis = Analysis(parameters)
+        analysis_folder = os.path.join(parameters.pele_dir, "results")
+        analysis.generate(analysis_folder,
+                          clustering_type=parameters.clustering_method.lower())
+
     return parameters
