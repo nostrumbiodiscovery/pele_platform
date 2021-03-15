@@ -171,7 +171,7 @@ class Analysis(object):
             if i_energy is not None:
                 plotter.plot_two_metrics(t_energy, i_energy, metric,
                                          output_folder=path)
-                plotter.plot_two_metrics(i_energy, metric,
+                plotter.plot_two_metrics(metric, i_energy,
                                          output_folder=path)
             else:
                 plotter.plot_two_metrics(t_energy, metric,
