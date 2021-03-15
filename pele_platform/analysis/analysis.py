@@ -253,8 +253,9 @@ class Analysis(object):
                              '\'HDBSCAN\', \'MeanShift\']')
 
         clusters = clustering.get_clusters(coordinates)
+        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
-        self._analyze_clusters(clusters, dataframe, path)
+        self._analyze_clusters(clusters, dataframe, rmsd_per_cluster, path)
         self._save_clusters(clusters, dataframe, path)
 
     def generate_report(self, plots_path, poses_path, clusters_path,
@@ -364,7 +365,8 @@ class Analysis(object):
 
         return values
 
-    def _analyze_clusters(self, clusters, dataframe, path):
+    def _analyze_clusters(self, clusters, dataframe, rmsd_per_cluster,
+                          path):
         """
         It analyzes the clusters and saves the analysis as a csv file.
 
@@ -380,6 +382,8 @@ class Analysis(object):
         dataframe : a pandas.dataframe object
             The dataframe containing the PELE reports information that
             follows the same ordering as the array of clusters
+        rmsd_per_cluster : dict[int, float]
+            The mean RMSD of each cluster
         path : str
             The path where the output file will be saved at
         """
@@ -395,10 +399,29 @@ class Analysis(object):
         for cluster in clusters:
             clusters_population[cluster] += 1
 
-        summary = pd.DataFrame([(cluster, population / len(clusters))
+        summary = pd.DataFrame([(cluster, population / len(clusters),
+                                 rmsd_per_cluster[cluster])
                                 for cluster, population
                                 in clusters_population.items()],
-                               columns=['Cluster', 'Population'])
+                               columns=['Cluster', 'Population', 'MeanRMSD'])
+
+        # Plot Mean RMSD per cluster
+        fig, ax = plt.subplots()
+        ax.scatter([cluster
+                    for cluster in sorted(clusters_population.keys())
+                    if cluster != -1],
+                   [rmsd_per_cluster[cluster]
+                    for cluster in sorted(clusters_population.keys())
+                    if cluster != -1],
+                   s=[clusters_population[cluster] / len(clusters) * 200
+                      for cluster in sorted(clusters_population.keys())
+                      if cluster != -1],
+                   label='Cluster population')
+        ax.set_xlabel('Cluster label')
+        ax.set_ylabel('Mean RMSD (Å)')
+        plt.legend()
+        plot_filename = os.path.join(path, "clusters_meanRMSD.png")
+        plt.savefig(plot_filename)
 
         # Generate descriptors and boxplots for all reported metrics
         descriptors = defaultdict(dict)
@@ -459,6 +482,62 @@ class Analysis(object):
 
         # Save cluster summary to file
         summary.to_csv(os.path.join(path, 'info.csv'), index=False)
+
+    def _calculate_cluster_rmsds(self, clusters, coordinates):
+        """
+        It calculates the RMSD of all the structures belonging to each
+        cluster.
+
+        Parameters
+        ----------
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        coordinates : numpy.array
+            The array of coordinates that have been clustered
+
+        Returns
+        -------
+        rmsd_per_cluster : dict[int, float]
+            The mean RMSD of each cluster
+        """
+        from collections import defaultdict
+        import numpy as np
+        from pele_platform.analysis.clustering import Clustering
+
+        coordinates = Clustering.fix_coordinates_shape(coordinates)
+
+        if len(clusters) != len(coordinates):
+            print('Warning: coordinates array has a wrong size. ' +
+                  'The RMSD analysis will be skipped. It will be ' +
+                  'skipped. Expected size: {}'.format(len(clusters)))
+            return
+
+        # Split conformations by cluster
+        conformations_per_cluster = defaultdict(list)
+        for cluster, conformation in zip(clusters, coordinates):
+            conformations_per_cluster[cluster].append(conformation)
+
+        # Convert lists to numpy arrays
+        for cluster, conformations in conformations_per_cluster.items():
+            conformations_per_cluster[cluster] = np.array(conformations)
+
+        # Calculate centroids of each cluster
+        centroid_per_cluster = {}
+        for cluster, conformations in conformations_per_cluster.items():
+            centroid_per_cluster[cluster] = \
+                np.mean(conformations, axis=0).reshape(-1, 3)
+
+        # Calculate mean RMSD of each cluster with respect to their centroid
+        rmsd_per_cluster = {}
+        for cluster, conformations in conformations_per_cluster.items():
+            rmsds = []
+            for conformation in conformations:
+                diff = conformation.reshape(-1, 3) - centroid_per_cluster[cluster]
+                norm_factor = len(centroid_per_cluster[cluster])
+                rmsds.append(np.sqrt((diff * diff).sum() / norm_factor))
+            rmsd_per_cluster[cluster] = np.mean(rmsds)
+
+        return rmsd_per_cluster
 
     def _save_clusters(self, clusters, dataframe, path):
         """
