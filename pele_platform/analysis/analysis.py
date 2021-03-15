@@ -252,7 +252,13 @@ class Analysis(object):
                              'It should be one of [\'GaussianMixture\', ' +
                              '\'HDBSCAN\', \'MeanShift\']')
 
-        clusters = clustering.get_clusters(coordinates)
+        try:
+            clusters = clustering.get_clusters(coordinates)
+        except ValueError as e:
+            if self.parameters.test:
+                clusters = [1]
+            else:
+                raise e
 
         self._analyze_clusters(clusters, dataframe,
                                os.path.join(path, 'info.csv'))
@@ -506,6 +512,3 @@ class Analysis(object):
                     step=step, out_freq=1,
                     f_out='cluster_{}.pdb'.format(cluster),
                     logger=self.parameters.logger)
-
-
-

@@ -13,7 +13,7 @@ class DataHandler(object):
     _TRAJECTORY_LABEL = 'trajectory'
 
     def __init__(self, sim_path, report_name, trajectory_name,
-                 be_column=None):
+                 be_column=None, skip_initial_structures=False):
         """
         It initializes a DataHandler object.
 
@@ -35,6 +35,7 @@ class DataHandler(object):
         self._trajectory_name = trajectory_name
         self._be_column = be_column
         self._dataframe = None
+        self.skip_initial_structures = skip_initial_structures
 
     @classmethod
     def from_parameters(cls, parameters):
@@ -60,10 +61,9 @@ class DataHandler(object):
         report_name = parameters.report_name
         trajectory_name = parameters.traj_name
         be_column = parameters.be_column
-
+        skip_initial_structures = parameters.test
         data_handler = DataHandler(sim_path, report_name, trajectory_name,
-                                   be_column)
-
+                                   be_column, skip_initial_structures)
         return data_handler
 
     @classmethod
@@ -119,6 +119,7 @@ class DataHandler(object):
         """
         # Return the dataframe if it has been already created,
         # unless a brand new dataset is requested
+        breakpoint()
         if self._dataframe is not None and not from_scratch:
             return self._dataframe
 
@@ -431,7 +432,6 @@ class DataHandler(object):
         import numpy as np
 
         dataframe = self.get_reports_dataframe()
-
         trajectories = list(set(dataframe[self._TRAJECTORY_LABEL]))
 
         if no_multiprocessing or n_proc == 1:
@@ -462,7 +462,7 @@ class DataHandler(object):
                                                           ascending=True)
 
             # Remove first entry
-            trajectory_rows = trajectory_rows.query('Step!="0"')
+            trajectory_rows = trajectory_rows.query('Step!="0"') if not self.skip_initial_structures else trajectory_rows
 
             # Append the resulting entries to the new reordered dataframe
             reordered_dataframe = \
@@ -530,7 +530,7 @@ class DataHandler(object):
                         coordinates.append(np.array(model_coords))
 
                 # First model will always be skipped
-                if current_model == 1:
+                if current_model == 1 and not self.skip_initial_structures:
                     continue
 
                 if line_type == "ATOM  " or line_type == "HETATM":
@@ -574,7 +574,7 @@ class DataHandler(object):
             # Return empty array
             return np.array(())
 
-        if n_models_loaded != current_model - 1 or spatial_dimension != 3:
+        if (n_models_loaded != current_model - 1 or spatial_dimension != 3) and not self.skip_initial_structures:
             print('Warning: unexpected dimensions found in the ' +
                   'coordinate array from trajectory {}. '.format(trajectory) +
                   'Its coordinates will be skipped.')
@@ -583,6 +583,3 @@ class DataHandler(object):
             return np.array(())
 
         return coordinates
-
-
-
