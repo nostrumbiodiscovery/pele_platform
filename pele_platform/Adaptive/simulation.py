@@ -335,7 +335,8 @@ def run_adaptive(args):
     #datahandler = DataHandler(parameters)
     #dataframe = datahandler.get_reports_dataframe()
     analysis_folder = os.path.join(parameters.pele_dir, "results")
-    analysis.generate(analysis_folder, clustering_type='?')
+    analysis.generate(analysis_folder,
+                      clustering_type=parameters.clustering_method.lower())
 
     """
     if parameters.analyse and not parameters.debug:

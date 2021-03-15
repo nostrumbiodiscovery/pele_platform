@@ -104,6 +104,7 @@ class Analysis(object):
         """
         import os
 
+        summary_file = os.path.join(path, "summary.csv")
         plots_folder = os.path.join(path, "plots")
         top_poses_folder = os.path.join(path, "top_poses")
         clusters_folder = os.path.join(path, "clusters")
@@ -115,6 +116,10 @@ class Analysis(object):
         if not os.path.exists(clusters_folder):
             os.makedirs(clusters_folder)
 
+        # Save dataframe
+        self._dataframe.to_csv(summary_file, index=False)
+
+        # Generate analysis results
         self.generate_plots(plots_folder)
         self.generate_top_poses(top_poses_folder)
         self.generate_clusters(clusters_folder, clustering_type)
@@ -192,7 +197,7 @@ class Analysis(object):
         top_poses = self._data_handler.get_top_entries(metric, n_poses)
         self._extract_poses(top_poses, metric, path)
 
-    def generate_clusters(self, path, clustering_type, *args, **kargs):
+    def generate_clusters(self, path, clustering_type):
         """
         It generates the structural clustering of ligand poses.
 
@@ -203,25 +208,43 @@ class Analysis(object):
         clustering_type : str
             The clustering method that will be used to generate the
             clusters
-        args : list
-            The list of arguments to pass to the cluster class
-        kargs : dict
-            The dictionary of keyword arguments to pass to the cluster class
         """
+        import os
+        from pele_platform.analysis import (GaussianMixtureClustering,
+                                            HDBSCANClustering,
+                                            MeanShiftClustering)
+
         if not self.parameters.topology:
-            coordinates = self._data_handler.extract_raw_coords(
-                self.parameters.residue, filter=True,
-                threshold=None, remove_hydrogen=True,
-                n_proc=self.parameters.cpus)
+            coordinates, dataframe = \
+                self._data_handler.extract_raw_coords(
+                    self.parameters.residue, remove_hydrogen=True,
+                    n_proc=self.parameters.cpus)
         else:
-            coordinates = self._data_handler.extract_coords(
-                self.parameters.residue, self.parameters.topology,
-                filter=True, threshold=None, remove_hydrogen=True)
+            coordinates, dataframe = \
+                self._data_handler.extract_coords(self.parameters.residue,
+                                                  self.parameters.topology,
+                                                  remove_hydrogen=True)
 
-        print(coordinates)
-        print(coordinates.shape)
+        self.parameters.logger.info(f"Retrieve best cluster poses")
 
-        self.parameters.logger.info(f"Retrieve {nclusts} best cluster poses")
+        if clustering_type.lower() == 'gaussianmixture':
+            clustering = \
+                GaussianMixtureClustering(self.parameters.analysis_nclust)
+        elif clustering_type.lower() == 'hdbscan':
+            clustering = HDBSCANClustering(self.parameters.bandwidth)
+        elif clustering_type.lower() == 'meanshift':
+            clustering = MeanShiftClustering(self.parameters.bandwidth)
+        else:
+            raise ValueError('Invalid clustering type: '
+                             '\'{}\'. '.format(clustering_type) +
+                             'It should be one of [\'GaussianMixture\', ' +
+                             '\'HDBSCAN\', \'MeanShift\']')
+
+        clusters = clustering.get_clusters(coordinates)
+
+        self._analyze_clusters(clusters, dataframe,
+                               os.path.join(path, 'info.csv'))
+        self._save_clusters(clusters, dataframe, path)
 
     def _extract_poses(self, dataframe, metric, output_path):
         """
@@ -289,7 +312,147 @@ class Analysis(object):
                                           f_out=f_out,
                                           logger=self.parameters.logger)
 
+    def _analyze_clusters(self, clusters, dataframe, output_file):
+        """
+        It analyzes the clusters and saves the analysis as a csv file.
 
+        .. todo ::
+           * Generate box plots
+           * Generate scatter plots colored by cluster
+           * Calculate mean RMSD for each cluster
+
+        Parameters
+        ----------
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of clusters
+        output_file : str
+            The path where the output file will be saved at
+        """
+        from collections import defaultdict
+        import pandas as pd
+        import numpy as np
+
+        metrics = self._data_handler.get_metrics()
+
+        clusters_population = defaultdict(int)
+        for cluster in clusters:
+            clusters_population[cluster] += 1
+
+        summary = pd.DataFrame([(cluster, population / len(clusters))
+                                for cluster, population
+                                in clusters_population.items()],
+                               columns=['Cluster', 'Population'])
+
+        descriptors = defaultdict(dict)
+        for metric in metrics:
+            values_per_cluster = defaultdict(list)
+            values = list(dataframe[metric])
+
+            if len(clusters) != len(values):
+                print('Warning: metric \'{}\' '.format(metric) +
+                      'array has a wrong size. It will be skipped ' +
+                      'from the clustering analysis. Expected size: ' +
+                      '{}'.format(len(clusters)))
+                continue
+
+            for cluster, value in zip(clusters, values):
+                values_per_cluster[cluster].append(value)
+
+            for cluster in values_per_cluster:
+                descriptors['{} min'.format(metric)][cluster] = \
+                    np.min(values_per_cluster[cluster])
+                descriptors['{} 5-percentile'.format(metric)][cluster] = \
+                    np.percentile(values_per_cluster[cluster], 5)
+                descriptors['{} 25-percentile'.format(metric)][cluster] = \
+                    np.percentile(values_per_cluster[cluster], 25)
+                descriptors['{} mean'.format(metric)][cluster] = \
+                    np.mean(values_per_cluster[cluster])
+                descriptors['{} 75-percentile'.format(metric)][cluster] = \
+                    np.percentile(values_per_cluster[cluster], 75)
+                descriptors['{} 95-percentile'.format(metric)][cluster] = \
+                    np.percentile(values_per_cluster[cluster], 95)
+                descriptors['{} max'.format(metric)][cluster] = \
+                    np.max(values_per_cluster[cluster])
+
+        for label, values_per_cluster in descriptors.items():
+            summary[label] = [values_per_cluster[cluster]
+                              for cluster in summary['Cluster']]
+
+        summary.to_csv(output_file, index=False)
+
+    def _save_clusters(self, clusters, dataframe, path):
+        """
+        It saves the resulting clusters to disk. The selection of the
+        representative structures is based on the total energy. The
+        structure chosen as the representative will be the closer
+        to the 5th percentile of total energy.
+
+        Parameters
+        ----------
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of clusters
+        path : str
+            The path where the clusters will be saved at
+        """
+        import os
+        from collections import defaultdict
+        import numpy as np
+        from pele_platform.Utilities.Helpers import get_suffix
+        from pele_platform.Utilities.Helpers.bestStructs \
+            import extract_snapshot_from_pdb, extract_snapshot_from_xtc
+
+        energies = list(dataframe['currentEnergy'])
+        energies_per_cluster = defaultdict(list)
+        for cluster, energy in zip(clusters, energies):
+            energies_per_cluster[cluster].append(energy)
+
+        percentiles_per_cluster = {}
+        for cluster, energies_array in energies_per_cluster.items():
+            percentiles_per_cluster[cluster] = np.percentile(energies_array, 5)
+
+        representative_structures = {}
+        lowest_energetic_diff = {}
+        trajectories = list(dataframe['trajectory'])
+        steps = list(dataframe['numberOfAcceptedPeleSteps'])
+        for cluster, energy, trajectory, step in zip(clusters, energies,
+                                                     trajectories, steps):
+            energetic_diff = np.abs(percentiles_per_cluster[cluster] - energy)
+            if cluster not in representative_structures:
+                representative_structures[cluster] = (trajectory, step)
+                lowest_energetic_diff[cluster] = energetic_diff
+            elif lowest_energetic_diff[cluster] > energetic_diff:
+                representative_structures[cluster] = (trajectory, step)
+                lowest_energetic_diff[cluster] = energetic_diff
+
+        for cluster, (trajectory, step) in representative_structures.items():
+            if not self.parameters.topology:
+                try:
+                    extract_snapshot_from_pdb(
+                        path=trajectory,
+                        f_id=get_suffix(os.path.splitext(trajectory)[0]),
+                        output=path, topology=self.parameters.topology,
+                        step=step, out_freq=1,
+                        f_out='cluster_{}.pdb'.format(cluster),
+                        logger=self.parameters.logger)
+                except UnicodeDecodeError:
+                    raise Exception('XTC output being treated as PDB. '
+                                    + 'Please specify XTC with the next '
+                                    + 'flag. traj: \'trajectory_name.xtc\' '
+                                    + 'in the input.yaml')
+            else:
+                extract_snapshot_from_xtc(
+                    path=trajectory,
+                    f_id=get_suffix(os.path.splitext(trajectory)[0]),
+                    output=path, topology=self.parameters.topology,
+                    step=step, out_freq=1,
+                    f_out='cluster_{}.pdb'.format(cluster),
+                    logger=self.parameters.logger)
 
 
 
