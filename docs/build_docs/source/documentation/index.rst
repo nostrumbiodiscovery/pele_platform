@@ -350,9 +350,9 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
 
-- **clustering_method**: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to ``MeanShift`` or ``DBSCAN``.
+- **clustering_method**: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to ``MeanShift`` or ``HDBSCAN``.
 
-- **bandwidth**: Value for the meanshift bandwith (when using the mean shift algorithm) or epsilon (when using the DBSCAN clustering); default = 5.0
+- **bandwidth**: Value for the Mean Shift bandwith (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
 
 ..  code-block:: yaml
 

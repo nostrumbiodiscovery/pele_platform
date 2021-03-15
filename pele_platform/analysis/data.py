@@ -268,6 +268,8 @@ class DataHandler(object):
 
         Returns
         -------
+        dataframe :  a pandas.DataFrame object
+            The dataframe containing the top entries that were filtered
         """
         # Check metric value
         metrics = self.get_metrics()
@@ -311,30 +313,38 @@ class DataHandler(object):
 
         return column_name
 
-    def extract_coords(self, residue_name, topology, filter=True,
-                        threshold=None, remove_hydrogen=True):
+    def extract_coords(self, residue_name, topology, remove_hydrogen=True):
         """
         This method employs mdtraj to extract the coordinates that
         belong to the supplied residue from all the trajectories in the
         dataframe. It supports both PDB and XTC trajectories.
 
+        Parameters
+        ----------
         residue_name : str
             A 3-char string that represent the residue that will be extracted
         topology : str
             Path to the PDB file representing the topology of the system.
-        filter : bool
-            Whether to use the filtered dataframe without top energy entries
-            or not. Default is True
-        threshold : float
-            The ratio of high-energy entries that will be filtered out.
-            Default is None and will be initialized with a threshold of
-            0.02
         remove_hydrogen : bool
             Whether to remove all hydrogen atoms from the extracted
             coordinates array or not. Default is True
+
+        Returns
+        -------
+        coordinates : numpy.array
+            The array of coordinates that will be clustered. Its shape
+            fulfills the following dimensions: [M, N, 3], where M is the
+            total number of models that have been sampled with PELE and
+            N is the total number of atoms belonging to the residue that
+            is being analyzed
+        dataframe :  a pandas.DataFrame object
+            The dataframe containing the information from PELE reports
+            that matches with the array of coordinates that has been
+            extracted
         """
         import mdtraj
         import numpy as np
+        import pandas as pd
 
         # Load topology
         topology = mdtraj.load(topology)
@@ -350,24 +360,37 @@ class DataHandler(object):
         # Get trajectories from reports dataframe
         dataframe = self.get_reports_dataframe()
 
-        if filter:
-            dataframe = self.remove_outliers_from_dataframe(dataframe,
-                                                            threshold)
-
-        trajectories = list(dataframe[self._TRAJECTORY_LABEL])
+        reordered_dataframe = pd.DataFrame()
+        trajectories = set(dataframe[self._TRAJECTORY_LABEL])
 
         coordinates = []
         for trajectory in trajectories:
+            # Extract coordinates
             residue_frames = mdtraj.load(trajectory, top=topology,
                                          atom_indices=atom_indices)
+
+            # Reorder entries in the dataset to match with the coordinate
+            # ordering
+            trajectory_rows = dataframe.query(
+                'trajectory=="{}"'.format(trajectory))
+            trajectory_rows = trajectory_rows.sort_values(['Step'],
+                                                          ascending=True)
+
+            # Remove first entry
+            residue_frames = residue_frames[1:]
+            trajectory_rows = trajectory_rows.query('Step!="0"')
+
+            # Save extracted data
             coordinates.extend(residue_frames.xyz * 10)
+            reordered_dataframe = \
+                reordered_dataframe.append(trajectory_rows)
 
         coordinates = np.array(coordinates)
 
-        return coordinates
+        return coordinates, reordered_dataframe
 
-    def extract_raw_coords(self, residue_name, filter=True, threshold=None,
-                           remove_hydrogen=True, n_proc=1):
+    def extract_raw_coords(self, residue_name, remove_hydrogen=True,
+                           n_proc=1):
         """
         This method extracts the the coordinates that belong to the
         supplied residue from all the trajectories in the dataframe.
@@ -377,13 +400,6 @@ class DataHandler(object):
         ----------
         residue_name : str
             A 3-char string that represent the residue that will be extracted
-        filter : bool
-            Whether to use the filtered dataframe without top energy entries
-            or not. Default is True
-        threshold : float
-            The ratio of high-energy entries that will be filtered out.
-            Default is None and will be initialized with a threshold of
-            0.02
         remove_hydrogen : bool
             Whether to remove all hydrogen atoms from the extracted
             coordinates array or not. Default is True
@@ -393,7 +409,19 @@ class DataHandler(object):
 
         Returns
         -------
+        coordinates : numpy.array
+            The array of coordinates that will be clustered. Its shape
+            fulfills the following dimensions: [M, N, 3], where M is the
+            total number of models that have been sampled with PELE and
+            N is the total number of atoms belonging to the residue that
+            is being analyzed
+        dataframe :  a pandas.DataFrame object
+            The dataframe containing the information from PELE reports
+            that matches with the array of coordinates that has been
+            extracted
         """
+        import pandas as pd
+
         no_multiprocessing = False
         try:
             from multiprocessing import Pool
@@ -404,11 +432,7 @@ class DataHandler(object):
 
         dataframe = self.get_reports_dataframe()
 
-        if filter:
-            dataframe = self.remove_outliers_from_dataframe(dataframe,
-                                                            threshold)
-
-        trajectories = list(dataframe[self._TRAJECTORY_LABEL])
+        trajectories = list(set(dataframe[self._TRAJECTORY_LABEL]))
 
         if no_multiprocessing or n_proc == 1:
             coordinates = []
@@ -426,21 +450,25 @@ class DataHandler(object):
 
         coordinates = np.concatenate(coordinates)
 
-        # When np.array.shape does not return a tuple of len 3 is because
-        # its subarrays does not share the same dimensionality, so ligand
-        # sizes are different.
-        try:
-            n_models_loaded, ligand_size, spatial_dimension = \
-                coordinates.shape
-        except ValueError:
-            print('Warning: trajectory {} '.format(trajectory) +
-                  'has an inconsistent ligand size throughout the models. ' +
-                  'Its coordinates will be skipped.')
+        # Reorder entries in the dataset to match with the coordinate
+        # ordering
+        reordered_dataframe = pd.DataFrame()
 
-            # Return empty array
-            return np.array(())
+        for trajectory in trajectories:
+            # Retrieve entries belonging to this trajectory, sorted by step
+            trajectory_rows = dataframe.query(
+                'trajectory=="{}"'.format(trajectory))
+            trajectory_rows = trajectory_rows.sort_values(['Step'],
+                                                          ascending=True)
 
-        return coordinates
+            # Remove first entry
+            trajectory_rows = trajectory_rows.query('Step!="0"')
+
+            # Append the resulting entries to the new reordered dataframe
+            reordered_dataframe = \
+                reordered_dataframe.append(trajectory_rows)
+
+        return coordinates, reordered_dataframe
 
     def _get_coordinates_from_trajectory(self, residue_name, remove_hydrogen,
                                          trajectory):
