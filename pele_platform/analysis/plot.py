@@ -67,7 +67,11 @@ class Plotter(object):
             will be stored in the local directory
         """
         import os
+        from pele_platform.analysis import DataHandler
         from pele_platform.Utilities.Helpers.helpers import backup_logger
+
+        # Initialize a data handler from the current dataframe
+        data_handler = DataHandler.from_dataframe(self._dataframe)
 
         # Ensure that output_folder exists
         if not os.path.exists(output_folder):
@@ -75,11 +79,11 @@ class Plotter(object):
 
         # Ensure that metrics are strings pointing to dataframe columns
         if str(metric_to_x).isdigit():
-            metric_to_x = self._get_column_name(self._dataframe, metric_to_x)
+            metric_to_x = data_handler._get_column_name(metric_to_x)
         if str(metric_to_y).isdigit():
-            metric_to_y = self._get_column_name(self._dataframe, metric_to_y)
+            metric_to_y = data_handler._get_column_name(metric_to_y)
         if metric_to_z is not None and str(metric_to_z).isdigit():
-            metric_to_z = self._get_column_name(self._dataframe, metric_to_z)
+            metric_to_z = data_handler._get_column_name(metric_to_z)
 
         # Prepare plot name
         if output_name is None:

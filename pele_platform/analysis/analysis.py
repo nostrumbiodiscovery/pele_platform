@@ -254,8 +254,7 @@ class Analysis(object):
 
         clusters = clustering.get_clusters(coordinates)
 
-        self._analyze_clusters(clusters, dataframe,
-                               os.path.join(path, 'info.csv'))
+        self._analyze_clusters(clusters, dataframe, path)
         self._save_clusters(clusters, dataframe, path)
 
     def generate_report(self, plots_path, poses_path, clusters_path,
@@ -365,7 +364,7 @@ class Analysis(object):
 
         return values
 
-    def _analyze_clusters(self, clusters, dataframe, output_file):
+    def _analyze_clusters(self, clusters, dataframe, path):
         """
         It analyzes the clusters and saves the analysis as a csv file.
 
@@ -381,12 +380,14 @@ class Analysis(object):
         dataframe : a pandas.dataframe object
             The dataframe containing the PELE reports information that
             follows the same ordering as the array of clusters
-        output_file : str
+        path : str
             The path where the output file will be saved at
         """
+        import os
         from collections import defaultdict
         import pandas as pd
         import numpy as np
+        from matplotlib import pyplot as plt
 
         metrics = self._data_handler.get_metrics()
 
@@ -399,6 +400,7 @@ class Analysis(object):
                                 in clusters_population.items()],
                                columns=['Cluster', 'Population'])
 
+        # Generate descriptors and boxplots for all reported metrics
         descriptors = defaultdict(dict)
         for metric in metrics:
             values_per_cluster = defaultdict(list)
@@ -411,9 +413,11 @@ class Analysis(object):
                       '{}'.format(len(clusters)))
                 continue
 
+            # Arrange metrics per cluster
             for cluster, value in zip(clusters, values):
                 values_per_cluster[cluster].append(value)
 
+            # Calculate descriptors
             for cluster in values_per_cluster:
                 descriptors['{} min'.format(metric)][cluster] = \
                     np.min(values_per_cluster[cluster])
@@ -430,11 +434,31 @@ class Analysis(object):
                 descriptors['{} max'.format(metric)][cluster] = \
                     np.max(values_per_cluster[cluster])
 
+            # Generate boxplots
+            try:
+                fig, ax = plt.subplots()
+
+                ax.boxplot([values_per_cluster[cluster]
+                            for cluster in sorted(values_per_cluster.keys())])
+
+                ax.set_ylabel(metric)
+                ax.set_xlabel("Cluster number")
+
+                boxplot_filename = \
+                    os.path.join(path,
+                                 "clusters_{}_boxplot.png".format(metric))
+                plt.savefig(boxplot_filename)
+            except IndexError:
+                self.logger.info("Samples to disperse to produce a cluster " +
+                                 "for metric {}".format(metric))
+
+        # Add descriptors to summary dataframe
         for label, values_per_cluster in descriptors.items():
             summary[label] = [values_per_cluster[cluster]
                               for cluster in summary['Cluster']]
 
-        summary.to_csv(output_file, index=False)
+        # Save cluster summary to file
+        summary.to_csv(os.path.join(path, 'info.csv'), index=False)
 
     def _save_clusters(self, clusters, dataframe, path):
         """
@@ -463,6 +487,9 @@ class Analysis(object):
         energies = list(dataframe['currentEnergy'])
         energies_per_cluster = defaultdict(list)
         for cluster, energy in zip(clusters, energies):
+            # Skip outliers such as clusters with label -1
+            if cluster < 0:
+                continue
             energies_per_cluster[cluster].append(energy)
 
         percentiles_per_cluster = {}
@@ -475,10 +502,15 @@ class Analysis(object):
         steps = list(dataframe['numberOfAcceptedPeleSteps'])
         for cluster, energy, trajectory, step in zip(clusters, energies,
                                                      trajectories, steps):
+            # Skip outliers such as clusters with label -1
+            if cluster < 0:
+                continue
+
             energetic_diff = np.abs(percentiles_per_cluster[cluster] - energy)
             if cluster not in representative_structures:
                 representative_structures[cluster] = (trajectory, step)
                 lowest_energetic_diff[cluster] = energetic_diff
+
             elif lowest_energetic_diff[cluster] > energetic_diff:
                 representative_structures[cluster] = (trajectory, step)
                 lowest_energetic_diff[cluster] = energetic_diff
