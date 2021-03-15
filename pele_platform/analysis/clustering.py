@@ -40,7 +40,8 @@ class Clustering(ABC):
         """
         pass
 
-    def _fix_coordinates_shape(self, coordinates):
+    @staticmethod
+    def fix_coordinates_shape(coordinates):
         """
         Given an array of coordinates with the following dimensions:
         [M, N, 3], it reshapes it to [M, N * 3]. This is the shape
@@ -122,7 +123,7 @@ class GaussianMixtureClustering(Clustering):
         """
         from sklearn.mixture import GaussianMixture
 
-        coordinates = self._fix_coordinates_shape(coordinates)
+        coordinates = Clustering.fix_coordinates_shape(coordinates)
 
         clustering_method = GaussianMixture(n_components=self._n_clusters,
                                             covariance_type="full")
@@ -171,7 +172,7 @@ class HDBSCANClustering(Clustering):
         """
         from hdbscan import HDBSCAN
 
-        coordinates = self._fix_coordinates_shape(coordinates)
+        coordinates = Clustering.fix_coordinates_shape(coordinates)
 
         clustering_method = HDBSCAN(cluster_selection_epsilon=self._bandwidth)
         clusters = clustering_method.fit_predict(coordinates)
@@ -219,7 +220,7 @@ class MeanShiftClustering(Clustering):
         """
         from sklearn.cluster import MeanShift
 
-        coordinates = self._fix_coordinates_shape(coordinates)
+        coordinates = Clustering.fix_coordinates_shape(coordinates)
 
         clustering_method = MeanShift(bandwidth=self.bandwidth,
                                       cluster_all=False)
