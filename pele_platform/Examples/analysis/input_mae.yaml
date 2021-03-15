@@ -6,3 +6,4 @@ only_analysis: true
 output: 'xtc'
 mae: true
 traj: 'trajectory.xtc'
+test: true

@@ -6,6 +6,9 @@ coming from PELE reports.
 
 # TODO this method should be moved to another module
 def _extract_coords(info):
+    import numpy as np
+    import mdtraj
+
     p, v, resname, topology = info
     # Most time consuming step 0.1
     traj = mdtraj.load_frame(p, v, top=topology)
@@ -70,7 +73,10 @@ class Plotter(object):
         from pele_platform.analysis import DataHandler
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
+<<<<<<< HEAD
         # Initialize a data handler from the current dataframe
+=======
+>>>>>>> Partial test fix
         data_handler = DataHandler.from_dataframe(self._dataframe)
 
         # Ensure that output_folder exists

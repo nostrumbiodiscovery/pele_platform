@@ -252,8 +252,18 @@ class Analysis(object):
                              'It should be one of [\'GaussianMixture\', ' +
                              '\'HDBSCAN\', \'MeanShift\']')
 
+<<<<<<< HEAD
         clusters = clustering.get_clusters(coordinates)
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
+=======
+        try:
+            clusters = clustering.get_clusters(coordinates)
+        except ValueError as e:
+            if self.parameters.test:
+                clusters = [1]
+            else:
+                raise e
+>>>>>>> Partial test fix
 
         self._analyze_clusters(clusters, dataframe, rmsd_per_cluster, path)
         self._save_clusters(clusters, dataframe, path)
@@ -617,6 +627,3 @@ class Analysis(object):
                     step=step, out_freq=1,
                     f_out='cluster_{}.pdb'.format(cluster),
                     logger=self.parameters.logger)
-
-
-

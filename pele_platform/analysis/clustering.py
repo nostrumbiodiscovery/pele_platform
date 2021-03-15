@@ -80,7 +80,6 @@ class Clustering(ABC):
                              'that is being analyzed')
 
         reshaped_coordinates = coordinates.reshape(-1, n_atoms * n_dimensions)
-
         return reshaped_coordinates
 
 
@@ -171,8 +170,12 @@ class HDBSCANClustering(Clustering):
             the supplied array
         """
         from hdbscan import HDBSCAN
+<<<<<<< HEAD
 
         coordinates = Clustering.fix_coordinates_shape(coordinates)
+=======
+        coordinates = self._fix_coordinates_shape(coordinates)
+>>>>>>> Partial test fix
 
         clustering_method = HDBSCAN(cluster_selection_epsilon=self._bandwidth)
         clusters = clustering_method.fit_predict(coordinates)
@@ -222,7 +225,7 @@ class MeanShiftClustering(Clustering):
 
         coordinates = Clustering.fix_coordinates_shape(coordinates)
 
-        clustering_method = MeanShift(bandwidth=self.bandwidth,
+        clustering_method = MeanShift(bandwidth=self._bandwidth,
                                       cluster_all=False)
         clusters = clustering_method.fit_predict(coordinates)
 

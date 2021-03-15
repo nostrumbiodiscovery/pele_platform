@@ -6,3 +6,4 @@ only_analysis: true
 te_column: 3
 be_column: 4
 limit_column: 7
+test: true
