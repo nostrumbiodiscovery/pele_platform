@@ -7,3 +7,4 @@ te_column: 3
 be_column: 4
 limit_column: 6
 analysis_nclust: 1
+test: true

@@ -6,6 +6,9 @@ coming from PELE reports.
 
 # TODO this method should be moved to another module
 def _extract_coords(info):
+    import numpy as np
+    import mdtraj
+
     p, v, resname, topology = info
     # Most time consuming step 0.1
     traj = mdtraj.load_frame(p, v, top=topology)
