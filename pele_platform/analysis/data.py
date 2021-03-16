@@ -456,6 +456,12 @@ class DataHandler(object):
             with Pool(n_proc) as pool:
                 coordinates = pool.map(parallel_function, trajectories)
 
+        # Remove possible empty arrays
+        for coordinates_array in coordinates:
+            if len(coordinates_array) == 0:
+                coordinates.remove(coordinates_array)
+
+        # Concatenate resulting array
         coordinates = np.concatenate(coordinates)
 
         # Reorder entries in the dataset to match with the coordinate

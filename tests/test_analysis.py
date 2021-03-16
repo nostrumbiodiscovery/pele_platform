@@ -123,8 +123,7 @@ def test_analysis(ext_args=ANALYSIS_ARGS):
     main.run_platform(ext_args)
 
 
-def test_analysis_mae(ext_args=ANALYSIS_MAE_ARGS):
-    os.system("rm ../pele_platform/Examples/analysis/data/*/*summary*")
+def test_analysis_xtc(ext_args=ANALYSIS_MAE_ARGS):
     main.run_platform(ext_args)
 
 
@@ -145,8 +144,9 @@ def test_cluster_default():
 
 
 @pytest.mark.parametrize(("method", "bandwidth", "n_clusters"), [
-    ("dbscan", 20, 1),
-    ("meanshift", 100, 3)])
+    ("hdbscan", 20, 1),
+    ("meanshift", 100, 2),
+    ("meanshift", 10, 3)])
 def test_clustering_methods(method, bandwidth, n_clusters):
     """
     Checks built-in clustering methods and report generation.
