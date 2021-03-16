@@ -133,7 +133,9 @@ def test_cluster_default():
     if os.path.exists(output_folder):
         shutil.rmtree(output_folder)
 
-    data_handler = DataHandler(sim_path=simulation_path, report_name=REPORT_NAME, trajectory_name=TRAJ_NAME,
+    data_handler = DataHandler(sim_path=simulation_path,
+                               report_name=REPORT_NAME,
+                               trajectory_name=TRAJ_NAME,
                                be_column=5)
 
     coordinates, dataframe = data_handler.extract_raw_coords('STR')
