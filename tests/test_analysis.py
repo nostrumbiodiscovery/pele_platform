@@ -8,7 +8,9 @@ import pele_platform.main as main
 import pele_platform.analysis.plot as pt
 from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 from pele_platform.analysis import DataHandler, Plotter
-from pele_platform.analysis import clustering
+from pele_platform.analysis import (GaussianMixtureClustering,
+                                    HDBSCANClustering,
+                                    MeanShiftClustering)
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
@@ -136,8 +138,8 @@ def test_cluster_default():
 
     coordinates, dataframe = data_handler.extract_raw_coords('LIG')
 
-    classifier = clustering.GaussianMixtureClustering(2)
-    labels = classifier.get_clusters(coordinates)
+    clustering = GaussianMixtureClustering(2)
+    labels = clustering.get_clusters(coordinates)
 
     assert len(set(labels)) == n_clusts
 
@@ -170,7 +172,13 @@ def test_clustering_methods(method, bandwidth, n_clusters):
 
     coordinates, dataframe = data_handler.extract_raw_coords('LIG')
 
-    classifier = clustering.GaussianMixtureClustering(2)
-    labels = classifier.get_clusters(coordinates)
+    if method == 'hdbscan':
+        clustering = HDBSCANClustering(bandwidth)
+    elif method == 'meanshift':
+        clustering = MeanShiftClustering(bandwidth)
+    else:
+        assert False
 
-    assert len(set(created_clusters)) == n_clusters
+    labels = clustering.get_clusters(coordinates)
+
+    assert len(set(labels)) == n_clusters
