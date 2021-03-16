@@ -119,7 +119,7 @@ def test_analysis_flag(ext_args=ANALYSIS_FLAGS):
     )
 
 
-def test_analysis(ext_args=ANALYSIS_ARGS):
+def test_analysis_production(ext_args=ANALYSIS_ARGS):
     main.run_platform(ext_args)
 
 
