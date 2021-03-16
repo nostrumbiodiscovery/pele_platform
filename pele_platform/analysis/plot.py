@@ -48,8 +48,7 @@ class Plotter(object):
         self._logger = logger
 
     def plot_two_metrics(self, metric_to_x, metric_to_y, metric_to_z=None,
-                         output_name=None, output_folder=".",
-                         limit_column=6):
+                         output_name=None, output_folder=".", colors=None, limit_column=6):
         """
         Given 2 or 3 metrics, it generates the scatter plot. In case that
         a 3rd metric is supplied, it will be represented as the color bar.
@@ -71,6 +70,8 @@ class Plotter(object):
         output_folder : str
             The path where the plot will be saved. Default is '.', so it
             will be stored in the local directory
+        colors : list
+            List of cluster indices.
         """
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
@@ -108,9 +109,10 @@ class Plotter(object):
 
         fig, ax = plt.subplots()
         if metric_to_z is not None:
+            colors = colors if colors is not None else self._dataframe[metric_to_z]
             scatter = ax.scatter(self._dataframe[metric_to_x],
                                  self._dataframe[metric_to_y],
-                                 c=self._dataframe[metric_to_z],
+                                 c=colors,
                                  s=20)
             cbar = plt.colorbar(scatter)
             cbar.ax.set_ylabel(metric_to_z)
@@ -122,8 +124,10 @@ class Plotter(object):
                                                           metric_to_y,
                                                           metric_to_z))
         else:
+            colors = colors if colors is not None else None
             ax.scatter(self._dataframe[metric_to_x],
                        self._dataframe[metric_to_y],
+                       c=colors,
                        s=20)
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
