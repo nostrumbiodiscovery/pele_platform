@@ -13,7 +13,7 @@ class DataHandler(object):
     _TRAJECTORY_LABEL = 'trajectory'
 
     def __init__(self, sim_path, report_name, trajectory_name,
-                 be_column=None, skip_initial_structures=False):
+                 be_column=None, skip_initial_structures=True):
         """
         It initializes a DataHandler object.
 
@@ -31,7 +31,7 @@ class DataHandler(object):
             PELE report files. Default is None
         skip_initial_structures : bool
             Whether to skip initial structures when extracting metrics
-            or coordinates or not. Default is False
+            or coordinates or not. Default is True
         """
         self._sim_path = sim_path
         self._report_name = report_name
@@ -66,9 +66,9 @@ class DataHandler(object):
         be_column = parameters.be_column
 
         if parameters.test is not None:
-            skip_initial_structures = parameters.test
+            skip_initial_structures = not parameters.test
         else:
-            skip_initial_structures = False
+            skip_initial_structures = True
 
         data_handler = DataHandler(sim_path, report_name, trajectory_name,
                                    be_column, skip_initial_structures)
@@ -470,7 +470,7 @@ class DataHandler(object):
                                                           ascending=True)
 
             # Remove first entry, if applicable
-            if not self.skip_initial_structures:
+            if self.skip_initial_structures:
                 trajectory_rows = trajectory_rows.query('Step!="0"')
 
             # Append the resulting entries to the new reordered dataframe
@@ -540,7 +540,7 @@ class DataHandler(object):
 
                 # First model will always be skipped, unless otherwise
                 # established
-                if current_model == 1 and not self.skip_initial_structures:
+                if current_model == 1 and self.skip_initial_structures:
                     continue
 
                 if line_type == "ATOM  " or line_type == "HETATM":
@@ -585,7 +585,7 @@ class DataHandler(object):
             return np.array(())
 
         if (n_models_loaded != current_model - 1 or spatial_dimension != 3) \
-                and not self.skip_initial_structures:
+                and self.skip_initial_structures:
             print('Warning: unexpected dimensions found in the ' +
                   'coordinate array from trajectory {}. '.format(trajectory) +
                   'Its coordinates will be skipped.')
