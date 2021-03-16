@@ -170,7 +170,6 @@ class Analysis(object):
 
         # Iterate over all the metrics found in the reports
         for metric in metrics[limit_column:]:
-            print(metric)
 
             if i_energy is not None:
                 plotter.plot_two_metrics(t_energy, i_energy, metric,
