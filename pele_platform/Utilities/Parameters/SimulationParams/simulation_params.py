@@ -484,6 +484,8 @@ class SimulationParams(
         self.be_column = args.be_column
         self.te_column = args.te_column
         self.limit_column = args.limit_column
+        self.kde = args.kde if args.kde else False
+        self.kde_structs = args.kde_structs if args.kde_structs else 1000
 
     def constraints_params(self, args):
         """

@@ -127,6 +127,7 @@ class DataHandler(object):
         """
         # Return the dataframe if it has been already created,
         # unless a brand new dataset is requested
+
         if self._dataframe is not None and not from_scratch:
             return self._dataframe
 

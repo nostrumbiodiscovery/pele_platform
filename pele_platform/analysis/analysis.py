@@ -180,6 +180,9 @@ class Analysis(object):
                 plotter.plot_two_metrics(metric, t_energy,
                                          output_folder=path)
 
+            if self.parameters.kde:
+                plotter.plot_kde(metric, i_energy, output_folder=path, kde_structs=self.parameters.kde_structs)
+
     def generate_top_poses(self, path, n_poses=100):
         """
         It selects and saves the top poses.
