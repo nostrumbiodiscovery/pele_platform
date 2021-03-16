@@ -48,7 +48,7 @@ def test_mutagenesis_production():
 
 def test_mutagenesis_restart():
     yaml = os.path.join(test_path, "restart_saturated_mutagenesis.yaml")
-    pele_dir = "ANL_Pele"
+    pele_dir = "restart_ANL_Pele"
     restart_folder = os.path.join(test_path, "directory_to_restart")
 
     if os.path.exists(pele_dir):

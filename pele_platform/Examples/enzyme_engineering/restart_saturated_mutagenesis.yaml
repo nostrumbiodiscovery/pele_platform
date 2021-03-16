@@ -4,5 +4,5 @@ chain: 'L'
 resname: 'ANL'
 cpus_per_mutation: 2
 test: true
-working_folder: 'ANL_Pele'
+working_folder: 'restart_ANL_Pele'
 adaptive_restart: true
