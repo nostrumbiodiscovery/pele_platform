@@ -64,7 +64,12 @@ class DataHandler(object):
         report_name = parameters.report_name
         trajectory_name = parameters.traj_name
         be_column = parameters.be_column
-        skip_initial_structures = parameters.test
+
+        if parameters.test is not None:
+            skip_initial_structures = parameters.test
+        else:
+            skip_initial_structures = False
+
         data_handler = DataHandler(sim_path, report_name, trajectory_name,
                                    be_column, skip_initial_structures)
         return data_handler
