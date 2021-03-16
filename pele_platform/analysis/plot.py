@@ -46,7 +46,8 @@ class Plotter(object):
         self._logger = logger
 
     def plot_two_metrics(self, metric_to_x, metric_to_y, metric_to_z=None,
-                         output_name=None, output_folder="."):
+                         output_name=None, output_folder=".",
+                         limit_column=6):
         """
         Given 2 or 3 metrics, it generates the scatter plot. In case that
         a 3rd metric is supplied, it will be represented as the color bar.

@@ -178,7 +178,7 @@ class Analysis(object):
                 plotter.plot_two_metrics(metric, i_energy,
                                          output_folder=path)
             else:
-                plotter.plot_two_metrics(t_energy, metric,
+                plotter.plot_two_metrics(metric, t_energy,
                                          output_folder=path)
 
     def generate_top_poses(self, path, n_poses=100):
