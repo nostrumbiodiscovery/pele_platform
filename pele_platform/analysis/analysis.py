@@ -161,12 +161,16 @@ class Analysis(object):
             t_energy = 'currentEnergy'
             i_energy = None
 
+        # The minimum value for the limit column is 4, since previous
+        # columns in PELE report files does not contain any metric
+        if self.parameters.limit_column > 4:
+            limit_column = self.parameters.limit_column - 4
+        else:
+            limit_column = 0
+
         # Iterate over all the metrics found in the reports
-        for metric in metrics:
-            # Skip metric if it belongs to the Total energy or the
-            # Interaction energy
-            if metric == 'currentEnergy' or metric == 'Binding Energy':
-                continue
+        for metric in metrics[limit_column:]:
+            print(metric)
 
             if i_energy is not None:
                 plotter.plot_two_metrics(t_energy, i_energy, metric,
