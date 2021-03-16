@@ -15,7 +15,7 @@ def test_mutagenesis_production():
     as expected (i.e. has induced_fit_exhaustive defaults).
     TODO: This is a very primitive implementation, needs a lot more testing!
     """
-    yaml = os.path.join(test_path, "restart_saturated_mutagenesis.yaml")
+    yaml = os.path.join(test_path, "saturated_mutagenesis.yaml")
     all_jobs = main.run_platform(yaml)
 
     # List of mutated PDBs expected in each job
