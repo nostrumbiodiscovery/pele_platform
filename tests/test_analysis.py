@@ -134,8 +134,6 @@ def test_cluster_default():
                                trajectory_name=TRAJ_NAME,
                                be_column=5)
 
-    data_handler.skip_initial_structures = False
-
     coordinates, dataframe = data_handler.extract_raw_coords('LIG')
 
     classifier = clustering.GaussianMixtureClustering(2)
@@ -164,25 +162,15 @@ def test_clustering_methods(method, bandwidth, n_clusters):
     -------
         Folder with clusters and report.
     """
-    output_folder = "clustering"
-    if os.path.exists(output_folder):
-        shutil.rmtree(output_folder)
 
-    analysis = pt.PostProcessor(
-        "report_",
-        "trajectory_",
-        "../pele_platform/Examples/clustering",
-        5,
-        topology=None,
-        residue="LIG",
-        clustering_method=method,
-        bandwidth=bandwidth,
-    )
-    analysis.logger = logging.getLogger("logger")
-    analysis.retrive_data()
-    analysis.cluster_poses(10, 5, output_folder, nclusts=1)
+    data_handler = DataHandler(sim_path='../pele_platform/Examples/clustering',
+                               report_name=REPORT_NAME,
+                               trajectory_name=TRAJ_NAME,
+                               be_column=5)
 
-    created_clusters = glob.glob(os.path.join(output_folder, "cluster*pdb"))
-    report = os.path.join(output_folder, "clustering_report.csv")
-    assert len(created_clusters) == n_clusters
-    assert os.path.exists(report)
+    coordinates, dataframe = data_handler.extract_raw_coords('LIG')
+
+    classifier = clustering.GaussianMixtureClustering(2)
+    labels = classifier.get_clusters(coordinates)
+
+    assert len(set(created_clusters)) == n_clusters
