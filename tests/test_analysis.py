@@ -14,7 +14,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
 data = "data"
 REPORT_NAME = "report"
-TRAJ_NAME = "trajectory"
+TRAJ_NAME = "trajectory.pdb"
 ANALYSIS_ARGS = os.path.join(test_path, "analysis/input.yaml")
 ANALYSIS_FLAGS0 = os.path.join(test_path, "analysis/input_flags0.yaml")
 ANALYSIS_FLAGS = os.path.join(test_path, "analysis/input_flags.yaml")
@@ -127,24 +127,21 @@ def test_analysis_mae(ext_args=ANALYSIS_MAE_ARGS):
 
 
 def test_cluster_default():
-    output_folder = "clusters"
     n_clusts = 2
 
-    if os.path.exists(output_folder):
-        shutil.rmtree(output_folder)
-
-    data_handler = DataHandler(sim_path=simulation_path,
+    data_handler = DataHandler(sim_path='../pele_platform/Examples/clustering',
                                report_name=REPORT_NAME,
                                trajectory_name=TRAJ_NAME,
                                be_column=5)
 
-    coordinates, dataframe = data_handler.extract_raw_coords('STR')
+    data_handler.skip_initial_structures = False
+
+    coordinates, dataframe = data_handler.extract_raw_coords('LIG')
 
     classifier = clustering.GaussianMixtureClustering(2)
     labels = classifier.get_clusters(coordinates)
 
-    assert os.path.exists(output_folder)
-    assert len(glob.glob(os.path.join(output_folder, "clust*.pdb"))) == n_clusts
+    assert len(set(labels)) == n_clusts
 
 
 @pytest.mark.parametrize(("method", "bandwidth", "n_clusters"), [
