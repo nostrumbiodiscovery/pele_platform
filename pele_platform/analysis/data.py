@@ -29,6 +29,9 @@ class DataHandler(object):
         be_column : int
             The column that belongs to the Interaction energy metric in
             PELE report files. Default is None
+        skip_initial_structures : bool
+            Whether to skip initial structures when extracting metrics
+            or coordinates or not. Default is False
         """
         self._sim_path = sim_path
         self._report_name = report_name
@@ -461,8 +464,9 @@ class DataHandler(object):
             trajectory_rows = trajectory_rows.sort_values(['Step'],
                                                           ascending=True)
 
-            # Remove first entry
-            trajectory_rows = trajectory_rows.query('Step!="0"') if not self.skip_initial_structures else trajectory_rows
+            # Remove first entry, if applicable
+            if not self.skip_initial_structures:
+                trajectory_rows = trajectory_rows.query('Step!="0"')
 
             # Append the resulting entries to the new reordered dataframe
             reordered_dataframe = \
@@ -529,7 +533,8 @@ class DataHandler(object):
                     if len(model_coords) > 0:
                         coordinates.append(np.array(model_coords))
 
-                # First model will always be skipped
+                # First model will always be skipped, unless otherwise
+                # established
                 if current_model == 1 and not self.skip_initial_structures:
                     continue
 
@@ -574,7 +579,8 @@ class DataHandler(object):
             # Return empty array
             return np.array(())
 
-        if (n_models_loaded != current_model - 1 or spatial_dimension != 3) and not self.skip_initial_structures:
+        if (n_models_loaded != current_model - 1 or spatial_dimension != 3) \
+                and not self.skip_initial_structures:
             print('Warning: unexpected dimensions found in the ' +
                   'coordinate array from trajectory {}. '.format(trajectory) +
                   'Its coordinates will be skipped.')
