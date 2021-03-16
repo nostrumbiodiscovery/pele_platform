@@ -119,7 +119,6 @@ class DataHandler(object):
         """
         # Return the dataframe if it has been already created,
         # unless a brand new dataset is requested
-        breakpoint()
         if self._dataframe is not None and not from_scratch:
             return self._dataframe
 
@@ -227,10 +226,11 @@ class DataHandler(object):
         dataframe = self.get_reports_dataframe()
 
         # Get columns
-        columns = set(dataframe.columns)
+        columns = list(dataframe.columns)
 
         # Filter out non metric columns
-        metrics = list(columns.difference(self._NON_METRIC_LABELS))
+        metrics = [metric for metric in columns
+                   if metric not in self._NON_METRIC_LABELS]
 
         return metrics
 

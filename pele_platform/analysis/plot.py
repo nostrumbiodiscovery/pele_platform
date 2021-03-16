@@ -101,6 +101,8 @@ class Plotter(object):
         output_name = os.path.join(output_folder, output_name).replace(" ", "_")
 
         # Generate plot with matplotlib
+        import matplotlib
+        matplotlib.use('Agg')
         from matplotlib import pyplot as plt
 
         fig, ax = plt.subplots()

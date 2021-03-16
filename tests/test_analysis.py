@@ -77,15 +77,18 @@ def test_csv_move_folder():
 
 
 def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
+    if os.path.exists("../pele_platform/Examples/analysis/data/results/plots/"):
+        shutil.rmtree("../pele_platform/Examples/analysis/data/results/plots/")
+
     job = main.run_platform(ext_args)
     assert os.path.exists(
-        "../pele_platform/Examples/analysis/data/results/plots/Binding_Energy_distance0_plot.png"
+        "../pele_platform/Examples/analysis/data/results/plots/distance0_Binding_Energy_plot.png"
     )
     assert os.path.exists(
         "../pele_platform/Examples/analysis/data/results/plots/currentEnergy_Binding_Energy_distance0_plot.png"
     )
     assert os.path.exists(
-        "../pele_platform/Examples/analysis/data/results/plots/Binding_Energy_sasaLig_plot.png"
+        "../pele_platform/Examples/analysis/data/results/plots/sasaLig_Binding_Energy_plot.png"
     )
     assert os.path.exists(
         "../pele_platform/Examples/analysis/data/results/plots/currentEnergy_Binding_Energy_sasaLig_plot.png"
@@ -98,12 +101,15 @@ def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
 
 
 def test_analysis_flag(ext_args=ANALYSIS_FLAGS):
+    if os.path.exists("../pele_platform/Examples/analysis/data/results/plots/"):
+        shutil.rmtree("../pele_platform/Examples/analysis/data/results/plots/")
+
     main.run_platform(ext_args)
     assert os.path.exists(
-        "../pele_platform/Examples/analysis/data/results/plots/numberOfAcceptedPeleSteps_currentEnergy_distance0_plot.png"
+        "../pele_platform/Examples/analysis/data/results/plots/currentEnergy_Binding_Energy_distance0_plot.png"
     )
     assert os.path.exists(
-        "../pele_platform/Examples/analysis/data/results/plots/distance0_currentEnergy_plot.png"
+        "../pele_platform/Examples/analysis/data/results/plots/distance0_Binding_Energy_plot.png"
     )
     assert (
         len(glob.glob("../pele_platform/Examples/analysis/data/results/plots/*.png"))
