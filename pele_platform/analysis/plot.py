@@ -2,6 +2,8 @@
 This module contains classes and methods to construct plots with data
 coming from PELE reports.
 """
+import os
+from pele_platform.analysis import DataHandler
 
 
 # TODO this method should be moved to another module
@@ -70,8 +72,6 @@ class Plotter(object):
             The path where the plot will be saved. Default is '.', so it
             will be stored in the local directory
         """
-        import os
-        from pele_platform.analysis import DataHandler
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
 <<<<<<< HEAD
@@ -133,4 +133,24 @@ class Plotter(object):
             plt.savefig(output_name)
             backup_logger(self._logger, "Plotted {} vs {}".format(metric_to_x,
                                                                   metric_to_y))
+        return output_name
+
+    def plot_kde(self, column_to_x, column_to_y, output_folder, kde_structs):
+        import seaborn as sb
+
+        data_handler = DataHandler.from_dataframe(self._dataframe)
+
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+
+        column_to_x = column_to_x if not str(column_to_x).isdigit() else data_handler._get_column_name(column_to_x)
+        column_to_y = column_to_y if not str(column_to_y).isdigit() else data_handler._get_column_name(column_to_y)
+
+        output_name = "{}_{}_kde.png".format(column_to_x, column_to_y)
+        output_name = os.path.join(output_folder,output_name).replace(" ", "_")
+        top_1000 = self._dataframe.sort_values(column_to_y, ascending=True)[0:int(kde_structs)]
+        plot = sb.kdeplot(top_1000[column_to_x], top_1000[column_to_y], cmap="crest", fill=False, shade=True, cbar=True)
+        figure = plot.get_figure()
+        figure.savefig(output_name)
+
         return output_name

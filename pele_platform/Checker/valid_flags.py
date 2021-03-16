@@ -184,4 +184,6 @@ VALID_FLAGS_PLATFORM = {
     "cpus_per_mutation": "cpus_per_mutation",
     "clustering_method": "clustering_method",
     "bandwidth": "bandwidth",
+    "kde_structs": "kde_structs",
+    "kde": "kde"
 }
