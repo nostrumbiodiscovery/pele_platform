@@ -174,13 +174,13 @@ class Plotter(object):
             metric_to_y = data_handler._get_column_name(metric_to_y)
 
         # Define output path
-        output_name = "{}_{}_kde.png".format(column_to_x, column_to_y)
+        output_name = "{}_{}_kde.png".format(metric_to_x,metric_to_y)
         output_name = os.path.join(output_folder, output_name)
         output_name = output_name.replace(" ", "_")
 
         # Filter out the number of structures from dataframe to plot
         structures_to_keep = min(int(kde_structs), len(self._dataframe) - 1)
-        sorted_df = self._dataframe.sort_values(column_to_y, ascending=True)
+        sorted_df = self._dataframe.sort_values(metric_to_y, ascending=True)
         top = sorted_df[0:structures_to_keep]
 
         # Plot and save it
