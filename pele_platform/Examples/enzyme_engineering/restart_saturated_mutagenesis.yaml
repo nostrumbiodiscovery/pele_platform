@@ -1,0 +1,8 @@
+saturated_mutagenesis: true
+system: '../pele_platform/Examples/enzyme_engineering/pdb_files/*.pdb'
+chain: 'L'
+resname: 'ANL'
+cpus_per_mutation: 2
+test: true
+working_folder: 'restart_ANL_Pele'
+adaptive_restart: true

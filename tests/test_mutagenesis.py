@@ -1,5 +1,6 @@
 import glob
 import os
+import shutil
 
 from pele_platform.constants import constants
 from pele_platform import main
@@ -43,3 +44,19 @@ def test_mutagenesis_production():
         job_input = [os.path.basename(file) for file in glob.glob(job_dir)]
         for expected_pdb in expected_pdbs[i]:
             assert expected_pdb in job_input
+
+
+def test_mutagenesis_restart():
+    yaml = os.path.join(test_path, "restart_saturated_mutagenesis.yaml")
+    pele_dir = "restart_ANL_Pele"
+    restart_folder = os.path.join(test_path, "directory_to_restart")
+
+    if os.path.exists(pele_dir):
+        shutil.rmtree(pele_dir)
+    shutil.copytree(restart_folder, pele_dir)
+
+    all_jobs = main.run_platform(yaml)
+    last_job = all_jobs[-1]
+    mutation_folder = os.path.splitext(os.path.basename(last_job.input[0]))[0]
+    restart_trajectories = glob.glob(os.path.join(last_job.pele_dir, last_job.output, mutation_folder, "traj*"))
+    assert len(restart_trajectories) == 2
