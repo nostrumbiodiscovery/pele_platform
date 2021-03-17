@@ -204,6 +204,7 @@ class Plotter(object):
             The array of cluster labels that were obtained
         """
         import copy
+        from string import ascii_uppercase
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
         # Initialize a data handler from the current dataframe
@@ -243,9 +244,12 @@ class Plotter(object):
         ax.spines['bottom'].set_color('black')
         ax.set_facecolor('#E6E9EB')
 
+        # Extract the list of cluster labels
+        cluster_labels = sorted(list(set(clusters)))
+
         # Configurate colormap
         cmap = copy.copy(cm.get_cmap("Set1"))
-        norm = colors.Normalize(vmin=0, vmax=8)
+        norm = colors.Normalize(vmin=0, vmax=len(cluster_labels))
         cmap.set_under('grey')
 
         # Values to plot
@@ -254,7 +258,7 @@ class Plotter(object):
 
         # Draw points
         colors_used = []
-        for current_cluster in set(clusters):
+        for current_cluster in cluster_labels:
             xs = []
             ys = []
             for x, y, cluster in zip(all_xs, all_ys, clusters):
@@ -268,6 +272,21 @@ class Plotter(object):
             sc = ax.scatter(xs, ys, c=[current_cluster, ] * len(xs), cmap=cmap,
                             norm=norm, alpha=0.7, zorder=zorder)
             colors_used += sc.legend_elements()[0]
+
+        # Configurate legend
+        cluster_names = []
+        for cluster_id in cluster_labels:
+            if cluster_id == -1:
+                cluster_names.append('Others')
+            else:
+                cluster_names.append(ascii_uppercase[cluster_id])
+
+        if cluster_names[0] == 'Others':
+            n = cluster_names.pop(0)
+            c = colors_used.pop(0)
+            cluster_names.append(n)
+            colors_used.append(c)
+        legend1 = ax.legend(colors_used, cluster_names, title="Clusters")
 
         # Set output name
         output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
