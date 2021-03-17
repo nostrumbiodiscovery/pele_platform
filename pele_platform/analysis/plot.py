@@ -48,7 +48,7 @@ class Plotter(object):
         self._logger = logger
 
     def plot_two_metrics(self, metric_to_x, metric_to_y, metric_to_z=None,
-                         output_name=None, output_folder=".", colors=None):
+                         output_name=None, output_folder="."):
         """
         Given 2 or 3 metrics, it generates the scatter plot. In case that
         a 3rd metric is supplied, it will be represented as the color bar.
@@ -70,8 +70,6 @@ class Plotter(object):
         output_folder : str
             The path where the plot will be saved. Default is '.', so it
             will be stored in the local directory
-        colors : list
-            List of cluster indices.
         """
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
@@ -112,17 +110,12 @@ class Plotter(object):
 
         fig, ax = plt.subplots()
         if metric_to_z is not None:
-            if colors is not None:
-                ax.scatter(self._dataframe[metric_to_x],
-                           self._dataframe[metric_to_y],
-                           c=colors, s=20)
-            else:
-                scatter = ax.scatter(self._dataframe[metric_to_x],
-                                     self._dataframe[metric_to_y],
-                                     c=self._dataframe[metric_to_z],
-                                     s=20)
-                cbar = plt.colorbar(scatter)
-                cbar.ax.set_ylabel(metric_to_z)
+            scatter = ax.scatter(self._dataframe[metric_to_x],
+                                 self._dataframe[metric_to_y],
+                                 c=self._dataframe[metric_to_z],
+                                 s=20)
+            cbar = plt.colorbar(scatter)
+            cbar.ax.set_ylabel(metric_to_z)
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
@@ -132,13 +125,8 @@ class Plotter(object):
                                                           metric_to_z))
 
         else:
-            if colors is not None:
-                ax.scatter(self._dataframe[metric_to_x],
-                           self._dataframe[metric_to_y],
-                           c=colors, s=20)
-            else:
-                ax.scatter(self._dataframe[metric_to_x],
-                           self._dataframe[metric_to_y])
+            ax.scatter(self._dataframe[metric_to_x],
+                       self._dataframe[metric_to_y])
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
@@ -194,3 +182,99 @@ class Plotter(object):
         figure.savefig(output_name)
 
         return output_name
+
+    def plot_clusters(self, metric_to_x, metric_to_y, output_folder,
+                      clusters):
+        """
+        It creates a scatter plot with the two metrics that are supplied
+        and displays the points belonging to each top cluster with a
+        different color.
+
+        Parameters
+        ----------
+        metric_to_x : str or int
+            The metric id to plot in the X axis. It can be either a string
+            with the name of the metric or an integer with the column index
+        metric_to_y : str or int
+            The metric id to plot in the Y axis. It can be either a string
+            with the name of the metric or an integer with the column index
+        output_folder : str
+            The path where the plot will be saved
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        """
+        import copy
+        from pele_platform.Utilities.Helpers.helpers import backup_logger
+
+        # Initialize a data handler from the current dataframe
+        data_handler = DataHandler.from_dataframe(self._dataframe)
+
+        # Ensure that output_folder exists
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+
+        # Ensure that metrics are strings pointing to dataframe columns
+        if str(metric_to_x).isdigit():
+            metric_to_x = data_handler._get_column_name(metric_to_x)
+        if str(metric_to_y).isdigit():
+            metric_to_y = data_handler._get_column_name(metric_to_y)
+
+        import matplotlib
+        matplotlib.use('Agg')
+        from matplotlib import pyplot as plt
+        from matplotlib import colors, cm
+
+        # Initialize figure
+        fig, ax = plt.subplots(figsize=(6, 6), dpi=100, facecolor='w',
+                               edgecolor='k')
+
+        # Set axis labels
+        plt.xlabel(metric_to_x)
+        plt.ylabel(metric_to_y)
+
+        # Configurate grid
+        ax.set_axisbelow(True)
+        ax.grid(True)
+        ax.xaxis.grid(color='#AEB6BF', linestyle='dashed')
+        ax.yaxis.grid(color='#AEB6BF', linestyle='dashed')
+        ax.spines['right'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['left'].set_color('black')
+        ax.spines['bottom'].set_color('black')
+        ax.set_facecolor('#E6E9EB')
+
+        # Configurate colormap
+        cmap = copy.copy(cm.get_cmap("Set1"))
+        norm = colors.Normalize(vmin=0, vmax=8)
+        cmap.set_under('grey')
+
+        # Values to plot
+        all_xs = self._dataframe[metric_to_x]
+        all_ys = self._dataframe[metric_to_y]
+
+        # Draw points
+        colors_used = []
+        for current_cluster in set(clusters):
+            xs = []
+            ys = []
+            for x, y, cluster in zip(all_xs, all_ys, clusters):
+                if (cluster == current_cluster):
+                    xs.append(x)
+                    ys.append(y)
+            if (current_cluster == -1):
+                zorder = 1
+            else:
+                zorder = 2
+            sc = ax.scatter(xs, ys, c=[current_cluster, ] * len(xs), cmap=cmap,
+                            norm=norm, alpha=0.7, zorder=zorder)
+            colors_used += sc.legend_elements()[0]
+
+        # Set output name
+        output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
+        output_name = os.path.join(output_folder, output_name).replace(" ", "_")
+
+        plt.savefig(output_name, dpi=200, edgecolor='k',
+                    orientation='portrait', transparent=True)
+
+        backup_logger(self._logger, "Plotted {} vs {}".format(metric_to_x,
+                                                              metric_to_y))
