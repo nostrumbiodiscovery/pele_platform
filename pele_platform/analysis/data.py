@@ -360,10 +360,13 @@ class DataHandler(object):
         import numpy as np
         import pandas as pd
 
-        indices_to_retrieve = self._coordinate_reduction(residue_name,
-                                                         remove_hydrogen,
-                                                         topology,
-                                                         max_coordinates)
+        try:
+            indices_to_retrieve = self._coordinate_reduction(residue_name,
+                                                             remove_hydrogen,
+                                                             topology,
+                                                             max_coordinates)
+        except ValueError:
+            return None, None
 
         # Load topology
         topology = mdtraj.load(topology)
@@ -467,10 +470,14 @@ class DataHandler(object):
                              'dataframe. Are all the variables correctly ' +
                              'set?')
         else:
-            indices_to_retrieve = self._coordinate_reduction(residue_name,
-                                                             remove_hydrogen,
-                                                             trajectories[0],
-                                                             max_coordinates)
+            try:
+                indices_to_retrieve = \
+                    self._coordinate_reduction(residue_name, remove_hydrogen,
+                                               trajectories[0],
+                                               max_coordinates)
+            except ValueError:
+                return None, None
+
 
         if no_multiprocessing or n_proc == 1:
             coordinates = []
@@ -560,6 +567,14 @@ class DataHandler(object):
                                                   remove_hydrogen,
                                                   trajectory,
                                                   only_first_model=True)
+
+        try:
+            coordinates = coordinates[0]  # There is only one model
+        except IndexError:
+            return ValueError('Residue {} '.format(residue_name) +
+                              'not found in PDB file ' +
+                              '{}'.format(trajectory))
+
         coordinates = coordinates[0]  # There is only one model
 
         # Calculate the centroid

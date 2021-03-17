@@ -249,6 +249,16 @@ class Analysis(object):
                                                   self.parameters.topology,
                                                   remove_hydrogen=True)
 
+        if coordinates is None or dataframe is None:
+            self.parameters.logger.info(f"Coordinate extraction failed, " +
+                                        f"clustering analysis is skipped")
+            return
+
+        if len(coordinates) < 2:
+            self.parameters.logger.info(f"Not enough coordinates, " +
+                                        f"clustering analysis is skipped")
+            return
+
         self.parameters.logger.info(f"Retrieve best cluster poses")
 
         if clustering_type.lower() == 'gaussianmixture':
@@ -264,18 +274,9 @@ class Analysis(object):
                              'It should be one of [\'GaussianMixture\', ' +
                              '\'HDBSCAN\', \'MeanShift\']')
 
-        # We are only allowing the clustering to fail when running
-        # in test mode
-        try:
-            clusters = clustering.get_clusters(coordinates)
-            rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
-        except ValueError as error:
-            if self.parameters.test:
-                clusters = [1]
-                rmsd_per_cluster = {1: 0}
-            else:
-                raise error
+        clusters = clustering.get_clusters(coordinates)
+        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
         self._analyze_clusters(clusters, dataframe, rmsd_per_cluster, path)
         self._plot_clusters(clusters, dataframe, path)

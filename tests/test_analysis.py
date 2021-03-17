@@ -95,7 +95,7 @@ def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
     assert os.path.exists(
         "../pele_platform/Examples/analysis/data/results/plots/currentEnergy_Binding_Energy_sasaLig_plot.png"
     )
-    assert job.analysis_nclust == 1
+    assert job.analysis_nclust == 4
     assert (
         len(glob.glob("../pele_platform/Examples/analysis/data/results/plots/*.png"))
         == 4
@@ -124,8 +124,26 @@ def test_analysis_production(ext_args=ANALYSIS_ARGS):
 
 
 def test_analysis_xtc(ext_args=ANALYSIS_XTC_ARGS):
-    main.run_platform(ext_args)
+    from pele_platform.Utilities.Helpers import yaml_parser
+    from pele_platform.Checker import valid_flags
+    from pele_platform.Utilities.Helpers.launcher import Launcher
 
+    yaml_obj = yaml_parser.YamlParser(ext_args,
+                                      valid_flags.VALID_FLAGS_PLATFORM)
+
+    yaml_obj.read()
+
+    # Modify this value for this specific case
+    yaml_obj.analysis_nclust = 3
+
+    # Initialize job launcher
+    launcher = Launcher(yaml_obj)
+
+    # Run launcher
+    job_params = launcher.launch()
+
+    # Return job parameters
+    return job_params
 
 def test_cluster_default():
     n_clusts = 2
