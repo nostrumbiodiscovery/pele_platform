@@ -5,4 +5,3 @@ restart: false
 seed: 12345
 test: true
 msm: true
-analysis_nclust: 4
