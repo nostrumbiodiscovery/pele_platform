@@ -48,7 +48,7 @@ class Plotter(object):
         self._logger = logger
 
     def plot_two_metrics(self, metric_to_x, metric_to_y, metric_to_z=None,
-                         output_name=None, output_folder=".", colors=None, limit_column=6):
+                         output_name=None, output_folder=".", colors=None):
         """
         Given 2 or 3 metrics, it generates the scatter plot. In case that
         a 3rd metric is supplied, it will be represented as the color bar.
@@ -112,13 +112,17 @@ class Plotter(object):
 
         fig, ax = plt.subplots()
         if metric_to_z is not None:
-            colors = colors if colors is not None else self._dataframe[metric_to_z]
-            scatter = ax.scatter(self._dataframe[metric_to_x],
-                                 self._dataframe[metric_to_y],
-                                 c=colors,
-                                 s=20)
-            cbar = plt.colorbar(scatter)
-            cbar.ax.set_ylabel(metric_to_z)
+            if colors is not None:
+                ax.scatter(self._dataframe[metric_to_x],
+                           self._dataframe[metric_to_y],
+                           c=colors, s=20)
+            else:
+                scatter = ax.scatter(self._dataframe[metric_to_x],
+                                     self._dataframe[metric_to_y],
+                                     c=self._dataframe[metric_to_z],
+                                     s=20)
+                cbar = plt.colorbar(scatter)
+                cbar.ax.set_ylabel(metric_to_z)
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
@@ -126,12 +130,15 @@ class Plotter(object):
                           "Plotted {} vs {} vs {}".format(metric_to_x,
                                                           metric_to_y,
                                                           metric_to_z))
+
         else:
-            colors = colors if colors is not None else None
-            ax.scatter(self._dataframe[metric_to_x],
-                       self._dataframe[metric_to_y],
-                       c=colors,
-                       s=20)
+            if colors is not None:
+                ax.scatter(self._dataframe[metric_to_x],
+                           self._dataframe[metric_to_y],
+                           c=colors, s=20)
+            else:
+                ax.scatter(self._dataframe[metric_to_x],
+                           self._dataframe[metric_to_y])
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
