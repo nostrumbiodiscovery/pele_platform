@@ -2,6 +2,8 @@
 This module contains classes and methods to construct plots with data
 coming from PELE reports.
 """
+import os
+from pele_platform.analysis import DataHandler
 
 
 # TODO this method should be moved to another module
@@ -46,8 +48,7 @@ class Plotter(object):
         self._logger = logger
 
     def plot_two_metrics(self, metric_to_x, metric_to_y, metric_to_z=None,
-                         output_name=None, output_folder=".",
-                         limit_column=6):
+                         output_name=None, output_folder=".", colors=None, limit_column=6):
         """
         Given 2 or 3 metrics, it generates the scatter plot. In case that
         a 3rd metric is supplied, it will be represented as the color bar.
@@ -69,9 +70,9 @@ class Plotter(object):
         output_folder : str
             The path where the plot will be saved. Default is '.', so it
             will be stored in the local directory
+        colors : list
+            List of cluster indices.
         """
-        import os
-        from pele_platform.analysis import DataHandler
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
         # Initialize a data handler from the current dataframe
@@ -108,9 +109,10 @@ class Plotter(object):
 
         fig, ax = plt.subplots()
         if metric_to_z is not None:
+            colors = colors if colors is not None else self._dataframe[metric_to_z]
             scatter = ax.scatter(self._dataframe[metric_to_x],
                                  self._dataframe[metric_to_y],
-                                 c=self._dataframe[metric_to_z],
+                                 c=colors,
                                  s=20)
             cbar = plt.colorbar(scatter)
             cbar.ax.set_ylabel(metric_to_z)
@@ -122,12 +124,34 @@ class Plotter(object):
                                                           metric_to_y,
                                                           metric_to_z))
         else:
+            colors = colors if colors is not None else None
             ax.scatter(self._dataframe[metric_to_x],
                        self._dataframe[metric_to_y],
+                       c=colors,
                        s=20)
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
             backup_logger(self._logger, "Plotted {} vs {}".format(metric_to_x,
                                                                   metric_to_y))
+        return output_name
+
+    def plot_kde(self, column_to_x, column_to_y, output_folder, kde_structs):
+        import seaborn as sb
+
+        data_handler = DataHandler.from_dataframe(self._dataframe)
+
+        if not os.path.exists(output_folder):
+            os.makedirs(output_folder)
+
+        column_to_x = column_to_x if not str(column_to_x).isdigit() else data_handler._get_column_name(column_to_x)
+        column_to_y = column_to_y if not str(column_to_y).isdigit() else data_handler._get_column_name(column_to_y)
+
+        output_name = "{}_{}_kde.png".format(column_to_x, column_to_y)
+        output_name = os.path.join(output_folder,output_name).replace(" ", "_")
+        top_1000 = self._dataframe.sort_values(column_to_y, ascending=True)[0:int(kde_structs)]
+        plot = sb.kdeplot(top_1000[column_to_x], top_1000[column_to_y], cmap="crest", fill=False, shade=True, cbar=True)
+        figure = plot.get_figure()
+        figure.savefig(output_name)
+
         return output_name

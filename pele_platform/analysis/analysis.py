@@ -128,7 +128,7 @@ class Analysis(object):
                              clusters_folder, best_metrics,
                              report_file)
 
-    def generate_plots(self, path):
+    def generate_plots(self, path, exisiting_dataframe=None, colors=None):
         """
         It generates the plots.
 
@@ -136,11 +136,15 @@ class Analysis(object):
         ----------
         path : str
             The path where the plots will be saved
+        exisiting_dataframe : pandas.Dataframe
+            Dataframe with data to plot.
+        colors : list
+            List of cluster IDs for colour mapping.
         """
         from pele_platform.analysis import Plotter
 
         # Get dataframe
-        dataframe = self.get_dataframe(filter=True)
+        dataframe = self.get_dataframe(filter=True) if exisiting_dataframe is None else exisiting_dataframe
 
         # Initialize plotter
         plotter = Plotter(dataframe)
@@ -173,12 +177,15 @@ class Analysis(object):
 
             if i_energy is not None:
                 plotter.plot_two_metrics(t_energy, i_energy, metric,
-                                         output_folder=path)
+                                         output_folder=path, colors=colors)
                 plotter.plot_two_metrics(metric, i_energy,
-                                         output_folder=path)
+                                         output_folder=path, colors=colors)
             else:
                 plotter.plot_two_metrics(metric, t_energy,
-                                         output_folder=path)
+                                         output_folder=path, colors=colors)
+
+            if self.parameters.kde and exisiting_dataframe is not None:
+                plotter.plot_kde(metric, i_energy, output_folder=path, kde_structs=self.parameters.kde_structs)
 
     def generate_top_poses(self, path, n_poses=100):
         """
@@ -271,7 +278,12 @@ class Analysis(object):
                 raise error
 
         self._analyze_clusters(clusters, dataframe, rmsd_per_cluster, path)
+        self._plot_clusters(clusters, dataframe, path)
         self._save_clusters(clusters, dataframe, path)
+
+    def _plot_clusters(self, clusters, dataframe, path):
+        dataframe['cluster'] = clusters
+        self.generate_plots(path, exisiting_dataframe=dataframe, colors=dataframe['cluster'])
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):
