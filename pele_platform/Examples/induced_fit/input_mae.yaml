@@ -9,5 +9,5 @@ atom_dist:
 - 4165
 - 1
 test: true
-
+analysis_nclust: 4
 

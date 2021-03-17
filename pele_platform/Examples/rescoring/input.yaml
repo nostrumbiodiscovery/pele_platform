@@ -10,5 +10,4 @@ atom_dist:
 skip_preprocess: true
 test: true
 ca_constr: 3
-
-
+analysis_nclust: 4

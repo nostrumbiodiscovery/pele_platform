@@ -15,3 +15,4 @@ pca_traj:
 - "../pele_platform/Examples/pca/3.pdb"
 perturbation: false
 working_folder: "PCA_result"
+analysis_nclust: 4
