@@ -8,3 +8,4 @@ atom_dist:
 - "A:3:CA"
 test: true
 in_out: true
+analysis_nclust: 4

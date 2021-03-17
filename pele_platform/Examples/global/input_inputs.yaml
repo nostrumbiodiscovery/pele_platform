@@ -10,5 +10,4 @@ global_inputs:
 - "../pele_platform/Examples/analysis/data/inputs/input3.pdb"
 poses: 4
 test: true
-
-
+analysis_nclust: 4

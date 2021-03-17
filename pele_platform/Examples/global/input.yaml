@@ -6,5 +6,4 @@ seed: 12345
 global: true
 poses: 4
 test: true
-
-
+analysis_nclust: 4

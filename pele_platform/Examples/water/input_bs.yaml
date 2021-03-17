@@ -7,5 +7,4 @@ seed: 12345
 test: true
 waters:
 - M:1
-
-
+analysis_nclust: 4

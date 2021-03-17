@@ -9,3 +9,4 @@ atom_dist:
 - 33
 test: true
 n_waters: 1
+analysis_nclust: 4
