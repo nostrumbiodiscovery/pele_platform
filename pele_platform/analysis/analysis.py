@@ -229,6 +229,8 @@ class Analysis(object):
                                             HDBSCANClustering,
                                             MeanShiftClustering)
 
+        self.parameters.logger.info(f"Extract coordinates for clustering")
+
         if not self.parameters.topology:
             coordinates, dataframe = \
                 self._data_handler.extract_raw_coords(

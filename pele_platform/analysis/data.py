@@ -322,7 +322,8 @@ class DataHandler(object):
 
         return column_name
 
-    def extract_coords(self, residue_name, topology, remove_hydrogen=True):
+    def extract_coords(self, residue_name, topology, remove_hydrogen=True,
+                       max_coordinates=6):
         """
         This method employs mdtraj to extract the coordinates that
         belong to the supplied residue from all the trajectories in the
@@ -337,6 +338,9 @@ class DataHandler(object):
         remove_hydrogen : bool
             Whether to remove all hydrogen atoms from the extracted
             coordinates array or not. Default is True
+        max_coordinates : int
+            The maximum number of coordinates to keep for each model. Default
+            is 6
 
         Returns
         -------
@@ -355,6 +359,11 @@ class DataHandler(object):
         import numpy as np
         import pandas as pd
 
+        indices_to_retrieve = self._coordinate_reduction(residue_name,
+                                                         remove_hydrogen,
+                                                         topology,
+                                                         max_coordinates)
+
         # Load topology
         topology = mdtraj.load(topology)
 
@@ -366,17 +375,23 @@ class DataHandler(object):
             selection_str = 'resname == {}'.format(residue_name)
         atom_indices = topology.top.select(selection_str)
 
+        filtered_atom_indices = []
+        # Apply the indices to retrieve
+        for residue_index, atom_index in enumerate(atom_indices):
+            if residue_index in indices_to_retrieve:
+                filtered_atom_indices.append(atom_index)
+
         # Get trajectories from reports dataframe
         dataframe = self.get_reports_dataframe()
 
         reordered_dataframe = pd.DataFrame()
-        trajectories = set(dataframe[self._TRAJECTORY_LABEL])
+        trajectories = list(set(dataframe[self._TRAJECTORY_LABEL]))
 
         coordinates = []
         for trajectory in trajectories:
             # Extract coordinates
             residue_frames = mdtraj.load(trajectory, top=topology,
-                                         atom_indices=atom_indices)
+                                         atom_indices=filtered_atom_indices)
 
             # Reorder entries in the dataset to match with the coordinate
             # ordering
@@ -399,7 +414,7 @@ class DataHandler(object):
         return coordinates, reordered_dataframe
 
     def extract_raw_coords(self, residue_name, remove_hydrogen=True,
-                           n_proc=1):
+                           max_coordinates=6, n_proc=1):
         """
         This method extracts the the coordinates that belong to the
         supplied residue from all the trajectories in the dataframe.
@@ -412,6 +427,9 @@ class DataHandler(object):
         remove_hydrogen : bool
             Whether to remove all hydrogen atoms from the extracted
             coordinates array or not. Default is True
+        max_coordinates : int
+            The maximum number of coordinates to keep for each model. Default
+            is 6
         n_proc : int
             The number of processors to employ to extract the coordinates.
             Default is 1, so the parallelization is deactivated
@@ -442,16 +460,27 @@ class DataHandler(object):
         dataframe = self.get_reports_dataframe()
         trajectories = list(set(dataframe[self._TRAJECTORY_LABEL]))
 
+        if len(trajectories) == 0:
+            raise ValueError('No trajectories were found in the report ' +
+                             'dataframe. Are all the variables correctly ' +
+                             'set?')
+        else:
+            indices_to_retrieve = self._coordinate_reduction(residue_name,
+                                                             remove_hydrogen,
+                                                             trajectories[0],
+                                                             max_coordinates)
+
         if no_multiprocessing or n_proc == 1:
             coordinates = []
             for trajectory in trajectories:
                 coordinates.append(
-                    self._get_coordinates_from_trajectory(residue_name,
-                                                          remove_hydrogen,
-                                                          trajectory))
+                    self._get_coordinates_from_trajectory(
+                        residue_name, remove_hydrogen, trajectory,
+                        indices_to_retrieve=indices_to_retrieve))
         else:
             parallel_function = partial(self._get_coordinates_from_trajectory,
-                                        residue_name, remove_hydrogen)
+                                        residue_name, remove_hydrogen,
+                                        indices_to_retrieve=indices_to_retrieve)
 
             with Pool(n_proc) as pool:
                 coordinates = pool.map(parallel_function, trajectories)
@@ -485,8 +514,104 @@ class DataHandler(object):
 
         return coordinates, reordered_dataframe
 
+    def _coordinate_reduction(self, residue_name, remove_hydrogen,
+                              trajectory, max_coordinates):
+        """
+        It reduces the dimensions of the coordinates array to simplify the
+        clustering.
+
+        Given a [N, 3], where N is the total number of atoms that belong
+        to the selected residue, it will reduce N until reaching the
+        maximum number of coordinates that is supplied. The coordinates
+        that will be kept are those that belong to atoms that are further
+        away from each other, which are the ones that will be more
+        meaningful to identify the different binding modes in the
+        clustering.
+
+        Parameters
+        ----------
+        residue_name : str
+            A 3-char string that represent the residue that will be extracted
+        remove_hydrogen : bool
+            Whether to remove all hydrogen atoms from the extracted
+            coordinates array or not. Default is True
+        trajectory : str
+            The trajectory to extract the coordinates from
+        max_coordinates : int
+            The maximum number of coordinates to keep for each model
+
+        Returns
+        -------
+        residue_indices : list[int]
+            The indices belonging to the residue atoms that are
+            further away from each other which are the most meaningful
+            ones to detect its different binding modes
+        """
+        import numpy as np
+
+        # Array to store the indices to retrieve from the residue later on
+        residue_indices = []
+
+        # Extract the coordinates
+        coordinates = \
+            self._get_coordinates_from_trajectory(residue_name,
+                                                  remove_hydrogen,
+                                                  trajectory,
+                                                  only_first_model=True)
+        coordinates = coordinates[0]  # There is only one model
+
+        # Calculate the centroid
+        centroid = np.mean(coordinates, axis=0)
+
+        # Get the point that is further away from the centroid
+        best_distance = None
+        best_point = None
+        for index, point in enumerate(coordinates):
+            diff = point - centroid
+            squared_distance = (diff * diff).sum()
+
+            if best_distance is None or best_distance < squared_distance:
+                best_distance = squared_distance
+                best_point = index
+
+        # Add best point's index to the array
+        residue_indices.append(best_point)
+
+        # Keep adding points until reaching the maximum number or the
+        # total length of the residue
+        for _ in range(0, min(len(coordinates), max_coordinates) - 1):
+            min_distance_per_index = {}
+            for index, point1 in enumerate(coordinates):
+                # We exclude the current point if its index is already in
+                # the list
+                if index in residue_indices:
+                    continue
+
+                squared_distances = []
+                for residue_index in residue_indices:
+                    point2 = coordinates[residue_index]
+                    diff = point1 - point2
+                    squared_distance = (diff * diff).sum()
+                    squared_distances.append(squared_distance)
+
+                min_distance_per_index[index] = sorted(squared_distances)[0]
+
+            print(min_distance_per_index)
+
+            index, _ = sorted(min_distance_per_index.items(),
+                              key=lambda item: item[1],
+                              reverse=True)[0]
+
+            # Add new best point's index to the array
+            residue_indices.append(index)
+
+        print('residue_indices', residue_indices)
+
+        return residue_indices
+
     def _get_coordinates_from_trajectory(self, residue_name, remove_hydrogen,
-                                         trajectory):
+                                         trajectory, only_first_model=False,
+                                         indices_to_retrieve=None):
         """
         Given the path of a trajectory, it returns the array of coordinates
         that belong to the chosen residue.
@@ -509,6 +634,13 @@ class DataHandler(object):
             coordinates array or not. Default is True
         trajectory : str
             The trajectory to extract the coordinates from
+        only_first_model : bool
+            Whether to retrieve the coordinates of the first model in the
+            trajectory or all of them. It is optional and its default
+            value is False
+        indices_to_retrieve : list[int]
+            The indices of the residue to extract. Default is None and
+            will extract all of them
 
         Returns
         -------
@@ -516,7 +648,17 @@ class DataHandler(object):
             The resulting array of coordinates
         """
         import numpy as np
+
         coordinates = list()
+
+        # In case MODEL section is missing
+        current_index = -1
+        model_coords = []
+
+        if only_first_model:
+            skip_initial_structures = False
+        else:
+            skip_initial_structures = self.skip_initial_structures
 
         with open(trajectory) as f:
             inside_model = False
@@ -534,6 +676,7 @@ class DataHandler(object):
                               '{} might be missing'.format(current_model))
                     inside_model = True
                     current_model += 1
+                    current_index = -1
                     model_coords = []
 
                 if line_type == "ENDMDL":
@@ -541,23 +684,41 @@ class DataHandler(object):
                         print('Warning: MODEL declaration for model ' +
                               '{} might be missing'.format(current_model + 1))
                     inside_model = False
+
+                    # Only add the current model coordinates if the array is
+                    # not empty (to fulfill the dimensionality later on)
                     if len(model_coords) > 0:
                         coordinates.append(np.array(model_coords))
 
+                    # In case we are only interested in obtaining the
+                    # coordinates of the first model, we are done
+                    if only_first_model and current_model == 1:
+                        break
+
                 # First model will always be skipped, unless otherwise
                 # established
-                if current_model == 1 and self.skip_initial_structures:
+                if current_model == 1 and skip_initial_structures:
                     continue
 
                 if line_type == "ATOM  " or line_type == "HETATM":
                     current_residue_name = line[17:20]
 
                     if current_residue_name == residue_name:
+                        # Add one to current index (it initially equals -1)
+                        current_index += 1
+
+                        # In case we are interested in specific residue
+                        # indices, retrieve only those
+                        if (indices_to_retrieve is not None and
+                                current_index not in indices_to_retrieve):
+                            continue
+
                         # In case we have information about the element
                         # and we want to skip hydrogen atoms, do so
                         if remove_hydrogen and len(line) >= 78:
                             element = line[76:78]
-                            element.strip()
+                            element = element.strip()
+                            element = element.strip(' ')
                             if element == 'H':
                                 continue
 
@@ -573,6 +734,10 @@ class DataHandler(object):
 
                         point = np.array((x, y, z))
                         model_coords.append(point)
+
+        # In case MODEL section was missing
+        if not inside_model and len(model_coords) > 0:
+            coordinates.append(np.array(model_coords))
 
         coordinates = np.array(coordinates)
 
@@ -591,7 +756,7 @@ class DataHandler(object):
             return np.array(())
 
         if (n_models_loaded != current_model - 1 or spatial_dimension != 3) \
-                and self.skip_initial_structures:
+                and skip_initial_structures:
             print('Warning: unexpected dimensions found in the ' +
                   'coordinate array from trajectory {}. '.format(trajectory) +
                   'Its coordinates will be skipped.')
