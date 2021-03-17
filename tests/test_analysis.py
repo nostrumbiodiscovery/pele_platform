@@ -20,7 +20,7 @@ TRAJ_NAME = "trajectory.pdb"
 ANALYSIS_ARGS = os.path.join(test_path, "analysis/input.yaml")
 ANALYSIS_FLAGS0 = os.path.join(test_path, "analysis/input_flags0.yaml")
 ANALYSIS_FLAGS = os.path.join(test_path, "analysis/input_flags.yaml")
-ANALYSIS_MAE_ARGS = os.path.join(test_path, "analysis/input_mae.yaml")
+ANALYSIS_XTC_ARGS = os.path.join(test_path, "analysis/input_xtc.yaml")
 
 
 # @pytest.fixture
@@ -123,7 +123,7 @@ def test_analysis_production(ext_args=ANALYSIS_ARGS):
     main.run_platform(ext_args)
 
 
-def test_analysis_xtc(ext_args=ANALYSIS_MAE_ARGS):
+def test_analysis_xtc(ext_args=ANALYSIS_XTC_ARGS):
     main.run_platform(ext_args)
 
 
@@ -145,7 +145,7 @@ def test_cluster_default():
 
 @pytest.mark.parametrize(("method", "bandwidth", "n_clusters"), [
     ("hdbscan", 20, 1),
-    ("meanshift", 100, 2),
+    ("meanshift", 100, 1),
     ("meanshift", 10, 3)])
 def test_clustering_methods(method, bandwidth, n_clusters):
     """

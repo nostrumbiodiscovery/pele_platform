@@ -402,8 +402,9 @@ class DataHandler(object):
                                                           ascending=True)
 
             # Remove first entry
-            residue_frames = residue_frames[1:]
-            trajectory_rows = trajectory_rows.query('Step!="0"')
+            if self.skip_initial_structures:
+                residue_frames = residue_frames[1:]
+                trajectory_rows = trajectory_rows.query('Step!="0"')
 
             # Save extracted data
             coordinates.extend(residue_frames.xyz * 10)
@@ -690,6 +691,7 @@ class DataHandler(object):
                     # not empty (to fulfill the dimensionality later on)
                     if len(model_coords) > 0:
                         coordinates.append(np.array(model_coords))
+                        model_coords = []
 
                     # In case we are only interested in obtaining the
                     # coordinates of the first model, we are done

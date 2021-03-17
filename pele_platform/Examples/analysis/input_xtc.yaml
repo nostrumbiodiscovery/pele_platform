@@ -7,3 +7,4 @@ output: 'xtc'
 mae: true
 traj: 'trajectory.xtc'
 test: true
+analysis_nclust: 3
