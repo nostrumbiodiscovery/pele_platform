@@ -222,7 +222,8 @@ class MeanShiftClustering(Clustering):
         coordinates = Clustering.fix_coordinates_shape(coordinates)
 
         clustering_method = MeanShift(bandwidth=self._bandwidth,
-                                      cluster_all=False)
+                                      cluster_all=True,
+                                      max_iter=10000)
         clusters = clustering_method.fit_predict(coordinates)
 
         return clusters

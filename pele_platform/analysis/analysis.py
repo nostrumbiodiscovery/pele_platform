@@ -235,11 +235,28 @@ class Analysis(object):
             clusters
         """
         import os
+        from string import ascii_uppercase
         from pele_platform.analysis import (GaussianMixtureClustering,
                                             HDBSCANClustering,
                                             MeanShiftClustering)
 
         self.parameters.logger.info(f"Extract coordinates for clustering")
+
+        if clustering_type.lower() == 'gaussianmixture':
+            clustering = \
+                GaussianMixtureClustering(self.parameters.analysis_nclust)
+            max_coordinates = 10
+        elif clustering_type.lower() == 'hdbscan':
+            clustering = HDBSCANClustering(self.parameters.bandwidth)
+            max_coordinates = 10
+        elif clustering_type.lower() == 'meanshift':
+            clustering = MeanShiftClustering(self.parameters.bandwidth)
+            max_coordinates = 5
+        else:
+            raise ValueError('Invalid clustering type: '
+                             '\'{}\'. '.format(clustering_type) +
+                             'It should be one of [\'GaussianMixture\', ' +
+                             '\'HDBSCAN\', \'MeanShift\']')
 
         if not self.parameters.topology:
             coordinates, dataframe = \
@@ -247,10 +264,9 @@ class Analysis(object):
                     self.parameters.residue, remove_hydrogen=True,
                     n_proc=self.parameters.cpus)
         else:
-            coordinates, dataframe = \
-                self._data_handler.extract_coords(self.parameters.residue,
-                                                  self.parameters.topology,
-                                                  remove_hydrogen=True)
+            coordinates, dataframe = self._data_handler.extract_coords(
+                self.parameters.residue, self.parameters.topology,
+                remove_hydrogen=True, max_coordinates=max_coordinates)
 
         if coordinates is None or dataframe is None:
             self.parameters.logger.info(f"Coordinate extraction failed, " +
@@ -264,25 +280,21 @@ class Analysis(object):
 
         self.parameters.logger.info(f"Retrieve best cluster poses")
 
-        if clustering_type.lower() == 'gaussianmixture':
-            clustering = \
-                GaussianMixtureClustering(self.parameters.analysis_nclust)
-        elif clustering_type.lower() == 'hdbscan':
-            clustering = HDBSCANClustering(self.parameters.bandwidth)
-        elif clustering_type.lower() == 'meanshift':
-            clustering = MeanShiftClustering(self.parameters.bandwidth)
-        else:
-            raise ValueError('Invalid clustering type: '
-                             '\'{}\'. '.format(clustering_type) +
-                             'It should be one of [\'GaussianMixture\', ' +
-                             '\'HDBSCAN\', \'MeanShift\']')
-
         clusters = clustering.get_clusters(coordinates)
 
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
         cluster_summary = self._analyze_clusters(clusters, dataframe,
                                                  rmsd_per_cluster, path)
-        cluster_subset = self._select_top_clusters(clusters, cluster_summary)
+        cluster_subset, cluster_reindex_map = \
+            self._select_top_clusters(clusters, cluster_summary)
+
+        # Save cluster summary to file with information about selected labels
+        cluster_summary['Selected labels'] = \
+            [ascii_uppercase[cluster_reindex_map[cluster]]
+             if cluster in cluster_reindex_map else '-'
+             for cluster in cluster_summary['Cluster']]
+        cluster_summary.to_csv(os.path.join(path, 'info.csv'), index=False)
+
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
         self._save_clusters(cluster_subset, dataframe, path)
 
@@ -396,7 +408,9 @@ class Analysis(object):
     def _analyze_clusters(self, clusters, dataframe, rmsd_per_cluster,
                           path):
         """
-        It analyzes the clusters and saves the analysis as a csv file.
+        It analyzes the clusters and generates a summary with all
+        the calculated descriptors. It also generates some plots
+        with information about the clusters.
 
         .. todo ::
            * Generate box plots
@@ -413,7 +427,7 @@ class Analysis(object):
         rmsd_per_cluster : dict[int, float]
             The mean RMSD of each cluster
         path : str
-            The path where the output file will be saved at
+            The path where the output files will be saved at
 
         Returns
         -------
@@ -436,7 +450,8 @@ class Analysis(object):
         summary = pd.DataFrame([(cluster, population / len(clusters),
                                  rmsd_per_cluster[cluster])
                                 for cluster, population
-                                in clusters_population.items()],
+                                in clusters_population.items()
+                                if not cluster < 0],
                                columns=['Cluster', 'Population', 'MeanRMSD'])
 
         # Plot Mean RMSD per cluster
@@ -473,6 +488,9 @@ class Analysis(object):
 
             # Arrange metrics per cluster
             for cluster, value in zip(clusters, values):
+                # Skip outliers
+                if cluster < 0:
+                    continue
                 values_per_cluster[cluster].append(value)
 
             # Calculate descriptors
@@ -514,15 +532,14 @@ class Analysis(object):
         # Add descriptors to summary dataframe
         for label, values_per_cluster in descriptors.items():
             summary[label] = [values_per_cluster[cluster]
-                              for cluster in summary['Cluster']]
-
-        # Save cluster summary to file
-        summary.to_csv(os.path.join(path, 'info.csv'), index=False)
+                              for cluster in summary['Cluster']
+                              if not cluster < 0]
 
         return summary
 
     def _select_top_clusters(self, clusters, cluster_summary,
-                             max_clusters_to_select=8):
+                             max_clusters_to_select=8,
+                             min_population_to_select=0.01):
         """
         It selects the top clusters based on their binding energy. If
         this metric is not available, the cluster population will be
@@ -530,6 +547,7 @@ class Analysis(object):
 
         .. todo ::
            * The user should be able to choose max_clusters_to_select
+           * The user should be able to choose min_population_to_select
            * The user might also be able to choose the metric to use
              in order to select the top clusters
 
@@ -541,13 +559,19 @@ class Analysis(object):
             The dataframe containing summary of all clusters that were
             analyzed
         max_clusters_to_select : int
-            The maximum number of clusters to select as top
+            The maximum number of clusters to select as top. Default is 8
+        min_population_to_select : float
+            The minimum population the clusters must have in order to
+            be selected. Default is 0.01, i.e. a population of 1%
 
         Returns
         -------
         cluster_subset : a numpy.array object
             The array of cluster after the selection. Those clusters
             that were not selected are now labeled with a -1
+        cluster_reindex_map : dict[int, int]
+            It pairs the old cluster label (dictionary key) with the new
+            one after the filtering (dictionary value)
         """
         metrics = list(cluster_summary.columns)
 
@@ -557,17 +581,25 @@ class Analysis(object):
             metric = 'Population'
 
         filtered_cluster_summary = \
-            cluster_summary.nsmallest(max_clusters_to_select, metric)
+            cluster_summary[cluster_summary['Population'] >=
+                            min_population_to_select]
+        filtered_cluster_summary = \
+            filtered_cluster_summary.nsmallest(max_clusters_to_select,
+                                               metric)
         top_clusters = list(filtered_cluster_summary['Cluster'])
+
+        cluster_reindex_map = {}
+        for index, cluster in enumerate(sorted(top_clusters)):
+            cluster_reindex_map[cluster] = index
 
         cluster_subset = []
         for cluster in clusters:
             if cluster in top_clusters:
-                cluster_subset.append(cluster)
+                cluster_subset.append(cluster_reindex_map[cluster])
             else:
                 cluster_subset.append(-1)
 
-        return cluster_subset
+        return cluster_subset, cluster_reindex_map
 
     def _plot_clusters(self, clusters, dataframe, cluster_summary, path):
         """
@@ -689,6 +721,7 @@ class Analysis(object):
         import os
         from collections import defaultdict
         import numpy as np
+        from string import ascii_uppercase
         from pele_platform.Utilities.Helpers import get_suffix
         from pele_platform.Utilities.Helpers.bestStructs \
             import extract_snapshot_from_pdb, extract_snapshot_from_xtc
@@ -732,7 +765,7 @@ class Analysis(object):
                         f_id=get_suffix(os.path.splitext(trajectory)[0]),
                         output=path, topology=self.parameters.topology,
                         step=step, out_freq=1,
-                        f_out='cluster_{}.pdb'.format(cluster),
+                        f_out='cluster_{}.pdb'.format(ascii_uppercase[cluster]),
                         logger=self.parameters.logger)
                 except UnicodeDecodeError:
                     raise Exception('XTC output being treated as PDB. '
@@ -745,5 +778,5 @@ class Analysis(object):
                     f_id=get_suffix(os.path.splitext(trajectory)[0]),
                     output=path, topology=self.parameters.topology,
                     step=step, out_freq=1,
-                    f_out='cluster_{}.pdb'.format(cluster),
+                    f_out='cluster_{}.pdb'.format(ascii_uppercase[cluster]),
                     logger=self.parameters.logger)
