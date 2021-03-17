@@ -175,12 +175,7 @@ class DataHandler(object):
                                  trajectory_format)
                 dataframe_lists.append(pandas_df)
 
-        dataframe = pd.concat(dataframe_lists, ignore_index=True)
-
-        if self.skip_initial_structures:
-            dataframe = dataframe.query('Step!="0"')
-
-        self._dataframe = dataframe
+        self._dataframe = pd.concat(dataframe_lists, ignore_index=True)
 
         return self._dataframe
 
@@ -406,11 +401,9 @@ class DataHandler(object):
             trajectory_rows = trajectory_rows.sort_values(['Step'],
                                                           ascending=True)
 
-            # TODO remove below lines
             # Remove first entry
-            if self.skip_initial_structures:
-                residue_frames = residue_frames[1:]
-            #trajectory_rows = trajectory_rows.query('Step!="0"')
+            residue_frames = residue_frames[1:]
+            trajectory_rows = trajectory_rows.query('Step!="0"')
 
             # Save extracted data
             coordinates.extend(residue_frames.xyz * 10)
@@ -512,10 +505,9 @@ class DataHandler(object):
             trajectory_rows = trajectory_rows.sort_values(['Step'],
                                                           ascending=True)
 
-            # TODO remove below lines
             # Remove first entry, if applicable
-            #if self.skip_initial_structures:
-            #    trajectory_rows = trajectory_rows.query('Step!="0"')
+            if self.skip_initial_structures:
+                trajectory_rows = trajectory_rows.query('Step!="0"')
 
             # Append the resulting entries to the new reordered dataframe
             reordered_dataframe = \
