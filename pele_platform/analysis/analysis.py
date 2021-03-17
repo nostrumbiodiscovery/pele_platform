@@ -282,6 +282,8 @@ class Analysis(object):
         self._save_clusters(clusters, dataframe, path)
 
     def _plot_clusters(self, clusters, dataframe, path):
+        print(dataframe)
+        print(clusters)
         dataframe['cluster'] = clusters
         self.generate_plots(path, exisiting_dataframe=dataframe, colors=dataframe['cluster'])
 
