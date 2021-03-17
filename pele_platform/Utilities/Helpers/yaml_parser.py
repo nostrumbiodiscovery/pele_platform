@@ -312,6 +312,7 @@ class YamlParser(object):
             self.n_components = 3
             self.temperature = self.temp = 10000
             self.n_components = 3
+            self.analysis_nclust = 4
 
 
 @dataclass
