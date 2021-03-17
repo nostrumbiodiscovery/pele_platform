@@ -146,7 +146,23 @@ class Plotter(object):
                                                                   metric_to_y))
         return output_name
 
-    def plot_kde(self, column_to_x, column_to_y, output_folder, kde_structs):
+    def plot_kde(self, metric_to_x, metric_to_y, output_folder, kde_structs):
+        """
+        Given 2 metrics, it generates the kde plot.
+
+        Parameters
+        ----------
+        metric_to_x : str or int
+            The metric id to plot in the X axis. It can be either a string
+            with the name of the metric or an integer with the column index
+        metric_to_y : str or int
+            The metric id to plot in the Y axis. It can be either a string
+            with the name of the metric or an integer with the column index
+        output_folder : str
+            The path where the plot will be saved
+        kde_structs : int
+            The number of structures to represent in the plot
+        """
         import seaborn as sb
 
         data_handler = DataHandler.from_dataframe(self._dataframe)
@@ -154,13 +170,26 @@ class Plotter(object):
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
-        column_to_x = column_to_x if not str(column_to_x).isdigit() else data_handler._get_column_name(column_to_x)
-        column_to_y = column_to_y if not str(column_to_y).isdigit() else data_handler._get_column_name(column_to_y)
+        # Ensure that metrics are strings pointing to dataframe columns
+        if str(metric_to_x).isdigit():
+            metric_to_x = data_handler._get_column_name(metric_to_x)
+        if str(metric_to_y).isdigit():
+            metric_to_y = data_handler._get_column_name(metric_to_y)
 
+        # Define output path
         output_name = "{}_{}_kde.png".format(column_to_x, column_to_y)
-        output_name = os.path.join(output_folder,output_name).replace(" ", "_")
-        top_1000 = self._dataframe.sort_values(column_to_y, ascending=True)[0:int(kde_structs)]
-        plot = sb.kdeplot(top_1000[column_to_x], top_1000[column_to_y], cmap="crest", fill=False, shade=True, cbar=True)
+        output_name = os.path.join(output_folder, output_name)
+        output_name = output_name.replace(" ", "_")
+
+        # Filter out the number of structures from dataframe to plot
+        structures_to_keep = min(int(kde_structs), len(self._dataframe) - 1)
+        sorted_df = self._dataframe.sort_values(column_to_y, ascending=True)
+        top = sorted_df[0:structures_to_keep]
+
+        # Plot and save it
+        plot = sb.kdeplot(top[metric_to_x], top[metric_to_y],
+                          cmap="crest", fill=False,
+                          shade=True, cbar=True)
         figure = plot.get_figure()
         figure.savefig(output_name)
 

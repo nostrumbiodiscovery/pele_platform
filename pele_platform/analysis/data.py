@@ -613,16 +613,12 @@ class DataHandler(object):
 
                 min_distance_per_index[index] = sorted(squared_distances)[0]
 
-            print(min_distance_per_index)
-
             index, _ = sorted(min_distance_per_index.items(),
                               key=lambda item: item[1],
                               reverse=True)[0]
 
             # Add new best point's index to the array
             residue_indices.append(index)
-
-        print('residue_indices', residue_indices)
 
         return residue_indices
 
