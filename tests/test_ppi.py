@@ -18,7 +18,7 @@ def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
     job, _ = main.run_platform(yaml)
 
     # checkpoints
-    files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/BestStructs/*.pdb"))
+    files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/top_poses/*.pdb"))
 
     # test
     assert not files_refinement
@@ -33,7 +33,7 @@ def test_ppi_default(energy_result=-2.18, yaml=yaml):
     output_csv = pd.read_csv(os.path.join(job.pele_dir, "output/clustering_output.csv"))
     best_energy = round(output_csv["binding_energy"].min(),2)
     nfiles = len(glob.glob(os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")))
-    nfiles_refinement = len(glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/*.pdb")))
+    nfiles_refinement = len(glob.glob(os.path.join(job2.pele_dir, "results/top_poses/*.pdb")))
 
     # test
     assert nfiles == job.n_components 
@@ -74,7 +74,7 @@ def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
     job, _ = main.run_platform(yaml)
 
     # checkpoints
-    files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/BestStructs/*.pdb"))
+    files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/top_poses/*.pdb"))
 
     # test
     assert not files_refinement

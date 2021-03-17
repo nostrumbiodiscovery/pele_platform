@@ -296,6 +296,8 @@ class YamlParser(object):
         # Analysis
         self.clustering_method = data.get(valid_flags["clustering_method"], None)
         self.bandwidth = data.get(valid_flags["bandwidth"], None)
+        self.kde = data.get(valid_flags["kde"], None)
+        self.kde_structs = data.get(valid_flags["kde_structs"], None)
 
         if self.test:
             warnings.warn(
@@ -310,6 +312,7 @@ class YamlParser(object):
             self.n_components = 3
             self.temperature = self.temp = 10000
             self.n_components = 3
+            self.analysis_nclust = 4
 
 
 @dataclass
