@@ -2,7 +2,6 @@
 This module manages the analysis toolkit of the platform.
 """
 
-
 __all__ = ["Analysis"]
 
 
@@ -128,7 +127,7 @@ class Analysis(object):
                              clusters_folder, best_metrics,
                              report_file)
 
-    def generate_plots(self, path, exisiting_dataframe=None, colors=None):
+    def generate_plots(self, path, existing_dataframe=None, colors=None):
         """
         It generates the plots.
 
@@ -136,7 +135,7 @@ class Analysis(object):
         ----------
         path : str
             The path where the plots will be saved
-        exisiting_dataframe : pandas.Dataframe
+        existing_dataframe : pandas.Dataframe
             Dataframe with data to plot.
         colors : list
             List of cluster IDs for colour mapping.
@@ -144,7 +143,10 @@ class Analysis(object):
         from pele_platform.analysis import Plotter
 
         # Get dataframe
-        dataframe = self.get_dataframe(filter=True) if exisiting_dataframe is None else exisiting_dataframe
+        if existing_dataframe is None:
+            dataframe = self.get_dataframe(filter=True)
+        else:
+            dataframe = exisiting_dataframe
 
         # Initialize plotter
         plotter = Plotter(dataframe)
@@ -177,15 +179,16 @@ class Analysis(object):
 
             if i_energy is not None:
                 plotter.plot_two_metrics(t_energy, i_energy, metric,
-                                         output_folder=path, colors=colors)
+                                         output_folder=path)
                 plotter.plot_two_metrics(metric, i_energy,
-                                         output_folder=path, colors=colors)
+                                         output_folder=path)
             else:
                 plotter.plot_two_metrics(metric, t_energy,
-                                         output_folder=path, colors=colors)
+                                         output_folder=path)
 
             if self.parameters.kde and exisiting_dataframe is not None:
-                plotter.plot_kde(metric, i_energy, output_folder=path, kde_structs=self.parameters.kde_structs)
+                plotter.plot_kde(metric, i_energy, output_folder=path,
+                                 kde_structs=self.parameters.kde_structs)
 
     def generate_top_poses(self, path, n_poses=100):
         """
@@ -274,17 +277,14 @@ class Analysis(object):
                              'It should be one of [\'GaussianMixture\', ' +
                              '\'HDBSCAN\', \'MeanShift\']')
 
-
         clusters = clustering.get_clusters(coordinates)
+
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
-
-        self._analyze_clusters(clusters, dataframe, rmsd_per_cluster, path)
-        self._plot_clusters(clusters, dataframe, path)
-        self._save_clusters(clusters, dataframe, path)
-
-    def _plot_clusters(self, clusters, dataframe, path):
-        dataframe['cluster'] = clusters
-        self.generate_plots(path, exisiting_dataframe=dataframe, colors=dataframe['cluster'])
+        cluster_summary = self._analyze_clusters(clusters, dataframe,
+                                                 rmsd_per_cluster, path)
+        cluster_subset = self._select_top_clusters(clusters, cluster_summary)
+        self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
+        self._save_clusters(cluster_subset, dataframe, path)
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):
@@ -414,6 +414,12 @@ class Analysis(object):
             The mean RMSD of each cluster
         path : str
             The path where the output file will be saved at
+
+        Returns
+        -------
+        cluster_summary : a pandas.dataframe object
+            The dataframe containing summary of all clusters that were
+            analyzed
         """
         import os
         from collections import defaultdict
@@ -512,6 +518,99 @@ class Analysis(object):
 
         # Save cluster summary to file
         summary.to_csv(os.path.join(path, 'info.csv'), index=False)
+
+        return summary
+
+    def _select_top_clusters(self, clusters, cluster_summary,
+                             max_clusters_to_select=8):
+        """
+        It selects the top clusters based on their binding energy. If
+        this metric is not available, the cluster population will be
+        used instead.
+
+        .. todo ::
+           * The user should be able to choose max_clusters_to_select
+           * The user might also be able to choose the metric to use
+             in order to select the top clusters
+
+        Parameters
+        ----------
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        cluster_summary : a pandas.dataframe object
+            The dataframe containing summary of all clusters that were
+            analyzed
+        max_clusters_to_select : int
+            The maximum number of clusters to select as top
+
+        Returns
+        -------
+        cluster_subset : a numpy.array object
+            The array of cluster after the selection. Those clusters
+            that were not selected are now labeled with a -1
+        """
+        metrics = list(cluster_summary.columns)
+
+        if 'Binding Energy 25-percentile' in metrics:
+            metric = 'Binding Energy 25-percentile'
+        else:
+            metric = 'Population'
+
+        filtered_cluster_summary = \
+            cluster_summary.nsmallest(max_clusters_to_select, metric)
+        top_clusters = list(filtered_cluster_summary['Cluster'])
+
+        cluster_subset = []
+        for cluster in clusters:
+            if cluster in top_clusters:
+                cluster_subset.append(cluster)
+            else:
+                cluster_subset.append(-1)
+
+        return cluster_subset
+
+    def _plot_clusters(self, clusters, dataframe, cluster_summary, path):
+        """
+        It generates the plots for clusters.
+
+        Parameters
+        ----------
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of clusters
+        cluster_summary : a pandas.dataframe object
+            The dataframe containing summary of all clusters that were
+            analyzed
+        path : str
+            The path where the output file will be saved at
+        """
+        from pele_platform.analysis import Plotter
+
+        metrics = self._data_handler.get_metrics()
+
+        # Initialize plotter
+        plotter = Plotter(dataframe)
+
+        if 'Binding Energy' in metrics:
+            energy = 'Binding Energy'
+        else:
+            energy = 'currentEnergy'
+
+        # The minimum value for the limit column is 4, since previous
+        # columns in PELE report files does not contain any metric
+        if self.parameters.limit_column > 4:
+            limit_column = self.parameters.limit_column - 4
+        else:
+            limit_column = 0
+
+        # Iterate over all the metrics found in the reports
+        for metric in metrics[limit_column:]:
+            plotter.plot_clusters(metric, energy,
+                                  output_folder=path,
+                                  clusters=clusters)
+
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """
