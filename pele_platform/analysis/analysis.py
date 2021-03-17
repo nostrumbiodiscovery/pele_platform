@@ -458,10 +458,11 @@ class Analysis(object):
             values = list(dataframe[metric])
 
             if len(clusters) != len(values):
-                print('Warning: metric \'{}\' '.format(metric) +
-                      'array has a wrong size. It will be skipped ' +
-                      'from the clustering analysis. Expected size: ' +
-                      '{}'.format(len(clusters)))
+                logger = self.parameters.logger
+                logger.info('Warning: metric \'{}\' '.format(metric) +
+                            'array has a wrong size. It will be skipped ' +
+                            'from the clustering analysis. Expected size: ' +
+                            '{}'.format(len(clusters)))
                 continue
 
             # Arrange metrics per cluster
@@ -500,8 +501,9 @@ class Analysis(object):
                                  "clusters_{}_boxplot.png".format(metric))
                 plt.savefig(boxplot_filename)
             except IndexError:
-                self.logger.info("Samples to disperse to produce a cluster " +
-                                 "for metric {}".format(metric))
+                logger = self.parameters.logger
+                logger.info("Samples too disperse to produce a cluster " +
+                            "for metric {}".format(metric))
 
         # Add descriptors to summary dataframe
         for label, values_per_cluster in descriptors.items():
@@ -535,9 +537,10 @@ class Analysis(object):
         coordinates = Clustering.fix_coordinates_shape(coordinates)
 
         if len(clusters) != len(coordinates):
-            print('Warning: coordinates array has a wrong size. ' +
-                  'The RMSD analysis will be skipped. It will be ' +
-                  'skipped. Expected size: {}'.format(len(clusters)))
+            logger = self.parameters.logger
+            logger.info('Warning: coordinates array has a wrong size. ' +
+                        'The RMSD analysis will be skipped. It will be ' +
+                        'skipped. Expected size: {}'.format(len(clusters)))
             return
 
         # Split conformations by cluster
