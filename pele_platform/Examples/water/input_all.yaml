@@ -7,4 +7,5 @@ test: true
 anm_freq: 1
 sidechain_freq: 1
 waters: "all_waters"
-analysis_nclust: 4
+
+

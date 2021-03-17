@@ -7,4 +7,3 @@ induced_fit_fast: true
 skip_preprocess: true
 cpus: 5
 test: true
-analysis_nclust: 4
