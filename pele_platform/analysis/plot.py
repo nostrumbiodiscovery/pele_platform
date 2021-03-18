@@ -73,10 +73,7 @@ class Plotter(object):
         """
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
-<<<<<<< HEAD
         # Initialize a data handler from the current dataframe
-=======
->>>>>>> Partial test fix
         data_handler = DataHandler.from_dataframe(self._dataframe)
 
         # Ensure that output_folder exists
@@ -180,7 +177,6 @@ class Plotter(object):
                           shade=True, cbar=True)
         figure = plot.get_figure()
         figure.savefig(output_name)
-
         return output_name
 
     def plot_clusters(self, metric_to_x, metric_to_y, output_folder,

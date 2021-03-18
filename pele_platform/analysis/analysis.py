@@ -280,7 +280,6 @@ class Analysis(object):
 
         self.parameters.logger.info(f"Retrieve best cluster poses")
 
-<<<<<<< HEAD
         if clustering_type.lower() == 'gaussianmixture':
             clustering = \
                 GaussianMixtureClustering(self.parameters.analysis_nclust)
@@ -294,14 +293,9 @@ class Analysis(object):
                              'It should be one of [\'GaussianMixture\', ' +
                              '\'HDBSCAN\', \'MeanShift\']')
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> Fixes and improvements for clustering
         clusters = clustering.get_clusters(coordinates)
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
-=======
+
         try:
             clusters = clustering.get_clusters(coordinates)
         except ValueError as e:
@@ -309,16 +303,8 @@ class Analysis(object):
                 clusters = [1]
             else:
                 raise e
->>>>>>> Partial test fix
-=======
 
         clusters = clustering.get_clusters(coordinates)
-        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
->>>>>>> Fix remaining tests
-=======
-        clusters = clustering.get_clusters(coordinates)
->>>>>>> Improve cluster plots
-
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
         cluster_summary = self._analyze_clusters(clusters, dataframe,
                                                  rmsd_per_cluster, path)
@@ -685,7 +671,6 @@ class Analysis(object):
             plotter.plot_clusters(metric, energy,
                                   output_folder=path,
                                   clusters=clusters)
-
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """

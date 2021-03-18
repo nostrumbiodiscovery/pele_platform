@@ -2,7 +2,6 @@ import os
 import tempfile
 import shutil
 
-
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.checker as ch
@@ -45,10 +44,10 @@ class FragRunner(object):
                                        params.frag_library,
                                        params.logger,
                                        tmpdirname)
-         
+
             if not params.only_analysis:
                 self._run()
-        
+
             if params.cleanup and fragment_files:
                 self._clean_up(fragment_files)
 
@@ -123,7 +122,7 @@ class FragRunner(object):
         # Check input file
         limit_atoms_ligand = 100
         ch.check_limit_number_atoms(params.ligands, limit_atoms_ligand)
-        
+
         # Get core of the ligand
         mol = Chem.MolFromPDBFile(params.core)
         try:
@@ -136,7 +135,7 @@ class FragRunner(object):
         # Get sdf full grown ligands
         ligands_grown = Chem.SDMolSupplier(params.ligands, removeHs=False)
         fragment_files = []
-        
+
         # For each full grown ligand create neutral fragment
         with open(params.input, "w") as fout:
             pass
@@ -181,26 +180,26 @@ class FragRunner(object):
         params = self.parameters
 
         fragment, old_atoms, hydrogen_core, atom_core, atom_frag, \
-            mapping, correct = hp._build_fragment_from_complex(
-                params.core, params.residue, ligand, ligand_core,
-                result, substructure, symmetry)
+        mapping, correct = hp._build_fragment_from_complex(
+            params.core, params.residue, ligand, ligand_core,
+            result, substructure, symmetry)
 
         # temporary override to fix segmentation faults
         filename = "temp.pdb"
         Chem.MolToPDBFile(fragment, filename)
         fragment = Chem.MolFromPDBFile(filename, removeHs=False)
         os.remove(filename)
-        
+
         rp.EmbedMolecule(fragment)
         fragment = hp._retrieve_fragment(
-        fragment, old_atoms, atom_core, hydrogen_core, atom_frag, mapping)
+            fragment, old_atoms, atom_core, hydrogen_core, atom_frag, mapping)
         line = fragment.get_inputfile_line()
         fragment.sanitize_file()
-        
+
         if not correct:
             print("Ligand incorrect")
         return line, fragment
-       
+
     def _analysis(self):
         self.parameters.analysis_to_point = \
             self.parameters.args.analysis_to_point

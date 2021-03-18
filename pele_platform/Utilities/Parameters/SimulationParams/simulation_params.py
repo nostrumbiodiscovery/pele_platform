@@ -22,10 +22,8 @@ class SimulationParams(
     inout_params.InOutParams,
     pca.PCAParams,
     site_finder.SiteFinderParams,
-    ppi.PPIParams,
-    site_finder.SiteFinderParams
+    ppi.PPIParams
 ):
-
 
     def __init__(self, args):
         self.simulation_type(args)

@@ -170,13 +170,7 @@ class HDBSCANClustering(Clustering):
             the supplied array
         """
         from hdbscan import HDBSCAN
-<<<<<<< HEAD
-
         coordinates = Clustering.fix_coordinates_shape(coordinates)
-=======
-        coordinates = self._fix_coordinates_shape(coordinates)
->>>>>>> Partial test fix
-
         clustering_method = HDBSCAN(cluster_selection_epsilon=self._bandwidth)
         clusters = clustering_method.fit_predict(coordinates)
 
