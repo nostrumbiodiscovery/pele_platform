@@ -97,7 +97,7 @@ def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
 
 def test_n_water(ext_args=NWATER_ARGS):
     job = main.run_platform(ext_args)
-    results = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/*.pdb"))
+    results = glob.glob(os.path.join(job.pele_dir, "results/top_poses/*.pdb"))
     error = False
     #Result has waters
     for result in results:

@@ -3,3 +3,4 @@ system: 'your_system.pdb'
 chain: 'Z'
 resname: 'STR'
 only_analysis: true
+test: true

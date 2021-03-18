@@ -1,6 +1,6 @@
 import os
 import shutil
-import AdaptivePELE.adaptiveSampling as adt
+from AdaptivePELE import adaptiveSampling
 import PPP.main as ppp
 
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
@@ -16,7 +16,7 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-import pele_platform.analysis.plots as pt
+import pele_platform.analysis.plot as pt
 import pele_platform.Adaptive.ligand_parametrization as lg
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
@@ -40,7 +40,7 @@ def run_adaptive(args):
 
     if parameters.adaptive_restart and not parameters.only_analysis:
         with helpers.cd(parameters.pele_dir):
-            adt.main(parameters.ad_ex_temp)
+            adaptiveSampling.main(parameters.ad_ex_temp)
             parameters.logger.info("Simulation run successfully (:\n\n")
 
     elif not parameters.only_analysis:
@@ -140,7 +140,7 @@ def run_adaptive(args):
 
         # Prepare System
         if (
-            parameters.no_ppp or parameters.input
+                parameters.no_ppp or parameters.input
         ):  # No need to run system through PPP, if we already preprocessed parameters.input
             missing_residues = []
             if parameters.input:
@@ -192,7 +192,8 @@ def run_adaptive(args):
             )
 
             metal_constraints_json = hp.retrieve_constraints_for_pele(
-                metal_constraints, os.path.join(parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"'))
+                metal_constraints,
+                os.path.join(parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"'))
             )
             parameters.external_constraints.extend(metal_constraints_json)
         else:
@@ -203,7 +204,7 @@ def run_adaptive(args):
         # Keep JSON ordered by having first title and then constraints
         if parameters.external_constraints:
             parameters.constraints = (
-                parameters.constraints[0:1] + parameters.external_constraints + parameters.constraints[1:]
+                    parameters.constraints[0:1] + parameters.external_constraints + parameters.constraints[1:]
             )
         if parameters.remove_constraints:
             parameters.constraints = ""
@@ -253,7 +254,7 @@ def run_adaptive(args):
             )
             smi_constraint = smiles.run()
             parameters.constraints = (
-                parameters.constraints[0:1] + smi_constraint + parameters.constraints[1:]
+                    parameters.constraints[0:1] + smi_constraint + parameters.constraints[1:]
             )
 
         # Waters
@@ -286,13 +287,16 @@ def run_adaptive(args):
         # Metrics builder - builds JSON strings for PELE to be able to track atom distances, RMSD, etc.
         metrics = mt.MetricBuilder()
         parameters.metrics = (
-            metrics.distance_to_atom_json(parameters.system, args.atom_dist)
+            metrics.distance_to_atom_json(
+                os.path.join(parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"')),
+                args.atom_dist)
             if args.atom_dist
             else ""
         )
         parameters.native = metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
 
         #interaction restrictions
+        # TODO this is not the place to initialize parameters for the interaction restrictions
         if args.interaction_restrictions:
             interaction_restrictions = ir.InteractionRestrictionsBuilder()
             interaction_restrictions.parse_interaction_restrictions(parameters.system, args.interaction_restrictions)
@@ -317,24 +321,19 @@ def run_adaptive(args):
         )
         adaptive.generate_inputs(parameters, water_obj)
 
+        # Run simulation only if we are not in debug mode
+        if not parameters.debug:
+            parameters.logger.info("Running Simulation")
+            adaptive.run()
+            parameters.logger.info("Simulation run successfully (:\n\n")
+
     # Run analysis
     if parameters.analyse and not parameters.debug:
-        report = pt.analyse_simulation(
-            parameters.report_name,
-            parameters.traj_name[:-4] + "_",
-            os.path.join(parameters.pele_dir, parameters.output),
-            parameters.residue,
-            cpus=parameters.cpus,
-            output_folder=parameters.pele_dir,
-            clustering=parameters.perturbation,
-            mae=parameters.mae,
-            nclusts=parameters.analysis_nclust,
-            overwrite=parameters.overwrite,
-            topology=parameters.topology,
-            be_column=parameters.be_column,
-            limit_column=parameters.limit_column,
-            te_column=parameters.te_column,
-            logger=parameters.logger,
-        )
-        parameters.logger.info("Pdf summary report successfully written to: {}".format(report))
+        from pele_platform.analysis import Analysis
+
+        analysis = Analysis(parameters)
+        analysis_folder = os.path.join(parameters.pele_dir, "results")
+        analysis.generate(analysis_folder,
+                          clustering_type=parameters.clustering_method.lower())
+
     return parameters

@@ -13,19 +13,26 @@ class SimulationBuilder(template_builder.TemplateBuilder):
     pele_file: str
     topology: str
 
-    def generate_inputs(self, env: pv.ParametersBuilder, water_obj: wt.WaterIncluder) -> None:
+    def generate_inputs(self, parameters, water_obj):
+        """
+        It generates the input files for Adaptive PELE, according to the
+        parameters previously generated.
+
+        Parameters
+        ----------
+        parameters : a Parameters object
+            The Parameters object containing the parameters for PELE
+        water_obj : a WaterIncluder object
+            The parameters for aquaPELE, if applicable
+        """
         # Fill in simulation template with 
         # simulation parameters specified in  
-        # pv.EnviroBuilder
-        env.logger.info("Running Simulation")
-        # Fill to time because we have flags inside flags
-        self.fill_pele_template(env, water_obj)
-        self.fill_pele_template(env, water_obj)
-        self.fill_adaptive_template(env)
-        self.fill_adaptive_template(env)
-        if not env.debug:
-            self.run()
-        env.logger.info("Simulation run successfully (:\n\n")
+
+        # Fill two times because we have flags inside flags
+        self.fill_pele_template(parameters, water_obj)
+        self.fill_pele_template(parameters, water_obj)
+        self.fill_adaptive_template(parameters)
+        self.fill_adaptive_template(parameters)
 
     def fill_pele_template(self, env: pv.ParametersBuilder, water_obj: wt.WaterIncluder) -> None:
         # Fill in PELE template

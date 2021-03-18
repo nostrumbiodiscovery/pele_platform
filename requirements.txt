@@ -10,3 +10,5 @@ PPPele==1.0.5
 ploprottemp==1.0.1
 scikit-learn>0.20
 fpdf
+hdbscan==0.8.27
+mdtraj==1.9.5

@@ -13,6 +13,12 @@ from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Adaptive import simulation
 
 
+def set_starting_point(logged_subsets):
+    indexes = [int(subset.replace("Subset_", "")) for subset in logged_subsets]
+    next_index = max(indexes) + 1
+    return next_index
+
+
 @dataclass
 class SaturatedMutagenesis:
     """
@@ -78,23 +84,34 @@ class SaturatedMutagenesis:
         """
         logger_file = os.path.join(self.working_folder, "completed_mutations.log")
         logged_systems = []
-        pattern = r"Completed (.+\.pdb) simulation"
+        logged_subset_folders = []
+        pattern = r"Completed (?P<system>.+\.pdb) simulation .+ directory (?P<folder>Subset_\d+)"
 
+        # Check what systems and folders are already in the log
         if os.path.exists(logger_file) and self.env.adaptive_restart:
             with open(logger_file, "r") as f:
                 lines = f.readlines()
                 for line in lines:
-                    (system,) = re.findall(pattern, line)
-                    logged_systems.append(system)
+                    match = re.search(pattern, line)
+                    logged_systems.append(match.group('system'))
+                    logged_subset_folders.append(match.group('folder'))
 
+            # Remove mutations that were already completed
             self.all_mutations = [
                 mutation
                 for mutation in self.all_mutations
                 if os.path.basename(mutation) not in logged_systems
             ]
 
+            # Remove subset folders that exist but were not completed according to the log
             existing_subsets = glob.glob(os.path.join(self.working_folder, "{}*".format(self.subset_folder)))
-            self.start = len(existing_subsets) + 1
+            to_remove = [subset for subset in existing_subsets if os.path.basename(subset) not in logged_subset_folders]
+
+            for folder in to_remove:
+                shutil.rmtree(folder)
+
+            # Set parameters for the next run
+            self.start = set_starting_point(logged_subset_folders)
             self.env.adaptive_restart = False
 
     def postprocessing(self, job):
@@ -115,7 +132,6 @@ class SaturatedMutagenesis:
 
         new_dirs = [os.path.splitext(os.path.basename(file))[0] for file in job.input]
         abs_new_dirs = sorted([os.path.join(output_path, path) for path in new_dirs])
-        abs_new_dirs = abs_new_dirs[1:] + abs_new_dirs[:1]  # shifting by 1 to match PELE report numbering
 
         for folder in abs_new_dirs:
             os.mkdir(folder)
