@@ -43,8 +43,8 @@ PELE_VALUES = ['rep', 'traj.xtc',
                 '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:111:_CA_" },',
                 '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" }',
                 '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:13:_CA_" }',
-                '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
-                '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
                 '"radius": 3000',
                 '"fixedCenter": [30,30,30]',
                 'tests/native.pdb"',
@@ -99,7 +99,7 @@ def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
 
 def test_n_water(ext_args=NWATER_ARGS):
     job = main.run_platform(ext_args)
-    results = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/*.pdb"))
+    results = glob.glob(os.path.join(job.pele_dir, "results/top_poses/*.pdb"))
     error = False
     #Result has waters
     for result in results:
@@ -222,9 +222,8 @@ def check_file(folder, filename, values, errors, subdelimiter=None, truncate_dig
 def test_gpcr(args=GPCR_ARGS):
     errors = []
     job = main.run_platform(args)
-    folder = job.pele_dir
-    errors = check_file(folder, "pele.conf", GPCR_VALUES, errors)
-    input_file = os.path.join(folder, "complex_processed.pdb")
+    errors = check_file(job.pele_dir, "pele.conf", GPCR_VALUES, errors)
+    input_file = os.path.join(job.inputs_dir, "complex_processed.pdb")
     if not os.path.exists(input_file):
         errors.append("skip_ppp")
     assert not errors

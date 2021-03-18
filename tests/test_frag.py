@@ -92,10 +92,6 @@ def test_flags(ext_args=FLAGS_ARGS,
     if os.path.exists(output): shutil.rmtree(output, ignore_errors=True)
     job = main.run_platform(ext_args)
     folder = output
-    #if not os.path.exists(os.path.join(folder, "DataLocal/LigandRotamerLibs/STR.rot.assign")) or not os.path.exists(os.path.join(folder, "DataLocal/LigandRotamerLibs/MG.rot.assign")):
-        #errors.append("External rotamer flag not working")
-    #if not os.path.exists(os.path.join(folder, "DataLocal/Templates/OPLS2005/HeteroAtoms/strz")) or not os.path.exists(os.path.join(folder, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz")):
-        #errors.append("External templates flag not working")
     errors = td.check_file(folder, "control_folder/0_pele_template.conf", td.PELE_VALUES + FRAG_FLAGS, errors)
     errors = td.check_file(folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors)
     assert not errors

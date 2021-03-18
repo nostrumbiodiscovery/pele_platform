@@ -1,0 +1,12 @@
+system: '../pele_platform/Examples/site_finder/complex.pdb'
+chain: 'Z'
+resname: 'API'
+traj: "trajectory.xtc"
+seed: 12345
+site_finder: true
+poses: 3
+n_components: 2
+atom_dist:
+- 4555
+- 10
+test: true

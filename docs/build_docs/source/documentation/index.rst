@@ -313,12 +313,6 @@ PPI params
 Constraints
 ==================
 
-This section allows the user to change the constraint values.
-
-- **ca_constr**: Carbon alpha constraints. Default=0.5
-
-- **interval_constr**: Every how many carbon alphas to apply the constraints. Default:10
-
 - **water_constr**: Water constraints. Default=5
 
 - **constrain_smiles**: SMILES string to indicate what part of the molecule to constrain. Default=None
@@ -340,8 +334,6 @@ This section allows the user to change the constraint values.
 
 ..  code-block:: yaml
 
-    ca_constr: 2
-    interval_constr: 10
     water_constr: 5
     constrain_smiles: "C2CCC1CCCCC1C2"
     smiles_constr: 5
@@ -351,6 +343,45 @@ This section allows the user to change the constraint values.
     - "50-2.34-17-4159" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 & 4159
     - "50-2.34-A:1:H-L:1:C21" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
     remove_constraints: true
+
+Carbon-alpha constraints
++++++++++++++++++++++++++
+
+Each package in the platform has its own predefined constraint parameters which are likely to be the best choice in each
+type of study. However, the platform provides the users with several different levels of constraining the alpha carbons
+of the protein backbone with varying spring constants and intervals:
+
+- **level 0** - no constraints
+
+- **level 1** - terminal CAs constrained with a spring constant of 5 kcal/mol, the rest of the CAs in the backbone with 0.5 kcal/mol at an interval of 10, i.e. every 10 residues (default)
+
+- **level 2** - terminal CAs constrained at 5 kcal/mol, the rest of the CAs with 2.5 kcal/mol at the interval of 8 (default for the ``rescoring`` package)
+
+- **level 3** - the whole backbone is constrained every 5 atoms with 5 kcal/mol (default for the ``gpcr_orth`` package)
+
+We strongly suggest relying on the default settings for each package. However, in case of studying a system where the
+defaults are not optimal (more flexibility or rigidity required), the users can change the level, for example:
+
+..  code-block:: yaml
+
+    constraint_level: 3
+
+Alternatively, advanced users can manipulate the constraint parameters individually at their own risk, using the following flags:
+
+- **terminal_constr** - sets the spring constant for the terminal C-alpha constraints, default = 5 kcal/mol
+
+- **ca_constr** - sets the spring constant for the remaining C-alphas in the backbone, default = 0.5 kcal/mol
+
+- **ca_interval** - interval at which the backbone C-alphas should be constrained, default = 10 (i.e. every 10 residues).
+
+Take into account that specific modifiers of constraint parameters will prevail over the settings coming from the
+constraints levels and those predefined in each package.
+
+..  code-block:: yaml
+
+    terminal_constr: 10.5
+    ca_constr: 6.0
+    ca_interval: 3
 
 Metal constraints
 +++++++++++++++++++++
@@ -417,6 +448,34 @@ WaterPerturbation
     water_temp: 2000
     water_overlap: 0.5
 
+Interaction restrictions
+=========================
+
+Interaction restrictions allow for biased exploration, where the simulation results are limited to those that fit the specified conditions.
+
+Users can define two types of conditions using the atom strings (format "chain:resnum:atomname", e.g. A:2:CA) to select the atoms:
+
+- **distance**: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.
+
+- **angle**: Angle between three atoms with a user-defined maximum, minimum or both.
+
+
+..  code-block:: yaml
+
+    interaction_restrictions:
+    - distance:  # distance between the two atoms will not exceed 3 A
+        max: 3
+      atoms:
+        - "A:318:OG1"   # chain A, residue number 318, atom OG1
+        - "Z:201:O3"
+    - angle:  # angle between those three atoms will remain betwenn 90 and 180 degrees
+        min: 90
+        max: 180
+      atoms:
+        - "A:318:OG1"
+        - "A:318:HG1"
+        - "Z:201:O3"
+
 
 Metrics
 =============
@@ -448,7 +507,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **only_analysis**: Analyse PELE simulation without running it.
 
-- **analysis_nclust**: Numbers of clusters out of the simulation. Default: 10
+- **analysis_nclust**: Numbers of clusters out of the simulation, if using the standard clustering method. Default: 10
 
 - **be_column**: Column of the binding energy in the reports starting by 1. Default: 5
 
@@ -460,6 +519,10 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
 
+- **clustering_method**: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to ``MeanShift`` or ``HDBSCAN``.
+
+- **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
+
 ..  code-block:: yaml
 
     only_analysis: true
@@ -467,6 +530,11 @@ Run a post simulation analysis to extract plots, top poses and clusters.
     te_column: 4
     limit_column: 6
     mae: true
+    clustering_method: "meanshift"
+    bandwidth: 7.0
+
+The bandwidth parameter hugely influences the clustering results, therefore, it might be worth trying out different values depending on your system.
+In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD allowed within the cluster, whereas in HDBSCAN to distances between your data points.
 
 Output
 ==========

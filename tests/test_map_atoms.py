@@ -29,29 +29,32 @@ def test_atom_string_mapping(yaml_file, expected):
 
 
 @pytest.mark.parametrize(
-    ("line", "expected_atomname", "expected_resnum", "expected_chain"),
+    ("line", "expected_atomname", "expected_resnum", "expected_residue_name", "expected_chain"),
     [
         (
             "ATOM     13  HB3 ASP A  11      34.775  63.714  47.018  1.00  0.00           H",
             "HB3",
             "11",
+            "ASP",
             "A",
         ),
         (
             "HETATM 5207  N2  API Z 900      -0.107  -0.083   0.156  1.00  0.00           N1+",
             "N2",
             "900",
+            "API",
             "Z",
         ),
     ],
 )
-def test_get_atom_from_line(line, expected_atomname, expected_resnum, expected_chain):
+def test_get_atom_from_line(line, expected_atomname, expected_resnum, expected_residue_name, expected_chain):
     """
     Test to check if extraction of PDB atom name, residue number and chain ID from a PDB line works.
     """
-    atom_name, residue_number, chain_id = map_atoms.get_atom_from_line(line)
+    atom_name, residue_number, residue_name, chain_id = map_atoms.get_atom_from_line(line)
     assert atom_name == expected_atomname
     assert residue_number == expected_resnum
+    assert residue_name == expected_residue_name
     assert chain_id == expected_chain
 
 

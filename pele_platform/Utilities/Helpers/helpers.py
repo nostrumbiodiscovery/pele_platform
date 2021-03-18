@@ -10,6 +10,8 @@ from multiprocessing import Pool
 from functools import partial
 
 
+__all__ = ["get_suffix", "backup_logger"]
+
 
 def silentremove(*args, **kwargs):
     for files in args:
@@ -57,6 +59,30 @@ class cd:
 
 
 def is_repeated(pele_dir):
+    """
+    Given a PELE directory it will return a new directory with a new
+    suffix. The suffix is chosen with the following criterion:
+
+     - In case that NOL_Pele folder already exists in the working directory,
+       it will return NOL_Pele_1.
+     - In case that NOL_Pele_1 folder already exists in the working directory,
+       it will return NOL_Pele_2.
+
+    .. todo ::
+        * The name of this function is misleading.
+
+    Parameters
+    ----------
+    pele_dir : str
+        The candidate name for the PELE directory which will only be
+        modified following the criterion above if it already exists
+
+    Returns
+    -------
+    pele_dir : str
+        The new PELE directory that does not match with any other directory
+        previously created
+    """
 
     original_dir = None
     split_dir = pele_dir.split("_")
@@ -82,6 +108,31 @@ def is_repeated(pele_dir):
 
 
 def is_last(pele_dir):
+    """
+    Given a PELE directory it will return the name of the directory that
+    looks newer. It employs the following criterion:
+
+     - In case that NOL_Pele, NOL_Pele_1 and NOL_Pele_2 folders already
+       exist in the working directory, it will choose NOL_Pele_2 since it
+       has the highest suffix index.
+     - In case no directory named NOL_Pele is found, the original name
+       will be employed.
+
+    .. todo ::
+        * The name of this function is misleading.
+
+    Parameters
+    ----------
+    pele_dir : str
+        The original name for the PELE directory whose newest directory
+        wants to be obtained
+
+    Returns
+    -------
+    pele_dir : str
+        The newest PELE directory that has been found in the working
+        directory according to the original name that is supplied
+    """
 
     original_dir = None
     split_dir = pele_dir.split("_")
@@ -223,3 +274,26 @@ def is_rdkit():
         return True
     except:
         raise ModuleNotFoundError("Please install rdkit with the following command: conda install -c conda-forge rdkit")
+
+
+def get_suffix(filename, separator='_'):
+    """
+    Given a filename, it returns its corresponding suffix.
+
+    Parameters
+    ----------
+    filename : str
+        The filename path
+    separator : str
+        The pattern that is used to separate the name root from the suffix.
+        Default is '_'
+
+    Returns
+    -------
+    suffix : str
+        The suffix for the supplied filename
+    """
+    name = os.path.basename(filename)
+    suffix = name.split('_')[-1]
+
+    return suffix

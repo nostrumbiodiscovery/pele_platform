@@ -41,6 +41,9 @@ requirements:
     - lib_prep
     - peleffy
     - drug_learning
+    - hdbscan==0.8.27
+    - mdtraj==1.9.5
+    - seaborn
 test:
   imports:
     - pele_platform
