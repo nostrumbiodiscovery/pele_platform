@@ -147,8 +147,8 @@ the global exploration output or any other PELE simulation.
 
 If you want to understand more about the content of ``LIG_Pele`` directory, you can refer to the PELE++ documentation:
 
-    - `Data folder <https://eapm-bsc.github.io/PELE-repo/molecularParameters.html>`_
-    - `pele.conf <https://eapm-bsc.github.io/PELE-repo/GeneralStructure/GeneralStructure.html>`_
+    - `Data folder <https://nostrumbiodiscovery.github.io/pele_docs/molecularParameters.html>`_
+    - `pele.conf <https://nostrumbiodiscovery.github.io/pele_docs/GeneralStructure/GeneralStructure.html>`_
     - `adaptive.conf <https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline>`_
 
 a. Plots

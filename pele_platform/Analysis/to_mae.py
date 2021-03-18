@@ -31,18 +31,18 @@ def pdb_to_mae(fname, schr_path, mae_output_file=None, remove=False):
            "epoch": epoch
            }
         title = fname.split('_')
-        traj = f"{epoch}_{trajectory}_{snapshot}"
+        traj = "{}_{}_{}".format(epoch, trajectory, snapshot)
         pele_energy = binding_energy
         cmd = '$SCHRODINGER/utilities/prepwizard -rehtreat -noepik -disulfides -noimpref -nometaltreat -noprotassign -nopropka -WAIT %s %s.mae' %(fname, traj)
         print(cmd)
         os.system(cmd)
-        struct = next(st.StructureReader(f"{traj}.mae"))
+        struct = next(st.StructureReader("{}.mae".format(traj)))
         struct.property['r_user_PELE_energy'] = properties["BindingEnergy"]
         struct.property['r_user_PELE_epoch'] = properties["epoch"]
         struct.property['r_user_PELE_traj'] = properties["trajectory"]
         struct.property['r_user_PELE_snapshot'] = properties["snapshot"]
         struct.title = '%s_BindEn_%.2f' %(traj, pele_energy) 
-        struct.write("{}.mae.format(traj)")
+        struct.write("{}.mae".format(traj))
 
 
 def add_args(parser):
