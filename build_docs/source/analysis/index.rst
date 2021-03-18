@@ -13,16 +13,16 @@ Each simulation will create a number of output folders, as indicated on the tree
     └── LIG_Pele
         ├── output
         └── results
-            ├── BestStructs
-            ├── Plots
+            ├── top_poses
+            ├── plots
             └── clusters
 
 
 The ``output`` folder contains raw output files such as detailed metrics reports and trajectory snapshots for every step, whereas the
 ``results`` directory holds a more user-friendly, curated output comprising of three separate folders:
 
-- ``BestStructs`` - top 100 lowest binding energy structures
-- ``Plots`` - plots of multiple metrics selected by the user
+- ``top_poses`` - top 100 lowest binding energy structures
+- ``plots`` - plots of multiple metrics selected by the user
 - ``clusters`` - lowest binding energy cluster representatives.
 
 Interactive plots
@@ -41,3 +41,16 @@ case we used columns 5 and 6 corresponding to the binding energy and SASA of the
   :align: center
 
 For more advanced interactive plots, please refer to `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html>`_.
+
+Kernel density estimate plot
+-------------------------------
+
+The KDE plots can aid the simulation analysis by visualising the distribution of ligand poses (similarly to a histogram)
+in respect to plotted metrics, such as distance between two atoms (atom_dist) or solvent exposed surface area (SASA).
+All you have to do is include the ``kde: true`` flag in your input.yaml. Additionally, you can influence the number of
+poses plotted using the ``kde_structs`` flag, where the default included 1000 best energy poses.
+
+.. code-block:: yaml
+
+    kde: true
+    kde_structs: 200

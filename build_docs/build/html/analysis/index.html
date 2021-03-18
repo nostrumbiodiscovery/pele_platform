@@ -102,6 +102,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#output-folders">Output folders</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kernel-density-estimate-plot">Kernel density estimate plot</a></li>
 </ul>
 </li>
 </ul>
@@ -187,16 +188,16 @@
 <span class="go">└── LIG_Pele</span>
 <span class="go">    ├── output</span>
 <span class="go">    └── results</span>
-<span class="go">        ├── BestStructs</span>
-<span class="go">        ├── Plots</span>
+<span class="go">        ├── top_poses</span>
+<span class="go">        ├── plots</span>
 <span class="go">        └── clusters</span>
 </pre></div>
 </div>
 <p>The <code class="docutils literal notranslate"><span class="pre">output</span></code> folder contains raw output files such as detailed metrics reports and trajectory snapshots for every step, whereas the
 <code class="docutils literal notranslate"><span class="pre">results</span></code> directory holds a more user-friendly, curated output comprising of three separate folders:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">BestStructs</span></code> - top 100 lowest binding energy structures</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Plots</span></code> - plots of multiple metrics selected by the user</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">top_poses</span></code> - top 100 lowest binding energy structures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plots</span></code> - plots of multiple metrics selected by the user</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">clusters</span></code> - lowest binding energy cluster representatives.</p></li>
 </ul>
 </div>
@@ -210,6 +211,17 @@
 case we used columns 5 and 6 corresponding to the binding energy and SASA of the ligand. You can click on data points to get the file names of the structures.</p>
 <a class="reference internal image-reference" href="../_images/interactive_plot.png"><img alt="../_images/interactive_plot.png" class="align-center" src="../_images/interactive_plot.png" style="width: 400px;" /></a>
 <p>For more advanced interactive plots, please refer to <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html">PELE++ documentation</a>.</p>
+</div>
+<div class="section" id="kernel-density-estimate-plot">
+<h2>Kernel density estimate plot<a class="headerlink" href="#kernel-density-estimate-plot" title="Permalink to this headline">¶</a></h2>
+<p>The KDE plots can aid the simulation analysis by visualising the distribution of ligand poses (similarly to a histogram)
+in respect to plotted metrics, such as distance between two atoms (atom_dist) or solvent exposed surface area (SASA).
+All you have to do is include the <code class="docutils literal notranslate"><span class="pre">kde:</span> <span class="pre">true</span></code> flag in your input.yaml. Additionally, you can influence the number of
+poses plotted using the <code class="docutils literal notranslate"><span class="pre">kde_structs</span></code> flag, where the default included 1000 best energy poses.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">kde</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">kde_structs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
+</pre></div>
+</div>
 </div>
 </div>
 
