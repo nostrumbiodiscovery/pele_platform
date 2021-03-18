@@ -194,17 +194,6 @@ def test_env_variable(ext_args=ENV_ARGS):
     assert False
 
 
-def test_python_version_error(args=ENV_ARGS):
-    p = Popen(
-        "/usr/bin/python -m pele_platform.main -h".split(), stdout=PIPE, stderr=PIPE
-    )
-    output, error = p.communicate()
-    if "OldPythonVersion" in error.decode():
-        assert True
-        return
-    assert False
-
-
 def test_flag_similarity():
     yaml = os.path.join(test_path, "checker/input.yaml")
     try:
