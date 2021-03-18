@@ -54,3 +54,9 @@ poses plotted using the ``kde_structs`` flag, where the default included 1000 be
 
     kde: true
     kde_structs: 200
+
+Example plot of binding energy vs ligand SASA with a KDE including 1000 best energy poses.
+
+.. image:: ../img/kde.png
+  :width: 400
+  :align: center
