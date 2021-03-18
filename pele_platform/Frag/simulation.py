@@ -37,19 +37,20 @@ class FragRunner(object):
         params = self.parameters
 
         fragment_files = None
-
-        if params.ligands:  # Full ligands as sdf
-            fragment_files = self._prepare_input_file(logger=params.logger)
-        elif params.frag_library:
-            params.input = lb.main(params.frag_core_atom,
-                                   params.frag_library,
-                                   params.logger)
+        with tempfile.TemporaryDirectory() as tmpdirname:
+            if params.ligands:  # Full ligands as sdf
+                fragment_files = self._prepare_input_file(logger=params.logger)
+            elif params.frag_library:
+                params.input = lb.main(params.frag_core_atom,
+                                       params.frag_library,
+                                       params.logger,
+                                       tmpdirname)
+         
+            if not params.only_analysis:
+                self._run()
         
-        if not params.only_analysis:
-            self._run()
-        
-        if params.cleanup and fragment_files:
-            self._clean_up(fragment_files)
+            if params.cleanup and fragment_files:
+                self._clean_up(fragment_files)
 
     def _prepare_control_file(self):
         # Create tmp folder with frag control_file
