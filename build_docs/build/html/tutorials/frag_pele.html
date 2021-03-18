@@ -1,0 +1,429 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>FRAG_PELE &mdash; pele platform 1.5.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Analysis" href="../analysis/index.html" />
+    <link rel="prev" title="GPCR tutorial" href="gpcr.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gpcr.html">GPCR tutorial</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">FRAG_PELE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#previous-requisites">Previous Requisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launch-a-fragpele-simulation">Launch a FragPELE simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#protein-preparation">1. Protein Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">2. Ligand Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-input-file">3. YAML Input File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launching-fragpele">4. Launching FragPELE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#results">5. Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#optative-flags">Optative Flags</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>FRAG_PELE</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/frag_pele.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="frag-pele">
+<h1>FRAG_PELE<a class="headerlink" href="#frag-pele" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/32027130/">FragPELE</a>  is a new tool for in silico hit-to-lead drug design, capable of growing a fragment from a bound core while exploring the protein-ligand conformational space.</p>
+<p>This tutorial aims to describe the general protocol to run FragPELE.</p>
+<div class="section" id="previous-requisites">
+<h2>Previous Requisites<a class="headerlink" href="#previous-requisites" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Complex PDB:</strong> The PDB processed file. Prepare the system with the <strong>Schrödinger Protein Preparation Wizard</strong>. It is recommended to delete all water molecules as well as filling in missing loops and side chains.</p></li>
+</ul>
+<p>It is obligatory that the protein is protonated.
+Furthermore, make sure the ligand has:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A unique chain ID.</p></li>
+<li><p>Unique PDB atom names with no spaces or single letters.</p></li>
+<li><p>NO residue name except for UNK.</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><p><strong>Fragment PDB:</strong> The PDB with the desired fragment. The chain of the fragment <strong>must be renamed to “L”</strong>.</p></li>
+</ul>
+</div>
+<div class="section" id="launch-a-fragpele-simulation">
+<h2>Launch a FragPELE simulation<a class="headerlink" href="#launch-a-fragpele-simulation" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="protein-preparation">
+<h2>1. Protein Preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
+<ol class="loweralpha simple">
+<li><p>Launch Schrödinger Maestro.</p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB</span></code> and type your PDB ID to import the structure.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_1b.png"><img alt="../_images/frag_pele_tutorial_1b.png" class="align-center" src="../_images/frag_pele_tutorial_1b.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_1b.2.png"><img alt="../_images/frag_pele_tutorial_1b.2.png" class="align-center" src="../_images/frag_pele_tutorial_1b.2.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="3">
+<li><p>To preprocess the protein, go to <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> and search for <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Preparation</span> <span class="pre">Wizard</span></code>. Select the following options:</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_1c.png"><img alt="../_images/frag_pele_tutorial_1c.png" class="align-center" src="../_images/frag_pele_tutorial_1c.png" style="width: 400px;" /></a>
+<p>Click <code class="docutils literal notranslate"><span class="pre">Preprocess</span></code> to start the preprocessing of the protein.</p>
+<ol class="loweralpha" start="4">
+<li><dl>
+<dt>Change the ligand chain ID and the residue name.</dt><dd><ul class="simple">
+<li><p>Go to <code class="docutils literal notranslate"><span class="pre">Select</span> <span class="pre">-&gt;</span> <span class="pre">Set</span> <span class="pre">pick</span> <span class="pre">level</span> <span class="pre">-&gt;</span> <span class="pre">Residues</span></code>.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_1d.1.png"><img alt="../_images/frag_pele_tutorial_1d.1.png" class="align-center" src="../_images/frag_pele_tutorial_1d.1.png" style="width: 400px;" /></a>
+<ul class="simple">
+<li><p>Select the ligand with a mouse click.</p></li>
+<li><p>Go to <code class="docutils literal notranslate"><span class="pre">Build</span></code> and click on <code class="docutils literal notranslate"><span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">atom</span> <span class="pre">properties</span></code>.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_1d.3.png"><img alt="../_images/frag_pele_tutorial_1d.3.png" class="align-center" src="../_images/frag_pele_tutorial_1d.3.png" style="width: 400px;" /></a>
+<ul class="simple">
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">Residue</span> <span class="pre">Name</span></code> to <code class="docutils literal notranslate"><span class="pre">LIG</span></code>.</p></li>
+<li><p>Change <code class="docutils literal notranslate"><span class="pre">Chain</span> <span class="pre">Name</span></code> to <code class="docutils literal notranslate"><span class="pre">Z</span></code>.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_1d.4.png"><img alt="../_images/frag_pele_tutorial_1d.4.png" class="align-center" src="../_images/frag_pele_tutorial_1d.4.png" style="width: 400px;" /></a>
+<ul class="simple">
+<li><p>Select <code class="docutils literal notranslate"><span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">name</span></code> from the drop down list and select <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">unique</span> <span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">names</span> <span class="pre">within</span> <span class="pre">residues</span></code>.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_1d.5.png"><img alt="../_images/frag_pele_tutorial_1d.5.png" class="align-center" src="../_images/frag_pele_tutorial_1d.5.png" style="width: 400px;" /></a>
+<ul class="simple">
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Apply</span></code>.</p></li>
+<li><p>Close the window.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Finally, export the structure by going to <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures</span></code> and save it to your working directory.</p></li>
+</ol>
+</div>
+<div class="section" id="ligand-preparation">
+<h2>2. Ligand Preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
+<ol class="loweralpha">
+<li><p>Select the ligand with a mouse click and extract it to a separate entry opening <code class="docutils literal notranslate"><span class="pre">Build</span></code> and clicking <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">selected</span> <span class="pre">atoms</span> <span class="pre">to</span> <span class="pre">new</span> <span class="pre">entry</span></code>.</p></li>
+<li><p>Now define the R-groups:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Hit <code class="docutils literal notranslate"><span class="pre">Select</span> <span class="pre">-&gt;</span> <span class="pre">Set</span> <span class="pre">pick</span> <span class="pre">level</span> <span class="pre">-&gt;</span> <span class="pre">Atoms</span></code>.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_2b.2.png"><img alt="../_images/frag_pele_tutorial_2b.2.png" class="align-center" src="../_images/frag_pele_tutorial_2b.2.png" style="width: 400px;" /></a>
+<ul class="simple">
+<li><p>Click on any hydrogen atoms adjacent to a Nitrogen.</p></li>
+<li><p>Go to <code class="docutils literal notranslate"><span class="pre">Tasks</span> <span class="pre">-&gt;</span> <span class="pre">Enumeration</span> <span class="pre">-&gt;</span> <span class="pre">Custom</span> <span class="pre">R-Group</span></code>.</p></li>
+<li><p>Choose <code class="docutils literal notranslate"><span class="pre">R-groups</span> <span class="pre">to</span> <span class="pre">Create</span> <span class="pre">a</span> <span class="pre">Hydrogen</span> <span class="pre">Bond</span></code> from the drop down list.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_2b.4.png"><img alt="../_images/frag_pele_tutorial_2b.4.png" class="align-center" src="../_images/frag_pele_tutorial_2b.4.png" style="width: 400px;" /></a>
+<ul class="simple">
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Run</span></code> to submit the job.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>A new group on the entry list is created once the job finishes. Select all enumerated ligands by clicking on the group.</p></li>
+<li><p>Go to <code class="docutils literal notranslate"><span class="pre">Tasks</span> <span class="pre">-&gt;</span> <span class="pre">LigPrep</span></code></p></li>
+<li><p>Check the following options and hit <code class="docutils literal notranslate"><span class="pre">Run</span></code>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/frag_pele_tutorial_2e.png"><img alt="../_images/frag_pele_tutorial_2e.png" class="align-center" src="../_images/frag_pele_tutorial_2e.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="6">
+<li><p>A new group on the entry list is created after LigPrep finishes. Select all the entries of the group as in step <code class="docutils literal notranslate"><span class="pre">2c</span></code>.</p></li>
+<li><p>Go to <code class="docutils literal notranslate"><span class="pre">Export</span> <span class="pre">-&gt;</span> <span class="pre">Structures</span></code> and save the file as <code class="docutils literal notranslate"><span class="pre">ligands.sdf</span></code> in your working directory.</p></li>
+</ol>
+</div>
+<div class="section" id="yaml-input-file">
+<h2>3. YAML Input File<a class="headerlink" href="#yaml-input-file" title="Permalink to this headline">¶</a></h2>
+<p>The input file <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> must contain:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><strong>frag_core:</strong> Path to the processed PDB file containing the protein and docket scaffolds.</p></li>
+<li><p><strong>frag_ligands:</strong> Path to the SD file wit fully grown and preprocessed ligands.</p></li>
+<li><p><strong>resname:</strong> Unique residue name of the scaffold.</p></li>
+<li><p><strong>chain_core:</strong> Unique chain ID of the scaffolds.</p></li>
+<li><p><strong>cpus:</strong> Number of CPUs to use.</p></li>
+</ol>
+</div></blockquote>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;scaffold.pdb&quot;</span>
+<span class="nt">frag_ligands</span><span class="p">:</span> <span class="s">&quot;ligands.sdf&quot;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;Z&quot;</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> It is recommended to first run the simulation including <strong>test:true</strong> in the <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file to check that everything works. The test will be executed with 5 CPUs.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;scaffold.pdb&quot;</span>
+<span class="nt">frag_ligands</span><span class="p">:</span> <span class="s">&quot;ligands.sdf&quot;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;Z&quot;</span>
+<span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="launching-fragpele">
+<h2>4. Launching FragPELE<a class="headerlink" href="#launching-fragpele" title="Permalink to this headline">¶</a></h2>
+<p>To run the system launch the simulation with the following command:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pele_platform</span><span class="o">.</span><span class="n">main</span> <span class="nb">input</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="results">
+<h2>5. Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<dl>
+<dt>The simulation will create a folder with the following organization:</dt><dd><ul>
+<li><p><strong>pregrow:</strong> Contains the initial PDB files.</p></li>
+<li><p><strong>growing_steps:</strong> There is a folder for each growing step from the simulation. In each of these folderes, there is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A report file for each CPU launched. This report contains the information of the number of the task, the number of accepted Pele steps, the current energy and binding energy of each step and the sasaLig, which is the solvent accesible surface area.</p></li>
+<li><p>A PDB file of the trajectory.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>sampling_result:</strong> Growed fragment from each trajectory.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>top_result:</strong> Top results from each trajectory.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<a class="reference internal image-reference" href="../_images/top_result_frag_pele.png"><img alt="../_images/top_result_frag_pele.png" class="align-center" src="../_images/top_result_frag_pele.png" style="width: 400px;" /></a>
+<ul>
+<li><p><strong>clustering_PDBs:</strong> There is a folder for each growing step from the simulation. In each of the folders there is:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Initial PDB file for each trajectory.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>control_folder:</strong> <code class="docutils literal notranslate"><span class="pre">conf</span></code> file for each growing step from the simulation.</p></li>
+<li><p><strong>DataLocal:</strong> Contains the ligand templates. When you run a simulation, the ligands are parametrized and stored in this folder.</p></li>
+<li><p><strong>top_result.pdb:</strong> PDB file of the top result from the simulation.</p></li>
+<li><p><strong>pele_template.conf</strong></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="optative-flags">
+<h2>Optative Flags<a class="headerlink" href="#optative-flags" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference external" href="../documentation/frag/index.html">here</a> the optative flags for FragPELE.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../analysis/index.html" class="btn btn-neutral float-right" title="Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="gpcr.html" class="btn btn-neutral float-left" title="GPCR tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
