@@ -15,7 +15,7 @@ def get_symmetry_groups(mol):
     Parameters
     ----------
     mol : rdkit molecule object.
-         Fragment from custom-made library.
+          Fragment from custom-made library.
 
     Returns
     -------
