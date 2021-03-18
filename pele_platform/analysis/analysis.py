@@ -146,7 +146,7 @@ class Analysis(object):
         if existing_dataframe is None:
             dataframe = self.get_dataframe(filter=True)
         else:
-            dataframe = exisiting_dataframe
+            dataframe = existing_dataframe
 
         # Initialize plotter
         plotter = Plotter(dataframe)
@@ -186,7 +186,7 @@ class Analysis(object):
                 plotter.plot_two_metrics(metric, t_energy,
                                          output_folder=path)
 
-            if self.parameters.kde and exisiting_dataframe is not None:
+            if self.parameters.kde:
                 plotter.plot_kde(metric, i_energy, output_folder=path,
                                  kde_structs=self.parameters.kde_structs)
 
