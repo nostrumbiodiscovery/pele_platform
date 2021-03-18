@@ -517,6 +517,10 @@ class DataHandler(object):
         for traj in traj_to_remove:
             trajectories.remove(traj)
 
+        # In case we removed all of them
+        if len(coordinates) == 0:
+            return None, None
+
         # Concatenate resulting array
         coordinates = np.concatenate(coordinates)
 
