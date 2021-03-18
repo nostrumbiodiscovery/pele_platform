@@ -14,11 +14,13 @@ def get_symmetry_groups(mol):
 
     Parameters
     ----------
-    mol: Rdkit molecule object.
+    mol : rdkit molecule object.
+         Fragment from custom-made library.
 
     Returns
     -------
-    symmetry_list: List with atom indices.
+    symmetry_list : list
+                    List with atom indices.
     """
     rank = {} 
     symmetry_list = []
@@ -27,8 +29,6 @@ def get_symmetry_groups(mol):
     
     for counter, atom in enumerate(mol.GetAtoms()):
         rank[atom.GetIdx()] = list(Chem.CanonicalRankAtoms(mol, breakTies=False))[counter]
-    print(rank)
-    sys.exit() 
     for idx, symmetry_rank in rank.items():
         if symmetry_rank not in symmetry_rank_list:
             symmetry_rank_list.append(symmetry_rank)
@@ -43,12 +43,16 @@ def growing_sites(fragment,
 
     Parameters
     ----------
-    fragment: Path to fragment pdb file.
-    user_bond: Connection point from which the user wants to grow the fragments.
+    fragment : string
+               Path to fragment pdb file.
+    
+    user_bond : string
+                Connection point from which the user wants to grow the fragments.
 
     Returns
     -------
-    bonds: List of strings representing sites, e.g. "benzene.pdb C6-H6 C1-H2"
+    bonds : list
+            List of strings representing sites, e.g. "benzene.pdb C6-H6 C1-H2"
     """
     bonds = []
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
@@ -71,13 +75,19 @@ def sdf_to_pdb(file_list,
 
     Parameters
     ----------
-    file_list: List of paths of fragments in sdf format.
-    logger: File with status messages
-    tmpdirname: Path of temporary directory.
+    file_list : list
+                List of paths of fragments in sdf format.
+    
+    logger : string
+             File with status messages
+    
+    tmpdirname : string
+                 Path of temporary directory.
 
     Returns
     -------
-    out: List of paths with converted sdf files.
+    out : list
+          List of paths with converted sdf files.
     """
 
     out = []
@@ -88,10 +98,10 @@ def sdf_to_pdb(file_list,
         schrodinger_path = os.path.join(cs.SCHRODINGER, "utilities/structconvert")
         command_mae = "{} -isd {} -omae {}"
         command_pdb = "{} -imae {} -opdb {}"
-        for f in file_list:
-            shutil.copy(f, tmpdirname)
-            fout = os.path.splitext(os.path.basename(f))[0] + ".mae"
-            fout_path = '%s/%s' % (tmpdirname, os.path.basename(f))
+        for file in file_list:
+            shutil.copy(file, tmpdirname)
+            fout = os.path.splitext(os.path.basename(file))[0] + ".mae"
+            fout_path = os.path.join(tmpdirname, os.path.basename(file))
             try:
                 command_mae = command_mae.format(schrodinger_path, fout_path, fout)
                 subprocess.call(command_mae.split())
@@ -102,9 +112,9 @@ def sdf_to_pdb(file_list,
         # convert all MAE to PDB, it will result in a lot of numbered pdb files
         for c in converted_mae:
             shutil.move(c, tmpdirname)
-            c = tmpdirname + '/' + c
+            c = os.path.join(tmpdirname, c)
             fout = c.replace(".mae", ".pdb")
-            
+
             try:
                 command_pdb = command_pdb.format(schrodinger_path, c, fout)
                 subprocess.call(command_pdb.split())
@@ -112,7 +122,8 @@ def sdf_to_pdb(file_list,
             except Exception as e:
                 logger.info("Error occured while converting mae to PDB.", e)
         
-        pdb_pattern = '%s/%s' % (tmpdirname, converted_mae[0])
+
+        pdb_pattern = os.path.join(tmpdirname, converted_mae[0])
         converted_pdb = glob.glob(pdb_pattern[:-4]+"*"+".pdb")
         # ~~~ If it's stupid but it works (?), it isn't stupid. ~~~
         
@@ -141,11 +152,13 @@ def get_library(frag_library):
 
     Parameters
     ----------
-    frag_library: Path to fragment library.
+    frag_library : string
+                   Path to fragment library.
 
     Returns
     -------
-    path: Path to the fragment library.
+    path : string
+           Path to the fragment library.
     """
     directory = os.path.dirname(os.path.abspath(__file__))                                                                                                                              
     path = frag_library if os.path.exists(frag_library) else os.path.join(directory, "Libraries", frag_library.strip())                                                                 
@@ -161,13 +174,19 @@ def get_fragment_files(path,
 
     Parameters
     ----------
-    path: Path to the fragment library.
-    logger: File with status messages.
-    tmpdirname: Path of temporary directory.
+    path : string
+           Path to the fragment library.
+
+    logger : string
+             File with status messages.
+
+    tmpdirname : string
+                 Path of temporary directory.
 
     Returns
     -------
-    all_files: List of paths of the fragments in the fragment library.
+    all_files : list
+                List of paths of the fragments in the fragment library.
     """
     fragment_files = []                                                                                                                                                                 
     extensions = ['*.pdb', '*.sdf']                                                                                                                                                     
