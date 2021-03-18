@@ -165,6 +165,11 @@ class DataHandler(object):
             report_list = [os.path.join(folder, report_prefix + '_' + i)
                            for i in sorted(report_ids, key=int)]
 
+            if len(report_dirs) == 0:
+                print('Warning: no PELE reports with prefix ' +
+                      '\'{}\'were found in: '.format(report_prefix) +
+                      '{}'.format(folder))
+
             for i, report in enumerate(report_list, start=1):
                 pandas_df = pd.read_csv(report, sep="    ", engine="python",
                                         index_col=False, header=0)
@@ -174,6 +179,11 @@ class DataHandler(object):
                                  trajectory_prefix + str(i) +
                                  trajectory_format)
                 dataframe_lists.append(pandas_df)
+
+        if len(dataframe_lists) == 0:
+            raise ValueError('No PELE trajectories were found in the ' +
+                             'output that was supplied: ' +
+                             '{}'.format(self._sim_path))
 
         self._dataframe = pd.concat(dataframe_lists, ignore_index=True)
 
@@ -478,7 +488,6 @@ class DataHandler(object):
             except ValueError:
                 return None, None
 
-
         if no_multiprocessing or n_proc == 1:
             coordinates = []
             for trajectory in trajectories:
@@ -494,10 +503,19 @@ class DataHandler(object):
             with Pool(n_proc) as pool:
                 coordinates = pool.map(parallel_function, trajectories)
 
+        # TODO trajectories might not need to be removed here, we are already
+        # filtering them afterwards, when creating the ordered dataframe
         # Remove possible empty arrays
-        for coordinates_array in coordinates:
+        coord_to_remove = []
+        traj_to_remove = []
+        for coordinates_array, trajectory in zip(coordinates, trajectories):
             if len(coordinates_array) == 0:
-                coordinates.remove(coordinates_array)
+                coord_to_remove.append(coordinates_array)
+                traj_to_remove.append(trajectory)
+        for coord in coord_to_remove:
+            coordinates.remove(coord)
+        for traj in traj_to_remove:
+            trajectories.remove(traj)
 
         # Concatenate resulting array
         coordinates = np.concatenate(coordinates)
@@ -574,8 +592,6 @@ class DataHandler(object):
             return ValueError('Residue {} '.format(residue_name) +
                               'not found in PDB file ' +
                               '{}'.format(trajectory))
-
-        coordinates = coordinates[0]  # There is only one model
 
         # Calculate the centroid
         centroid = np.mean(coordinates, axis=0)
@@ -762,9 +778,10 @@ class DataHandler(object):
             n_models_loaded, ligand_size, spatial_dimension = \
                 coordinates.shape
         except ValueError:
-            print('Warning: trajectory {} '.format(trajectory) +
-                  'has an inconsistent ligand size throughout the models. ' +
-                  'Its coordinates will be skipped.')
+            if len(coordinates) > 0:
+                print('Warning: trajectory {} '.format(trajectory) +
+                      'has an inconsistent ligand size throughout the ' +
+                      'models. Its coordinates will be skipped.')
 
             # Return empty array
             return np.array(())

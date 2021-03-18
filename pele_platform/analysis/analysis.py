@@ -285,6 +285,12 @@ class Analysis(object):
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
         cluster_summary = self._analyze_clusters(clusters, dataframe,
                                                  rmsd_per_cluster, path)
+
+        if len(cluster_summary) == 0:
+            self.parameters.logger.info(f"No clusters could be obtained, " +
+                                        f"clustering analysis is skipped")
+            return
+
         cluster_subset, cluster_reindex_map = \
             self._select_top_clusters(clusters, cluster_summary)
 
