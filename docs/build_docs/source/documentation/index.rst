@@ -307,6 +307,34 @@ WaterPerturbation
     water_temp: 2000
     water_overlap: 0.5
 
+Interaction restrictions
+=========================
+
+Interaction restrictions allow for biased exploration, where the simulation results are limited to those that fit the specified conditions.
+
+Users can define two types of conditions using the atom strings (format "chain:resnum:atomname", e.g. A:2:CA) to select the atoms:
+
+- **distance**: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.
+
+- **angle**: Angle between three atoms with a user-defined maximum, minimum or both.
+
+
+..  code-block:: yaml
+
+    interaction_restrictions:
+    - distance:  # distance between the two atoms will not exceed 3 A
+        max: 3
+      atoms:
+        - "A:318:OG1"   # chain A, residue number 318, atom OG1
+        - "Z:201:O3"
+    - angle:  # angle between those three atoms will remain betwenn 90 and 180 degrees
+        min: 90
+        max: 180
+      atoms:
+        - "A:318:OG1"
+        - "A:318:HG1"
+        - "Z:201:O3"
+
 
 Metrics
 =============
@@ -352,7 +380,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **clustering_method**: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to ``MeanShift`` or ``HDBSCAN``.
 
-- **bandwidth**: Value for the Mean Shift bandwith (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
+- **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
 
 ..  code-block:: yaml
 
@@ -361,6 +389,11 @@ Run a post simulation analysis to extract plots, top poses and clusters.
     te_column: 4
     limit_column: 6
     mae: true
+    clustering_method: "meanshift"
+    bandwidth: 7.0
+
+The bandwidth parameter hugely influences the clustering results, therefore, it might be worth trying out different values depending on your system.
+In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD allowed within the cluster, whereas in HDBSCAN to distances between your data points.
 
 Output
 ==========
@@ -375,35 +408,3 @@ Configure the output
 
     working_folder: "NOR_solvent_OBC"
     output: "output_sim"
-
-
-Interaction restrictions
-=========================
-
-Interaction restrictions allow for biased exploration, we can limit the simulation results to those that fit the specified conditions.
-
-Can define two types of conditions:
-
-- **distance**: Limit distance between two atomnumbers to a maximum, a minimum, or both.
-
-    - The atoms can be specified via chain:resnum:atomname i.e. A:2:CA
-
-- **angle**: Limit angle between three atomnumbers to a maximum, a minimum, or both.
-
-    - The atoms can be specified via chain:resnum:atomname i.e. A:2:CA
-
-..  code-block:: yaml
-
-    interaction_restrictions:
-    - distance:
-        max: 3
-      atoms:
-        - "A:318:OG1"
-        - "Z:201:O3"
-    - angle:
-        min: 90
-        max: 180
-      atoms:
-        - "A:318:OG1"
-        - "A:318:HG1"
-        - "Z:201:O3"
