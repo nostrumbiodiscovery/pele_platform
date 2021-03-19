@@ -1,4 +1,6 @@
 import os
+import math
+import sys
 import glob
 import shutil
 import pele_platform.constants.constants as cs
@@ -39,8 +41,10 @@ PELE_VALUES = ['rep', 'traj.xtc',
                 'OBC', '"anmFrequency" : 3,', '"sideChainPredictionFrequency" : 3,',
                 '"minimizationFrequency" : 3,', '"temperature": 3000,',
                 '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:111:_CA_" },',
-                '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
-                '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:13:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
+                '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
                 '"radius": 3000',
                 '"fixedCenter": [30,30,30]',
                 'tests/native.pdb"',
@@ -95,7 +99,7 @@ def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
 
 def test_n_water(ext_args=NWATER_ARGS):
     job = main.run_platform(ext_args)
-    results = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/*.pdb"))
+    results = glob.glob(os.path.join(job.pele_dir, "results/top_poses/*.pdb"))
     error = False
     #Result has waters
     for result in results:
@@ -184,21 +188,42 @@ def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
 
-def check_file(folder, filename, values, errors):
+def truncate(f, n):
+    return math.floor(f * 10 ** n) / 10 ** n
+
+def check_file(folder, filename, values, errors, subdelimiter=None, truncate_digits_to=4):
    filename = os.path.join(folder, filename)
+   print(values)
+   print('---------------------')
+   print('filename:', filename)
    with open(filename, "r") as f:
       lines = f.readlines()
-      for value in values:
-          if value not in "".join(lines):
-              errors.append(value) 
+      print('lines:',lines)
+      if subdelimiter is None:
+          for value in values:
+              if value not in "".join(lines):
+                  errors.append(value)
+
+      elif isinstance(subdelimiter, str):
+          for value in values:
+              splitted_values = value.split(subdelimiter)
+          for splitted_value in splitted_values:
+             if splitted_value.replace('.','').replace('-','').isnumeric():
+                 if str(truncate(float(splitted_value), truncate_digits_to)) not in "".join(lines): 
+                     errors.append(value)
+             else:
+                 if splitted_value not in "".join(lines):
+                     errors.append(splitted_value)
+      else:
+          raise TypeError("Wrong subdelimiter type")
+
    return errors
 
 def test_gpcr(args=GPCR_ARGS):
     errors = []
     job = main.run_platform(args)
-    folder = job.pele_dir
-    errors = check_file(folder, "pele.conf", GPCR_VALUES, errors)
-    input_file = os.path.join(folder, "complex_processed.pdb")
+    errors = check_file(job.pele_dir, "pele.conf", GPCR_VALUES, errors)
+    input_file = os.path.join(job.inputs_dir, "complex_processed.pdb")
     if not os.path.exists(input_file):
         errors.append("skip_ppp")
     assert not errors

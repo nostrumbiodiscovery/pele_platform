@@ -1,0 +1,11 @@
+system: '../pele_platform/Examples/constraints/4qnr_prep.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+permissive_metal_constr: true
+induced_fit_fast: true
+test: true
+constrain_core: "[#6]-[#7]1-[#6]-[#6]-[#7+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+constrain_core_spring: 33.5
+traj: trajectory.xtc
+debug: true

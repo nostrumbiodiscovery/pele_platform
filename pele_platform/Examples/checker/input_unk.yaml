@@ -1,0 +1,6 @@
+system: '../pele_platform/Examples/gpcr/complex_unk.pdb'
+chain: 'Z'
+resname: 'UNK'
+site_finder: true
+test: true
+seed: 12345

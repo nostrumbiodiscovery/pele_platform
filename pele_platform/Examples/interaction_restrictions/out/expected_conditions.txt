@@ -1,0 +1,9 @@
+
+,
+
+"interactionRestrictions":
+[
+	"distance0 < 3",
+	"angle1 > 90",
+	"angle1 < 180"
+]

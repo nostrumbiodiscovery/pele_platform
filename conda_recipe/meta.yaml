@@ -28,18 +28,22 @@ requirements:
     - numpy
     - matplotlib
     - scipy
-    - pandas
+    - pandas==1.2.3
     - pytest
     - adaptive_pele
     - ploprottemp==1.0.1
     - pyyaml
-    - pppele==1.0.5
+    - pppele==1.0.6
     - fpdf
     - scikit-learn
     - rdkit
     - frag_pele==2.2.1
     - lib_prep
-
+    - peleffy
+    - drug_learning
+    - hdbscan==0.8.27
+    - mdtraj==1.9.5
+    - seaborn
 test:
   imports:
     - pele_platform

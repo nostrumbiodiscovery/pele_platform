@@ -1,29 +1,57 @@
 from dataclasses import dataclass
+from pele_platform.Errors.custom_errors import LigandNameNotSupported
 from difflib import SequenceMatcher
 import os
 import yaml
 import warnings
 
+
+def _yaml_error_wrapper(error):
+    """
+    Wraps YAML errors into a more human-friendly format, making customs suggestions about potential issues.
+    This should be expanded in the future when more issues get reported by the users.
+    """
+    custom_errors = {
+        "expected '<document start>', but found '<block mapping start>'": "Please ensure every key in input.yaml is "
+        "followed by a colon and "
+        "a space. There seem to be some issues on line {}, character {}.",
+        "found character '\\t' that cannot start any token": "Please remove any trailing tabs from input.yaml, there "
+        "seem to be one on line {}, character {}.",
+    }
+
+    custom = custom_errors.get(str(error.problem).strip(), None)
+
+    if custom:
+        line = error.problem_mark.line + 1
+        character = int(error.problem_mark.column) + 1
+        raise yaml.YAMLError(custom.format(line, character))
+    else:
+        raise error
+
+
 @dataclass
 class YamlParser(object):
-
     yamlfile: str
     valid_flags: dict
-
 
     def read(self) -> None:
         self.data = self._parse_yaml()
         self._check()
+        self._check_residue()
         self._parse()
+        self._get_value_from_env()
 
     def _parse_yaml(self) -> dict:
         # Retrieve raw info from yaml
-        with open(self.yamlfile, 'r') as stream:
+        with open(self.yamlfile, "r") as stream:
             try:
                 data = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                raise(exc)
+            except Exception as error:
+                _yaml_error_wrapper(error)
         return data
+
+    def _get_value_from_env(self):
+        self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
 
 
     def _check(self) -> None:
@@ -31,6 +59,13 @@ class YamlParser(object):
         for key in self.data.keys():
             if key not in self.valid_flags.values():
                 raise KeyError(self._recommend(key))
+
+    def _check_residue(self) -> None:
+        if "resname" in self.data.keys():
+            if self.data["resname"] == "UNK":
+                raise LigandNameNotSupported(
+                    "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
+                )
 
     def _recommend(self, key):
         most_similar_flag = None
@@ -40,12 +75,13 @@ class YamlParser(object):
             if not most_similar_flag:
                 most_similar_flag = flag
             else:
-                 if flag.distance > most_similar_flag.distance:
-                     most_similar_flag = flag
-        exception_raised = f"Incorrect flag {key}. Did you mean {most_similar_flag.name}?"
+                if flag.distance > most_similar_flag.distance:
+                    most_similar_flag = flag
+        exception_raised = (
+            f"Incorrect flag {key}. Did you mean {most_similar_flag.name}?"
+        )
         return exception_raised
-        
-    
+
     def _parse(self) -> None:
         # Parse fields in yaml file and set defaults
         valid_flags = self.valid_flags
@@ -117,7 +153,7 @@ class YamlParser(object):
         self.full = data.get(valid_flags["full"], None)
         self.proximityDetection = data.get(valid_flags["proximityDetection"], None)
         self.poses = data.get(valid_flags["poses"], None)
-        self.precision_glide = data.get(valid_flags["precision_glide"], None) 
+        self.precision_glide = data.get(valid_flags["precision_glide"], None)
         self.msm = data.get(valid_flags["msm"], None)
         self.precision = data.get(valid_flags["precision"], None)
         self.clust = data.get(valid_flags["clust"], None)
@@ -139,18 +175,23 @@ class YamlParser(object):
         self.water_constr = data.get(valid_flags["water_constr"], None)
         self.water_trials = data.get(valid_flags["water_trials"], None)
         self.water_radius = data.get(valid_flags["water_radius"], None)
-        self.induced_fit_exhaustive = data.get(valid_flags["induced_fit_exhaustive"], None)
+        self.induced_fit_exhaustive = data.get(
+            valid_flags["induced_fit_exhaustive"], None
+        )
         self.induced_fit_fast = data.get(valid_flags["induced_fit_fast"], None)
         self.frag = data.get(valid_flags["frag"], None)
-        self.ca_constr=data.get(valid_flags["ca_constr"], None)
-        self.one_exit=data.get(valid_flags["one_exit"], None)
-        self.box_type=data.get(valid_flags["box_type"], None)
+        self.ca_constr = data.get(valid_flags["ca_constr"], None)
+        self.ca_interval = data.get(valid_flags["ca_interval"], None)
+        self.constraint_level = data.get(valid_flags["constraint_level"], None)
+        self.terminal_constr = data.get(valid_flags["terminal_constr"], None)
+        self.one_exit = data.get(valid_flags["one_exit"], None)
+        self.box_type = data.get(valid_flags["box_type"], None)
         self.box_metric = data.get(valid_flags["box_metric"], None)
         self.time = data.get(valid_flags["time"], None)
         self.nosasa = data.get(valid_flags["nosasa"], None)
         self.sasa = data.get(valid_flags["sasa"], None)
         self.perc_sasa = data.get(valid_flags["perc_sasa"], None)
-        self.seed=data.get(valid_flags["seed"], None)
+        self.seed = data.get(valid_flags["seed"], None)
         self.pdb = data.get(valid_flags["pdb"], None)
         self.log = data.get(valid_flags["log"], None)
         self.nonrenum = data.get(valid_flags["nonrenum"], None)
@@ -164,7 +205,9 @@ class YamlParser(object):
         self.anm_displacement = data.get(valid_flags["anm_displacement"], None)
         self.anm_modes_change = data.get(valid_flags["anm_modes_change"], None)
         self.anm_num_of_modes = data.get(valid_flags["anm_num_of_modes"], None)
-        self.anm_relaxation_constr = data.get(valid_flags["anm_relaxation_constr"], None)
+        self.anm_relaxation_constr = data.get(
+            valid_flags["anm_relaxation_constr"], None
+        )
         self.remove_constraints = data.get(valid_flags["remove_constraints"], None)
         self.pca_traj = data.get(valid_flags["pca_traj"], None)
         self.perturbation = data.get(valid_flags["perturbation"], None)
@@ -173,7 +216,10 @@ class YamlParser(object):
         self.analyse = data.get(valid_flags["analyse"], None)
         self.selection_to_perturb = data.get(valid_flags["selection_to_perturb"], None)
         self.mae = data.get(valid_flags["mae"], None)
-        self.constrain_smiles = data.get(valid_flags["constrain_smiles"], None)
+        self.constrain_core = data.get(valid_flags["constrain_core"], None)
+        self.constrain_core_spring = data.get(
+            valid_flags["constrain_core_spring"], 50.0
+        )
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.spawning_condition = data.get(valid_flags["spawning_condition"], None)
         self.external_constraints = data.get(valid_flags["external_constraints"], [])
@@ -191,13 +237,16 @@ class YamlParser(object):
         self.water_empty_selector = data.get(valid_flags["water_empty_selector"], False)
         self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
         self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
+        self.interaction_restrictions = data.get(valid_flags["interaction_restrictions"], None)
 
         # Metal constraints
-        self.permissive_metal_constr = data.get(valid_flags["permissive_metal_constr"], False)
+        self.permissive_metal_constr = data.get(
+            valid_flags["permissive_metal_constr"], False
+        )
         self.constrain_all_metals = data.get(valid_flags["constrain_all_metals"], False)
         self.no_metal_constraints = data.get(valid_flags["no_metal_constraints"], False)
-        
-        #Frag
+
+        # Frag
         self.frag_run = data.get(valid_flags["frag_run"], True)
         self.frag_core = data.get(valid_flags["frag_core"], False)
         self.frag_input = data.get(valid_flags["frag_input"], False)
@@ -213,8 +262,11 @@ class YamlParser(object):
         self.frag_criteria = data.get(valid_flags["frag_criteria"], False)
         self.frag_output_folder = data.get(valid_flags["frag_output_folder"], False)
         self.frag_cluster_folder = data.get(valid_flags["frag_cluster_folder"], False)
+        self.frag_library = data.get(valid_flags["frag_library"], None)
+        self.frag_core_atom = data.get(valid_flags["frag_core_atom"], None)
+        self.analysis_to_point = data.get(valid_flags["analysis_to_point"], None)
 
-        #PPI
+        # PPI
         self.n_components = data.get(valid_flags["n_components"], None)
         self.ppi = data.get(valid_flags["ppi"], None)
         self.center_of_interface = data.get(valid_flags["center_of_interface"], None)
@@ -223,23 +275,35 @@ class YamlParser(object):
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
         self.n_waters = data.get(valid_flags["n_waters"], 0)
 
-        #Allosteric
-        self.allosteric = data.get(valid_flags["allosteric"], None)
+        # site_finder
+        self.site_finder = data.get(valid_flags["site_finder"], None)
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
 
-        #RNA
+        # RNA
         self.rna = data.get(valid_flags["rna"], None)
 
-        #GPCR
+        # GPCR
         self.gpcr_orth = data.get(valid_flags["gpcr_orth"], None)
         self.orthosteric_site = data.get(valid_flags["orthosteric_site"], None)
         self.initial_site = data.get(valid_flags["initial_site"], None)
 
-        #OUTIN
+        # OUTIN
         self.final_site = data.get(valid_flags["final_site"], None)
 
+        # Mutagenesis
+        self.saturated_mutagenesis = data.get(valid_flags["saturated_mutagenesis"], None)
+        self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
+
+        # Analysis
+        self.clustering_method = data.get(valid_flags["clustering_method"], None)
+        self.bandwidth = data.get(valid_flags["bandwidth"], None)
+        self.kde = data.get(valid_flags["kde"], None)
+        self.kde_structs = data.get(valid_flags["kde_structs"], None)
+
         if self.test:
-            warnings.warn("WARNING: This simulation is a test do not use the input files to run production simulations")
+            warnings.warn(
+                "WARNING: This simulation is a test do not use the input files to run production simulations"
+            )
             self.cpus = 5
             self.pele_steps = self.steps = 1
             self.iterations = 1
@@ -249,10 +313,11 @@ class YamlParser(object):
             self.n_components = 3
             self.temperature = self.temp = 10000
             self.n_components = 3
+            self.analysis_nclust = 4
+
 
 @dataclass
-class Most_Similar_Flag():
-
+class Most_Similar_Flag:
     name: str
 
     def calculate_distance(self, key):

@@ -1,16 +1,16 @@
 from dataclasses import dataclass
 import pele_platform.Adaptive.simulation as si
 import pele_platform.Utilities.Helpers.helpers as hp
-import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Errors.custom_errors as ce
 
 
 @dataclass
 class OutInLauncher():
 
-    args: pv.EnviroBuilder
+    args: pv.ParametersBuilder
 
-    def run_gpcr_simulation(self) -> pv.EnviroBuilder:
+    def run_gpcr_simulation(self) -> pv.ParametersBuilder:
         #Set parameters for gpcr and launch simulation
         self._check_mandatory_fields()
         self._set_parameters()

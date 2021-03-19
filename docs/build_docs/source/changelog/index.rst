@@ -3,6 +3,29 @@ Versions
 
 Here we report the main changes for each version.
 
+v1.6.0 beta
+==============
+
+- Interaction restrictions
+
+- HDBSCAN and mean shift clustering algorithms
+
+- Support for growing custom fragment libraries
+
+- Kernel density estimator plots
+
+- Constraints levels for alpha carbons
+
+- Changes to Monte Carlo parameters
+
+- Allosteric package renamed to site finder
+
+- Minor changes to folder structure
+
+- Better handling of YAML errors
+
+- Optimisation of coordinates parser and bugfixes
+
 v1.5.1
 ==========================
 
@@ -29,7 +52,7 @@ v1.5.0 (19/06/2020)
 
 - PPI package
 
-- Allosteric package
+- Site finder (pocket exploration) package
 
 - GPCR orthosteric package
 

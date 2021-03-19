@@ -2,8 +2,9 @@ from dataclasses import dataclass
 import os
 import AdaptivePELE.adaptiveSampling as ad
 from pele_platform.Utilities.Helpers import helpers, template_builder
-import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Utilities.Helpers.water as wt
+
 
 @dataclass
 class SimulationBuilder(template_builder.TemplateBuilder):
@@ -12,21 +13,28 @@ class SimulationBuilder(template_builder.TemplateBuilder):
     pele_file: str
     topology: str
 
-    def generate_inputs(self, env: pv.EnviroBuilder, water_obj: wt.WaterIncluder) -> None:
+    def generate_inputs(self, parameters, water_obj):
+        """
+        It generates the input files for Adaptive PELE, according to the
+        parameters previously generated.
+
+        Parameters
+        ----------
+        parameters : a Parameters object
+            The Parameters object containing the parameters for PELE
+        water_obj : a WaterIncluder object
+            The parameters for aquaPELE, if applicable
+        """
         # Fill in simulation template with 
         # simulation parameters specified in  
-        # pv.EnviroBuilder
-        env.logger.info("Running Simulation")
-        # Fill to time because we have flags inside flags
-        self.fill_pele_template(env, water_obj)
-        self.fill_pele_template(env, water_obj)
-        self.fill_adaptive_template(env)
-        self.fill_adaptive_template(env)
-        if not env.debug:
-            self.run()
-        env.logger.info("Simulation run successfully (:\n\n")
 
-    def fill_pele_template(self, env: pv.EnviroBuilder, water_obj: wt.WaterIncluder) -> None:
+        # Fill two times because we have flags inside flags
+        self.fill_pele_template(parameters, water_obj)
+        self.fill_pele_template(parameters, water_obj)
+        self.fill_adaptive_template(parameters)
+        self.fill_adaptive_template(parameters)
+
+    def fill_pele_template(self, env: pv.ParametersBuilder, water_obj: wt.WaterIncluder) -> None:
         # Fill in PELE template
         self.pele_keywords = { "PERTURBATION": env.perturbation, "SELECTION_TO_PERTURB": env.selection_to_perturb,
                         "BE": env.binding_energy, "SASA": env.sasa,
@@ -42,12 +50,12 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box, "PROXIMITY": env.proximityDetection, "WATER_FREQ": env.water_freq, "VERBOSE": env.verbose, "ANM_DISPLACEMENT": env.anm_displacement, "ANM_MODES_CHANGE": env.anm_modes_change, "ANM_DIRECTION": env.anm_direction, "ANM_MIX_MODES": env.anm_mix_modes, "ANM_PICKING_MODE": env.anm_picking_mode,
                         "ANM_NUM_OF_MODES": env.anm_num_of_modes, "ANM_RELAXATION_CONST": env.anm_relaxation_constr,
                         "PCA": env.pca, "COMPLEXES": env.complexes, "PELE_STEPS": env.frag_pele_steps, "OUTPUT_PATH": env.output_path,
-                        "COM": env.com, "STEERING": env.steering}
-
+                        "COM": env.com, "STEERING": env.steering, "MET_INTERACTION_RESTRICTIONS":env.met_interaction_restrictions,
+                        "INTERACTION_RESTRICTIONS": env.interaction_restrictions}
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
-    def fill_adaptive_template(self, env: pv.EnviroBuilder) -> None:
+    def fill_adaptive_template(self, env: pv.ParametersBuilder) -> None:
         # Fill in adaptive template
         self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.output, "INPUT":env.adap_ex_input,
                 "CPUS":env.cpus, "PELE_CFILE": os.path.basename(self.pele_file), "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,

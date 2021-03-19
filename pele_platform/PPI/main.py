@@ -1,21 +1,21 @@
 import os
 import glob
-from pele_platform.Allosteric.cluster import cluster_best_structures
+from pele_platform.site_finder.cluster import cluster_best_structures
 from pele_platform.PPI.simulation_launcher import launch_simulation
 from pele_platform.PPI.preparation import prepare_structure
-from pele_platform.Utilities.Helpers.helpers import cd, is_repited, is_last
-import pele_platform.Utilities.Parameters.pele_env as pv
+from pele_platform.Utilities.Helpers.helpers import cd, is_repeated, is_last
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Adaptive.simulation as si
 
 
-def run_ppi(parsed_yaml: dict) -> (pv.EnviroBuilder, pv.EnviroBuilder):
+def run_ppi(parsed_yaml: dict) -> (pv.ParametersBuilder, pv.ParametersBuilder):
 
 
     # Let user choose working folder
     original_dir = os.path.abspath(os.getcwd())
     working_folder = os.path.abspath("{}_Pele".format(parsed_yaml.residue))
     if not parsed_yaml.folder:
-        working_folder = is_repited(working_folder) if not parsed_yaml.adaptive_restart else is_last(working_folder)
+        working_folder = is_repeated(working_folder) if not parsed_yaml.adaptive_restart else is_last(working_folder)
     else:
         working_folder = os.path.abspath(parsed_yaml.folder)
 
