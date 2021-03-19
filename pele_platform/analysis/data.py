@@ -417,7 +417,7 @@ class DataHandler(object):
             # Remove first entry
             if self.skip_initial_structures:
                 residue_frames = residue_frames[1:]
-                trajectory_rows = trajectory_rows.query('Step!="0"')
+                trajectory_rows = trajectory_rows.query('Step!=0')
 
             # Save extracted data
             coordinates.extend(residue_frames.xyz * 10)
@@ -537,7 +537,7 @@ class DataHandler(object):
 
             # Remove first entry, if applicable
             if self.skip_initial_structures:
-                trajectory_rows = trajectory_rows.query('Step!="0"')
+                trajectory_rows = trajectory_rows.query('Step!=0')
 
             # Append the resulting entries to the new reordered dataframe
             reordered_dataframe = \

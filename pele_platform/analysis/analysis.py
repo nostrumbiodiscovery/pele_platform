@@ -294,17 +294,7 @@ class Analysis(object):
                              '\'HDBSCAN\', \'MeanShift\']')
 
         clusters = clustering.get_clusters(coordinates)
-        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
-        try:
-            clusters = clustering.get_clusters(coordinates)
-        except ValueError as e:
-            if self.parameters.test:
-                clusters = [1]
-            else:
-                raise e
-
-        clusters = clustering.get_clusters(coordinates)
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
         cluster_summary = self._analyze_clusters(clusters, dataframe,
                                                  rmsd_per_cluster, path)
