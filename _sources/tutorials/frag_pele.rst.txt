@@ -1,4 +1,4 @@
-FRAG_PELE
+Fragment growing tutorial
 ========================================
 
 `FragPELE <https://pubmed.ncbi.nlm.nih.gov/32027130/>`_  is a new tool for in silico hit-to-lead drug design, capable of growing a fragment from a bound core while exploring the protein-ligand conformational space.
