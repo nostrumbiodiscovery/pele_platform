@@ -334,9 +334,9 @@ class SimulationParams(
         )
         self.skip_refinement = args.skip_refinement if args.skip_refinement else False
         self.bandwidth = args.bandwidth if args.bandwidth else self.simulation_params.get(
-            "bandwidth", 5.0)
+            "bandwidth", 2.5)
         self.clustering_method = args.clustering_method if args.clustering_method else self.simulation_params.get(
-            "clustering_method", "GaussianMixture")
+            "clustering_method", "meanshift")
 
     def system_preparation_params(self, args):
         self.skip_prep = (
