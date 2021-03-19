@@ -398,9 +398,6 @@ class DataHandler(object):
         # Get trajectories from reports dataframe
         dataframe = self.get_reports_dataframe()
 
-        # Filter out entries with the highest energies
-        dataframe = self.remove_outliers_from_dataframe(dataframe)
-
         reordered_dataframe = pd.DataFrame()
         trajectories = list(set(dataframe[self._TRAJECTORY_LABEL]))
 
