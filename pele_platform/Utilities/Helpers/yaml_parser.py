@@ -53,6 +53,7 @@ class YamlParser(object):
     def _get_value_from_env(self):
         self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
 
+
     def _check(self) -> None:
         # Check if valids in yaml file are valids
         for key in self.data.keys():
@@ -236,6 +237,7 @@ class YamlParser(object):
         self.water_empty_selector = data.get(valid_flags["water_empty_selector"], False)
         self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
         self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
+        self.interaction_restrictions = data.get(valid_flags["interaction_restrictions"], None)
 
         # Metal constraints
         self.permissive_metal_constr = data.get(
@@ -292,12 +294,11 @@ class YamlParser(object):
         self.saturated_mutagenesis = data.get(valid_flags["saturated_mutagenesis"], None)
         self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
 
-        # Covalent docking
-        self.covalent_residue = data.get(valid_flags["covalent_residue"], None)
-        self.nonbonding_radius = data.get(valid_flags["nonbonding_radius"], None)
-        self.number_of_trials = data.get(valid_flags["number_of_trials"], None)
-        self.sidechain_gridres = data.get(valid_flags["sidechain_gridres"], None)
-        self.refinement_distance = data.get(valid_flags["refinement_distance"], None)
+        # Analysis
+        self.clustering_method = data.get(valid_flags["clustering_method"], None)
+        self.bandwidth = data.get(valid_flags["bandwidth"], None)
+        self.kde = data.get(valid_flags["kde"], None)
+        self.kde_structs = data.get(valid_flags["kde_structs"], None)
 
         if self.test:
             warnings.warn(
@@ -312,6 +313,7 @@ class YamlParser(object):
             self.n_components = 3
             self.temperature = self.temp = 10000
             self.n_components = 3
+            self.analysis_nclust = 4
 
 
 @dataclass

@@ -32,7 +32,7 @@ def check_substructure_match(ligand, ligand_core, core_atoms):
             continue
         if vocabulary[idx_atom_ligand] == idx_atom_core: # If indexes are correct - pass
             continue
-        else: # If indexes are incorrect - swap indexes
+        else:  # If indexes are incorrect - swap indexes
             core_atoms = list(core_atoms)
             core_atoms[idx_atom_ligand] = vocabulary[idx_atom_ligand]
     return core_atoms

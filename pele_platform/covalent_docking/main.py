@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import os
 
-from pele_platform.Utilities.Parameters import pele_env
+from pele_platform.Utilities.Parameters import parameters
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Adaptive import simulation
 from pele_platform.site_finder.cluster import cluster_best_structures
@@ -9,7 +9,7 @@ from pele_platform.site_finder.cluster import cluster_best_structures
 
 @dataclass
 class CovalentDocking:
-    env: pele_env.EnviroBuilder
+    env: parameters.Parameters
     original_dir: str = os.path.abspath(os.getcwd())
 
     def run(self):

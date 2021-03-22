@@ -1,165 +1,33 @@
-Input flags documentation
+Optative flags
 ###########################
 
-Compulsory flags PELE
---------------------------------
+Optional flags for each package:
 
-- **system**: Path to the input pdb file cointaining ligand and receptor in your desired initial conformation (except for a global exploration)
+    - `All packages <all_packages/index.html>`_
+    - `Protein-Protein Inhibitors <ppi/index.html>`_
+    - `Pocket Exploration (Allosteric) <pocket_exploration/index.html>`_
+    - `HT-Fragment Growing <frag/index.html>`_
+    - `AquaPELE (water perturbation) <water/index.html>`_
 
- 
-- **residue**: Residue name of the ligand to be perturbed
+.. toctree::
+   all_packages/index.rst
+   :hidden:
 
+.. toctree::
+   ppi/index.rst
+   :hidden:
 
-- **chain**: Chain of the ligand to be perturbed
+.. toctree::
+   pocket_exploration/index.rst
+   :hidden:
 
+.. toctree::
+   frag/index.rst
+   :hidden:
 
-- **cpus**: Cpus to use
-
-..  code-block:: yaml
-
-    system: "/home/daniel/PR_complex.pdb"
-    residue: "LIG"
-    chain: "L"
-    cpus: 200
-
-
-Compulsory flags FragPele
------------------------------
-
-Frag PELE grows an atom onto a core in N growing steps while moving protein and ligand.
-Afterwards a final sampling simulation is run to fully explore the ligand-protein conformational space.
-
-- **frag_core**: Core of the molecule we want to add fragments to. Required parameter
-
-- **Method to use**: Choose on of the available methos. For more please refer here.
-
-- **resname**: Residue name of the frag_core ligand
-
-- **cpus**: Cpus to use. Default=48
-
-..  code-block:: yaml
-
-    frag_core: "/home/daniel/PR_core.pdb"
-    frag_input: "/home/daniel/serie_file.conf"
-    frag_core: "LIG"
-    cpus: 48
-
-
-Optative flags
-----------------------------
-
-
-General settings
-====================
-
-Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).
-
-- **test**: Run a quick test to check the simulation works (~2 min). **Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to make simulation faster!!!!**
- 
-- **usesrun**: Use srun binary to run PELE. Only when using intel processors.
-
-- **pele_exec**: Use a pele executable that is not the default one. **Needs to be used with pele_data and pele_documents**. default: $PELE/bin/Pele_mpi
-
-- **pele_data**: Use a pele data folder that is not the default one. default: $PELE/Data
-
-- **pele_documents**: Use a pele documents folder that is not the default one. default: $PELE/Documents 
-
-- **pele_license**: Use a pele_license path that is not the default one. default: $PELE/licenses
-
-- **schrodinger**: Use a schrodinger path that is not the default one. default: $SCHRODINGER
-
-..  code-block:: yaml
-
-
-  test: true
-  usesrun: false
-  pele_exec: "/home/pele/bin/Pele_mpi"
-  pele_data: "/home/pele/Data/"
-  pele_documents: "/home/pele/Documents/"
-  pele_license: "/home/pele/licenses"
-  schrodinger: "/home/pele/schrodinger2020-1/"
-
-
-Receptor preparation
-=======================
-
-Configure the parameters of the PPP (Protein Pele Preparation)
-
-- **skip_preprocess**: Skip protein pele preparation. Default: False
-
-- **noTERs**: Don't include TERs on preparation. Used if PPP gets confuse with insertion codes or other. Default: False
-
-- **charge_ters**: Charge terminals of the protein. Default: False
-
-- **nonstandard**: List of names of nonstandard residues that will be omitted in protein pele preparation. Default=[]
-
-- **prepwizard**: Run Prepwizard (Still on testing version). Default: False
-
-..  code-block:: yaml
-
-  preprocess_receptor: true
-  noTERs: false
-  charge_ters: false
-  nonstandard:
-    - TPO
-  prepwizard: false
-
-PCA
-++++++
-
-This algorithm calculates the PCA of a pdb trajectory (minimum of 3 snapshots) and includes the movement into the simulation.
-
-- **pca_traj**: Pdb snapshots to build the PCA on. Default = []
- 
-
-..  code-block:: yaml
-
-    pca_traj: #Example1
-    - "pele_platform/Examples/pca/1.pdb"
-    - "pele_platform/Examples/pca/2.pdb"
-    - "pele_platform/Examples/pca/3.pdb"
-    pca_traj: #Example2
-    - "pele_platform/Examples/pca/*.pdb"
-    remove_constraints: true #When running PCA remove contraints on carbon-alphas
-
-
-Ligand preparation
-======================
-
-Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.
-
-- **gridres**: Resolution of the rotamers when sampling. Default: 10 degrees
-
-- **core**: Atomnumber of the atom that will be included as part of the rigid core. Default=None
-
-- **maxtorsion**: Maximum number of rotamers per flexible sidechain. Default: 4
-
-- **n**: Maximum number of flexible sidechains in a molecule, Default: None
-
-- **mae_lig**: Mae file to extract the cuantum charges from. Default: None
-
-- **template**: External forcefield templaters
-
-- **rotamers**: External rotamer libraries
-
-- **skip_ligand_prep**: Skip preparation of that resiude. This could be usefull to bypass problems with PlopRotTemp when creating the ligand parameters.
-
-
-..  code-block:: yaml
-
-  gridres: 10
-  core: -1
-  maxtorsion: 4
-  n: 5
-  mae_lig: "/home/dsoler/lig.mae"
-  templates:
-    - "/home/dsoler/mgz"
-    - "/home/dsoler/ligz"
-  rotamers:
-    - "/home/dsoler/MG.rot.assign"
-    - "/home/dsoler/LIG.rot.assign"
-  skip_ligand_prep:
-    - "LIG"
+.. toctree::
+   water/index.rst
+   :hidden:
 
 Box parameters
 =================
@@ -404,18 +272,9 @@ Algorithm to automatically set metal constraints around the ligand.
     constrain_all_metals: true
     external_constraints:
         - "50-2.34-A:1:H-L:1:MG" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
-
-
-Core constraints
-+++++++++++++++++++++
-
-You can constrain the core of your ligand by specifying either SMILES or SMARTS pattern using ``constrain_core`` flag.
-The default spring constant is 50 but you can choose your own.
-
-..  code-block:: yaml
-
     constrain_core: "CN(C)C(=O)c1ccc(F)cc1"  # SMILES or SMARTS pattern
     constrain_core_spring: 30  # optional, default 50.0
+
 
 WaterPerturbation
 ======================
@@ -448,6 +307,34 @@ WaterPerturbation
     water_temp: 2000
     water_overlap: 0.5
 
+Interaction restrictions
+=========================
+
+Interaction restrictions allow for biased exploration, where the simulation results are limited to those that fit the specified conditions.
+
+Users can define two types of conditions using the atom strings (format "chain:resnum:atomname", e.g. A:2:CA) to select the atoms:
+
+- **distance**: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.
+
+- **angle**: Angle between three atoms with a user-defined maximum, minimum or both.
+
+
+..  code-block:: yaml
+
+    interaction_restrictions:
+    - distance:  # distance between the two atoms will not exceed 3 A
+        max: 3
+      atoms:
+        - "A:318:OG1"   # chain A, residue number 318, atom OG1
+        - "Z:201:O3"
+    - angle:  # angle between those three atoms will remain betwenn 90 and 180 degrees
+        min: 90
+        max: 180
+      atoms:
+        - "A:318:OG1"
+        - "A:318:HG1"
+        - "Z:201:O3"
+
 
 Metrics
 =============
@@ -479,7 +366,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **only_analysis**: Analyse PELE simulation without running it.
 
-- **analysis_nclust**: Numbers of clusters out of the simulation. Default: 10
+- **analysis_nclust**: Numbers of clusters out of the simulation, if using the standard clustering method. Default: 10
 
 - **be_column**: Column of the binding energy in the reports starting by 1. Default: 5
 
@@ -491,6 +378,10 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
 
+- **clustering_method**: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to ``MeanShift`` or ``HDBSCAN``.
+
+- **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
+
 ..  code-block:: yaml
 
     only_analysis: true
@@ -498,6 +389,11 @@ Run a post simulation analysis to extract plots, top poses and clusters.
     te_column: 4
     limit_column: 6
     mae: true
+    clustering_method: "meanshift"
+    bandwidth: 7.0
+
+The bandwidth parameter hugely influences the clustering results, therefore, it might be worth trying out different values depending on your system.
+In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD allowed within the cluster, whereas in HDBSCAN to distances between your data points.
 
 Output
 ==========

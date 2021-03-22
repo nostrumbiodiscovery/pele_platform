@@ -29,7 +29,7 @@ def test_site_finder_pdb():
         os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")
     )
     nfiles_refinement = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/*.pdb"))
+        glob.glob(os.path.join(job2.pele_dir, "results/top_poses/*.pdb"))
     )
     best_energy_input = os.path.join(
         os.path.dirname(job.pele_dir),
@@ -56,11 +56,11 @@ def test_site_finder_xtc():
         os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb")
     )
     nfiles_refinement = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/*.pdb"))
+        glob.glob(os.path.join(job2.pele_dir, "results/top_poses/*.pdb"))
     )
 
-    # checking if all temporary BestStructs (needed to select refinement input) were removed
-    temp_bs_dir = os.path.join(job.pele_dir, job.output, "BestStructs")
+    # checking if all temporary top_poses (needed to select refinement input) were removed
+    temp_bs_dir = os.path.join(job.pele_dir, job.output, "top_poses")
 
     # test
     assert best_energy_input in refinement_input
@@ -85,7 +85,7 @@ def test_site_finder_restart():
         glob.glob(os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb"))
     )
     nfiles_refinement = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/BestStructs/*.pdb"))
+        glob.glob(os.path.join(job2.pele_dir, "results/top_poses/*.pdb"))
     )
     # test
     assert nfiles == job.n_components

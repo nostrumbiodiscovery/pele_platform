@@ -1,0 +1,27 @@
+
+                     {
+                     "type":"com_distance",
+                     "tag":"distance0",
+                     "selection_group_1":{
+                     "atoms": { "ids":["A:318:_OG1"]}
+                     },
+                     "selection_group_2":{
+                     "atoms": { "ids":["Z:201:_O3_"]}
+                     }
+                     },
+                     
+
+                     {
+                     "type":"atomsAngle",
+                     "tag":"angle1",
+                     "selection_group_1":{
+                     "atoms": { "ids":["A:318:_OG1"]}
+                     },
+                     "selection_group_2":{
+                     "atoms": { "ids":["A:318:_HG1"]}
+                     },
+                     "selection_group_3":{
+                     "atoms": { "ids":["Z:201:_O3_"]}
+                     }
+                     },
+                     

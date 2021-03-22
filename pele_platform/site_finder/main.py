@@ -6,16 +6,16 @@ import shutil
 
 from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Utilities.Helpers.helpers import cd, is_repeated, is_last, parallelize
-from pele_platform.Analysis.plots import _extract_coords
-import pele_platform.Utilities.Parameters.pele_env as pv
+from pele_platform.analysis.plot import _extract_coords
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Adaptive.simulation as si
 
 
 @dataclass
 class SiteFinderLauncher:
-    args: pv.EnviroBuilder
+    args: pv.ParametersBuilder
 
-    def run_site_finder(self) -> (pv.EnviroBuilder, pv.EnviroBuilder):
+    def run_site_finder(self) -> (pv.ParametersBuilder, pv.ParametersBuilder):
         """
         Launch site_finder simulation.
         1) Run global exploration to identify the most important pockets

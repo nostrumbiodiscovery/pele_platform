@@ -1,0 +1,21 @@
+system: '../pele_platform/Examples/interaction_restrictions/complex.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+cpus: 5
+interaction_restrictions:
+- distance:
+    max: 3
+  atoms:
+    - "A:318:OG1"
+    - "Z:201:O3"
+  angle:
+    min: 90
+    atoms:
+      - "A:318:OG1"
+      - "A:318:HG1"
+      - "Z:201:O3"
+  other:
+    max: 8
+debug: true
+skip_preprocess: true

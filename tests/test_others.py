@@ -1,10 +1,12 @@
 import os
 import pytest
 from subprocess import Popen, PIPE
+import glob
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
 from . import test_adaptive as tk
+import pytest
 import pele_platform.Utilities.Helpers.protein_wizard as pp
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
@@ -17,10 +19,26 @@ EXTERNAL_CONSTR_ARGS = os.path.join(
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
 ATOM_GPCR_ERROR_ARGS = os.path.join(test_path, "gpcr/input_atom_error.yaml")
+MAP_ARGS = os.path.join(test_path, "checker/input_map_atom_str.yaml")
+
+MAPPED = ['atoms": { "ids":["Z:1:_C13"]}']
 
 EXT_CONSTR = [
     '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_H__" },',
     '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"}',
+]
+
+SMILES_CONSTR = [
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C7_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N1_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C1_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C2_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N2_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C3_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',
+        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },',
 ]
 
 SMILES_CONSTR = [
@@ -36,7 +54,6 @@ SMILES_CONSTR = [
     '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },',
 ]
 
-  
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
     job = main.run_platform(ext_args)
@@ -177,17 +194,6 @@ def test_env_variable(ext_args=ENV_ARGS):
     assert False
 
 
-def test_python_version_error(args=ENV_ARGS):
-    p = Popen(
-        "/usr/bin/python -m pele_platform.main -h".split(), stdout=PIPE, stderr=PIPE
-    )
-    output, error = p.communicate()
-    if "OldPythonVersion" in error.decode():
-        assert True
-        return
-    assert False
-
-
 def test_flag_similarity():
     yaml = os.path.join(test_path, "checker/input.yaml")
     try:
@@ -243,7 +249,6 @@ def test_rotamer_error(yaml=yaml):
 
 yaml = os.path.join(test_path, "out_in/input_flag_error.yaml")
 
-
 def test_out_in_flag(yaml=yaml):
     try:
         job = main.run_platform(yaml)
@@ -256,7 +261,6 @@ def test_out_in_flag(yaml=yaml):
 
 
 yaml = os.path.join(test_path, "checker/input_atom_string.yaml")
-
 
 def test_atom_string_error(yaml=yaml):
     try:

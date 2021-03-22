@@ -175,13 +175,6 @@ def retrieve_software_settings(args, pele_dir):
                 "params": pcs.OUT_IN,
                 "box_radius": 30,
             },
-            "covalent_docking": {
-                "steric_trials": 20,
-                "overlap_factor": 0.6,
-                "anm_freq": 5,
-                "sidechain_freq": 1,
-                "min_freq": 1,
-            }
         },
     }
 
@@ -202,8 +195,6 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "out_in"
     elif args.gpcr_orth:
         type_simulation = "gpcr_orth"
-    elif args.covalent_residue:
-        type_simulation = "covalent_docking"
     else:
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"

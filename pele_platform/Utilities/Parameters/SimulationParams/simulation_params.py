@@ -1,7 +1,6 @@
 import random
 import os
 import glob
-from string import Template
 
 import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
@@ -23,8 +22,9 @@ class SimulationParams(
     inout_params.InOutParams,
     pca.PCAParams,
     site_finder.SiteFinderParams,
-    ppi.PPIParams,
+    ppi.PPIParams
 ):
+
     def __init__(self, args):
         self.simulation_type(args)
         self.main_pele_params(args)
@@ -38,7 +38,6 @@ class SimulationParams(
         self.output_params(args)
         self.analysis_params(args)
         self.constraints_params(args)
-        self.covalent_docking_params(args)
 
         # Create all simulation types (could be more efficient --> chnage in future)
         super().generate_msm_params(args)
@@ -51,9 +50,7 @@ class SimulationParams(
         # rna.RNAParams.__init__(self, args)
 
     def simulation_type(self, args):
-        self.adaptive = (
-            True if args.package in ["site_finder", "adaptive", "PPI"] else None
-        )
+        self.adaptive = True if args.package in ["site_finder", "adaptive", "PPI"] else None
         self.frag_pele = True if args.package == "frag" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
@@ -336,6 +333,10 @@ class SimulationParams(
             args.polarization_factor if args.polarization_factor else 2.0
         )
         self.skip_refinement = args.skip_refinement if args.skip_refinement else False
+        self.bandwidth = args.bandwidth if args.bandwidth else self.simulation_params.get(
+            "bandwidth", 2.5)
+        self.clustering_method = args.clustering_method if args.clustering_method else self.simulation_params.get(
+            "clustering_method", "meanshift")
 
     def system_preparation_params(self, args):
         self.skip_prep = (
@@ -399,11 +400,7 @@ class SimulationParams(
         self.forcefield = args.forcefield
         self.mae_lig = args.mae_lig
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
-        self.gridres = (
-            args.gridres
-            if args.gridres is not None
-            else self.simulation_params.get("gridres", 10)
-        )
+        self.gridres = args.gridres
 
     def water_params(self, args):
         self.water_temp = (
@@ -488,6 +485,8 @@ class SimulationParams(
         self.be_column = args.be_column
         self.te_column = args.te_column
         self.limit_column = args.limit_column
+        self.kde = args.kde if args.kde is not None else False
+        self.kde_structs = args.kde_structs if args.kde_structs else 1000
 
     def constraints_params(self, args):
         """
@@ -522,52 +521,3 @@ class SimulationParams(
                     flag, self.simulation_params.get(flag, defaults[flag])
                 )
             setattr(self, flag, flag_value)
-
-    def covalent_docking_params(self, args):
-        self.covalent_residue = args.covalent_residue if args.covalent_residue else None
-        self.sidechain_perturbation = (
-            "" if not args.covalent_residue else cs.SIDECHAIN_PERTURBATION
-        )
-        self.refinement_distance = (
-            args.refinement_distance
-            if args.refinement_distance is not None
-            else self.simulation_params.get("refinement_distance", None)
-        )
-
-        self.refinement_distance_template = '"refinementDistance": {},'.format(
-            self.refinement_distance) if self.refinement_distance is not None else ""
-
-        self.sidechain_gridres = (
-            args.sidechain_gridres
-            if args.sidechain_gridres is not None
-            else self.simulation_params.get("sidechain_gridres", 10)
-        )
-        self.nonbonding_radius = (
-            args.nonbonding_radius
-            if args.nonbonding_radius is not None
-            else self.simulation_params.get("nonbonding_radius", 20.0)
-        )
-        self.number_of_trials = (
-            args.number_of_trials
-            if args.number_of_trials is not None
-            else self.simulation_params.get("number_of_trials", 20)
-        )
-
-        if self.covalent_residue:
-            self.sasa = cs.SASA_COVALENT.format(self.covalent_residue)
-
-        self._fill_sidechain_template()
-
-    def _fill_sidechain_template(self):
-        """
-        Fills the template string for side chain perturbation.
-        """
-        variables = {"COVALENT_RESIDUE": self.covalent_residue,
-                     "OVERLAP": self.overlap_factor,
-                     "STERIC_TRIALS": self.steric_trials,
-                     "TRIALS": self.number_of_trials,
-                     "GRIDRES": self.sidechain_gridres,
-                     "REFINEMENT_DISTANCE": self.refinement_distance_template}
-
-        template = Template(str(self.sidechain_perturbation))
-        self.sidechain_perturbation = template.safe_substitute(variables)

@@ -21,8 +21,8 @@ RESTART = "true"
 CLUSTERS = 40
 PLATFORM_RESTART = "all"
 EQ_STEPS = 50
-GRIDRES = '10.0'
-NATIVE = '''
+GRIDRES = "10.0"
+NATIVE = """
                                    {{
        
                                       "type": "rmsd",
@@ -42,17 +42,17 @@ NATIVE = '''
                                    }},\n\
        
        
-            '''
+            """
 
-WATER_ENERGY = '''
+WATER_ENERGY = """
                             {{
                             "type": "bindingEnergy",\n\
                             "boundPartSelection": {{ "chains": {{ "names": ["{0}"] }} }},\n\
                             "tag": "water{0}"\n\
                             }},\n\
-                           '''
+                           """
 
-UNBINDING = '''
+UNBINDING = """
             "modeMovingBox" : "unbinding",
             "exitCondition" : {{
                 "type" : "metricMultipleTrajectories",
@@ -63,9 +63,9 @@ UNBINDING = '''
                        "numberTrajectories" : {}
             }}
             }},
-            '''
+            """
 
-DISTANCE_ATOMS = '''
+DISTANCE_ATOMS = """
                      {{
                      "type":"com_distance",
                      "tag":"distance{2}",
@@ -76,7 +76,8 @@ DISTANCE_ATOMS = '''
                      "atoms": {{ "ids":["{1}"]}}
                      }}
                      }},
-                     '''
+                     """
+
 
 LOCAL_NONBONDING_ENERGY = """
                      {{
@@ -86,16 +87,45 @@ LOCAL_NONBONDING_ENERGY = """
                       }},
 """
 
-BOX = '''
+DISTANCE_ATOMS_TAG = """
+                     {{
+                     "type":"com_distance",
+                     "tag":"{0}",
+                     "selection_group_1":{{
+                     "atoms": {{ "ids":["{1}"]}}
+                     }},
+                     "selection_group_2":{{
+                     "atoms": {{ "ids":["{2}"]}}
+                     }}
+                     }},
+                     """
+
+ANGLE_ATOMS_TAG = """
+                     {{
+                     "type":"atomsAngle",
+                     "tag":"{0}",
+                     "selection_group_1":{{
+                     "atoms": {{ "ids":["{1}"]}}
+                     }},
+                     "selection_group_2":{{
+                     "atoms": {{ "ids":["{2}"]}}
+                     }},
+                     "selection_group_3":{{
+                     "atoms": {{ "ids":["{3}"]}}
+                     }}
+                     }},
+                     """
+
+BOX = """
 
                 "Box": {{
                     "type": "sphericalBox",
                     "radius": {0},
                     "fixedCenter": {1}
                 }},
-'''
+"""
 
-WATER = '''
+WATER = """
          "WaterPerturbation":
          {{
              "watersToPerturb": {{ "links": {{ "ids": [ {} ] }} }},
@@ -109,9 +139,9 @@ WATER = '''
              }},
              "waterSites": {}
          }}, 
-'''
+"""
 
-PCA = '''"preloadedModesIn" : "{}",'''
+PCA = """"preloadedModesIn" : "{}","""
 
 SIDECHAIN_PERTURBATION = """
          "SideChainPerturbation":{
@@ -127,9 +157,11 @@ SIDECHAIN_PERTURBATION = """
                 },
 """
 
-SELECTION_TO_PERTURB = '"selectionToPerturb" : { "chains" : { "names" : [ "$CHAIN" ] } },'
+SELECTION_TO_PERTURB = (
+    '"selectionToPerturb" : { "chains" : { "names" : [ "$CHAIN" ] } },'
+)
 
-PERTURBATION = '''
+PERTURBATION = """
           "Perturbation": {
                 $BOX
                 "perturbationType":"naive",
@@ -142,16 +174,16 @@ PERTURBATION = '''
                 }   
                 
             },
-'''
-BE = '''
+"""
+BE = """
                         { "type": "bindingEnergy",
 
                            "boundPartSelection": { "chains": { "names": ["$CHAIN"] } }
 
                         },
-'''
+"""
 
-SASA = '''
+SASA = """
                         { "type": "sasa",
 
                            "tag": "sasaLig",
@@ -159,9 +191,9 @@ SASA = '''
                            "selection": { "chains": { "names": ["$CHAIN"] } }
 
                         },
-'''
+"""
 
-SASA_COVALENT = '''
+SASA_COVALENT = """
                         {{ "type": "sasa",
 
                            "tag": "sasaLig",
@@ -169,7 +201,17 @@ SASA_COVALENT = '''
                            "selection": {{ "links": {{ "ids": ["{}"] }} }}
 
                         }},
-'''
+"""
+
+INTERACTION_RESTRICTIONS = """
+,
+
+"interactionRestrictions":
+[
+	"{0}"
+]
+>>>>>>> devel
+"""
 
 LIGAND = '"ligandResname" : "$LIG_RES",'
 
@@ -180,25 +222,140 @@ water_H2 = "HETATM {}  2HW HOH {}{:>4}     {}  1.00  0.00           H\n"
 water = [water_O, water_H1, water_H2]
 
 # Amino acids
-AMINO_ACIDS = ["VAL", "ASN", "GLY", "LEU", "ILE",
-               "SER", "ASP", "LYS", "MET", "GLN",
-               "TRP", "ARG", "ALA", "THR", "PRO",
-               "PHE", "GLU", "HIS", "HIP", "TYR",
-               "CYS", "HID"]
+AMINO_ACIDS = [
+    "VAL",
+    "ASN",
+    "GLY",
+    "LEU",
+    "ILE",
+    "SER",
+    "ASP",
+    "LYS",
+    "MET",
+    "GLN",
+    "TRP",
+    "ARG",
+    "ALA",
+    "THR",
+    "PRO",
+    "PHE",
+    "GLU",
+    "HIS",
+    "HIP",
+    "TYR",
+    "CYS",
+    "HID",
+]
+
 
 # Nucleotides
 NUCLEOTIDES = ["G", "U", "A", "C"]
 
 # Metals
-metals = ['LI', 'BE', 'NA', 'MG', 'AL', 'K', 'CA', 'SC', 'TI', 'V', 'CR', 'MN', 'FE', 'CO', 'NI', 'CU', 'ZN', 'GA',
-          'RB', 'SR', 'Y', 'ZR', 'NB', 'MO', 'TC', 'RU', 'RH', 'PD', 'AG', 'CD', 'IN', 'SN', 'CS', 'BA', 'LA', 'CE',
-          'PR', 'ND', 'PM', 'SM', 'EU', 'GD', 'TB', 'DY', 'HO', 'ER', 'TM', 'YB', 'LU', 'HF', 'TA', 'W', 'RE', 'OS',
-          'IR', 'PT', 'AU', 'HG', 'TL', 'PB', 'BI', 'PO', 'FR', 'RA', 'AC', 'TH', 'PA', 'U', 'NP', 'PU', 'AM', 'CM',
-          'BK', 'CF', 'ES', 'FM', 'MD', 'NO', 'LR', 'RF', 'DB', 'SG', 'BH', 'HS', 'MT', 'DS', 'RG', 'CN', 'NH', 'FL',
-          'MC', 'LV']
+
+metals = [
+    "LI",
+    "BE",
+    "NA",
+    "MG",
+    "AL",
+    "K",
+    "CA",
+    "SC",
+    "TI",
+    "V",
+    "CR",
+    "MN",
+    "FE",
+    "CO",
+    "NI",
+    "CU",
+    "ZN",
+    "GA",
+    "RB",
+    "SR",
+    "Y",
+    "ZR",
+    "NB",
+    "MO",
+    "TC",
+    "RU",
+    "RH",
+    "PD",
+    "AG",
+    "CD",
+    "IN",
+    "SN",
+    "CS",
+    "BA",
+    "LA",
+    "CE",
+    "PR",
+    "ND",
+    "PM",
+    "SM",
+    "EU",
+    "GD",
+    "TB",
+    "DY",
+    "HO",
+    "ER",
+    "TM",
+    "YB",
+    "LU",
+    "HF",
+    "TA",
+    "W",
+    "RE",
+    "OS",
+    "IR",
+    "PT",
+    "AU",
+    "HG",
+    "TL",
+    "PB",
+    "BI",
+    "PO",
+    "FR",
+    "RA",
+    "AC",
+    "TH",
+    "PA",
+    "U",
+    "NP",
+    "PU",
+    "AM",
+    "CM",
+    "BK",
+    "CF",
+    "ES",
+    "FM",
+    "MD",
+    "NO",
+    "LR",
+    "RF",
+    "DB",
+    "SG",
+    "BH",
+    "HS",
+    "MT",
+    "DS",
+    "RG",
+    "CN",
+    "NH",
+    "FL",
+    "MC",
+    "LV",
+]
 
 # FLAGS WITH ATOM STRINGS
-atom_string_flags = ["atom_dist", "final_site", "orthosteric_site", "initial_site", "center_of_interface"]
+atom_string_flags = [
+    "atom_dist",
+    "final_site",
+    "orthosteric_site",
+    "initial_site",
+    "center_of_interface",
+]
 
 # TEMPLATE KEYWORDS
 # ------------------
@@ -208,7 +365,9 @@ GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
 # RESTARTS:
 # -----------
 
-FIRST_RESTART = ["all", ]
+FIRST_RESTART = [
+    "all",
+]
 SECOND_RESTART = ["all", "adaptive"]
 THIRD_RESTART = ["all", "adaptive", "pele"]
 FOURTH_RESTART = ["all", "adaptive", "pele", "msm"]
@@ -217,7 +376,9 @@ FOURTH_RESTART = ["all", "adaptive", "pele", "msm"]
 # -------
 
 DIR = os.path.dirname(os.path.dirname(__file__))
-ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py"))
+ADAPTIVE_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "Adaptive/clusterAdaptiveRun.py")
+)
 
 # MESSAGES & ERRORS
 # -----------------
@@ -225,7 +386,9 @@ ADAPTIVE_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "Adaptiv
 CLUSTER_ERROR = "Number of cpus ({}) must be bigger than clusters ({})"
 SYSTEM = "\n\t**Missing residues found {}\n\t**Gaps found {}\n\t**Metals found {}"
 
-constraint_levels = {0: {"ca_constr": 0.0, "terminal_constr": 0.0, "ca_interval": 0},
-                     1: {"ca_constr": 0.5, "terminal_constr": 5.0, "ca_interval": 10},
-                     2: {"ca_constr": 2.5, "terminal_constr": 5.0, "ca_interval": 8},
-                     3: {"ca_constr": 5.0, "terminal_constr": 5.0, "ca_interval": 5}}
+constraint_levels = {
+    0: {"ca_constr": 0.0, "terminal_constr": 0.0, "ca_interval": 0},
+    1: {"ca_constr": 0.5, "terminal_constr": 5.0, "ca_interval": 10},
+    2: {"ca_constr": 2.5, "terminal_constr": 5.0, "ca_interval": 8},
+    3: {"ca_constr": 5.0, "terminal_constr": 5.0, "ca_interval": 5},
+}

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Input flags documentation &mdash; pele platform 1.5.0 documentation</title>
+  <title>Optative flags &mdash; pele platform 1.5.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Developers: Add your own mode" href="../developers/index.html" />
+    <link rel="next" title="All PELE packages" href="all_packages/index.html" />
     <link rel="prev" title="Prepare your own biased simulation" href="../packages/bias/index.html" /> 
 </head>
 
@@ -91,31 +91,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Input flags documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#compulsory-flags-pele">Compulsory flags PELE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#compulsory-flags-fragpele">Compulsory flags FragPele</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#optative-flags">Optative flags</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#general-settings">General settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#receptor-preparation">Receptor preparation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#pca">PCA</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">Ligand preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#box-parameters">Box parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#simulation-params">Simulation params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pele-params">PELE params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fragpele-params">FragPELE params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ppi-params">PPI params</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#metal-constraints">Metal constraints</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#waterperturbation">WaterPerturbation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
-</ul>
-</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Optative flags</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="all_packages/index.html">All PELE packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppi/index.html">PPI parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pocket_exploration/index.html">Allosteric parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frag/index.html">FragPELE parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="water/index.html">Water perturbation</a></li>
 </ul>
 </li>
 </ul>
@@ -169,7 +150,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Input flags documentation</li>
+      <li>Optative flags</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -188,379 +169,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="input-flags-documentation">
-<h1>Input flags documentation<a class="headerlink" href="#input-flags-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="compulsory-flags-pele">
-<h2>Compulsory flags PELE<a class="headerlink" href="#compulsory-flags-pele" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><strong>system</strong>: Path to the input pdb file cointaining ligand and receptor in your desired initial conformation (except for a global exploration)</p></li>
-<li><p><strong>residue</strong>: Residue name of the ligand to be perturbed</p></li>
-<li><p><strong>chain</strong>: Chain of the ligand to be perturbed</p></li>
-<li><p><strong>cpus</strong>: Cpus to use</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_complex.pdb&quot;</span>
-<span class="nt">residue</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="compulsory-flags-fragpele">
-<h2>Compulsory flags FragPele<a class="headerlink" href="#compulsory-flags-fragpele" title="Permalink to this headline">¶</a></h2>
-<p>Frag PELE grows an atom onto a core in N growing steps while moving protein and ligand.
-Afterwards a final sampling simulation is run to fully explore the ligand-protein conformational space.</p>
-<ul class="simple">
-<li><p><strong>frag_core</strong>: Core of the molecule we want to add fragments to. Required parameter</p></li>
-<li><p><strong>Method to use</strong>: Choose on of the available methos. For more please refer here.</p></li>
-<li><p><strong>resname</strong>: Residue name of the frag_core ligand</p></li>
-<li><p><strong>cpus</strong>: Cpus to use. Default=48</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;/home/daniel/PR_core.pdb&quot;</span>
-<span class="nt">frag_input</span><span class="p">:</span> <span class="s">&quot;/home/daniel/serie_file.conf&quot;</span>
-<span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="optative-flags">
-<h2>Optative flags<a class="headerlink" href="#optative-flags" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="general-settings">
-<h3>General settings<a class="headerlink" href="#general-settings" title="Permalink to this headline">¶</a></h3>
-<p>Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).</p>
-<ul class="simple">
-<li><p><strong>test</strong>: Run a quick test to check the simulation works (~2 min). <strong>Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to make simulation faster!!!!</strong></p></li>
-<li><p><strong>usesrun</strong>: Use srun binary to run PELE. Only when using intel processors.</p></li>
-<li><p><strong>pele_exec</strong>: Use a pele executable that is not the default one. <strong>Needs to be used with pele_data and pele_documents</strong>. default: $PELE/bin/Pele_mpi</p></li>
-<li><p><strong>pele_data</strong>: Use a pele data folder that is not the default one. default: $PELE/Data</p></li>
-<li><p><strong>pele_documents</strong>: Use a pele documents folder that is not the default one. default: $PELE/Documents</p></li>
-<li><p><strong>pele_license</strong>: Use a pele_license path that is not the default one. default: $PELE/licenses</p></li>
-<li><p><strong>schrodinger</strong>: Use a schrodinger path that is not the default one. default: $SCHRODINGER</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">usesrun</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">pele_exec</span><span class="p">:</span> <span class="s">&quot;/home/pele/bin/Pele_mpi&quot;</span>
-<span class="nt">pele_data</span><span class="p">:</span> <span class="s">&quot;/home/pele/Data/&quot;</span>
-<span class="nt">pele_documents</span><span class="p">:</span> <span class="s">&quot;/home/pele/Documents/&quot;</span>
-<span class="nt">pele_license</span><span class="p">:</span> <span class="s">&quot;/home/pele/licenses&quot;</span>
-<span class="nt">schrodinger</span><span class="p">:</span> <span class="s">&quot;/home/pele/schrodinger2020-1/&quot;</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="receptor-preparation">
-<h3>Receptor preparation<a class="headerlink" href="#receptor-preparation" title="Permalink to this headline">¶</a></h3>
-<p>Configure the parameters of the PPP (Protein Pele Preparation)</p>
-<ul class="simple">
-<li><p><strong>skip_preprocess</strong>: Skip protein pele preparation. Default: False</p></li>
-<li><p><strong>noTERs</strong>: Don’t include TERs on preparation. Used if PPP gets confuse with insertion codes or other. Default: False</p></li>
-<li><p><strong>charge_ters</strong>: Charge terminals of the protein. Default: False</p></li>
-<li><p><strong>nonstandard</strong>: List of names of nonstandard residues that will be omitted in protein pele preparation. Default=[]</p></li>
-<li><p><strong>prepwizard</strong>: Run Prepwizard (Still on testing version). Default: False</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">preprocess_receptor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">noTERs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">charge_ters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">nonstandard</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">TPO</span>
-<span class="nt">prepwizard</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-</pre></div>
-</div>
-<div class="section" id="pca">
-<h4>PCA<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h4>
-<p>This algorithm calculates the PCA of a pdb trajectory (minimum of 3 snapshots) and includes the movement into the simulation.</p>
-<ul class="simple">
-<li><p><strong>pca_traj</strong>: Pdb snapshots to build the PCA on. Default = []</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pca_traj</span><span class="p">:</span> <span class="c1">#Example1</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/1.pdb&quot;</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/2.pdb&quot;</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/3.pdb&quot;</span>
-<span class="nt">pca_traj</span><span class="p">:</span> <span class="c1">#Example2</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;pele_platform/Examples/pca/*.pdb&quot;</span>
-<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1">#When running PCA remove contraints on carbon-alphas</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="ligand-preparation">
-<h3>Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h3>
-<p>Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.</p>
-<ul class="simple">
-<li><p><strong>gridres</strong>: Resolution of the rotamers when sampling. Default: 10 degrees</p></li>
-<li><p><strong>core</strong>: Atomnumber of the atom that will be included as part of the rigid core. Default=None</p></li>
-<li><p><strong>maxtorsion</strong>: Maximum number of rotamers per flexible sidechain. Default: 4</p></li>
-<li><p><strong>n</strong>: Maximum number of flexible sidechains in a molecule, Default: None</p></li>
-<li><p><strong>mae_lig</strong>: Mae file to extract the cuantum charges from. Default: None</p></li>
-<li><p><strong>template</strong>: External forcefield templaters</p></li>
-<li><p><strong>rotamers</strong>: External rotamer libraries</p></li>
-<li><p><strong>skip_ligand_prep</strong>: Skip preparation of that resiude. This could be usefull to bypass problems with PlopRotTemp when creating the ligand parameters.</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">gridres</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">core</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">-1</span>
-<span class="nt">maxtorsion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
-<span class="nt">n</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="nt">mae_lig</span><span class="p">:</span> <span class="s">&quot;/home/dsoler/lig.mae&quot;</span>
-<span class="nt">templates</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/mgz&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/ligz&quot;</span>
-<span class="nt">rotamers</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/MG.rot.assign&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/LIG.rot.assign&quot;</span>
-<span class="nt">skip_ligand_prep</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;LIG&quot;</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="box-parameters">
-<h3>Box parameters<a class="headerlink" href="#box-parameters" title="Permalink to this headline">¶</a></h3>
-<p>Parameters to set the exploration Box:</p>
-<ul class="simple">
-<li><p><strong>box_radius</strong>: Radius of the box. Default=[induced_fit (10), local_exploration (30), global_exploration (50)]</p></li>
-<li><p><strong>box_center</strong>: Center of the box. Default=[indeuced_fit&amp;local_exploration (CM of the ligand), global (calculater center)]</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">box_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">box_center</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="simulation-params">
-<h3>Simulation params<a class="headerlink" href="#simulation-params" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><strong>seed</strong>: Seed of the job for reproducibility. Default=12345</p></li>
-<li><p><strong>log</strong>: Retrieve PELE logfiles during simulation. Default=False</p></li>
-<li><p><strong>verbose</strong>: Set to true to activate verbose mode in PELE. DEfault=False</p></li>
-<li><p><strong>anm_freq</strong>: Every how many steps to perform anm. Default=4</p></li>
-<li><p><strong>anm_displacement</strong>: Angstrom to displace carbon alphas in each ANM movement. Default=0.75</p></li>
-<li><p><strong>anm_modes_change</strong>: Number of steps before we change to a new normal mode movement. Default=4</p></li>
-<li><p><strong>sidechain_freq</strong>: Every how many steps to perform sidechain sampling. Default=2</p></li>
-<li><p><strong>min_freq</strong>: Every how many steps to perform minimization. Default=1</p></li>
-<li><p><strong>water_freq</strong>: Every how many steps to perform water perturbation. Default=1</p></li>
-<li><p><strong>temperature</strong>: Temperature of the simulation. Default=1500</p></li>
-<li><p><strong>solvent</strong>: Solvent of the simulation. (OBC or VDGBNP). Default=VDGBNP</p></li>
-<li><p><strong>sidechain_res</strong>: Receptor sidechain resolution. Default=10</p></li>
-<li><p><strong>overlap_factor</strong>: Vanderwals overlap factor (More in PELE docs). Default=0.65</p></li>
-<li><p><strong>steric_trials</strong>: Number of steric trials (More in PELE docs). Default=250</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">312312</span>
-<span class="nt">log</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">verbose</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">anm_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
-<span class="nt">anm_displacement</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<span class="nt">anm_modes_change</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
-<span class="nt">sidechain_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="nt">min_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="nt">water_freq</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
-<span class="nt">temperature</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1500</span>
-<span class="nt">solvent</span><span class="p">:</span> <span class="s">&quot;VDGBNP&quot;</span>
-<span class="nt">sidechain_res</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">overlap_factor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.65</span>
-<span class="nt">steric_trials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">250</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="pele-params">
-<h3>PELE params<a class="headerlink" href="#pele-params" title="Permalink to this headline">¶</a></h3>
-<p><strong>These flags are exclusive of the PELE modes not fragPELE</strong></p>
-<ul class="simple">
-<li><p><strong>iterations</strong>: Adaptive epochs to run. Set to 1 by default if using PELE</p></li>
-<li><p><strong>steps</strong>: Pele steps in each iteration</p></li>
-<li><p><strong>debug</strong>: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)</p></li>
-<li><p><strong>spawning</strong>: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional</p></li>
-<li><p><strong>density</strong>: Density type ([null, exitContinuous…]. More in AdaptivePELE docs). Default: null</p></li>
-<li><p><strong>cluster_values</strong>: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type</p></li>
-<li><p><strong>cluster_conditions</strong>: Clusterization condition. More in AdaptivePELE. Default: Depending on simulation type</p></li>
-<li><p><strong>equilibration</strong>: Whether to run initial equilibration or not. Default: false</p></li>
-<li><p><strong>equilibration_steps</strong>: Equilibration steps. Default: 2</p></li>
-<li><p><strong>adaptive_restart</strong>: Use adaptive restart with the working folder option to restart the simulation. Default: false</p></li>
-<li><p><strong>report</strong>: Change the name of the report file. Default: report</p></li>
-<li><p><strong>traj</strong>: Change the name of the trajectory file. Default: trajectory.pdb</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
-<span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">spawning</span><span class="p">:</span> <span class="s">&quot;epsilon&quot;</span>
-<span class="nt">density</span><span class="p">:</span> <span class="s">&quot;exitContinuous&quot;</span>
-<span class="nt">cluster_values</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="nv">3</span><span class="p p-Indicator">,</span><span class="nv">4</span><span class="p p-Indicator">]</span>
-<span class="nt">cluster_conditions</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">0.8</span><span class="p p-Indicator">,</span> <span class="nv">0.6</span><span class="p p-Indicator">,</span> <span class="nv">0.2</span><span class="p p-Indicator">]</span>
-<span class="nt">equilibration</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class="nt">equilibration_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">adaptive_restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;folder_to_restart&quot;</span>
-<span class="nt">report</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">report</span>
-<span class="nt">traj</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trajectory.xtc</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="fragpele-params">
-<h3>FragPELE params<a class="headerlink" href="#fragpele-params" title="Permalink to this headline">¶</a></h3>
-<p><strong>These flags are exclusive of the FragPele modes not PELE</strong></p>
-<ul class="simple">
-<li><p><strong>growing_steps</strong>: Number of steps to grow the fragment with.</p></li>
-<li><p><strong>steps_in_gs</strong>: Number of pele steps within each growing step</p></li>
-<li><p><strong>sampling_steps</strong>: Number of pele steps in the final sampling simulation</p></li>
-<li><p><strong>protocol</strong>: Type of protocol. options = [HT, ES]. For more info please refere here.</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">growing_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
-<span class="nt">steps_in_gs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
-<span class="nt">sampling_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="nt">protocol</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">HT</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">24</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="ppi-params">
-<h3>PPI params<a class="headerlink" href="#ppi-params" title="Permalink to this headline">¶</a></h3>
-<p><strong>These flags are exclusive of the ppi: true mode</strong></p>
-<ul class="simple">
-<li><p>n_components: Number of clusters after global exploration. In other words, number of inputs for the refinment exploration after the global simulation. Default: 10</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">n_components</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="constraints">
-<h3>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h3>
-<p>This section allows the user to change the constraint values.</p>
-<ul class="simple">
-<li><p><strong>ca_constr</strong>: Carbon alpha constraints. Default=0.5</p></li>
-<li><p><strong>interval_constr</strong>: Every how many carbon alphas to apply the constraints. Default:10</p></li>
-<li><p><strong>water_constr</strong>: Water constraints. Default=5</p></li>
-<li><p><strong>constrain_smiles</strong>: SMILES string to indicate what part of the molecule to constrain. Default=None</p></li>
-<li><p><strong>smiles_constr</strong>: Numeric value of the SMILES constraints. Default=10</p></li>
-<li><p><strong>external_constraints</strong>: You can specify 2 types of constraints. Positional constraints or atom-atom constraint. (Example below)</p>
-<ul>
-<li><dl class="simple">
-<dt>The positional constraints are given either by:</dt><dd><ul>
-<li><p>springConstant-atomnumber. i.e. “10-17”</p></li>
-<li><p>springConstant-chain:resnum:atomname. i.e. “5-A:1:H”</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>The atom-atom constraints are specified either by:</dt><dd><ul>
-<li><p>springConstant-equilibriumDistance-atomnumber1-atomnumber2. i.e. “50-2.34-17-4159”</p></li>
-<li><p>springConstant-equilibriumDistance-chain1:resnum1:atomname1-chain2:resnum2:atomname2. i.e. “50-2.34-A:1:H-L:1:C21”</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</li>
-<li><p><strong>remove_constraints</strong>: Do not place constraints on the carbon-alpha of the protein. Default: False</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ca_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="nt">interval_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">water_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="nt">constrain_smiles</span><span class="p">:</span> <span class="s">&quot;C2CCC1CCCCC1C2&quot;</span>
-<span class="nt">smiles_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="nt">external_constraints</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;10-17&quot;</span> <span class="c1">#constrain of 10kcal/mol at atomnumber 17</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;5-A:1:H&quot;</span> <span class="c1">##constrain of 10kcal/mol at atom with chain A residuenumber 1 and atomname H</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-17-4159&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 &amp; 4159</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-A:1:H-L:1:C21&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname</span>
-<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</pre></div>
-</div>
-<div class="section" id="metal-constraints">
-<h4>Metal constraints<a class="headerlink" href="#metal-constraints" title="Permalink to this headline">¶</a></h4>
-<p>Algorithm to automatically set metal constraints around the ligand.</p>
-<ul class="simple">
-<li><p><strong>no_metal_constraints</strong>: Ignore all metals in the PDB file, no constraints will be set automatically. Default=False</p></li>
-<li><p><strong>permissive_metal_constr</strong>: Expand the search for coordinated atoms by allowing 35% deviation from “ideal” angles. If the algorithm finds a valid geometry it will include the metal constraint into the simulation. Default=False</p></li>
-<li><p><strong>constrain_all_metals</strong>: Constrain all atoms around the metal, regardless of the angles or coordination number. Default=False</p></li>
-<li><p><strong>external_constraints</strong>: Set a manual constraint containing a metal atom to disable search for this particular metal. Default=[]</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">no_metal_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">permissive_metal_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">constrain_all_metals</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">external_constraints</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-A:1:H-L:1:MG&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="waterperturbation">
-<h3>WaterPerturbation<a class="headerlink" href="#waterperturbation" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li><p><strong>n_waters</strong>: Number of waters to randomly add into your simulation. Compulsory when running MonteCarlo with water perturbation. Default=0</p></li>
-<li><p><strong>box_water</strong>: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.</p></li>
-<li><p><strong>water_radius</strong>: Radius of the water box. Default=7</p></li>
-<li><p><strong>water_trials</strong>: Numerical trials on water perturbation. Default=10000</p></li>
-<li><p><strong>water_constr</strong>: COM constrain applied to th water molecule after perturbation. Default=0</p></li>
-<li><p><strong>water_temp</strong>: Temperature of the water perturbation step. Default=5000</p></li>
-<li><p><strong>water_overlap</strong>: Overlap factor of water. Default=0.78</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">n_waters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span> <span class="c1">#Compulsory</span>
-<span class="nt">box_water</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="nt">water_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
-<span class="nt">water_trials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">500</span>
-<span class="nt">water_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<span class="nt">water_temp</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2000</span>
-<span class="nt">water_overlap</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="metrics">
-<h3>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h3>
-<p>Metrics to track along the simulation</p>
-<ul>
-<li><p><strong>atom_dist</strong>: Calculate distance between two atomnumbers. To calculate more than one append them in column as the example below. Default=None</p>
+  <div class="section" id="optative-flags">
+<h1>Optative flags<a class="headerlink" href="#optative-flags" title="Permalink to this headline">¶</a></h1>
+<p>Optional flags for each package:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>The atomdist can be specified via chain:resnum:atomname i.e. A:2:CA</p></li>
+<li><p><a class="reference external" href="all_packages/index.html">All packages</a></p></li>
+<li><p><a class="reference external" href="ppi/index.html">Protein-Protein Inhibitors</a></p></li>
+<li><p><a class="reference external" href="pocket_exploration/index.html">Pocket Exploration (Allosteric)</a></p></li>
+<li><p><a class="reference external" href="frag/index.html">HT-Fragment Growing</a></p></li>
+<li><p><a class="reference external" href="water/index.html">AquaPELE (water perturbation)</a></p></li>
 </ul>
 </div></blockquote>
-</li>
-<li><p><strong>rmsd_pdb</strong>: Calculate rmsd of the ligand to a native pdb structure</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">atom_dist</span><span class="p">:</span>
-    <span class="c1"># Distance between the A:2:CA and B:3:CG also between A:5:N and B:3:CG. Append more if desired.</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;A:5:N&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span>
-<span class="nt">rmsd_pdb</span><span class="p">:</span> <span class="s">&quot;/home/dsoler/native.pdb&quot;</span>
-</pre></div>
+<div class="toctree-wrapper compound">
 </div>
+<div class="toctree-wrapper compound">
 </div>
-<div class="section" id="analysis">
-<h3>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h3>
-<p>Run a post simulation analysis to extract plots, top poses and clusters.</p>
-<ul class="simple">
-<li><p><strong>only_analysis</strong>: Analyse PELE simulation without running it.</p></li>
-<li><p><strong>analysis_nclust</strong>: Numbers of clusters out of the simulation. Default: 10</p></li>
-<li><p><strong>be_column</strong>: Column of the binding energy in the reports starting by 1. Default: 5</p></li>
-<li><p><strong>te_column</strong>: Column of the total energy in the reports starting by 1. Default: 4</p></li>
-<li><p><strong>limit_column</strong>: Specify the column where your external metrics start. Default: 6</p></li>
-<li><p><strong>mae</strong>: To extract the best energy and cluster poses as .mae files with the metrics as properties (schrodinger need it). Default: false</p></li>
-<li><p><strong>analysis</strong>: Whether to run or not the analysis at the end of the simulation. Default: true</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">be_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="nt">te_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
-<span class="nt">limit_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
-<span class="nt">mae</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-</pre></div>
+<div class="toctree-wrapper compound">
 </div>
+<div class="toctree-wrapper compound">
 </div>
-<div class="section" id="output">
-<h3>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
-<p>Configure the output</p>
-<ul class="simple">
-<li><p><strong>working_folder</strong>: Name of the main working folder where to store the processed input, control files and the simulation folder. Default=”resname_Pele_X” where X is a number.</p></li>
-<li><p><strong>output</strong>: Output folder of the simulation. Default=output</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;NOR_solvent_OBC&quot;</span>
-<span class="nt">output</span><span class="p">:</span> <span class="s">&quot;output_sim&quot;</span>
-</pre></div>
-</div>
-</div>
+<div class="toctree-wrapper compound">
 </div>
 </div>
 
@@ -572,7 +201,7 @@ Afterwards a final sampling simulation is run to fully explore the ligand-protei
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers: Add your own mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="all_packages/index.html" class="btn btn-neutral float-right" title="All PELE packages" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../packages/bias/index.html" class="btn btn-neutral float-left" title="Prepare your own biased simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

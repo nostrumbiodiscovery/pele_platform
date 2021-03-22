@@ -63,6 +63,8 @@ Test it works
 
 .. code-block:: bash
 
+    git clone https://github.com/NostrumBioDiscovery/pele_platform.git
+
     cd pele_platform/tests
 
     python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml

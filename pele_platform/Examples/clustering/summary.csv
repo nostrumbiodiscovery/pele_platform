@@ -1,0 +1,8 @@
+#Task,Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,sasaLig,epoch,trajectory
+1,0,0,-8687.3,25.6048,0.753729,0,../pele_platform/Examples/clustering/0/trajectory_1.pdb
+1,1,1,-8706.14,6.6241699999999994,0.584803,0,../pele_platform/Examples/clustering/0/trajectory_1.pdb
+1,0,0,-8712.07,0.879497,0.930883,0,../pele_platform/Examples/clustering/0/trajectory_2.pdb
+1,0,0,-8711.55,2.2030000000000003,0.9668120000000001,0,../pele_platform/Examples/clustering/0/trajectory_3.pdb
+1,1,1,-8709.73,3.5630900000000003,0.9171299999999999,0,../pele_platform/Examples/clustering/0/trajectory_3.pdb
+1,0,0,-8699.17,13.7932,0.9620639999999999,0,../pele_platform/Examples/clustering/0/trajectory_4.pdb
+1,1,1,-8690.68,22.1708,0.908892,0,../pele_platform/Examples/clustering/0/trajectory_4.pdb
