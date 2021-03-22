@@ -1,16 +1,14 @@
 import os
-import logging
 import glob
 import pytest
 import shutil
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
-import pele_platform.analysis.plot as pt
-from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
-from pele_platform.analysis import DataHandler, Plotter
+from pele_platform.analysis import Analysis, DataHandler, Plotter
 from pele_platform.analysis import (GaussianMixtureClustering,
                                     HDBSCANClustering,
                                     MeanShiftClustering)
+from . import test_adaptive
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
@@ -23,21 +21,14 @@ ANALYSIS_FLAGS = os.path.join(test_path, "analysis/input_flags.yaml")
 ANALYSIS_XTC_ARGS = os.path.join(test_path, "analysis/input_xtc.yaml")
 
 
-# @pytest.fixture
-# def parameters():
-#
-#     builder = ParametersBuilder()
-#     parameters = builder.build_adaptive_variables()
-
-
 @pytest.mark.parametrize(("x", "y", "z"), [(4, 5, 6), (5, 6, None)])
 def test_plot_two_metrics(x, y, z):
-
     output_folder = "tmp/plots"
     if os.path.exists(output_folder):
         shutil.rmtree(output_folder)
 
-    data_handler = DataHandler(sim_path=simulation_path, report_name=REPORT_NAME, trajectory_name=TRAJ_NAME, be_column=5)
+    data_handler = DataHandler(sim_path=simulation_path, report_name=REPORT_NAME, trajectory_name=TRAJ_NAME,
+                               be_column=5)
     dataframe = data_handler.get_reports_dataframe()
     plotter = Plotter(dataframe)
     output = plotter.plot_two_metrics(x, y, z, output_folder=output_folder)
@@ -97,8 +88,8 @@ def test_analysis_0flag(ext_args=ANALYSIS_FLAGS0):
     )
     assert job.analysis_nclust == 4
     assert (
-        len(glob.glob("../pele_platform/Examples/analysis/data/results/plots/*.png"))
-        == 4
+            len(glob.glob("../pele_platform/Examples/analysis/data/results/plots/*.png"))
+            == 4
     )
 
 
@@ -114,8 +105,8 @@ def test_analysis_flag(ext_args=ANALYSIS_FLAGS):
         "../pele_platform/Examples/analysis/data/results/plots/distance0_Binding_Energy_plot.png"
     )
     assert (
-        len(glob.glob("../pele_platform/Examples/analysis/data/results/plots/*.png"))
-        == 2
+            len(glob.glob("../pele_platform/Examples/analysis/data/results/plots/*.png"))
+            == 2
     )
 
 
@@ -144,6 +135,7 @@ def test_analysis_xtc(ext_args=ANALYSIS_XTC_ARGS):
 
     # Return job parameters
     return job_params
+
 
 def test_cluster_default():
     n_clusts = 2
@@ -198,5 +190,16 @@ def test_clustering_methods(method, bandwidth, n_clusters):
         assert False
 
     labels = clustering.get_clusters(coordinates)
-
     assert len(set(labels)) == n_clusters
+
+
+def test_analysis_dataframe():
+    csv = "dataframe.csv"
+    expected_line = "1,0,0,-7830.55,-51.3074,0,2.47946,0,../pele_platform/Examples/analysis/data/output/0/trajectory_1"
+    output = '../pele_platform/Examples/analysis/data/output'
+    analysis = Analysis(resname="STR", chain="Z", simulation_output=output, working_folder=".",
+                        skip_initial_structures=False)
+    analysis.dataframe_to_csv(csv)
+
+    errors = test_adaptive.check_file(".", csv, expected_line, [])
+    assert not errors
