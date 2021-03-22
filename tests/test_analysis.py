@@ -195,11 +195,9 @@ def test_clustering_methods(method, bandwidth, n_clusters):
 
 def test_analysis_dataframe():
     csv = "dataframe.csv"
+    working_folder = "."
     expected_line = "1,0,0,-7830.55,-51.3074,0,2.47946,0,../pele_platform/Examples/analysis/data/output/0/trajectory_1"
     output = '../pele_platform/Examples/analysis/data/output'
-    analysis = Analysis(resname="STR", chain="Z", simulation_output=output, working_folder=".",
+    analysis = Analysis(resname="STR", chain="Z", simulation_output=output, working_folder=working_folder,
                         skip_initial_structures=False)
-    analysis.dataframe_to_csv(csv)
-
-    errors = test_adaptive.check_file(".", csv, expected_line, [])
-    assert not errors
+    analysis.generate(working_folder, "gaussianmixture")

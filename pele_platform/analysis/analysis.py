@@ -23,14 +23,14 @@ class Analysis(object):
         working_folder=".",
         be_column=4,
         limit_column=None,
-        traj=None,
+        traj="trajectory.pdb",
         report=None,
         skip_initial_structures=True,
         kde=False,
         kde_structs=1000,
         clustering_method="meanshift",
         bandwidth=2.5,
-        analysis_nclusts=10,
+        analysis_nclust=10,
         topology=None,
         cpus=1,
         max_top_clusters=8,
@@ -54,11 +54,11 @@ class Analysis(object):
             Column with energy metric, default 4.
         limit_column : int
         traj : str
-            Trajectory name, if not using the default.
+            Trajectory name defaults to "trajectory.pdb", but you should use "trajectory.xtc" if using XTC format.
         report : str
             Report file name, if not using default.
         skip_initial_structures : bool
-            Skips initial structures (step 0 of the simulation), default = True. Should be set to True when running tests
+            Skips initial structures (step 0 of the simulation), default = True. Should be set to True when running test.
             with only one step.
         kde : bool
             Set to True to create kernel density estimator plots, default = False
@@ -68,7 +68,7 @@ class Analysis(object):
             Clustering method to be used: gaussianmixture, meanshift or hdbscan, default is "meanshift"
         bandwidth : float
             Bandwidth for the mean shift and HDBSCAN clustering, default = 2.5
-        analysis_nclusts : int
+        analysis_nclust : int
             Number of clusters to create when using the Gaussian mixture model, default = 10
         topology : str
             Path to the topology file, if using XTC trajectories, default = None.
@@ -89,12 +89,12 @@ class Analysis(object):
         self.limit_column = limit_column
         self.kde = kde
         self.kde_structs = kde_structs
-        self.traj = traj if traj else self._TRAJECTORY_LABEL
+        self.traj = traj
         self.report = report if report else self._REPORT
         self.skip_initial_structures = skip_initial_structures
         self.clustering_method = clustering_method
         self.bandwidth = bandwidth
-        self.analysis_nclusts = analysis_nclusts
+        self.analysis_nclust = analysis_nclust
         self.topology = topology
         self.cpus = cpus
         self.max_top_clusters = max_top_clusters
@@ -249,7 +249,7 @@ class Analysis(object):
 
         # The minimum value for the limit column is 4, since previous
         # columns in PELE report files does not contain any metric
-        if self.limit_column > 4:
+        if self.limit_column is not None and self.limit_column > 4:
             limit_column = self.limit_column - 4
         else:
             limit_column = 0

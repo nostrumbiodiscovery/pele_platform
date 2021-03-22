@@ -394,7 +394,7 @@ def run_adaptive(args):
             kde_structs=parameters.kde_structs,
             clustering_method=parameters.clustering_method,
             bandwidth=parameters.bandwidth,
-            analysis_nclusts=parameters.analysis_nclust,
+            analysis_nclust=parameters.analysis_nclust,
             topology=parameters.topology,
             cpus=parameters.cpus,
             max_top_clusters=parameters.max_top_clusters,

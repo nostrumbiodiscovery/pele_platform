@@ -96,9 +96,9 @@ def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, outp
     # Read trajectory and output snapshot
     for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
         if not topology:
-            extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, logger=logger)
+            extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out)
         else:
-            extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, logger=logger)
+            extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out)
     files_out = [os.path.join(output, f) for f in files_out]
     # Return data
     return files_out, epochs, file_ids, step_indexes, values
