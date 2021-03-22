@@ -566,6 +566,9 @@ class Analysis(object):
 
         metrics = self._data_handler.get_metrics()
 
+        if not os.path.exists(path):
+            os.mkdir(path)
+
         clusters_population = defaultdict(int)
         for cluster in clusters:
             clusters_population[cluster] += 1
@@ -784,7 +787,7 @@ class Analysis(object):
 
         # The minimum value for the limit column is 4, since previous
         # columns in PELE report files does not contain any metric
-        if self.limit_column > 4:
+        if self.limit_column is not None and self.limit_column > 4:
             limit_column = self.limit_column - 4
         else:
             limit_column = 0
