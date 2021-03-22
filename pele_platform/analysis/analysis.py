@@ -305,7 +305,9 @@ class Analysis(object):
             return
 
         cluster_subset, cluster_reindex_map = \
-            self._select_top_clusters(clusters, cluster_summary)
+            self._select_top_clusters(clusters, cluster_summary,
+                                      max_clusters_to_select=self.parameters.max_top_clusters,
+                                      min_population_to_select=self.parameters.min_population)
 
         # Save cluster summary to file with information about selected labels
         cluster_summary['Selected labels'] = \

@@ -487,6 +487,8 @@ class SimulationParams(
         self.limit_column = args.limit_column
         self.kde = args.kde if args.kde is not None else False
         self.kde_structs = args.kde_structs if args.kde_structs else 1000
+        self.min_population = args.min_population if args.min_population is not None else 0.01
+        self.max_top_clusters = args.max_top_clusters if args.max_top_clusters is not None else 8
 
     def constraints_params(self, args):
         """
