@@ -377,31 +377,8 @@ def run_adaptive(args):
     if parameters.analyse and not parameters.debug:
         from pele_platform.analysis import Analysis
 
-        simulation_output = os.path.join(parameters.pele_dir, parameters.output)
-        analysis_folder = os.path.join(parameters.pele_dir, "results")
-
-        analysis = Analysis(
-            resname=parameters.residue,
-            chain=parameters.chain,
-            simulation_output=simulation_output,
-            working_folder=analysis_folder,
-            be_column=parameters.be_column,
-            limit_column=parameters.limit_column,
-            traj=parameters.traj_name,
-            report=parameters.report_name,
-            skip_initial_structures=parameters.test,
-            kde=parameters.kde,
-            kde_structs=parameters.kde_structs,
-            clustering_method=parameters.clustering_method,
-            bandwidth=parameters.bandwidth,
-            analysis_nclust=parameters.analysis_nclust,
-            topology=parameters.topology,
-            cpus=parameters.cpus,
-            max_top_clusters=parameters.max_top_clusters,
-            min_population=parameters.min_population,
-        )
-        analysis.generate(
-            analysis_folder, clustering_type=parameters.clustering_method.lower()
-        )
+        analysis = Analysis.from_parameters(parameters)
+        analysis.generate(analysis_folder,
+                          clustering_type=parameters.clustering_method.lower())
 
     return parameters

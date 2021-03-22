@@ -15,27 +15,12 @@ class Analysis(object):
     _REPORT = "report"
     _STEP_LABEL = "numberOfAcceptedPeleSteps"
 
-    def __init__(
-        self,
-        resname,
-        chain,
-        simulation_output,
-        working_folder=".",
-        be_column=4,
-        limit_column=None,
-        traj="trajectory.pdb",
-        report=None,
-        skip_initial_structures=True,
-        kde=False,
-        kde_structs=1000,
-        clustering_method="meanshift",
-        bandwidth=2.5,
-        analysis_nclust=10,
-        topology=None,
-        cpus=1,
-        max_top_clusters=8,
-        min_population=0.01,
-    ):
+    def __init__(self, resname, chain, simulation_output, working_folder=".",
+                 be_column=4, limit_column=None, traj="trajectory.pdb",
+                 report=None, skip_initial_structures=True, kde=False,
+                 kde_structs=1000, clustering_method="meanshift",
+                 bandwidth=2.5, analysis_nclust=10, topology=None,
+                 cpus=1, max_top_clusters=8, min_population=0.01):
         """
         It initializes an Analysis instance which it depends on
         the general Parameters class of the PELE Platform.
@@ -45,39 +30,50 @@ class Analysis(object):
         resname : str
             Residue name of the ligand, e.g. "LIG"
         chain : str
-            Chain ID of the ligand, e.g. "Z.".
+            Chain ID of the ligand, e.g. "Z."
         simulation_output : str
-            Path to the output folder of the simulation, e.g. "LIG_Pele/output".
+            Path to the output folder of the simulation, e.g.
+            "LIG_Pele/output"
         working_folder : str
-            Directory to output the analysis results, default is current working directory.
+            Directory to output the analysis results. Default is current
+            working directory
         be_column : int
             Column with energy metric, default 4.
         limit_column : int
         traj : str
-            Trajectory name defaults to "trajectory.pdb", but you should use "trajectory.xtc" if using XTC format.
+            Trajectory name defaults to "trajectory.pdb",
+            but you should use "trajectory.xtc" if using XTC format.
         report : str
             Report file name, if not using default.
         skip_initial_structures : bool
-            Skips initial structures (step 0 of the simulation), default = True. Should be set to True when running test.
-            with only one step.
+            Skips initial structures (step 0 of the simulation),
+            default is True. Should be set to True when running test
+            with only one step
         kde : bool
-            Set to True to create kernel density estimator plots, default = False
+            Set to True to create kernel density estimator plots. Default
+            is False
         kde_structs : int
-            Number of structures to consider for the KDE plot, default = 1000 or however many are available.
+            Maximum number of structures to consider for the KDE plot.
+            Default is 1000
         clustering_method : str
-            Clustering method to be used: gaussianmixture, meanshift or hdbscan, default is "meanshift"
+            Clustering method to be used. On of ['gaussianmixture',
+            'meanshift', 'hdbscan']. Default is 'meanshift'
         bandwidth : float
-            Bandwidth for the mean shift and HDBSCAN clustering, default = 2.5
+            Bandwidth for the mean shift and HDBSCAN clustering. Default is
+            2.5
         analysis_nclust : int
-            Number of clusters to create when using the Gaussian mixture model, default = 10
+            Number of clusters to create when using the Gaussian mixture
+            model. Default is 10
         topology : str
-            Path to the topology file, if using XTC trajectories, default = None.
+            Path to the topology file, if using XTC trajectories. Default
+             is None
         cpus: int
-            Number of CPUs to use, default = 1.
+            Number of CPUs to use. Default is 1
         max_top_clusters : int
-            Maximum number of clusters to return.
+            Maximum number of clusters to return. Default is 8
         min_population : float
-            The minimum amount of structures in a cluster, takes a value between 0 and 1, default = 0.01 (i.e. 1%).
+            The minimum amount of structures in a cluster, takes a value
+            between 0 and 1. Default is 0.01 (i.e. 1%)
         """
         from pele_platform.analysis import DataHandler
 
@@ -109,17 +105,59 @@ class Analysis(object):
         )
         self._dataframe = self._data_handler.get_reports_dataframe()
 
-    @property
-    def parameters(self):
+    @classmethod
+    def from_parameters(cls, parameters):
         """
-        It returns the Analysis class parameters to analyze.
+        It initializes an Analysis object from a Parameters object.
+
+        Parameters
+        ----------
+        parameters : a Parameters object
+            The Parameters object containing the parameters that belong
+            to the simulation
 
         Returns
         -------
-        parameters : dict
+        analysis : an Analysis object
+            The Analysis object obtained from the parameters that were
+            supplied
+        """
+        simulation_output = os.path.join(parameters.pele_dir, parameters.output)
+        analysis_folder = os.path.join(parameters.pele_dir, "results")
+
+        analysis = Analysis(resname=parameters.residue,
+                            chain=parameters.chain,
+                            simulation_output=simulation_output,
+                            working_folder=analysis_folder,
+                            be_column=parameters.be_column,
+                            limit_column=parameters.limit_column,
+                            traj=parameters.traj_name,
+                            report=parameters.report_name,
+                            skip_initial_structures=parameters.test,
+                            kde=parameters.kde,
+                            kde_structs=parameters.kde_structs,
+                            clustering_method=parameters.clustering_method,
+                            bandwidth=parameters.bandwidth,
+                            analysis_nclust=parameters.analysis_nclust,
+                            topology=parameters.topology,
+                            cpus=parameters.cpus,
+                            max_top_clusters=parameters.max_top_clusters,
+                            min_population=parameters.min_population)
+
+        return analysis
+
+    @property
+    def parameters(self):
+        """
+        It returns the attributes of this Analysis object as a dictionary.
+
+        Returns
+        -------
+        params : dict
             A dictionary of parameters
         """
-        params = {key: value for key, value in self.__dict__.items() if key[:1] != "_"}
+        params = {key: value for key, value in self.__dict__.items()
+                  if key[:1] != "_"}
         return params
 
     def get_dataframe(self, filter=False, threshold=None):
@@ -379,6 +417,9 @@ class Analysis(object):
                 + "It should be one of ['GaussianMixture', "
                 + "'HDBSCAN', 'MeanShift']"
             )
+
+        coordinates, dataframe = self._filter_coordinates(coordinates,
+                                                          dataframe)
 
         clusters = clustering.get_clusters(coordinates)
 
@@ -795,6 +836,47 @@ class Analysis(object):
         # Iterate over all the metrics found in the reports
         for metric in metrics[limit_column:]:
             plotter.plot_clusters(metric, energy, output_folder=path, clusters=clusters)
+
+    def _filter_coordinates(self, coordinates, dataframe, threshold=0.25):
+        """
+        It filters the coordinates by total energy according to the
+        threshold that is supplied. A threshold of 0.25 means that the
+        25% of structures with highest energies will be discarded.
+
+        Parameters
+        ----------
+        coordinates : numpy.array
+            The array of coordinates to filter
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of coordinates
+        threshold : float
+            A value between 0 and 1 that defines the ratio of structures
+            to discard. Default is 0.25
+
+        Returns
+        -------
+        filtered_coordinates : numpy.array
+            The array of coordinates resulting from the filtering
+        filtered_dataframe : a pandas.dataframe object
+            The dataframe resulting from the filtering
+        energetic_threshold : float
+            The energetic value that fulfills the supplied threshold
+        """
+        import numpy as np
+
+        total_energies = list(dataframe['currentEnergy'])
+        energetic_threshold = np.quantile(total_energies, 1 - threshold)
+
+        filtered_coordinates = []
+        for coors_array, total_energy in zip(coordinates, total_energies):
+            if total_energy <= energetic_threshold:
+                filtered_coordinates.append(coors_array)
+
+        filtered_dataframe = \
+            dataframe.query('currentEnergy<={}'.format(energetic_threshold))
+
+        return filtered_coordinates, filtered_dataframe, energetic_threshold
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """
