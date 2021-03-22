@@ -165,7 +165,7 @@ class SiteFinderLauncher:
         self.args.box_radius = self.global_simulation.box_radius
 
         if not self.args.test:
-            self.args.steps = 250
+            self.args.pele_steps = 250
         self.args.box_center = self.global_simulation.box_center
         self.args.box_radius = self.global_simulation.box_radius
 
