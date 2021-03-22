@@ -1,0 +1,5 @@
+- [ ] Tag issue being addressed
+- [ ] Add [tests](https://github.com/nostrumbiodiscovery/pele_platform/tree/master/tests)
+- [ ] Update docstrings/[documentation](https://github.com/nostrumbiodiscovery/pele_platform/tree/master/docs/build_docs/source), if applicable
+- [ ] Update [changelog](https://github.com/nostrumbiodiscovery/pele_platform/blob/master/docs/build_docs/source/changelog/index.rst)
+- [ ] All tests successfully pass
