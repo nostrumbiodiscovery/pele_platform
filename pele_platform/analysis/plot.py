@@ -85,20 +85,20 @@ class Plotter(object):
 
         # Initialize a data handler from the current dataframe and get column names
         metric_to_x, metric_to_y, metric_to_z = self._get_column_names(
-            metric_to_x, metric_to_y, metric_to_z
-        )
+            metric_to_x, metric_to_y, metric_to_z)
 
         # Prepare plot name
         if output_name is None:
             if metric_to_z is not None:
-                output_name = "{}_{}_{}_plot.png".format(
-                    metric_to_x, metric_to_y, metric_to_z
-                )
+                output_name = "{}_{}_{}_plot.png".format(metric_to_x,
+                                                         metric_to_y,
+                                                         metric_to_z)
             else:
                 output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
 
         # Replace whitespaces in the output name
-        output_name = os.path.join(output_folder, output_name).replace(" ", "_")
+        output_name = os.path.join(output_folder,
+                                   output_name).replace(" ", "_")
 
         # Generate plot with matplotlib
         import matplotlib
@@ -108,30 +108,29 @@ class Plotter(object):
 
         fig, ax = plt.subplots()
         if metric_to_z is not None:
-            scatter = ax.scatter(
-                self._dataframe[metric_to_x],
-                self._dataframe[metric_to_y],
-                c=self._dataframe[metric_to_z],
-                s=20,
-            )
+            scatter = ax.scatter(self._dataframe[metric_to_x],
+                                 self._dataframe[metric_to_y],
+                                 c=self._dataframe[metric_to_z],
+                                 s=20)
             cbar = plt.colorbar(scatter)
             cbar.ax.set_ylabel(metric_to_z)
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
-            backup_logger(
-                self._logger,
-                "Plotted {} vs {} vs {}".format(metric_to_x, metric_to_y, metric_to_z),
-            )
+            backup_logger(self._logger,
+                          "Plotted {} vs {} vs {}".format(metric_to_x,
+                                                          metric_to_y,
+                                                          metric_to_z))
 
         else:
-            ax.scatter(self._dataframe[metric_to_x], self._dataframe[metric_to_y])
+            ax.scatter(self._dataframe[metric_to_x],
+                       self._dataframe[metric_to_y])
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
-            backup_logger(
-                self._logger, "Plotted {} vs {}".format(metric_to_x, metric_to_y)
-            )
+            backup_logger(self._logger,
+                          "Plotted {} vs {}".format(metric_to_x,
+                                                    metric_to_y))
         return output_name
 
     def plot_kde(self, metric_to_x, metric_to_y, output_folder, kde_structs):
@@ -154,9 +153,8 @@ class Plotter(object):
         import seaborn as sb
 
         check_output_folder(output_folder)
-        metric_to_x, metric_to_y, metric_to_z = self._get_column_names(
-            metric_to_x, metric_to_y
-        )
+        metric_to_x, metric_to_y, metric_to_z = \
+            self._get_column_names(metric_to_x, metric_to_y)
 
         # Define output path
         output_name = "{}_{}_kde.png".format(metric_to_x, metric_to_y)
@@ -169,19 +167,15 @@ class Plotter(object):
         top = sorted_df[0:structures_to_keep]
 
         # Plot and save it
-        plot = sb.kdeplot(
-            top[metric_to_x],
-            top[metric_to_y],
-            cmap="crest",
-            fill=False,
-            shade=True,
-            cbar=True,
-        )
+        plot = sb.kdeplot(top[metric_to_x], top[metric_to_y],
+                          cmap="crest", fill=False,
+                          shade=True, cbar=True)
         figure = plot.get_figure()
         figure.savefig(output_name)
         return output_name
 
-    def plot_clusters(self, metric_to_x, metric_to_y, output_folder, clusters):
+    def plot_clusters(self, metric_to_x, metric_to_y, output_folder,
+                      clusters):
         """
         It creates a scatter plot with the two metrics that are supplied
         and displays the points belonging to each top cluster with a
@@ -207,9 +201,8 @@ class Plotter(object):
         check_output_folder(output_folder)
 
         # Initialize a data handler from the current dataframe
-        metric_to_x, metric_to_y, metric_to_z = self._get_column_names(
-            metric_to_x, metric_to_y
-        )
+        metric_to_x, metric_to_y, metric_to_z = \
+            self._get_column_names(metric_to_x, metric_to_y)
 
         import matplotlib
 
@@ -218,7 +211,9 @@ class Plotter(object):
         from matplotlib import colors, cm
 
         # Initialize figure
-        fig, ax = plt.subplots(figsize=(6, 6), dpi=100, facecolor="w", edgecolor="k")
+        fig, ax = plt.subplots(figsize=(6, 6), dpi=100, facecolor="w",
+                               edgecolor="k")
+        fig.subplots_adjust(right=0.8)  # To make room for the legend
 
         # Set axis labels
         plt.xlabel(metric_to_x)
@@ -239,7 +234,11 @@ class Plotter(object):
         cluster_labels = sorted(list(set(clusters)))
 
         # Configurate colormap
-        cmap = copy.copy(cm.get_cmap("Set1"))
+        if len(cluster_labels) > 8:
+            cmap = copy.copy(cm.get_cmap("jet"))
+        else:
+            cmap = copy.copy(cm.get_cmap("Set1"))
+
         norm = colors.Normalize(vmin=0, vmax=len(cluster_labels))
         cmap.set_under("grey")
 
@@ -260,18 +259,9 @@ class Plotter(object):
                 zorder = 1
             else:
                 zorder = 2
-            sc = ax.scatter(
-                xs,
-                ys,
-                c=[
-                    current_cluster,
-                ]
-                * len(xs),
-                cmap=cmap,
-                norm=norm,
-                alpha=0.7,
-                zorder=zorder,
-            )
+            sc = ax.scatter(xs, ys, c=[current_cluster, ] * len(xs),
+                            cmap=cmap, norm=norm, alpha=0.7,
+                            zorder=zorder)
             colors_used += sc.legend_elements()[0]
 
         # Configurate legend
@@ -287,21 +277,19 @@ class Plotter(object):
             c = colors_used.pop(0)
             cluster_names.append(n)
             colors_used.append(c)
-        legend1 = ax.legend(colors_used, cluster_names, title="Clusters")
+        ax.legend(colors_used, cluster_names, title="Clusters",
+                  loc='center left', bbox_to_anchor=(1, 0.5))
 
         # Set output name
         output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
         output_name = os.path.join(output_folder, output_name).replace(" ", "_")
 
-        plt.savefig(
-            output_name,
-            dpi=200,
-            edgecolor="k",
-            orientation="portrait",
-            transparent=True,
-        )
+        plt.savefig(output_name, dpi=200, edgecolor="k",
+                    orientation="portrait", transparent=True,
+                    bbox_inches="tight")
 
-        backup_logger(self._logger, "Plotted {} vs {}".format(metric_to_x, metric_to_y))
+        backup_logger(self._logger,
+                      "Plotted {} vs {}".format(metric_to_x, metric_to_y))
 
     def _get_column_names(self, metric_to_x, metric_to_y, metric_to_z=None):
         """
@@ -323,10 +311,10 @@ class Plotter(object):
 
         # Ensure that metrics are strings pointing to dataframe columns
         if str(metric_to_x).isdigit():
-            metric_to_x = data_handler._get_column_name(metric_to_x)
+            metric_to_x = data_handler.get_column_name(metric_to_x)
         if str(metric_to_y).isdigit():
-            metric_to_y = data_handler._get_column_name(metric_to_y)
+            metric_to_y = data_handler.get_column_name(metric_to_y)
         if metric_to_z is not None and str(metric_to_z).isdigit():
-            metric_to_z = data_handler._get_column_name(metric_to_z)
+            metric_to_z = data_handler.get_column_name(metric_to_z)
 
         return metric_to_x, metric_to_y, metric_to_z

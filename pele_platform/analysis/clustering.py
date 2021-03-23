@@ -225,3 +225,9 @@ class MeanShiftClustering(Clustering):
         clusters = clustering_method.fit_predict(coordinates)
 
         return clusters
+
+
+def get_cluster_label(cluster_id):
+    """
+
+    """

@@ -299,7 +299,7 @@ class DataHandler(object):
 
         # Ensure that metric is pointing to a dataframe column
         if str(metric).isdigit():
-            metric = self._get_column_name(metric)
+            metric = self.get_column_name(metric)
 
         # Check criterion value
         if criterion not in ['lowest', 'largest']:
@@ -311,7 +311,7 @@ class DataHandler(object):
         else:
             return self._dataframe.nlargest(n_entries, metric)
 
-    def _get_column_name(self, column_index):
+    def get_column_name(self, column_index):
         """
         It returns the column name that corresponds to the index that is
         supplied. Take into account that the index starts at 1, not at 0.
