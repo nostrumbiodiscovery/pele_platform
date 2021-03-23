@@ -499,7 +499,7 @@ class Analysis(object):
                 self.residue, remove_hydrogen=True,
                 n_proc=self.cpus, max_coordinates=max_coordinates)
         else:
-            coordinates, dataframe = self._data_handler.extract_coords(
+            coordinates, dataframe = self._data_handler.extract_XTC_coords(
                 self.residue, self.topology,
                 remove_hydrogen=True, max_coordinates=max_coordinates)
 

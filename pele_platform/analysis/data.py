@@ -333,8 +333,8 @@ class DataHandler(object):
 
         return column_name
 
-    def extract_coords(self, residue_name, topology, remove_hydrogen=True,
-                       max_coordinates=6):
+    def extract_XTC_coords(self, residue_name, topology, remove_hydrogen=True,
+                           max_coordinates=6):
         """
         This method employs mdtraj to extract the coordinates that
         belong to the supplied residue from all the trajectories in the
