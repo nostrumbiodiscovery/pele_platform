@@ -129,7 +129,7 @@ class Analysis(object):
                             limit_column=parameters.limit_column,
                             traj=parameters.traj_name,
                             report=parameters.report_name,
-                            skip_initial_structures=parameters.test,
+                            skip_initial_structures=not parameters.test,
                             kde=parameters.kde,
                             kde_structs=parameters.kde_structs,
                             clustering_method=parameters.clustering_method,
