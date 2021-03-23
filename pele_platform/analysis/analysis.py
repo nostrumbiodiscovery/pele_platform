@@ -353,7 +353,6 @@ class Analysis(object):
             clusters
         """
         import os
-        from pele_platform.analysis.clustering import get_cluster_label
 
         # Get clustering object
         clustering, max_coordinates = self._get_clustering(clustering_type)
@@ -377,7 +376,7 @@ class Analysis(object):
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters,
                                                          coordinates)
         cluster_summary = self._analyze_clusters(clusters, dataframe,
-                                                 rmsd_per_cluster, path)
+                                                 rmsd_per_cluster)
 
         if len(cluster_summary) == 0:
             print(f"No clusters could be obtained, " +
@@ -386,18 +385,17 @@ class Analysis(object):
             return
 
         print(f"Retrieve best cluster poses")
-
-        cluster_subset, cluster_reindex_map = self._select_top_clusters(
+        cluster_subset, cluster_summary = self._select_top_clusters(
             clusters, cluster_summary,
             max_clusters_to_select=self.max_top_clusters,
             min_population_to_select=self.min_population)
 
         # Save cluster summary to file with information about selected labels
-        cluster_summary["Selected labels"] = [
-            get_cluster_label(cluster_reindex_map[cluster])
-            if cluster in cluster_reindex_map
-            else "-" for cluster in cluster_summary["Cluster"]]
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
+
+        # Plot cluster descriptors
+        self._plot_cluster_descriptors(cluster_subset, dataframe,
+                                       cluster_summary, path)
 
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
         self._save_clusters(cluster_subset, dataframe, path)
@@ -590,16 +588,11 @@ class Analysis(object):
 
         return values
 
-    def _analyze_clusters(self, clusters, dataframe, rmsd_per_cluster, path):
+    def _analyze_clusters(self, clusters, dataframe, rmsd_per_cluster):
         """
         It analyzes the clusters and generates a summary with all
         the calculated descriptors. It also generates some plots
         with information about the clusters.
-
-        .. todo ::
-           * Generate box plots
-           * Generate scatter plots colored by cluster
-           * Calculate mean RMSD for each cluster
 
         Parameters
         ----------
@@ -610,8 +603,6 @@ class Analysis(object):
             follows the same ordering as the array of clusters
         rmsd_per_cluster : dict[int, float]
             The mean RMSD of each cluster
-        path : str
-            The path where the output files will be saved at
 
         Returns
         -------
@@ -619,16 +610,12 @@ class Analysis(object):
             The dataframe containing summary of all clusters that were
             analyzed
         """
-        import os
         from collections import defaultdict
         import pandas as pd
         import numpy as np
         from matplotlib import pyplot as plt
 
         metrics = self._data_handler.get_metrics()
-
-        if not os.path.exists(path):
-            os.mkdir(path)
 
         clusters_population = defaultdict(int)
         for cluster in clusters:
@@ -640,23 +627,6 @@ class Analysis(object):
                                 in clusters_population.items()
                                 if not cluster < 0],
                                columns=["Cluster", "Population", "MeanRMSD"])
-
-        # Plot Mean RMSD per cluster
-        fig, ax = plt.subplots()
-        ax.scatter([cluster for cluster in sorted(clusters_population.keys())
-                    if cluster != -1],
-                   [rmsd_per_cluster[cluster]
-                    for cluster in sorted(clusters_population.keys())
-                    if cluster != -1],
-                   s=[clusters_population[cluster] / len(clusters) * 200
-                      for cluster in sorted(clusters_population.keys())
-                      if cluster != -1],
-                   label="Cluster population")
-        ax.set_xlabel("Cluster label")
-        ax.set_ylabel("Mean RMSD (Å)")
-        plt.legend()
-        plot_filename = os.path.join(path, "clusters_meanRMSD.png")
-        plt.savefig(plot_filename)
 
         # Generate descriptors and boxplots for all reported metrics
         descriptors = defaultdict(dict)
@@ -695,24 +665,6 @@ class Analysis(object):
                 descriptors["{} max".format(metric)][cluster] = \
                     np.max(values_per_cluster[cluster])
 
-            # Generate boxplots
-            try:
-                fig, ax = plt.subplots()
-
-                ax.boxplot([values_per_cluster[cluster]
-                            for cluster in sorted(values_per_cluster.keys())])
-
-                ax.set_ylabel(metric)
-                ax.set_xlabel("Cluster number")
-
-                boxplot_filename = \
-                    os.path.join(path,
-                                 "clusters_{}_boxplot.png".format(metric))
-                plt.savefig(boxplot_filename)
-            except IndexError:
-                print("Samples too disperse to produce a cluster " +
-                      "for metric {}".format(metric))
-
         # Add descriptors to summary dataframe
         for label, values_per_cluster in descriptors.items():
             summary[label] = [values_per_cluster[cluster]
@@ -728,12 +680,6 @@ class Analysis(object):
         It selects the top clusters based on their binding energy. If
         this metric is not available, the cluster population will be
         used instead.
-
-        .. todo ::
-           * The user should be able to choose max_clusters_to_select
-           * The user should be able to choose min_population_to_select
-           * The user might also be able to choose the metric to use
-             in order to select the top clusters
 
         Parameters
         ----------
@@ -753,10 +699,14 @@ class Analysis(object):
         cluster_subset : a numpy.array object
             The array of cluster after the selection. Those clusters
             that were not selected are now labeled with a -1
-        cluster_reindex_map : dict[int, int]
-            It pairs the old cluster label (dictionary key) with the new
-            one after the filtering (dictionary value)
+        cluster_summary : a pandas.dataframe object
+            The dataframe containing summary of all clusters that were
+            analyzed. It is updated with an extra column containing
+            cluster names of top clusters
         """
+        import os
+        from pele_platform.analysis.clustering import get_cluster_label
+
         metrics = list(cluster_summary.columns)
 
         if "Binding Energy 25-percentile" in metrics:
@@ -783,7 +733,103 @@ class Analysis(object):
             else:
                 cluster_subset.append(-1)
 
-        return cluster_subset, cluster_reindex_map
+        cluster_summary["Selected labels"] = [
+            get_cluster_label(cluster_reindex_map[cluster])
+            if cluster in cluster_reindex_map
+            else "-" for cluster in cluster_summary["Cluster"]]
+
+        return cluster_subset, cluster_summary
+
+    def _plot_cluster_descriptors(self, clusters, dataframe,
+                                  cluster_summary, path):
+        """
+        It plots cluster descriptors.
+
+        Parameters
+        ----------
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of clusters
+        cluster_summary : a pandas.dataframe object
+            The dataframe containing summary of all clusters that were
+            analyzed
+        path : str
+            The path where the output files will be saved at
+        """
+        import os
+        from collections import defaultdict
+        from matplotlib import pyplot as plt
+        from pele_platform.analysis.clustering import get_cluster_label
+
+        if not os.path.exists(path):
+            os.mkdir(path)
+
+        top_clusters_summary = cluster_summary.query('`Selected labels`!="-"')
+
+        rmsd_per_cluster = dict(zip(top_clusters_summary['Selected labels'],
+                                    top_clusters_summary['MeanRMSD']))
+        population_per_cluster = dict(zip(top_clusters_summary['Selected labels'],
+                                      top_clusters_summary['Population']))
+
+        # Plot Mean RMSD per cluster
+        fig, ax = plt.subplots()
+        ax.scatter([cluster for cluster in sorted(rmsd_per_cluster.keys())],
+                   [rmsd_per_cluster[cluster]
+                    for cluster in sorted(rmsd_per_cluster.keys())],
+                   s=[population_per_cluster[cluster] * 200
+                      for cluster in sorted(population_per_cluster.keys())],
+                   label="Cluster population")
+        ax.set_xlabel("Cluster label")
+        ax.set_ylabel("Mean RMSD (Å)")
+        ax.set_ylim(bottom=0)
+        plt.legend()
+        plot_filename = os.path.join(path, "top_clusters_meanRMSD.png")
+        plt.savefig(plot_filename)
+
+        metrics = self._data_handler.get_metrics()
+        for metric in metrics:
+            values_per_cluster = defaultdict(list)
+            values = list(dataframe[metric])
+
+            if len(clusters) != len(values):
+                print("Warning: metric '{}' ".format(metric) +
+                      "array has a wrong size. It will be skipped " +
+                      "from the clustering analysis. Expected size: " +
+                      "{}".format(len(clusters)))
+                continue
+
+            # Arrange metrics per cluster
+            for cluster, value in zip(clusters, values):
+                # Skip outliers
+                if cluster < 0:
+                    continue
+                values_per_cluster[cluster].append(value)
+
+            # Generate boxplots
+            try:
+                fig, ax = plt.subplots()
+
+                ax.boxplot([values_per_cluster[cluster]
+                            for cluster in sorted(values_per_cluster.keys())])
+                ax.set_xticklabels([get_cluster_label(cluster)
+                                    for cluster
+                                    in sorted(values_per_cluster.keys())])
+
+                ax.set_ylabel(metric)
+                ax.set_xlabel("Cluster label")
+
+                boxplot_filename = \
+                    os.path.join(path,
+                                 "top_clusters_{}_boxplot.png".format(metric))
+                boxplot_filename.replace(' ', '_')
+
+                plt.savefig(boxplot_filename)
+
+            except IndexError:
+                print("Samples too disperse to produce a cluster " +
+                      "for metric {}".format(metric))
 
     def _plot_clusters(self, clusters, dataframe, cluster_summary, path):
         """
