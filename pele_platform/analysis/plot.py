@@ -195,7 +195,7 @@ class Plotter(object):
             The array of cluster labels that were obtained
         """
         import copy
-        from string import ascii_uppercase
+        from pele_platform.analysis.clustering import get_cluster_label
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
         check_output_folder(output_folder)
@@ -270,7 +270,7 @@ class Plotter(object):
             if cluster_id == -1:
                 cluster_names.append("Others")
             else:
-                cluster_names.append(ascii_uppercase[cluster_id])
+                cluster_names.append(get_cluster_label(cluster_id))
 
         if cluster_names[0] == "Others":
             n = cluster_names.pop(0)

@@ -229,5 +229,41 @@ class MeanShiftClustering(Clustering):
 
 def get_cluster_label(cluster_id):
     """
+    It assigns a cluster label according to the cluster id that is
+    supplied.
 
+    It follows the criterion from above:
+    Cluster id   |   Cluster label
+    0           -->  A
+    1           -->  B
+    2           -->  C
+    25          -->  Z
+    26          -->  AA
+    27          -->  AB
+    28          -->  AC
+
+    Parameters
+    ----------
+    cluster_id : int
+        The id of the cluster that will be used to generate the label.
     """
+    from string import ascii_uppercase
+
+    cluster_label = ''
+    current_index = cluster_id
+    while current_index >= 0:
+        if current_index < len(ascii_uppercase):
+            cluster_label += ascii_uppercase[current_index]
+        else:
+            for letter in reversed(cluster_label):
+                if letter != 'Z':
+                    idx = ascii_uppercase.index(cluster_label[-1])
+                    cluster_label = \
+                        cluster_label[:-1] + ascii_uppercase[idx + 1]
+                    break
+            else:
+                cluster_label = 'A' + cluster_label
+
+        current_index -= 26
+
+    return cluster_label

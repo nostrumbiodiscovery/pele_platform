@@ -350,10 +350,10 @@ class Analysis(object):
             clusters
         """
         import os
-        from string import ascii_uppercase
         from pele_platform.analysis import (GaussianMixtureClustering,
                                             HDBSCANClustering,
                                             MeanShiftClustering)
+        from pele_platform.analysis.clustering import get_cluster_label
 
         print(f"Extract coordinates for clustering")
 
@@ -424,7 +424,7 @@ class Analysis(object):
 
         # Save cluster summary to file with information about selected labels
         cluster_summary["Selected labels"] = [
-            ascii_uppercase[cluster_reindex_map[cluster]]
+            get_cluster_label(cluster_reindex_map[cluster])
             if cluster in cluster_reindex_map
             else "-" for cluster in cluster_summary["Cluster"]]
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
@@ -937,12 +937,11 @@ class Analysis(object):
         import os
         from collections import defaultdict
         import numpy as np
-        from string import ascii_uppercase
         from pele_platform.Utilities.Helpers import get_suffix
         from pele_platform.Utilities.Helpers.bestStructs import (
             extract_snapshot_from_pdb,
-            extract_snapshot_from_xtc,
-        )
+            extract_snapshot_from_xtc)
+        from pele_platform.analysis.clustering import get_cluster_label
 
         energies = list(dataframe["currentEnergy"])
         energies_per_cluster = defaultdict(list)
@@ -986,7 +985,7 @@ class Analysis(object):
                         topology=self.topology,
                         step=step,
                         out_freq=1,
-                        f_out="cluster_{}.pdb".format(ascii_uppercase[cluster]),
+                        f_out="cluster_{}.pdb".format(get_cluster_label(cluster)),
                     )
                 except UnicodeDecodeError:
                     raise Exception(
@@ -1003,5 +1002,5 @@ class Analysis(object):
                     topology=self.topology,
                     step=step,
                     out_freq=1,
-                    f_out="cluster_{}.pdb".format(ascii_uppercase[cluster]),
+                    f_out="cluster_{}.pdb".format(get_cluster_label(cluster)),
                 )
