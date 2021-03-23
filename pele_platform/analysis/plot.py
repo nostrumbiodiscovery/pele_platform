@@ -215,7 +215,7 @@ class Plotter(object):
         cluster_labels = sorted(list(set(clusters)))
 
         # Configurate colormap
-        if len(cluster_labels) > 8:
+        if len(cluster_labels) > 9:
             cmap = copy.copy(cm.get_cmap("jet"))
         else:
             cmap = copy.copy(cm.get_cmap("Set1"))

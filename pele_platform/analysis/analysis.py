@@ -77,7 +77,9 @@ class Analysis(object):
         self.residue = resname
         self.chain = chain
         self.output = simulation_output
-        self.be_column = be_column if be_column else 4
+        self.be_column = be_column
+        if be_column is None:
+            self.be_column = 4
         self.limit_column = limit_column
         self.kde = kde
         self.kde_structs = kde_structs
@@ -97,8 +99,7 @@ class Analysis(object):
             report_name=self.report,
             trajectory_name=self.traj,
             be_column=self.be_column,
-            skip_initial_structures=self.skip_initial_structures,
-        )
+            skip_initial_structures=self.skip_initial_structures)
         self._dataframe = self._data_handler.get_reports_dataframe()
 
     @classmethod
