@@ -232,7 +232,8 @@ def get_cluster_label(cluster_id):
     It assigns a cluster label according to the cluster id that is
     supplied.
 
-    It follows the criterion from above:
+    It follows the criterion from below:
+
     Cluster id   |   Cluster label
     0           -->  A
     1           -->  B
@@ -245,7 +246,13 @@ def get_cluster_label(cluster_id):
     Parameters
     ----------
     cluster_id : int
-        The id of the cluster that will be used to generate the label.
+        The id of the cluster that will be used to generate the label
+
+    Returns
+    -------
+    cluster_label : str
+        The cluster label according to the supplied id and the criterion
+        mentioned above
     """
     from string import ascii_uppercase
 
