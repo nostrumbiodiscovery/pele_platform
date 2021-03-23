@@ -360,6 +360,10 @@ class Analysis(object):
         # Extract coordinates
         coordinates, dataframe = self._extract_coordinates()
 
+        # Skip clustering in case
+        if coordinates is None or dataframe is None:
+            return
+
         # Filter coordinates
         coordinates, dataframe, energetic_threshold = \
             self._filter_coordinates(coordinates, dataframe)
@@ -371,9 +375,8 @@ class Analysis(object):
         # Analyze and save clustering results
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters,
                                                          coordinates)
-        cluster_summary = self._analyze_clusters(
-            clusters, dataframe, rmsd_per_cluster, path
-        )
+        cluster_summary = self._analyze_clusters(clusters, dataframe,
+                                                 rmsd_per_cluster, path)
 
         if len(cluster_summary) == 0:
             print(f"No clusters could be obtained, " +
@@ -398,9 +401,8 @@ class Analysis(object):
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
         self._save_clusters(cluster_subset, dataframe, path)
 
-    def generate_report(
-        self, plots_path, poses_path, clusters_path, best_metrics, filename
-    ):
+    def generate_report(self, plots_path, poses_path, clusters_path,
+                        best_metrics, filename):
         """
         It generates the final simulation report as a PDF file.
 
@@ -426,9 +428,8 @@ class Analysis(object):
         poses = glob.glob(os.path.join(poses_path, "*"))
         clusters = glob.glob(os.path.join(clusters_path, "*.png"))
 
-        report = pdf_report.create_report(
-            plots, clusters, poses, best_metrics, filename
-        )
+        report = pdf_report.create_report(plots, clusters, poses,
+                                          best_metrics, filename)
 
         print("PDF summary report successfully written to: {}".format(report))
 
@@ -499,12 +500,12 @@ class Analysis(object):
         if coordinates is None or dataframe is None:
             print(f"Coordinate extraction failed, " +
                   f"clustering analysis is skipped")
-            return
+            return None, None
 
         if len(coordinates) < 2:
             print(f"Not enough coordinates, " +
                   f"clustering analysis is skipped")
-            return
+            return None, None
 
         return coordinates, dataframe
 
@@ -531,13 +532,13 @@ class Analysis(object):
         from pele_platform.Utilities.Helpers import get_suffix
         from pele_platform.Utilities.Helpers.bestStructs import (
             extract_snapshot_from_pdb,
-            extract_snapshot_from_xtc,
-        )
+            extract_snapshot_from_xtc)
 
         values = dataframe[metric].tolist()
         paths = dataframe[self._TRAJECTORY_LABEL].tolist()
         epochs = dataframe[self._EPOCH_LABEL].tolist()
-        file_ids = [get_suffix(os.path.splitext(trajectory)[0]) for trajectory in paths]
+        file_ids = [get_suffix(os.path.splitext(trajectory)[0])
+                    for trajectory in paths]
         steps = list(map(int, dataframe[self._STEP_LABEL].tolist()))
 
         # TODO which is the purpose of this hardcoded distance_key?
@@ -545,49 +546,40 @@ class Analysis(object):
         if distance_key in dataframe.columns:
             dist_values = dataframe[distance_key].tolist()
             filename_template = "{}.{}.{}_BindEner{:.2f}_AtomDist{:.2f}.pdb"
-            file_names = [
-                filename_template.format(epoch, report, step, value, dist)
-                for epoch, step, report, value, dist in zip(
-                    epochs, steps, file_ids, values, dist_values
-                )
-            ]
+            file_names = \
+                [filename_template.format(epoch, report, step, value, dist)
+                 for epoch, step, report, value, dist
+                 in zip(epochs, steps, file_ids, values, dist_values)]
         else:
             filename_template = "{}.{}.{}_BindEner{:.2f}.pdb"
-            file_names = [
-                filename_template.format(epoch, report, step, value)
-                for epoch, step, report, value in zip(epochs, steps, file_ids, values)
-            ]
+            file_names = [filename_template.format(epoch, report, step, value)
+                          for epoch, step, report, value
+                          in zip(epochs, steps, file_ids, values)]
 
         # Read trajectory and output snapshot
         for f_id, f_out, step, path in zip(file_ids, file_names, steps, paths):
             if not self.topology:
                 try:
-                    extract_snapshot_from_pdb(
-                        path=path,
-                        f_id=f_id,
-                        output=output_path,
-                        topology=self.topology,
-                        step=step,
-                        out_freq=1,
-                        f_out=f_out,
-                    )
+                    extract_snapshot_from_pdb(path=path,
+                                              f_id=f_id,
+                                              output=output_path,
+                                              topology=self.topology,
+                                              step=step,
+                                              out_freq=1,
+                                              f_out=f_out)
                 except UnicodeDecodeError:
-                    raise Exception(
-                        "XTC output being treated as PDB. "
-                        + "Please specify XTC with the next "
-                        + "flag. traj: 'trajectory_name.xtc' "
-                        + "in the input.yaml"
-                    )
+                    raise Exception("XTC output being treated as PDB. " +
+                                    "Please specify XTC with the next " +
+                                    "flag. traj: 'trajectory_name.xtc' " +
+                                    "in the input.yaml")
             else:
-                extract_snapshot_from_xtc(
-                    path=path,
-                    f_id=f_id,
-                    output=output_path,
-                    topology=self.topology,
-                    step=step,
-                    out_freq=1,
-                    f_out=f_out,
-                )
+                extract_snapshot_from_xtc(path=path,
+                                          f_id=f_id,
+                                          output=output_path,
+                                          topology=self.topology,
+                                          step=step,
+                                          out_freq=1,
+                                          f_out=f_out)
 
         return values
 
@@ -635,35 +627,24 @@ class Analysis(object):
         for cluster in clusters:
             clusters_population[cluster] += 1
 
-        summary = pd.DataFrame(
-            [
-                (cluster, population / len(clusters), rmsd_per_cluster[cluster])
-                for cluster, population in clusters_population.items()
-                if not cluster < 0
-            ],
-            columns=["Cluster", "Population", "MeanRMSD"],
-        )
+        summary = pd.DataFrame([(cluster, population / len(clusters),
+                                 rmsd_per_cluster[cluster])
+                                for cluster, population
+                                in clusters_population.items()
+                                if not cluster < 0],
+                               columns=["Cluster", "Population", "MeanRMSD"])
 
         # Plot Mean RMSD per cluster
         fig, ax = plt.subplots()
-        ax.scatter(
-            [
-                cluster
-                for cluster in sorted(clusters_population.keys())
-                if cluster != -1
-            ],
-            [
-                rmsd_per_cluster[cluster]
-                for cluster in sorted(clusters_population.keys())
-                if cluster != -1
-            ],
-            s=[
-                clusters_population[cluster] / len(clusters) * 200
-                for cluster in sorted(clusters_population.keys())
-                if cluster != -1
-            ],
-            label="Cluster population",
-        )
+        ax.scatter([cluster for cluster in sorted(clusters_population.keys())
+                    if cluster != -1],
+                   [rmsd_per_cluster[cluster]
+                    for cluster in sorted(clusters_population.keys())
+                    if cluster != -1],
+                   s=[clusters_population[cluster] / len(clusters) * 200
+                      for cluster in sorted(clusters_population.keys())
+                      if cluster != -1],
+                   label="Cluster population")
         ax.set_xlabel("Cluster label")
         ax.set_ylabel("Mean RMSD (Å)")
         plt.legend()
@@ -677,12 +658,10 @@ class Analysis(object):
             values = list(dataframe[metric])
 
             if len(clusters) != len(values):
-                print(
-                    "Warning: metric '{}' ".format(metric)
-                    + "array has a wrong size. It will be skipped "
-                    + "from the clustering analysis. Expected size: "
-                    + "{}".format(len(clusters))
-                )
+                print("Warning: metric '{}' ".format(metric) +
+                      "array has a wrong size. It will be skipped " +
+                      "from the clustering analysis. Expected size: " +
+                      "{}".format(len(clusters)))
                 continue
 
             # Arrange metrics per cluster
@@ -694,69 +673,50 @@ class Analysis(object):
 
             # Calculate descriptors
             for cluster in values_per_cluster:
-                descriptors["{} min".format(metric)][cluster] = np.min(
-                    values_per_cluster[cluster]
-                )
-                descriptors["{} 5-percentile".format(metric)][cluster] = np.percentile(
-                    values_per_cluster[cluster], 5
-                )
-                descriptors["{} 25-percentile".format(metric)][cluster] = np.percentile(
-                    values_per_cluster[cluster], 25
-                )
-                descriptors["{} mean".format(metric)][cluster] = np.mean(
-                    values_per_cluster[cluster]
-                )
-                descriptors["{} 75-percentile".format(metric)][cluster] = np.percentile(
-                    values_per_cluster[cluster], 75
-                )
-                descriptors["{} 95-percentile".format(metric)][cluster] = np.percentile(
-                    values_per_cluster[cluster], 95
-                )
-                descriptors["{} max".format(metric)][cluster] = np.max(
-                    values_per_cluster[cluster]
-                )
+                descriptors["{} min".format(metric)][cluster] = \
+                    np.min(values_per_cluster[cluster])
+                descriptors["{} 5-percentile".format(metric)][cluster] = \
+                    np.percentile(values_per_cluster[cluster], 5)
+                descriptors["{} 25-percentile".format(metric)][cluster] = \
+                    np.percentile(values_per_cluster[cluster], 25)
+                descriptors["{} mean".format(metric)][cluster] = \
+                    np.mean(values_per_cluster[cluster])
+                descriptors["{} 75-percentile".format(metric)][cluster] = \
+                    np.percentile(values_per_cluster[cluster], 75)
+                descriptors["{} 95-percentile".format(metric)][cluster] = \
+                    np.percentile(values_per_cluster[cluster], 95)
+                descriptors["{} max".format(metric)][cluster] = \
+                    np.max(values_per_cluster[cluster])
 
             # Generate boxplots
             try:
                 fig, ax = plt.subplots()
 
-                ax.boxplot(
-                    [
-                        values_per_cluster[cluster]
-                        for cluster in sorted(values_per_cluster.keys())
-                    ]
-                )
+                ax.boxplot([values_per_cluster[cluster]
+                            for cluster in sorted(values_per_cluster.keys())])
 
                 ax.set_ylabel(metric)
                 ax.set_xlabel("Cluster number")
 
-                boxplot_filename = os.path.join(
-                    path, "clusters_{}_boxplot.png".format(metric)
-                )
+                boxplot_filename = \
+                    os.path.join(path,
+                                 "clusters_{}_boxplot.png".format(metric))
                 plt.savefig(boxplot_filename)
             except IndexError:
-                print(
-                    "Samples too disperse to produce a cluster "
-                    + "for metric {}".format(metric)
-                )
+                print("Samples too disperse to produce a cluster " +
+                      "for metric {}".format(metric))
 
         # Add descriptors to summary dataframe
         for label, values_per_cluster in descriptors.items():
-            summary[label] = [
-                values_per_cluster[cluster]
-                for cluster in summary["Cluster"]
-                if not cluster < 0
-            ]
+            summary[label] = [values_per_cluster[cluster]
+                              for cluster in summary["Cluster"]
+                              if not cluster < 0]
 
         return summary
 
-    def _select_top_clusters(
-        self,
-        clusters,
-        cluster_summary,
-        max_clusters_to_select=8,
-        min_population_to_select=0.01,
-    ):
+    def _select_top_clusters(self, clusters, cluster_summary,
+                             max_clusters_to_select=8,
+                             min_population_to_select=0.01):
         """
         It selects the top clusters based on their binding energy. If
         this metric is not available, the cluster population will be
@@ -797,12 +757,12 @@ class Analysis(object):
         else:
             metric = "Population"
 
-        filtered_cluster_summary = cluster_summary[
-            cluster_summary["Population"] >= min_population_to_select
-        ]
-        filtered_cluster_summary = filtered_cluster_summary.nsmallest(
-            max_clusters_to_select, metric
-        )
+        filtered_cluster_summary = \
+            cluster_summary[cluster_summary["Population"] >=
+                            min_population_to_select]
+        filtered_cluster_summary = \
+            filtered_cluster_summary.nsmallest(max_clusters_to_select,
+                                               metric)
         top_clusters = list(filtered_cluster_summary["Cluster"])
 
         cluster_reindex_map = {}
@@ -856,7 +816,8 @@ class Analysis(object):
 
         # Iterate over all the metrics found in the reports
         for metric in metrics[limit_column:]:
-            plotter.plot_clusters(metric, energy, output_folder=path, clusters=clusters)
+            plotter.plot_clusters(metric, energy, output_folder=path,
+                                  clusters=clusters)
 
     def _filter_coordinates(self, coordinates, dataframe, threshold=0.25):
         """
@@ -924,11 +885,9 @@ class Analysis(object):
         coordinates = Clustering.fix_coordinates_shape(coordinates)
 
         if len(clusters) != len(coordinates):
-            print(
-                "Warning: coordinates array has a wrong size. "
-                + "The RMSD analysis will be skipped. It will be "
-                + "skipped. Expected size: {}".format(len(clusters))
-            )
+            print("Warning: coordinates array has a wrong size. " +
+                  "The RMSD analysis will be skipped. It will be " +
+                  "skipped. Expected size: {}".format(len(clusters)))
             return
 
         # Split conformations by cluster
@@ -943,16 +902,16 @@ class Analysis(object):
         # Calculate centroids of each cluster
         centroid_per_cluster = {}
         for cluster, conformations in conformations_per_cluster.items():
-            centroid_per_cluster[cluster] = np.mean(conformations, axis=0).reshape(
-                -1, 3
-            )
+            centroid_per_cluster[cluster] = \
+                np.mean(conformations, axis=0).reshape(-1, 3)
 
         # Calculate mean RMSD of each cluster with respect to their centroid
         rmsd_per_cluster = {}
         for cluster, conformations in conformations_per_cluster.items():
             rmsds = []
             for conformation in conformations:
-                diff = conformation.reshape(-1, 3) - centroid_per_cluster[cluster]
+                diff = \
+                    conformation.reshape(-1, 3) - centroid_per_cluster[cluster]
                 norm_factor = len(centroid_per_cluster[cluster])
                 rmsds.append(np.sqrt((diff * diff).sum() / norm_factor))
             rmsd_per_cluster[cluster] = np.mean(rmsds)
@@ -1001,9 +960,8 @@ class Analysis(object):
         lowest_energetic_diff = {}
         trajectories = list(dataframe["trajectory"])
         steps = list(dataframe["numberOfAcceptedPeleSteps"])
-        for cluster, energy, trajectory, step in zip(
-            clusters, energies, trajectories, steps
-        ):
+        for cluster, energy, trajectory, step in zip(clusters, energies,
+                                                     trajectories, steps):
             # Skip outliers such as clusters with label -1
             if cluster < 0:
                 continue
@@ -1027,15 +985,13 @@ class Analysis(object):
                         topology=self.topology,
                         step=step,
                         out_freq=1,
-                        f_out="cluster_{}.pdb".format(get_cluster_label(cluster)),
-                    )
+                        f_out="cluster_{}.pdb".format(
+                            get_cluster_label(cluster)))
                 except UnicodeDecodeError:
-                    raise Exception(
-                        "XTC output being treated as PDB. "
-                        + "Please specify XTC with the next "
-                        + "flag. traj: 'trajectory_name.xtc' "
-                        + "in the input.yaml"
-                    )
+                    raise Exception("XTC output being treated as PDB. " +
+                                    "Please specify XTC with the next " +
+                                    "flag. traj: 'trajectory_name.xtc' " +
+                                    "in the input.yaml")
             else:
                 extract_snapshot_from_xtc(
                     path=trajectory,
@@ -1044,5 +1000,4 @@ class Analysis(object):
                     topology=self.topology,
                     step=step,
                     out_freq=1,
-                    f_out="cluster_{}.pdb".format(get_cluster_label(cluster)),
-                )
+                    f_out="cluster_{}.pdb".format(get_cluster_label(cluster)))
