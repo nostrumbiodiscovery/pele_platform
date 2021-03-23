@@ -15,7 +15,7 @@ class Analysis(object):
     _REPORT = "report"
     _STEP_LABEL = "numberOfAcceptedPeleSteps"
 
-    def __init__(self, resname, chain, simulation_output, working_folder=".",
+    def __init__(self, resname, chain, simulation_output,
                  be_column=4, limit_column=None, traj="trajectory.pdb",
                  report=None, skip_initial_structures=True, kde=False,
                  kde_structs=1000, clustering_method="meanshift",
@@ -34,9 +34,6 @@ class Analysis(object):
         simulation_output : str
             Path to the output folder of the simulation, e.g.
             "LIG_Pele/output"
-        working_folder : str
-            Directory to output the analysis results. Default is current
-            working directory
         be_column : int
             Column with energy metric, default 4.
         limit_column : int
@@ -80,7 +77,6 @@ class Analysis(object):
         self.residue = resname
         self.chain = chain
         self.output = simulation_output
-        self.working_folder = working_folder
         self.be_column = be_column if be_column else 4
         self.limit_column = limit_column
         self.kde = kde
@@ -122,13 +118,13 @@ class Analysis(object):
             The Analysis object obtained from the parameters that were
             supplied
         """
+        import os
+
         simulation_output = os.path.join(parameters.pele_dir, parameters.output)
-        analysis_folder = os.path.join(parameters.pele_dir, "results")
 
         analysis = Analysis(resname=parameters.residue,
                             chain=parameters.chain,
                             simulation_output=simulation_output,
-                            working_folder=analysis_folder,
                             be_column=parameters.be_column,
                             limit_column=parameters.limit_column,
                             traj=parameters.traj_name,
@@ -355,11 +351,9 @@ class Analysis(object):
         """
         import os
         from string import ascii_uppercase
-        from pele_platform.analysis import (
-            GaussianMixtureClustering,
-            HDBSCANClustering,
-            MeanShiftClustering,
-        )
+        from pele_platform.analysis import (GaussianMixtureClustering,
+                                            HDBSCANClustering,
+                                            MeanShiftClustering)
 
         print(f"Extract coordinates for clustering")
 
@@ -418,20 +412,20 @@ class Analysis(object):
                 + "'HDBSCAN', 'MeanShift']"
             )
 
-        coordinates, dataframe = self._filter_coordinates(coordinates,
-                                                          dataframe)
+        coordinates, dataframe, energetic_threshold = \
+            self._filter_coordinates(coordinates, dataframe)
 
         clusters = clustering.get_clusters(coordinates)
 
-        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
+        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters,
+                                                         coordinates)
         cluster_summary = self._analyze_clusters(
             clusters, dataframe, rmsd_per_cluster, path
         )
 
         if len(cluster_summary) == 0:
-            print(
-                f"No clusters could be obtained, " + f"clustering analysis is skipped"
-            )
+            print(f"No clusters could be obtained, " +
+                  f"clustering analysis is skipped")
             return
 
         cluster_subset, cluster_reindex_map = self._select_top_clusters(
@@ -445,9 +439,7 @@ class Analysis(object):
         cluster_summary["Selected labels"] = [
             ascii_uppercase[cluster_reindex_map[cluster]]
             if cluster in cluster_reindex_map
-            else "-"
-            for cluster in cluster_summary["Cluster"]
-        ]
+            else "-" for cluster in cluster_summary["Cluster"]]
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
 
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
@@ -872,6 +864,7 @@ class Analysis(object):
         for coors_array, total_energy in zip(coordinates, total_energies):
             if total_energy <= energetic_threshold:
                 filtered_coordinates.append(coors_array)
+        filtered_coordinates = np.array(filtered_coordinates)
 
         filtered_dataframe = \
             dataframe.query('currentEnergy<={}'.format(energetic_threshold))

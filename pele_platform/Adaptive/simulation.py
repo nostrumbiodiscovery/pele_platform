@@ -377,6 +377,8 @@ def run_adaptive(args):
     if parameters.analyse and not parameters.debug:
         from pele_platform.analysis import Analysis
 
+        analysis_folder = os.path.join(parameters.pele_dir, "results")
+
         analysis = Analysis.from_parameters(parameters)
         analysis.generate(analysis_folder,
                           clustering_type=parameters.clustering_method.lower())
