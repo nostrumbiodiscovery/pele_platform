@@ -355,10 +355,10 @@ class Analysis(object):
         from pele_platform.analysis.clustering import get_cluster_label
 
         # Get clustering object
-        clustering = self._get_clustering(clustering_type)
+        clustering, max_coordinates = self._get_clustering(clustering_type)
 
         # Extract coordinates
-        coordinates, dataframe = self._extract_coordinates()
+        coordinates, dataframe = self._extract_coordinates(max_coordinates)
 
         # Skip clustering in case
         if coordinates is None or dataframe is None:
@@ -448,6 +448,9 @@ class Analysis(object):
         clustering : a Clustering object
             The Clustering object that matches with the supplied
             clustering type
+        max_coordinates : int
+            The maximum number of coordinates to extract from the
+            residue
         """
         from pele_platform.analysis import (GaussianMixtureClustering,
                                             HDBSCANClustering,
@@ -468,12 +471,18 @@ class Analysis(object):
                              "It should be one of ['GaussianMixture', " +
                              "'HDBSCAN', 'MeanShift']")
 
-        return clustering
+        return clustering, max_coordinates
 
-    def _extract_coordinates(self):
+    def _extract_coordinates(self, max_coordinates):
         """
         It extracts the coordinates of the simulation and creates the
         dataframe with the metrics of each snapshot.
+
+        Parameters
+        ----------
+        max_coordinates : int
+            The maximum number of coordinates to extract from the
+            residue
 
         Returns
         -------
@@ -486,16 +495,13 @@ class Analysis(object):
         print(f"Extract coordinates for clustering")
 
         if not self.topology:
-            coordinates, dataframe = \
-                self._data_handler.extract_raw_coords(self.residue,
-                                                      remove_hydrogen=True,
-                                                      n_proc=self.cpus)
+            coordinates, dataframe = self._data_handler.extract_raw_coords(
+                self.residue, remove_hydrogen=True,
+                n_proc=self.cpus, max_coordinates=max_coordinates)
         else:
             coordinates, dataframe = self._data_handler.extract_coords(
-                self.residue,
-                self.topology,
-                remove_hydrogen=True,
-                max_coordinates=max_coordinates)
+                self.residue, self.topology,
+                remove_hydrogen=True, max_coordinates=max_coordinates)
 
         if coordinates is None or dataframe is None:
             print(f"Coordinate extraction failed, " +
