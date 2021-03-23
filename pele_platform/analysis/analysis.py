@@ -365,21 +365,6 @@ class Analysis(object):
             return
 
         print(f"Retrieve best cluster poses")
-
-        if clustering_type.lower() == "gaussianmixture":
-            clustering = GaussianMixtureClustering(self.analysis_nclust)
-        elif clustering_type.lower() == "hdbscan":
-            clustering = HDBSCANClustering(self.bandwidth)
-        elif clustering_type.lower() == "meanshift":
-            clustering = MeanShiftClustering(self.bandwidth)
-        else:
-            raise ValueError(
-                "Invalid clustering type: "
-                "'{}'. ".format(clustering_type)
-                + "It should be one of ['GaussianMixture', "
-                + "'HDBSCAN', 'MeanShift']"
-            )
-
         clusters = clustering.get_clusters(coordinates)
 
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
@@ -389,7 +374,7 @@ class Analysis(object):
 
         if len(cluster_summary) == 0:
             print(
-                f"No clusters could be obtained, " + f"clustering analysis is skipped"
+                f"No clusters could be obtained, " + f"clustering analysis was skipped."
             )
             return
 
