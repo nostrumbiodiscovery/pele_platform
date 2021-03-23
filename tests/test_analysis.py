@@ -56,8 +56,8 @@ def test_plotter(x, y, z):
     ("n_poses", "expected_energies"),
     [
         (0, []),
-        (1, [0.879497]),
-        (4, [0.879497, 2.2030000000000003, 3.5630900000000003, 6.6241699999999994]),
+        (1, [0.879]),
+        (4, [0.879, 2.203, 3.563, 6.624]),
     ],
 )
 def test_top_poses(n_poses, expected_energies):
@@ -78,11 +78,12 @@ def test_top_poses(n_poses, expected_energies):
         skip_initial_structures=False,
     )
     top_poses = analysis.generate_top_poses(output_folder, n_poses)
+    top_poses_rounded = [round(pose, 3) for pose in top_poses]
 
     # Check if correct energy values were extracted
     assert len(top_poses) == n_poses
     for energy in expected_energies:
-        assert energy in top_poses
+        assert energy in top_poses_rounded
 
     # Check if correct number of files was saved
     results = [
@@ -96,22 +97,22 @@ def test_top_poses(n_poses, expected_energies):
     ("yaml_file", "n_expected_outputs", "expected_files"),
     [
         (
-            ANALYSIS_FLAGS0,
-            4,
-            [
-                "distance0_Binding_Energy_plot.png",
-                "currentEnergy_Binding_Energy_distance0_plot.png",
-                "sasaLig_Binding_Energy_plot.png",
-                "currentEnergy_Binding_Energy_sasaLig_plot.png",
-            ],
+                ANALYSIS_FLAGS0,
+                4,
+                [
+                    "distance0_Binding_Energy_plot.png",
+                    "currentEnergy_Binding_Energy_distance0_plot.png",
+                    "sasaLig_Binding_Energy_plot.png",
+                    "currentEnergy_Binding_Energy_sasaLig_plot.png",
+                ],
         ),
         (
-            ANALYSIS_FLAGS,
-            2,
-            [
-                "currentEnergy_Binding_Energy_distance0_plot.png",
-                "distance0_Binding_Energy_plot.png",
-            ],
+                ANALYSIS_FLAGS,
+                2,
+                [
+                    "currentEnergy_Binding_Energy_distance0_plot.png",
+                    "distance0_Binding_Energy_plot.png",
+                ],
         ),
     ],
 )
@@ -145,8 +146,9 @@ def test_analysis_flags(yaml_file, n_expected_outputs, expected_files):
     assert len(all_files) == n_expected_outputs
 
 
-@pytest.mark.parametrize("yaml_file", [ANALYSIS_ARGS, ANALYSIS_XTC_ARGS])
-def test_analysis_production(yaml_file):
+@pytest.mark.parametrize(("yaml_file", "expected_poses", "expected_clusters"),
+                         [(ANALYSIS_ARGS, 1, 0), (ANALYSIS_XTC_ARGS, 3, 2)])
+def test_analysis_production(yaml_file, expected_poses, expected_clusters):
     """
     Runs production analysis from input.yaml, both for PDB and XTC trajectories.
     Parameters
@@ -158,6 +160,16 @@ def test_analysis_production(yaml_file):
         Parameters object with simulation parameters.
     """
     job_params = main.run_platform(yaml_file)
+
+    results_folder = os.path.join(job_params.pele_dir, "results")
+    top_poses = glob.glob(os.path.join(results_folder, "top_poses/*pdb"))
+    clusters = glob.glob(os.path.join(results_folder, "clusters/*pdb"))
+
+    assert len(top_poses) == expected_poses
+    assert len(clusters) == expected_clusters
+
+    # Clean up
+    shutil.rmtree(results_folder)
 
 
 @pytest.mark.parametrize(
