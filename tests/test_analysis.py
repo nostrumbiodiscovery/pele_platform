@@ -215,11 +215,11 @@ def test_analysis_api():
         Returns a directory with top_poses, clusters and plots.
     """
     working_folder = "full_analysis"
-    output = "../pele_platform/Examples/analysis/data/output"
-    n_clusts = 1
+    output = "../pele_platform/Examples/clustering"
+    n_clusts = 3
 
     analysis = Analysis(
-        resname="STR",
+        resname="LIG",
         chain="Z",
         simulation_output=output,
         working_folder=working_folder,
@@ -238,7 +238,7 @@ def test_analysis_api():
 
     # Check top poses
     top_poses = glob.glob(os.path.join(working_folder, "top_poses", "*pdb"))
-    assert len(top_poses) == 1
+    assert len(top_poses) == 7
 
     # Check clusters
     clusters = glob.glob(os.path.join(working_folder, "top_poses", "*pdb"))
