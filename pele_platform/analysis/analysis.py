@@ -290,20 +290,22 @@ class Analysis(object):
 
         # Iterate over all the metrics found in the reports
         for metric in metrics[limit_column:]:
+            # Avoid comparing an energy with itself
+            if metric == t_energy or metric == i_energy:
+                continue
 
             if i_energy is not None:
-                plotter.plot_two_metrics(t_energy, i_energy, metric, output_folder=path)
-                plotter.plot_two_metrics(metric, i_energy, output_folder=path)
+                plotter.plot_two_metrics(t_energy, i_energy, metric,
+                                         output_folder=path)
+                plotter.plot_two_metrics(metric, i_energy,
+                                         output_folder=path)
             else:
-                plotter.plot_two_metrics(metric, t_energy, output_folder=path)
+                plotter.plot_two_metrics(metric, t_energy,
+                                         output_folder=path)
 
             if self.kde:
-                plotter.plot_kde(
-                    metric,
-                    i_energy,
-                    output_folder=path,
-                    kde_structs=self.kde_structs,
-                )
+                plotter.plot_kde(metric, i_energy, output_folder=path,
+                                 kde_structs=self.kde_structs)
 
     def generate_top_poses(self, path, n_poses=100):
         """
@@ -350,61 +352,23 @@ class Analysis(object):
             clusters
         """
         import os
-        from pele_platform.analysis import (GaussianMixtureClustering,
-                                            HDBSCANClustering,
-                                            MeanShiftClustering)
         from pele_platform.analysis.clustering import get_cluster_label
 
-        print(f"Extract coordinates for clustering")
+        # Get clustering object
+        clustering = self._get_clustering(clustering_type)
 
-        if clustering_type.lower() == "gaussianmixture":
-            clustering = GaussianMixtureClustering(self.analysis_nclust)
-            max_coordinates = 10
-        elif clustering_type.lower() == "hdbscan":
-            clustering = HDBSCANClustering(self.bandwidth)
-            max_coordinates = 10
-        elif clustering_type.lower() == "meanshift":
-            clustering = MeanShiftClustering(self.bandwidth)
-            max_coordinates = 5
-        else:
-            raise ValueError(
-                "Invalid clustering type: "
-                "'{}'. ".format(clustering_type)
-                + "It should be one of ['GaussianMixture', "
-                + "'HDBSCAN', 'MeanShift']"
-            )
+        # Extract coordinates
+        coordinates, dataframe = self._extract_coordinates()
 
-        if not self.topology:
-            coordinates, dataframe = self._data_handler.extract_raw_coords(
-                self.residue,
-                remove_hydrogen=True,
-                n_proc=self.cpus,
-            )
-        else:
-            coordinates, dataframe = self._data_handler.extract_coords(
-                self.residue,
-                self.topology,
-                remove_hydrogen=True,
-                max_coordinates=max_coordinates,
-            )
-
-        if coordinates is None or dataframe is None:
-            print(f"Coordinate extraction failed, " +
-                  f"clustering analysis is skipped")
-            return
-
-        if len(coordinates) < 2:
-            print(f"Not enough coordinates, " +
-                  f"clustering analysis is skipped")
-            return
-
-        print(f"Retrieve best cluster poses")
-
+        # Filter coordinates
         coordinates, dataframe, energetic_threshold = \
             self._filter_coordinates(coordinates, dataframe)
 
+        # Cluster coordinates
+        print(f"Cluster coordinates into best poses")
         clusters = clustering.get_clusters(coordinates)
 
+        # Analyze and save clustering results
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters,
                                                          coordinates)
         cluster_summary = self._analyze_clusters(
@@ -416,6 +380,8 @@ class Analysis(object):
                   f"clustering analysis is skipped")
 
             return
+
+        print(f"Retrieve best cluster poses")
 
         cluster_subset, cluster_reindex_map = self._select_top_clusters(
             clusters, cluster_summary,
@@ -465,6 +431,82 @@ class Analysis(object):
         )
 
         print("PDF summary report successfully written to: {}".format(report))
+
+    def _get_clustering(self, clustering_type):
+        """
+        It returns the clustering object according to the supplied
+        clustering type.
+
+        Parameters
+        ----------
+        clustering_type : str
+            The type of clustering to use
+
+        Returns
+        -------
+        clustering : a Clustering object
+            The Clustering object that matches with the supplied
+            clustering type
+        """
+        from pele_platform.analysis import (GaussianMixtureClustering,
+                                            HDBSCANClustering,
+                                            MeanShiftClustering)
+
+        if clustering_type.lower() == "gaussianmixture":
+            clustering = GaussianMixtureClustering(self.analysis_nclust)
+            max_coordinates = 10
+        elif clustering_type.lower() == "hdbscan":
+            clustering = HDBSCANClustering(self.bandwidth)
+            max_coordinates = 10
+        elif clustering_type.lower() == "meanshift":
+            clustering = MeanShiftClustering(self.bandwidth)
+            max_coordinates = 5
+        else:
+            raise ValueError("Invalid clustering type: " +
+                             "'{}'. ".format(clustering_type) +
+                             "It should be one of ['GaussianMixture', " +
+                             "'HDBSCAN', 'MeanShift']")
+
+        return clustering
+
+    def _extract_coordinates(self):
+        """
+        It extracts the coordinates of the simulation and creates the
+        dataframe with the metrics of each snapshot.
+
+        Returns
+        -------
+        coordinates : numpy.array
+            The array of coordinates to filter
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of coordinates
+        """
+        print(f"Extract coordinates for clustering")
+
+        if not self.topology:
+            coordinates, dataframe = \
+                self._data_handler.extract_raw_coords(self.residue,
+                                                      remove_hydrogen=True,
+                                                      n_proc=self.cpus)
+        else:
+            coordinates, dataframe = self._data_handler.extract_coords(
+                self.residue,
+                self.topology,
+                remove_hydrogen=True,
+                max_coordinates=max_coordinates)
+
+        if coordinates is None or dataframe is None:
+            print(f"Coordinate extraction failed, " +
+                  f"clustering analysis is skipped")
+            return
+
+        if len(coordinates) < 2:
+            print(f"Not enough coordinates, " +
+                  f"clustering analysis is skipped")
+            return
+
+        return coordinates, dataframe
 
     def _extract_poses(self, dataframe, metric, output_path):
         """
