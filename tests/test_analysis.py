@@ -93,25 +93,6 @@ def test_top_poses(n_poses, expected_energies):
     assert len(results) == n_poses
 
 
-def test_csv_move_folder():
-    # TODO: Is it still necessary?
-    metric = "Binding Energy"
-    n_poses = 1
-
-    output_folder = "copy_folder"
-    if os.path.exists(output_folder):
-        shutil.rmtree(output_folder)
-
-    shutil.copytree(simulation_path, output_folder)
-    data_handler = DataHandler(
-        sim_path=simulation_path,
-        report_name=REPORT_NAME,
-        trajectory_name=TRAJ_NAME,
-        be_column=5,
-    )
-    top_poses = data_handler.get_top_entries(metric, n_poses)
-
-
 @pytest.mark.parametrize(
     ("yaml_file", "n_expected_outputs", "expected_files"),
     [
@@ -183,9 +164,9 @@ def test_analysis_production(yaml_file):
 @pytest.mark.parametrize(
     ("method", "bandwidth", "n_clusters"),
     [
-        ("hdbscan", 10, 1),
+        ("hdbscan", 5, 0),  # only gets orphan clusters [-1]
         ("meanshift", 100, 1),
-        ("meanshift", 10, 3),
+        ("meanshift", 30, 3),
         ("gaussianmixture", 1, 2),
     ],
 )
@@ -222,7 +203,6 @@ def test_clustering_methods(method, bandwidth, n_clusters):
         analysis_nclust=n_clusters,
         clustering_method=method,
     )
-
     analysis.generate_clusters(working_folder, method)
     assert len(glob.glob(results)) == n_clusters
 
@@ -235,11 +215,11 @@ def test_analysis_api():
         Returns a directory with top_poses, clusters and plots.
     """
     working_folder = "full_analysis"
-    output = "../pele_platform/Examples/analysis/data/output"
-    n_clusts = 1
+    output = "../pele_platform/Examples/clustering"
+    n_clusts = 3
 
     analysis = Analysis(
-        resname="STR",
+        resname="LIG",
         chain="Z",
         simulation_output=output,
         working_folder=working_folder,
@@ -254,12 +234,12 @@ def test_analysis_api():
 
     # Check plots
     plots = glob.glob(os.path.join(working_folder, "plots", "*png"))
-    assert len(plots) == 8
+    assert len(plots) == 6
 
     # Check top poses
     top_poses = glob.glob(os.path.join(working_folder, "top_poses", "*pdb"))
-    assert len(top_poses) == 1
+    assert len(top_poses) == 7
 
     # Check clusters
-    clusters = glob.glob(os.path.join(working_folder, "top_poses", "*pdb"))
+    clusters = glob.glob(os.path.join(working_folder, "clusters", "*pdb"))
     assert len(clusters) == n_clusts

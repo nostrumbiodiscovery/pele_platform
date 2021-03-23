@@ -389,28 +389,16 @@ class Analysis(object):
             )
 
         if coordinates is None or dataframe is None:
-            print(f"Coordinate extraction failed, " + f"clustering analysis is skipped")
+            print(f"Coordinate extraction failed, " +
+                  f"clustering analysis is skipped")
             return
 
         if len(coordinates) < 2:
-            print(f"Not enough coordinates, " + f"clustering analysis is skipped")
+            print(f"Not enough coordinates, " +
+                  f"clustering analysis is skipped")
             return
 
         print(f"Retrieve best cluster poses")
-
-        if clustering_type.lower() == "gaussianmixture":
-            clustering = GaussianMixtureClustering(self.analysis_nclust)
-        elif clustering_type.lower() == "hdbscan":
-            clustering = HDBSCANClustering(self.bandwidth)
-        elif clustering_type.lower() == "meanshift":
-            clustering = MeanShiftClustering(self.bandwidth)
-        else:
-            raise ValueError(
-                "Invalid clustering type: "
-                "'{}'. ".format(clustering_type)
-                + "It should be one of ['GaussianMixture', "
-                + "'HDBSCAN', 'MeanShift']"
-            )
 
         coordinates, dataframe, energetic_threshold = \
             self._filter_coordinates(coordinates, dataframe)
@@ -426,14 +414,13 @@ class Analysis(object):
         if len(cluster_summary) == 0:
             print(f"No clusters could be obtained, " +
                   f"clustering analysis is skipped")
+
             return
 
         cluster_subset, cluster_reindex_map = self._select_top_clusters(
-            clusters,
-            cluster_summary,
+            clusters, cluster_summary,
             max_clusters_to_select=self.max_top_clusters,
-            min_population_to_select=self.min_population,
-        )
+            min_population_to_select=self.min_population)
 
         # Save cluster summary to file with information about selected labels
         cluster_summary["Selected labels"] = [
