@@ -234,12 +234,12 @@ def test_analysis_api():
 
     # Check plots
     plots = glob.glob(os.path.join(working_folder, "plots", "*png"))
-    assert len(plots) == 8
+    assert len(plots) == 6
 
     # Check top poses
     top_poses = glob.glob(os.path.join(working_folder, "top_poses", "*pdb"))
     assert len(top_poses) == 7
 
     # Check clusters
-    clusters = glob.glob(os.path.join(working_folder, "top_poses", "*pdb"))
+    clusters = glob.glob(os.path.join(working_folder, "clusters", "*pdb"))
     assert len(clusters) == n_clusts
