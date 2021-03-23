@@ -495,7 +495,7 @@ class Analysis(object):
         print(f"Extract coordinates for clustering")
 
         if not self.topology:
-            coordinates, dataframe = self._data_handler.extract_raw_coords(
+            coordinates, dataframe = self._data_handler.extract_PDB_coords(
                 self.residue, remove_hydrogen=True,
                 n_proc=self.cpus, max_coordinates=max_coordinates)
         else:

@@ -338,7 +338,8 @@ class DataHandler(object):
         """
         This method employs mdtraj to extract the coordinates that
         belong to the supplied residue from all the trajectories in the
-        dataframe. It supports both PDB and XTC trajectories.
+        dataframe. It supports both PDB and XTC trajectories (although
+        right now it is only used to deal with XTC)
 
         Parameters
         ----------
@@ -428,7 +429,7 @@ class DataHandler(object):
 
         return coordinates, reordered_dataframe
 
-    def extract_raw_coords(self, residue_name, remove_hydrogen=True,
+    def extract_PDB_coords(self, residue_name, remove_hydrogen=True,
                            max_coordinates=6, n_proc=1):
         """
         This method extracts the the coordinates that belong to the
