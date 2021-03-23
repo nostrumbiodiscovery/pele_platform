@@ -8,26 +8,6 @@ from pele_platform.Utilities.Helpers.helpers import check_output_folder
 from pele_platform.analysis import DataHandler
 
 
-# TODO this method should be moved to another module
-def _extract_coords(info):
-    import numpy as np
-    import mdtraj
-
-    p, v, resname, topology = info
-    # Most time consuming step 0.1
-    traj = mdtraj.load_frame(p, v, top=topology)
-    atoms_info = traj.topology.to_dataframe()[0]
-    condition = atoms_info["resName"] == resname
-    atom_numbers_ligand = atoms_info[condition].index.tolist()
-    coords = []
-    for atom_num in atom_numbers_ligand:
-        try:
-            coords.extend(traj.xyz[0][atom_num].tolist())
-        except IndexError:
-            continue
-    return np.array(coords).ravel() * 10
-
-
 class Plotter(object):
     """
     It handles the plots.
@@ -107,6 +87,7 @@ class Plotter(object):
         from matplotlib import pyplot as plt
 
         fig, ax = plt.subplots()
+
         if metric_to_z is not None:
             scatter = ax.scatter(self._dataframe[metric_to_x],
                                  self._dataframe[metric_to_y],
@@ -264,7 +245,7 @@ class Plotter(object):
                             zorder=zorder)
             colors_used += sc.legend_elements()[0]
 
-        # Configurate legend
+        # Configure legend
         cluster_names = []
         for cluster_id in cluster_labels:
             if cluster_id == -1:
@@ -308,7 +289,6 @@ class Plotter(object):
         """
 
         data_handler = DataHandler.from_dataframe(self._dataframe)
-
         # Ensure that metrics are strings pointing to dataframe columns
         if str(metric_to_x).isdigit():
             metric_to_x = data_handler.get_column_name(metric_to_x)
@@ -316,5 +296,4 @@ class Plotter(object):
             metric_to_y = data_handler.get_column_name(metric_to_y)
         if metric_to_z is not None and str(metric_to_z).isdigit():
             metric_to_z = data_handler.get_column_name(metric_to_z)
-
         return metric_to_x, metric_to_y, metric_to_z

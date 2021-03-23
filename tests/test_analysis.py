@@ -75,7 +75,6 @@ def test_top_poses(n_poses, expected_energies):
         resname="LIG",
         chain="Z",
         simulation_output="../pele_platform/Examples/clustering",
-        working_folder=output_folder,
         skip_initial_structures=False,
     )
     top_poses = analysis.generate_top_poses(output_folder, n_poses)
@@ -197,7 +196,6 @@ def test_clustering_methods(method, bandwidth, n_clusters):
         resname="LIG",
         chain="Z",
         simulation_output="../pele_platform/Examples/clustering",
-        working_folder=working_folder,
         skip_initial_structures=False,
         bandwidth=bandwidth,
         analysis_nclust=n_clusters,
@@ -222,7 +220,6 @@ def test_analysis_api():
         resname="LIG",
         chain="Z",
         simulation_output=output,
-        working_folder=working_folder,
         skip_initial_structures=False,
         analysis_nclust=n_clusts,
     )
@@ -234,7 +231,7 @@ def test_analysis_api():
 
     # Check plots
     plots = glob.glob(os.path.join(working_folder, "plots", "*png"))
-    assert len(plots) == 6
+    assert len(plots) == 2
 
     # Check top poses
     top_poses = glob.glob(os.path.join(working_folder, "top_poses", "*pdb"))
