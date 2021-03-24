@@ -2,7 +2,6 @@
 This module contains classes and methods to cluster PELE trajectories.
 """
 
-
 from abc import ABC, abstractmethod
 
 
@@ -114,8 +113,8 @@ class Clustering(ABC):
 
         path = os.path.join(csv_path, "data.csv")
 
-        clustering_dataframe["Cluster"] = [str(element) for element
-                                           in clusters.tolist()]
+        clustering_dataframe.insert(len(clustering_dataframe.columns), "Cluster",
+                                    [str(element) for element in clusters.tolist()])
 
         keys = [column for column in clustering_dataframe
                 if column in original_dataframe]

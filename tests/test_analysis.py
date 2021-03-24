@@ -260,4 +260,4 @@ def test_analysis_api():
     with open(data_csv, "r") as file:
         lines = file.readlines()
         assert len(lines) == 8
-        assert lines[0] == "Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,sasaLig,epoch,trajectory,Cluster ID\n"
+        assert lines[0] == "Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,sasaLig,epoch,trajectory,Cluster\n"
