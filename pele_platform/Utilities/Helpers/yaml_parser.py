@@ -299,6 +299,8 @@ class YamlParser(object):
         self.bandwidth = data.get(valid_flags["bandwidth"], None)
         self.kde = data.get(valid_flags["kde"], None)
         self.kde_structs = data.get(valid_flags["kde_structs"], None)
+        self.max_top_clusters = data.get(valid_flags["max_top_clusters"], None)
+        self.min_population = data.get(valid_flags["min_population"], None)
 
         if self.test:
             warnings.warn(
@@ -314,6 +316,7 @@ class YamlParser(object):
             self.temperature = self.temp = 10000
             self.n_components = 3
             self.analysis_nclust = 4
+            self.max_top_clusters = 4
 
 
 @dataclass

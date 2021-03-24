@@ -96,15 +96,15 @@ def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, outp
     # Read trajectory and output snapshot
     for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
         if not topology:
-            extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, logger=logger)
+            extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out)
         else:
-            extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, logger=logger)
+            extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out)
     files_out = [os.path.join(output, f) for f in files_out]
     # Return data
     return files_out, epochs, file_ids, step_indexes, values
 
 
-def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out, logger=None):
+def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out):
     f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.pdb".format(f_id)))
     if not f_in:
         f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.*".format(f_id)))
@@ -132,14 +132,14 @@ def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_ou
         f.write("\n".join(traj))
 
 
-def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out, logger=None):
+def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out):
     f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.xtc".format(f_id)))
     if not f_in:
         f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.*".format(f_id)))
     if len(f_in) == 0: 
         sys.exit("Trajectory {} not found. Be aware that PELE trajectories must contain the label \'trajectory\' in their file name to be detected".format("*trajectory*_{}".format(f_id)))
     splitTrajectory.main(output, [f_in[0], ], topology, [(step)/out_freq+1, ], template= f_out)
-    logger.info("Model {} selected".format(f_out))
+    print("Model {} selected".format(f_out))
 
 
 def parse_values(reports, n_structs, criteria, sort_order, steps):
