@@ -6,6 +6,7 @@ import os
 
 from pele_platform.Utilities.Helpers.helpers import check_output_folder
 from pele_platform.analysis import DataHandler
+from pele_platform.constants import constants
 
 
 class Plotter(object):
@@ -176,6 +177,8 @@ class Plotter(object):
             The array of cluster labels that were obtained
         """
         import copy
+        from matplotlib.colors import LinearSegmentedColormap
+
         from pele_platform.analysis.clustering import get_cluster_label
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
@@ -215,8 +218,10 @@ class Plotter(object):
         cluster_labels = sorted(list(set(clusters)))
 
         # Configurate colormap
-        if len(cluster_labels) > 9:
+        if len(cluster_labels) > 18:
             cmap = copy.copy(cm.get_cmap("jet"))
+        elif 9 <= len(cluster_labels) <= 18:
+            cmap = LinearSegmentedColormap.from_list('custom_tab20', constants.custom_colors)
         else:
             cmap = copy.copy(cm.get_cmap("Set1"))
 
