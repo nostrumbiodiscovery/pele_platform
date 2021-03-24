@@ -233,15 +233,16 @@ class Analysis(object):
             os.makedirs(clusters_folder)
 
         # Save dataframe
+        # (it will be save later again, replacing this file, to include
+        # the column of clusters, only if clustering can run successfully)
         self._dataframe.to_csv(summary_file, index=False)
 
         # Generate analysis results
         self.generate_plots(plots_folder)
         best_metrics = self.generate_top_poses(top_poses_folder)
         self.generate_clusters(clusters_folder, clustering_type)
-        self.generate_report(
-            plots_folder, top_poses_folder, clusters_folder, best_metrics, report_file
-        )
+        self.generate_report(plots_folder, top_poses_folder,
+                             clusters_folder, best_metrics, report_file)
 
     def generate_plots(self, path, existing_dataframe=None, colors=None):
         """
@@ -374,7 +375,8 @@ class Analysis(object):
 
         # Cluster coordinates
         print(f"Cluster coordinates into best poses")
-        clusters = clustering.get_clusters(coordinates, self._dataframe, dataframe, os.path.dirname(path))
+        clusters = clustering.get_clusters(coordinates, self._dataframe,
+                                           dataframe, os.path.dirname(path))
 
         # Analyze and save clustering results
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters,
@@ -765,31 +767,40 @@ class Analysis(object):
         import os
         from collections import defaultdict
         from matplotlib import pyplot as plt
+        import pandas as pd
         from pele_platform.analysis.clustering import get_cluster_label
 
         if not os.path.exists(path):
             os.mkdir(path)
 
-        top_clusters_summary = cluster_summary.query('`Selected labels`!="-"')
+        sorted_summary = cluster_summary.sort_values(by=['Cluster'],
+                                                     inplace=False,
+                                                     ascending=True)
 
-        rmsd_per_cluster = dict(zip(top_clusters_summary['Selected labels'],
-                                    top_clusters_summary['MeanRMSD']))
-        population_per_cluster = dict(zip(top_clusters_summary['Selected labels'],
-                                      top_clusters_summary['Population']))
+        xticks = list()
+        xticklabels = list()
+        for cluster_id, cluster_label in zip(sorted_summary['Cluster'],
+                                             sorted_summary['Selected labels']):
+            if cluster_label != '-':
+                xticks.append(cluster_id)
+                xticklabels.append(cluster_label)
+            elif cluster_id % 10 == 0 and abs(xticks[-1] - cluster_id) > 5:
+                xticks.append(cluster_id)
+                xticklabels.append(cluster_id)
 
         # Plot Mean RMSD per cluster
         fig, ax = plt.subplots()
-        ax.scatter([cluster for cluster in sorted(rmsd_per_cluster.keys())],
-                   [rmsd_per_cluster[cluster]
-                    for cluster in sorted(rmsd_per_cluster.keys())],
-                   s=[population_per_cluster[cluster] * 200
-                      for cluster in sorted(population_per_cluster.keys())],
+        ax.scatter(sorted_summary['Cluster'],
+                   sorted_summary['MeanRMSD'],
+                   s=[population * 300 for population
+                      in sorted_summary['Population']],
                    label="Cluster population")
-        ax.set_xlabel("Cluster label")
+        ax.set_xlabel("Cluster label/id")
         ax.set_ylabel("Mean RMSD (Å)")
-        ax.set_ylim(bottom=0)
+        ax.set_xticks(xticks)
+        ax.set_xticklabels(xticklabels)
         plt.legend()
-        plot_filename = os.path.join(path, "top_clusters_meanRMSD.png")
+        plot_filename = os.path.join(path, "clusters_meanRMSD.png")
         plt.savefig(plot_filename)
 
         metrics = self._data_handler.get_metrics()
