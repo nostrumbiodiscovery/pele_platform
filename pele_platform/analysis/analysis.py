@@ -786,9 +786,11 @@ class Analysis(object):
             if cluster_label != '-':
                 xticks.append(cluster_id)
                 xticklabels.append(cluster_label)
-            elif cluster_id % 10 == 0 and abs(xticks[-1] - cluster_id) > 5:
-                xticks.append(cluster_id)
-                xticklabels.append(cluster_id)
+            elif cluster_id % 10 == 0:
+                if len(xticks) > 0:
+                    if abs(xticks[-1] - cluster_id) > 5:
+                        xticks.append(cluster_id)
+                        xticklabels.append(cluster_id)
 
         # Plot Mean RMSD per cluster
         fig, ax = plt.subplots()
