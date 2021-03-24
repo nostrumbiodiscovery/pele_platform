@@ -219,6 +219,8 @@ class Analysis(object):
         """
         import os
 
+        self._directory_cleanup(path)
+
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
         top_poses_folder = os.path.join(path, "top_poses")
@@ -1069,3 +1071,11 @@ class Analysis(object):
                     step=step,
                     out_freq=1,
                     f_out="cluster_{}.pdb".format(get_cluster_label(cluster)))
+
+    def _directory_cleanup(self, path):
+        import os
+        import shutil
+
+        if os.path.exists(path):
+            shutil.rmtree(path)
+        print("Removing existing {} directory.".format(path))
