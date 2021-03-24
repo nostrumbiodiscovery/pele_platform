@@ -353,6 +353,9 @@ class Analysis(object):
             clusters
         """
         import os
+        from pele_platform.Utilities.Helpers.helpers import check_output_folder
+
+        check_output_folder(path)
 
         # Get clustering object
         clustering, max_coordinates = self._get_clustering(clustering_type)
