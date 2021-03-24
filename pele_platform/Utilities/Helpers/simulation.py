@@ -51,7 +51,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "ANM_NUM_OF_MODES": env.anm_num_of_modes, "ANM_RELAXATION_CONST": env.anm_relaxation_constr,
                         "PCA": env.pca, "COMPLEXES": env.complexes, "PELE_STEPS": env.frag_pele_steps, "OUTPUT_PATH": env.output_path,
                         "COM": env.com, "STEERING": env.steering, "MET_INTERACTION_RESTRICTIONS":env.met_interaction_restrictions,
-                        "INTERACTION_RESTRICTIONS": env.interaction_restrictions}
+                        "INTERACTION_RESTRICTIONS": env.interaction_restrictions, "INTER_STEP_LOGGER": env.inter_step_logger}
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 

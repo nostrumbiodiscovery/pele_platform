@@ -233,3 +233,8 @@ constraint_levels = {0: {"ca_constr": 0.0, "terminal_constr": 0.0, "ca_interval"
                      1: {"ca_constr": 0.5, "terminal_constr": 5.0, "ca_interval": 10},
                      2: {"ca_constr": 2.5, "terminal_constr": 5.0, "ca_interval": 8},
                      3: {"ca_constr": 5.0, "terminal_constr": 5.0, "ca_interval": 5}}
+
+# INTER STEP LOGGER
+#-------------------
+INTERSTEPLOGGER = ''',
+            "useInterStepLogger": true'''
