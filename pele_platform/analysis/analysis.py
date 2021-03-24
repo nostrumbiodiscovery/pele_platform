@@ -37,6 +37,7 @@ class Analysis(object):
         be_column : int
             Column with energy metric, default 4.
         limit_column : int
+            Integer specifying the first column from which the meaningful metrics start, e.g. SASA or RMSD.
         traj : str
             Trajectory name defaults to "trajectory.pdb",
             but you should use "trajectory.xtc" if using XTC format.
@@ -373,7 +374,7 @@ class Analysis(object):
 
         # Cluster coordinates
         print(f"Cluster coordinates into best poses")
-        clusters = clustering.get_clusters(coordinates)
+        clusters = clustering.get_clusters(coordinates, self._dataframe, dataframe, os.path.dirname(path))
 
         # Analyze and save clustering results
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters,

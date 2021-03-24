@@ -252,3 +252,12 @@ def test_analysis_api():
     # Check clusters
     clusters = glob.glob(os.path.join(working_folder, "clusters", "*pdb"))
     assert len(clusters) == n_clusts
+
+    # Check if data.csv exists and is not empty
+    data_csv = os.path.join(working_folder, "data.csv")
+    assert os.path.exists(data_csv)
+
+    with open(data_csv, "r") as file:
+        lines = file.readlines()
+        assert len(lines) == 8
+        assert lines[0] == "Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,sasaLig,epoch,trajectory,Cluster ID\n"
