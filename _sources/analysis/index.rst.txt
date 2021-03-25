@@ -87,15 +87,40 @@ API
 -----
 
 We included an option to run analysis as API for those of our users, who are familiar with Python. All you have to do is
-initialize the Analysis class with the following parameters:
+initialize the Analysis class with the three mandatory parameters (resname, chain and simulation_output) and any optional
+you might want to include.
 
-- **resname** - residue name of the ligand
-- **chain** - chain ID of the ligand
-- **simulation_output** - path to the output folder of the simulation.
+class Analysis
+++++++++++++++++
+        resname : str (mandatory)
+            Residue name of the ligand, e.g. "LIG"
+        chain : str (mandatory)
+            Chain ID of the ligand, e.g. "Z."
+        simulation_output : str (mandatory)
+            Path to the output folder of the simulation, e.g. "LIG_Pele/output"
+        be_column : int (optional, default = 4)
+            Report column with energy metric.
+        limit_column : int (optional, default = None)
+            Integer specifying the first column from which the meaningful metrics start, e.g. SASA or RMSD.
+        traj : str (optional, default = "tarjectory.pdb")
+            Trajectory name defaults to "trajectory.pdb", but you should use "trajectory.xtc" if using XTC format.
+        report : str (optional, default = "report")
+            Report file name, if not using default.
+        skip_initial_structures : bool (optional, default = False)
+            Skips initial structures (step 0 of the simulation). Should be set to False when running test
+            with only one step.
+        kde : bool (optional, default = False)
+            Set to True to create kernel density estimator plots.
+        kde_structs : int (optional, default = 1000)
+            Maximum number of structures to consider for the KDE plot.
+        topology : str (optional, default = None)
+            Path to the topology file, if using XTC trajectories.
+        cpus: int (optional, default = 1)
+            Number of CPUs to use.
 
 .. code-block:: python
 
-     analysis = Analysis(
+     >> analysis = Analysis(
             resname="LIG",
             chain="Z",
             simulation_output="LIG_Pele/output",
@@ -103,8 +128,52 @@ initialize the Analysis class with the following parameters:
 
 Then you can use one of the available methods to generate top poses, perform clustering or run the whole analysis workflow, e.g.
 
--
+generate()
+++++++++++++
 
 .. code-block:: python
 
-    analysis.generate(working_folder, "gaussianmixture")
+    >> analysis.generate(working_folder, "gaussianmixture")
+
+
+generate_clusters()
+++++++++++++++++++++
+Runs the full analysis workflow (plots, top poses and clusters) and saves the results in the supplied path.
+
+        path : str
+            The path where the analysis results will be saved
+        clustering_type : str (optional, default = 'meanshift')
+            The clustering method that will be used to generate the clusters. One of ['gaussianmixture', 'meanshift', 'hdbscan'].
+        bandwidth : float (optional, default = 2.5)
+            Bandwidth for the mean shift and HDBSCAN clustering.
+        analysis_nclust : int (optional, default = 10)
+            Number of clusters to create when using the Gaussian mixture model.
+        max_top_clusters : int (optional, default = 8)
+            Maximum number of clusters to return.
+        min_population : float (optional, default = 0.01)
+            The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1% of all structures.
+
+.. code-block:: python
+
+    >> analysis.generate_clusters(path="my_folder", clustering_type="gaussianmixture", analysis_nclust=3)
+
+generate_plots()
+++++++++++++++++++
+
+.. code-block:: python
+
+    >> analysis.generate_plots(working_folder, "gaussianmixture")
+
+generate_report()
+++++++++++++++++++
+
+.. code-block:: python
+
+    >> analysis.generate_report(working_folder, "gaussianmixture")
+
+generate_top_poses()
+++++++++++++++++++
+
+.. code-block:: python
+
+    >> analysis.generate_top_poses(working_folder, "gaussianmixture")

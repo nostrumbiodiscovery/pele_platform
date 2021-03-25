@@ -23,17 +23,11 @@ of hours. We are constantly improving and developing new features, currently the
 
 You can also check out our repository on `github <https://github.com/NostrumBioDiscovery/pele_platform>`_!
 
-Structure
-------------
-
-.. figure:: package_structure.png
-    :scale: 50%
-    :align: center
-
 Requirements
 ---------------
 
 - Schrödinger Suite (any version)
+
 
 .. toctree::
    installation/index.rst

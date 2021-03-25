@@ -36,6 +36,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
     <link rel="next" title="Tutorials" href="../tutorials/index.html" />
     <link rel="prev" title="Water perturbation" href="../flags/water/index.html" /> 
 </head>
@@ -108,7 +109,15 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#clusters">Clusters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#class-analysis">class Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate">generate()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-clusters">generate_clusters()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-plots">generate_plots()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-report">generate_report()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-top-poses">generate_top_poses()</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -257,13 +266,40 @@ poses plotted using the <code class="docutils literal notranslate"><span class="
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>We included an option to run analysis as API for those of our users, who are familiar with Python. All you have to do is
-initialize the Analysis class with the following parameters:</p>
-<ul class="simple">
-<li><p><strong>resname</strong> - residue name of the ligand</p></li>
-<li><p><strong>chain</strong> - chain ID of the ligand</p></li>
-<li><p><strong>simulation_output</strong> - path to the output folder of the simulation.</p></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span>
+initialize the Analysis class with the three mandatory parameters (resname, chain and simulation_output) and any optional
+you might want to include.</p>
+<div class="section" id="class-analysis">
+<h3>class Analysis<a class="headerlink" href="#class-analysis" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><dl class="simple">
+<dt>resname<span class="classifier">str (mandatory)</span></dt><dd><p>Residue name of the ligand, e.g. “LIG”</p>
+</dd>
+<dt>chain<span class="classifier">str (mandatory)</span></dt><dd><p>Chain ID of the ligand, e.g. “Z.”</p>
+</dd>
+<dt>simulation_output<span class="classifier">str (mandatory)</span></dt><dd><p>Path to the output folder of the simulation, e.g. “LIG_Pele/output”</p>
+</dd>
+<dt>be_column<span class="classifier">int (optional, default = 4)</span></dt><dd><p>Report column with energy metric.</p>
+</dd>
+<dt>limit_column<span class="classifier">int (optional, default = None)</span></dt><dd><p>Integer specifying the first column from which the meaningful metrics start, e.g. SASA or RMSD.</p>
+</dd>
+<dt>traj<span class="classifier">str (optional, default = “tarjectory.pdb”)</span></dt><dd><p>Trajectory name defaults to “trajectory.pdb”, but you should use “trajectory.xtc” if using XTC format.</p>
+</dd>
+<dt>report<span class="classifier">str (optional, default = “report”)</span></dt><dd><p>Report file name, if not using default.</p>
+</dd>
+<dt>skip_initial_structures<span class="classifier">bool (optional, default = False)</span></dt><dd><p>Skips initial structures (step 0 of the simulation). Should be set to False when running test
+with only one step.</p>
+</dd>
+<dt>kde<span class="classifier">bool (optional, default = False)</span></dt><dd><p>Set to True to create kernel density estimator plots.</p>
+</dd>
+<dt>kde_structs<span class="classifier">int (optional, default = 1000)</span></dt><dd><p>Maximum number of structures to consider for the KDE plot.</p>
+</dd>
+<dt>topology<span class="classifier">str (optional, default = None)</span></dt><dd><p>Path to the topology file, if using XTC trajectories.</p>
+</dd>
+<dt>cpus: int (optional, default = 1)</dt><dd><p>Number of CPUs to use.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span>
        <span class="n">resname</span><span class="o">=</span><span class="s2">&quot;LIG&quot;</span><span class="p">,</span>
        <span class="n">chain</span><span class="o">=</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span>
        <span class="n">simulation_output</span><span class="o">=</span><span class="s2">&quot;LIG_Pele/output&quot;</span><span class="p">,</span>
@@ -271,11 +307,53 @@ initialize the Analysis class with the following parameters:</p>
 </pre></div>
 </div>
 <p>Then you can use one of the available methods to generate top poses, perform clustering or run the whole analysis workflow, e.g.</p>
-<ul class="simple">
-<li></li>
-</ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analysis</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
+</div>
+<div class="section" id="generate">
+<h3>generate()<a class="headerlink" href="#generate" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="generate-clusters">
+<h3>generate_clusters()<a class="headerlink" href="#generate-clusters" title="Permalink to this headline">¶</a></h3>
+<p>Runs the full analysis workflow (plots, top poses and clusters) and saves the results in the supplied path.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>path<span class="classifier">str</span></dt><dd><p>The path where the analysis results will be saved</p>
+</dd>
+<dt>clustering_type<span class="classifier">str (optional, default = ‘meanshift’)</span></dt><dd><p>The clustering method that will be used to generate the clusters. One of [‘gaussianmixture’, ‘meanshift’, ‘hdbscan’].</p>
+</dd>
+<dt>bandwidth<span class="classifier">float (optional, default = 2.5)</span></dt><dd><p>Bandwidth for the mean shift and HDBSCAN clustering.</p>
+</dd>
+<dt>analysis_nclust<span class="classifier">int (optional, default = 10)</span></dt><dd><p>Number of clusters to create when using the Gaussian mixture model.</p>
+</dd>
+<dt>max_top_clusters<span class="classifier">int (optional, default = 8)</span></dt><dd><p>Maximum number of clusters to return.</p>
+</dd>
+<dt>min_population<span class="classifier">float (optional, default = 0.01)</span></dt><dd><p>The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1% of all structures.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_clusters</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;my_folder&quot;</span><span class="p">,</span> <span class="n">clustering_type</span><span class="o">=</span><span class="s2">&quot;gaussianmixture&quot;</span><span class="p">,</span> <span class="n">analysis_nclust</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-plots">
+<h3>generate_plots()<a class="headerlink" href="#generate-plots" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_plots</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-report">
+<h3>generate_report()<a class="headerlink" href="#generate-report" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_report</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-top-poses">
+<h3>generate_top_poses()<a class="headerlink" href="#generate-top-poses" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_top_poses</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -301,7 +379,8 @@ initialize the Analysis class with the following parameters:</p>
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2021, NBD | Nostrum Biodiscovery
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
 
     </p>
   </div>
