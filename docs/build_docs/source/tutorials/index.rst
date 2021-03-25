@@ -11,8 +11,6 @@ We assume you have already installed the software and have access to Schrödinge
     - `GPCR simulation of BU72 agonist of the μ-opioid receptor <gpcr.html>`_
     - `Performing a fragment growing simulation in p38 kinase <frag_pele.html>`_
 
-All tutorial files are available in ``pele_platform/Examples/tutorials``.
-
 For further information about the obtained outputs files, refer to `this page <outputs.html>`_.
 
 .. toctree::
