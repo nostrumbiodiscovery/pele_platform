@@ -380,7 +380,12 @@ def run_adaptive(args):
         analysis_folder = os.path.join(parameters.pele_dir, "results")
 
         analysis = Analysis.from_parameters(parameters)
-        analysis.generate(analysis_folder,
-                          clustering_type=parameters.clustering_method.lower())
+        analysis.generate(
+            analysis_folder,
+            clustering_type=parameters.clustering_method.lower(),
+            bandwidth=parameters.bandwidth,
+            analysis_nclust=parameters.analysis_nclust,
+            max_top_clusters=parameters.max_top_clusters,
+            min_population=parameters.min_population)
 
     return parameters
