@@ -80,7 +80,22 @@ Example plot of binding energy vs ligand SASA with a KDE including 1000 best ene
 Clusters
 -----------
 
-The user has a choice between three clustering methods as well as some control over: mean shift, HDBSCAN and Gaussian mixture model.
+Once the ligand clustering is finished, this folder will contain PDB files with the representatives of each selected cluster
+(marked with a letter) as well as a CSV summary of metrics for all clusters, not only the selected one.
+
+For each metrics there's a box plot to provide the user with a quick, intuitive overview of the clusters.
+
+.. image:: ../img/clusters_boxplot.png
+  :width: 400
+  :align: center
+
+Moreover, the overall simulation metrics coloured by cluster are plotted to easily compare the performance of each cluster
+throughout the simulation.
+
+.. image:: ../img/cluster_scatter.png
+  :width: 400
+  :align: center
+
 
 
 API
@@ -131,13 +146,6 @@ Then you can use one of the available methods to generate top poses, perform clu
 generate()
 ++++++++++++
 
-.. code-block:: python
-
-    >> analysis.generate(working_folder, "gaussianmixture")
-
-
-generate_clusters()
-++++++++++++++++++++
 Runs the full analysis workflow (plots, top poses and clusters) and saves the results in the supplied path.
 
         path : str
@@ -155,25 +163,72 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
 
 .. code-block:: python
 
-    >> analysis.generate_clusters(path="my_folder", clustering_type="gaussianmixture", analysis_nclust=3)
+    >> analysis.generate(path="my_folder", clustering_type="gaussianmixture", analysis_nclust=3)
+
+
+generate_clusters()
+++++++++++++++++++++
+Performs clustering of the output poses based on ligand heavy atom coordinates using a user-defined method.
+
+        path : str (mandatory)
+            The path where the clusters will be saved.
+        clustering_type : str (mandatory)
+            The clustering method that will be used to generate the clusters, choose one from ['gaussianmixture', 'meanshift', 'hdbscan'].
+        bandwidth : float (optional, default = 2.5)
+            Bandwidth for the mean shift and HDBSCAN clustering (also called epsilon).
+        analysis_nclust : int (optional, default = 10)
+            Number of clusters to create when using the Gaussian mixture model.
+        max_top_clusters : int (optional, default = 8)
+            Maximum number of clusters to return. If a large number of clusters is created, only a specific subset with the best metrics is returned.
+        min_population : float (optional, default = 0.01)
+            The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1%.
+
+.. code-block:: python
+
+    >> analysis.generate_clusters(path="my_clusters", clustering_type="gaussianmixture", analysis_nclust=3)
 
 generate_plots()
 ++++++++++++++++++
 
+Generates scatter plots for all metrics versus binding energy and total energy.
+
+    path : str (mandatory)
+        The path where the plots will be saved.
+
 .. code-block:: python
 
-    >> analysis.generate_plots(working_folder, "gaussianmixture")
+    >> analysis.generate_plots("my_plots_folder")
+
+generate_top_poses()
++++++++++++++++++++++
+
+Retrieves the best binding energy poses and saves them in the PDB format, returns a list of metrics associated with each pose.
+
+        path : str (mandatory)
+            The path where the top poses will be saved.
+        n_poses : int (optional, default = 100)
+            The number of top poses to retrieve.
+
+.. code-block:: python
+
+    >> best_metrics = analysis.generate_top_poses("my_working_folder", n_poses=20)
 
 generate_report()
 ++++++++++++++++++
 
+It generates the final simulation report as a PDF file.
+
+        plots_path : str (mandatory)
+            The path where the plots are saved.
+        poses_path : str (mandatory)
+            The path where the top poses are saved.
+        clusters_path : str (mandatory)
+            The path where the clusters are saved.
+        best_metrics : list[float] (mandatory)
+            The list that contains the metrics belonging to the extracted best poses, extracted by generate_top_poses method.
+        filename : str (mandatory)
+            The filename for the simulation report.
+
 .. code-block:: python
 
-    >> analysis.generate_report(working_folder, "gaussianmixture")
-
-generate_top_poses()
-++++++++++++++++++
-
-.. code-block:: python
-
-    >> analysis.generate_top_poses(working_folder, "gaussianmixture")
+    >> analysis.generate_report("my_plots_folder", "my_working_folder", "my_clusters", best_metrics, "report.pdf")

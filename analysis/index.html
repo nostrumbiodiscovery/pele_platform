@@ -114,8 +114,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#generate">generate()</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#generate-clusters">generate_clusters()</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#generate-plots">generate_plots()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generate-report">generate_report()</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#generate-top-poses">generate_top_poses()</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generate-report">generate_report()</a></li>
 </ul>
 </li>
 </ul>
@@ -261,7 +261,13 @@ poses plotted using the <code class="docutils literal notranslate"><span class="
 </div>
 <div class="section" id="clusters">
 <h2>Clusters<a class="headerlink" href="#clusters" title="Permalink to this headline">¶</a></h2>
-<p>The user has a choice between three clustering methods as well as some control over: mean shift, HDBSCAN and Gaussian mixture model.</p>
+<p>Once the ligand clustering is finished, this folder will contain PDB files with the representatives of each selected cluster
+(marked with a letter) as well as a CSV summary of metrics for all clusters, not only the selected one.</p>
+<p>For each metrics there’s a box plot to provide the user with a quick, intuitive overview of the clusters.</p>
+<a class="reference internal image-reference" href="../_images/clusters_boxplot.png"><img alt="../_images/clusters_boxplot.png" class="align-center" src="../_images/clusters_boxplot.png" style="width: 400px;" /></a>
+<p>Moreover, the overall simulation metrics coloured by cluster are plotted to easily compare the performance of each cluster
+throughout the simulation.</p>
+<a class="reference internal image-reference" href="../_images/cluster_scatter.png"><img alt="../_images/cluster_scatter.png" class="align-center" src="../_images/cluster_scatter.png" style="width: 400px;" /></a>
 </div>
 <div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
@@ -310,12 +316,6 @@ with only one step.</p>
 </div>
 <div class="section" id="generate">
 <h3>generate()<a class="headerlink" href="#generate" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="generate-clusters">
-<h3>generate_clusters()<a class="headerlink" href="#generate-clusters" title="Permalink to this headline">¶</a></h3>
 <p>Runs the full analysis workflow (plots, top poses and clusters) and saves the results in the supplied path.</p>
 <blockquote>
 <div><dl class="simple">
@@ -333,25 +333,79 @@ with only one step.</p>
 </dd>
 </dl>
 </div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_clusters</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;my_folder&quot;</span><span class="p">,</span> <span class="n">clustering_type</span><span class="o">=</span><span class="s2">&quot;gaussianmixture&quot;</span><span class="p">,</span> <span class="n">analysis_nclust</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;my_folder&quot;</span><span class="p">,</span> <span class="n">clustering_type</span><span class="o">=</span><span class="s2">&quot;gaussianmixture&quot;</span><span class="p">,</span> <span class="n">analysis_nclust</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-clusters">
+<h3>generate_clusters()<a class="headerlink" href="#generate-clusters" title="Permalink to this headline">¶</a></h3>
+<p>Performs clustering of the output poses based on ligand heavy atom coordinates using a user-defined method.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the clusters will be saved.</p>
+</dd>
+<dt>clustering_type<span class="classifier">str (mandatory)</span></dt><dd><p>The clustering method that will be used to generate the clusters, choose one from [‘gaussianmixture’, ‘meanshift’, ‘hdbscan’].</p>
+</dd>
+<dt>bandwidth<span class="classifier">float (optional, default = 2.5)</span></dt><dd><p>Bandwidth for the mean shift and HDBSCAN clustering (also called epsilon).</p>
+</dd>
+<dt>analysis_nclust<span class="classifier">int (optional, default = 10)</span></dt><dd><p>Number of clusters to create when using the Gaussian mixture model.</p>
+</dd>
+<dt>max_top_clusters<span class="classifier">int (optional, default = 8)</span></dt><dd><p>Maximum number of clusters to return. If a large number of clusters is created, only a specific subset with the best metrics is returned.</p>
+</dd>
+<dt>min_population<span class="classifier">float (optional, default = 0.01)</span></dt><dd><p>The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1%.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_clusters</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;my_clusters&quot;</span><span class="p">,</span> <span class="n">clustering_type</span><span class="o">=</span><span class="s2">&quot;gaussianmixture&quot;</span><span class="p">,</span> <span class="n">analysis_nclust</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="generate-plots">
 <h3>generate_plots()<a class="headerlink" href="#generate-plots" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_plots</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="generate-report">
-<h3>generate_report()<a class="headerlink" href="#generate-report" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_report</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
+<p>Generates scatter plots for all metrics versus binding energy and total energy.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the plots will be saved.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_plots</span><span class="p">(</span><span class="s2">&quot;my_plots_folder&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="generate-top-poses">
 <h3>generate_top_poses()<a class="headerlink" href="#generate-top-poses" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_top_poses</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
+<p>Retrieves the best binding energy poses and saves them in the PDB format, returns a list of metrics associated with each pose.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the top poses will be saved.</p>
+</dd>
+<dt>n_poses<span class="classifier">int (optional, default = 100)</span></dt><dd><p>The number of top poses to retrieve.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">best_metrics</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_top_poses</span><span class="p">(</span><span class="s2">&quot;my_working_folder&quot;</span><span class="p">,</span> <span class="n">n_poses</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-report">
+<h3>generate_report()<a class="headerlink" href="#generate-report" title="Permalink to this headline">¶</a></h3>
+<p>It generates the final simulation report as a PDF file.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>plots_path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the plots are saved.</p>
+</dd>
+<dt>poses_path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the top poses are saved.</p>
+</dd>
+<dt>clusters_path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the clusters are saved.</p>
+</dd>
+<dt>best_metrics<span class="classifier">list[float] (mandatory)</span></dt><dd><p>The list that contains the metrics belonging to the extracted best poses, extracted by generate_top_poses method.</p>
+</dd>
+<dt>filename<span class="classifier">str (mandatory)</span></dt><dd><p>The filename for the simulation report.</p>
+</dd>
+</dl>
+</div></blockquote>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_report</span><span class="p">(</span><span class="s2">&quot;my_plots_folder&quot;</span><span class="p">,</span> <span class="s2">&quot;my_working_folder&quot;</span><span class="p">,</span> <span class="s2">&quot;my_clusters&quot;</span><span class="p">,</span> <span class="n">best_metrics</span><span class="p">,</span> <span class="s2">&quot;report.pdf&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
