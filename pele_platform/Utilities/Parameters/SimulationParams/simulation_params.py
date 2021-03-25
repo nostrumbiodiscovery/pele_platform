@@ -475,6 +475,7 @@ class SimulationParams(
         self.traj_name = args.traj_name if args.traj_name else "trajectory.pdb"
         self.xtc = self.traj_name.endswith(".xtc")
         self.pdb = self.traj_name.endswith(".pdb")
+        self.inter_step_logger = cs.INTERSTEPLOGGER if args.inter_step_logger else ""
 
     def analysis_params(self, args):
         self.analyse = args.analyse if args.analyse is not None else True

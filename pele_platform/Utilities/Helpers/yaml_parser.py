@@ -238,6 +238,7 @@ class YamlParser(object):
         self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
         self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
         self.interaction_restrictions = data.get(valid_flags["interaction_restrictions"], None)
+        self.inter_step_logger = data.get(valid_flags["inter_step_logger"], None)
 
         # Metal constraints
         self.permissive_metal_constr = data.get(

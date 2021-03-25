@@ -186,6 +186,7 @@ VALID_FLAGS_PLATFORM = {
     "bandwidth": "bandwidth",
     "kde_structs": "kde_structs",
     "kde": "kde",
+    "inter_step_logger": "inter_step_logger",
     "max_top_clusters": "max_top_clusters",
     "min_population": "min_population"
 }
