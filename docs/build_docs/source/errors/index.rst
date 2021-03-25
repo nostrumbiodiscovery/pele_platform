@@ -2,7 +2,7 @@ Common errors
 ================
 
 Check atoms
-++++++++++++++++++++++
+--------------
 
 The following error message indicates that the atom(s) you chose to calculate the distance metric or constrain does not exist.
 
@@ -25,7 +25,7 @@ You can easily check residue numbers and atom names in the bottom panel in Maest
 
 
 FileNotFound
-++++++++++++++++++
+-------------
 
 If PELE raises ``FileNotFoundError``, it probably means it cannot find one of the files specified in ``input.yaml`` such as system, ligand or RMSD reference. Make sure:
 
@@ -39,7 +39,7 @@ If PELE raises ``FileNotFoundError``, it probably means it cannot find one of th
 
 
 ValueError - ligand
-++++++++++++++++++++
+---------------------
 
 This error indicates that the software was not able to find the ligand in the PDB file. Make sure ``chain`` and ``resname`` flags
 in your input file have correct values. Remember that ligands needs to have a unique chain ID!
@@ -47,16 +47,3 @@ in your input file have correct values. Remember that ligands needs to have a un
 ..  code-block:: console
 
     ValueError: Something went wrong when extracting the ligand. Check residue&Chain on input
-
-
-ValueError - water molecules
-+++++++++++++++++++++++++++++++
-
-PELE does not allow more than 4 water molecules to be perturbed, since it results in a lot of noise in simulation results. Make sure
-``n_waters`` flag in the input file is set to a value between 1 and 4.
-
-.. code-block:: console
-
-    ValueError: Maximum 4 water molecules are allowed.
-
-This is only relevant to ``n_waters`` flag used to automatically add water molecules to the system when running AquaPELE.

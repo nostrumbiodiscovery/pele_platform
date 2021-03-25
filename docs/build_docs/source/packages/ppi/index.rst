@@ -87,6 +87,4 @@ Ranked cluster representatives can be found in:
 
 In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
 
-``working_folder/2_refinement_simulation/results/BestStructs/``
-
-
+``working_folder/2_refinement_simulation/results/top_poses/``

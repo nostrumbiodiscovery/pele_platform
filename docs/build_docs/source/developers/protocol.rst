@@ -1,4 +1,4 @@
-Documentation Protocol
+Documentation protocol
 ==========================
 
 This tutorial intends to help to develop and improve the documentation of the platform. 
@@ -41,5 +41,3 @@ The steps to follow are:
 		``git push``
 
 #. **As soon as the repository is updated you can start a pull request to merge the branches so the final documentation is visible in your page.** 
-
-

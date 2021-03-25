@@ -1,5 +1,5 @@
 
-The reStructuredText Cheat Sheet: Basic Syntax
+The reStructuredText cheat sheet: Basic syntax
 ==================================================
 
 
@@ -35,7 +35,7 @@ Sections
     Fourth level
     ~~~~~~~~~~~~
 
-Inline Markup
+Inline markup
 ***************
 
 +----------------------------------+--------------------------------+
@@ -49,7 +49,7 @@ Inline Markup
 +----------------------------------+--------------------------------+
 
 
-List and bullets
+Lists and bullets
 ********************
 +---------------------------------------+---------------------------------+
 |  ``* This is a bulleted list``        | * This is a bulleted list       |
@@ -64,5 +64,3 @@ List and bullets
 |                                       |                                 |
 |``#. Second item``                     | #. Second item                  |
 +---------------------------------------+---------------------------------+ 
-
-

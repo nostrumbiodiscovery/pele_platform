@@ -2,8 +2,6 @@ import os
 import pandas as pd
 from sklearn.mixture import GaussianMixture
 from pele_platform.Utilities.Helpers import bestStructs, helpers
-from pele_platform.analysis.plot import _extract_coords
-from multiprocessing import Pool
 
 
 def cluster_best_structures(
@@ -54,3 +52,22 @@ def cluster_best_structures(
         os.system("cp {} {}/.".format(file, directory))
 
     return clustered_lig["file_name"]
+
+
+def _extract_coords(info):
+    import numpy as np
+    import mdtraj
+
+    p, v, resname, topology = info
+    # Most time consuming step 0.1
+    traj = mdtraj.load_frame(p, v, top=topology)
+    atoms_info = traj.topology.to_dataframe()[0]
+    condition = atoms_info["resName"] == resname
+    atom_numbers_ligand = atoms_info[condition].index.tolist()
+    coords = []
+    for atom_num in atom_numbers_ligand:
+        try:
+            coords.extend(traj.xyz[0][atom_num].tolist())
+        except IndexError:
+            continue
+    return np.array(coords).ravel() * 10
