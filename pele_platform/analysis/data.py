@@ -154,8 +154,19 @@ class DataHandler(object):
         epochs = [os.path.basename(path) for path in epoch_dirs
                   if os.path.basename(path).isdigit()]
 
+        # Sort epochs by number
+        epochs = sorted(epochs, key=int)
+
+        # Tweak to read a directory from standard PELE (not coming
+        # from adaptive)
+        if len(epochs) == 0:
+            report_dirs = glob.glob(os.path.join(self._sim_path,
+                                                 report_prefix + '_[0-9]*'))
+            if len(report_dirs) > 0:
+                epochs = ['']
+
         dataframe_lists = []
-        for adaptive_epoch in sorted(epochs, key=int):
+        for adaptive_epoch in epochs:
             folder = os.path.join(self._sim_path, str(adaptive_epoch))
             report_dirs = glob.glob(os.path.join(folder,
                                                  report_prefix + '_[0-9]*'))

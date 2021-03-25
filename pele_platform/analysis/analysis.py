@@ -2,6 +2,7 @@
 This module manages the analysis toolkit of the platform.
 """
 
+
 __all__ = ["Analysis"]
 
 
@@ -18,9 +19,7 @@ class Analysis(object):
     def __init__(self, resname, chain, simulation_output,
                  be_column=4, limit_column=None, traj="trajectory.pdb",
                  report=None, skip_initial_structures=True, kde=False,
-                 kde_structs=1000, clustering_method="meanshift",
-                 bandwidth=2.5, analysis_nclust=10, topology=None,
-                 cpus=1, max_top_clusters=8, min_population=0.01):
+                 kde_structs=1000, topology=None, cpus=1):
         """
         It initializes an Analysis instance which it depends on
         the general Parameters class of the PELE Platform.
@@ -37,7 +36,8 @@ class Analysis(object):
         be_column : int
             Column with energy metric, default 4.
         limit_column : int
-            Integer specifying the first column from which the meaningful metrics start, e.g. SASA or RMSD.
+            Integer specifying the first column from which the meaningful
+            metrics start, e.g. SASA or RMSD.
         traj : str
             Trajectory name defaults to "trajectory.pdb",
             but you should use "trajectory.xtc" if using XTC format.
@@ -53,25 +53,11 @@ class Analysis(object):
         kde_structs : int
             Maximum number of structures to consider for the KDE plot.
             Default is 1000
-        clustering_method : str
-            Clustering method to be used. On of ['gaussianmixture',
-            'meanshift', 'hdbscan']. Default is 'meanshift'
-        bandwidth : float
-            Bandwidth for the mean shift and HDBSCAN clustering. Default is
-            2.5
-        analysis_nclust : int
-            Number of clusters to create when using the Gaussian mixture
-            model. Default is 10
         topology : str
             Path to the topology file, if using XTC trajectories. Default
              is None
         cpus: int
             Number of CPUs to use. Default is 1
-        max_top_clusters : int
-            Maximum number of clusters to return. Default is 8
-        min_population : float
-            The minimum amount of structures in a cluster, takes a value
-            between 0 and 1. Default is 0.01 (i.e. 1%)
         """
         from pele_platform.analysis import DataHandler
 
@@ -87,13 +73,8 @@ class Analysis(object):
         self.traj = traj
         self.report = report if report else self._REPORT
         self.skip_initial_structures = skip_initial_structures
-        self.clustering_method = clustering_method
-        self.bandwidth = bandwidth
-        self.analysis_nclust = analysis_nclust
         self.topology = topology
         self.cpus = cpus
-        self.max_top_clusters = max_top_clusters
-        self.min_population = min_population
 
         self._data_handler = DataHandler(
             sim_path=self.output,
@@ -134,13 +115,8 @@ class Analysis(object):
                             skip_initial_structures=not parameters.test,
                             kde=parameters.kde,
                             kde_structs=parameters.kde_structs,
-                            clustering_method=parameters.clustering_method,
-                            bandwidth=parameters.bandwidth,
-                            analysis_nclust=parameters.analysis_nclust,
                             topology=parameters.topology,
-                            cpus=parameters.cpus,
-                            max_top_clusters=parameters.max_top_clusters,
-                            min_population=parameters.min_population)
+                            cpus=parameters.cpus)
 
         return analysis
 
@@ -177,8 +153,7 @@ class Analysis(object):
         """
         if filter:
             return self._data_handler.remove_outliers_from_dataframe(
-                self._dataframe, threshold
-            )
+                self._dataframe, threshold)
         else:
             return self._dataframe
 
@@ -204,7 +179,9 @@ class Analysis(object):
         # Save it as a csv file
         dataframe.to_csv(path, index=False)
 
-    def generate(self, path, clustering_type):
+    def generate(self, path, clustering_type='meanshift',
+                 bandwidth=2.5, analysis_nclust=10,
+                 max_top_clusters=8, min_population=0.01):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -215,7 +192,19 @@ class Analysis(object):
             The path where the analysis results will be saved
         clustering_type : str
             The clustering method that will be used to generate the
-            clusters
+            clusters. One of ['gaussianmixture', 'meanshift', 'hdbscan'].
+            Default is 'meanshift'
+        bandwidth : float
+            Bandwidth for the mean shift and HDBSCAN clustering. Default is
+            2.5
+        analysis_nclust : int
+            Number of clusters to create when using the Gaussian mixture
+            model. Default is 10
+        max_top_clusters : int
+            Maximum number of clusters to return. Default is 8
+        min_population : float
+            The minimum amount of structures in a cluster, takes a value
+            between 0 and 1. Default is 0.01 (i.e. 1%)
         """
         import os
 
@@ -242,11 +231,14 @@ class Analysis(object):
         # Generate analysis results
         self.generate_plots(plots_folder)
         best_metrics = self.generate_top_poses(top_poses_folder)
-        self.generate_clusters(clusters_folder, clustering_type)
+        self.generate_clusters(clusters_folder, clustering_type,
+                               bandwidth, analysis_nclust,
+                               max_top_clusters, min_population)
+
         self.generate_report(plots_folder, top_poses_folder,
                              clusters_folder, best_metrics, report_file)
 
-    def generate_plots(self, path, existing_dataframe=None, colors=None):
+    def generate_plots(self, path):
         """
         It generates the plots.
 
@@ -254,18 +246,11 @@ class Analysis(object):
         ----------
         path : str
             The path where the plots will be saved
-        existing_dataframe : pandas.Dataframe
-            Dataframe with data to plot.
-        colors : list
-            List of cluster IDs for colour mapping.
         """
         from pele_platform.analysis import Plotter
 
-        # Get dataframe
-        if existing_dataframe is None:
-            dataframe = self.get_dataframe(filter=True)
-        else:
-            dataframe = existing_dataframe
+        # Get dataframe, filtering highest 2% energies out
+        dataframe = self.get_dataframe(filter=True)
 
         # Initialize plotter
         plotter = Plotter(dataframe)
@@ -344,7 +329,9 @@ class Analysis(object):
 
         return best_metrics
 
-    def generate_clusters(self, path, clustering_type):
+    def generate_clusters(self, path, clustering_type,
+                          bandwidth=2.5, analysis_nclust=10,
+                          max_top_clusters=8, min_population=0.01):
         """
         It generates the structural clustering of ligand poses.
 
@@ -355,6 +342,17 @@ class Analysis(object):
         clustering_type : str
             The clustering method that will be used to generate the
             clusters
+        bandwidth : float
+            Bandwidth for the mean shift and HDBSCAN clustering. Default is
+            2.5
+        analysis_nclust : int
+            Number of clusters to create when using the Gaussian mixture
+            model. Default is 10
+        max_top_clusters : int
+            Maximum number of clusters to return. Default is 8
+        min_population : float
+            The minimum amount of structures in a cluster, takes a value
+            between 0 and 1. Default is 0.01 (i.e. 1%)
         """
         import os
         from pele_platform.Utilities.Helpers.helpers import check_output_folder
@@ -362,7 +360,9 @@ class Analysis(object):
         check_output_folder(path)
 
         # Get clustering object
-        clustering, max_coordinates = self._get_clustering(clustering_type)
+        clustering, max_coordinates = self._get_clustering(clustering_type,
+                                                           bandwidth,
+                                                           analysis_nclust)
 
         # Extract coordinates
         coordinates, dataframe = self._extract_coordinates(max_coordinates)
@@ -395,8 +395,8 @@ class Analysis(object):
         print(f"Retrieve best cluster poses")
         cluster_subset, cluster_summary = self._select_top_clusters(
             clusters, cluster_summary,
-            max_clusters_to_select=self.max_top_clusters,
-            min_population_to_select=self.min_population)
+            max_clusters_to_select=max_top_clusters,
+            min_population_to_select=min_population)
 
         # Save cluster summary to file with information about selected labels
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
@@ -440,7 +440,7 @@ class Analysis(object):
 
         print("PDF summary report successfully written to: {}".format(report))
 
-    def _get_clustering(self, clustering_type):
+    def _get_clustering(self, clustering_type, bandwidth, analysis_nclust):
         """
         It returns the clustering object according to the supplied
         clustering type.
@@ -458,19 +458,25 @@ class Analysis(object):
         max_coordinates : int
             The maximum number of coordinates to extract from the
             residue
+        bandwidth : float
+            Bandwidth for the mean shift and HDBSCAN clustering. Default is
+            2.5
+        analysis_nclust : int
+            Number of clusters to create when using the Gaussian mixture
+            model. Default is 10
         """
         from pele_platform.analysis import (GaussianMixtureClustering,
                                             HDBSCANClustering,
                                             MeanShiftClustering)
 
         if clustering_type.lower() == "gaussianmixture":
-            clustering = GaussianMixtureClustering(self.analysis_nclust)
+            clustering = GaussianMixtureClustering(analysis_nclust)
             max_coordinates = 10
         elif clustering_type.lower() == "hdbscan":
-            clustering = HDBSCANClustering(self.bandwidth)
+            clustering = HDBSCANClustering(bandwidth)
             max_coordinates = 10
         elif clustering_type.lower() == "meanshift":
-            clustering = MeanShiftClustering(self.bandwidth)
+            clustering = MeanShiftClustering(bandwidth)
             max_coordinates = 5
         else:
             raise ValueError("Invalid clustering type: " +
