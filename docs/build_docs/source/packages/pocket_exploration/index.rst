@@ -1,5 +1,5 @@
-Prepare your own Pocket Exploration
-#####################################################
+Pocket exploration
+=====================
 
 To prepare your own pocket exploration to obtain putative binding sites of your small molecule and retrieve the most promising binding modes of yout ligand, please follow the steps below.
 
@@ -17,7 +17,7 @@ To prepare your own pocket exploration to obtain putative binding sites of your 
 **Computational time**: 24h
 
 1. Complex Preparation
-========================
+-------------------------
    
 Prepare the system with maestro (Protein Preparation Wizard)
 and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligand can be place anywhere as it will be automatically placed all around the protein by our automatic pipeline.
@@ -29,7 +29,7 @@ Make sure the ligand has:
  - Any residuename except UNK
 
 2. Input Preparation
-=====================
+----------------------
 
 Prepare the input file ``input.yml``:
 
@@ -52,7 +52,7 @@ For more optional flags please refer to `optative falgs <../../documentation/ind
 
 
 3. Run simulation
-====================
+-------------------
 
 
 To run the system launch the simulation with the next command:
@@ -60,7 +60,7 @@ To run the system launch the simulation with the next command:
 ``python -m pele_platform.main input.yml``
 
 4. Output
-=================
+-------------
 
 Best pockets ranked by ligand energy:
 
@@ -68,6 +68,4 @@ Best pockets ranked by ligand energy:
 
 Best snapshots ranked by ligand energy:
 
-``working_folder/refinement_simulation/results/BestStructs/``
-
-
+``working_folder/refinement_simulation/results/top_poses/``

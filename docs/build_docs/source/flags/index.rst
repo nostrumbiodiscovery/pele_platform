@@ -1,11 +1,11 @@
-Optative flags
-###########################
+Optional flags
+==================
 
 Optional flags for each package:
 
     - `All packages <all_packages/index.html>`_
     - `Protein-Protein Inhibitors <ppi/index.html>`_
-    - `Pocket Exploration (Allosteric) <pocket_exploration/index.html>`_
+    - `Pocket Exploration <pocket_exploration/index.html>`_
     - `HT-Fragment Growing <frag/index.html>`_
     - `AquaPELE (water perturbation) <water/index.html>`_
 
@@ -30,7 +30,7 @@ Optional flags for each package:
    :hidden:
 
 Box parameters
-=================
+---------------
 
 Parameters to set the exploration Box:
 
@@ -48,8 +48,8 @@ Parameters to set the exploration Box:
     - 50
 
 
-Simulation params
-====================
+Simulation parameters
+--------------------
 
 - **seed**: Seed of the job for reproducibility. Default=12345
 
@@ -99,7 +99,7 @@ Simulation params
 
 
 PELE params
-===================
+--------------
 
 **These flags are exclusive of the PELE modes not fragPELE**
 
@@ -143,8 +143,8 @@ PELE params
     report: report
     traj: trajectory.xtc
 
-FragPELE params
-===================
+FragPELE
+------------------
 
 **These flags are exclusive of the FragPele modes not PELE**
 
@@ -166,7 +166,7 @@ FragPELE params
     cpus: 24
 
 PPI params
-===============
+------------
 
 **These flags are exclusive of the ppi: true mode**
 
@@ -179,7 +179,7 @@ PPI params
 
 
 Constraints
-==================
+--------------
 
 - **water_constr**: Water constraints. Default=5
 
@@ -277,7 +277,7 @@ Algorithm to automatically set metal constraints around the ligand.
 
 
 WaterPerturbation
-======================
+-------------------
 
 - **n_waters**: Number of waters to randomly add into your simulation. Compulsory when running MonteCarlo with water perturbation. Default=0
 
@@ -308,7 +308,7 @@ WaterPerturbation
     water_overlap: 0.5
 
 Interaction restrictions
-=========================
+----------------------------
 
 Interaction restrictions allow for biased exploration, where the simulation results are limited to those that fit the specified conditions.
 
@@ -337,7 +337,7 @@ Users can define two types of conditions using the atom strings (format "chain:r
 
 
 Metrics
-=============
+---------
 
 Metrics to track along the simulation
 
@@ -360,7 +360,7 @@ Metrics to track along the simulation
 
 
 Analysis
-=============
+-----------
 
 Run a post simulation analysis to extract plots, top poses and clusters.
 
@@ -396,7 +396,7 @@ The bandwidth parameter hugely influences the clustering results, therefore, it 
 In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD allowed within the cluster, whereas in HDBSCAN to distances between your data points.
 
 Output
-==========
+----------
 
 Configure the output
 

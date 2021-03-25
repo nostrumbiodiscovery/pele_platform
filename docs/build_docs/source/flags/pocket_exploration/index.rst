@@ -1,5 +1,5 @@
-Allosteric parameters
-======================
+Pocket exploration parameters
+===============================
 
 These flags are exclusive to the ``allosteric: true`` mode.
 
