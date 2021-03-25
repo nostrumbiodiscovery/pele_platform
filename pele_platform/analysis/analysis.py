@@ -554,6 +554,10 @@ class Analysis(object):
                     for trajectory in paths]
         steps = list(map(int, dataframe[self._STEP_LABEL].tolist()))
 
+        # To prevent hiding files in case epochs is a list of empty strings
+        if all([epoch == '' for epoch in epochs]):
+            epochs = [0, ] * len(values)
+
         # TODO which is the purpose of this hardcoded distance_key?
         distance_key = "distance0.5"
         if distance_key in dataframe.columns:
