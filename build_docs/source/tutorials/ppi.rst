@@ -18,9 +18,9 @@ and click ``Download``. The protein structure should appear in your workspace.
 
 b. **Preprocess the protein** using Protein Preparation Wizard. Click on ``Tasks`` and search ``Protein Preparation Wizard``.
 Check the following options and hit ``Preprocess``.
-    - Fill in missing side chain using Prime*
-    - Fill in missing loops using Prime*
-    - Delete waters beyond 0.0 Å from het groups (i.e. all waters in the system)
+- Fill in missing side chain using Prime*
+- Fill in missing loops using Prime*
+- Delete waters beyond 0.0 Å from het groups (i.e. all waters in the system)
 
 \*If you do not have Prime license, you can skip those steps.
 
@@ -212,4 +212,3 @@ the superposition of 10 lowest energy structures (green) with the native pose (p
 
 
 For more information regarding the outputs of the tutorial see `Output files <outputs.html>`_
-

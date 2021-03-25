@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Prepare your own Pocket Exploration &mdash; pele platform 1.5.1 documentation</title>
+  <title>Pocket exploration &mdash; pele platform 1.5.1 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Prepare your own Fragment Growing" href="../frag/index.html" />
-    <link rel="prev" title="Prepare your own PPI simulation" href="../ppi/index.html" /> 
+    <link rel="next" title="Prepare your own PPI simulation" href="../ppi/index.html" />
+    <link rel="prev" title="Rank multiple putative poses" href="../rescoring/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,11 +90,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Prepare your own simulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Refine docking poses by accounting for receptor flexibility</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Run simulation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Docking pose refinement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rescoring/index.html">Rank multiple putative poses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Prepare your own Pocket Exploration</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Pocket exploration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#pocket-exploration-24h">Pocket Exploration (24h)</a></li>
@@ -104,29 +103,31 @@
 <li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Prepare your own Fragment Growing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow your own fragment library</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">Prepare your own GPCR orthosteric site simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Prepare your own binding simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Prepare your own biased simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Fragment growing simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow custom fragment library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minimization/index.html">Minimize your protein</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Optative flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flags/index.html">Optional flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../analysis/index.html">Analysis</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
@@ -176,9 +177,9 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../index.html">Prepare your own simulation</a> &raquo;</li>
+          <li><a href="../index.html">Run simulation</a> &raquo;</li>
         
-      <li>Prepare your own Pocket Exploration</li>
+      <li>Pocket exploration</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -197,8 +198,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="prepare-your-own-pocket-exploration">
-<h1>Prepare your own Pocket Exploration<a class="headerlink" href="#prepare-your-own-pocket-exploration" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="pocket-exploration">
+<h1>Pocket exploration<a class="headerlink" href="#pocket-exploration" title="Permalink to this headline">¶</a></h1>
 <p>To prepare your own pocket exploration to obtain putative binding sites of your small molecule and retrieve the most promising binding modes of yout ligand, please follow the steps below.</p>
 <p><strong>Article</strong>: <a class="reference external" href="https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose">https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose</a></p>
 <p><strong>Input</strong> (further explained below):</p>
@@ -257,7 +258,7 @@ and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligan
 <p>Best pockets ranked by ligand energy:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/refinement_simulation/results/clusters</span></code></p>
 <p>Best snapshots ranked by ligand energy:</p>
-<p><code class="docutils literal notranslate"><span class="pre">working_folder/refinement_simulation/results/BestStructs/</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/refinement_simulation/results/top_poses/</span></code></p>
 </div>
 </div>
 
@@ -269,10 +270,10 @@ and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligan
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../frag/index.html" class="btn btn-neutral float-right" title="Prepare your own Fragment Growing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../ppi/index.html" class="btn btn-neutral float-right" title="Prepare your own PPI simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../ppi/index.html" class="btn btn-neutral float-left" title="Prepare your own PPI simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../rescoring/index.html" class="btn btn-neutral float-left" title="Rank multiple putative poses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

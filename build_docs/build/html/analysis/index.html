@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Developers" href="../developers/index.html" />
-    <link rel="prev" title="Fragment growing tutorial" href="../tutorials/frag_pele.html" /> 
+    <link rel="next" title="Tutorials" href="../tutorials/index.html" />
+    <link rel="prev" title="Water perturbation" href="../flags/water/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,27 +90,36 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#output-folders">Output folders</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#interactive-plots">Interactive plots</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#kernel-density-estimate-plot">Kernel density estimate plot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#folder-structure">Folder structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#detailed-metrics">Detailed metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#plots">Plots</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#interactive-plots">Interactive plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kernel-density-estimate-plot">Kernel density estimate plot</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#clusters">Clusters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
@@ -181,8 +190,10 @@
             
   <div class="section" id="analysis">
 <h1>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="output-folders">
-<h2>Output folders<a class="headerlink" href="#output-folders" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="output-files">
+<h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="folder-structure">
+<h3>Folder structure<a class="headerlink" href="#folder-structure" title="Permalink to this headline">¶</a></h3>
 <p>Each simulation will create a number of output folders, as indicated on the tree below.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">.</span>
 <span class="go">└── LIG_Pele</span>
@@ -198,13 +209,26 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">top_poses</span></code> - top 100 lowest binding energy structures</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">plots</span></code> - plots of multiple metrics selected by the user</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">clusters</span></code> - lowest binding energy cluster representatives.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clusters</span></code> - lowest binding energy cluster representatives and clustering plots.</p></li>
 </ul>
 </div>
+<div class="section" id="detailed-metrics">
+<h3>Detailed metrics<a class="headerlink" href="#detailed-metrics" title="Permalink to this headline">¶</a></h3>
+<p>Additionally, the simulation will create a two CSV files with more detailed metrics:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">results/data.csv</span></code> contains a summary of all created poses together with their metrics and the clusters they belong to</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">results/clusters/info.csv</span></code> provides detailed metric on each cluster, such as its population, mean RMSD, energy percentiles, etc.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="plots">
+<h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
+<p>The software will automatically create scatter plots for all metrics, however, if you want to enhance your analysis, you
+can check out our interactive and KDE plots.</p>
 <div class="section" id="interactive-plots">
-<h2>Interactive plots<a class="headerlink" href="#interactive-plots" title="Permalink to this headline">¶</a></h2>
-<p>Additionally, you can create your own interactive plots. Go to the <code class="docutils literal notranslate"><span class="pre">output</span></code> folder and run the following command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.Analysis.interactive_plot 6 5</span>
+<h3>Interactive plots<a class="headerlink" href="#interactive-plots" title="Permalink to this headline">¶</a></h3>
+<p>You can also create your own interactive plots. Simply go to the <code class="docutils literal notranslate"><span class="pre">output</span></code> folder and run the following command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.analysis.interactive_plot 6 5</span>
 </pre></div>
 </div>
 <p>The script requires two integer arguments indicating the numbers of report columns you would like to plot, in this
@@ -213,7 +237,7 @@ case we used columns 5 and 6 corresponding to the binding energy and SASA of the
 <p>For more advanced interactive plots, please refer to <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html">PELE++ documentation</a>.</p>
 </div>
 <div class="section" id="kernel-density-estimate-plot">
-<h2>Kernel density estimate plot<a class="headerlink" href="#kernel-density-estimate-plot" title="Permalink to this headline">¶</a></h2>
+<h3>Kernel density estimate plot<a class="headerlink" href="#kernel-density-estimate-plot" title="Permalink to this headline">¶</a></h3>
 <p>The KDE plots can aid the simulation analysis by visualising the distribution of ligand poses (similarly to a histogram)
 in respect to plotted metrics, such as distance between two atoms (atom_dist) or solvent exposed surface area (SASA).
 All you have to do is include the <code class="docutils literal notranslate"><span class="pre">kde:</span> <span class="pre">true</span></code> flag in your input.yaml. Additionally, you can influence the number of
@@ -226,6 +250,35 @@ poses plotted using the <code class="docutils literal notranslate"><span class="
 <a class="reference internal image-reference" href="../_images/kde.png"><img alt="../_images/kde.png" class="align-center" src="../_images/kde.png" style="width: 400px;" /></a>
 </div>
 </div>
+<div class="section" id="clusters">
+<h2>Clusters<a class="headerlink" href="#clusters" title="Permalink to this headline">¶</a></h2>
+<p>The user has a choice between three clustering methods as well as some control over: mean shift, HDBSCAN and Gaussian mixture model.</p>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>We included an option to run analysis as API for those of our users, who are familiar with Python. All you have to do is
+initialize the Analysis class with the following parameters:</p>
+<ul class="simple">
+<li><p><strong>resname</strong> - residue name of the ligand</p></li>
+<li><p><strong>chain</strong> - chain ID of the ligand</p></li>
+<li><p><strong>simulation_output</strong> - path to the output folder of the simulation.</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span>
+       <span class="n">resname</span><span class="o">=</span><span class="s2">&quot;LIG&quot;</span><span class="p">,</span>
+       <span class="n">chain</span><span class="o">=</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span>
+       <span class="n">simulation_output</span><span class="o">=</span><span class="s2">&quot;LIG_Pele/output&quot;</span><span class="p">,</span>
+   <span class="p">)</span>
+</pre></div>
+</div>
+<p>Then you can use one of the available methods to generate top poses, perform clustering or run the whole analysis workflow, e.g.</p>
+<ul class="simple">
+<li></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">analysis</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">working_folder</span><span class="p">,</span> <span class="s2">&quot;gaussianmixture&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
 
 
            </div>
@@ -235,10 +288,10 @@ poses plotted using the <code class="docutils literal notranslate"><span class="
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../tutorials/index.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../tutorials/frag_pele.html" class="btn btn-neutral float-left" title="Fragment growing tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../flags/water/index.html" class="btn btn-neutral float-left" title="Water perturbation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

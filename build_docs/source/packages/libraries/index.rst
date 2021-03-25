@@ -1,4 +1,4 @@
-Grow your own fragment library
+Grow custom fragment library
 ######################################
 
 FragPELE is now able to grow fragments from custom-made libraries, all you have to do is provide it with a directory

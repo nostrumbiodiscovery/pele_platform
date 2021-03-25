@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Versions" href="../changelog/index.html" />
-    <link rel="prev" title="Documentation Protocol" href="../developers/protocol.html" /> 
+    <link rel="next" title="Developers" href="../developers/index.html" />
+    <link rel="prev" title="Understanding the output files" href="../tutorials/outputs.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,28 +90,27 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Common errors</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#check-atoms">Check atoms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#filenotfound">FileNotFound</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#valueerror-ligand">ValueError - ligand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#valueerror-water-molecules">ValueError - water molecules</a></li>
 </ul>
 </li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
@@ -217,15 +216,6 @@ in your input file have correct values. Remember that ligands needs to have a un
 </pre></div>
 </div>
 </div>
-<div class="section" id="valueerror-water-molecules">
-<h2>ValueError - water molecules<a class="headerlink" href="#valueerror-water-molecules" title="Permalink to this headline">¶</a></h2>
-<p>PELE does not allow more than 4 water molecules to be perturbed, since it results in a lot of noise in simulation results. Make sure
-<code class="docutils literal notranslate"><span class="pre">n_waters</span></code> flag in the input file is set to a value between 1 and 4.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ValueError: Maximum 4 water molecules are allowed.</span>
-</pre></div>
-</div>
-<p>This is only relevant to <code class="docutils literal notranslate"><span class="pre">n_waters</span></code> flag used to automatically add water molecules to the system when running AquaPELE.</p>
-</div>
 </div>
 
 
@@ -236,10 +226,10 @@ in your input file have correct values. Remember that ligands needs to have a un
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../changelog/index.html" class="btn btn-neutral float-right" title="Versions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../developers/index.html" class="btn btn-neutral float-right" title="Developers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../developers/protocol.html" class="btn btn-neutral float-left" title="Documentation Protocol" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../tutorials/outputs.html" class="btn btn-neutral float-left" title="Understanding the output files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -90,10 +90,13 @@
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
@@ -112,17 +115,15 @@
 <li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpcr.html">GPCR tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frag_pele.html">Fragment growing tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html">Understanding the output files</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
@@ -205,14 +206,10 @@ a ligand from PDB 4UIT co-crystal.</p>
 and click <code class="docutils literal notranslate"><span class="pre">Download</span></code>. The protein structure should appear in your workspace.</p>
 <a class="reference internal image-reference" href="../_images/allosteric_tutorial_1a.png"><img alt="../_images/allosteric_tutorial_1a.png" class="align-center" src="../_images/allosteric_tutorial_1a.png" style="width: 400px;" /></a>
 <p>b. <strong>Preprocess the protein</strong> using Protein Preparation Wizard. Click on <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> and search <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Preparation</span> <span class="pre">Wizard</span></code>.
-Check the following options and hit <code class="docutils literal notranslate"><span class="pre">Preprocess</span></code>.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Fill in missing side chain using Prime*</p></li>
-<li><p>Fill in missing loops using Prime*</p></li>
-<li><p>Delete waters beyond 0.0 Å from het groups (i.e. all waters in the system)</p></li>
-</ul>
-</div></blockquote>
+Check the following options and hit <code class="docutils literal notranslate"><span class="pre">Preprocess</span></code>.
+- Fill in missing side chain using Prime*
+- Fill in missing loops using Prime*
+- Delete waters beyond 0.0 Å from het groups (i.e. all waters in the system)</p>
 <p>*If you do not have Prime license, you can skip those steps.</p>
 <a class="reference internal image-reference" href="../_images/allosteric_tutorial_1b.png"><img alt="../_images/allosteric_tutorial_1b.png" class="align-center" src="../_images/allosteric_tutorial_1b.png" style="width: 400px;" /></a>
 <p>The preprocessing might take a few minutes. Upon completion, you should see <code class="docutils literal notranslate"><span class="pre">4YY6</span> <span class="pre">-</span> <span class="pre">preprocessed</span></code> on the entry list.</p>

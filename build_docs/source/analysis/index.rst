@@ -1,9 +1,11 @@
 Analysis
 ============
 
-
-Output folders
+Output files
 -----------------
+
+Folder structure
+++++++++++++++++++
 
 Each simulation will create a number of output folders, as indicated on the tree below.
 
@@ -23,15 +25,29 @@ The ``output`` folder contains raw output files such as detailed metrics reports
 
 - ``top_poses`` - top 100 lowest binding energy structures
 - ``plots`` - plots of multiple metrics selected by the user
-- ``clusters`` - lowest binding energy cluster representatives.
+- ``clusters`` - lowest binding energy cluster representatives and clustering plots.
+
+Detailed metrics
+++++++++++++++++++
+
+Additionally, the simulation will create a two CSV files with more detailed metrics:
+
+- ``results/data.csv`` contains a summary of all created poses together with their metrics and the clusters they belong to
+- ``results/clusters/info.csv`` provides detailed metric on each cluster, such as its population, mean RMSD, energy percentiles, etc.
+
+
+Plots
+---------
+The software will automatically create scatter plots for all metrics, however, if you want to enhance your analysis, you
+can check out our interactive and KDE plots.
 
 Interactive plots
--------------------
-Additionally, you can create your own interactive plots. Go to the ``output`` folder and run the following command:
++++++++++++++++++++
+You can also create your own interactive plots. Simply go to the ``output`` folder and run the following command:
 
 .. code-block:: console
 
- python -m pele_platform.Analysis.interactive_plot 6 5
+ python -m pele_platform.analysis.interactive_plot 6 5
 
 The script requires two integer arguments indicating the numbers of report columns you would like to plot, in this
 case we used columns 5 and 6 corresponding to the binding energy and SASA of the ligand. You can click on data points to get the file names of the structures.
@@ -43,7 +59,7 @@ case we used columns 5 and 6 corresponding to the binding energy and SASA of the
 For more advanced interactive plots, please refer to `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html>`_.
 
 Kernel density estimate plot
--------------------------------
+++++++++++++++++++++++++++++++
 
 The KDE plots can aid the simulation analysis by visualising the distribution of ligand poses (similarly to a histogram)
 in respect to plotted metrics, such as distance between two atoms (atom_dist) or solvent exposed surface area (SASA).
@@ -60,3 +76,35 @@ Example plot of binding energy vs ligand SASA with a KDE including 1000 best ene
 .. image:: ../img/kde.png
   :width: 400
   :align: center
+
+Clusters
+-----------
+
+The user has a choice between three clustering methods as well as some control over: mean shift, HDBSCAN and Gaussian mixture model.
+
+
+API
+-----
+
+We included an option to run analysis as API for those of our users, who are familiar with Python. All you have to do is
+initialize the Analysis class with the following parameters:
+
+- **resname** - residue name of the ligand
+- **chain** - chain ID of the ligand
+- **simulation_output** - path to the output folder of the simulation.
+
+.. code-block:: python
+
+     analysis = Analysis(
+            resname="LIG",
+            chain="Z",
+            simulation_output="LIG_Pele/output",
+        )
+
+Then you can use one of the available methods to generate top poses, perform clustering or run the whole analysis workflow, e.g.
+
+-
+
+.. code-block:: python
+
+    analysis.generate(working_folder, "gaussianmixture")

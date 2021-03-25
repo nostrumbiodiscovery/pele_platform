@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Prepare your own Fragment Growing &mdash; pele platform 1.5.1 documentation</title>
+  <title>Fragment growing simulation &mdash; pele platform 1.5.1 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Grow your own fragment library" href="../libraries/index.html" />
-    <link rel="prev" title="Prepare your own Pocket Exploration" href="../pocket_exploration/index.html" /> 
+    <link rel="next" title="Grow custom fragment library" href="../libraries/index.html" />
+    <link rel="prev" title="Prepare your own PPI simulation" href="../ppi/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,40 +90,41 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Prepare your own simulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Refine docking poses by accounting for receptor flexibility</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Run simulation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Docking pose refinement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rescoring/index.html">Rank multiple putative poses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Pocket exploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Prepare your own Pocket Exploration</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Prepare your own Fragment Growing</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Fragment growing simulation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow your own fragment library</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">Prepare your own GPCR orthosteric site simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Prepare your own binding simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Prepare your own biased simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow custom fragment library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minimization/index.html">Minimize your protein</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Optative flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flags/index.html">Optional flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../analysis/index.html">Analysis</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
@@ -173,9 +174,9 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../index.html">Prepare your own simulation</a> &raquo;</li>
+          <li><a href="../index.html">Run simulation</a> &raquo;</li>
         
-      <li>Prepare your own Fragment Growing</li>
+      <li>Fragment growing simulation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -194,8 +195,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="prepare-your-own-fragment-growing">
-<h1>Prepare your own Fragment Growing<a class="headerlink" href="#prepare-your-own-fragment-growing" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="fragment-growing-simulation">
+<h1>Fragment growing simulation<a class="headerlink" href="#fragment-growing-simulation" title="Permalink to this headline">¶</a></h1>
 <p>FragPELE is a new tool for in silico hit-to-lead drug design, capable of performing HT-fragment growing onto a scaffold while
 exploring the protein-ligand conformational space. Aims to rank ligands and discover cryptic pockets.</p>
 <p><strong>Article</strong>: <a class="reference external" href="https://nostrumbiodiscovery.github.io/papers/Software/index.html#frag-pele-dynamic-ligand-growing-within-a-binding-site-a-novel-tool-for-hit-to-lead-drug-design">https://nostrumbiodiscovery.github.io/papers/Software/index.html#frag-pele-dynamic-ligand-growing-within-a-binding-site-a-novel-tool-for-hit-to-lead-drug-design</a></p>
@@ -283,10 +284,10 @@ can be found in:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../libraries/index.html" class="btn btn-neutral float-right" title="Grow your own fragment library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../libraries/index.html" class="btn btn-neutral float-right" title="Grow custom fragment library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../pocket_exploration/index.html" class="btn btn-neutral float-left" title="Prepare your own Pocket Exploration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../ppi/index.html" class="btn btn-neutral float-left" title="Prepare your own PPI simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

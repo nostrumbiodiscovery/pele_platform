@@ -1,18 +1,15 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>All PELE packages &mdash; pele platform 1.5.1 documentation</title>
+  <title>All PELE packages &mdash; pele platform 1.5.0 documentation</title>
   
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
 
   
   
@@ -20,9 +17,7 @@
   
 
   
-  <!--[if lt IE 9]>
-    <script src="../../_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -34,10 +29,14 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
     
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="PPI parameters" href="../ppi/index.html" />
-    <link rel="prev" title="Optative flags" href="../index.html" /> 
+    <link rel="prev" title="Input flags documentation" href="../index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -51,7 +50,7 @@
           
 
           
-            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+            <a href="../../index.html" class="icon icon-home"> pele platform
           
 
           
@@ -61,7 +60,7 @@
             
             
               <div class="version">
-                1.5.1
+                1.5
               </div>
             
           
@@ -78,7 +77,6 @@
           
         </div>
 
-        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -93,7 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../packages/index.html">Prepare your own simulation</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Optative flags</a><ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Input flags documentation</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">All PELE packages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#general-settings">General settings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#receptor-preparation">Receptor preparation</a></li>
@@ -105,7 +103,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#metal-constraints">Metal constraints</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#metal-polarisation">Metal polarisation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
@@ -115,31 +112,11 @@
 <li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Allosteric parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../frag/index.html">FragPELE parameters</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../water/index.html">Water perturbation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#box-parameters">Box parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#simulation-params">Simulation params</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#pele-params">PELE params</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#fragpele-params">FragPELE params</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#ppi-params">PPI params</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#constraints">Constraints</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#waterperturbation">WaterPerturbation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#interaction-restrictions">Interaction restrictions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#metrics">Metrics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#analysis">Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../index.html#output">Output</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../analysis/index.html">Analysis</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../errors/index.html">Common errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers: Add your own mode</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
@@ -148,7 +125,6 @@
             
           
         </div>
-        
       </div>
     </nav>
 
@@ -187,9 +163,9 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../index.html">Optative flags</a> &raquo;</li>
+          <li><a href="../index.html">Input flags documentation</a> &raquo;</li>
         
       <li>All PELE packages</li>
     
@@ -427,18 +403,6 @@
 </div>
 </div>
 </div>
-<div class="section" id="metal-polarisation">
-<h2>Metal polarisation<a class="headerlink" href="#metal-polarisation" title="Permalink to this headline">¶</a></h2>
-<p>An optional flag to adjust charges on the metals by dividing them by certain factor.</p>
-<ul class="simple">
-<li><p><strong>polarize_metals</strong> - adjust charges on the metals by dividing them by 2 (unless other value is set in polarization_factor)</p></li>
-<li><p><strong>polarization_factor</strong> - factor by which the metal charges should be divided</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">polarize_metals</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">polarization_factor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span> <span class="c1"># Mg2+ will have a charge of +1</span>
-</pre></div>
-</div>
-</div>
 <div class="section" id="metrics">
 <h2>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h2>
 <p>Metrics to track along the simulation</p>
@@ -507,7 +471,7 @@
         <a href="../ppi/index.html" class="btn btn-neutral float-right" title="PPI parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="Optative flags" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Input flags documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -516,19 +480,11 @@
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2021, NBD | Nostrum Biodiscovery
+        &copy; Copyright 2020, Daniel Soler Viladrich
 
     </p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -539,6 +495,7 @@
 
   </div>
   
+
 
   <script type="text/javascript">
       jQuery(function () {

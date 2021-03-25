@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Prepare your own simulation" href="../packages/index.html" />
+    <link rel="next" title="Run simulation" href="../packages/index.html" />
     <link rel="prev" title="PELE Platform" href="../index.html" /> 
 </head>
 
@@ -92,27 +92,27 @@
 <li class="toctree-l2"><a class="reference internal" href="#singularity">Singularity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pypi">Pypi</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#last-stable-release-from-source-code">Last stable release from source code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#test-it-works">Test it works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#test-installation">Test installation</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Prepare your own simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../documentation/index.html">Optative flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
@@ -206,11 +206,11 @@ bash create_pele_image.sh <span class="o">(</span>You will need acces to PELE do
 
 <span class="nb">cd</span> test/
 
-<span class="c1">#Change the licenses and folders inside singularity.sl (IT section)</span>
+<span class="c1"># Change the licenses and folders inside singularity.sl (IT section)</span>
 
-bash singularity.sl  <span class="c1">#If not queue system</span>
+bash singularity.sl  <span class="c1"># If not queue system</span>
 
-sbatch singularity.sl  <span class="c1">#If slurm queue system</span>
+sbatch singularity.sl  <span class="c1"># If slurm queue system</span>
 </pre></div>
 </div>
 </div>
@@ -222,12 +222,12 @@ pip install <span class="nv">pele_platform</span><span class="o">==</span><span 
 
 <span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
 
-<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
+<span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schrodinger/20XX/
 
-conda install rdkit <span class="o">(</span>Or compile from <span class="nb">source</span> code<span class="o">)</span>
+conda install rdkit <span class="o">(</span>or compile from <span class="nb">source</span> code<span class="o">)</span>
 
 Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
+specified via input.yaml flag, i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>
@@ -246,12 +246,12 @@ pip install .
 conda install rdkit <span class="o">(</span><span class="k">if</span> you want to have the possibility to build constraints by SMILES<span class="o">)</span>
 
 Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
+specified via input.yaml flag, i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
 </div>
-<div class="section" id="test-it-works">
-<h2>Test it works<a class="headerlink" href="#test-it-works" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="test-installation">
+<h2>Test installation<a class="headerlink" href="#test-installation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
 
 <span class="nb">cd</span> pele_platform/tests
@@ -270,7 +270,7 @@ python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.ya
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../packages/index.html" class="btn btn-neutral float-right" title="Prepare your own simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../packages/index.html" class="btn btn-neutral float-right" title="Run simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../index.html" class="btn btn-neutral float-left" title="PELE Platform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

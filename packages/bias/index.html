@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Prepare your own biased simulation &mdash; pele platform 1.5.1 documentation</title>
+  <title>Biased simulation &mdash; pele platform 1.5.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Simulate big conformational moves of your receptor with PCA-PELE" href="../pca/index.html" />
-    <link rel="prev" title="Prepare your own binding simulation" href="../binding/index.html" /> 
+    <link rel="prev" title="Binding simulation" href="../binding/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,16 +90,16 @@
 <li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Prepare your own simulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Refine docking poses by accounting for receptor flexibility</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Run simulation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Docking pose refinement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rescoring/index.html">Rank multiple putative poses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Pocket exploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Prepare your own Pocket Exploration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Prepare your own Fragment Growing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow your own fragment library</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">Prepare your own GPCR orthosteric site simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Prepare your own binding simulation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Prepare your own biased simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Fragment growing simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow custom fragment library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Biased simulation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
@@ -111,23 +111,24 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minimization/index.html">Minimize your protein</a></li>
 </ul>
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../documentation/index.html">Optative flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../flags/index.html">Optional flags</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../analysis/index.html">Analysis</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
@@ -177,9 +178,9 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../index.html">Prepare your own simulation</a> &raquo;</li>
+          <li><a href="../index.html">Run simulation</a> &raquo;</li>
         
-      <li>Prepare your own biased simulation</li>
+      <li>Biased simulation</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -198,8 +199,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="prepare-your-own-biased-simulation">
-<h1>Prepare your own biased simulation<a class="headerlink" href="#prepare-your-own-biased-simulation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="biased-simulation">
+<h1>Biased simulation<a class="headerlink" href="#biased-simulation" title="Permalink to this headline">¶</a></h1>
 <p>This simulation aims to find a binding mode containing a specific interaction between two atoms.</p>
 <p><strong>Article</strong> <a class="reference external" href="https://www.nature.com/articles/s41598-017-08445-5">https://www.nature.com/articles/s41598-017-08445-5</a></p>
 <p><strong>Input</strong> (further explained below):</p>
@@ -265,7 +266,7 @@ Ranked cluster representatives can be found in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/clusters</span></code></p>
 <p><strong>Best snapshots</strong></p>
 <p>In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:</p>
-<p><code class="docutils literal notranslate"><span class="pre">working_folder/results/BestStructs</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">working_folder/results/top_poses</span></code></p>
 </div>
 </div>
 </div>
@@ -281,7 +282,7 @@ Ranked cluster representatives can be found in:</p>
         <a href="../pca/index.html" class="btn btn-neutral float-right" title="Simulate big conformational moves of your receptor with PCA-PELE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../binding/index.html" class="btn btn-neutral float-left" title="Prepare your own binding simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../binding/index.html" class="btn btn-neutral float-left" title="Binding simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

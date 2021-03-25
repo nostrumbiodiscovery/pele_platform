@@ -1,5 +1,5 @@
 Installation
-###############
+===============
 
 Conda (recommended)
 -----------------------
@@ -29,11 +29,11 @@ Singularity
    
    cd test/
    
-   #Change the licenses and folders inside singularity.sl (IT section)
+   # Change the licenses and folders inside singularity.sl (IT section)
    
-   bash singularity.sl  #If not queue system
+   bash singularity.sl  # If not queue system
    
-   sbatch singularity.sl  #If slurm queue system
+   sbatch singularity.sl  # If slurm queue system
 
 
 
@@ -48,12 +48,12 @@ Pypi
 
     export PELE=/path/to/PELE-1.X/
 
-    export SCHRODINGER=/path/to/schoringer/20XX/
+    export SCHRODINGER=/path/to/schrodinger/20XX/
     
-    conda install rdkit (Or compile from source code)
+    conda install rdkit (or compile from source code)
 
     Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
+    specified via input.yaml flag, i.e license: /path/to/licenses/folder/
 
 
 Last stable release from source code
@@ -74,11 +74,11 @@ Last stable release from source code
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
     Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
+    specified via input.yaml flag, i.e license: /path/to/licenses/folder/
 
 
 
-Test it works
+Test installation
 ----------------
 
 .. code-block:: bash
@@ -88,12 +88,3 @@ Test it works
     cd pele_platform/tests
 
     python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml
-
-
-
-
-
-
-
-
-

@@ -1,4 +1,4 @@
-Prepare your own Fragment Growing
+Fragment growing simulation
 ######################################
 
 FragPELE is a new tool for in silico hit-to-lead drug design, capable of performing HT-fragment growing onto a scaffold while
@@ -86,5 +86,3 @@ can be found in:
 Each fragment folder contains a top_results folder with PDB files corresponding to the best poses for that fragment:
 
 ``fragment_folder/top_results/``
-
-

@@ -274,20 +274,6 @@ Algorithm to automatically set metal constraints around the ligand.
     external_constraints:
         - "50-2.34-A:1:H-L:1:MG" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
 
-Metal polarisation
-====================
-
-An optional flag to adjust charges on the metals by dividing them by certain factor.
-
-- **polarize_metals** - adjust charges on the metals by dividing them by 2 (unless other value is set in polarization_factor)
-
-- **polarization_factor** - factor by which the metal charges should be divided
-
-..  code-block:: yaml
-
-    polarize_metals: true
-    polarization_factor: 2 # Mg2+ will have a charge of +1
-
 Metrics
 =============
 

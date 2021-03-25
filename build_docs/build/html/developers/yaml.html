@@ -1,0 +1,4522 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>YAML Model &mdash; pele platform 1.5.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Developers</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>YAML Model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/developers/yaml.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="yaml-model">
+<h1>YAML Model<a class="headerlink" href="#yaml-model" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-settings">
+<h2>General settings<a class="headerlink" href="#general-settings" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="package">
+<h3>Package<a class="headerlink" href="#package" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>package</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>package</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="adaptive">
+<h3>Adaptive<a class="headerlink" href="#adaptive" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>adaptive</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>adaptive</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_adaptive</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="global-inputs-input">
+<h3>Global Inputs / Input<a class="headerlink" href="#global-inputs-input" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>global_inputs</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>input</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_input_glob</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="system">
+<h3>System<a class="headerlink" href="#system" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>system</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>system</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">construct_path</span></code> from <cite>YamlParserModel</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_system_glob</span></code> from <cite>SimulationParamsModel</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_adaptive_required_fields</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="resname-residue">
+<h3>Resname / Residue<a class="headerlink" href="#resname-residue" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>resname</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>residue</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_residue</span></code> from <cite>YamlParserModel</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_adaptive_required_fields</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="chain">
+<h3>Chain<a class="headerlink" href="#chain" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>chain</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>chain</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_adaptive_required_fields</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="test">
+<h3>Test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>test</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>test</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="verbose">
+<h3>Verbose<a class="headerlink" href="#verbose" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>verbose</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>verbose</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format_verbose</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="debug">
+<h3>Debug<a class="headerlink" href="#debug" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>debug</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>debug</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="working-folder-folder">
+<h3>Working Folder / Folder<a class="headerlink" href="#working-folder-folder" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>working_folder</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>folder</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="output">
+<h3>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>output</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>output</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'output'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="other">
+<h2>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="hbond">
+<h3>Hbond<a class="headerlink" href="#hbond" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>hbond</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>hbond</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">[None,</span> <span class="pre">None]</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="pele">
+<h3>Pele<a class="headerlink" href="#pele" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>pele</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pele</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="temp">
+<h3>Temp<a class="headerlink" href="#temp" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value from <cite>temperature</cite> parser</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>temp</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="adaptive-restart">
+<h3>Adaptive Restart<a class="headerlink" href="#adaptive-restart" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>adaptive_restart</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>adaptive_restart</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="templates-template">
+<h3>Templates / Template<a class="headerlink" href="#templates-template" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>templates</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>template</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="ext-rotamers">
+<h3>Ext Rotamers<a class="headerlink" href="#ext-rotamers" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value from <cite>rotamers</cite> parser</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>ext_rotamers</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="ters-gaps-ter">
+<h3>TERs / Gaps Ter<a class="headerlink" href="#ters-gaps-ter" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>TERs</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>gaps_ter</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">gaps_ter</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="charge-ters-charge-ter">
+<h3>Charge Ters / Charge Ter<a class="headerlink" href="#charge-ters-charge-ter" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>charge_ters</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>charge_ter</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">charge_ter</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="mpi-params">
+<h3>Mpi Params<a class="headerlink" href="#mpi-params" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>mpi_params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>mpi_params</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">format_mpi_params</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="nonstandard">
+<h3>Nonstandard<a class="headerlink" href="#nonstandard" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>nonstandard</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>nonstandard</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">nonstandard</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+</div>
+<div class="section" id="prepwizard">
+<h3>Prepwizard<a class="headerlink" href="#prepwizard" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>prepwizard</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>prepwizard</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="proximitydetection">
+<h3>proximityDetection<a class="headerlink" href="#proximitydetection" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>proximityDetection</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>proximityDetection</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_proximityDetection</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="poses">
+<h3>Poses<a class="headerlink" href="#poses" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>poses</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>poses</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="precision-glide">
+<h3>Precision Glide<a class="headerlink" href="#precision-glide" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>precision_glide</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>precision_glide</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="msm">
+<h3>Msm<a class="headerlink" href="#msm" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>msm</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>msm</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="precision">
+<h3>Precision<a class="headerlink" href="#precision" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>precision</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>precision</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="exit-clust-clust">
+<h3>Exit Clust / Clust<a class="headerlink" href="#exit-clust-clust" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>exit_clust</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>clust</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">2</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="restart">
+<h3>Restart<a class="headerlink" href="#restart" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>restart</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>restart</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">restart</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'all'</span></code>.</p>
+</div>
+<div class="section" id="lagtime">
+<h3>Lagtime<a class="headerlink" href="#lagtime" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>lagtime</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>lagtime</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="msm-clust">
+<h3>Msm Clust<a class="headerlink" href="#msm-clust" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>msm_clust</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>msm_clust</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="rescoring">
+<h3>Rescoring<a class="headerlink" href="#rescoring" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>rescoring</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>rescoring</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="in-out">
+<h3>In Out<a class="headerlink" href="#in-out" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>in_out</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>in_out</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="in-out-soft">
+<h3>In Out Soft<a class="headerlink" href="#in-out-soft" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>in_out_soft</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>in_out_soft</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="exit">
+<h3>Exit<a class="headerlink" href="#exit" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>exit</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>exit</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="exit-value">
+<h3>Exit Value<a class="headerlink" href="#exit-value" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>exit_value</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>exit_value</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="exit-condition">
+<h3>Exit Condition<a class="headerlink" href="#exit-condition" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>exit_condition</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>exit_condition</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="exit-trajnum">
+<h3>Exit Trajnum<a class="headerlink" href="#exit-trajnum" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>exit_trajnum</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>exit_trajnum</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="one-exit">
+<h3>One Exit<a class="headerlink" href="#one-exit" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>one_exit</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>one_exit</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="box-type">
+<h3>Box Type<a class="headerlink" href="#box-type" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>box_type</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>box_type</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="box-metric">
+<h3>Box Metric<a class="headerlink" href="#box-metric" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>box_metric</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>box_metric</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="time">
+<h3>Time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>time</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>time</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="nosasa">
+<h3>Nosasa<a class="headerlink" href="#nosasa" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>nosasa</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>nosasa</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="perc-sasa">
+<h3>Perc Sasa<a class="headerlink" href="#perc-sasa" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>perc_sasa</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>perc_sasa</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="seed">
+<h3>Seed<a class="headerlink" href="#seed" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>seed</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>seed</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">generate_random_seed()</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="pdb">
+<h3>Pdb<a class="headerlink" href="#pdb" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>pdb</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pdb</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_extensions</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="log">
+<h3>Log<a class="headerlink" href="#log" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>log</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>log</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="nonrenum">
+<h3>Nonrenum<a class="headerlink" href="#nonrenum" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>nonrenum</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>nonrenum</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="pele-exec">
+<h3>Pele Exec<a class="headerlink" href="#pele-exec" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>pele_exec</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pele_exec</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'bin/Pele_mpi'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="pele-data">
+<h3>Pele Data<a class="headerlink" href="#pele-data" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>pele_data</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pele_data</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'Data'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="pele-documents">
+<h3>Pele Documents<a class="headerlink" href="#pele-documents" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>pele_documents</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pele_documents</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'Documents'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="pca">
+<h3>Pca<a class="headerlink" href="#pca" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>pca</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pca</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">format_pca</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="anm-direction">
+<h3>Anm Direction<a class="headerlink" href="#anm-direction" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>anm_direction</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>anm_direction</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">anm_direction</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'random'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="anm-mix-modes">
+<h3>Anm Mix Modes<a class="headerlink" href="#anm-mix-modes" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>anm_mix_modes</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>anm_mix_modes</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">anm_mix_modes</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'mixMainModeWithOthersModes'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="anm-picking-mode">
+<h3>Anm Picking Mode<a class="headerlink" href="#anm-picking-mode" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>anm_picking_mode</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>anm_picking_mode</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">anm_picking_mode</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'RANDOM_MODE'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="anm-displacement">
+<h3>Anm Displacement<a class="headerlink" href="#anm-displacement" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>anm_displacement</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>anm_displacement</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">anm_displacement</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0.75</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="anm-modes-change">
+<h3>Anm Modes Change<a class="headerlink" href="#anm-modes-change" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>anm_modes_change</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>anm_modes_change</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">anm_modes_change</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">4</span></code>.</p>
+</div>
+<div class="section" id="anm-num-of-modes">
+<h3>Anm Num Of Modes<a class="headerlink" href="#anm-num-of-modes" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>anm_num_of_modes</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>anm_num_of_modes</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">anm_num_of_modes</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">6</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="anm-relaxation-constr">
+<h3>Anm Relaxation Constr<a class="headerlink" href="#anm-relaxation-constr" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>anm_relaxation_constr</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>anm_relaxation_constr</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">anm_relaxation_constr</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0.5</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="remove-constraints">
+<h3>Remove Constraints<a class="headerlink" href="#remove-constraints" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>remove_constraints</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>remove_constraints</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">remove_constraints</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="pca-traj">
+<h3>Pca Traj<a class="headerlink" href="#pca-traj" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>pca_traj</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pca_traj</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="perturbation">
+<h3>Perturbation<a class="headerlink" href="#perturbation" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>perturbation</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>perturbation</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_perturbation</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="sasa">
+<h3>Sasa<a class="headerlink" href="#sasa" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>sasa</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>sasa</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">sasa</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">{</span> <span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;sasa&quot;,\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;tag&quot;:</span> <span class="pre">&quot;sasaLig&quot;,\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;selection&quot;:</span> <span class="pre">{</span> <span class="pre">&quot;chains&quot;:</span> <span class="pre">{</span> <span class="pre">&quot;names&quot;:</span> <span class="pre">[&quot;$CHAIN&quot;]</span> <span class="pre">}</span> <span class="pre">}\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">},\n'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">only_with_perturbation</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="binding-energy">
+<h3>Binding Energy<a class="headerlink" href="#binding-energy" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>binding_energy</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>binding_energy</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">binding_energy</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">{</span> <span class="pre">&quot;type&quot;:</span> <span class="pre">&quot;bindingEnergy&quot;,\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">&quot;boundPartSelection&quot;:</span> <span class="pre">{</span> <span class="pre">&quot;chains&quot;:</span> <span class="pre">{</span> <span class="pre">&quot;names&quot;:</span> <span class="pre">[&quot;$CHAIN&quot;]</span> <span class="pre">}</span> <span class="pre">}\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">},\n'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">only_with_perturbation</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>parameters</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>parameters</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">params</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">only_with_perturbation</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="analyse">
+<h3>Analyse<a class="headerlink" href="#analyse" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>analyse</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>analyse</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="selection-to-perturb">
+<h3>Selection To Perturb<a class="headerlink" href="#selection-to-perturb" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>selection_to_perturb</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>selection_to_perturb</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">selection_to_perturb</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'&quot;selectionToPerturb&quot;</span> <span class="pre">:</span> <span class="pre">{</span> <span class="pre">&quot;chains&quot;</span> <span class="pre">:</span> <span class="pre">{</span> <span class="pre">&quot;names&quot;</span> <span class="pre">:</span> <span class="pre">[</span> <span class="pre">&quot;$CHAIN&quot;</span> <span class="pre">]</span> <span class="pre">}</span> <span class="pre">},'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">only_with_perturbation</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="mae">
+<h3>Mae<a class="headerlink" href="#mae" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>mae</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>mae</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="constrain-core">
+<h3>Constrain Core<a class="headerlink" href="#constrain-core" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>constrain_core</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>constrain_core</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">constrain_core</span></code> software setting.</p>
+</div>
+<div class="section" id="spawning-condition">
+<h3>Spawning Condition<a class="headerlink" href="#spawning-condition" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>spawning_condition</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>spawning_condition</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">spawning_condition</span></code> software setting.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">format_spawning_condition</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="overwrite-analysis-overwrite">
+<h3>Overwrite Analysis / Overwrite<a class="headerlink" href="#overwrite-analysis-overwrite" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>overwrite_analysis</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>overwrite</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="analysis-nclust">
+<h3>Analysis Nclust<a class="headerlink" href="#analysis-nclust" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>analysis_nclust</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>analysis_nclust</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">10</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="te-column">
+<h3>Te Column<a class="headerlink" href="#te-column" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>te_column</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>te_column</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="be-column">
+<h3>Be Column<a class="headerlink" href="#be-column" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>be_column</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>be_column</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">5</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="limit-column">
+<h3>Limit Column<a class="headerlink" href="#limit-column" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>limit_column</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>limit_column</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">6</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="comligandconstraint-com">
+<h3>COMligandConstraint / Com<a class="headerlink" href="#comligandconstraint-com" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>COMligandConstraint</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>com</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">COMligandConstraint</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</div>
+<div class="section" id="pele-license">
+<h3>Pele License<a class="headerlink" href="#pele-license" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>pele_license</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pele_license</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'licenses'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="license">
+<h3>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value from <cite>pele_license</cite> parser</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>license</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="schrodinger">
+<h3>Schrodinger<a class="headerlink" href="#schrodinger" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>schrodinger</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>schrodinger</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="no-check">
+<h3>No Check<a class="headerlink" href="#no-check" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>no_check</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>no_check</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-pele">
+<h3>Frag Pele<a class="headerlink" href="#frag-pele" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_pele</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_frag_pele</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="complexes">
+<h3>Complexes<a class="headerlink" href="#complexes" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>complexes</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_complexes</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-pele-steps">
+<h3>Frag Pele Steps<a class="headerlink" href="#frag-pele-steps" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_pele_steps</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_frag_pele_steps</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="output-path">
+<h3>Output Path<a class="headerlink" href="#output-path" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>output_path</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_output_path</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="logfile">
+<h3>Logfile<a class="headerlink" href="#logfile" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>logfile</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_logfile</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="water">
+<h3>Water<a class="headerlink" href="#water" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">''</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="ligand">
+<h3>Ligand<a class="headerlink" href="#ligand" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>ligand</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'&quot;ligandResname&quot;</span> <span class="pre">:</span> <span class="pre">&quot;$LIG_RES&quot;,'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">only_with_perturbation</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="external-template">
+<h3>External Template<a class="headerlink" href="#external-template" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>external_template</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">template</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+</div>
+<div class="section" id="external-rotamers">
+<h3>External Rotamers<a class="headerlink" href="#external-rotamers" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>external_rotamers</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">rotamers</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+</div>
+<div class="section" id="spython">
+<h3>Spython<a class="headerlink" href="#spython" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>spython</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'utilities/python'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">check_spython_path</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="lig">
+<h3>Lig<a class="headerlink" href="#lig" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>lig</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">set_lig</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="sasa-max">
+<h3>Sasa Max<a class="headerlink" href="#sasa-max" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>sasa_max</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="sasa-min">
+<h3>Sasa Min<a class="headerlink" href="#sasa-min" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>sasa_min</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="clust-clusters">
+<h3>Clust / Clusters<a class="headerlink" href="#clust-clusters" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>clusters</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">2</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="allow-empty-selectors">
+<h3>Allow Empty Selectors<a class="headerlink" href="#allow-empty-selectors" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>allow_empty_selectors</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">format_allow_empty_selectors</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="templates">
+<h3>Templates<a class="headerlink" href="#templates" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>templates</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'/Users/agruszka/Projects/pele_platform/pele_platform/PeleTemplates'</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="xtc">
+<h3>Xtc<a class="headerlink" href="#xtc" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>xtc</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">check_extensions</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="constraints">
+<h3>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>constraints</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="water-energy">
+<h3>Water Energy<a class="headerlink" href="#water-energy" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value calculated in simulation params</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_energy</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="simulation-parameters">
+<h2>Simulation parameters<a class="headerlink" href="#simulation-parameters" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="forcefield">
+<h3>Forcefield<a class="headerlink" href="#forcefield" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>forcefield</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>forcefield</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'OPLS2005'</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">forcefield</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'OPLS2005'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="anm-freq">
+<h3>Anm Freq<a class="headerlink" href="#anm-freq" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>anm_freq</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>anm_freq</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">anm_freq</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">4</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="sidechain-freq">
+<h3>Sidechain Freq<a class="headerlink" href="#sidechain-freq" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>sidechain_freq</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>sidechain_freq</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">sidechain_freq</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">2</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="min-freq">
+<h3>Min Freq<a class="headerlink" href="#min-freq" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>min_freq</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>min_freq</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">0</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">min_freq</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="water-freq">
+<h3>Water Freq<a class="headerlink" href="#water-freq" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>water_freq</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_freq</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">water_freq</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="temperature">
+<h3>Temperature<a class="headerlink" href="#temperature" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>temperature</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>temperature</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">10000</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">temperature</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">1500</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="sidechain-res-sidechain-resolution">
+<h3>Sidechain Res / Sidechain Resolution<a class="headerlink" href="#sidechain-res-sidechain-resolution" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>sidechain_res</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>sidechain_resolution</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">sidechain_resolution</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">30</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="steric-trials">
+<h3>Steric Trials<a class="headerlink" href="#steric-trials" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>steric_trials</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>steric_trials</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">steric_trials</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">250</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="overlap-factor">
+<h3>Overlap Factor<a class="headerlink" href="#overlap-factor" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>overlap_factor</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>overlap_factor</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">overlap_factor</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0.65</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="steering">
+<h3>Steering<a class="headerlink" href="#steering" title="Permalink to this headline">¶</a></h3>
+<p>Number of translations in the same direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>steering</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>steering</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">steering</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="solvent">
+<h3>Solvent<a class="headerlink" href="#solvent" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>solvent</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>solvent</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">solvent</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'VDGBNP'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="spawning">
+<h3>Spawning<a class="headerlink" href="#spawning" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>spawning</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>spawning</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">spawning_type</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'independent'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="iterations">
+<h3>Iterations<a class="headerlink" href="#iterations" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>iterations</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>iterations</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">iterations</span></code> software setting.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_iterations</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="steps">
+<h3>Steps<a class="headerlink" href="#steps" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>steps</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>steps</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="pele-steps">
+<h3>Pele Steps<a class="headerlink" href="#pele-steps" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value from <cite>steps</cite> parser</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>pele_steps</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">pele_steps</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">8</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="cpus">
+<h3>Cpus<a class="headerlink" href="#cpus" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>cpus</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>cpus</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">5</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">cpus</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">60</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="density">
+<h3>Density<a class="headerlink" href="#density" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>density</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>density</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">density</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'null'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="cluster-values">
+<h3>Cluster Values<a class="headerlink" href="#cluster-values" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>cluster_values</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>cluster_values</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">cluster_values</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'[1.75,</span> <span class="pre">2.5,</span> <span class="pre">4,</span> <span class="pre">6]'</span></code>.</p>
+</div>
+<div class="section" id="cluster-conditions">
+<h3>Cluster Conditions<a class="headerlink" href="#cluster-conditions" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>cluster_conditions</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>cluster_conditions</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">cluster_conditions</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'[1,</span> <span class="pre">0.6,</span> <span class="pre">0.4,</span> <span class="pre">0.0]'</span></code>.</p>
+</div>
+<div class="section" id="simulation-type">
+<h3>Simulation Type<a class="headerlink" href="#simulation-type" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>simulation_type</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>simulation_type</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">simulation_type</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'pele'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="equilibration">
+<h3>Equilibration<a class="headerlink" href="#equilibration" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>equilibration</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>equilibration</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">format_verbose</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="clust-type">
+<h3>Clust Type<a class="headerlink" href="#clust-type" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>clust_type</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>clust_type</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">clust_type</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">'rmsd'</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="equilibration-steps-eq-steps">
+<h3>Equilibration Steps / Eq Steps<a class="headerlink" href="#equilibration-steps-eq-steps" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>equilibration_steps</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>eq_steps</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="report-report-name">
+<h3>Report / Report Name<a class="headerlink" href="#report-report-name" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a candidate for deprecation.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>report</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>report_name</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'report'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="traj-traj-name">
+<h3>Traj / Traj Name<a class="headerlink" href="#traj-traj-name" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>traj</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>traj_name</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">'trajectory.pdb'</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="epsilon">
+<h3>Epsilon<a class="headerlink" href="#epsilon" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>epsilon</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>epsilon</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="bias-column">
+<h3>Bias Column<a class="headerlink" href="#bias-column" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>bias_column</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>bias_column</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">bias_column</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">5</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="randomize">
+<h3>Randomize<a class="headerlink" href="#randomize" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>randomize</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>randomize</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">randomize</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="miscellaneous">
+<h2>Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="usesrun">
+<h3>Usesrun<a class="headerlink" href="#usesrun" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>usesrun</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>usesrun</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">set_usesrun</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="out-in">
+<h2>Out in<a class="headerlink" href="#out-in" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Out In<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>out_in</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>out_in</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="initial-site">
+<h3>Initial Site<a class="headerlink" href="#initial-site" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>initial_site</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>initial_site</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_atom_string</span></code> from <cite>YamlParserModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="ligand-preparation">
+<h2>Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="gridres">
+<h3>Gridres<a class="headerlink" href="#gridres" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>gridres</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>gridres</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">10</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="core">
+<h3>Core<a class="headerlink" href="#core" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>core</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>core</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">-1</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="maxtorsion-mtor">
+<h3>Maxtorsion / Mtor<a class="headerlink" href="#maxtorsion-mtor" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>maxtorsion</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>mtor</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">4</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="n">
+<h3>N<a class="headerlink" href="#n" title="Permalink to this headline">¶</a></h3>
+<p>Maximum number of flexible sidechains in the ligand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>n</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>n</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">10000</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="ext-temp">
+<h3>Ext Temp<a class="headerlink" href="#ext-temp" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>None, value from <cite>template</cite> parser</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>ext_temp</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="rotamers">
+<h3>Rotamers<a class="headerlink" href="#rotamers" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>rotamers</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>rotamers</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="mae-lig">
+<h3>Mae Lig<a class="headerlink" href="#mae-lig" title="Permalink to this headline">¶</a></h3>
+<p>Maestro file to extract quantum charges.</p>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>mae_lig</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>mae_lig</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">mae_lig</span></code> software setting.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">construct_path</span></code> from <cite>YamlParserModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="skip-ligand-prep">
+<h3>Skip Ligand Prep<a class="headerlink" href="#skip-ligand-prep" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>skip_ligand_prep</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>skip_ligand_prep</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">args.skip_ligand_prep</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+</div>
+</div>
+<div class="section" id="protein-preparation">
+<h2>Protein preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="skip-preprocess-no-ppp">
+<h3>Skip Preprocess / No Ppp<a class="headerlink" href="#skip-preprocess-no-ppp" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>skip_preprocess</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>no_ppp</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">no_ppp</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="skip-preprocess-skip-prep">
+<h3>Skip Preprocess / Skip Prep<a class="headerlink" href="#skip-preprocess-skip-prep" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>skip_preprocess</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>skip_prep</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">skip_prep</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="box-settings">
+<h2>Box settings<a class="headerlink" href="#box-settings" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="box-radius">
+<h3>Box Radius<a class="headerlink" href="#box-radius" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>box_radius</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>box_radius</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">box_radius</span></code> software setting.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="box-center">
+<h3>Box Center<a class="headerlink" href="#box-center" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>box_center</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>box_center</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Union[List[float],</span> <span class="pre">str]</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">calculate_box_center</span></code> from <cite>SimulationParamsModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="box">
+<h3>Box<a class="headerlink" href="#box" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>box</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>box</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="metrics">
+<h2>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="rmsd-pdb-native">
+<h3>Rmsd Pdb / Native<a class="headerlink" href="#rmsd-pdb-native" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>rmsd_pdb</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>native</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="atom-dist">
+<h3>Atom Dist<a class="headerlink" href="#atom-dist" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>atom_dist</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>atom_dist</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Union[List[str],</span> <span class="pre">List[int]]</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list()</span></code></p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="global-exploration">
+<h2>Global Exploration<a class="headerlink" href="#global-exploration" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>Randomize<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>randomize</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>randomize</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">randomize</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="global-full">
+<h3>Global / Full<a class="headerlink" href="#global-full" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>global</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>full</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="id3">
+<h2>Water<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="waters">
+<h3>Waters<a class="headerlink" href="#waters" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>waters</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>waters</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Union[str,</span> <span class="pre">List[str]]</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">waters</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+</div>
+<div class="section" id="water-center">
+<h3>Water Center<a class="headerlink" href="#water-center" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>water_center</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_center</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Union[List[float],</span> <span class="pre">str]</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="water-temp">
+<h3>Water Temp<a class="headerlink" href="#water-temp" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>water_temp</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_temp</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">water_temp</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">5000</span></code>.</p>
+</div>
+<div class="section" id="water-overlap">
+<h3>Water Overlap<a class="headerlink" href="#water-overlap" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>water_overlap</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_overlap</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">water_overlap</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0.78</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="water-constr">
+<h3>Water Constr<a class="headerlink" href="#water-constr" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>water_constr</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_constr</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">water_constr</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</div>
+<div class="section" id="water-trials">
+<h3>Water Trials<a class="headerlink" href="#water-trials" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>water_trials</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_trials</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">water_trials</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">10000</span></code>.</p>
+</div>
+<div class="section" id="water-radius">
+<h3>Water Radius<a class="headerlink" href="#water-radius" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>water_radius</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_radius</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">6</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="water-empty-selector">
+<h3>Water Empty Selector<a class="headerlink" href="#water-empty-selector" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>water_empty_selector</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>water_empty_selector</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="n-waters">
+<h3>N Waters<a class="headerlink" href="#n-waters" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>n_waters</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>n_waters</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">n_waters</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="induced-fit">
+<h2>Induced fit<a class="headerlink" href="#induced-fit" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="induced-fit-exhaustive">
+<h3>Induced Fit Exhaustive<a class="headerlink" href="#induced-fit-exhaustive" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>induced_fit_exhaustive</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>induced_fit_exhaustive</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="induced-fit-fast">
+<h3>Induced Fit Fast<a class="headerlink" href="#induced-fit-fast" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>induced_fit_fast</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>induced_fit_fast</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="fragpele">
+<h2>FragPELE<a class="headerlink" href="#fragpele" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="frag">
+<h3>Frag<a class="headerlink" href="#frag" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="cleanup">
+<h3>Cleanup<a class="headerlink" href="#cleanup" title="Permalink to this headline">¶</a></h3>
+<p>Automatically cleans up fragment files, only applicable to FragPELE.</p>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>cleanup</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>cleanup</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-run">
+<h3>Frag Run<a class="headerlink" href="#frag-run" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_run</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_run</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-core">
+<h3>Frag Core<a class="headerlink" href="#frag-core" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_core</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_core</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-input">
+<h3>Frag Input<a class="headerlink" href="#frag-input" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_input</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_input</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-ligands">
+<h3>Frag Ligands<a class="headerlink" href="#frag-ligands" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_ligands</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_ligands</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="growing-steps">
+<h3>Growing Steps<a class="headerlink" href="#growing-steps" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>growing_steps</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>growing_steps</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="steps-in-gs-frag-steps">
+<h3>Steps In Gs / Frag Steps<a class="headerlink" href="#steps-in-gs-frag-steps" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>steps_in_gs</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_steps</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="sampling-steps-frag-eq-steps">
+<h3>Sampling Steps / Frag Eq Steps<a class="headerlink" href="#sampling-steps-frag-eq-steps" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>sampling_steps</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_eq_steps</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="protocol">
+<h3>Protocol<a class="headerlink" href="#protocol" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>protocol</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>protocol</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-ai">
+<h3>Frag Ai<a class="headerlink" href="#frag-ai" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_ai</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_ai</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-ai-iterations">
+<h3>Frag Ai Iterations<a class="headerlink" href="#frag-ai-iterations" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_ai_iterations</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_ai_iterations</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="chain-core">
+<h3>Chain Core<a class="headerlink" href="#chain-core" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>chain_core</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>chain_core</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-restart">
+<h3>Frag Restart<a class="headerlink" href="#frag-restart" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_restart</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_restart</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-criteria">
+<h3>Frag Criteria<a class="headerlink" href="#frag-criteria" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_criteria</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_criteria</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-output-folder">
+<h3>Frag Output Folder<a class="headerlink" href="#frag-output-folder" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_output_folder</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_output_folder</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-cluster-folder">
+<h3>Frag Cluster Folder<a class="headerlink" href="#frag-cluster-folder" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_cluster_folder</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_cluster_folder</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-library">
+<h3>Frag Library<a class="headerlink" href="#frag-library" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_library</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_library</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="frag-core-atom">
+<h3>Frag Core Atom<a class="headerlink" href="#frag-core-atom" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>frag_core_atom</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>frag_core_atom</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="analysis-to-point">
+<h3>Analysis To Point<a class="headerlink" href="#analysis-to-point" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>analysis_to_point</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>analysis_to_point</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="id4">
+<h2>Constraints<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="ca-constr">
+<h3>Ca Constr<a class="headerlink" href="#ca-constr" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>ca_constr</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>ca_constr</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">ca_constr</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">5</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="ca-interval">
+<h3>Ca Interval<a class="headerlink" href="#ca-interval" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>ca_interval</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>ca_interval</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<p>If value is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">ca_interval</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">5</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="constrain-core-spring">
+<h3>Constrain Core Spring<a class="headerlink" href="#constrain-core-spring" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>constrain_core_spring</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>constrain_core_spring</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">50.0</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="external-constraints">
+<h3>External Constraints<a class="headerlink" href="#external-constraints" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>external_constraints</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>external_constraints</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">[]</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="permissive-metal-constr">
+<h3>Permissive Metal Constr<a class="headerlink" href="#permissive-metal-constr" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>permissive_metal_constr</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>permissive_metal_constr</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list()</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="constrain-all-metals">
+<h3>Constrain All Metals<a class="headerlink" href="#constrain-all-metals" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>constrain_all_metals</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>constrain_all_metals</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="no-metal-constraints">
+<h3>No Metal Constraints<a class="headerlink" href="#no-metal-constraints" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>no_metal_constraints</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>no_metal_constraints</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="analysis">
+<h2>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="only-analysis">
+<h3>Only Analysis<a class="headerlink" href="#only-analysis" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>only_analysis</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>only_analysis</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="metals">
+<h2>Metals<a class="headerlink" href="#metals" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="polarize-metals">
+<h3>Polarize Metals<a class="headerlink" href="#polarize-metals" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>polarize_metals</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>polarize_metals</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="polarization-factor">
+<h3>Polarization Factor<a class="headerlink" href="#polarization-factor" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>polarization_factor</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>polarization_factor</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">2.0</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="custom-workflows">
+<h2>Custom workflows<a class="headerlink" href="#custom-workflows" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="workflow">
+<h3>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>workflow</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>workflow</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</div>
+<div class="section" id="distance">
+<h3>Distance<a class="headerlink" href="#distance" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>distance</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>distance</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">float</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">float_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="ppi">
+<h2>PPI<a class="headerlink" href="#ppi" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="n-components">
+<h3>N Components<a class="headerlink" href="#n-components" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>n_components</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>n_components</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">n_components</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="id5">
+<h3>Ppi<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>ppi</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>ppi</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="center-of-interface">
+<h3>Center Of Interface<a class="headerlink" href="#center-of-interface" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>center_of_interface</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>center_of_interface</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_atom_string</span></code> from <cite>YamlParserModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="protein">
+<h3>Protein<a class="headerlink" href="#protein" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>protein</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>protein</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="ligand-pdb">
+<h3>Ligand Pdb<a class="headerlink" href="#ligand-pdb" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>ligand_pdb</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>ligand_pdb</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="skip-refinement">
+<h3>Skip Refinement<a class="headerlink" href="#skip-refinement" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>skip_refinement</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>skip_refinement</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+<hr class="docutils" />
+</div>
+<hr class="docutils" />
+<div class="section" id="id6">
+<h3>N Components<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>n_components</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>n_components</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">int</span></code></p>
+</dd>
+<dt class="field-even">Tests value</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">3</span></code></p>
+</dd>
+</dl>
+<p>If value is  falsy,
+it will fall back to <code class="docutils literal notranslate"><span class="pre">n_components</span></code> software setting.
+If there is no software setting,
+it will default to <code class="docutils literal notranslate"><span class="pre">10</span></code>.</p>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">int_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="id7">
+<h3>Skip Refinement<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>skip_refinement</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>skip_refinement</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+<dt class="field-even">Default</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">False</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="allosteric">
+<h3>Allosteric<a class="headerlink" href="#allosteric" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>allosteric</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>allosteric</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="rna">
+<h2>RNA<a class="headerlink" href="#rna" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id8">
+<h3>Rna<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>rna</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>rna</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="gpcr">
+<h2>GPCR<a class="headerlink" href="#gpcr" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="gpcr-orth">
+<h3>Gpcr Orth<a class="headerlink" href="#gpcr-orth" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>gpcr_orth</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>gpcr_orth</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool_validator</span></code> from <cite>Pydantic</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="orthosteric-site">
+<h3>Orthosteric Site<a class="headerlink" href="#orthosteric-site" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>orthosteric_site</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>orthosteric_site</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_atom_string</span></code> from <cite>YamlParserModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="id9">
+<h3>Initial Site<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>initial_site</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>initial_site</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_atom_string</span></code> from <cite>YamlParserModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+<div class="section" id="final-site">
+<h3>Final Site<a class="headerlink" href="#final-site" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">YAML key</dt>
+<dd class="field-odd"><p>final_site</p>
+</dd>
+<dt class="field-even">Parser key</dt>
+<dd class="field-even"><p>final_site</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Processors:</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">str_validator</span></code> from <cite>Pydantic</cite></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">validate_atom_string</span></code> from <cite>YamlParserModel</cite></p></li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

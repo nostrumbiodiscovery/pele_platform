@@ -1,4 +1,4 @@
-Prepare your own binding simulation
+Binding simulation
 ####################################
 
 This simulation aims to find the binding path of a small molecule to a given receptor.
@@ -74,4 +74,4 @@ Ranked cluster representatives can be found in:
 
 In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
 
-``working_folder/results/BestStructs``
+``working_folder/results/top_poses``

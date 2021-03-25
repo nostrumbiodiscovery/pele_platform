@@ -1,26 +1,19 @@
-.. pele platform master file, created by
-   sphinx-quickstart on Mon Dec  4 11:58:09 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Prepare your own simulation
+Run simulation
 ===========================================
 
-The next packages are included in the PELE Platform:
+Step by step guides to setting up your own simulation.
 
-    - `Docking Refinement <docking/index.html>`_ (2-3h)
-    - `Pose Scorer <rescoring/index.html>`_ (1-2h)
-    - `Protein-Protein Inhibitors <ppi/index.html>`_ (10h)
-    - `Pocket Exploration <pocket_exploration/index.html>`_ (24h)
-    - `HT-Fragment Growing <frag/index.html>`_ (30 min/fragment)
-    - `Grow your own fragment library <libraries/index.html>`_
-    - `Binding Events <binding/index.html>`_ (6h)
-    - `GPCR orthosteric site simulation <gpcr/index.html>`_ (6h)
-    - `Biased Simulation <bias/index.html>`_ (3h)
-    - `Conformational change simulation  <pca/index.html>`_ (5h)
-    - `Minimization package <minimization/index.html>`_ (30 min)
-
-
+    - `Docking pose refinement <docking/index.html>`_
+    - `Pose scoring <rescoring/index.html>`_
+    - `Pocket exploration <pocket_exploration/index.html>`_
+    - `Protein-protein inhibitors <ppi/index.html>`_
+    - `High-throughput fragment growing <frag/index.html>`_
+    - `Growing custom fragment library <libraries/index.html>`_
+    - `GPCR orthosteric site exploration <gpcr/index.html>`_
+    - `Binding events <binding/index.html>`_
+    - `Biased simulation <bias/index.html>`_
+    - `Conformational change simulation <pca/index.html>`_
+    - `Protein minimization <minimization/index.html>`_
 
 .. toctree::
    docking/index.rst
@@ -32,11 +25,11 @@ The next packages are included in the PELE Platform:
    :hidden:
 
 .. toctree::
-   ppi/index.rst
+   pocket_exploration/index.rst
    :hidden:
 
 .. toctree::
-   pocket_exploration/index.rst
+   ppi/index.rst
    :hidden:
 
 .. toctree::
@@ -61,4 +54,8 @@ The next packages are included in the PELE Platform:
 
 .. toctree::
    pca/index.rst
+   :hidden:
+
+.. toctree::
+   minimization/index.rst
    :hidden:
