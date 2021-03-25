@@ -214,8 +214,7 @@ class FragRunner(object):
         from glob import glob
 
         sim_directories = glob(os.path.splitext(self.parameters.system)[0]
-                               + '_processed_*' +
-                               self.parameters.frag_core_atom + '*')
+                               + '_processed_*' + '*')
 
         for sim_directory in sim_directories:
             simulation_output = os.path.join(sim_directory, 'sampling_result')

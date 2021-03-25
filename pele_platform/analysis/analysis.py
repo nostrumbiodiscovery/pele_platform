@@ -230,6 +230,7 @@ class Analysis(object):
 
         # Generate analysis results
         self.generate_plots(plots_folder)
+        # TODO generate top poses should depend on the n_poses flag (or is it called poses?)
         best_metrics = self.generate_top_poses(top_poses_folder)
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
