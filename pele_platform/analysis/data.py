@@ -154,8 +154,19 @@ class DataHandler(object):
         epochs = [os.path.basename(path) for path in epoch_dirs
                   if os.path.basename(path).isdigit()]
 
+        # Sort epochs by number
+        epochs = sorted(epochs, key=int)
+
+        # Tweak to read a directory from standard PELE (not coming
+        # from adaptive)
+        if len(epochs) == 0:
+            report_dirs = glob.glob(os.path.join(self._sim_path,
+                                                 report_prefix + '_[0-9]*'))
+            if len(report_dirs) > 0:
+                epochs = ['']
+
         dataframe_lists = []
-        for adaptive_epoch in sorted(epochs, key=int):
+        for adaptive_epoch in epochs:
             folder = os.path.join(self._sim_path, str(adaptive_epoch))
             report_dirs = glob.glob(os.path.join(folder,
                                                  report_prefix + '_[0-9]*'))
@@ -299,7 +310,7 @@ class DataHandler(object):
 
         # Ensure that metric is pointing to a dataframe column
         if str(metric).isdigit():
-            metric = self._get_column_name(metric)
+            metric = self.get_column_name(metric)
 
         # Check criterion value
         if criterion not in ['lowest', 'largest']:
@@ -311,7 +322,7 @@ class DataHandler(object):
         else:
             return self._dataframe.nlargest(n_entries, metric)
 
-    def _get_column_name(self, column_index):
+    def get_column_name(self, column_index):
         """
         It returns the column name that corresponds to the index that is
         supplied. Take into account that the index starts at 1, not at 0.
@@ -333,12 +344,13 @@ class DataHandler(object):
 
         return column_name
 
-    def extract_coords(self, residue_name, topology, remove_hydrogen=True,
-                       max_coordinates=6):
+    def extract_XTC_coords(self, residue_name, topology, remove_hydrogen=True,
+                           max_coordinates=6):
         """
         This method employs mdtraj to extract the coordinates that
         belong to the supplied residue from all the trajectories in the
-        dataframe. It supports both PDB and XTC trajectories.
+        dataframe. It supports both PDB and XTC trajectories (although
+        right now it is only used to deal with XTC)
 
         Parameters
         ----------
@@ -428,7 +440,7 @@ class DataHandler(object):
 
         return coordinates, reordered_dataframe
 
-    def extract_raw_coords(self, residue_name, remove_hydrogen=True,
+    def extract_PDB_coords(self, residue_name, remove_hydrogen=True,
                            max_coordinates=6, n_proc=1):
         """
         This method extracts the the coordinates that belong to the

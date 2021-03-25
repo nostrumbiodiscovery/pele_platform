@@ -6,7 +6,7 @@ import shutil
 
 from pele_platform.Utilities.Helpers import bestStructs as bs
 from pele_platform.Utilities.Helpers.helpers import cd, is_repeated, is_last, parallelize
-from pele_platform.analysis.plot import _extract_coords
+from pele_platform.PPI.cluster import _extract_coords
 import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Adaptive.simulation as si
 
@@ -165,13 +165,13 @@ class SiteFinderLauncher:
         self.args.box_radius = self.global_simulation.box_radius
 
         if not self.args.test:
-            self.args.iterations = 20
+            self.args.pele_steps = 250
         self.args.box_center = self.global_simulation.box_center
         self.args.box_radius = self.global_simulation.box_radius
 
     def _clean_temp_files(self):
         output_dir = os.path.join(self.global_simulation.pele_dir, self.global_simulation.output)
-        temp_bs_dir = os.path.join(output_dir, "BestStructs")
+        temp_bs_dir = os.path.join(output_dir, "top_poses")
 
         if os.path.exists(temp_bs_dir):
             shutil.rmtree(temp_bs_dir)

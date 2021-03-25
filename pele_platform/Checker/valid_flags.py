@@ -185,5 +185,8 @@ VALID_FLAGS_PLATFORM = {
     "clustering_method": "clustering_method",
     "bandwidth": "bandwidth",
     "kde_structs": "kde_structs",
-    "kde": "kde"
+    "kde": "kde",
+    "inter_step_logger": "inter_step_logger",
+    "max_top_clusters": "max_top_clusters",
+    "min_population": "min_population"
 }

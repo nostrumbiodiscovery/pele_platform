@@ -238,6 +238,7 @@ class YamlParser(object):
         self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
         self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
         self.interaction_restrictions = data.get(valid_flags["interaction_restrictions"], None)
+        self.inter_step_logger = data.get(valid_flags["inter_step_logger"], None)
 
         # Metal constraints
         self.permissive_metal_constr = data.get(
@@ -299,6 +300,8 @@ class YamlParser(object):
         self.bandwidth = data.get(valid_flags["bandwidth"], None)
         self.kde = data.get(valid_flags["kde"], None)
         self.kde_structs = data.get(valid_flags["kde_structs"], None)
+        self.max_top_clusters = data.get(valid_flags["max_top_clusters"], None)
+        self.min_population = data.get(valid_flags["min_population"], None)
 
         if self.test:
             warnings.warn(
@@ -314,6 +317,7 @@ class YamlParser(object):
             self.temperature = self.temp = 10000
             self.n_components = 3
             self.analysis_nclust = 4
+            self.max_top_clusters = 4
 
 
 @dataclass

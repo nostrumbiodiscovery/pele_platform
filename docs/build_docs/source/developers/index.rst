@@ -2,10 +2,12 @@
 Developers
 ================
 
-This section contains information for developers on how to generate your own mode and developing the documentation of the platform. 
+This section contains information for developers on how to generate your own simulation mode and the development of the documentation.
 
-- `Developers: Add your own mode <own_mode.html>`_
-- `Documentation Protocol <protocol.html>`_
+- `Add your own simulation mode <own_mode.html>`_
+- `Documentation protocol <protocol.html>`_
+- `reStructuredText cheat sheet <cheatsheet_rst.html>`_
+- `Advanced Tips & Tricks <advanced_tips.html>`_
 
 .. toctree::
    own_mode.rst
@@ -14,3 +16,11 @@ This section contains information for developers on how to generate your own mod
 .. toctree::
    protocol.rst
    :hidden:
+
+.. toctree::
+    cheatsheet_rst.rst
+    :hidden:
+
+.. toctree::
+	advanced_tips.rst
+	:hidden:
