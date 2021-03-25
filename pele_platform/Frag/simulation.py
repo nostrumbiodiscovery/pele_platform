@@ -218,6 +218,11 @@ class FragRunner(object):
 
         for sim_directory in sim_directories:
             simulation_output = os.path.join(sim_directory, 'sampling_result')
+
+            # Only proceed if sampling_result folder exists
+            if not os.path.isdir(simulation_output):
+                continue
+
             analysis_folder = os.path.join(sim_directory, "results")
 
             analysis = Analysis(resname='GRW',
