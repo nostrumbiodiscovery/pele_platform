@@ -95,7 +95,7 @@ initialize the Analysis class with the following parameters:
 
 .. code-block:: python
 
-     analysis = Analysis(
+     >> analysis = Analysis(
             resname="LIG",
             chain="Z",
             simulation_output="LIG_Pele/output",
@@ -103,8 +103,38 @@ initialize the Analysis class with the following parameters:
 
 Then you can use one of the available methods to generate top poses, perform clustering or run the whole analysis workflow, e.g.
 
--
+generate()
+++++++++++++
 
 .. code-block:: python
 
-    analysis.generate(working_folder, "gaussianmixture")
+    >> analysis.generate(working_folder, "gaussianmixture")
+
+
+generate_clusters()
+++++++++++++++++++++
+
+.. code-block:: python
+
+    >> analysis.generate_clusters(working_folder, "gaussianmixture")
+
+generate_plots()
+++++++++++++++++++
+
+.. code-block:: python
+
+    >> analysis.generate_plots(working_folder, "gaussianmixture")
+
+generate_report()
+++++++++++++++++++
+
+.. code-block:: python
+
+    >> analysis.generate_report(working_folder, "gaussianmixture")
+
+generate_top_poses()
+++++++++++++++++++
+
+.. code-block:: python
+
+    >> analysis.generate_top_poses(working_folder, "gaussianmixture")
