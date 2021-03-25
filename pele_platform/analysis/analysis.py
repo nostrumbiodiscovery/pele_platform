@@ -562,7 +562,7 @@ class Analysis(object):
         steps = list(map(int, dataframe[self._STEP_LABEL].tolist()))
 
         # To prevent hiding files in case epochs is a list of empty strings
-        if all([epoch == '' for epoch in epochs]):
+        if all([len(epoch) == 0 for epoch in epochs]):
             epochs = [0, ] * len(values)
 
         # TODO which is the purpose of this hardcoded distance_key?
