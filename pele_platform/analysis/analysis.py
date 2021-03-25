@@ -879,6 +879,8 @@ class Analysis(object):
 
         if "Binding Energy" in metrics:
             energy = "Binding Energy"
+            plotter.plot_clusters("currentEnergy", energy,
+                                  output_folder=path, clusters=clusters)
         else:
             energy = "currentEnergy"
 

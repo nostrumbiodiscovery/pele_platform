@@ -72,8 +72,8 @@ class Plotter(object):
                 output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
 
         # Replace whitespaces in the output name
-        output_name = os.path.join(output_folder,
-                                   output_name).replace(" ", "_")
+        output_name = output_name.replace(" ", "_")
+        output_name = os.path.join(output_folder, output_name)
 
         # Generate plot with matplotlib
         import matplotlib
@@ -134,8 +134,8 @@ class Plotter(object):
 
         # Define output path
         output_name = "{}_{}_kde.png".format(metric_to_x, metric_to_y)
-        output_name = os.path.join(output_folder, output_name)
         output_name = output_name.replace(" ", "_")
+        output_name = os.path.join(output_folder, output_name)
 
         # Filter out the number of structures from dataframe to plot
         structures_to_keep = min(int(kde_structs), len(self._dataframe) - 1)
@@ -263,7 +263,8 @@ class Plotter(object):
 
         # Set output name
         output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
-        output_name = os.path.join(output_folder, output_name).replace(" ", "_")
+        output_name = output_name.replace(" ", "_")
+        output_name = os.path.join(output_folder, output_name)
 
         plt.savefig(output_name, dpi=200, edgecolor="k",
                     orientation="portrait", transparent=True,
