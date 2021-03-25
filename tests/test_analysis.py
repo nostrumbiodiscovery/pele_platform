@@ -205,15 +205,12 @@ def test_clustering_methods(method, bandwidth, n_clusters):
         shutil.rmtree(working_folder)
 
     analysis = Analysis(
-        resname="LIG",
-        chain="Z",
+        resname="LIG", chain="Z",
         simulation_output="../pele_platform/Examples/clustering",
-        skip_initial_structures=False,
-        bandwidth=bandwidth,
-        analysis_nclust=n_clusters,
-        clustering_method=method,
-    )
-    analysis.generate_clusters(working_folder, method)
+        skip_initial_structures=False)
+    analysis.generate_clusters(working_folder, method,
+                               bandwidth=bandwidth,
+                               analysis_nclust=n_clusters)
     assert len(glob.glob(results)) == n_clusters
 
 
@@ -228,14 +225,11 @@ def test_analysis_api():
     output = "../pele_platform/Examples/clustering"
     n_clusts = 3
 
-    analysis = Analysis(
-        resname="LIG",
-        chain="Z",
-        simulation_output=output,
-        skip_initial_structures=False,
-        analysis_nclust=n_clusts,
-    )
-    analysis.generate(working_folder, "gaussianmixture")
+    analysis = Analysis(resname="LIG", chain="Z",
+                        simulation_output=output,
+                        skip_initial_structures=False)
+    analysis.generate(working_folder, "gaussianmixture",
+                      analysis_nclust=n_clusts)
 
     # Check if reports exist
     assert os.path.exists(os.path.join(working_folder, "data.csv"))
