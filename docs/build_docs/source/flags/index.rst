@@ -7,7 +7,6 @@ Optional flags for each package:
     - `Protein-Protein Inhibitors <ppi/index.html>`_
     - `Pocket Exploration <pocket_exploration/index.html>`_
     - `HT-Fragment Growing <frag/index.html>`_
-    - `AquaPELE (water perturbation) <water/index.html>`_
 
 .. toctree::
    all_packages/index.rst
