@@ -391,7 +391,7 @@ class DataHandler(object):
             return None, None
 
         # Load topology
-        topology = mdtraj.load(topology)
+        topology = mdtraj.load()
 
         # Select atom subset
         if remove_hydrogen:
@@ -440,6 +440,7 @@ class DataHandler(object):
 
         return coordinates, reordered_dataframe
 
+    # TODO this should be a static method!!!
     def extract_PDB_coords(self, residue_name, remove_hydrogen=True,
                            max_coordinates=6, n_proc=1):
         """
