@@ -42,7 +42,7 @@ Prepare the input file ``input.yml``:
     cpus: 20
     rescoring: true # Minimize
 
-For more optional flags please refer to `optative flags <../../flags/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_
 
 3. Run simulation
 ---------------------
