@@ -1,6 +1,37 @@
 All packages
 ===============
 
+General settings
+---------------------
+
+Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).
+
+- **test**: Run a quick test to check the simulation works (~2 min). **Never use the control files from the test as input for a production simulation as temperature, ANM and minimization are twicked to make simulation faster!!!!**
+
+- **usesrun**: Use srun binary to run PELE. Only when using intel processors.
+
+- **pele_exec**: Use a pele executable that is not the default one. **Needs to be used with pele_data and pele_documents**. default: $PELE/bin/Pele_mpi
+
+- **pele_data**: Use a pele data folder that is not the default one. default: $PELE/Data
+
+- **pele_documents**: Use a pele documents folder that is not the default one. default: $PELE/Documents
+
+- **pele_license**: Use a pele_license path that is not the default one. default: $PELE/licenses
+
+- **schrodinger**: Use a schrodinger path that is not the default one. default: $SCHRODINGER
+
+..  code-block:: yaml
+
+
+  test: true
+  usesrun: false
+  pele_exec: "/home/pele/bin/Pele_mpi"
+  pele_data: "/home/pele/Data/"
+  pele_documents: "/home/pele/Documents/"
+  pele_license: "/home/pele/licenses"
+  schrodinger: "/home/pele/schrodinger2020-1/"
+
+
 Simulation parameters
 ----------------------
 
@@ -94,6 +125,69 @@ PELE++ parameters
     working_folder: "folder_to_restart"
     report: report
     traj: trajectory.xtc
+
+Receptor preparation
+-----------------------
+
+Configure the parameters of the PPP (Protein Pele Preparation)
+
+- **skip_preprocess**: Skip protein pele preparation. Default: False
+
+- **noTERs**: Don't include TERs on preparation. Used if PPP gets confuse with insertion codes or other. Default: False
+
+- **charge_ters**: Charge terminals of the protein. Default: False
+
+- **nonstandard**: List of names of nonstandard residues that will be omitted in protein pele preparation. Default=[]
+
+- **prepwizard**: Run Prepwizard (Still on testing version). Default: False
+
+..  code-block:: yaml
+
+  preprocess_receptor: true
+  noTERs: false
+  charge_ters: false
+  nonstandard:
+    - TPO
+  prepwizard: false
+
+
+Ligand preparation
+----------------------
+
+Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.
+
+- **gridres**: Resolution of the rotamers when sampling. Default: 10 degrees
+
+- **core**: Atomnumber of the atom that will be included as part of the rigid core. Default=None
+
+- **maxtorsion**: Maximum number of rotamers per flexible sidechain. Default: 4
+
+- **n**: Maximum number of flexible sidechains in a molecule, Default: None
+
+- **mae_lig**: Mae file to extract the cuantum charges from. Default: None
+
+- **template**: External forcefield templaters
+
+- **rotamers**: External rotamer libraries
+
+- **skip_ligand_prep**: Skip preparation of that resiude. This could be usefull to bypass problems with PlopRotTemp when creating the ligand parameters.
+
+
+..  code-block:: yaml
+
+  gridres: 10
+  core: -1
+  maxtorsion: 4
+  n: 5
+  mae_lig: "/home/dsoler/lig.mae"
+  templates:
+    - "/home/dsoler/mgz"
+    - "/home/dsoler/ligz"
+  rotamers:
+    - "/home/dsoler/MG.rot.assign"
+    - "/home/dsoler/LIG.rot.assign"
+  skip_ligand_prep:
+    - "LIG"
 
 
 Constraints
@@ -209,6 +303,20 @@ Parameters to set the exploration Box:
     - 20
     - 30
     - 50
+
+Metal polarisation
+-------------------
+
+An optional flag to adjust charges on the metals by dividing them by certain factor.
+
+- **polarize_metals** - adjust charges on the metals by dividing them by 2 (unless other value is set in polarization_factor)
+
+- **polarization_factor** - factor by which the metal charges should be divided
+
+..  code-block:: yaml
+
+    polarize_metals: true
+    polarization_factor: 2 # Mg2+ will have a charge of +1
 
 
 Water perturbation
