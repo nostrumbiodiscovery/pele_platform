@@ -24,7 +24,3 @@ Optional flags for each package:
 .. toctree::
    frag/index.rst
    :hidden:
-
-.. toctree::
-   water/index.rst
-   :hidden:
