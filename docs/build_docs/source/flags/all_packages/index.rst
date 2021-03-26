@@ -103,9 +103,7 @@ Constraints
 
 - **constrain_smiles**: SMILES string to indicate what part of the molecule to constrain. Default=None
 
-- **smiles_constr**: Numeric value of the SMILES constraints. Default=10
-
-- **external_constraints**: You can specify 2 types of constraints. Positional constraints or atom-atom constraint. (Example below)
+- **external_constraints**: You can specify 2 types of constraints: positional constraints or atom-atom constraints, e.g.
 
   - The positional constraints are given either by:
         - springConstant-atomnumber. i.e. "10-17"
