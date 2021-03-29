@@ -68,8 +68,7 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
 
         for atom in reversed(atoms_core):
             new_mol.RemoveAtom(atom)
-
-
+        Chem.MolToPDBFile(new_mol, "check2.pdb")
         for atom in reversed(new_mol.GetMol().GetAtoms()):
             neighbours = atom.GetNeighbors()
             if len(neighbours) == 0 and atom.GetAtomicNum() == 1:
