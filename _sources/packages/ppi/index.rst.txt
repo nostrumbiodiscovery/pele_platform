@@ -49,7 +49,7 @@ Prepare the input file ``input.yml`` as show in the template below:
    - "B:3:CG" # Second atom to make the distance to
    ppi: true
 
-For more optional flags please refer to `optative flags <../../documentation/index.html>`_.
+For more optional flags please refer to `optional flags <../../flags/index.html>`_.
 
 
 3. Run simulation

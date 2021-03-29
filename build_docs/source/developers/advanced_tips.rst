@@ -1,10 +1,10 @@
-Advanced Tips & Tricks
+Advanced tips & tricks
 ============================
-
 
 1. Enable PELE InterStepLogger
 ---------------------------------
-InterStepLogger functionality allows taking structural and simulation data within the different stages of a step. It is useful for debugging purposes. 
+InterStepLogger functionality allows capturing structural and simulation data during different stages of a step.
+It is useful for debugging purposes.
 
 To enable this option you need to set **inter_step_logger** parameter to true in your **input.yaml**:
 

@@ -54,7 +54,7 @@ Prepare the input file ``input.yml``:
     spawning: independent
     out_in: true #You can change the method to any other (induced_fit, rescoring...)
 
-For more optional flags please refer to `optional flags <../../documentation/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_
 
 3. Run simulation
 ====================

@@ -1,8 +1,8 @@
-All PELE packages
-#####################################
+All packages
+===============
 
 General settings
-====================
+---------------------
 
 Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).
 
@@ -32,8 +32,102 @@ Configure the settings of the simulation and the path to all dependencies in cas
   schrodinger: "/home/pele/schrodinger2020-1/"
 
 
+Simulation parameters
+----------------------
+
+- **seed**: Seed of the job for reproducibility. Default=12345
+
+- **log**: Retrieve PELE logfiles during simulation. Default=False
+
+- **verbose**: Set to true to activate verbose mode in PELE. DEfault=False
+
+- **anm_freq**: Every how many steps to perform anm. Default=4
+
+- **anm_displacement**: Angstrom to displace carbon alphas in each ANM movement. Default=0.75
+
+- **anm_modes_change**: Number of steps before we change to a new normal mode movement. Default=4
+
+- **sidechain_freq**: Every how many steps to perform sidechain sampling. Default=2
+
+- **min_freq**: Every how many steps to perform minimization. Default=1
+
+- **water_freq**: Every how many steps to perform water perturbation. Default=1
+
+- **temperature**: Temperature of the simulation. Default=1500
+
+- **solvent**: Solvent of the simulation. (OBC or VDGBNP). Default=VDGBNP
+
+- **sidechain_res**: Receptor sidechain resolution. Default=10
+
+- **overlap_factor**: Vanderwals overlap factor (More in PELE docs). Default=0.65
+
+- **steric_trials**: Number of steric trials (More in PELE docs). Default=250
+
+..  code-block:: yaml
+
+  seed: 312312
+  log: true
+  verbose: true
+  anm_freq: 4
+  anm_displacement: 0.5
+  anm_modes_change: 3
+  sidechain_freq: 2
+  min_freq: 1
+  water_freq: 1
+  temperature: 1500
+  solvent: "VDGBNP"
+  sidechain_res: 30
+  overlap_factor: 0.65
+  steric_trials: 250
+
+
+PELE++ parameters
+-------------------
+
+**These flags are exclusive of the PELE modes not fragPELE**
+
+- **iterations**: Adaptive epochs to run. Set to 1 by default if using PELE
+
+- **steps**: Pele steps in each iteration
+
+- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)
+
+- **spawning**: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional
+
+- **density**: Density type ([null, exitContinuous...]. More in AdaptivePELE docs). Default: null
+
+- **cluster_values**: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type
+
+- **cluster_conditions**: Clusterization condition. More in AdaptivePELE. Default: Depending on simulation type
+
+- **equilibration**: Whether to run initial equilibration or not. Default: false
+
+- **equilibration_steps**: Equilibration steps. Default: 2
+
+- **adaptive_restart**: Use adaptive restart with the working folder option to restart the simulation. Default: false
+
+- **report**: Change the name of the report file. Default: report
+
+- **traj**: Change the name of the trajectory file. Default: trajectory.pdb
+
+..  code-block:: yaml
+
+    iterations: 30
+    steps: 12
+    debug: true
+    spawning: "epsilon"
+    density: "exitContinuous"
+    cluster_values: [2,3,4]
+    cluster_conditions: [0.8, 0.6, 0.2]
+    equilibration: false
+    equilibration_steps: 10
+    adaptive_restart: true
+    working_folder: "folder_to_restart"
+    report: report
+    traj: trajectory.xtc
+
 Receptor preparation
-=======================
+-----------------------
 
 Configure the parameters of the PPP (Protein Pele Preparation)
 
@@ -58,7 +152,7 @@ Configure the parameters of the PPP (Protein Pele Preparation)
 
 
 Ligand preparation
-======================
+----------------------
 
 Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.
 
@@ -95,137 +189,15 @@ Configure the parameters of the PlopRotTemp to extract the ligand forcefield par
   skip_ligand_prep:
     - "LIG"
 
-Box parameters
-=================
-
-Parameters to set the exploration Box:
-
-- **box_radius**: Radius of the box. Default=[induced_fit (10), local_exploration (30), global_exploration (50)]
-
-- **box_center**: Center of the box. Default=[indeuced_fit&local_exploration (CM of the ligand), global (calculater center)]
-
-
-..  code-block:: yaml
-
-  box_radius: 30
-  box_center:
-    - 20
-    - 30
-    - 50
-
-
-Simulation params
-====================
-
-- **seed**: Seed of the job for reproducibility. Default=12345
-
-- **log**: Retrieve PELE log files during simulation. Default=False
-
-- **verbose**: Set to true to activate verbose mode in PELE. Default=False
-
-- **anm_freq**: Every how many steps to perform anm. Default=4
-
-- **anm_displacement**: Angstrom to displace carbon alphas in each ANM movement. Default=0.75
-
-- **anm_modes_change**: Number of steps before we change to a new normal mode movement. Default=4
-
-- **sidechain_freq**: Every how many steps to perform sidechain sampling. Default=2
-
-- **min_freq**: Every how many steps to perform minimization. Default=1
-
-- **water_freq**: Every how many steps to perform water perturbation. Default=1
-
-- **temperature**: Temperature of the simulation. Default=1500
-
-- **solvent**: Solvent of the simulation. (OBC or VDGBNP). Default=VDGBNP
-
-- **sidechain_res**: Receptor sidechain resolution. Default=10
-
-- **overlap_factor**: van der Wals overlap factor (More in PELE docs). Default=0.65
-
-- **steric_trials**: Number of steric trials (More in PELE docs). Default=250
-
-..  code-block:: yaml
-
-  seed: 312312
-  log: true
-  verbose: true
-  anm_freq: 4
-  anm_displacement: 0.5
-  anm_modes_change: 3
-  sidechain_freq: 2
-  min_freq: 1
-  water_freq: 1
-  temperature: 1500
-  solvent: "VDGBNP"
-  sidechain_res: 30
-  overlap_factor: 0.65
-  steric_trials: 250
-
-
-
-PELE params
-===================
-
-**These flags are exclusive of the PELE modes not fragPELE**
-
-- **iterations**: Adaptive epochs to run. Set to 1 by default if using PELE
-
-- **steps**: Pele steps in each iteration
-
-- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Useful to transport it to another machine)
-
-- **spawning**: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional
-
-- **density**: Density type ([null, exitContinuous...]. More in AdaptivePELE docs). Default: null
-
-- **cluster_values**: Clustering values. More in AdaptivePELE. Default: Depending on simulation type
-
-- **cluster_conditions**: Clustering condition. More in AdaptivePELE. Default: Depending on simulation type
-
-- **equilibration**: Whether to run initial equilibration or not. Default: false
-
-- **equilibration_steps**: Equilibration steps. Default: 2
-
-- **adaptive_restart**: Use adaptive restart with the working folder option to restart the simulation. Default: false
-
-- **report**: Change the name of the report file. Default: report
-
-- **traj**: Change the name of the trajectory file. Default: trajectory.pdb
-
-..  code-block:: yaml
-
-    iterations: 30
-    steps: 12
-    debug: true
-    spawning: "epsilon"
-    density: "exitContinuous"
-    cluster_values: [2,3,4]
-    cluster_conditions: [0.8, 0.6, 0.2]
-    equilibration: false
-    equilibration_steps: 10
-    adaptive_restart: true
-    working_folder: "folder_to_restart"
-    report: report
-    traj: trajectory.xtc
-
 
 Constraints
-==================
-
-This section allows the user to change the constraint values.
-
-- **ca_constr**: Carbon alpha constraints. Default=0.5
-
-- **interval_constr**: Every how many carbon alphas to apply the constraints. Default:10
+--------------
 
 - **water_constr**: Water constraints. Default=5
 
 - **constrain_smiles**: SMILES string to indicate what part of the molecule to constrain. Default=None
 
-- **smiles_constr**: Numeric value of the SMILES constraints. Default=10
-
-- **external_constraints**: You can specify 2 types of constraints. Positional constraints or atom-atom constraint. (Example below)
+- **external_constraints**: You can specify 2 types of constraints: positional constraints or atom-atom constraints, e.g.
 
   - The positional constraints are given either by:
         - springConstant-atomnumber. i.e. "10-17"
@@ -240,17 +212,54 @@ This section allows the user to change the constraint values.
 
 ..  code-block:: yaml
 
-    ca_constr: 2
-    interval_constr: 10
     water_constr: 5
     constrain_smiles: "C2CCC1CCCCC1C2"
     smiles_constr: 5
     external_constraints:
-    - "10-17" #constrain of 10 kcal/mol at atom number 17
-    - "5-A:1:H" ##constrain of 10 kcal/mol at atom with chain A residue number 1 and atomname H
-    - "50-2.34-17-4159" #constrain of 50 kcal/mol with equilibrium distance of 2.34 between atom numbers 17 & 4159
-    - "50-2.34-A:1:H-L:1:C21" #constrain of 50 kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
+    - "10-17" #constrain of 10kcal/mol at atomnumber 17
+    - "5-A:1:H" ##constrain of 10kcal/mol at atom with chain A residuenumber 1 and atomname H
+    - "50-2.34-17-4159" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 & 4159
+    - "50-2.34-A:1:H-L:1:C21" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
     remove_constraints: true
+
+Carbon-alpha constraints
++++++++++++++++++++++++++
+
+Each package in the platform has its own predefined constraint parameters which are likely to be the best choice in each
+type of study. However, the platform provides the users with several different levels of constraining the alpha carbons
+of the protein backbone with varying spring constants and intervals:
+
+- **level 0** - no constraints
+
+- **level 1** - terminal CAs constrained with a spring constant of 5 kcal/mol, the rest of the CAs in the backbone with 0.5 kcal/mol at an interval of 10, i.e. every 10 residues (default)
+
+- **level 2** - terminal CAs constrained at 5 kcal/mol, the rest of the CAs with 2.5 kcal/mol at the interval of 8 (default for the ``rescoring`` package)
+
+- **level 3** - the whole backbone is constrained every 5 atoms with 5 kcal/mol (default for the ``gpcr_orth`` package)
+
+We strongly suggest relying on the default settings for each package. However, in case of studying a system where the
+defaults are not optimal (more flexibility or rigidity required), the users can change the level, for example:
+
+..  code-block:: yaml
+
+    constraint_level: 3
+
+Alternatively, advanced users can manipulate the constraint parameters individually at their own risk, using the following flags:
+
+- **terminal_constr** - sets the spring constant for the terminal C-alpha constraints, default = 5 kcal/mol
+
+- **ca_constr** - sets the spring constant for the remaining C-alphas in the backbone, default = 0.5 kcal/mol
+
+- **ca_interval** - interval at which the backbone C-alphas should be constrained, default = 10 (i.e. every 10 residues).
+
+Take into account that specific modifiers of constraint parameters will prevail over the settings coming from the
+constraints levels and those predefined in each package.
+
+..  code-block:: yaml
+
+    terminal_constr: 10.5
+    ca_constr: 6.0
+    ca_interval: 3
 
 Metal constraints
 +++++++++++++++++++++
@@ -273,9 +282,30 @@ Algorithm to automatically set metal constraints around the ligand.
     constrain_all_metals: true
     external_constraints:
         - "50-2.34-A:1:H-L:1:MG" #constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname
+    constrain_core: "CN(C)C(=O)c1ccc(F)cc1"  # SMILES or SMARTS pattern
+    constrain_core_spring: 30  # optional, default 50.0
+
+
+Box parameters
+---------------
+
+Parameters to set the exploration Box:
+
+- **box_radius**: Radius of the box. Default=[induced_fit (10), local_exploration (30), global_exploration (50)]
+
+- **box_center**: Center of the box. Default=[indeuced_fit&local_exploration (CM of the ligand), global (calculater center)]
+
+
+..  code-block:: yaml
+
+  box_radius: 30
+  box_center:
+    - 20
+    - 30
+    - 50
 
 Metal polarisation
-====================
+-------------------
 
 An optional flag to adjust charges on the metals by dividing them by certain factor.
 
@@ -288,16 +318,83 @@ An optional flag to adjust charges on the metals by dividing them by certain fac
     polarize_metals: true
     polarization_factor: 2 # Mg2+ will have a charge of +1
 
+
+Water perturbation
+-----------------------
+
+- **n_waters**: Number of waters to randomly add into your simulation and perturb. Default=0
+
+- **waters**: Water molecules to be perturbed in AquaPELE steps. Users can indicate specific water IDs, e.g. "W:15" or select "all_waters" option to perturb all water molecules present in the system.
+
+- **box_water**: Center of the box for the waters. Default: Centroid of the center of masses of all water molecules.
+
+- **water_radius**: Radius of the water box. Default=7
+
+- **water_trials**: Numerical trials on water perturbation. Default=10000
+
+- **water_constr**: COM constrain applied to th water molecule after perturbation. Default=0
+
+- **water_temp**: Temperature of the water perturbation step. Default=5000
+
+- **water_overlap**: Overlap factor of water. Default=0.78
+
+
+..  code-block:: yaml
+
+    n_waters: 3 # Compulsory, if no water molecules are present in the system
+    box_water:
+    - 20
+    - 30
+    - 20
+    water_radius: 8
+    water_trials: 500
+    water_constr: 0.5
+    water_temp: 2000
+    water_overlap: 0.5
+    # waters: "all_waters" # to perturb all waters in the system
+    # waters:
+        - "W:15" # chain ID and residue number
+        - "W:21"
+
+Interaction restrictions
+----------------------------
+
+Interaction restrictions allow for biased exploration, where the simulation results are limited to those that fit the specified conditions.
+
+Users can define two types of conditions using the atom strings (format "chain:resnum:atomname", e.g. A:2:CA) to select the atoms:
+
+- **distance**: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.
+
+- **angle**: Angle between three atoms with a user-defined maximum, minimum or both.
+
+
+..  code-block:: yaml
+
+    interaction_restrictions:
+    - distance:  # distance between the two atoms will not exceed 3 A
+        max: 3
+      atoms:
+        - "A:318:OG1"   # chain A, residue number 318, atom OG1
+        - "Z:201:O3"
+    - angle:  # angle between those three atoms will remain betwenn 90 and 180 degrees
+        min: 90
+        max: 180
+      atoms:
+        - "A:318:OG1"
+        - "A:318:HG1"
+        - "Z:201:O3"
+
+
 Metrics
-=============
+---------
 
 Metrics to track along the simulation
 
-- **atom_dist**: Calculate distance between two atom numbers. To calculate more than one append them in column as the example below. Default=None
+- **atom_dist**: Calculate distance between two atomnumbers. To calculate more than one append them in column as the example below. Default=None
 
-    - The atom distances can be specified via chain:resnum:atomname, e.g. A:2:CA.
+    - The atomdist can be specified via chain:resnum:atomname i.e. A:2:CA
 
-- **rmsd_pdb**: Calculate RMSD of the ligand to a native pdb structure
+- **rmsd_pdb**: Calculate rmsd of the ligand to a native pdb structure
 
 
 ..  code-block:: yaml
@@ -312,13 +409,13 @@ Metrics to track along the simulation
 
 
 Analysis
-=============
+-----------
 
 Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **only_analysis**: Analyse PELE simulation without running it.
 
-- **analysis_nclust**: Numbers of clusters out of the simulation. Default: 10
+- **analysis_nclust**: Numbers of clusters out of the simulation, if using the standard clustering method. Default: 10
 
 - **be_column**: Column of the binding energy in the reports starting by 1. Default: 5
 
@@ -326,9 +423,13 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **limit_column**: Specify the column where your external metrics start. Default: 6
 
-- **mae**: To extract the best energy and cluster poses as .mae files with the metrics as properties (Schrodinger needs it). Default: false
+- **mae**: To extract the best energy and cluster poses as .mae files with the metrics as properties (schrodinger need it). Default: false
 
 - **analysis**: Whether to run or not the analysis at the end of the simulation. Default: true
+
+- **clustering_method**: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to ``MeanShift`` or ``HDBSCAN``.
+
+- **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
 
 ..  code-block:: yaml
 
@@ -337,9 +438,14 @@ Run a post simulation analysis to extract plots, top poses and clusters.
     te_column: 4
     limit_column: 6
     mae: true
+    clustering_method: "meanshift"
+    bandwidth: 7.0
+
+The bandwidth parameter hugely influences the clustering results, therefore, it might be worth trying out different values depending on your system.
+In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD allowed within the cluster, whereas in HDBSCAN to distances between your data points.
 
 Output
-==========
+----------
 
 Configure the output
 
