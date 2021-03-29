@@ -4,7 +4,7 @@ pillow
 scipy 
 matplotlib
 pytest
-AdaptivePELE
+AdaptivePELE==1.7
 PPPele==1.0.6
 ploprottemp==1.0.1
 scikit-learn>0.20

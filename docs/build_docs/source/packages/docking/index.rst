@@ -48,7 +48,7 @@ Prepare the input file ``input.yml``:
     induced_fit_fast: true # less sampling but faster (2-3 h)
     #induced_fit_exhaustive: true # 6h simulation but a lot more sampling
 
-For more optional flags please refer to `optative flags <../../documentation/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_
 
 3. Run simulation
 ====================
