@@ -30,7 +30,7 @@ requirements:
     - scipy
     - pandas==1.2.3
     - pytest
-    - adaptive_pele
+    - adaptive_pele==1.7
     - ploprottemp==1.0.1
     - pyyaml
     - pppele==1.0.6
