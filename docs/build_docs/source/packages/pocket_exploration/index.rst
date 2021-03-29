@@ -48,7 +48,7 @@ Pocket Exploration (24h)
    - "B:3:CG" #Second atom to make the distance to
    site_finder: true
 
-For more optional flags please refer to `optative falgs <../../documentation/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_
 
 
 3. Run simulation

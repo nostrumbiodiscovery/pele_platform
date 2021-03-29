@@ -44,7 +44,7 @@ Prepare the input file ``input.yml``:
     cpus: 60
     rescoring: true # only relaxation part of the algorithm
 
-For more optional flags please refer to `optative flags <../../documentation/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_
 
 3. Run simulation
 ====================

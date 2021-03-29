@@ -9,7 +9,7 @@ These flags are **exclusive to FragPELE** modes.
 
 - **sampling_steps**: Number of pele steps in the final sampling simulation
 
-- **protocol**: Type of protocol. options = [HT, ES]. For more info please refere here.
+- **protocol**: Type of protocol. options = [HT, ES]. For more info please refer `here <https://carlesperez94.github.io/frag_pele/>`_.
 
 
 ..  code-block:: yaml
