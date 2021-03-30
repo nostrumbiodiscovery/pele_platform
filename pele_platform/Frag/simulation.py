@@ -208,7 +208,7 @@ class FragRunner(object):
 
         if self.parameters.analysis_to_point and self.parameters.folder:
             ana.main(path=self.parameters.folder,
-                     atomCoords=self.parameters.analysis_to_point,
+                     atom_coords=self.parameters.analysis_to_point,
                      pattern=os.path.basename(self.parameters.system))
 
         # TODO create a list of the libraries defined in the current input.yaml
