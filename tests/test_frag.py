@@ -45,7 +45,9 @@ point_analysis_lines = [
 
 
 def test_frag_sim(
-    capsys, ext_args=FRAG_SIM_ARGS, output="1w7h_preparation_structure_2w_processed_aminoC1N1"
+    capsys,
+    ext_args=FRAG_SIM_ARGS,
+    output="1w7h_preparation_structure_2w_processed_aminoC1N1",
 ):
     """
     Runs FragPELE test simulation. Checks if the output folder exists and the ligand was not skipped.
@@ -63,14 +65,14 @@ def test_frag_sim(
 
     job = main.run_platform(ext_args)
     captured = capsys.readouterr()
+    top_results = glob.glob(os.path.join(output, "top_result", "*pdb"))
 
     assert "Skipped - FragPELE will not run." not in captured.out
     assert os.path.exists(output)
+    assert len(top_results) == 3
 
 
-def test_frag_core(
-    capsys, ext_args=FRAG_CORE_ARGS, output="1w7h_preparation_structure_2w_aminoC1N1"
-):
+def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     """
     Tests FragPELE growing method using an SDF with full ligands. Checks if the output folder exists and the ligand
     was not skipped.
@@ -79,16 +81,24 @@ def test_frag_core(
     ----------
     ext_args : str
         Path to PELE input file.
-    output : str
-        Output folder name.
     """
-    if os.path.exists(output):
-        shutil.rmtree(output)
+
+    output = "1w7h_preparation_structure_2w_processed_*ligand_01*"
+
+    output_paths = glob.glob(output)
+    for path in output_paths:
+        if os.path.exists(output):
+            shutil.rmtree(output)
+
     job = main.run_platform(ext_args)
     captured = capsys.readouterr()
 
+    new_output_path = glob.glob(output)[0]
+    top_results = glob.glob(os.path.join(new_output_path, "top_result", "*pdb"))
+
     assert "Skipped - FragPELE will not run." not in captured.out
-    assert os.path.exists(output)
+    assert os.path.exists(new_output_path)
+    assert len(top_results) == 3
 
 
 def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
