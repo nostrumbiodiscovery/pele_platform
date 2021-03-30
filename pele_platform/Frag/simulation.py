@@ -35,7 +35,6 @@ class FragRunner(object):
     def _launch(self):
         params = self.parameters
 
-        fragment_files = None
         with tempfile.TemporaryDirectory() as tmpdirname:
             if params.ligands:  # Full ligands as sdf
                 fragment_files = self._prepare_input_file(logger=params.logger)
@@ -148,8 +147,7 @@ class FragRunner(object):
             try:
                 line, fragment = \
                     self._create_fragment_from_ligand(ligand,
-                                                      ligand_core,
-                                                      logger=logger)
+                                                      ligand_core)
             except Exception as e:
                 try:
                     line, fragment = \
