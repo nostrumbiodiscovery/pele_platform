@@ -1,26 +1,39 @@
 Binding simulation
-####################################
+======================
 
-This simulation aims to find the binding path of a small molecule to a given receptor.
+Introduction
+------------------
 
-**Input** (further explained below):
+The binding simulation aims to find the binding path of a small molecule to a given receptor. Our software will automatically
+place the ligand around the specified initial site and build the simulation box based on the coordinates of the  final_site.
+Upon completion of the simulation, the user will be presented with a ranking of binding modes of the small molecule.
 
-    - protein-ligand PDB file
+Input
++++++++++
 
-**Output** (further explained below):
+- protein-ligand PDB file
+- YAML file with parameters
 
-    - ranked binding modes of the chosen small molecule with the desired protein
+Default parameters
++++++++++++++++++++++
 
-**Computational Time**: 6h
+- iterations: 100
+- pele steps: 8
+
+
+Recommendations
++++++++++++++++++
+
+#. We recommend using **at least 50 CPUs**.
+#. Expected computational time is 6h.
 
 1. Complex Preparation
-======================
+--------------------------
    
-Prepare the system with maestro (Protein Preparation Wizard)
-and output a complex.pdb. The complex.pdb must contain the protein-ligand in the desired initial conformation. If the binding site is known, the ligand must be set as close as possible to the protein surface on that side of the protein.
+Prepare the system with Maestro (Protein Preparation Wizard) and output as ``complex.pdb``.
 
 2. Input Preparation
-=====================
+------------------------
 
 Prepare the input file ``input.yml``:
 
@@ -39,21 +52,20 @@ Prepare the input file ``input.yml``:
     initial_site: "A:577:N"
     final_site: "A:867:CB"
 
-**Note:** PELE will automatically place the ligand around the specified initial site, and will use
-the final_site to build the simulation box. Then simulation will start.
+**Note:** PELE will automatically . Then simulation will start.
 
-For more optional flags please refer to `optional flags <../../flags/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_.
 
 
 3. Run simulation
-====================
+--------------------
 
 To run the system launch the simulation with the following command:
 
 ``python -m pele_platform.main input.yml``
 
 4. Output
-=================
+----------------
 
 Raw output
 +++++++++++++
@@ -63,14 +75,16 @@ detailed information on each snapshot (PDB file, binding energy, metrics, etc.).
 Selected poses
 ++++++++++++++++
 
-**Clusters**
+Clusters
+***********
 
 Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:
 
 ``working_folder/results/clusters``
 
-**Best snapshots**
+Best snapshots
+******************
 
 In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
 

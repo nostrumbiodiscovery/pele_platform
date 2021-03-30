@@ -56,7 +56,7 @@ class Analysis(object):
         topology : str
             Path to the topology file, if using XTC trajectories. Default
              is None
-        cpus: int
+        cpus : int
             Number of CPUs to use. Default is 1
         """
         from pele_platform.analysis import DataHandler

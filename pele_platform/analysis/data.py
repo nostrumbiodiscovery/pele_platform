@@ -391,7 +391,7 @@ class DataHandler(object):
             return None, None
 
         # Load topology
-        topology = mdtraj.load(topology)
+        topology = mdtraj.load()
 
         # Select atom subset
         if remove_hydrogen:
