@@ -66,7 +66,7 @@ class FragInputFiles(object):
 
         parameters.core = args.frag_core
 
-        if parameters.skip_prep:
+        if args.skip_prep is not None:
             parameters.skip_prep = args.skip_prep
         else:
             parameters.skip_prep = parameters.simulation_params.get("skip_prep", False)
