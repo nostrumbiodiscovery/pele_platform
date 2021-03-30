@@ -44,6 +44,10 @@ class FragRunner(object):
                                        params.frag_library,
                                        params.logger,
                                        tmpdirname)
+            else:
+                fragment_files = None
+                assert params.input is not None, "You need to provide input.conf file or SD file with fully grown " \
+                                                 "ligands. "
 
             if not params.only_analysis:
                 self._run()

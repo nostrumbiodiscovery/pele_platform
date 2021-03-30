@@ -45,7 +45,7 @@ point_analysis_lines = [
 
 
 def test_frag_sim(
-    capsys, ext_args=FRAG_SIM_ARGS, output="1w7h_preparation_structure_2w_aminoC1N1"
+    capsys, ext_args=FRAG_SIM_ARGS, output="1w7h_preparation_structure_2w_processed_aminoC1N1"
 ):
     """
     Runs FragPELE test simulation. Checks if the output folder exists and the ligand was not skipped.
@@ -60,6 +60,7 @@ def test_frag_sim(
 
     if os.path.exists(output):
         shutil.rmtree(output)
+
     job = main.run_platform(ext_args)
     captured = capsys.readouterr()
 
