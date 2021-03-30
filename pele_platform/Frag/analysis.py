@@ -105,7 +105,7 @@ def normalize_lists(distance_list, be_list):
     return distance_list, be_list
 
 
-def main(reference_file, path, atom_coords, resname="GRW", pattern=''):
+def main(path, atom_coords, resname="GRW", pattern='', reference_file=""):
     if not atom_coords:
         atom_coords = get_atom_from_ref(reference_file).get_coord()
 
