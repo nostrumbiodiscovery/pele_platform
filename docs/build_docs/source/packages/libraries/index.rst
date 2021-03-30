@@ -1,43 +1,59 @@
-Grow custom fragment library
-######################################
+Grow a custom fragment library
+================================
 
-FragPELE is now able to grow fragments from custom-made libraries, all you have to do is provide it with a directory
-containing your fragments (in PDB or SDF format) and a docked core.
+Introduction
+-------------
 
-**Input** (further explained below):
+FragPELE is now able to grow fragments from custom-made libraries! All you have to do is provide it with a directory
+containing your fragments (in PDB or SDF format) and a docked core to let the software rank your fragments and return the
+best binding modes for each.
 
+Inputs
++++++++++
 
     - protein-scaffold PDB file
     - directory with fragment files (SDF or PDB)
     - input.yaml configuration file
 
-**Output**:
+Default parameters
++++++++++++++++++++
 
-    - ranking of the fragments
-    - ranked binding modes within each fragment
+    - frag_eq_steps: 20
+    - gr_steps: 6
+    - frag_steps: 3
 
-**Computational time**:
 
-    - 30min/3h per fragment (depends on how many rotatable bonds the fragment has)
+Recommendations
++++++++++++++++++
+
+    #. Computational time is estimated between 30min and 3h per fragment (depending on the number of rotatable bonds).
 
 1. Complex Preparation
-======================
+-------------------------
 
-**Protein-scaffold PDB file** should be preprocessed with Maestro Protein Preparation Wizard.
-We would usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
-and ions as well as filling in missing loops and side chains.
+Protein-scaffold PDB file
+++++++++++++++++++++++++++++
 
-The file must contain protein in complex with a fragment (scaffold), e.g. an X-ray structure or a docked pose. Additionally, ensure the ligand has:
+The PDB file should be preprocessed with Maestro Protein Preparation Wizard. We usually recommend protonating the
+protein (obligatory), deleting water molecules more than 5Å away from ligands and ions as well as filling in missing
+loops and side chains.
+
+The file must contain protein in complex with a fragment (scaffold), e.g. an X-ray structure or a docked pose.
+Additionally, ensure the ligand has:
 
  - unique chain ID
  - no atom names with spaces or single letters (occasionally Maestro adds hydrogens named ``H1 2``, these need to be corrected)
- - any unique residue name, except for UNK
+ - any unique residue name, except for ``UNK``
  - well-defined aromatic bonds.
 
-**Directory with fragments** which should be preprocessed using Schrodinger LigPrep (default settings should be sufficient) and have unique molecule names.
+Directory with fragments
++++++++++++++++++++++++++
+
+The fragment library should be preprocessed using Schrodinger LigPrep (default settings should be sufficient) and
+have unique molecule names.
 
 2. Input Preparation
-=====================
+---------------------
 
 Prepare input.yaml file:
 
@@ -50,6 +66,9 @@ Prepare input.yaml file:
     frag_core_atom: "C6-H6"  # Connection point from which you want to grow the fragments
     cpus: 48
 
+Defining frag_core_atom
+++++++++++++++++++++++++++++
+
 Not sure how to define ``frag_core_atom``?
 Open your PDB file in Schrodinger Maestro and hover over the atoms to see their PDB names on the panel below.
 The starting point for fragment growing should consist of a heavy atom and a hydrogen, e.g. "C6-H6" on the picture below.
@@ -59,19 +78,19 @@ The starting point for fragment growing should consist of a heavy atom and a hyd
     :align: center
 
 3. Run simulation
-====================
-
+--------------------
 
 To run the system launch the simulation with the following command:
 
 ``python -m pele_platform.main input.yml``
 
 4. Output
-===============
+--------------
 
 The simulation will create a TSV file with scored fragments as well as a number of fragment folders, the names of which will consist of the scaffold and molecule names.
 
-**Scored fragments**
+Scored fragments
+++++++++++++++++++
 
 The list of all grown fragments together with their associated scores (average binding energy of the top 25% of all poses)
 can be found in:
@@ -79,7 +98,8 @@ can be found in:
 ``simulation_score.tsv``
 
 
-**Top poses**
+Top poses
+++++++++++++
 
 Each fragment folder contains a top_results folder with PDB files corresponding to the best poses for that fragment:
 
@@ -87,7 +107,7 @@ Each fragment folder contains a top_results folder with PDB files corresponding 
 
 
 5. Analysis
-=============
+--------------
 
 Once your simulation is finished, you can run an automated analysis to retrieve most promising fragments based on their
 proximity to a certain point, for example a side chain atom you would like your fragment to interact with.

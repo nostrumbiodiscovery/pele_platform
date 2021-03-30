@@ -1,35 +1,61 @@
 Prepare your own PPI simulation
-####################################
+=====================================
 
-This simulation aims to find a small molecule that
-inhibits the interface between two protein domains.
+Introduction
+---------------
 
-**Article**: https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose
+The PPI package aims to identify possible binding sites for a small molecule to inhibits the interface between two proteins.
 
-**Input** (further explained below):
+Check out one of our related papers: `Monte Carlo simulations using PELE to identify a protein–protein inhibitor binding site and pose <https://pubs.rsc.org/en/content/articlelanding/2020/ra/d0ra01127d>`_.
+
+Inputs
+++++++++++
 
     - protein-protein PDB file
     - ligand PDB file
-    - input.yaml, which specifies center of the protein-protein interface where the simulation will focus.
+    - input.yaml with parameters
 
-**Output** (further explained below):
+Default parameters
+++++++++++++++++++++
 
-    - ranked binding modes of the chosen small molecule with the desired protein
+The simulation consists of two stages: local exploration around the protein-protein interface and binding pose refinement.
 
-**Computational time**: 9h
+Parameters for interface exploration:
+
+    - iterations: 1
+    - pele steps: 1000
+
+Parameters for pose refinement:
+
+    - iterations: 20
+    - pele_steps: 12
+
+Recommendations
+++++++++++++++++++
+
+#. We recommend tracking the distance between a ligand atom and the center of interface to aid analysis of the simulation.
+#. There is no need to align the ligand, it will be automatically placed all around the protein interface by our automatic pipeline.
+#. We suggest using **at least 50 CPUs**.
+#. Expected computational time is around 9h.
 
 1. Complex Preparation
-======================
+-------------------------
    
-**Protein-protein file** has to be preprocessed with Maestro Protein Preparation Wizard.
-We would usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
-and ions as well as filling in missing loops and side chains.
+Protein-protein file
+++++++++++++++++++++++
 
-**Ligand file** needs to be correctly protonated. There is no need to align it, it will be
-automatically placed all around the protein interface by our automatic pipeline.
+The PDB file needs to be preprocessed with Maestro Protein Preparation Wizard. We usually recommend protonating the
+protein (obligatory), deleting water molecules more than 5Å away from ligands and ions as well as filling in missing
+loops and side chains.
+
+Ligand file
+++++++++++++++++
+
+The ligand needs to be correctly protonated, have unique chain ID and PDB atom names. It can have any residue name except
+for ``UNK``.
 
 2. Input Preparation
-=====================
+------------------------
 
 Prepare the input file ``input.yml`` as show in the template below:
 
@@ -53,14 +79,14 @@ For more optional flags please refer to `optional flags <../../flags/index.html>
 
 
 3. Run simulation
-====================
+---------------------
 
 Launch the simulation with the following command:
 
 ``python -m pele_platform.main input.yml``
 
 4. Output
-============
+--------------
 
 Main folders
 ++++++++++++++++++++++++
@@ -76,14 +102,17 @@ Trajectory and report files for each simulation are located in ``working_folder/
 
 Selected poses
 +++++++++++++++
-**Clusters**
+
+Clusters
+**********
 
 Upon completion of the refinement simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:
 
 ``working_folder/2_refinement_simulation/results/clusters``
 
-**Best snapshots**
+Best snapshots
+****************
 
 In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
 

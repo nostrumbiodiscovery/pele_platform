@@ -135,11 +135,8 @@ class Analysis
 
 .. code-block:: python
 
-     >> analysis = Analysis(
-            resname="LIG",
-            chain="Z",
-            simulation_output="LIG_Pele/output",
-        )
+     >> from pele_platform.analysis import Analysis
+     >> analysis = Analysis(resname="LIG", chain="Z", simulation_output="LIG_Pele/output")
 
 Then you can use one of the available methods to generate top poses, perform clustering or run the whole analysis workflow, e.g.
 
