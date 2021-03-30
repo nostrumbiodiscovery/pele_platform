@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Simulate big conformational moves of your receptor with PCA-PELE &mdash; pele platform 1.5.1 documentation</title>
+  <title>Simulate big conformational moves of your receptor with PCA-PELE &mdash; pele platform 1.6.0b2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.5.1
+                1.6.6
               </div>
             
           
@@ -97,15 +97,24 @@
 <li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Pocket exploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Fragment growing simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow custom fragment library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow a custom fragment library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Simulate big conformational moves of your receptor with PCA-PELE</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#default-parameters">Default parameters</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#clusters">Clusters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#best-snapshots">Best snapshots</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../minimization/index.html">Minimize your protein</a></li>
@@ -198,24 +207,27 @@
             
   <div class="section" id="simulate-big-conformational-moves-of-your-receptor-with-pca-pele">
 <h1>Simulate big conformational moves of your receptor with PCA-PELE<a class="headerlink" href="#simulate-big-conformational-moves-of-your-receptor-with-pca-pele" title="Permalink to this headline">¶</a></h1>
-<p>This simulation aims to enhance the receptor movement by extracting
-a PCA from a movement defined for 3 or more PDB files (trajectory snapshots).
-The best binding modes of the simulated ligand will be ranked and extracted
-for user inspection.</p>
-<p><strong>Input</strong> (further explained below):</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This package aims to analyse and enhance the receptor movement by performing the principal component analysis (PCA)
+on three or more trajectory snapshots, which is especially useful when the protein undergoes big conformational changes.
+The best binding modes of the simulated ligand are ranked and extracted for user inspection.</p>
+<div class="section" id="inputs">
+<h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
 <li><p>protein-ligand PDB file</p></li>
 <li><p>3 identical PDB files (only changing coordinates) which define a motion</p></li>
+<li><p>YAML file with parameters</p></li>
 </ul>
 </div></blockquote>
-<p><strong>Output</strong> (further explained below):</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Ranked binding modes</p></li>
-</ul>
-</div></blockquote>
+</div>
+<div class="section" id="default-parameters">
+<h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Exact parameters depend on the selected simulation type, the PCA only enhances the receptor movements.</p>
 <p><strong>Computational time</strong>: 5h</p>
+</div>
+</div>
 <div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the system with Maestro (Protein Preparation Wizard) and output a <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>. The file must contain the
@@ -225,7 +237,7 @@ protein-ligand in the desired initial configuration.</p>
 <div><ul class="simple">
 <li><p>unique chain ID</p></li>
 <li><p>no atom names with spaces or single letter</p></li>
-<li><p>any residue name except UNK</p></li>
+<li><p>any residue name except <code class="docutils literal notranslate"><span class="pre">UNK</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -236,6 +248,7 @@ protein-ligand in the desired initial configuration.</p>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1"># chain name of the ligand</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span> <span class="c1"># residue name of the ligand</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+
 <span class="c1"># Calculate PCA by giving 3 pdb snapshots</span>
 <span class="c1"># defining a motion</span>
 <span class="nt">pca_traj</span><span class="p">:</span>
@@ -249,7 +262,7 @@ protein-ligand in the desired initial configuration.</p>
 <span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1">#You can change the method to any other (induced_fit, rescoring...)</span>
 </pre></div>
 </div>
-<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a></p>
+<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a>.</p>
 </div>
 <div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
@@ -258,13 +271,17 @@ protein-ligand in the desired initial configuration.</p>
 </div>
 <div class="section" id="output">
 <h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
-<p><strong>Clusters</strong></p>
+<div class="section" id="clusters">
+<h3>Clusters<a class="headerlink" href="#clusters" title="Permalink to this headline">¶</a></h3>
 <p>Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/clusters</span></code></p>
-<p><strong>Best snapshots</strong></p>
+</div>
+<div class="section" id="best-snapshots">
+<h3>Best snapshots<a class="headerlink" href="#best-snapshots" title="Permalink to this headline">¶</a></h3>
 <p>In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/top_poses</span></code></p>
+</div>
 </div>
 </div>
 

@@ -1,19 +1,29 @@
 Minimize your protein
-========================
+==========================
 
-The minimization package aims at minimizing the energy of the system. 
-PELE will optimize all present interactions in your input PDB by slightly
-perturbing protein and ligand.
+Introduction
+------------------
 
-**Input** (further explained below):
+The package to minimize the energy of the system by slightly perturbing the protein and the ligand to optimize all
+interactions.
 
+Inputs
+++++++++++
     - protein-ligand complex PDB file
+    - YAML file with parameters
 
-**Output** (further explained below):
+Default parameters
+++++++++++++++++++++
 
-    - ranked binding modes
+    - iterations: 20
+    - pele_steps: 12
+    - `constraint level <https://nostrumbiodiscovery.github.io/pele_platform/flags/all_packages/index.html#carbon-alpha-constraints>`_: 2
 
-**Computational time**: 30min
+Recommendations
+++++++++++++++++++
+
+    #. Expected computational time is ~30 mins.
+
 
 1. Complex Preparation
 -------------------------

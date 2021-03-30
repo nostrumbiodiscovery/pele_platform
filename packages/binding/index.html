@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Binding simulation &mdash; pele platform 1.5.1 documentation</title>
+  <title>Binding simulation &mdash; pele platform 1.6.0b2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.5.1
+                1.6.6
               </div>
             
           
@@ -97,9 +97,15 @@
 <li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Pocket exploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Fragment growing simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow custom fragment library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow a custom fragment library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Binding simulation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#input">Input</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#default-parameters">Default parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recommendations">Recommendations</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
@@ -202,24 +208,36 @@
             
   <div class="section" id="binding-simulation">
 <h1>Binding simulation<a class="headerlink" href="#binding-simulation" title="Permalink to this headline">¶</a></h1>
-<p>This simulation aims to find the binding path of a small molecule to a given receptor.</p>
-<p><strong>Input</strong> (further explained below):</p>
-<blockquote>
-<div><ul class="simple">
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The binding simulation aims to find the binding path of a small molecule to a given receptor. Our software will automatically
+place the ligand around the specified initial site and build the simulation box based on the coordinates of the  final_site.
+Upon completion of the simulation, the user will be presented with a ranking of binding modes of the small molecule.</p>
+<div class="section" id="input">
+<h3>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
 <li><p>protein-ligand PDB file</p></li>
+<li><p>YAML file with parameters</p></li>
 </ul>
-</div></blockquote>
-<p><strong>Output</strong> (further explained below):</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>ranked binding modes of the chosen small molecule with the desired protein</p></li>
+</div>
+<div class="section" id="default-parameters">
+<h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>iterations: 100</p></li>
+<li><p>pele steps: 8</p></li>
 </ul>
-</div></blockquote>
-<p><strong>Computational Time</strong>: 6h</p>
+</div>
+<div class="section" id="recommendations">
+<h3>Recommendations<a class="headerlink" href="#recommendations" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li><p>We recommend using <strong>at least 50 CPUs</strong>.</p></li>
+<li><p>Expected computational time is 6h.</p></li>
+</ol>
+</div>
+</div>
 <div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Prepare the system with maestro (Protein Preparation Wizard)
-and output a complex.pdb. The complex.pdb must contain the protein-ligand in the desired initial conformation. If the binding site is known, the ligand must be set as close as possible to the protein surface on that side of the protein.</p>
+<p>Prepare the system with Maestro (Protein Preparation Wizard) and output as <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>.</p>
 </div>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
@@ -238,9 +256,8 @@ and output a complex.pdb. The complex.pdb must contain the protein-ligand in the
 <span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;A:867:CB&quot;</span>
 </pre></div>
 </div>
-<p><strong>Note:</strong> PELE will automatically place the ligand around the specified initial site, and will use
-the final_site to build the simulation box. Then simulation will start.</p>
-<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a></p>
+<p><strong>Note:</strong> PELE will automatically . Then simulation will start.</p>
+<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a>.</p>
 </div>
 <div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
@@ -256,13 +273,17 @@ detailed information on each snapshot (PDB file, binding energy, metrics, etc.).
 </div>
 <div class="section" id="selected-poses">
 <h3>Selected poses<a class="headerlink" href="#selected-poses" title="Permalink to this headline">¶</a></h3>
-<p><strong>Clusters</strong></p>
+<div class="section" id="clusters">
+<h4>Clusters<a class="headerlink" href="#clusters" title="Permalink to this headline">¶</a></h4>
 <p>Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/clusters</span></code></p>
-<p><strong>Best snapshots</strong></p>
+</div>
+<div class="section" id="best-snapshots">
+<h4>Best snapshots<a class="headerlink" href="#best-snapshots" title="Permalink to this headline">¶</a></h4>
 <p>In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/top_poses</span></code></p>
+</div>
 </div>
 </div>
 </div>

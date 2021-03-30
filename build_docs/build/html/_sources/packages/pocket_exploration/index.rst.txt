@@ -1,40 +1,59 @@
 Pocket exploration
 =====================
 
-To prepare your own pocket exploration to obtain putative binding sites of your small molecule and retrieve the most promising binding modes of yout ligand, please follow the steps below.
+Introduction
+--------------
 
-**Article**: https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose
+Prepare your own pocket exploration simulation to identify the most promising pockets in your protein and obtain
+putative binding sites of the ligand.
 
-**Input** (further explained below):
+Check out our paper with a real-life application: `Monte Carlo simulations using PELE to identify a protein–protein inhibitor binding site and pose <https://pubs.rsc.org/en/content/articlelanding/2020/ra/d0ra01127d>`_
 
-    - Protein-ligand.pdb
+Inputs
+++++++++
 
-**Output** (further explained below):
+    - protein-ligand PDB file
+    - YAML file with parameters
 
-    - Most promising pockets ranked
-    - Most promising binding modes ranked
+Default parameters
++++++++++++++++++++
 
-**Computational time**: 24h
+The pocket exploration consists of two steps - global exploration to identify the pockets, followed by refinement to
+optimize the binding modes.
+
+Parameters for stage 1:
+
+    - iterations: 100
+    - pele steps: 8
+
+Parameters for stage 2:
+
+    - iterations: 1
+    - pele steps: 250
+
+Recommendations
++++++++++++++++++
+
+    #. Expected computational time is around 24 h.
+    #. Initial position of the small molecule is irrelevant, since it will be extracted and randomly placed all around the protein.
+
 
 1. Complex Preparation
 -------------------------
    
-Prepare the system with maestro (Protein Preparation Wizard)
-and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligand can be place anywhere as it will be automatically placed all around the protein by our automatic pipeline.
+Prepare the system with Maestro (Protein Preparation Wizard): you must at least protonate the protein, but we also recommend
+removing any crystallization artefacts and water molecules as well as filling the missing loops and side chains, if possible.
 
-Make sure the ligand has:
+Ensure the ligand has:
 
- - Unique chain
- - No atomnames with spaces or single letter
- - Any residuename except UNK
+     - unique chain ID
+     - no atom names with spaces or single letters
+     - any residue name except ``UNK``
 
 2. Input Preparation
 ----------------------
 
 Prepare the input file ``input.yml``:
-
-Pocket Exploration (24h)
-+++++++++++++++++++++++++++
 
 ..  code-block:: yaml
 
@@ -48,12 +67,11 @@ Pocket Exploration (24h)
    - "B:3:CG" #Second atom to make the distance to
    site_finder: true
 
-For more optional flags please refer to `optional flags <../../flags/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_.
 
 
 3. Run simulation
 -------------------
-
 
 To run the system launch the simulation with the next command:
 

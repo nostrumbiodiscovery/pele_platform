@@ -1,24 +1,37 @@
 Rank multiple putative poses
-#####################################################################
+=====================================
 
-The rescoring simulation aims to rank poses. In order to achieve this, we developed a curated side chain prediction and minimization algorithm
-to relax the system. This simulation is generally used when having multiple plausible poses in order to discriminate between them.
+Introduction
+---------------
 
-**Input** (further explained below):
+The rescoring simulation aims to rank binding poses. In order to achieve this, we developed a curated side chain
+prediction and minimization algorithm to relax the system. This simulation is generally used you need to discriminate
+between multiple plausible poses.
 
-    - protein-ligand complex/es PDB file/s
+Inputs
+++++++++
+    - protein-ligand PDB file(s)
+    - YAML file with parameters
 
-**Output** (further explained below):
+Default parameters
++++++++++++++++++++++
 
-    - ranked binding modes
+    - iterations: 20
+    - pele_steps: 12
+    - `constraint level <https://nostrumbiodiscovery.github.io/pele_platform/flags/all_packages/index.html#carbon-alpha-constraints>`_: 2
 
-**Computational time**: 2h 
+Recommendations
+++++++++++++++++
+
+#. Expected computational time: 2h
+#. We recommend using **at least 50 CPUs**.
 
 1. Complex Preparation
-========================
+--------------------------
    
-Prepare the system consisting of protein and docked ligand with Schrödinger Protein Preparation Wizard. We would usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
-and ions as well as filling in missing loops and side chains.
+Prepare the system consisting of protein and docked ligand with Schrödinger Protein Preparation Wizard. We would usually
+recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands and ions as well
+as filling in missing loops and side chains.
 
 Make sure the ligand has:
 
@@ -27,7 +40,7 @@ Make sure the ligand has:
  - any residue name except for ``UNK``
 
 2. Input Preparation
-=====================
+----------------------
 
 Prepare the input file ``input.yml``:
 
@@ -44,17 +57,17 @@ Prepare the input file ``input.yml``:
     cpus: 60
     rescoring: true # only relaxation part of the algorithm
 
-For more optional flags please refer to `optional flags <../../flags/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_.
 
 3. Run simulation
-====================
+----------------------
 
 To run the system launch the simulation with the following command:
 
 ``python -m pele_platform.main input.yml``
 
 4. Output
-=================
+----------------
 
 Raw output
 +++++++++++++
@@ -64,14 +77,16 @@ detailed information on each snapshot (PDB file, binding energy, metrics, etc.).
 Selected poses
 ++++++++++++++++
 
-**Clusters**
+Clusters
+**********
 
 Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:
 
 ``working_folder/results/clusters``
 
-**Best snapshots**
+Best snapshots
+***************
 
 In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
 

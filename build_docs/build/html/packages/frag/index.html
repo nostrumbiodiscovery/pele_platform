@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Fragment growing simulation &mdash; pele platform 1.5.1 documentation</title>
+  <title>Fragment growing simulation &mdash; pele platform 1.6.0b2 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="copyright" title="Copyright" href="../../copyright.html" />
-    <link rel="next" title="Grow custom fragment library" href="../libraries/index.html" />
+    <link rel="next" title="Grow a custom fragment library" href="../libraries/index.html" />
     <link rel="prev" title="Prepare your own PPI simulation" href="../ppi/index.html" /> 
 </head>
 
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.5.1
+                1.6.6
               </div>
             
           
@@ -97,13 +97,27 @@
 <li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Pocket exploration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Fragment growing simulation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#default-parameters">Default parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recommendations">Recommendations</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow custom fragment library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#protein-scaffold-pdb-file">Protein-scaffold PDB file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sd-file-with-fully-grown-ligands">SD file with fully grown ligands</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#scored-fragments">Scored fragments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#top-poses">Top poses</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow a custom fragment library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
@@ -198,45 +212,60 @@
             
   <div class="section" id="fragment-growing-simulation">
 <h1>Fragment growing simulation<a class="headerlink" href="#fragment-growing-simulation" title="Permalink to this headline">¶</a></h1>
-<p>FragPELE is a new tool for in silico hit-to-lead drug design, capable of performing HT-fragment growing onto a scaffold while
-exploring the protein-ligand conformational space. Aims to rank ligands and discover cryptic pockets.</p>
-<p><strong>Article</strong>: <a class="reference external" href="https://nostrumbiodiscovery.github.io/papers/Software/index.html#frag-pele-dynamic-ligand-growing-within-a-binding-site-a-novel-tool-for-hit-to-lead-drug-design">https://nostrumbiodiscovery.github.io/papers/Software/index.html#frag-pele-dynamic-ligand-growing-within-a-binding-site-a-novel-tool-for-hit-to-lead-drug-design</a></p>
-<p><strong>Input</strong> (further explained below):</p>
-<blockquote>
-<div><ul class="simple">
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>FragPELE is a new tool for in silico hit-to-lead drug design, capable of performing high-throughput fragment growing
+onto a scaffold while exploring the protein-ligand conformational space. It aims to rank ligands and their binding modes,
+as well as discover cryptic pockets.</p>
+<p>For more details, you can refer to:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/32027130/">FragPELE: Dynamic Ligand Growing within a Binding Site. A Novel Tool for Hit-To-Lead Drug Design</a></p></li>
+<li><p><a class="reference external" href="https://carlesperez94.github.io/frag_pele/">frag_pele documantation</a>.</p></li>
+</ul>
+<div class="section" id="inputs">
+<h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
 <li><p>protein-scaffold PDB file</p></li>
 <li><p>grown ligands SD file</p></li>
 <li><p>input.yaml configuration file</p></li>
 </ul>
-</div></blockquote>
-<p><strong>Output</strong>:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>ranking of the fragments</p></li>
-<li><p>ranked binding modes within each fragment</p></li>
+</div>
+<div class="section" id="default-parameters">
+<h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>frag_eq_steps: 20</p></li>
+<li><p>gr_steps: 6</p></li>
+<li><p>frag_steps: 3</p></li>
 </ul>
-</div></blockquote>
-<p><strong>Computational time</strong>:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>30min/3h per fragment (depends on how many rotatable bonds the fragment has)</p></li>
-</ul>
-</div></blockquote>
+</div>
+<div class="section" id="recommendations">
+<h3>Recommendations<a class="headerlink" href="#recommendations" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic simple">
+<li><p>We recommend using <strong>at least 50 CPUs</strong>.</p></li>
+<li><p>The simulation can take between 30 mins and 3 hours per fragment, depending on the number of rotatable bonds.</p></li>
+</ol>
+</div>
+</div>
 <div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<p><strong>Protein-scaffold PDB file</strong> should be preprocessed with Maestro Protein Preparation Wizard.
-We would usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
+<div class="section" id="protein-scaffold-pdb-file">
+<h3>Protein-scaffold PDB file<a class="headerlink" href="#protein-scaffold-pdb-file" title="Permalink to this headline">¶</a></h3>
+<p>PDB file should be preprocessed with Maestro Protein Preparation Wizard. We usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
 and ions as well as filling in missing loops and side chains.</p>
 <p>The file must contain protein in complex with a fragment (scaffold), e.g. an X-ray structure or a docked pose. Additionally, ensure the ligand has:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>unique chain ID</p></li>
 <li><p>no atom names with spaces or single letters (occasionally Maestro adds hydrogens named <code class="docutils literal notranslate"><span class="pre">H1</span> <span class="pre">2</span></code>, these need to be corrected)</p></li>
-<li><p>any unique residue name, except for UNK</p></li>
+<li><p>any unique residue name, except for <code class="docutils literal notranslate"><span class="pre">UNK</span></code></p></li>
 <li><p>well-defined aromatic bonds.</p></li>
 </ul>
 </div></blockquote>
-<p><strong>SD file with fully grown ligands</strong> which should be preprocessed using Schrodinger LigPrep (default settings should be sufficient) and have unique molecule names.</p>
+</div>
+<div class="section" id="sd-file-with-fully-grown-ligands">
+<h3>SD file with fully grown ligands<a class="headerlink" href="#sd-file-with-fully-grown-ligands" title="Permalink to this headline">¶</a></h3>
+<p>Ligands should be preprocessed using Schrodinger LigPrep (default settings should be sufficient) and have unique molecule names.</p>
+</div>
 </div>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
@@ -257,7 +286,7 @@ and ions as well as filling in missing loops and side chains.</p>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
 </pre></div>
 </div>
-<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a></p>
+<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a>.</p>
 </div>
 <div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
@@ -267,13 +296,17 @@ and ions as well as filling in missing loops and side chains.</p>
 <div class="section" id="output">
 <h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>The simulation will create a TSV file with scored fragments as well as a number of fragment folders, the names of which will consist of the scaffold and molecule names.</p>
-<p><strong>Scored fragments</strong></p>
+<div class="section" id="scored-fragments">
+<h3>Scored fragments<a class="headerlink" href="#scored-fragments" title="Permalink to this headline">¶</a></h3>
 <p>The list of all grown fragments together with their associated scores (average binding energy of the top 25% of all poses)
 can be found in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">simulation_score.tsv</span></code></p>
-<p><strong>Top poses</strong></p>
+</div>
+<div class="section" id="top-poses">
+<h3>Top poses<a class="headerlink" href="#top-poses" title="Permalink to this headline">¶</a></h3>
 <p>Each fragment folder contains a top_results folder with PDB files corresponding to the best poses for that fragment:</p>
 <p><code class="docutils literal notranslate"><span class="pre">fragment_folder/top_results/</span></code></p>
+</div>
 </div>
 </div>
 
@@ -285,7 +318,7 @@ can be found in:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../libraries/index.html" class="btn btn-neutral float-right" title="Grow custom fragment library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../libraries/index.html" class="btn btn-neutral float-right" title="Grow a custom fragment library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../ppi/index.html" class="btn btn-neutral float-left" title="Prepare your own PPI simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

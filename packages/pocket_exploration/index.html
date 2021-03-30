@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Pocket exploration &mdash; pele platform 1.5.1 documentation</title>
+  <title>Pocket exploration &mdash; pele platform 1.6.0b2 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.5.1
+                1.6.6
               </div>
             
           
@@ -95,18 +95,21 @@
 <li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Docking pose refinement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rescoring/index.html">Rank multiple putative poses</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Pocket exploration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#pocket-exploration-24h">Pocket Exploration (24h)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#default-parameters">Default parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recommendations">Recommendations</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#run-simulation">3. Run simulation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">4. Output</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Fragment growing simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow custom fragment library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow a custom fragment library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
@@ -201,40 +204,65 @@
             
   <div class="section" id="pocket-exploration">
 <h1>Pocket exploration<a class="headerlink" href="#pocket-exploration" title="Permalink to this headline">¶</a></h1>
-<p>To prepare your own pocket exploration to obtain putative binding sites of your small molecule and retrieve the most promising binding modes of yout ligand, please follow the steps below.</p>
-<p><strong>Article</strong>: <a class="reference external" href="https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose">https://nostrumbiodiscovery.github.io/papers/Software/index.html#ppi-pele-monte-carlo-simulations-using-pele-to-identify-a-proteinprotein-inhibitor-binding-site-and-pose</a></p>
-<p><strong>Input</strong> (further explained below):</p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Prepare your own pocket exploration simulation to identify the most promising pockets in your protein and obtain
+putative binding sites of the ligand.</p>
+<p>Check out our paper with a real-life application: <a class="reference external" href="https://pubs.rsc.org/en/content/articlelanding/2020/ra/d0ra01127d">Monte Carlo simulations using PELE to identify a protein–protein inhibitor binding site and pose</a></p>
+<div class="section" id="inputs">
+<h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>Protein-ligand.pdb</p></li>
+<li><p>protein-ligand PDB file</p></li>
+<li><p>YAML file with parameters</p></li>
 </ul>
 </div></blockquote>
-<p><strong>Output</strong> (further explained below):</p>
+</div>
+<div class="section" id="default-parameters">
+<h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
+<p>The pocket exploration consists of two steps - global exploration to identify the pockets, followed by refinement to
+optimize the binding modes.</p>
+<p>Parameters for stage 1:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Most promising pockets ranked</p></li>
-<li><p>Most promising binding modes ranked</p></li>
+<li><p>iterations: 100</p></li>
+<li><p>pele steps: 8</p></li>
 </ul>
 </div></blockquote>
-<p><strong>Computational time</strong>: 24h</p>
+<p>Parameters for stage 2:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>iterations: 1</p></li>
+<li><p>pele steps: 250</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="recommendations">
+<h3>Recommendations<a class="headerlink" href="#recommendations" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Expected computational time is around 24 h.</p></li>
+<li><p>Initial position of the small molecule is irrelevant, since it will be extracted and randomly placed all around the protein.</p></li>
+</ol>
+</div></blockquote>
+</div>
+</div>
 <div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Prepare the system with maestro (Protein Preparation Wizard)
-and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligand can be place anywhere as it will be automatically placed all around the protein by our automatic pipeline.</p>
-<p>Make sure the ligand has:</p>
+<p>Prepare the system with Maestro (Protein Preparation Wizard): you must at least protonate the protein, but we also recommend
+removing any crystallization artefacts and water molecules as well as filling the missing loops and side chains, if possible.</p>
+<p>Ensure the ligand has:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>Unique chain</p></li>
-<li><p>No atomnames with spaces or single letter</p></li>
-<li><p>Any residuename except UNK</p></li>
+<li><p>unique chain ID</p></li>
+<li><p>no atom names with spaces or single letters</p></li>
+<li><p>any residue name except <code class="docutils literal notranslate"><span class="pre">UNK</span></code></p></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<div class="section" id="pocket-exploration-24h">
-<h3>Pocket Exploration (24h)<a class="headerlink" href="#pocket-exploration-24h" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span>
@@ -246,8 +274,7 @@ and output a complex.pdb. The complex.pdb must contain protein-ligand. The ligan
 <span class="nt">site_finder</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
-<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a></p>
-</div>
+<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a>.</p>
 </div>
 <div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
