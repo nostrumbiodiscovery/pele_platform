@@ -35,7 +35,6 @@ class FragRunner(object):
     def _launch(self):
         params = self.parameters
 
-        fragment_files = None
         with tempfile.TemporaryDirectory() as tmpdirname:
             if params.ligands:  # Full ligands as sdf
                 fragment_files = self._prepare_input_file(logger=params.logger)
@@ -44,6 +43,10 @@ class FragRunner(object):
                                        params.frag_library,
                                        params.logger,
                                        tmpdirname)
+            else:
+                fragment_files = None
+                assert params.input is not None, "You need to provide input.conf file or SD file with fully grown " \
+                                                 "ligands. "
 
             if not params.only_analysis:
                 self._run()
@@ -144,8 +147,7 @@ class FragRunner(object):
             try:
                 line, fragment = \
                     self._create_fragment_from_ligand(ligand,
-                                                      ligand_core,
-                                                      logger=logger)
+                                                      ligand_core)
             except Exception as e:
                 try:
                     line, fragment = \
@@ -206,7 +208,7 @@ class FragRunner(object):
 
         if self.parameters.analysis_to_point and self.parameters.folder:
             ana.main(path=self.parameters.folder,
-                     atomCoords=self.parameters.analysis_to_point,
+                     atom_coords=self.parameters.analysis_to_point,
                      pattern=os.path.basename(self.parameters.system))
 
         # TODO create a list of the libraries defined in the current input.yaml
