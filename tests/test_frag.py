@@ -87,8 +87,8 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
 
     output_paths = glob.glob(output)
     for path in output_paths:
-        if os.path.exists(output):
-            shutil.rmtree(output)
+        if os.path.exists(path):
+            shutil.rmtree(path)
 
     job = main.run_platform(ext_args)
     captured = capsys.readouterr()
