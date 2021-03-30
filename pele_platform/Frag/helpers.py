@@ -4,10 +4,38 @@ import pele_platform.Frag.fragments as fr
 import pele_platform.Frag.atoms as at
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
+import sys
 
+def _search_core_fragment_linker(ligand,
+                                 ligand_core,
+                                 result=0,
+                                 check_symmetry=False):
+    """
+    Given mol1 and mol2 return the linker atoms.
 
-def _search_core_fragment_linker(ligand, ligand_core, result=0, check_symmetry=False):
-    """ Given mol1 and mol2 return the linker atoms"""
+    Parameters
+    ----------
+    ligand : RDKit molecule object
+
+    ligand_core : RDKit molecule object
+
+    result : int
+
+    check_symmetry : bool
+
+    Returns
+    -------
+    atom_core_idx : int
+
+    atoms_core : tuple
+
+    atom_fragment : int
+
+    Raises
+    ------
+    IndexError
+        If the substructure search fails.
+    """
     substructure_results = ligand.GetSubstructMatches(ligand_core)
 
     try:
@@ -32,11 +60,55 @@ def _search_core_fragment_linker(ligand, ligand_core, result=0, check_symmetry=F
                     return core_atoms.index(neighbour.GetIdx()), core_atoms, atom.GetIdx()
 
 
-def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0, substructure=True, symmetry=False):
+def _build_fragment_from_complex(complex,
+                                 residue,
+                                 ligand,
+                                 ligand_core,
+                                 result=0,
+                                 substructure=True,
+                                 symmetry=False):
+    """
+
+    Parameters
+    ----------
+    complex : str
+
+    residue : str
+
+    ligand : RDKit molecule object
+
+    ligand_core : RDKit molecule object
+
+    result : int
+
+    substructure : bool
+
+    symmetry : bool
+
+    Returns
+    -------
+    fragment : RDKit molecule object
+
+    old_atoms : list
+
+    hydrogen_core : pele_platform.Frag.atoms.Atom
+
+    atom_core : pele_platform.Frag.atoms.Atom
+
+    atom_fragment : int
+
+    mapping : dict
+
+    correct : bool
+
+    Raises
+    ------
+    TypeError
+        If the core and ligand are the same molecule.
+    """
     from rdkit import Chem
     import rdkit.Chem.rdmolops as rd
     import rdkit.Chem.rdchem as rc
-
     # Retrieve atom core linking fragment
     try:
         atom_core_idx, atoms_core, atom_fragment = _search_core_fragment_linker(ligand, ligand_core, result, symmetry)
@@ -94,7 +166,35 @@ def random_string(string_length=8):
     return ''.join(random.choice(letters) for i in range(string_length))
 
 
-def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, atom_fragment, mapping):
+def _retrieve_fragment(fragment,
+                       old_atoms,
+                       atom_core,
+                       hydrogen_core,
+                       atom_fragment,
+                       mapping):
+    """
+
+    Parameters
+    ----------
+    old_atoms : list
+
+    atom_core : pele_platform.Frag.atoms.Atom
+
+    hydrogen_core : pele_platform.Frag.atoms.Atom
+
+    atom_fragment : int
+
+    mapping : dict
+
+    Returns
+    -------
+    fragment : pele_platform.Frag.fragments.Fragment
+
+    Raises
+    ------
+    IndexError
+        If the hydrogen detection failed.
+    """
     from rdkit import Chem
 
     # Get new added hydrogen
@@ -125,7 +225,34 @@ def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, atom_fragm
     return fragment
 
 
-def _check_fragment(fragment, ligand, mapping, atom_fragment, atom_fragment_mapped, ligand_core):
+def _check_fragment(fragment,
+                    ligand,
+                    mapping,
+                    atom_fragment,
+                    atom_fragment_mapped,
+                    ligand_core):
+    """
+
+    Parameters
+    ----------
+    fragment : rdkit.Chem.rdchem.Mol
+
+    ligand : rdkit.Chem.rdchem.Mol
+
+    mapping : dict
+
+    atom_fragment : int
+
+    atom_fragment_mapped : int
+
+    ligand_core : rdkit.Chem.rdchem.Mol
+
+    Returns
+    -------
+    correct : bool
+
+    """
+
     from rdkit import Chem
 
     frag_neighbours = fragment.GetAtomWithIdx(atom_fragment_mapped).GetNeighbors()
