@@ -15,7 +15,7 @@ yaml = os.path.join(test_path, "PPI/input_skipref.yaml")
 def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
 
     #Function to test
-    job, _ = main.run_platform(yaml)
+    job, _ = main.run_platform_from_yaml(yaml)
 
     # checkpoints
     files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/top_poses/*.pdb"))
@@ -27,7 +27,7 @@ yaml = os.path.join(test_path, "PPI/input.yaml")
 def test_ppi_default(energy_result=-2.18, yaml=yaml):
   
     #Function to test
-    job, job2 = main.run_platform(yaml)
+    job, job2 = main.run_platform_from_yaml(yaml)
 
     # checkpoints
     output_csv = pd.read_csv(os.path.join(job.pele_dir, "output/clustering_output.csv"))
@@ -71,7 +71,7 @@ yaml = os.path.join(test_path, "PPI/input_skipref.yaml")
 def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
 
     #Function to test
-    job, _ = main.run_platform(yaml)
+    job, _ = main.run_platform_from_yaml(yaml)
 
     # checkpoints
     files_refinement = glob.glob(os.path.join(job.pele_dir, "refinement_simulation/results/top_poses/*.pdb"))
@@ -83,5 +83,5 @@ def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
 yaml = os.path.join(test_path, "PPI/input_folder.yaml")
 def test_working_folder(yaml=yaml, output="ppi_folder"):
     if os.path.exists(output): shutil.rmtree(output)
-    job, _ = main.run_platform(yaml)
+    job, _ = main.run_platform_from_yaml(yaml)
     assert os.path.exists(job.folder)

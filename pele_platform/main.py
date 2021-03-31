@@ -40,13 +40,9 @@ def parse_args(args=[]):
     return input_yaml
 
 
-def run_platform(input_yaml):
+def run_platform_from_yaml(input_yaml):
     """
     High level function to run the PELE platform from an input yaml file.
-    .. todo ::
-        * In the future we might have other type of runners. We should specify
-        that this one runs the platform starting from a yaml file. So,
-        something like run_platform_from_yaml could be more appropriate.
 
     It will:
     1) Parse the input.yaml
@@ -60,8 +56,8 @@ def run_platform(input_yaml):
 
     Returns
     -------
-    job_params : an EnviroBuilder object
-        The corresponding EnviroBuilder object with the parameters of the
+    job_params : a Parameters object
+        The corresponding Parameters object with the parameters of the
         simulation
     """
     # Generate the yaml object from the input yaml
@@ -109,4 +105,4 @@ if __name__ == "__main__":
     yaml_file = parse_args()
 
     # Call platform runner
-    job_params = run_platform(yaml_file)
+    job_params = run_platform_from_yaml(yaml_file)

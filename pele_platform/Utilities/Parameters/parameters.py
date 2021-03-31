@@ -60,18 +60,18 @@ class ParametersBuilder(object):
             #      since it apparently is doing the opposite of
             #      adaptive_restart
             if args.restart in constants.FIRST_RESTART:
-                pele_dir = helpers.is_repeated(main_dir)
+                pele_dir = helpers.get_next_peledir(main_dir)
             else:
-                pele_dir = helpers.is_last(main_dir)
+                pele_dir = helpers.get_latest_peledir(main_dir)
 
             # Check if the adaptive simulation is being restarted or not
             # Also check if we are only running the analysis
             if args.adaptive_restart or args.only_analysis:
                 # Take the last folder name
-                pele_dir = helpers.is_last(main_dir)
+                pele_dir = helpers.get_latest_peledir(main_dir)
             else:
                 # Get a new folder name
-                pele_dir = helpers.is_repeated(main_dir)
+                pele_dir = helpers.get_next_peledir(main_dir)
 
         # In case that the user has specified the output folder, we will
         # use it, regardless it already exists.

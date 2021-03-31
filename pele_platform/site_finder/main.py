@@ -5,7 +5,7 @@ import pandas as pd
 import shutil
 
 from pele_platform.Utilities.Helpers import bestStructs as bs
-from pele_platform.Utilities.Helpers.helpers import cd, is_repeated, is_last, parallelize
+from pele_platform.Utilities.Helpers.helpers import cd, get_next_peledir, get_latest_peledir, parallelize
 from pele_platform.PPI.cluster import _extract_coords
 import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Adaptive.simulation as si
@@ -43,9 +43,9 @@ class SiteFinderLauncher:
         working_folder = os.path.abspath("{}_Pele".format(self.args.residue))
         if not self.args.folder:
             self.working_folder = (
-                is_repeated(working_folder)
+                get_next_peledir(working_folder)
                 if not self.args.adaptive_restart
-                else is_last(working_folder)
+                else get_latest_peledir(working_folder)
             )
         else:
             self.working_folder = os.path.abspath(self.args.folder)
