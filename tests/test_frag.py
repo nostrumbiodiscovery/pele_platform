@@ -63,7 +63,7 @@ def test_frag_sim(
     if os.path.exists(output):
         shutil.rmtree(output)
 
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
     top_results = glob.glob(os.path.join(output, "top_result", "*pdb"))
 
@@ -90,7 +90,7 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
         if os.path.exists(path):
             shutil.rmtree(path)
 
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
 
     new_output_path = glob.glob(output)[0]
@@ -118,7 +118,7 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     errors = []
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = output
     errors = td.check_file(
         folder,
@@ -144,7 +144,7 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     files = glob.glob(ext_args)
     for file in files:
         try:
-            job = main.run_platform(file)
+            job = main.run_platform_from_yaml(file)
         except Exception:
             assert False
 
@@ -167,7 +167,7 @@ def test_libraries(yaml_file, expected_lines):
     if os.path.exists("input.conf"):
         os.remove("input.conf")
 
-    job = main.run_platform(yaml_file)
+    job = main.run_platform_from_yaml(yaml_file)
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", expected_lines, errors)
     assert not errors
@@ -183,7 +183,7 @@ def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     ext_args : str
         Path to PELE input file.
     """
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = []
     errors = td.check_file(
         os.getcwd(), "point_analysis.csv", point_analysis_lines, errors, ",", 4
@@ -202,7 +202,7 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     """
     if os.path.exists("input.conf"):
         os.remove("input.conf")
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors

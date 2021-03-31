@@ -23,7 +23,7 @@ def test_atom_string_mapping(yaml_file, expected):
     pele.conf JSON."
     """
     errors = []
-    job = main.run_platform(yaml_file)
+    job = main.run_platform_from_yaml(yaml_file)
     errors = tk.check_file(job.pele_dir, "pele.conf", expected, errors)
     assert not errors
 

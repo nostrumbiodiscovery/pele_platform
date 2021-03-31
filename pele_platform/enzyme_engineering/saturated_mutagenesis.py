@@ -221,9 +221,9 @@ class SaturatedMutagenesis:
         resname_folder = os.path.abspath("{}_Pele".format(self.env.residue))
         if not self.env.folder:
             self.working_folder = (
-                helpers.is_repeated(resname_folder)
+                helpers.get_next_peledir(resname_folder)
                 if not self.env.adaptive_restart
-                else helpers.is_last(resname_folder)
+                else helpers.get_latest_peledir(resname_folder)
             )
         else:
             self.working_folder = os.path.abspath(self.env.folder)

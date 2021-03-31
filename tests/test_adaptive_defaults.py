@@ -169,21 +169,21 @@ GPCR2_DEFAULTS_PELE = [
 
 def test_induced_exhaustive_defaults(ext_args=INDUCED_EX_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", INDUCE_FIT_PELE, errors)
     assert not errors
 
 def test_induced_fast_defaults(ext_args=INDUCED_FAST_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", INDUCE_FIT_FAST_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", INDUCE_FIT_PELE, errors)
     assert not errors
 
 def test_global_defaults(ext_args=GLOBAL_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GLOBAL_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GLOBAL_DEFAULTS_PELE, errors)
     assert len(glob.glob(os.path.join(job.inputs_dir, "input*.pdb"))) == (job.cpus-1)
@@ -191,54 +191,54 @@ def test_global_defaults(ext_args=GLOBAL_ARGS):
 
 def test_exit_defaults(ext_args=EXIT_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", EXIT_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", EXIT_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_softexit_defaults(ext_args=EXITSOFT_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", EXIT_SOFT_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", EXIT_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_water_lig_defaults(ext_args=WATERLIG_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "pele.conf", WATER_PARAMS_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_out_in_defaults(ext_args=OUT_IN_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", OUT_IN_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", OUT_IN_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_bias_defaults(ext_args=BIAS_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", BIAS_DEFAULTS_ADAPTIVE, errors)
     assert not errors
 
 def test_rescoring_defaults(ext_args=RESCORING_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", REF_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", REF_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_gpcr_defaults(ext_args=GPCR_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GPCR_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GPCR_DEFAULTS_PELE, errors)
     assert not errors
 
 def test_gpcr2_defaults(ext_args=GPCR2_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = check_file(job.pele_dir, "adaptive.conf", GPCR_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", GPCR2_DEFAULTS_PELE, errors)
     assert not errors

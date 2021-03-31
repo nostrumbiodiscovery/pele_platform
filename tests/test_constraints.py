@@ -88,7 +88,7 @@ def test_ca_constraints_production(input_yaml):
     This test is redundant but let's keep it for as long as we do not depracte CA constraints in PPP completely.
     """
     errors = []
-    job = main.run_platform(input_yaml)
+    job = main.run_platform_from_yaml(input_yaml)
     errors = ta.check_file(
         job.pele_dir, "pele.conf", terminal_lines_file + default_interval_lines, errors
     )
@@ -150,7 +150,7 @@ def test_ca_constraint_logic(yaml_file, expected):
     constraint levels > package parameters > default values (corresponding to level 1).
     """
     errors = []
-    job = main.run_platform(yaml_file)
+    job = main.run_platform_from_yaml(yaml_file)
     errors = ta.check_file(job.pele_dir, "pele.conf", expected, errors)
     os.remove(yaml_file)
     assert not errors

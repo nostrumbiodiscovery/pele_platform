@@ -62,32 +62,18 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def is_repeated(pele_dir):
+def get_directory_index(pele_dir):
     """
-    Given a PELE directory it will return a new directory with a new
-    suffix. The suffix is chosen with the following criterion:
-
-     - In case that NOL_Pele folder already exists in the working directory,
-       it will return NOL_Pele_1.
-     - In case that NOL_Pele_1 folder already exists in the working directory,
-       it will return NOL_Pele_2.
-
-    .. todo ::
-        * The name of this function is misleading.
-
+    Gets the index of the next PELE directory to be created, for example given LIG_Pele_11 will return i = 12 and
+    original_dir = "LIG".
     Parameters
     ----------
     pele_dir : str
-        The candidate name for the PELE directory which will only be
-        modified following the criterion above if it already exists
-
+        PELE dir, e.g. LIG_Pele_1
     Returns
     -------
-    pele_dir : str
-        The new PELE directory that does not match with any other directory
-        previously created
+        Index of the next PELE directory and the prefix (residue name).
     """
-
     original_dir = None
     split_dir = pele_dir.split("_")
     for chunk in split_dir:
@@ -103,15 +89,43 @@ def is_repeated(pele_dir):
         i = int(i) + 1
     else:
         i = 1
+
+    return i, original_dir
+
+
+def get_next_peledir(pele_dir):
+    """
+    Given a PELE directory it will return a new directory with a new
+    suffix. The suffix is chosen with the following criterion:
+
+     - In case that NOL_Pele folder already exists in the working directory,
+       it will return NOL_Pele_1.
+     - In case that NOL_Pele_1 folder already exists in the working directory,
+       it will return NOL_Pele_2.
+
+    Parameters
+    ----------
+    pele_dir : str
+        The candidate name for the PELE directory which will only be
+        modified following the criterion above if it already exists
+
+    Returns
+    -------
+    pele_dir : str
+        The new PELE directory that does not match with any other directory
+        previously created
+    """
+    i, original_dir = get_directory_index(pele_dir)
+
     if os.path.isdir(pele_dir):
         new_pele_dir = "{}_Pele_{}".format(original_dir, i)
-        new_pele_dir = is_repeated(new_pele_dir)
+        new_pele_dir = get_next_peledir(new_pele_dir)
         return new_pele_dir
     else:
         return pele_dir
 
 
-def is_last(pele_dir):
+def get_latest_peledir(pele_dir):
     """
     Given a PELE directory it will return the name of the directory that
     looks newer. It employs the following criterion:
@@ -121,9 +135,6 @@ def is_last(pele_dir):
        has the highest suffix index.
      - In case no directory named NOL_Pele is found, the original name
        will be employed.
-
-    .. todo ::
-        * The name of this function is misleading.
 
     Parameters
     ----------
@@ -138,28 +149,14 @@ def is_last(pele_dir):
         directory according to the original name that is supplied
     """
 
-    original_dir = None
-    split_dir = pele_dir.split("_")
-    for chunk in split_dir:
-        if chunk != "Pele":
-            if original_dir:
-                original_dir = "{}_{}".format(original_dir, chunk)
-            else:
-                original_dir = chunk
-        else:
-            break
-    if split_dir[-1].isdigit():
-        i = split_dir[-1]
-        i = int(i) + 1
-    else:
-        i = 1
+    i, original_dir = get_directory_index(pele_dir)
 
     if os.path.isdir(pele_dir):
         new_pele_dir = "{}_Pele_{}".format(original_dir, i)
         if not os.path.isdir(new_pele_dir):
             return pele_dir
         else:
-            new_pele_dir = is_last(new_pele_dir)
+            new_pele_dir = get_latest_peledir(new_pele_dir)
             return new_pele_dir
     else:
         return pele_dir
