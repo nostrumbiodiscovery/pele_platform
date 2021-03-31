@@ -302,6 +302,7 @@ class YamlParser(object):
         self.kde_structs = data.get(valid_flags["kde_structs"], None)
         self.max_top_clusters = data.get(valid_flags["max_top_clusters"], None)
         self.min_population = data.get(valid_flags["min_population"], None)
+        self.max_top_poses = data.get(valid_flags["max_top_poses"], None)
 
         if self.test:
             warnings.warn(

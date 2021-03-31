@@ -6,4 +6,5 @@ only_analysis: true
 te_column: 3
 be_column: 4
 limit_column: 7
+max_top_poses: 0
 test: true

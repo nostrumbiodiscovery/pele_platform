@@ -120,8 +120,8 @@ def test_top_poses(n_poses, expected_energies):
 )
 def test_analysis_flags(yaml_file, n_expected_outputs, expected_files):
     """
-    Runs full simulation with input.yaml with some unusual flags, check the number of created plots and their names to
-    ensure correct metrics were take into account.
+    Runs full simulation with input.yaml with some unusual flags, check the number of top poses, created plots and their
+    names to ensure correct metrics were take into account.
     Parameters
     ----------
     yaml_file : str
@@ -132,20 +132,28 @@ def test_analysis_flags(yaml_file, n_expected_outputs, expected_files):
         List of expected plot names.
     Returns
     -------
-        Folder with plots
+        Folder with results.
     """
-    output_folder = "../pele_platform/Examples/analysis/data/results/plots/"
+    output_folder = "../pele_platform/Examples/analysis/data/results"
+    plots_folder = os.path.join(output_folder, "plots")
+    top_poses_folder = os.path.join(output_folder, "top_poses", "*pdb")
+
     if os.path.exists(output_folder):
         shutil.rmtree(output_folder)
 
     main.run_platform(yaml_file)
 
+    # Check if all expected file names are present
     for file in expected_files:
-        file_path = os.path.join(output_folder, file)
+        file_path = os.path.join(plots_folder, file)
         assert os.path.exists(file_path)
 
-    all_files = glob.glob(os.path.join(output_folder, "*png"))
-    assert len(all_files) == n_expected_outputs
+    # Check number of created plots and top poses
+    all_plots = glob.glob(os.path.join(plots_folder, "*png"))
+    assert len(all_plots) == n_expected_outputs
+
+    all_top_poses = glob.glob(top_poses_folder)
+    assert len(all_top_poses) == 0
 
 
 @pytest.mark.parametrize(("yaml_file", "expected_poses", "expected_clusters"),
@@ -260,4 +268,5 @@ def test_analysis_api():
     with open(data_csv, "r") as file:
         lines = file.readlines()
         assert len(lines) == 8
-        assert lines[0] == "Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,sasaLig,epoch,trajectory,Cluster\n"
+        assert lines[0] == "Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,sasaLig,epoch,trajectory," \
+                           "Cluster\n"

@@ -19,7 +19,6 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-import pele_platform.analysis.plot as pt
 import pele_platform.Adaptive.ligand_parametrization as lg
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
@@ -386,6 +385,7 @@ def run_adaptive(args):
             bandwidth=parameters.bandwidth,
             analysis_nclust=parameters.analysis_nclust,
             max_top_clusters=parameters.max_top_clusters,
-            min_population=parameters.min_population)
+            min_population=parameters.min_population,
+            max_top_poses=parameters.max_top_poses)
 
     return parameters

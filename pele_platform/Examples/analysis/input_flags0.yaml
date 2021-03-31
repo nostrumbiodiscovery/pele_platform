@@ -7,4 +7,5 @@ te_column: 3
 be_column: 4
 limit_column: 6
 analysis_nclust: 1
+max_top_poses: 0
 test: true

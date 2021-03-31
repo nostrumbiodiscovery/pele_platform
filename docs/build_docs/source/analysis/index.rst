@@ -157,6 +157,8 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
             Maximum number of clusters to return.
         min_population : float (optional, default = 0.01)
             The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1% of all structures.
+        max_top_poses : int (optional, default = 100)
+            Number of top poses to retrieve.
 
 .. code-block:: python
 

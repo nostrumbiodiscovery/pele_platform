@@ -180,7 +180,7 @@ class Analysis(object):
 
     def generate(self, path, clustering_type='meanshift',
                  bandwidth=2.5, analysis_nclust=10,
-                 max_top_clusters=8, min_population=0.01):
+                 max_top_clusters=8, min_population=0.01, max_top_poses=100):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -204,6 +204,8 @@ class Analysis(object):
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
+        max_top_poses : int
+            Number of top poses to retrieve. Default = 100.
         """
         import os
 
@@ -230,7 +232,7 @@ class Analysis(object):
         # Generate analysis results
         self.generate_plots(plots_folder)
         # TODO generate top poses should depend on the n_poses flag (or is it called poses?)
-        best_metrics = self.generate_top_poses(top_poses_folder)
+        best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
                                max_top_clusters, min_population)
@@ -297,7 +299,7 @@ class Analysis(object):
                 plotter.plot_kde(metric, i_energy, output_folder=path,
                                  kde_structs=self.kde_structs)
 
-    def generate_top_poses(self, path, n_poses=100):
+    def generate_top_poses(self, path, n_poses):
         """
         It selects and saves the top poses.
 
@@ -360,9 +362,7 @@ class Analysis(object):
         check_output_folder(path)
 
         # Get clustering object
-        clustering, max_coordinates = self._get_clustering(clustering_type,
-                                                           bandwidth,
-                                                           analysis_nclust)
+        clustering, max_coordinates = self._get_clustering(clustering_type, bandwidth, analysis_nclust)
 
         # Extract coordinates
         coordinates, dataframe = self._extract_coordinates(max_coordinates)
@@ -632,7 +632,6 @@ class Analysis(object):
         from collections import defaultdict
         import pandas as pd
         import numpy as np
-        from matplotlib import pyplot as plt
 
         metrics = self._data_handler.get_metrics()
 
@@ -723,7 +722,6 @@ class Analysis(object):
             analyzed. It is updated with an extra column containing
             cluster names of top clusters
         """
-        import os
         from pele_platform.analysis.clustering import get_cluster_label
 
         metrics = list(cluster_summary.columns)
@@ -780,7 +778,6 @@ class Analysis(object):
         import os
         from collections import defaultdict
         from matplotlib import pyplot as plt
-        import pandas as pd
         from pele_platform.analysis.clustering import get_cluster_label
 
         if not os.path.exists(path):
@@ -1124,7 +1121,8 @@ class Analysis(object):
             {"Cluster ID": cluster_ids, "Cluster label": labels, "Trajectory": trajectories, "Step": steps})
         top_selections_data.to_csv(file_name, index=False)
 
-    def _directory_cleanup(self, path):
+    @staticmethod
+    def _directory_cleanup(path):
         import os
         import shutil
 
