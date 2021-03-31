@@ -29,7 +29,7 @@ def test_water(yaml=yaml):
     water_output = []
 
     # Function to test
-    job = main.run_platform(yaml)
+    job = main.run_platform_from_yaml(yaml)
 
     # checkpoints
     output = glob.glob(os.path.join(job.pele_dir, "results/top_poses/0.1.0*"))[0]
@@ -55,7 +55,7 @@ WATER_PREVIOUS_ADAPTIVE = [
 def test_water_with_previous_water(yaml=yaml_previous_water):
     # Function to test
     errors = []
-    job = main.run_platform(yaml)
+    job = main.run_platform_from_yaml(yaml)
     errors = tk.check_file(job.pele_dir, "pele.conf", WATER_PREVIOUS_PELE, errors)
     errors = tk.check_file(job.pele_dir, "adaptive.conf", WATER_PREVIOUS_ADAPTIVE, errors)
     assert not errors

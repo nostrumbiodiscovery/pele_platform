@@ -134,7 +134,7 @@ def test_analysis_flags(yaml_file, n_expected_outputs, expected_files):
 
     check_remove_folder(output_folder)
 
-    main.run_platform(yaml_file)
+    main.run_platform_from_yaml(yaml_file)
 
     # Check if all expected file names are present
     for file in expected_files:
@@ -162,7 +162,7 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
     -------
         Parameters object with simulation parameters.
     """
-    job_params = main.run_platform(yaml_file)
+    job_params = main.run_platform_from_yaml(yaml_file)
 
     results_folder = os.path.join(job_params.pele_dir, "results")
     top_poses = glob.glob(os.path.join(results_folder, "top_poses/*pdb"))

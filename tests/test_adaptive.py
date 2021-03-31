@@ -92,13 +92,13 @@ GPCR_VALUES = [
 ]
 
 def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_n_water(ext_args=NWATER_ARGS):
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     results = glob.glob(os.path.join(job.pele_dir, "results/top_poses/*.pdb"))
     error = False
     #Result has waters
@@ -113,50 +113,50 @@ def test_n_water(ext_args=NWATER_ARGS):
     assert not error
 
 def test_global(ext_args=GLOBAL_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_inputs_global(ext_args=INPUTS_GLOBAL_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_exit(ext_args=EXIT_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_softexit(ext_args=EXITSOFT_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_all_waters(ext_args=ALL_WATER_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = job.pele_dir
     errors = check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
     assert not errors
 
 def test_water_lig(ext_args=WATERLIG_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = job.pele_dir
     errors = check_file(folder, "pele.conf", WATER_VALUES, errors)
     assert not errors
 
 def test_out_in(ext_args=OUT_IN_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_restart(ext_args=RESTART_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_rescoring(ext_args=RESCORING_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_mae(ext_args=MAE_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_asterisc_inputs(ext_args=INPUTS_AST_ARGS):
-    main.run_platform(ext_args)
+    main.run_platform_from_yaml(ext_args)
 
 def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     errors = []
     if os.path.exists(output): shutil.rmtree(output, ignore_errors=True)
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = job.folder
     if not os.path.exists(os.path.join(folder, "DataLocal/LigandRotamerLibs/STR.rot.assign")) or not os.path.exists(os.path.join(folder, "DataLocal/LigandRotamerLibs/MG.rot.assign")):
         errors.append("External rotamer flag not working")
@@ -174,7 +174,7 @@ def test_pca(ext_args=PCA_ARGS, output="PCA_result"):
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = job.folder
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
@@ -183,7 +183,7 @@ def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = job.folder
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
@@ -221,7 +221,7 @@ def check_file(folder, filename, values, errors, subdelimiter=None, truncate_dig
 
 def test_gpcr(args=GPCR_ARGS):
     errors = []
-    job = main.run_platform(args)
+    job = main.run_platform_from_yaml(args)
     errors = check_file(job.pele_dir, "pele.conf", GPCR_VALUES, errors)
     input_file = os.path.join(job.inputs_dir, "complex_processed.pdb")
     if not os.path.exists(input_file):
