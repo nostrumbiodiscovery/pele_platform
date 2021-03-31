@@ -356,9 +356,9 @@ class Analysis(object):
             between 0 and 1. Default is 0.01 (i.e. 1%)
         """
         import os
-        from pele_platform.Utilities.Helpers.helpers import check_output_folder
+        from pele_platform.Utilities.Helpers.helpers import check_make_folder
 
-        check_output_folder(path)
+        check_make_folder(path)
 
         # Get clustering object
         clustering, max_coordinates = self._get_clustering(clustering_type, bandwidth, analysis_nclust)

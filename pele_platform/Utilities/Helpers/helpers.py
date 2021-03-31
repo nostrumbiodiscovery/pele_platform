@@ -1,6 +1,7 @@
 import os
 import logging
 import numpy as np
+import shutil
 import sys
 import warnings
 import PPP.global_variables as gv
@@ -349,7 +350,7 @@ def get_suffix(filename, separator="_"):
     return suffix
 
 
-def check_output_folder(output_folder):
+def check_make_folder(output_folder):
     """
     Checks if output folders for plots exists and creates it, if not.
     Parameters
@@ -363,3 +364,19 @@ def check_output_folder(output_folder):
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
+
+
+def check_remove_folder(*output_folders):
+    """
+    Removes the whole folder tree.
+    Parameters
+    ----------
+    output_folders : Union[str, List[str]]
+        Path(s) to folder to be removed.
+    Returns
+    -------
+        None
+    """
+    for folder in output_folders:
+        if os.path.exists(folder):
+            shutil.rmtree(folder)

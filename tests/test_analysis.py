@@ -1,22 +1,24 @@
 import os
 import glob
 import pytest
-import shutil
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
 from pele_platform.analysis import Analysis, DataHandler, Plotter
+from pele_platform.Utilities.Helpers.helpers import check_remove_folder
 from . import test_adaptive as ta
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
-data = "data"
 REPORT_NAME = "report"
 TRAJ_NAME = "trajectory.pdb"
+
 ANALYSIS_ARGS = os.path.join(test_path, "analysis/input.yaml")
 ANALYSIS_FLAGS0 = os.path.join(test_path, "analysis/input_flags0.yaml")
 ANALYSIS_FLAGS = os.path.join(test_path, "analysis/input_flags.yaml")
 ANALYSIS_XTC_ARGS = os.path.join(test_path, "analysis/input_xtc.yaml")
+
+expected_energies = [-8699.17, -8690.68, -8711.55, -8709.73, -8687.3, -8706.14, -8712.07]
 
 
 @pytest.mark.parametrize(("x", "y", "z"), [(4, 5, 6), (5, 6, None)])
@@ -36,8 +38,7 @@ def test_plotter(x, y, z):
         Folder with plots.
     """
     output_folder = "tmp/plots"
-    if os.path.exists(output_folder):
-        shutil.rmtree(output_folder)
+    check_remove_folder(output_folder)
 
     data_handler = DataHandler(
         sim_path=simulation_path,
@@ -62,7 +63,7 @@ def test_plotter(x, y, z):
         (4, [0.879, 2.203, 3.563, 6.624]),
     ],
 )
-def test_top_poses(n_poses, expected_energies):
+def test_generate_top_poses(analysis, n_poses, expected_energies):
     """
     Checks if data_handler extracts the correct number of top poses and associated metrics.
     Returns
@@ -70,15 +71,8 @@ def test_top_poses(n_poses, expected_energies):
         Folder with top poses.
     """
     output_folder = "tmp/top_poses"
-    if os.path.exists(output_folder):
-        shutil.rmtree(output_folder)
+    check_remove_folder(output_folder)
 
-    analysis = Analysis(
-        resname="LIG",
-        chain="Z",
-        simulation_output="../pele_platform/Examples/clustering",
-        skip_initial_structures=False,
-    )
     top_poses = analysis.generate_top_poses(output_folder, n_poses)
     top_poses_rounded = [round(pose, 3) for pose in top_poses]
 
@@ -138,8 +132,7 @@ def test_analysis_flags(yaml_file, n_expected_outputs, expected_files):
     plots_folder = os.path.join(output_folder, "plots")
     top_poses_folder = os.path.join(output_folder, "top_poses", "*pdb")
 
-    if os.path.exists(output_folder):
-        shutil.rmtree(output_folder)
+    check_remove_folder(output_folder)
 
     main.run_platform(yaml_file)
 
@@ -179,7 +172,7 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
     assert len(clusters) == expected_clusters
 
     # Clean up
-    shutil.rmtree(results_folder)
+    check_remove_folder(results_folder)
 
 
 @pytest.mark.parametrize(
@@ -191,7 +184,7 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
         ("gaussianmixture", 1, 2),
     ],
 )
-def test_clustering_methods(method, bandwidth, n_clusters):
+def test_generate_clusters(analysis, method, bandwidth, n_clusters):
     """
     Checks if built-in clustering methods are producing expected number of clusters.
 
@@ -210,21 +203,13 @@ def test_clustering_methods(method, bandwidth, n_clusters):
     """
     working_folder = "clustering_method"
     results = os.path.join(working_folder, "*pdb")
+    check_remove_folder(working_folder)
 
-    if os.path.exists(working_folder):
-        shutil.rmtree(working_folder)
-
-    analysis = Analysis(
-        resname="LIG", chain="Z",
-        simulation_output="../pele_platform/Examples/clustering",
-        skip_initial_structures=False)
-    analysis.generate_clusters(working_folder, method,
-                               bandwidth=bandwidth,
-                               analysis_nclust=n_clusters)
+    analysis.generate_clusters(working_folder, method, bandwidth=bandwidth, analysis_nclust=n_clusters)
     assert len(glob.glob(results)) == n_clusters
 
 
-def test_analysis_api():
+def test_api_analysis_generation(analysis):
     """
     Runs full analysis workflow (with GMM clustering).
     Returns
@@ -232,14 +217,9 @@ def test_analysis_api():
         Returns a directory with top_poses, clusters and plots.
     """
     working_folder = "full_analysis"
-    output = "../pele_platform/Examples/clustering"
+    check_remove_folder(working_folder)
     n_clusts = 3
-
-    analysis = Analysis(resname="LIG", chain="Z",
-                        simulation_output=output,
-                        skip_initial_structures=False)
-    analysis.generate(working_folder, "gaussianmixture",
-                      analysis_nclust=n_clusts)
+    analysis.generate(working_folder, "gaussianmixture", analysis_nclust=n_clusts)
 
     # Check if reports exist
     assert os.path.exists(os.path.join(working_folder, "summary.pdf"))
@@ -287,8 +267,74 @@ def test_check_existing_directory(generate_folders):
     assert new_path == "results_3"
 
     folders = glob.glob("results*")
-    for folder in folders:
-        shutil.rmtree(folder)
+    check_remove_folder(*folders)
+
+
+@pytest.mark.parametrize("max_coordinates", [1, 3])
+def test_extract_and_filter_coordinates(analysis, max_coordinates):
+    """
+    Checks coordinates and dataframe extraction and its subsequent filtering.
+    Parameters
+    ----------
+    analysis : Analysis
+        Analysis object created in a fixture.
+    max_coordinates : int
+        Number of coordinates to extract per ligand.
+    Returns
+    -------
+
+    """
+    coordinates, dataframe = analysis._extract_coordinates(max_coordinates)
+    coordinates_filtered, _, _ = analysis._filter_coordinates(coordinates, dataframe, 0.5)
+
+    assert len(coordinates) == 7
+    assert coordinates.shape == (7, max_coordinates, 3)  # 7 poses, n atoms, 3 coordinates
+
+    assert len(dataframe) == 7
+    assert dataframe["currentEnergy"].tolist().sort() == expected_energies.sort()
+    assert len(coordinates_filtered) == 4
+
+
+def test_extract_poses(analysis):
+    """
+    Tests poses extraction from dataframe.
+    Parameters
+    ----------
+    analysis : Analysis object
+        Created in analysis fixture.
+    Returns
+    -------
+        Energy values for extracted poses and a folder with PDB files.
+    """
+
+    output = "extracted_poses"
+    check_remove_folder(output)
+
+    values = analysis._extract_poses(analysis._dataframe, "currentEnergy", output)
+    poses = glob.glob(os.path.join(output, "*pdb"))
+
+    assert values.sort() == expected_energies.sort()
+    assert len(poses) == 7
+
+
+@pytest.mark.parametrize(("filter", "threshold", "expected_length"),
+                         [(True, 0.5, 1),
+                          (False, None, 7)])
+def test_get_dataframe(analysis, filter, threshold, expected_length):
+    """
+    Tests dataframe filtering based on highest energy. Filtering happens twice, for binding energy and total energy,
+    therefore a threshold of 50% will only return one pose out of 7.
+    Parameters
+    ----------
+    analysis : Analysis
+        Analysis object created in a fixture.
+    Returns
+    -------
+        Filtered dataframe.
+    """
+
+    df = analysis.get_dataframe(filter=filter, threshold=threshold)
+    assert len(df) == expected_length
 
 
 @pytest.fixture
@@ -305,3 +351,20 @@ def generate_folders():
 
     for folder in folders:
         os.mkdir(folder)
+
+
+@pytest.fixture
+def analysis():
+    """
+    Creates Analysis object to use in other tests.
+    Returns
+    -------
+        Analysis object.
+    """
+    output = "../pele_platform/Examples/clustering"
+
+    analysis = Analysis(resname="LIG", chain="Z",
+                        simulation_output=output,
+                        skip_initial_structures=False)
+
+    return analysis
