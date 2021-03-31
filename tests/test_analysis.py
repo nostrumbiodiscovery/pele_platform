@@ -2,9 +2,11 @@ import os
 import glob
 import pytest
 import shutil
+
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
 from pele_platform.analysis import Analysis, DataHandler, Plotter
+from . import test_adaptive as ta
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
@@ -232,7 +234,6 @@ def test_analysis_api():
                       analysis_nclust=n_clusts)
 
     # Check if reports exist
-    assert os.path.exists(os.path.join(working_folder, "data.csv"))
     assert os.path.exists(os.path.join(working_folder, "summary.pdf"))
 
     # Check plots
@@ -246,6 +247,11 @@ def test_analysis_api():
     # Check clusters
     clusters = glob.glob(os.path.join(working_folder, "clusters", "*pdb"))
     assert len(clusters) == n_clusts
+
+    # Check cluster representatives CSV by testing for the presence of a representative line
+    errors = ta.check_file(os.path.join(working_folder, "clusters"), "top_selections.csv",
+                           "1,B,../pele_platform/Examples/clustering/0/trajectory_3.pdb,0", [])
+    assert not errors
 
     # Check if data.csv exists and is not empty
     data_csv = os.path.join(working_folder, "data.csv")
