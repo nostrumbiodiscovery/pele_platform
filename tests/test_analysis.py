@@ -270,3 +270,38 @@ def test_analysis_api():
         assert len(lines) == 8
         assert lines[0] == "Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,sasaLig,epoch,trajectory," \
                            "Cluster\n"
+
+
+def test_check_existing_directory(generate_folders):
+    """
+    Checks if tester of existing dir
+    Parameters
+    ----------
+    generate_folders : pytest.fixture
+        Pytest fixture that generates "results" folders for testing.
+    Returns
+    -------
+        A new "results" folder.
+    """
+    new_path = Analysis._check_existing_directory("results")
+    assert new_path == "results_3"
+
+    folders = glob.glob("results*")
+    for folder in folders:
+        shutil.rmtree(folder)
+
+
+@pytest.fixture
+def generate_folders():
+    """
+    Generates a few random folders to test _check_existing_directory.
+    Returns
+    -------
+        Three "results" folders.
+    """
+
+    folder_template = "results_{}"
+    folders = [folder_template.format(i) for i in range(3)] + ["results"]
+
+    for folder in folders:
+        os.mkdir(folder)

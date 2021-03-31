@@ -209,7 +209,7 @@ class Analysis(object):
         """
         import os
 
-        self._directory_cleanup(path)
+        self._check_existing_directory(path)
 
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
@@ -231,7 +231,6 @@ class Analysis(object):
 
         # Generate analysis results
         self.generate_plots(plots_folder)
-        # TODO generate top poses should depend on the n_poses flag (or is it called poses?)
         best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
@@ -1122,10 +1121,23 @@ class Analysis(object):
         top_selections_data.to_csv(file_name, index=False)
 
     @staticmethod
-    def _directory_cleanup(path):
+    def _check_existing_directory(path):
+        """
+        Checks if the results folder exists and enumerates a new folder name to avoid overwriting the analysis.
+        Parameters
+        ----------
+        path : str
+            Path to analysis working folder.
+        Returns
+        -------
+            New working folder for analysis, if 'results' already exists, otherwise returns the same folder.
+        """
         import os
-        import shutil
 
-        if os.path.exists(path):
-            shutil.rmtree(path)
-            print("Removing existing {} directory.".format(path))
+        counter = 2
+        while os.path.exists(path):
+            counter += 1
+            folder_name = "{}_{}".format(os.path.basename(path), counter)
+            path = os.path.join(os.path.dirname(path), folder_name)
+
+        return path
