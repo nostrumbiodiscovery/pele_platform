@@ -7,6 +7,7 @@ from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_pa
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
+from pele_platform.Adaptive.interaction_restrictions import InteractionRestrictionsBuilder
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
 from pele_platform.Utilities.Parameters.SimulationParams.site_finder import site_finder
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
@@ -38,6 +39,7 @@ class SimulationParams(
         self.output_params(args)
         self.analysis_params(args)
         self.constraints_params(args)
+        self.interaction_restrictions_params(args)
 
         # Create all simulation types (could be more efficient --> chnage in future)
         super().generate_msm_params(args)
@@ -525,3 +527,16 @@ class SimulationParams(
                     flag, self.simulation_params.get(flag, defaults[flag])
                 )
             setattr(self, flag, flag_value)
+
+    def interaction_restrictions_params(self, args):
+        """
+        Sets parameters for interaction restrictions.
+        """
+        if args.interaction_restrictions:
+            restrictions = InteractionRestrictionsBuilder()
+            restrictions.parse_interaction_restrictions(self.system, args.interaction_restrictions)
+            self.met_interaction_restrictions = restrictions.metrics_to_json()
+            self.interaction_restrictions = restrictions.conditions_to_json()
+        else:
+            self.met_interaction_restrictions = ""
+            self.interaction_restrictions = ""
