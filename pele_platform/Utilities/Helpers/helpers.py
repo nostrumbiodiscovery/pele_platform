@@ -86,8 +86,8 @@ def get_directory_new_index(pele_dir):
     split_name = folder_name.split("_")
 
     if (len(split_name) < 2 or len(split_name) > 3
-            or split_name[1] != 'Pele' or not split_name[-1].isdigit()):
-        raise ValueError('Invalid PELE directory {}. '.format(split_name)
+            or split_name[1] != 'Pele'):
+        raise ValueError('Invalid PELE directory {}. '.format(folder_name)
                          + 'Its format is unknown')
 
     original_dir = split_name[0]
