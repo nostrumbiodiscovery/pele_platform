@@ -130,7 +130,7 @@ def get_next_peledir(pele_dir):
     if os.path.isdir(pele_dir):
         new_pele_dir = "{}_Pele_{}".format(original_dir, new_index)
         new_pele_dir = get_next_peledir(new_pele_dir)
-        return new_pele_dir
+        return os.path.join(os.path.dirname(pele_dir), new_pele_dir)
     else:
         return pele_dir
 
