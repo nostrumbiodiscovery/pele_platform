@@ -16,7 +16,7 @@ def test_mutagenesis_production():
     TODO: This is a very primitive implementation, needs a lot more testing!
     """
     yaml = os.path.join(test_path, "saturated_mutagenesis.yaml")
-    all_jobs = main.run_platform(yaml)
+    all_jobs = main.run_platform_from_yaml(yaml)
 
     # List of mutated PDBs expected in each job
     expected_pdbs = [('T454A_processed.pdb', 'T454D_processed.pdb'),
@@ -55,7 +55,7 @@ def test_mutagenesis_restart():
         shutil.rmtree(pele_dir)
     shutil.copytree(restart_folder, pele_dir)
 
-    all_jobs = main.run_platform(yaml)
+    all_jobs = main.run_platform_from_yaml(yaml)
     last_job = all_jobs[-1]
     mutation_folder = os.path.splitext(os.path.basename(last_job.input[0]))[0]
     restart_trajectories = glob.glob(os.path.join(last_job.pele_dir, last_job.output, mutation_folder, "traj*"))

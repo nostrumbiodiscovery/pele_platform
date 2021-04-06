@@ -431,6 +431,10 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
 
+- **max_top_clusters**: Maximum number of clusters to be selected. Default = 8.
+
+- **max_top_poses**: Maximum number of top poses to be retrieved. Default = 100.
+
 ..  code-block:: yaml
 
     only_analysis: true

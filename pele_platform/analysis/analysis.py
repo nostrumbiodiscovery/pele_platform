@@ -2,7 +2,6 @@
 This module manages the analysis toolkit of the platform.
 """
 
-
 __all__ = ["Analysis"]
 
 
@@ -181,7 +180,7 @@ class Analysis(object):
 
     def generate(self, path, clustering_type='meanshift',
                  bandwidth=2.5, analysis_nclust=10,
-                 max_top_clusters=8, min_population=0.01):
+                 max_top_clusters=8, min_population=0.01, max_top_poses=100):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -205,10 +204,12 @@ class Analysis(object):
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
+        max_top_poses : int
+            Number of top poses to retrieve. Default = 100.
         """
         import os
 
-        self._directory_cleanup(path)
+        path = self._check_existing_directory(path)
 
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
@@ -230,8 +231,7 @@ class Analysis(object):
 
         # Generate analysis results
         self.generate_plots(plots_folder)
-        # TODO generate top poses should depend on the n_poses flag (or is it called poses?)
-        best_metrics = self.generate_top_poses(top_poses_folder)
+        best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
                                max_top_clusters, min_population)
@@ -298,7 +298,7 @@ class Analysis(object):
                 plotter.plot_kde(metric, i_energy, output_folder=path,
                                  kde_structs=self.kde_structs)
 
-    def generate_top_poses(self, path, n_poses=100):
+    def generate_top_poses(self, path, n_poses):
         """
         It selects and saves the top poses.
 
@@ -356,14 +356,12 @@ class Analysis(object):
             between 0 and 1. Default is 0.01 (i.e. 1%)
         """
         import os
-        from pele_platform.Utilities.Helpers.helpers import check_output_folder
+        from pele_platform.Utilities.Helpers.helpers import check_make_folder
 
-        check_output_folder(path)
+        check_make_folder(path)
 
         # Get clustering object
-        clustering, max_coordinates = self._get_clustering(clustering_type,
-                                                           bandwidth,
-                                                           analysis_nclust)
+        clustering, max_coordinates = self._get_clustering(clustering_type, bandwidth, analysis_nclust)
 
         # Extract coordinates
         coordinates, dataframe = self._extract_coordinates(max_coordinates)
@@ -394,6 +392,7 @@ class Analysis(object):
             return
 
         print(f"Retrieve best cluster poses")
+
         cluster_subset, cluster_summary = self._select_top_clusters(
             clusters, cluster_summary,
             max_clusters_to_select=max_top_clusters,
@@ -632,7 +631,6 @@ class Analysis(object):
         from collections import defaultdict
         import pandas as pd
         import numpy as np
-        from matplotlib import pyplot as plt
 
         metrics = self._data_handler.get_metrics()
 
@@ -723,7 +721,6 @@ class Analysis(object):
             analyzed. It is updated with an extra column containing
             cluster names of top clusters
         """
-        import os
         from pele_platform.analysis.clustering import get_cluster_label
 
         metrics = list(cluster_summary.columns)
@@ -780,7 +777,6 @@ class Analysis(object):
         import os
         from collections import defaultdict
         from matplotlib import pyplot as plt
-        import pandas as pd
         from pele_platform.analysis.clustering import get_cluster_label
 
         if not os.path.exists(path):
@@ -1026,6 +1022,7 @@ class Analysis(object):
         import os
         from collections import defaultdict
         import numpy as np
+
         from pele_platform.Utilities.Helpers import get_suffix
         from pele_platform.Utilities.Helpers.bestStructs import (
             extract_snapshot_from_pdb,
@@ -1056,16 +1053,17 @@ class Analysis(object):
 
             energetic_diff = np.abs(percentiles_per_cluster[cluster] - energy)
             if cluster not in representative_structures:
-                representative_structures[cluster] = (trajectory, step)
+                representative_structures[cluster] = [trajectory, step]
                 lowest_energetic_diff[cluster] = energetic_diff
 
             elif lowest_energetic_diff[cluster] > energetic_diff:
-                representative_structures[cluster] = (trajectory, step)
+                representative_structures[cluster] = [trajectory, step]
                 lowest_energetic_diff[cluster] = energetic_diff
 
-        for cluster, (trajectory, step) in representative_structures.items():
+        for cluster, [trajectory, step] in representative_structures.items():
             if not self.topology:
                 try:
+                    label = get_cluster_label(cluster)
                     extract_snapshot_from_pdb(
                         path=trajectory,
                         f_id=get_suffix(os.path.splitext(trajectory)[0]),
@@ -1073,14 +1071,14 @@ class Analysis(object):
                         topology=self.topology,
                         step=step,
                         out_freq=1,
-                        f_out="cluster_{}.pdb".format(
-                            get_cluster_label(cluster)))
+                        f_out="cluster_{}.pdb".format(label))
                 except UnicodeDecodeError:
                     raise Exception("XTC output being treated as PDB. " +
                                     "Please specify XTC with the next " +
                                     "flag. traj: 'trajectory_name.xtc' " +
                                     "in the input.yaml")
             else:
+                label = get_cluster_label(cluster)
                 extract_snapshot_from_xtc(
                     path=trajectory,
                     f_id=get_suffix(os.path.splitext(trajectory)[0]),
@@ -1088,12 +1086,89 @@ class Analysis(object):
                     topology=self.topology,
                     step=step,
                     out_freq=1,
-                    f_out="cluster_{}.pdb".format(get_cluster_label(cluster)))
+                    f_out="cluster_{}.pdb".format(label))
 
-    def _directory_cleanup(self, path):
+            representative_structures[cluster].append(label)
+
+        self._save_top_selections(representative_structures, path)
+
+    def _save_top_selections(self, dictionary, path):
+        """
+        It saves information about cluster representatives to a CSV file.
+
+        Parameters
+        ----------
+        dictionary : dict
+            Dictionary where cluster ID is the key and value is a list
+            with [trajectory, step, cluster label]
+        path : str
+            The path where the CSV file will be saved at
+        """
         import os
-        import shutil
+        import pandas as pd
 
-        if os.path.exists(path):
-            shutil.rmtree(path)
-        print("Removing existing {} directory.".format(path))
+        cluster_ids, steps, trajectories, labels = ([] for _ in range(4))
+
+        for cluster_id, values in dictionary.items():
+            trajectory, step, label = values
+            cluster_ids.append(cluster_id)
+            trajectories.append(trajectory)
+            steps.append(step)
+            labels.append(label)
+
+        file_name = os.path.join(path, "top_selections.csv")
+        top_selections_data = pd.DataFrame({"Cluster ID": cluster_ids,
+                                            "Cluster label": labels,
+                                            "Trajectory": trajectories,
+                                            "Step": steps})
+        top_selections_data.to_csv(file_name, index=False)
+
+    @staticmethod
+    def _check_existing_directory(path):
+        """
+        It checks if the results folder exists and enumerates a new folder
+        name to avoid overwriting the analysis.
+
+        Parameters
+        ----------
+        path : str
+            Path to analysis working folder
+
+        Returns
+        -------
+            New working folder for analysis, if 'results' already exists,
+            otherwise returns the same folder
+        """
+        import os
+
+        # If current path does not exist, we are done
+        if not os.path.exists(path):
+            return path
+
+        # Otherwise, suggest new path
+        dir_name = os.path.dirname(path)
+        folder_name = os.path.basename(path)
+        chunks = folder_name.split('_')
+        last_chunk = chunks[-1]
+
+        # If last chunk is digit, enumerate starting from it
+        if last_chunk.isdigit():
+            new_id = int(last_chunk) + 1
+            folder_name = '_'.join(chunks[:-1])
+        else:
+            new_id = 1
+            folder_name = '_'.join(chunks)
+
+        # Add new id to folder name
+        new_folder_name = folder_name + '_' + str(new_id)
+
+        # Concatenate old directory with new folder name
+        new_path = os.path.join(dir_name, new_folder_name)
+
+        # Iterate until finding a non existing path
+        while os.path.exists(new_path):
+            new_id += 1
+            new_folder_name = folder_name + '_' + str(new_id)
+            new_path = os.path.join(dir_name, new_folder_name)
+
+        return new_path

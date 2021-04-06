@@ -391,7 +391,7 @@ class DataHandler(object):
             return None, None
 
         # Load topology
-        topology = mdtraj.load()
+        topology = mdtraj.load(topology)
 
         # Select atom subset
         if remove_hydrogen:
@@ -516,21 +516,7 @@ class DataHandler(object):
             with Pool(n_proc) as pool:
                 coordinates = pool.map(parallel_function, trajectories)
 
-        # TODO trajectories might not need to be removed here, we are already
-        # filtering them afterwards, when creating the ordered dataframe
-        # Remove possible empty arrays
-        coord_to_remove = []
-        traj_to_remove = []
-        for coordinates_array, trajectory in zip(coordinates, trajectories):
-            if len(coordinates_array) == 0:
-                coord_to_remove.append(coordinates_array)
-                traj_to_remove.append(trajectory)
-        for coord in coord_to_remove:
-            coordinates.remove(coord)
-        for traj in traj_to_remove:
-            trajectories.remove(traj)
-
-        # In case we removed all of them
+        # In case we no coordinates were extracted
         if len(coordinates) == 0:
             return None, None
 

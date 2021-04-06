@@ -4,7 +4,7 @@ coming from PELE reports.
 """
 import os
 
-from pele_platform.Utilities.Helpers.helpers import check_output_folder
+from pele_platform.Utilities.Helpers.helpers import check_make_folder
 from pele_platform.analysis import DataHandler
 from pele_platform.constants import constants
 
@@ -56,7 +56,7 @@ class Plotter(object):
         """
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
-        check_output_folder(output_folder)
+        check_make_folder(output_folder)
 
         # Initialize a data handler from the current dataframe and get column names
         metric_to_x, metric_to_y, metric_to_z = self._get_column_names(
@@ -128,7 +128,7 @@ class Plotter(object):
         """
         import seaborn as sb
 
-        check_output_folder(output_folder)
+        check_make_folder(output_folder)
         metric_to_x, metric_to_y, metric_to_z = \
             self._get_column_names(metric_to_x, metric_to_y)
 
@@ -176,7 +176,7 @@ class Plotter(object):
         from pele_platform.analysis.clustering import get_cluster_label
         from pele_platform.Utilities.Helpers.helpers import backup_logger
 
-        check_output_folder(output_folder)
+        check_make_folder(output_folder)
 
         # Initialize a data handler from the current dataframe
         metric_to_x, metric_to_y, metric_to_z = \

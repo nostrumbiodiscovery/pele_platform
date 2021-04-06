@@ -1,6 +1,7 @@
 import os
 import logging
 import numpy as np
+import shutil
 import sys
 import warnings
 import PPP.global_variables as gv
@@ -24,31 +25,32 @@ def silentremove(*args, **kwargs):
 
 def create_dir(base_dir, extension=None):
     """
-    Class Method to manage
-    directory creation only if that
-    ones doesn't exist
+    It creates a directory only if that one doesn't exist.
 
-    Location:
-        base_dir+extension
-        or base_dir if extension is None
+    Parameters
+    ----------
+    base_dir : str
+        The base directory to remove
+    extension : str
+        The specific extension to remove, if any. Default is None
     """
     if extension:
         path = os.path.join(base_dir, extension)
         if os.path.isdir(path):
-            warnings.warn("Directory {} already exists.".format(path), RuntimeWarning)
+            warnings.warn("Directory {} already exists.".format(path),
+                          RuntimeWarning)
         else:
             os.makedirs(path)
     else:
         if os.path.isdir(base_dir):
-            warnings.warn(
-                "Directory {} already exists.".format(base_dir), RuntimeWarning
-            )
+            warnings.warn("Directory {} already exists.".format(base_dir),
+                          RuntimeWarning)
         else:
             os.makedirs(base_dir)
 
 
 class cd:
-    """Context manager for changing the current working directory"""
+    """Context manager for changing the current working directory."""
 
     def __init__(self, newPath):
         self.newPath = os.path.expanduser(newPath)
@@ -61,7 +63,47 @@ class cd:
         os.chdir(self.savedPath)
 
 
-def is_repeated(pele_dir):
+def get_directory_new_index(pele_dir):
+    """
+    It gets the new index of the next PELE directory to be created,
+    for example given LIG_Pele_11 will return new_index = 12 and
+    original_dir = "LIG".
+
+    Parameters
+    ----------
+    pele_dir : str
+        The PELE directory, e.g. LIG_Pele_1
+
+    Returns
+    -------
+    new_index : int
+        The index corresponding to the next PELE directory
+    old_index : int
+        The index corresponding to the current PELE directory
+    original_dir : str
+        The original PELE directory (usually, it matches with the
+        residue name)
+    """
+    folder_name = os.path.basename(pele_dir)
+    split_name = folder_name.split("_")
+
+    if (len(split_name) < 2 or len(split_name) > 3
+            or split_name[1] != 'Pele'):
+        raise ValueError('Invalid PELE directory {}. '.format(folder_name)
+                         + 'Its format is unknown')
+
+    original_dir = split_name[0]
+
+    if split_name[-1].isdigit():
+        new_index = split_name[-1]
+        new_index = int(new_index) + 1
+    else:
+        new_index = 1
+
+    return new_index, new_index - 1, original_dir
+
+
+def get_next_peledir(pele_dir):
     """
     Given a PELE directory it will return a new directory with a new
     suffix. The suffix is chosen with the following criterion:
@@ -70,9 +112,6 @@ def is_repeated(pele_dir):
        it will return NOL_Pele_1.
      - In case that NOL_Pele_1 folder already exists in the working directory,
        it will return NOL_Pele_2.
-
-    .. todo ::
-        * The name of this function is misleading.
 
     Parameters
     ----------
@@ -86,31 +125,17 @@ def is_repeated(pele_dir):
         The new PELE directory that does not match with any other directory
         previously created
     """
+    new_index, _, original_dir = get_directory_new_index(pele_dir)
 
-    original_dir = None
-    split_dir = pele_dir.split("_")
-    for chunk in split_dir:
-        if chunk != "Pele":
-            if original_dir:
-                original_dir = "{}_{}".format(original_dir, chunk)
-            else:
-                original_dir = chunk
-        else:
-            break
-    if split_dir[-1].isdigit():
-        i = split_dir[-1]
-        i = int(i) + 1
-    else:
-        i = 1
     if os.path.isdir(pele_dir):
-        new_pele_dir = "{}_Pele_{}".format(original_dir, i)
-        new_pele_dir = is_repeated(new_pele_dir)
-        return new_pele_dir
+        new_pele_dir = "{}_Pele_{}".format(original_dir, new_index)
+        new_pele_dir = get_next_peledir(new_pele_dir)
+        return os.path.join(os.path.dirname(pele_dir), new_pele_dir)
     else:
         return pele_dir
 
 
-def is_last(pele_dir):
+def get_latest_peledir(pele_dir):
     """
     Given a PELE directory it will return the name of the directory that
     looks newer. It employs the following criterion:
@@ -120,9 +145,6 @@ def is_last(pele_dir):
        has the highest suffix index.
      - In case no directory named NOL_Pele is found, the original name
        will be employed.
-
-    .. todo ::
-        * The name of this function is misleading.
 
     Parameters
     ----------
@@ -137,29 +159,15 @@ def is_last(pele_dir):
         directory according to the original name that is supplied
     """
 
-    original_dir = None
-    split_dir = pele_dir.split("_")
-    for chunk in split_dir:
-        if chunk != "Pele":
-            if original_dir:
-                original_dir = "{}_{}".format(original_dir, chunk)
-            else:
-                original_dir = chunk
-        else:
-            break
-    if split_dir[-1].isdigit():
-        i = split_dir[-1]
-        i = int(i) + 1
-    else:
-        i = 1
+    _, old_index, original_dir = get_directory_new_index(pele_dir)
 
     if os.path.isdir(pele_dir):
-        new_pele_dir = "{}_Pele_{}".format(original_dir, i)
-        if not os.path.isdir(new_pele_dir):
+        latest_pele_dir = "{}_Pele_{}".format(original_dir, old_index)
+        if not os.path.isdir(latest_pele_dir):
             return pele_dir
         else:
-            new_pele_dir = is_last(new_pele_dir)
-            return new_pele_dir
+            latest_pele_dir = get_latest_peledir(latest_pele_dir)
+            return latest_pele_dir
     else:
         return pele_dir
 
@@ -349,17 +357,29 @@ def get_suffix(filename, separator="_"):
     return suffix
 
 
-def check_output_folder(output_folder):
+def check_make_folder(output_folder):
     """
     Checks if output folders for plots exists and creates it, if not.
+
     Parameters
     ----------
     output_folder : str
-        Name of the desired output folder.
-    Returns
-    -------
-        Creates an output folder
+        Name of the desired output folder
     """
 
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
+
+
+def check_remove_folder(*output_folders):
+    """
+    Removes the whole folder tree.
+
+    Parameters
+    ----------
+    output_folders : Union[str, List[str]]
+        Path(s) to folder to be removed
+    """
+    for folder in output_folders:
+        if os.path.exists(folder):
+            shutil.rmtree(folder)

@@ -71,7 +71,7 @@ POLARISATION = ["    1   1.6445   0.8750  0.200000 0.9545   0.8222   0.005000000
 def test_metal_constraints(ext_args=METAL_CONSTR_ARGS):
     # checks metal constraints without any flags
     errors = []
-    job, _ = main.run_platform(ext_args)
+    job, _ = main.run_platform_from_yaml(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
     assert not errors
 
@@ -79,7 +79,7 @@ def test_metal_constraints(ext_args=METAL_CONSTR_ARGS):
 def test_no_metal_constraints(ext_args=NO_METAL_CONSTR_ARGS):
     # checks no_metal_constraints flag
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
     assert errors 
 
@@ -88,7 +88,7 @@ def test_permissive_constraints(passed=PASS_PERMISSIVE_METAL_CONSTR_ARGS, failed
     
     # should add constraints around the metal
     errors = []
-    job = main.run_platform(passed)
+    job = main.run_platform_from_yaml(passed)
     errors = tk.check_file(job.pele_dir, "pele.conf", PASS_METAL_CONSTR, errors)
     assert not errors
 
@@ -97,13 +97,13 @@ def test_all_metal_constraints(ext_args=ALL_METAL_CONSTR_ARGS, ext_args_permissi
 
     # checks constrain_all_metals -> should add whatever atoms in range
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", ALL_METAL_CONSTR, errors)
     assert not errors
 
     # same system, but permissive -> should fail due to lack of geometry
     try:
-        job = main.run_platform(ext_args_permissive)
+        job = main.run_platform_from_yaml(ext_args_permissive)
     except ce.NoGeometryAroundMetal:
         assert ce.NoGeometryAroundMetal
         return
@@ -113,7 +113,7 @@ def test_all_metal_constraints(ext_args=ALL_METAL_CONSTR_ARGS, ext_args_permissi
 def test_square_planar(ext_args=SQUARE_PLANAR_ARGS):
                                                                                                                                                
     errors = []                                                                                                                                                                         
-    job = main.run_platform(ext_args)                                                                                                                                                   
+    job = main.run_platform_from_yaml(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", SQUARE_PLANAR, errors)
     assert not errors 
 
@@ -121,7 +121,7 @@ def test_square_planar(ext_args=SQUARE_PLANAR_ARGS):
 def test_tetrahedral(ext_args=TETRAHEDRAL_ARGS):                                                                                                                                    
                                                                                                                                                                                             
     errors = []
-    job = main.run_platform(ext_args)                                                                                                                                                   
+    job = main.run_platform_from_yaml(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", TETRAHEDRAL, errors)                                                                                                            
     assert not errors
 
@@ -129,7 +129,7 @@ def test_tetrahedral(ext_args=TETRAHEDRAL_ARGS):
 def test_ignore_external(ext_args=IGNORE_ARGS):
 
     metal_lines = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     path = os.path.join(job.pele_dir, "pele.conf")
     
     with open(path, "r") as file:
@@ -144,19 +144,19 @@ def test_ignore_external(ext_args=IGNORE_ARGS):
 def test_polarisation(ext_args_true=POLARISATION_ARGS, ext_args_false=SQUARE_PLANAR_ARGS):
 
     # no polarisation
-    job1 = main.run_platform(ext_args_false)
+    job1 = main.run_platform_from_yaml(ext_args_false)
     mg_template_file_false = glob.glob(os.path.join(job1.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz"))
     assert not mg_template_file_false
 
     # polarisation with factor 10
     errors = []
-    job2 = main.run_platform(ext_args_true)
+    job2 = main.run_platform_from_yaml(ext_args_true)
     errors = tk.check_file(job2.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz", POLARISATION, errors)
     assert not errors
 
 #def test_K_dist(ext_args=K_ARGS):
 #
 #    errors = []
-#    job = main.run_platform(ext_args)                                                                                                                                                   
+#    job = main.run_platform_from_yaml(ext_args)
 #    errors = tk.check_file(job.pele_dir, "pele.conf", K_CONSTR, errors)                                                                                                              
 #    assert not errors 
