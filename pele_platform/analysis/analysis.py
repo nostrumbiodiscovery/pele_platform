@@ -1154,15 +1154,21 @@ class Analysis(object):
         # If last chunk is digit, enumerate starting from it
         if last_chunk.isdigit():
             new_id = int(last_chunk) + 1
-            new_folder_name = '_'.join(chunks[:-1])
+            folder_name = '_'.join(chunks[:-1])
         else:
             new_id = 1
-            new_folder_name = '_'.join(chunks)
+            folder_name = '_'.join(chunks)
 
         # Add new id to folder name
-        new_folder_name += '_' + str(new_id)
+        new_folder_name = folder_name + '_' + str(new_id)
 
         # Concatenate old directory with new folder name
         new_path = os.path.join(dir_name, new_folder_name)
+
+        # Iterate until finding a non existing path
+        while os.path.exists(new_path):
+            new_id += 1
+            new_folder_name = folder_name + '_' + str(new_id)
+            new_path = os.path.join(dir_name, new_folder_name)
 
         return new_path
