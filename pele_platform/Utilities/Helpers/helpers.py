@@ -78,6 +78,8 @@ def get_directory_new_index(pele_dir):
     -------
     new_index : int
         The index corresponding to the next PELE directory
+    old_index : int
+        The index corresponding to the current PELE directory
     original_dir : str
         The original PELE directory (usually, it matches with the
         residue name)
@@ -98,7 +100,7 @@ def get_directory_new_index(pele_dir):
     else:
         new_index = 1
 
-    return new_index, original_dir
+    return new_index, old_index, original_dir
 
 
 def get_next_peledir(pele_dir):
@@ -123,7 +125,7 @@ def get_next_peledir(pele_dir):
         The new PELE directory that does not match with any other directory
         previously created
     """
-    new_index, original_dir = get_directory_new_index(pele_dir)
+    new_index, _, original_dir = get_directory_new_index(pele_dir)
 
     if os.path.isdir(pele_dir):
         new_pele_dir = "{}_Pele_{}".format(original_dir, new_index)
@@ -157,15 +159,15 @@ def get_latest_peledir(pele_dir):
         directory according to the original name that is supplied
     """
 
-    new_index, original_dir = get_directory_new_index(pele_dir)
+    _, old_index, original_dir = get_directory_new_index(pele_dir)
 
     if os.path.isdir(pele_dir):
-        new_pele_dir = "{}_Pele_{}".format(original_dir, new_index)
-        if not os.path.isdir(new_pele_dir):
+        latest_pele_dir = "{}_Pele_{}".format(original_dir, old_index)
+        if not os.path.isdir(latest_pele_dir):
             return pele_dir
         else:
-            new_pele_dir = get_latest_peledir(new_pele_dir)
-            return new_pele_dir
+            latest_pele_dir = get_latest_peledir(latest_pele_dir)
+            return latest_pele_dir
     else:
         return pele_dir
 
