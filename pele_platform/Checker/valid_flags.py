@@ -144,6 +144,7 @@ VALID_FLAGS_PLATFORM = {
     "schrodinger": "schrodinger",
     "no_check": "no_check",
     "frag_core": "frag_core",
+    "frag_core_atom": "frag_core_atom",
     "frag_input": "frag_input",
     "frag_ligands": "frag_ligands",
     "growing_steps": "growing_steps",
