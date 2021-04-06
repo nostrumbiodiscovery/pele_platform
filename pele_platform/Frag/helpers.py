@@ -16,20 +16,25 @@ def _search_core_fragment_linker(ligand,
     Parameters
     ----------
     ligand : RDKit molecule object
+             Ligand to grow during the simulation.
 
     ligand_core : RDKit molecule object
-
+                  Common structure of each grown ligand.
     result : int
+             Index to extract core atoms from the substructure search.
 
     check_symmetry : bool
 
     Returns
     -------
     atom_core_idx : int
+                    Atom of the core attached to the fragment.
 
     atoms_core : tuple
+                 Common atoms from original ligand and grown ligand.
 
     atom_fragment : int
+                    Atom of the fragment attached to the core.
 
     Raises
     ------
@@ -72,12 +77,16 @@ def _build_fragment_from_complex(complex,
     Parameters
     ----------
     complex : str
+              Path of PDB file with protein-ligand complex.
 
     residue : str
+              Residue name.
 
     ligand : RDKit molecule object
+             Ligand to grow during the simulation.
 
     ligand_core : RDKit molecule object
+                  Common structure of each grown ligand.
 
     result : int
 
@@ -88,16 +97,22 @@ def _build_fragment_from_complex(complex,
     Returns
     -------
     fragment : RDKit molecule object
+               Grown ligand with deleted core atoms.
 
     old_atoms : list
+                Idx for each atom of grown ligand without core.
 
     hydrogen_core : pele_platform.Frag.atoms.Atom
+                    Hydrogen core attached to linking atom.
 
     atom_core : pele_platform.Frag.atoms.Atom
+                Atom object of the hydrogen core atom attached to linking atom.
 
     atom_fragment : int
+                    Atom of the fragment attached to the core.
 
     mapping : dict
+              Mapping of Idx for old atoms and full fragment atoms.
 
     correct : bool
 
