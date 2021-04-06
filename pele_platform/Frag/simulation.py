@@ -9,7 +9,7 @@ import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
 import frag_pele.main as frag
-
+import sys
 
 class FragRunner(object):
 
@@ -184,7 +184,7 @@ class FragRunner(object):
         fragment, old_atoms, hydrogen_core, atom_core, atom_frag, \
         mapping, correct = hp._build_fragment_from_complex(
             params.core, params.residue, ligand, ligand_core,
-            result, substructure, symmetry)
+            result, substructure, symmetry, params.frag_core_atom)
 
         # temporary override to fix segmentation faults
         filename = "temp.pdb"
