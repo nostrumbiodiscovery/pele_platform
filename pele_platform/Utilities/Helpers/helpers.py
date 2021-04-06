@@ -100,7 +100,7 @@ def get_directory_new_index(pele_dir):
     else:
         new_index = 1
 
-    return new_index, old_index, original_dir
+    return new_index, new_index - 1, original_dir
 
 
 def get_next_peledir(pele_dir):
