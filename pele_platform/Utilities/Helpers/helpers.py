@@ -84,8 +84,8 @@ def get_directory_new_index(pele_dir):
     """
     split_dir = pele_dir.split("_")
 
-    if (len(split_dir) != 3 or split_dir[1] != 'Pele'
-            or not split_dir[-1].isdigit()):
+    if (len(split_dir) < 2 or len(split_dir) > 3
+            or split_dir[1] != 'Pele' or not split_dir[-1].isdigit()):
         raise ValueError('Invalid pele_dir {}. '.format(pele_dir)
                          + 'Its format is unknown')
 
