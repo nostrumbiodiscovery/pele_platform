@@ -82,17 +82,18 @@ def get_directory_new_index(pele_dir):
         The original PELE directory (usually, it matches with the
         residue name)
     """
-    split_dir = pele_dir.split("_")
+    folder_name = os.path.basename(pele_dir)
+    split_name = folder_name.split("_")
 
-    if (len(split_dir) < 2 or len(split_dir) > 3
-            or split_dir[1] != 'Pele' or not split_dir[-1].isdigit()):
-        raise ValueError('Invalid pele_dir {}. '.format(pele_dir)
+    if (len(split_name) < 2 or len(split_name) > 3
+            or split_name[1] != 'Pele' or not split_name[-1].isdigit()):
+        raise ValueError('Invalid PELE directory {}. '.format(split_name)
                          + 'Its format is unknown')
 
-    original_dir = split_dir[0]
+    original_dir = split_name[0]
 
-    if split_dir[-1].isdigit():
-        new_index = split_dir[-1]
+    if split_name[-1].isdigit():
+        new_index = split_name[-1]
         new_index = int(new_index) + 1
     else:
         new_index = 1
