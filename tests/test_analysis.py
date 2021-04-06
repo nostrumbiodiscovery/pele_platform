@@ -255,16 +255,14 @@ def test_api_analysis_generation(analysis):
 def test_check_existing_directory(generate_folders):
     """
     Checks if tester of existing dir
+
     Parameters
     ----------
     generate_folders : pytest.fixture
-        Pytest fixture that generates "results" folders for testing.
-    Returns
-    -------
-        A new "results" folder.
+        Pytest fixture that generates "results" folders for testing
     """
     new_path = Analysis._check_existing_directory("results")
-    assert new_path == "results_1"
+    assert new_path == "results_3"
 
     folders = glob.glob("results*")
     check_remove_folder(*folders)
@@ -350,7 +348,10 @@ def generate_folders():
     folders = [folder_template.format(i) for i in range(3)] + ["results"]
 
     for folder in folders:
-        os.mkdir(folder)
+        try:
+            os.mkdir(folder)
+        except FileExistsError:
+            pass
 
 
 @pytest.fixture
