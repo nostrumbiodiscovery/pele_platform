@@ -264,7 +264,7 @@ def test_check_existing_directory(generate_folders):
         A new "results" folder.
     """
     new_path = Analysis._check_existing_directory("results")
-    assert new_path == "results_3"
+    assert new_path == "results_1"
 
     folders = glob.glob("results*")
     check_remove_folder(*folders)

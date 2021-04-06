@@ -209,7 +209,7 @@ class Analysis(object):
         """
         import os
 
-        self._check_existing_directory(path)
+        path = self._check_existing_directory(path)
 
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
@@ -1094,14 +1094,15 @@ class Analysis(object):
 
     def _save_top_selections(self, dictionary, path):
         """
-        Saves information about cluster representatives to a CSV file.
+        It saves information about cluster representatives to a CSV file.
+
         Parameters
         ----------
         dictionary : dict
-            Dictionary where cluster ID is the key and value is a list with [trajectory, step, cluster label].
-        Returns
-        -------
-            A CSV with cluster representatives.
+            Dictionary where cluster ID is the key and value is a list
+            with [trajectory, step, cluster label]
+        path : str
+            The path where the CSV file will be saved at
         """
         import os
         import pandas as pd
@@ -1116,28 +1117,52 @@ class Analysis(object):
             labels.append(label)
 
         file_name = os.path.join(path, "top_selections.csv")
-        top_selections_data = pd.DataFrame(
-            {"Cluster ID": cluster_ids, "Cluster label": labels, "Trajectory": trajectories, "Step": steps})
+        top_selections_data = pd.DataFrame({"Cluster ID": cluster_ids,
+                                            "Cluster label": labels,
+                                            "Trajectory": trajectories,
+                                            "Step": steps})
         top_selections_data.to_csv(file_name, index=False)
 
     @staticmethod
     def _check_existing_directory(path):
         """
-        Checks if the results folder exists and enumerates a new folder name to avoid overwriting the analysis.
+        It checks if the results folder exists and enumerates a new folder
+        name to avoid overwriting the analysis.
+
         Parameters
         ----------
         path : str
-            Path to analysis working folder.
+            Path to analysis working folder
+
         Returns
         -------
-            New working folder for analysis, if 'results' already exists, otherwise returns the same folder.
+            New working folder for analysis, if 'results' already exists,
+            otherwise returns the same folder
         """
         import os
 
-        counter = 2
-        while os.path.exists(path):
-            counter += 1
-            folder_name = "{}_{}".format(os.path.basename(path), counter)
-            path = os.path.join(os.path.dirname(path), folder_name)
+        # If current path does not exist, we are done
+        if not os.path.exists(path):
+            return path
 
-        return path
+        # Otherwise, suggest new path
+        dir_name = os.path.dirname(path)
+        folder_name = os.path.basename(path)
+        chunks = folder_name.split('_')
+        last_chunk = chunks[-1]
+
+        # If last chunk is digit, enumerate starting from it
+        if last_chunk.isdigit():
+            new_id = int(last_chunk) + 1
+            folder_name = '_'.join(chunks[:-1])
+        else:
+            new_id = 1
+            folder_name = '_'.join(chunks)
+
+        # Add new id to folder name
+        folder_name += '_' + str(new_id)
+
+        # Concatenate old directory with new folder name
+        new_path = os.path.join(dir_name, new_folder_name)
+
+        return new_path
