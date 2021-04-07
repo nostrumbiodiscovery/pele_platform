@@ -4,10 +4,11 @@ import pele_platform.Frag.fragments as fr
 import pele_platform.Frag.atoms as at
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
-import sys
+
 from rdkit import Chem
 import rdkit.Chem.rdmolops as rd
 import rdkit.Chem.rdchem as rc
+
 def _search_core_fragment_linker(ligand,
                                  ligand_core,
                                  result=0,
@@ -52,6 +53,7 @@ def _search_core_fragment_linker(ligand,
         core_atoms = substructure_results[result]
         print("RESULT SUBSTRUCTURE", core_atoms)
         if frag_core_atom is not None:
+
             for atom in ligand_core.GetAtoms():
                 if atom.GetPDBResidueInfo().GetName().replace(" ","") == frag_core_atom.replace(" ",""):
                     atom_core_idx = atom.GetIdx()
