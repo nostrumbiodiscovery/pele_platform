@@ -9,7 +9,7 @@ import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
 import frag_pele.main as frag
-import sys
+
 
 class FragRunner(object):
 
