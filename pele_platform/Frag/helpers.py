@@ -54,14 +54,14 @@ def _search_core_fragment_linker(ligand,
         if frag_core_atom is not None:
             for atom in ligand_core.GetAtoms():
                 if atom.GetPDBResidueInfo().GetName().replace(" ","") == frag_core_atom.replace(" ",""):
-                    atom_fragment = atom.GetIdx()
+                    atom_core_idx = atom.GetIdx()
             bonds = [(x.GetBeginAtomIdx(), x.GetEndAtomIdx()) for x in ligand.GetBonds()]
             for bond in bonds:
-                if atom_fragment in bond:
-                    if bond[0] == atom_fragment:
-                        atom_core_idx = bond[1]
+                if atom_core_idx in bond:
+                    if bond[0] == atom_core_idx:
+                        atom_fragment = bond[1]
                     else:
-                        atom_core_idx = bond[0]
+                        atom_fragment = bond[0]
             return atom_core_idx, core_atoms, atom_fragment
     except IndexError:
         raise IndexError(
@@ -142,7 +142,6 @@ def _build_fragment_from_complex(complex,
     # Retrieve atom core linking fragment
     try:
         atom_core_idx, atoms_core, atom_fragment = _search_core_fragment_linker(ligand, ligand_core, result, symmetry, frag_core_atom)
-        print(atom_core_idx,atoms_core,atom_fragment)
         print("ATOM OF FRAGMENT ATTACHED TO CORE:", atom_fragment)
         print("ATOM OF CORE ATTACHED TO FRAGMENT:", atom_core_idx)
     except TypeError:
