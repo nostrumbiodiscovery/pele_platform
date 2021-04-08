@@ -182,7 +182,7 @@ def retrieve_software_settings(args, pele_dir):
                 "density": "null",
                 "simulation_type": "pele",
                 "iterations": 1,
-                "pele_steps": 1000,
+                "pele_steps": 500,
                 "cluster_values": "[2.0, 5, 7]",
                 "cluster_conditions": "[2.0, 5, 7]",
                 "steric_trials": 500,
