@@ -48,6 +48,10 @@ METRIC_ANGLE_PELE = [
     '"atoms": { "ids":["Z:201:_O3_"]}',
 ]
 
+PARAMETERS_CHANGE_PELE = [
+    '{ "ifAnyIsTrue": [ "distance0 < 3 and angle1 > 90 and angle1 < 180" ]'
+]
+
 
 def test_interaction_restrictions(ext_args=ARGS_1):
     """
@@ -64,10 +68,14 @@ def test_interaction_restrictions(ext_args=ARGS_1):
     errors = []
     job = main.run_platform_from_yaml(ext_args)
     errors = check_file(
-        job.pele_dir, "pele.conf", INTERACTION_RESTRICTIONS_PELE, errors
+        job.pele_dir,
+        "pele.conf",
+        INTERACTION_RESTRICTIONS_PELE
+        + METRIC_DISTANCE_PELE
+        + METRIC_ANGLE_PELE
+        + PARAMETERS_CHANGE_PELE,
+        errors,
     )
-    errors = check_file(job.pele_dir, "pele.conf", METRIC_DISTANCE_PELE, errors)
-    errors = check_file(job.pele_dir, "pele.conf", METRIC_ANGLE_PELE, errors)
     assert not errors
 
 

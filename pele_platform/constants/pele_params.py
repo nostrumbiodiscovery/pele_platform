@@ -199,3 +199,20 @@ FRAG = '''
                      }
                   ]
 '''
+
+INTERACTION_RESTRICTIONS = '''
+             ,
+"parametersChanges" : [
+     {{ "ifAnyIsTrue": [ "rand >= .5" ],
+         "doThesechanges": {{ "Perturbation::parameters": {{ "rotationScalingFactor": 0.1 }} }},
+         "otherwise": {{ "Perturbation::parameters": {{ "rotationScalingFactor": 0.25 }} }}
+     }},
+     {{ "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+         "doThesechanges": {{ "Perturbation::parameters": {{ "translationRange": 0.5}} }},
+         "otherwise": {{ "Perturbation::parameters": {{ "translationRange": 1.0}} }}
+     }},
+     {{  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
+            "doThesechanges": {{  "Perturbation::parameters": {{ "steeringUpdateFrequency": 0, "numberOfTrials": 30 }} }},
+            "otherwise": {{  "Perturbation::parameters": {{ "steeringUpdateFrequency": 1 , "numberOfTrials": 10  }}}}
+    }}{}
+'''

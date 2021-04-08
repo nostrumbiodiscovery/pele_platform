@@ -22,6 +22,7 @@ class Launcher:
     out_in: str = "out_in"
     adaptive: str = "adaptive"
     saturated_mutagenesis: str = "saturated_mutagenesis"
+    interaction_restrictions: str = "interaction_restrictions"
 
     def launch(self) -> pv.ParametersBuilder:
         # Launch package from input.yaml
@@ -33,7 +34,7 @@ class Launcher:
         # Launch package from API
         if not no_check:
             ck.check_executable_and_env_variables(self._args)
-        if package == self.adaptive:
+        if package == self.adaptive or package == "interaction_restrictions":
             job_variables = ad.run_adaptive(self._args)
         elif package == self.gpcr_orth:
             job_variables = gpcr.GpcrLauncher(self._args).run_gpcr_simulation()
@@ -64,5 +65,7 @@ class Launcher:
             self._args.package = self.out_in
         elif self._args.saturated_mutagenesis:
             self._args.package = self.saturated_mutagenesis
+        elif self._args.interaction_restrictions:
+            self._args.package = self.interaction_restrictions
         else: 
             self._args.package = self.adaptive

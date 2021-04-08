@@ -175,6 +175,21 @@ def retrieve_software_settings(args, pele_dir):
                 "params": pcs.OUT_IN,
                 "box_radius": 30,
             },
+            "interaction_restrictions": {
+                "spawning_type": "independent",
+                "bias_column": 5,
+                "epsilon": 0.25,
+                "density": "null",
+                "simulation_type": "pele",
+                "iterations": 1,
+                "pele_steps": 1000,
+                "cluster_values": "[2.0, 5, 7]",
+                "cluster_conditions": "[2.0, 5, 7]",
+                "steric_trials": 500,
+                "overlap_factor": 0.65,
+                "params": pcs.INTERACTION_RESTRICTIONS,
+                "box_radius": 6,
+            },
         },
     }
 
@@ -195,6 +210,8 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "out_in"
     elif args.gpcr_orth:
         type_simulation = "gpcr_orth"
+    elif args.interaction_restrictions:
+        type_simulation = "interaction_restrictions"
     else:
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"
