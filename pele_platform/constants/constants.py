@@ -259,3 +259,13 @@ custom_colors = ((0.12156862745098039, 0.4666666666666667, 0.7058823529411765),
 INTERSTEPLOGGER = ''',
             "useInterStepLogger": true'''
 
+
+# Cluster selection - mapping between table metrics and YAML arguments
+metric_selection = {
+    "25_percentile": "Binding Energy 25-percentile",
+    "5_percentile": "Binding Energy 5-percentile",
+    "population": "Population",
+    "rmsd": "MeanRMSD",
+    "mean": "Binding Energy mean",
+    "stdev": "Binding Energy standard deviation",
+}

@@ -493,6 +493,7 @@ class SimulationParams(
         self.min_population = args.min_population if args.min_population is not None else 0.01
         self.max_top_clusters = args.max_top_clusters if args.max_top_clusters is not None else 8
         self.max_top_poses = args.max_top_poses if args.max_top_poses is not None else 100
+        self.cluster_selection = args.cluster_selection if args.cluster_conditions is not None else "5_percentile"
 
     def constraints_params(self, args):
         """

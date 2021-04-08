@@ -4,3 +4,4 @@ chain: 'Z'
 resname: 'STR'
 only_analysis: true
 test: true
+cluster_selection: "25_percentile"

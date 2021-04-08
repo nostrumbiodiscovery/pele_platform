@@ -1,5 +1,6 @@
 import os
 import glob
+import pandas as pd
 import pytest
 
 import pele_platform.constants.constants as cs
@@ -336,6 +337,53 @@ def test_get_dataframe(analysis, filter, threshold, expected_length):
 
     df = analysis.get_dataframe(filter=filter, threshold=threshold)
     assert len(df) == expected_length
+
+
+@pytest.mark.parametrize(
+    ("cluster_selection", "expected_value"),
+    [
+        ("25_percentile", 0.879497),
+        ("5_percentile", 0.879497),
+        ("population", 0.2),
+        ("rmsd", 0),
+        ("mean", 0.879497),
+        ("stdev", 0),
+    ],
+)
+def test_cluster_selection_flag(analysis, cluster_selection, expected_value):
+    """
+    It tests the selection for the clustering method and checks whether the top cluster (A) has the expected top value,
+    e.g. lowest mean binding energy.
+
+    Parameters
+    ----------
+    analysis : Analysis object
+        Created automatically by a fixture.
+    cluster_selection : str
+        Selection method, e.g. "rmsd", "population"... see parameters above.
+    expected_value : float
+        Metric value expected to be associated with the selected cluster A.
+    """
+
+    output_folder = "cluster_selection_test"
+    csv = os.path.join(output_folder, "info.csv")
+
+    analysis.generate_clusters(
+        path=output_folder,
+        clustering_type="meanshift",
+        bandwidth=2.5,
+        analysis_nclust=10,
+        max_top_clusters=1,
+        cluster_selection=cluster_selection,
+        min_population=0.01,
+    )
+
+    df = pd.read_csv(csv)
+    clusterA_index = df.index[df["Selected labels"] == "A"]
+    (top_value,) = (
+        df[cs.metric_selection[cluster_selection]].iloc[clusterA_index].tolist()
+    )
+    assert top_value == expected_value
 
 
 @pytest.fixture

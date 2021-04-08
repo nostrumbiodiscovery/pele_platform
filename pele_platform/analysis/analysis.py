@@ -180,7 +180,8 @@ class Analysis(object):
 
     def generate(self, path, clustering_type='meanshift',
                  bandwidth=2.5, analysis_nclust=10,
-                 max_top_clusters=8, min_population=0.01, max_top_poses=100):
+                 max_top_clusters=8, cluster_selection="5_percentile",
+                 min_population=0.01, max_top_poses=100):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -201,6 +202,9 @@ class Analysis(object):
             model. Default is 10
         max_top_clusters : int
             Maximum number of clusters to return. Default is 8
+        cluster_selection : str
+            Method for selection of top clusters, choose one option from constants.metric_selection, e.g.
+            "5_percentile", "25_percentile", "population"...
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
@@ -234,7 +238,7 @@ class Analysis(object):
         best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
-                               max_top_clusters, min_population)
+                               max_top_clusters, cluster_selection, min_population)
 
         self.generate_report(plots_folder, top_poses_folder,
                              clusters_folder, best_metrics, report_file)
@@ -332,7 +336,7 @@ class Analysis(object):
 
     def generate_clusters(self, path, clustering_type,
                           bandwidth=2.5, analysis_nclust=10,
-                          max_top_clusters=8, min_population=0.01):
+                          max_top_clusters=8, cluster_selection="5_percentile", min_population=0.01):
         """
         It generates the structural clustering of ligand poses.
 
@@ -351,12 +355,16 @@ class Analysis(object):
             model. Default is 10
         max_top_clusters : int
             Maximum number of clusters to return. Default is 8
+        cluster_selection : str
+            Method of cluster selection, e.g. "5_percentile", "25_percentile", "population". Choose one of the values
+            from constants.metric_selection.
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
         """
         import os
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
+        from pele_platform.constants import constants
 
         check_make_folder(path)
 
@@ -391,10 +399,10 @@ class Analysis(object):
 
             return
 
-        print(f"Retrieve best cluster poses")
+        print(f"Retrieve best cluster poses based on {constants.metric_selection[cluster_selection]}.")
 
         cluster_subset, cluster_summary = self._select_top_clusters(
-            clusters, cluster_summary,
+            clusters, cluster_summary, cluster_selection=cluster_selection,
             max_clusters_to_select=max_top_clusters,
             min_population_to_select=min_population)
 
@@ -692,13 +700,10 @@ class Analysis(object):
 
         return summary
 
-    def _select_top_clusters(self, clusters, cluster_summary,
-                             max_clusters_to_select=8,
+    def _select_top_clusters(self, clusters, cluster_summary, cluster_selection="5_percentile", max_clusters_to_select=8,
                              min_population_to_select=0.01):
         """
-        It selects the top clusters based on their binding energy. If
-        this metric is not available, the cluster population will be
-        used instead.
+        It selects the top clusters based on a user-defined metric (or 5th percentile Binding Energy as a default).
 
         Parameters
         ----------
@@ -724,11 +729,14 @@ class Analysis(object):
             cluster names of top clusters
         """
         from pele_platform.analysis.clustering import get_cluster_label
+        from pele_platform.constants import constants
 
         metrics = list(cluster_summary.columns)
 
-        if "Binding Energy 25-percentile" in metrics:
-            metric = "Binding Energy 25-percentile"
+        user_metric = constants.metric_selection[cluster_selection.lower()]
+
+        if user_metric in metrics:
+            metric = user_metric
         else:
             metric = "Population"
 

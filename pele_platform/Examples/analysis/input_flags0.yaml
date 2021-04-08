@@ -8,4 +8,5 @@ be_column: 4
 limit_column: 6
 analysis_nclust: 1
 max_top_poses: 0
+cluster_selection: "25_percentile"
 test: true

@@ -368,6 +368,7 @@ def run_adaptive(args):
             analysis_nclust=parameters.analysis_nclust,
             max_top_clusters=parameters.max_top_clusters,
             min_population=parameters.min_population,
-            max_top_poses=parameters.max_top_poses)
+            max_top_poses=parameters.max_top_poses,
+            cluster_selection=parameters.cluster_selection)
 
     return parameters

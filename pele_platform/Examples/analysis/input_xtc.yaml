@@ -8,3 +8,4 @@ mae: true
 traj: 'trajectory.xtc'
 test: true
 analysis_nclust: 3
+cluster_selection: "25_percentile"

@@ -246,6 +246,7 @@ class FragRunner(object):
                 bandwidth=self.parameters.bandwidth,
                 analysis_nclust=self.parameters.analysis_nclust,
                 max_top_clusters=self.parameters.max_top_clusters,
+                cluster_selection=self.parameters.cluster_selection,
                 min_population=self.parameters.min_population)
 
     def _clean_up(self, fragment_files):

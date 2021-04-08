@@ -303,6 +303,7 @@ class YamlParser(object):
         self.max_top_clusters = data.get(valid_flags["max_top_clusters"], None)
         self.min_population = data.get(valid_flags["min_population"], None)
         self.max_top_poses = data.get(valid_flags["max_top_poses"], None)
+        self.cluster_selection = data.get(valid_flags["cluster_selection"], None)
 
         if self.test:
             warnings.warn(
