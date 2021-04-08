@@ -255,6 +255,8 @@ def test_api_analysis_generation(analysis):
             "Cluster\n"
         )
 
+    check_remove_folder(working_folder)
+
 
 def test_check_existing_directory(generate_folders):
     """
@@ -384,6 +386,7 @@ def test_cluster_selection_flag(analysis, cluster_selection, expected_value):
         df[cs.metric_selection[cluster_selection]].iloc[clusterA_index].tolist()
     )
     assert top_value == expected_value
+    check_remove_folder(output_folder)
 
 
 @pytest.fixture
