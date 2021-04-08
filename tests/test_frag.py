@@ -2,6 +2,7 @@ import os
 import glob
 import pytest
 import shutil
+import sys
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
@@ -18,6 +19,7 @@ FRAG_SDF_LIBRARIES = os.path.join(test_path, "frag/input_lib_sdf.yaml")
 FRAG_PDB_LIBRARIES = os.path.join(test_path, "frag/input_lib_pdb.yaml")
 FRAG_ANALYSIS_TO_POINT = os.path.join(test_path, "frag/input_point_analysis.yaml")
 FRAG_SYMMETRY = os.path.join(test_path, "frag/input_symmetry.yaml")
+FRAG_CORE_ATOM = os.path.join(test_path, "frag/input_frag_core_atom.yaml")
 
 EXPECTED_INPUT = os.path.join(
     test_path, "frag/asymmetric_hydrogens_detector/expected_input.conf"
@@ -63,7 +65,7 @@ def test_frag_sim(
     if os.path.exists(output):
         shutil.rmtree(output)
 
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
     top_results = glob.glob(os.path.join(output, "top_result", "*pdb"))
 
@@ -90,7 +92,7 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
         if os.path.exists(path):
             shutil.rmtree(path)
 
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
 
     new_output_path = glob.glob(output)[0]
@@ -118,7 +120,7 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     errors = []
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = output
     errors = td.check_file(
         folder,
@@ -144,7 +146,7 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     files = glob.glob(ext_args)
     for file in files:
         try:
-            job = main.run_platform(file)
+            job = main.run_platform_from_yaml(file)
         except Exception:
             assert False
 
@@ -167,7 +169,7 @@ def test_libraries(yaml_file, expected_lines):
     if os.path.exists("input.conf"):
         os.remove("input.conf")
 
-    job = main.run_platform(yaml_file)
+    job = main.run_platform_from_yaml(yaml_file)
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", expected_lines, errors)
     assert not errors
@@ -183,7 +185,7 @@ def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     ext_args : str
         Path to PELE input file.
     """
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = []
     errors = td.check_file(
         os.getcwd(), "point_analysis.csv", point_analysis_lines, errors, ",", 4
@@ -202,7 +204,27 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     """
     if os.path.exists("input.conf"):
         os.remove("input.conf")
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
+    
+def test_frag_core_atom(capsys, ext_args=FRAG_CORE_ATOM):
+    """
+    Tests the frag_core_atom flag.
+    
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file.
+    """
+    if os.path.exists("input.conf"):
+        os.remove("input.conf")
+    try:
+        job = main.run_platform_from_yaml(ext_args)
+        captured = capsys.readouterr()
+        assert "Skipped - FragPELE will not run." not in captured.out
+
+    except Exception:
+        assert False
+
