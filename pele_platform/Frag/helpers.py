@@ -55,7 +55,7 @@ def _search_core_fragment_linker(ligand,
         if frag_core_atom is not None:
 
             for atom in ligand_core.GetAtoms():
-                if atom.GetPDBResidueInfo().GetName().replace(" ","") == frag_core_atom.replace(" ",""):
+                if atom.GetPDBResidueInfo().GetName().strip() == frag_core_atom.strip():
                     atom_core_idx = atom.GetIdx()
             bonds = [(x.GetBeginAtomIdx(), x.GetEndAtomIdx()) for x in ligand.GetBonds()]
             for bond in bonds:
