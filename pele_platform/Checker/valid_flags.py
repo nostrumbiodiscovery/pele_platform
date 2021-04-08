@@ -189,5 +189,6 @@ VALID_FLAGS_PLATFORM = {
     "kde": "kde",
     "inter_step_logger": "inter_step_logger",
     "max_top_clusters": "max_top_clusters",
-    "min_population": "min_population"
+    "min_population": "min_population",
+    "fragment_atom": "fragment_atom"
 }
