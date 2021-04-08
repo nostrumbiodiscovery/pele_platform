@@ -10,6 +10,7 @@ Step by step guides to setting up your own simulation.
     - `High-throughput fragment growing <frag/index.html>`_
     - `Growing custom fragment library <libraries/index.html>`_
     - `GPCR orthosteric site exploration <gpcr/index.html>`_
+    - `Induced fit with interaction restrictions <interaction_restrictions/index.html>`_
     - `Binding events <binding/index.html>`_
     - `Biased simulation <bias/index.html>`_
     - `Conformational change simulation <pca/index.html>`_
@@ -18,7 +19,6 @@ Step by step guides to setting up your own simulation.
 .. toctree::
    docking/index.rst
    :hidden:
-
 
 .. toctree::
    rescoring/index.rst
@@ -42,6 +42,10 @@ Step by step guides to setting up your own simulation.
 
 .. toctree::
    gpcr/index.rst
+   :hidden:
+
+.. toctree::
+   interaction_restrictions/index.rst
    :hidden:
 
 .. toctree::
