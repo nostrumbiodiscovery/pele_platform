@@ -201,6 +201,7 @@ FRAG = '''
 '''
 
 INTERACTION_RESTRICTIONS = '''
+,
 "parametersChanges" : [
      {{ "ifAnyIsTrue": [ "{}" ],
          "doThesechanges": {{ "Perturbation::parameters": {{ "rotationScalingFactor": 0.05, "translationRange": 0.25 }} }},
