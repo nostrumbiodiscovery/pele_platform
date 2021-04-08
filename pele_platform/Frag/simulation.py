@@ -11,6 +11,7 @@ import pele_platform.Frag.analysis as ana
 import frag_pele.main as frag
 
 
+
 class FragRunner(object):
 
     def __init__(self, args):
@@ -42,6 +43,7 @@ class FragRunner(object):
                 params.input = lb.main(params.frag_core_atom,
                                        params.frag_library,
                                        params.logger,
+                                       params.fragment_atom,
                                        tmpdirname)
             else:
                 fragment_files = None

@@ -37,7 +37,8 @@ def get_symmetry_groups(mol):
 
 
 def growing_sites(fragment,
-                  user_bond):
+                  user_bond,
+                  fragment_atom):
     """
     Retrieves all possible growing sites (hydrogens) on the fragment. Takes PDB fragment file as input.
 
@@ -214,7 +215,10 @@ def write_config_file(output_name,
 
 
 def main(user_bond,
-         frag_library, logger, tmpdirname):
+         frag_library,
+         logger,
+         tmpdirname,
+         fragment_atom):
     # find the library and extract fragments
     path = get_library(frag_library)
     all_files = get_fragment_files(path, logger, tmpdirname) 
@@ -222,7 +226,7 @@ def main(user_bond,
     # get all possible growing sites
     bond_list = []
     for file in all_files:
-        bond_list.extend(growing_sites(file, user_bond))
+        bond_list.extend(growing_sites(file, user_bond, fragment_atom))
     
     # write input.conf 
     write_config_file(OUTPUT, bond_list)
