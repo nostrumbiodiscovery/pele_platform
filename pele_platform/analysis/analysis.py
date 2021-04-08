@@ -414,7 +414,7 @@ class Analysis(object):
                                        cluster_summary, path)
 
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
-        self._save_clusters(cluster_subset, dataframe, path)
+        self._save_clusters(cluster_subset, dataframe, path, cluster_summary)
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):
@@ -700,7 +700,8 @@ class Analysis(object):
 
         return summary
 
-    def _select_top_clusters(self, clusters, cluster_summary, cluster_selection="5_percentile", max_clusters_to_select=8,
+    def _select_top_clusters(self, clusters, cluster_summary, cluster_selection="5_percentile",
+                             max_clusters_to_select=8,
                              min_population_to_select=0.01):
         """
         It selects the top clusters based on a user-defined metric (or 5th percentile Binding Energy as a default).
@@ -1012,7 +1013,7 @@ class Analysis(object):
 
         return rmsd_per_cluster
 
-    def _save_clusters(self, clusters, dataframe, path):
+    def _save_clusters(self, clusters, dataframe, path, cluster_summary):
         """
         It saves the resulting clusters to disk. The selection of the
         representative structures is based on the total energy. The
@@ -1028,6 +1029,8 @@ class Analysis(object):
             follows the same ordering as the array of clusters
         path : str
             The path where the clusters will be saved at
+        cluster_summary : pandas.DataFrame
+            Dataframe with detailed metric of each cluster.
         """
         import os
         from collections import defaultdict
@@ -1100,11 +1103,12 @@ class Analysis(object):
 
             representative_structures[cluster].append(label)
 
-        self._save_top_selections(representative_structures, path)
+        self._save_top_selections(representative_structures, path, cluster_summary)
 
-    def _save_top_selections(self, dictionary, path):
+    def _save_top_selections(self, dictionary, path, cluster_summary):
         """
-        It saves information about cluster representatives to a CSV file.
+        It saves trajectory information about cluster representatives to a CSV file, then joins that data with metric
+        from cluster summary dataframe (containing energies, percentiles, etc.).
 
         Parameters
         ----------
@@ -1113,10 +1117,13 @@ class Analysis(object):
             with [trajectory, step, cluster label]
         path : str
             The path where the CSV file will be saved at
+        cluster_summary : pandas.DataFrame
+            Dataframe with detailed metric of each cluster.
         """
         import os
         import pandas as pd
 
+        # Retrieve trajectory and step data
         cluster_ids, steps, trajectories, labels = ([] for _ in range(4))
 
         for cluster_id, values in dictionary.items():
@@ -1127,11 +1134,17 @@ class Analysis(object):
             labels.append(label)
 
         file_name = os.path.join(path, "top_selections.csv")
-        top_selections_data = pd.DataFrame({"Cluster ID": cluster_ids,
-                                            "Cluster label": labels,
-                                            "Trajectory": trajectories,
-                                            "Step": steps})
-        top_selections_data.to_csv(file_name, index=False)
+        trajectory_data = pd.DataFrame({"Cluster": cluster_ids,
+                                        "Cluster label": labels,
+                                        "Trajectory": trajectories,
+                                        "Step": steps})
+
+        # Join detailed metrics data from cluster summary
+        merged_dataframe = pd.merge(trajectory_data, cluster_summary, left_on="Cluster", right_on="Cluster")
+
+        # Remove column duplicated in both dataframes
+        merged_dataframe = merged_dataframe.drop(["Cluster label"], axis=1)
+        merged_dataframe.to_csv(file_name, index=False)
 
     @staticmethod
     def _check_existing_directory(path):

@@ -207,6 +207,7 @@ def test_generate_clusters(analysis, method, bandwidth, n_clusters):
         working_folder, method, bandwidth=bandwidth, analysis_nclust=n_clusters
     )
     assert len(glob.glob(results)) == n_clusters
+    check_remove_folder(working_folder)
 
 
 def test_api_analysis_generation(analysis):
@@ -233,14 +234,10 @@ def test_api_analysis_generation(analysis):
     clusters = glob.glob(os.path.join(working_folder, "clusters", "*pdb"))
     assert len(clusters) == n_clusts
 
-    # Check cluster representatives CSV by testing for the presence of a representative line
-    errors = ta.check_file(
-        os.path.join(working_folder, "clusters"),
-        "top_selections.csv",
-        "1,B,../pele_platform/Examples/clustering/0/trajectory_3.pdb,0",
-        [],
-    )
-    assert not errors
+    # Check cluster representatives CSV by testing for the presence of columns from both trajectory and metrics dfs
+    top_selections = os.path.join(working_folder, "clusters", "top_selections.csv")
+    df = pd.read_csv(top_selections)
+    assert all(x in df.columns for x in ["currentEnergy mean", "Trajectory"])
 
     # Check if data.csv exists and is not empty
     data_csv = os.path.join(working_folder, "data.csv")
@@ -321,6 +318,8 @@ def test_extract_poses(analysis):
 
     assert values.sort() == expected_energies.sort()
     assert len(poses) == 7
+
+    check_remove_folder(output)
 
 
 @pytest.mark.parametrize(
