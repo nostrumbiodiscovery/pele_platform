@@ -681,6 +681,8 @@ class Analysis(object):
                     np.percentile(values_per_cluster[cluster], 95)
                 descriptors["{} max".format(metric)][cluster] = \
                     np.max(values_per_cluster[cluster])
+                descriptors["{} standard deviation".format(metric)][cluster] = \
+                    np.std(values_per_cluster[cluster])
 
         # Add descriptors to summary dataframe
         for label, values_per_cluster in descriptors.items():
