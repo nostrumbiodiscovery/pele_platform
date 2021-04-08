@@ -16,15 +16,6 @@ RESTRICTIONS_CONFIG = {
     "angle": {"template": cs.ANGLE_ATOMS_TAG, "description": "angle", "num_elems": 3},
 }
 
-PARAMETERS_CHANGE = """
-    ,\n
-     {{ "ifAnyIsTrue": [ "{}" ],
-         "doThesechanges": {{ "Perturbation::parameters": {{ "rotationScalingFactor": 0.05, "translationRange": 0.25 }} }},
-         "otherwise": {{ "Perturbation::parameters": {{ "rotationScalingFactor": 0.25, "translationRange": 1.0 }} }}
-     }}                    
-]"""
-
-
 class InteractionRestrictionsBuilder:
     """
     Base class to generate interaction restrictions
@@ -120,7 +111,7 @@ class InteractionRestrictionsBuilder:
         if "max" in values:
             self.conditions.append(name + " < " + str(values["max"]))
 
-    def fill_template(self):
+    def fill_template(self, template):
         """
         Joins self.conditions with AND and fills the PARAMETERS_CHANGE template string.
         Returns
@@ -128,4 +119,4 @@ class InteractionRestrictionsBuilder:
             Parameters change string for interaction restrictions, which will later be injected into pele_params.py.
         """
         joined_conditions = " and ".join(self.conditions) if len(self.conditions) > 1 else self.conditions[0]
-        return PARAMETERS_CHANGE.format(joined_conditions)
+        return template.format(joined_conditions)

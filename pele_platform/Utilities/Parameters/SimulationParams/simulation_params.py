@@ -538,8 +538,7 @@ class SimulationParams(
             restrictions.parse_interaction_restrictions(self.system, args.interaction_restrictions)
             self.met_interaction_restrictions = restrictions.metrics_to_json()
             self.interaction_restrictions = restrictions.conditions_to_json()
-            additional_parameters_change = restrictions.fill_template()
-            self.parameters = self.parameters.format(additional_parameters_change)
+            self.parameters = restrictions.fill_template(self.parameters)
         else:
             self.met_interaction_restrictions = ""
             self.interaction_restrictions = ""
