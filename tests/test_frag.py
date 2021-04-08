@@ -2,6 +2,7 @@ import os
 import glob
 import pytest
 import shutil
+import sys
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
@@ -18,6 +19,7 @@ FRAG_SDF_LIBRARIES = os.path.join(test_path, "frag/input_lib_sdf.yaml")
 FRAG_PDB_LIBRARIES = os.path.join(test_path, "frag/input_lib_pdb.yaml")
 FRAG_ANALYSIS_TO_POINT = os.path.join(test_path, "frag/input_point_analysis.yaml")
 FRAG_SYMMETRY = os.path.join(test_path, "frag/input_symmetry.yaml")
+FRAG_CORE_ATOM = os.path.join(test_path, "frag/input_frag_core_atom.yaml")
 
 EXPECTED_INPUT = os.path.join(
     test_path, "frag/asymmetric_hydrogens_detector/expected_input.conf"
@@ -206,3 +208,23 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
+    
+def test_frag_core_atom(capsys, ext_args=FRAG_CORE_ATOM):
+    """
+    Tests the frag_core_atom flag.
+    
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file.
+    """
+    if os.path.exists("input.conf"):
+        os.remove("input.conf")
+    try:
+        job = main.run_platform_from_yaml(ext_args)
+        captured = capsys.readouterr()
+        assert "Skipped - FragPELE will not run." not in captured.out
+
+    except Exception:
+        assert False
+
