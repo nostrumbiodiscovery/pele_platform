@@ -265,9 +265,9 @@ metric_top_clusters_criterion = {
     "total_25_percentile": "Total Energy 25-percentile",
     "total_5_percentile": "Total Energy 5-percentile",
     "total_mean": "Total Energy mean",
-    "interaction_25_percentile": "Interaction Energy 25-percentile",
-    "interaction_5_percentile": "Interaction Energy 5-percentile",
-    "interaction_mean": "Interaction Energy mean",
+    "interaction_25_percentile": "Binding Energy 25-percentile",
+    "interaction_5_percentile": "Binding Energy 5-percentile",
+    "interaction_mean": "Binding Energy mean",
     "population": "Population"}
 
 # Cluster representatives selection - mapping between table metrics and
@@ -276,6 +276,6 @@ cluster_representatives_criterion = {
     "total_25_percentile": "Total Energy 25-percentile",
     "total_5_percentile": "Total Energy 5-percentile",
     "total_mean": "Total Energy mean",
-    "interaction_25_percentile": "Interaction Energy 25-percentile",
-    "interaction_5_percentile": "Interaction Energy 5-percentile",
-    "interaction_mean": "Interaction Energy mean"}
+    "interaction_25_percentile": "Binding Energy 25-percentile",
+    "interaction_5_percentile": "Binding Energy 5-percentile",
+    "interaction_mean": "Binding Energy mean"}

@@ -335,7 +335,7 @@ class Analysis(object):
         else:
             metric = "currentEnergy"
 
-        print("Retrieve 100 Best Poses")
+        print("Retrieve {} Best Poses".format(n_poses))
 
         top_poses = self._data_handler.get_top_entries(metric, n_poses)
         best_metrics = self._extract_poses(top_poses, metric, path)
@@ -404,7 +404,7 @@ class Analysis(object):
             self._filter_coordinates(coordinates, dataframe)
 
         # Cluster coordinates
-        print(f"Cluster coordinates into best poses")
+        print(f"Cluster ligand binding modes")
         clusters = clustering.get_clusters(coordinates, self._dataframe,
                                            dataframe, os.path.dirname(path))
 
@@ -1099,6 +1099,7 @@ class Analysis(object):
         """
         import os
         from collections import defaultdict
+        import numpy as np
 
         from pele_platform.Utilities.Helpers import get_suffix
         from pele_platform.Utilities.Helpers.bestStructs import (
@@ -1191,14 +1192,13 @@ class Analysis(object):
                     out_freq=1,
                     f_out="cluster_{}.pdb".format(label))
 
-            representative_structures[cluster].append(label)
-
         self._save_top_selections(representative_structures, path, dataframe)
 
     def _save_top_selections(self, representative_structures, path, dataframe):
         """
-        It saves trajectory information about cluster representatives to a CSV file, then joins that data with metric
-        from cluster summary dataframe (containing energies, percentiles, etc.).
+        It saves trajectory information about cluster representatives to
+        a CSV file, then joins that data with metric from cluster summary
+        dataframe (containing energies, percentiles, etc.).
 
         Parameters
         ----------
@@ -1243,12 +1243,14 @@ class Analysis(object):
                 break
             for cluster_id, (trajectory, step) \
                     in representative_structures.items():
-                filtered_df = dataframe[dataframe['Trajectory'] == trajectory]
-                filtered_df = filtered_df[filtered_df['Step'] == step]
+                filtered_df = dataframe[dataframe['trajectory'] == trajectory]
+                filtered_df = \
+                    filtered_df[filtered_df['numberOfAcceptedPeleSteps'] ==
+                                step]
                 if len(filtered_df) != 1:
-                    print('Unable to find metric {} '.format(metric) +
+                    print('Unable to find metric \'{}\' '.format(metric) +
                           'for representative structure: ' +
-                          '{}-{}'.format(trajectory, step))
+                          '{}, step {}'.format(trajectory, step))
                     skip = True
                     break
                 metric_values[metric].append(float(filtered_df[metric]))
