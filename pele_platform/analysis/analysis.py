@@ -744,9 +744,12 @@ class Analysis(object):
         filtered_cluster_summary = \
             cluster_summary[cluster_summary["Population"] >=
                             min_population_to_select]
-        filtered_cluster_summary = \
-            filtered_cluster_summary.nsmallest(max_clusters_to_select,
-                                               metric)
+
+        if metric == "Population":
+            filtered_cluster_summary = filtered_cluster_summary.nlargest(max_clusters_to_select, metric)
+        else:
+            filtered_cluster_summary = filtered_cluster_summary.nsmallest(max_clusters_to_select, metric)
+
         top_clusters = list(filtered_cluster_summary["Cluster"])
 
         cluster_reindex_map = {}
