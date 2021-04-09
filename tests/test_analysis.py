@@ -1,5 +1,6 @@
 import os
 import glob
+import pandas as pd
 import pytest
 
 import pele_platform.constants.constants as cs
@@ -202,10 +203,10 @@ def test_generate_clusters(analysis, method, bandwidth, n_clusters):
     results = os.path.join(working_folder, "*pdb")
     check_remove_folder(working_folder)
 
-    analysis.generate_clusters(
-        working_folder, method, bandwidth=bandwidth, analysis_nclust=n_clusters
-    )
+    analysis.generate_clusters(working_folder, method, bandwidth=bandwidth,
+                               analysis_nclust=n_clusters)
     assert len(glob.glob(results)) == n_clusters
+    check_remove_folder(working_folder)
 
 
 def test_api_analysis_generation(analysis):
@@ -232,14 +233,12 @@ def test_api_analysis_generation(analysis):
     clusters = glob.glob(os.path.join(working_folder, "clusters", "*pdb"))
     assert len(clusters) == n_clusts
 
-    # Check cluster representatives CSV by testing for the presence of a representative line
-    errors = ta.check_file(
-        os.path.join(working_folder, "clusters"),
-        "top_selections.csv",
-        "1,B,../pele_platform/Examples/clustering/0/trajectory_3.pdb,0",
-        [],
-    )
-    assert not errors
+    # Check cluster representatives CSV by testing for the presence of columns from both trajectory and metrics dfs
+    top_selections = os.path.join(working_folder, "clusters", "top_selections.csv")
+    df = pd.read_csv(top_selections)
+    assert all(x in df.columns for x in ["Cluster", "Cluster label", "epoch",
+                                         "trajectory", "Step", "currentEnergy",
+                                         "Binding Energy", "sasaLig"])
 
     # Check if data.csv exists and is not empty
     data_csv = os.path.join(working_folder, "data.csv")
@@ -253,6 +252,8 @@ def test_api_analysis_generation(analysis):
             == "Step,numberOfAcceptedPeleSteps,currentEnergy,Binding Energy,sasaLig,epoch,trajectory,"
             "Cluster\n"
         )
+
+    check_remove_folder(working_folder)
 
 
 def test_check_existing_directory(generate_folders):
@@ -319,6 +320,8 @@ def test_extract_poses(analysis):
     assert values.sort() == expected_energies.sort()
     assert len(poses) == 7
 
+    check_remove_folder(output)
+
 
 @pytest.mark.parametrize(
     ("filter", "threshold", "expected_length"), [(True, 0.5, 1), (False, None, 7)]
@@ -336,6 +339,85 @@ def test_get_dataframe(analysis, filter, threshold, expected_length):
 
     df = analysis.get_dataframe(filter=filter, threshold=threshold)
     assert len(df) == expected_length
+
+
+@pytest.mark.parametrize(
+    ("cluster_selection", "expected_value"),
+    [
+        ("interaction_25_percentile", 0.879497),
+        ("interaction_5_percentile", 0.879497),
+        ("population", 0.2),
+        ("interaction_mean", 0.879497),
+    ],
+)
+def test_top_clusters_criterion_flag(analysis, cluster_selection, expected_value):
+    """
+    It tests the selection for the clustering method and checks whether the top cluster (A) has the expected top value,
+    e.g. lowest mean binding energy.
+
+    Parameters
+    ----------
+    analysis : Analysis object
+        Created automatically by a fixture.
+    cluster_selection : str
+        Selection method, e.g. "rmsd", "population"... see parameters above.
+    expected_value : float
+        Metric value expected to be associated with the selected cluster A.
+    """
+
+    output_folder = "cluster_selection_test"
+    csv = os.path.join(output_folder, "info.csv")
+
+    analysis.generate_clusters(path=output_folder,
+                               clustering_type="meanshift",
+                               bandwidth=2.5,
+                               analysis_nclust=10,
+                               max_top_clusters=1,
+                               top_clusters_criterion=cluster_selection,
+                               min_population=0.01)
+
+    df = pd.read_csv(csv)
+    clusterA_index = df.index[df["Selected labels"] == "A"]
+    (top_value,) = \
+        (df[cs.metric_top_clusters_criterion[cluster_selection]].iloc[clusterA_index].tolist())
+    assert top_value == expected_value
+    check_remove_folder(output_folder)
+
+
+@pytest.mark.parametrize(("criterion", "expected"),
+                         [("interaction_5_percentile", ""),
+                          ("interaction_25_percentile", ""), ("interaction_mean", "")])
+def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
+    """
+    Tests the user-defined method of selecting cluster representatives.
+
+    Parameters
+    ----------
+    analysis : Analysis object
+        Created by a fixture.
+    criterion : str
+        cluster_representatives_criterion flag defined by the user.
+    expected : str
+        Expected value in the dataframe.
+    TODO: Manually check expected values and then add them to the test to make sure we're getting the right stuff!
+    """
+
+    output_folder = "cluster_rep_selection"
+    csv = os.path.join(output_folder, "top_selections.csv")
+
+    analysis.generate_clusters(path=output_folder,
+                               clustering_type="meanshift",
+                               bandwidth=2.5,
+                               max_top_clusters=1,
+                               representatives_criterion=criterion)
+
+    df = pd.read_csv(csv)
+    assert all(x in df.columns for x in ["Cluster", "Cluster label", "epoch",
+                                         "trajectory", "Step", "currentEnergy",
+                                         "Binding Energy", "sasaLig"])
+    assert not df.isnull().values.any()
+
+    check_remove_folder(output_folder)
 
 
 @pytest.fixture
@@ -363,11 +445,7 @@ def analysis():
     """
     output = "../pele_platform/Examples/clustering"
 
-    analysis = Analysis(
-        resname="LIG",
-        chain="Z",
-        simulation_output=output,
-        skip_initial_structures=False,
-    )
+    analysis = Analysis(resname="LIG", chain="Z", simulation_output=output,
+                        skip_initial_structures=False)
 
     return analysis
