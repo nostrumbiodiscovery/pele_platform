@@ -17,7 +17,7 @@ Defaults
 +++++++++
 
     - iterations: 1
-    - pele steps: 1000
+    - pele steps: 500
 
 Recommendations
 +++++++++++++++++++
@@ -54,9 +54,9 @@ Users can define two types of conditions using the atom strings (format ``chain:
       atoms:
         - "A:318:OG1"   # chain A, residue number 318, atom OG1
         - "Z:201:O3"
-    - angle:  # angle between those three atoms will remain between 90 and 180 degrees
+    - angle:  # angle between those three atoms will remain between 90 and 160 degrees
         min: 90
-        max: 180
+        max: 160
       atoms:
         - "A:318:OG1"
         - "A:318:HG1"
