@@ -439,7 +439,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
         - "total_5_percentile" - total energy 5th percentile
         - "total_mean" - total energy mean
         - "interaction_25_percentile" - interaction energy 25th percentile
-        - "interaction_5_percentile" - interaction energy 5th percentile
+        - "interaction_5_percentile" - interaction energy 5th percentile (default)
         - "interaction_mean" - interaction energy mean
 
 - **top_clusters_criterion**: Method of selecting top clusters, you can choose one of:
@@ -447,7 +447,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
         - "total_25_percentile" - total energy 25th percentile
         - "total_5_percentile" - total energy 5th percentile
         - "total_mean" - total energy mean
-        - "interaction_25_percentile" - interaction energy 25th percentile
+        - "interaction_25_percentile" - interaction energy 25th percentile (default)
         - "interaction_5_percentile" - interaction energy 5th percentile
         - "interaction_mean" - interaction energy mean
         - "population" - cluster population
