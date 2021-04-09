@@ -356,35 +356,6 @@ Water perturbation
         - "W:15" # chain ID and residue number
         - "W:21"
 
-Interaction restrictions
-----------------------------
-
-Interaction restrictions allow for biased exploration, where the simulation results are limited to those that fit the specified conditions.
-
-Users can define two types of conditions using the atom strings (format "chain:resnum:atomname", e.g. A:2:CA) to select the atoms:
-
-- **distance**: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.
-
-- **angle**: Angle between three atoms with a user-defined maximum, minimum or both.
-
-
-..  code-block:: yaml
-
-    interaction_restrictions:
-    - distance:  # distance between the two atoms will not exceed 3 A
-        max: 3
-      atoms:
-        - "A:318:OG1"   # chain A, residue number 318, atom OG1
-        - "Z:201:O3"
-    - angle:  # angle between those three atoms will remain betwenn 90 and 180 degrees
-        min: 90
-        max: 180
-      atoms:
-        - "A:318:OG1"
-        - "A:318:HG1"
-        - "Z:201:O3"
-
-
 Metrics
 ---------
 

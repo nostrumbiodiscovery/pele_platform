@@ -1,36 +1,29 @@
-GPCR orthosteric site simulation
-==================================
+Interaction restrictions
+=============================
 
 Introduction
 ---------------
 
-The GPCR package aims to find the binding path of a small molecule to the orthosteric site of a G protein-coupled receptor.
-
-Initially, the software will place the ligand all around the user-defined initial site and create a simulation box encompassing
-the initial and orthosteric sites. The simulation will be performed with a slight bias towards ligand's SASA as well as
-high constraints on all alpha carbons to avoid the collapse of the structure due to the lack of the membrane. Finally,
-ranked binding modes of the small molecule will be retrieved to the user.
+The induced fit simulation with interaction restrictions allow for biased exploration, where the simulation results are
+limited to those that fit the specified conditions, such as specific distance or angle between user-defined atoms.
 
 Inputs
 +++++++++
 
     - protein-ligand PDB file
-    - input.yaml specifying orthosteric and initial sites of atom
+    - input.yaml specifying angle and distance restrictions
 
 Defaults
-++++++++++++
++++++++++
 
-    - iterations: 50
-    - pele steps: 8
-    - epsilon: 0.25
-    - constraint level: 3 (backbone is constrained every 5 carbon alpha atoms with 5 kcal/mol constant)
+    - iterations: 1
+    - pele steps: 500
 
 Recommendations
 +++++++++++++++++++
 
-    #. We suggest using **at least 50 CPUs**.
-    #. The simulation will take around 3h on average.
-
+    #. We recommend using **at least 50 CPUs**.
+    #. Since interaction restrictions require a nested YAML file, you might encounter issues, if your YAML has incorrect indentation. Run a test simulation first (with ``test: true`` in your YAML file) to ensure everything works correctly or use one of YAML checkers available online, e.g. `YAML Lint <http://www.yamllint.com/>`_.
 
 1. Complex Preparation
 ---------------------------
@@ -43,19 +36,34 @@ the latter can be placed anywhere as its position will be automatically randomis
 
 Prepare the input file ``input.yml``:
 
+Users can define two types of conditions using the atom strings (format ``chain:resnum:atomname``, e.g. A:2:CA) to select the atoms:
+
+- **distance**: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.
+
+- **angle**: Angle between three atoms with a user-defined maximum, minimum or both.
+
 ..  code-block:: yaml
 
     system: "complex.pdb" # Ligand-protein complex
     resname: "LIG" # Ligand residue name in system
     chain: "L" # Ligand chain ID
-    seed: 1234
-    gpcr_orth: true # Set defaults for GPCR simulation
-    orthosteric_site: "A:114:CG" # Atom in the orthosteric site (chain ID:residue number:atom name)
-    initial_site: "A:310:CD" # Atom in the initial site
+
+    interaction_restrictions:
+    - distance:  # distance between the two atoms will not exceed 3 A
+        max: 3
+      atoms:
+        - "A:318:OG1"   # chain A, residue number 318, atom OG1
+        - "Z:201:O3"
+    - angle:  # angle between those three atoms will remain between 90 and 160 degrees
+        min: 90
+        max: 160
+      atoms:
+        - "A:318:OG1"
+        - "A:318:HG1"
+        - "Z:201:O3"
     cpus: 50
 
 For more optional flags please refer to `optional flags <../../flags/index.html>`_.
-
 
 3. Run simulation
 -------------------

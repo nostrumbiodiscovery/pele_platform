@@ -55,7 +55,7 @@ author = 'Nostrum Biodiscovery'
 # built documents.
 #
 # The short X.Y version.
-version = '1.6.6'
+version = '1.6'
 # The full version, including alpha/beta/rc tags.
 release = '1.6.0b2'
 
