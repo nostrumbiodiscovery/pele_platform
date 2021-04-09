@@ -159,10 +159,25 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
             The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1% of all structures.
         max_top_poses : int (optional, default = 100)
             Number of top poses to retrieve.
-        top_clusters_criterion : str (optional, default = "25_percentile")
-            Method for selecting the top clusters, you can use one of ["25_percentile", "5_percentile", "population", "mean"].
+        top_clusters_criterion : str (optional, default = "total_25_percentile")
+            Method for selecting the top clusters, you can use one of:
+
+                - "total_25_percentile" - total energy 25th percentile
+                - "total_5_percentile" - total energy 5th percentile
+                - "total_mean" - total energy mean
+                - "interaction_25_percentile" - interaction energy 25th percentile
+                - "interaction_5_percentile" - interaction energy 5th percentile
+                - "interaction_mean" - interaction energy mean
+                - "population" - cluster population
         cluster_representatives_criterion : str (optional, default = "5_percentile")
-            Method for selecting representative structures for each cluster, you can choose one of ["25_percentile", "5_percentile", "mean"].
+            Method for selecting representative structures for each cluster, you can choose one of:
+
+                - "total_25_percentile" - total energy 25th percentile
+                - "total_5_percentile" - total energy 5th percentile
+                - "total_mean" - total energy mean
+                - "interaction_25_percentile" - interaction energy 25th percentile
+                - "interaction_5_percentile" - interaction energy 5th percentile
+                - "interaction_mean" - interaction energy mean
 
 .. code-block:: python
 
@@ -185,10 +200,25 @@ Performs clustering of the output poses based on ligand heavy atom coordinates u
             Maximum number of clusters to return. If a large number of clusters is created, only a specific subset with the best metrics is returned.
         min_population : float (optional, default = 0.01)
             The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1%.
-        top_clusters_criterion : str (optional, default = "25_percentile")
-            Method for selecting the top clusters, you can use one of ["25_percentile", "5_percentile", "population", "mean"].
+        top_clusters_criterion : str (optional, default = "total_25_percentile")
+            Method for selecting the top clusters, you can use one of:
+
+                - "total_25_percentile" - total energy 25th percentile
+                - "total_5_percentile" - total energy 5th percentile
+                - "total_mean" - total energy mean
+                - "interaction_25_percentile" - interaction energy 25th percentile
+                - "interaction_5_percentile" - interaction energy 5th percentile
+                - "interaction_mean" - interaction energy mean
+                - "population" - cluster population
         cluster_representatives_criterion : str (optional, default = "5_percentile")
-            Method for selecting representative structures for each cluster, you can choose one of ["25_percentile", "5_percentile", "mean"].
+            Method for selecting representative structures for each cluster, you can choose one of:
+
+                - "total_25_percentile" - total energy 25th percentile
+                - "total_5_percentile" - total energy 5th percentile
+                - "total_mean" - total energy mean
+                - "interaction_25_percentile" - interaction energy 25th percentile
+                - "interaction_5_percentile" - interaction energy 5th percentile
+                - "interaction_mean" - interaction energy mean
 
 .. code-block:: python
 

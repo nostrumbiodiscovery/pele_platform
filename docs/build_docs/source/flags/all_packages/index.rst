@@ -433,9 +433,24 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **max_top_clusters**: Maximum number of clusters to be selected. Default = 8.
 
-- **cluster_representatives_criterion**: Method of selecting representative structures for each cluster, you can choose one of the binding energy values: "25_percentile", "mean" or the default "5_percentile".
+- **cluster_representatives_criterion**: Method of selecting representative structures for each cluster, you can choose one of:
 
-- **top_clusters_criterion**: Method of selecting top clusters, you can choose one of the binding energy values: "25_percentile" (default), "mean" or "5_percentile". Alternatively, you can set it to "population" to retrieve the most populated clusters.
+        - "total_25_percentile" - total energy 25th percentile
+        - "total_5_percentile" - total energy 5th percentile
+        - "total_mean" - total energy mean
+        - "interaction_25_percentile" - interaction energy 25th percentile
+        - "interaction_5_percentile" - interaction energy 5th percentile
+        - "interaction_mean" - interaction energy mean
+
+- **top_clusters_criterion**: Method of selecting top clusters, you can choose one of:
+
+        - "total_25_percentile" - total energy 25th percentile
+        - "total_5_percentile" - total energy 5th percentile
+        - "total_mean" - total energy mean
+        - "interaction_25_percentile" - interaction energy 25th percentile
+        - "interaction_5_percentile" - interaction energy 5th percentile
+        - "interaction_mean" - interaction energy mean
+        - "population" - cluster population
 
 - **max_top_poses**: Maximum number of top poses to be retrieved. Default = 100.
 
@@ -450,7 +465,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
     bandwidth: 7.0
     top_clusters_criterion: "population"
     max_top_clusters: 5
-    cluster_representatives_criterion: "mean"
+    cluster_representatives_criterion: "interaction_mean"
 
 The bandwidth parameter hugely influences the clustering results, therefore, it might be worth trying out different values depending on your system.
 In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD allowed within the cluster, whereas in HDBSCAN to distances between your data points.
