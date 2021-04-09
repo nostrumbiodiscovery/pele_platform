@@ -262,9 +262,9 @@ INTERSTEPLOGGER = ''',
 
 # Top cluster selection - mapping between table metrics and YAML arguments
 metric_top_clusters_criterion = {
-    "total_25_percentile": "Total Energy 25-percentile",
-    "total_5_percentile": "Total Energy 5-percentile",
-    "total_mean": "Total Energy mean",
+    "total_25_percentile": "currentEnergy 25-percentile",
+    "total_5_percentile": "currentEnergy 5-percentile",
+    "total_mean": "currentEnergy mean",
     "interaction_25_percentile": "Binding Energy 25-percentile",
     "interaction_5_percentile": "Binding Energy 5-percentile",
     "interaction_mean": "Binding Energy mean",
@@ -273,9 +273,9 @@ metric_top_clusters_criterion = {
 # Cluster representatives selection - mapping between table metrics and
 # YAML arguments
 cluster_representatives_criterion = {
-    "total_25_percentile": "Total Energy 25-percentile",
-    "total_5_percentile": "Total Energy 5-percentile",
-    "total_mean": "Total Energy mean",
+    "total_25_percentile": "currentEnergy 25-percentile",
+    "total_5_percentile": "currentEnergy 5-percentile",
+    "total_mean": "currentEnergy mean",
     "interaction_25_percentile": "Binding Energy 25-percentile",
     "interaction_5_percentile": "Binding Energy 5-percentile",
     "interaction_mean": "Binding Energy mean"}
