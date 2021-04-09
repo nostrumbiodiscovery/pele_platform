@@ -2,6 +2,7 @@ import glob
 import os
 import subprocess
 import shutil
+import sys
 
 from rdkit import Chem
 from pele_platform.constants import constants as cs
@@ -58,14 +59,31 @@ def growing_sites(fragment,
     bonds = []
     mol = Chem.MolFromPDBFile(fragment, removeHs=False)
     symmetry_list = get_symmetry_groups(mol)
-    if mol:
-        heavy_atoms = [a for a in mol.GetAtoms() if a.GetSymbol() != "H"]
-        for a in heavy_atoms:
-            hydrogens = [n for n in a.GetNeighbors() if n.GetSymbol() == "H" and n.GetIdx() in symmetry_list]
-            at_name = a.GetMonomerInfo().GetName().strip()
-            for h in hydrogens:
-                h_name = h.GetMonomerInfo().GetName().strip()
-                bonds.append("{} {} {}-{}".format(fragment, user_bond, at_name, h_name))
+    if fragment_atom is not None and mol:
+        # THE FRAGMENT_ATOM SHOULD BE AN HYDROGEN FROM WHERE WE WANT TO ATTACH THE FRAGMENT
+        for atom in mol.GetAtoms():
+            if atom.GetPDBResidueInfo().GetName().strip() == fragment_atom.strip():
+                fragment_atom_idx = atom.GetIdx()
+        fragment_bonds = [(x.GetBeginAtomIdx(), x.GetEndAtomIdx()) for x in mol.GetBonds()]
+        for bond in fragment_bonds:
+            if fragment_atom_idx in bond:
+                if bond[0] == fragment_atom_idx:
+                    core_id = bond[1]
+                else:
+                    core_id = bond[0]
+        for a in mol.GetAtoms():
+            if a.GetIdx() == core_id:
+                core_id_name = a.GetPDBResidueInfo().GetName().strip()
+        bonds.append("{} {} {}-{}".format(fragment, user_bond, core_id_name, fragment_atom.strip()))
+    else:
+        if mol:
+            heavy_atoms = [a for a in mol.GetAtoms() if a.GetSymbol() != "H"]
+            for a in heavy_atoms:
+                hydrogens = [n for n in a.GetNeighbors() if n.GetSymbol() == "H" and n.GetIdx() in symmetry_list]
+                at_name = a.GetMonomerInfo().GetName().strip()
+                for h in hydrogens:
+                    h_name = h.GetMonomerInfo().GetName().strip()
+                    bonds.append("{} {} {}-{}".format(fragment, user_bond, at_name, h_name))
     return bonds
 
 
@@ -109,7 +127,6 @@ def sdf_to_pdb(file_list,
                 converted_mae.append(fout)
             except Exception as e:
                 logger.info("Error occured while converting SD files to mae.", e)
-           
         # convert all MAE to PDB, it will result in a lot of numbered pdb files
         for c in converted_mae:
             shutil.move(c, tmpdirname)
@@ -198,7 +215,7 @@ def get_fragment_files(path,
                                                                                                                                                                                         
     # convert SDF to PDB, if necessary                                                                                                                                                  
     sdf_files = [elem for elem in fragment_files if ".sdf" in elem.lower()]                                                                                                             
-    pdb_files = [elem for elem in fragment_files if ".pdb" in elem.lower()]                                                                                                             
+    pdb_files = [elem for elem in fragment_files if ".pdb" in elem.lower()]
     all_files = pdb_files + sdf_to_pdb(sdf_files, logger, tmpdirname)
     return all_files
 
@@ -217,8 +234,8 @@ def write_config_file(output_name,
 def main(user_bond,
          frag_library,
          logger,
-         tmpdirname,
-         fragment_atom):
+         fragment_atom,
+         tmpdirname):
     # find the library and extract fragments
     path = get_library(frag_library)
     all_files = get_fragment_files(path, logger, tmpdirname) 
