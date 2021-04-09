@@ -272,8 +272,9 @@ class SimulationParams(
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates")
         )
         self.usesrun = "true" if args.usesrun else "false"
+        mpi_params_name = ("srunParameters" if args.usesrun else "mpiParameters")
         self.mpi_params = (
-            f'"mpiParameters": "{args.mpi_params}",' if args.mpi_params else ""
+            f'"{mpi_params_name}": "{args.mpi_params}",' if args.mpi_params else ""
         )
 
     def optative_params(self, args):
