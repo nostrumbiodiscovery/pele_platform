@@ -159,6 +159,10 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
             The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1% of all structures.
         max_top_poses : int (optional, default = 100)
             Number of top poses to retrieve.
+        top_clusters_criterion : str (optional, default = "25_percentile")
+            Method for selecting the top clusters, you can use one of ["25_percentile", "5_percentile", "population", "mean"].
+        cluster_representatives_criterion : str (optional, default = "5_percentile")
+            Method for selecting representative structures for each cluster, you can choose one of ["25_percentile", "5_percentile", "mean"].
 
 .. code-block:: python
 
@@ -181,6 +185,10 @@ Performs clustering of the output poses based on ligand heavy atom coordinates u
             Maximum number of clusters to return. If a large number of clusters is created, only a specific subset with the best metrics is returned.
         min_population : float (optional, default = 0.01)
             The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1%.
+        top_clusters_criterion : str (optional, default = "25_percentile")
+            Method for selecting the top clusters, you can use one of ["25_percentile", "5_percentile", "population", "mean"].
+        cluster_representatives_criterion : str (optional, default = "5_percentile")
+            Method for selecting representative structures for each cluster, you can choose one of ["25_percentile", "5_percentile", "mean"].
 
 .. code-block:: python
 

@@ -1220,7 +1220,7 @@ class Analysis(object):
                                         "Cluster label": labels,
                                         "trajectory": trajectories,
                                         "Step": steps})
-        breakpoint()
+
         # Merge selected cluster representatives with original report data
         extended_dataframe = dataframe.merge(trajectory_data, how="right", on=["Step", "trajectory", "Cluster"])
 
