@@ -7,5 +7,5 @@ te_column: 3
 be_column: 4
 limit_column: 7
 max_top_poses: 0
-top_clusters_criterion: "25_percentile"
+top_clusters_criterion: "interaction_25_percentile"
 test: true
