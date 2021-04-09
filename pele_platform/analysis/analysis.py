@@ -346,9 +346,9 @@ class Analysis(object):
     def generate_clusters(self, path, clustering_type,
                           bandwidth=2.5, analysis_nclust=10,
                           max_top_clusters=8,
-                          top_clusters_criterion="25_percentile",
+                          top_clusters_criterion="interaction_25_percentile",
                           min_population=0.01,
-                          representatives_criterion="5_percentile"):
+                          representatives_criterion="interaction_5_percentile"):
         """
         It generates the structural clustering of ligand poses.
 
@@ -368,8 +368,8 @@ class Analysis(object):
         max_top_clusters : int
             Maximum number of clusters to return. Default is 8
         top_clusters_criterion : str
-            Criterion to select top clusters. Default is "25_percentile".
-            One of ["total_25_percentile",
+            Criterion to select top clusters. Default is
+            "interaction_25_percentile". One of ["total_25_percentile",
             "total_5_percentile", "total_mean", "interaction_25_percentile",
             "interaction_5_percentile", "interaction_mean", "population"]
         min_population : float
@@ -377,7 +377,7 @@ class Analysis(object):
             between 0 and 1. Default is 0.01 (i.e. 1%)
         representatives_criterion : str
             Criterion to select cluster representative structures. Default is
-            "5_percentile". One of ["total_25_percentile",
+            "interaction_5_percentile". One of ["total_25_percentile",
             "total_5_percentile", "total_mean", "interaction_25_percentile",
             "interaction_5_percentile", "interaction_mean"]
         """
@@ -772,8 +772,9 @@ class Analysis(object):
             user_metric = \
                 metric_top_clusters_criterion[top_clusters_criterion.lower()]
         else:
-            raise ValueError('Invalid top_clusters_criterion. It must be '
-                             ' one of ' +
+            raise ValueError('Invalid top_clusters_criterion ' +
+                             '\'{}\''.format(top_clusters_criterion.lower()) +
+                             '. It must be one of ' +
                              '{}'.format(metric_top_clusters_criterion.keys()))
 
         # Check if the selected metric is available
@@ -1112,8 +1113,9 @@ class Analysis(object):
         # Get metric to be used in the cluster representatives selection
         representatives_criterion = representatives_criterion.lower()
         if representatives_criterion not in cluster_representatives_criterion:
-            raise ValueError('Invalid cluster_representatives_criterion. '
-                             'It must be one of ' +
+            raise ValueError('Invalid cluster_representatives_criterion'
+                             '\'{}\''.format(representatives_criterion) +
+                             '. It must be one of ' +
                              '{}'.format(
                                  cluster_representatives_criterion.keys()))
 
