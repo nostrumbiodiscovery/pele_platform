@@ -370,7 +370,7 @@ def run_adaptive(args):
             min_population=parameters.min_population,
             max_top_poses=parameters.max_top_poses,
             top_clusters_criterion=parameters.top_clusters_criterion,
-            cluster_representatives_criterion=parameters.cluster_representatives_criterion,
+            representatives_criterion=parameters.cluster_representatives_criterion,
             )
 
     return parameters

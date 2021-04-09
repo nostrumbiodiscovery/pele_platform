@@ -181,7 +181,8 @@ class Analysis(object):
     def generate(self, path, clustering_type='meanshift',
                  bandwidth=2.5, analysis_nclust=10,
                  max_top_clusters=8, top_clusters_criterion="25_percentile",
-                 min_population=0.01, max_top_poses=100, cluster_representatives_criterion="5_percentile"):
+                 min_population=0.01, max_top_poses=100,
+                 representatives_criterion="5_percentile"):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -202,17 +203,21 @@ class Analysis(object):
             model. Default is 10
         max_top_clusters : int
             Maximum number of clusters to return. Default is 8
-        top_clusters_criterion : str
-            Method for selection of top clusters, choose one option from constants.metric_top_clusters_criterion, e.g.
-            "5_percentile", "25_percentile", "population"...
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
         max_top_poses : int
             Number of top poses to retrieve. Default = 100.
-        cluster_representatives_criterion : str
-            Method of selecting best cluster representatives, choose one option from
-            constants. cluster_representatives_criterion. Default = "5_percentile".
+        top_clusters_criterion : str
+            Criterion to select top clusters. Default is "25_percentile".
+            One of ["total_25_percentile",
+            "total_5_percentile", "total_mean", "interaction_25_percentile",
+            "interaction_5_percentile", "interaction_mean", "population"]
+        representatives_criterion : str
+            Criterion to select cluster representative structures. Default is
+            "5_percentile". One of ["total_25_percentile",
+            "total_5_percentile", "total_mean", "interaction_25_percentile",
+            "interaction_5_percentile", "interaction_mean"]
         """
         import os
         path = self._check_existing_directory(path)
@@ -240,8 +245,8 @@ class Analysis(object):
         best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
-                               max_top_clusters, top_clusters_criterion, min_population,
-                               cluster_representatives_criterion)
+                               max_top_clusters, top_clusters_criterion,
+                               min_population, representatives_criterion)
 
         self.generate_report(plots_folder, top_poses_folder,
                              clusters_folder, best_metrics, report_file)
@@ -339,8 +344,10 @@ class Analysis(object):
 
     def generate_clusters(self, path, clustering_type,
                           bandwidth=2.5, analysis_nclust=10,
-                          max_top_clusters=8, top_clusters_criterion="25_percentile", min_population=0.01,
-                          cluster_representatives_criterion="5_percentile"):
+                          max_top_clusters=8,
+                          top_clusters_criterion="25_percentile",
+                          min_population=0.01,
+                          representatives_criterion="5_percentile"):
         """
         It generates the structural clustering of ligand poses.
 
@@ -360,23 +367,30 @@ class Analysis(object):
         max_top_clusters : int
             Maximum number of clusters to return. Default is 8
         top_clusters_criterion : str
-            Method of cluster selection, e.g. "5_percentile", "25_percentile", "population". Choose one of the values
-            from constants.metric_top_clusters_criterion.
-        cluster_representatives_criterion : str
-            Method of selecting cluster representatives, default is "5_percentile" but any from
-            constants.cluster_representatives_criterion will work.
+            Criterion to select top clusters. Default is "25_percentile".
+            One of ["total_25_percentile",
+            "total_5_percentile", "total_mean", "interaction_25_percentile",
+            "interaction_5_percentile", "interaction_mean", "population"]
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
+        representatives_criterion : str
+            Criterion to select cluster representative structures. Default is
+            "5_percentile". One of ["total_25_percentile",
+            "total_5_percentile", "total_mean", "interaction_25_percentile",
+            "interaction_5_percentile", "interaction_mean"]
         """
         import os
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
-        from pele_platform.constants import constants
+        from pele_platform.constants.constants import \
+            metric_top_clusters_criterion
 
         check_make_folder(path)
 
         # Get clustering object
-        clustering, max_coordinates = self._get_clustering(clustering_type, bandwidth, analysis_nclust)
+        clustering, max_coordinates = self._get_clustering(clustering_type,
+                                                           bandwidth,
+                                                           analysis_nclust)
 
         # Extract coordinates
         coordinates, dataframe = self._extract_coordinates(max_coordinates)
@@ -405,11 +419,11 @@ class Analysis(object):
 
             return
 
-        print(
-            f"Retrieve best cluster poses based on {constants.metric_top_clusters_criterion[cluster_representatives_criterion]}.")
+        print(f"Retrieve best cluster poses based on " +
+              f"{metric_top_clusters_criterion[cluster_representatives_criterion]}.")
 
         cluster_subset, cluster_summary = self._select_top_clusters(
-            clusters, cluster_summary, top_clusters_criterion=top_clusters_criterion,
+            clusters, cluster_summary, top_clusters_criterion,
             max_clusters_to_select=max_top_clusters,
             min_population_to_select=min_population)
 
@@ -422,7 +436,7 @@ class Analysis(object):
 
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
         self._save_cluster_representatives(cluster_subset, dataframe, path,
-                                           user_metric=cluster_representatives_criterion)
+                                           representatives_criterion)
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):
@@ -465,6 +479,12 @@ class Analysis(object):
         ----------
         clustering_type : str
             The type of clustering to use
+        bandwidth : float
+            Bandwidth for the mean shift and HDBSCAN clustering. Default is
+            2.5
+        analysis_nclust : int
+            Number of clusters to create when using the Gaussian mixture
+            model. Default is 10
 
         Returns
         -------
@@ -474,12 +494,6 @@ class Analysis(object):
         max_coordinates : int
             The maximum number of coordinates to extract from the
             residue
-        bandwidth : float
-            Bandwidth for the mean shift and HDBSCAN clustering. Default is
-            2.5
-        analysis_nclust : int
-            Number of clusters to create when using the Gaussian mixture
-            model. Default is 10
         """
         from pele_platform.analysis import (GaussianMixtureClustering,
                                             HDBSCANClustering,
@@ -708,7 +722,8 @@ class Analysis(object):
 
         return summary
 
-    def _select_top_clusters(self, clusters, cluster_summary, top_clusters_criterion="25_percentile",
+    def _select_top_clusters(self, clusters, cluster_summary,
+                             top_clusters_criterion="25_percentile",
                              max_clusters_to_select=8,
                              min_population_to_select=0.01):
         """
@@ -1024,7 +1039,8 @@ class Analysis(object):
 
         return rmsd_per_cluster
 
-    def _save_cluster_representatives(self, clusters, dataframe, path, user_metric):
+    def _save_cluster_representatives(self, clusters, dataframe, path,
+                                      representatives_criterion):
         """
         It saves the resulting clusters to disk. The selection of the
         representative structures is based on the total energy. The
@@ -1040,9 +1056,9 @@ class Analysis(object):
             follows the same ordering as the array of clusters
         path : str
             The path where the clusters will be saved at
-        user_metric : str
-            User-defined metric to select cluster representatives, default "5_percentile", but any from
-            constants.cluster_representatives_criterion can be used.
+        representatives_criterion : str
+            User-defined criterion to select cluster representatives.
+            Default is "5_percentile". One of
         """
         import os
         from collections import defaultdict
@@ -1063,10 +1079,10 @@ class Analysis(object):
             metrics_per_cluster[cluster].append(metric)
 
         # Get percentile values or mean energy (based on user metric)
-        if user_metric == "25_percentile":
+        if representatives_criterion == "25_percentile":
             representative_structures = self._get_percentile_per_cluster(metrics_per_cluster, 25, dataframe, clusters,
                                                                          metrics)
-        elif user_metric == "mean":
+        elif representatives_criterion == "mean":
             representative_structures = self._get_mean_per_cluster(metrics_per_cluster, dataframe, clusters, metrics)
         else:
             representative_structures = self._get_percentile_per_cluster(metrics_per_cluster, 5, dataframe, clusters,

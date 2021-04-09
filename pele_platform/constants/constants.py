@@ -260,10 +260,22 @@ INTERSTEPLOGGER = ''',
             "useInterStepLogger": true'''
 
 
-# Cluster selection - mapping between table metrics and YAML arguments
+# Top cluster selection - mapping between table metrics and YAML arguments
 metric_top_clusters_criterion = {
-    "25_percentile": "Binding Energy 25-percentile",
-    "5_percentile": "Binding Energy 5-percentile",
-    "population": "Population",
-    "mean": "Binding Energy mean",
-}
+    "total_25_percentile": "Total Energy 25-percentile",
+    "total_5_percentile": "Total Energy 5-percentile",
+    "total_mean": "Total Energy mean",
+    "interaction_25_percentile": "Interaction Energy 25-percentile",
+    "interaction_5_percentile": "Interaction Energy 5-percentile",
+    "interaction_mean": "Interaction Energy mean",
+    "population": "Population"}
+
+# Cluster representatives selection - mapping between table metrics and
+# YAML arguments
+cluster_representatives_criterion = {
+    "total_25_percentile": "Total Energy 25-percentile",
+    "total_5_percentile": "Total Energy 5-percentile",
+    "total_mean": "Total Energy mean",
+    "interaction_25_percentile": "Interaction Energy 25-percentile",
+    "interaction_5_percentile": "Interaction Energy 5-percentile",
+    "interaction_mean": "Interaction Energy mean"}

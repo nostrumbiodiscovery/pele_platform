@@ -247,7 +247,7 @@ class FragRunner(object):
                 max_top_clusters=self.parameters.max_top_clusters,
                 top_clusters_criterion=self.parameters.top_clusters_criterion,
                 min_population=self.parameters.min_population,
-                cluster_representatives_criterion=self.parameters.cluster_representatives_criterion)
+                representatives_criterion=self.parameters.cluster_representatives_criterion)
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
