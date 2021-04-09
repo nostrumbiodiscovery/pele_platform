@@ -19,7 +19,7 @@ FRAG_SDF_LIBRARIES = os.path.join(test_path, "frag/input_lib_sdf.yaml")
 FRAG_PDB_LIBRARIES = os.path.join(test_path, "frag/input_lib_pdb.yaml")
 FRAG_ANALYSIS_TO_POINT = os.path.join(test_path, "frag/input_point_analysis.yaml")
 FRAG_SYMMETRY = os.path.join(test_path, "frag/input_symmetry.yaml")
-FRAG_CORE_ATOM = os.path.join(test_path, "frag/input_frag_core_atom.yaml")
+FRAGMENT_ATOM = os.path.join(test_path, "frag/input_fragment_atom.yaml")
 
 EXPECTED_INPUT = os.path.join(
     test_path, "frag/asymmetric_hydrogens_detector/expected_input.conf"
@@ -209,7 +209,7 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
     
-def test_frag_core_atom(capsys, ext_args=FRAG_CORE_ATOM):
+def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
     """
     Tests the frag_core_atom flag.
     
