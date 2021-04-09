@@ -180,9 +180,10 @@ class Analysis(object):
 
     def generate(self, path, clustering_type='meanshift',
                  bandwidth=2.5, analysis_nclust=10,
-                 max_top_clusters=8, top_clusters_criterion="25_percentile",
+                 max_top_clusters=8,
+                 top_clusters_criterion="interaction_25_percentile",
                  min_population=0.01, max_top_poses=100,
-                 representatives_criterion="5_percentile"):
+                 representatives_criterion="interaction_5_percentile"):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -209,13 +210,13 @@ class Analysis(object):
         max_top_poses : int
             Number of top poses to retrieve. Default = 100.
         top_clusters_criterion : str
-            Criterion to select top clusters. Default is "25_percentile".
-            One of ["total_25_percentile",
+            Criterion to select top clusters. Default is
+            "interaction_25_percentile". One of ["total_25_percentile",
             "total_5_percentile", "total_mean", "interaction_25_percentile",
             "interaction_5_percentile", "interaction_mean", "population"]
         representatives_criterion : str
             Criterion to select cluster representative structures. Default is
-            "5_percentile". One of ["total_25_percentile",
+            "interaction_5_percentile". One of ["total_25_percentile",
             "total_5_percentile", "total_mean", "interaction_25_percentile",
             "interaction_5_percentile", "interaction_mean"]
         """
@@ -419,14 +420,13 @@ class Analysis(object):
 
             return
 
-        print(f"Retrieve top clusters based on " +
-              f"{metric_top_clusters_criterion[top_clusters_criterion]}.")
-
         cluster_subset, cluster_summary = \
             self._select_top_clusters(clusters, cluster_summary,
                                       top_clusters_criterion,
                                       max_clusters_to_select=max_top_clusters,
                                       min_population_to_select=min_population)
+        print(f"Retrieve top clusters based on " +
+              f"{metric_top_clusters_criterion[top_clusters_criterion]}.")
 
         # Save cluster summary to file with information about selected labels
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
@@ -439,11 +439,11 @@ class Analysis(object):
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
 
         # Save cluster representative structures
+        self._save_cluster_representatives(cluster_subset, dataframe, path,
+                                           representatives_criterion)
         print(
             f"Retrieve top cluster representative structures based on " +
             f"{cluster_representatives_criterion[representatives_criterion]}.")
-        self._save_cluster_representatives(cluster_subset, dataframe, path,
-                                           representatives_criterion)
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):

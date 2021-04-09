@@ -203,9 +203,8 @@ def test_generate_clusters(analysis, method, bandwidth, n_clusters):
     results = os.path.join(working_folder, "*pdb")
     check_remove_folder(working_folder)
 
-    analysis.generate_clusters(
-        working_folder, method, bandwidth=bandwidth, analysis_nclust=n_clusters
-    )
+    analysis.generate_clusters(working_folder, method, bandwidth=bandwidth,
+                               analysis_nclust=n_clusters)
     assert len(glob.glob(results)) == n_clusters
     check_remove_folder(working_folder)
 
