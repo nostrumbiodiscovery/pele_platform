@@ -6,7 +6,6 @@ import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
 
 
-
 def _search_core_fragment_linker(ligand, ligand_core, result=0, check_symmetry=False):
     """ Given mol1 and mol2 return the linker atoms"""
     substructure_results = ligand.GetSubstructMatches(ligand_core)
@@ -33,14 +32,14 @@ def _search_core_fragment_linker(ligand, ligand_core, result=0, check_symmetry=F
                     return core_atoms.index(neighbour.GetIdx()), core_atoms, atom.GetIdx()
 
 
-def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0, substructure=True, simmetry=False):
+def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0, substructure=True, symmetry=False):
     from rdkit import Chem
     import rdkit.Chem.rdmolops as rd
     import rdkit.Chem.rdchem as rc
 
     # Retrieve atom core linking fragment
     try:
-        atom_core_idx, atoms_core, atom_fragment = _search_core_fragment_linker(ligand, ligand_core, result, simmetry)
+        atom_core_idx, atoms_core, atom_fragment = _search_core_fragment_linker(ligand, ligand_core, result, symmetry)
         print("ATOM OF FRAGMENT ATTACHED TO CORE:", atom_fragment)
         print("ATOM OF CORE ATTACHED TO FRAGMENT:", atom_core_idx)
     except TypeError:
@@ -53,7 +52,6 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
     hydrogen_core_idx = \
         [atom.GetIdx() for atom in original.GetAtomWithIdx(atom_core_idx).GetNeighbors() if atom.GetAtomicNum() == 1][0]
     hydrogen_core = at.Atom(original, hydrogen_core_idx)
-
 
     # Delete core for full ligand with substructure and if it fails manually
     if substructure:
@@ -68,7 +66,6 @@ def _build_fragment_from_complex(complex, residue, ligand, ligand_core, result=0
 
         for atom in reversed(atoms_core):
             new_mol.RemoveAtom(atom)
-
 
         for atom in reversed(new_mol.GetMol().GetAtoms()):
             neighbours = atom.GetNeighbors()
@@ -107,7 +104,7 @@ def _retrieve_fragment(fragment, old_atoms, atom_core, hydrogen_core, atom_fragm
         # Get fragment atom attached to newly added hydrogen
         atom_fragment_idx = fragment.GetAtomWithIdx(added_hydrogen_idx).GetNeighbors()[0].GetIdx()
     except IndexError:
-        logger.info("Hydrogen detection failed won't have into account steriochemistry")
+        print("Hydrogen detection failed won't have into account stereochemistry")
         added_hydrogen_idx = 0
         no_hydrogens = True
         atom_fragment_idx = mapping[atom_fragment]

@@ -7,6 +7,7 @@ from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_pa
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
 from pele_platform.Utilities.Parameters.SimulationParams.InOutParams import inout_params
+from pele_platform.Adaptive.interaction_restrictions import InteractionRestrictionsBuilder
 from pele_platform.Utilities.Parameters.SimulationParams.PCA import pca
 from pele_platform.Utilities.Parameters.SimulationParams.site_finder import site_finder
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
@@ -38,6 +39,7 @@ class SimulationParams(
         self.output_params(args)
         self.analysis_params(args)
         self.constraints_params(args)
+        self.interaction_restrictions_params(args)
 
         # Create all simulation types (could be more efficient --> chnage in future)
         super().generate_msm_params(args)
@@ -270,8 +272,9 @@ class SimulationParams(
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates")
         )
         self.usesrun = "true" if args.usesrun else "false"
+        mpi_params_name = ("srunParameters" if args.usesrun else "mpiParameters")
         self.mpi_params = (
-            f'"mpiParameters": "{args.mpi_params}",' if args.mpi_params else ""
+            f'"{mpi_params_name}": "{args.mpi_params}",' if args.mpi_params else ""
         )
 
     def optative_params(self, args):
@@ -490,6 +493,9 @@ class SimulationParams(
         self.kde_structs = args.kde_structs if args.kde_structs else 1000
         self.min_population = args.min_population if args.min_population is not None else 0.01
         self.max_top_clusters = args.max_top_clusters if args.max_top_clusters is not None else 8
+        self.max_top_poses = args.max_top_poses if args.max_top_poses is not None else 100
+        self.top_clusters_criterion = args.top_clusters_criterion if args.cluster_conditions is not None else "interaction_25_percentile"
+        self.cluster_representatives_criterion = args.cluster_representatives_criterion if args.cluster_representatives_criterion is not None else "interaction_5_percentile"
 
     def constraints_params(self, args):
         """
@@ -524,3 +530,18 @@ class SimulationParams(
                     flag, self.simulation_params.get(flag, defaults[flag])
                 )
             setattr(self, flag, flag_value)
+
+    def interaction_restrictions_params(self, args):
+        """
+        Sets parameters for interaction restrictions.
+        Fills the pele_params INTERACTION_RESTRICTIONS template with an additional section of parameters change.
+        """
+        if args.interaction_restrictions:
+            restrictions = InteractionRestrictionsBuilder()
+            restrictions.parse_interaction_restrictions(self.system, args.interaction_restrictions)
+            self.met_interaction_restrictions = restrictions.metrics_to_json()
+            self.interaction_restrictions = restrictions.conditions_to_json()
+            self.parameters = restrictions.fill_template(self.parameters)
+        else:
+            self.met_interaction_restrictions = ""
+            self.interaction_restrictions = ""

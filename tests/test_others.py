@@ -56,7 +56,7 @@ SMILES_CONSTR = [
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = tk.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
     assert not errors
 
@@ -64,7 +64,7 @@ def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
 def test_checker():
     yaml = os.path.join(test_path, "checker/input.yaml")
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except KeyError:
         assert KeyError
         return
@@ -86,7 +86,7 @@ def test_checker():
 )
 def test_yaml_errors(yaml_file, error):
     try:
-        job = main.run_platform(yaml_file)
+        job = main.run_platform_from_yaml(yaml_file)
     except Exception as e:
         assert str(e) == error
         return
@@ -167,7 +167,7 @@ def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
     path_variables = os.environ["PATH"]
     os.environ["PATH"] = ""
     try:
-        job = main.run_platform(ext_args)
+        job = main.run_platform_from_yaml(ext_args)
     except ce.ExecutableNotInPath:
         assert True
         os.environ["PATH"] = path_variables
@@ -178,7 +178,7 @@ def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
 
 def test_lig_preparation_error(args=LIG_PREP_ARGS):
     try:
-        job = main.run_platform(args)
+        job = main.run_platform_from_yaml(args)
     except ce.LigandPreparationError:
         assert True
         return
@@ -187,7 +187,7 @@ def test_lig_preparation_error(args=LIG_PREP_ARGS):
 
 def test_env_variable(ext_args=ENV_ARGS):
     try:
-        job = main.run_platform(ext_args)
+        job = main.run_platform_from_yaml(ext_args)
     except ce.EnvVariableNotFound as e:
         assert True
         return
@@ -197,7 +197,7 @@ def test_env_variable(ext_args=ENV_ARGS):
 def test_flag_similarity():
     yaml = os.path.join(test_path, "checker/input.yaml")
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except KeyError as e:
         assert str(e).strip("'") == "Incorrect flag posis. Did you mean poses?"
         return
@@ -206,7 +206,7 @@ def test_flag_similarity():
 
 def test_atom_error(ext_args=ATOM_GPCR_ERROR_ARGS):
     try:
-        job = main.run_platform(ext_args)
+        job = main.run_platform_from_yaml(ext_args)
     except ce.WrongAtomSpecified as e:
         assert str(e).strip("'") == "Atom A:114:CM could not be found in structure"
         return
@@ -218,7 +218,7 @@ yaml = os.path.join(test_path, "checker/input_template.yaml")
 
 def test_template_error(yaml=yaml):
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except ce.TemplateFileNotFound as e:
         assert str(e).strip("'") == "File mgadeaz not found"
         return
@@ -228,7 +228,7 @@ def test_template_error(yaml=yaml):
 def test_input_yaml_error():
     yaml = os.path.join(test_path, "gpcr/complex.pdb")
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except ce.WrongYamlFile:
         assert True
         return
@@ -240,7 +240,7 @@ yaml = os.path.join(test_path, "checker/input_rotamer.yaml")
 
 def test_rotamer_error(yaml=yaml):
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except ce.RotamersFileNotFound as e:
         assert str(e).strip("'") == "File mgadeaz not found"
         return
@@ -251,7 +251,7 @@ yaml = os.path.join(test_path, "out_in/input_flag_error.yaml")
 
 def test_out_in_flag(yaml=yaml):
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except ce.OutInError as e:
         assert (
             str(e).strip("'") == "flag final_site must be specified for out_in package"
@@ -264,7 +264,7 @@ yaml = os.path.join(test_path, "checker/input_atom_string.yaml")
 
 def test_atom_string_error(yaml=yaml):
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except ce.WrongAtomStringFormat as e:
         assert (
             str(e).strip("'")
@@ -279,7 +279,7 @@ yaml = os.path.join(test_path, "checker/input_underscore.yaml")
 
 def test_atom_string_underscore(yaml=yaml):
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except ce.WrongAtomStringFormat as e:
         assert (
             str(e).strip("'")
@@ -292,7 +292,7 @@ yaml = os.path.join(test_path, "checker/input_unk.yaml")
 
 def test_unk_error():
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except ce.LigandNameNotSupported as e:
         assert (
             str(e)
@@ -305,7 +305,7 @@ def test_unk_error():
 def test_constrain_smarts():
     yaml = os.path.join(test_path, "constraints/input_constrain_smarts.yaml")
     errors = []
-    job = main.run_platform(yaml)
+    job = main.run_platform_from_yaml(yaml)
     errors = tk.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
     assert not errors
 
@@ -313,7 +313,7 @@ def test_constrain_smarts():
 def test_substructure_error():
     yaml = os.path.join(test_path, "constraints/input_smiles_error.yaml")
     try:
-        job = main.run_platform(yaml)
+        job = main.run_platform_from_yaml(yaml)
     except ce.SubstructureError as e:
         assert (
             str(e).strip("'")

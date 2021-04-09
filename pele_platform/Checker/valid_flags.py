@@ -188,5 +188,8 @@ VALID_FLAGS_PLATFORM = {
     "kde": "kde",
     "inter_step_logger": "inter_step_logger",
     "max_top_clusters": "max_top_clusters",
-    "min_population": "min_population"
+    "min_population": "min_population",
+    "max_top_poses": "max_top_poses",
+    "top_clusters_criterion": "top_clusters_criterion",
+    "cluster_representatives_criterion": "cluster_representatives_criterion",
 }

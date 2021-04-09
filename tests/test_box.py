@@ -13,6 +13,6 @@ BOX_RES = [
 
 def test_box_center_from_residue(ext_args=BOX_RES_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     errors = ta.check_file(job.pele_dir, "pele.conf", BOX_RES, errors)
     assert not errors

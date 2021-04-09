@@ -440,6 +440,7 @@ class DataHandler(object):
 
         return coordinates, reordered_dataframe
 
+    # TODO this should be a static method!!!
     def extract_PDB_coords(self, residue_name, remove_hydrogen=True,
                            max_coordinates=6, n_proc=1):
         """
@@ -515,21 +516,7 @@ class DataHandler(object):
             with Pool(n_proc) as pool:
                 coordinates = pool.map(parallel_function, trajectories)
 
-        # TODO trajectories might not need to be removed here, we are already
-        # filtering them afterwards, when creating the ordered dataframe
-        # Remove possible empty arrays
-        coord_to_remove = []
-        traj_to_remove = []
-        for coordinates_array, trajectory in zip(coordinates, trajectories):
-            if len(coordinates_array) == 0:
-                coord_to_remove.append(coordinates_array)
-                traj_to_remove.append(trajectory)
-        for coord in coord_to_remove:
-            coordinates.remove(coord)
-        for traj in traj_to_remove:
-            trajectories.remove(traj)
-
-        # In case we removed all of them
+        # In case we no coordinates were extracted
         if len(coordinates) == 0:
             return None, None
 
