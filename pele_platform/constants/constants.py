@@ -261,11 +261,9 @@ INTERSTEPLOGGER = ''',
 
 
 # Cluster selection - mapping between table metrics and YAML arguments
-metric_selection = {
+metric_top_clusters_criterion = {
     "25_percentile": "Binding Energy 25-percentile",
     "5_percentile": "Binding Energy 5-percentile",
     "population": "Population",
-    "rmsd": "MeanRMSD",
     "mean": "Binding Energy mean",
-    "stdev": "Binding Energy standard deviation",
 }

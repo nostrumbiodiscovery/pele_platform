@@ -239,15 +239,15 @@ class FragRunner(object):
                                 kde_structs=self.parameters.kde_structs,
                                 topology=self.parameters.topology,
                                 cpus=self.parameters.cpus)
-
             analysis.generate(
                 analysis_folder,
                 clustering_type=self.parameters.clustering_method.lower(),
                 bandwidth=self.parameters.bandwidth,
                 analysis_nclust=self.parameters.analysis_nclust,
                 max_top_clusters=self.parameters.max_top_clusters,
-                cluster_selection=self.parameters.cluster_selection,
-                min_population=self.parameters.min_population)
+                top_clusters_criterion=self.parameters.top_clusters_criterion,
+                min_population=self.parameters.min_population,
+                cluster_representatives_criterion=self.parameters.cluster_representatives_criterion)
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:

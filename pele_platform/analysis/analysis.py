@@ -180,8 +180,8 @@ class Analysis(object):
 
     def generate(self, path, clustering_type='meanshift',
                  bandwidth=2.5, analysis_nclust=10,
-                 max_top_clusters=8, cluster_selection="5_percentile",
-                 min_population=0.01, max_top_poses=100):
+                 max_top_clusters=8, top_clusters_criterion="25_percentile",
+                 min_population=0.01, max_top_poses=100, cluster_representatives_criterion="5_percentile"):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -202,17 +202,19 @@ class Analysis(object):
             model. Default is 10
         max_top_clusters : int
             Maximum number of clusters to return. Default is 8
-        cluster_selection : str
-            Method for selection of top clusters, choose one option from constants.metric_selection, e.g.
+        top_clusters_criterion : str
+            Method for selection of top clusters, choose one option from constants.metric_top_clusters_criterion, e.g.
             "5_percentile", "25_percentile", "population"...
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
         max_top_poses : int
             Number of top poses to retrieve. Default = 100.
+        cluster_representatives_criterion : str
+            Method of selecting best cluster representatives, choose one option from
+            constants. cluster_representatives_criterion. Default = "5_percentile".
         """
         import os
-
         path = self._check_existing_directory(path)
 
         summary_file = os.path.join(path, "data.csv")
@@ -238,7 +240,8 @@ class Analysis(object):
         best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
-                               max_top_clusters, cluster_selection, min_population)
+                               max_top_clusters, top_clusters_criterion, min_population,
+                               cluster_representatives_criterion)
 
         self.generate_report(plots_folder, top_poses_folder,
                              clusters_folder, best_metrics, report_file)
@@ -336,7 +339,8 @@ class Analysis(object):
 
     def generate_clusters(self, path, clustering_type,
                           bandwidth=2.5, analysis_nclust=10,
-                          max_top_clusters=8, cluster_selection="5_percentile", min_population=0.01):
+                          max_top_clusters=8, top_clusters_criterion="25_percentile", min_population=0.01,
+                          cluster_representatives_criterion="5_percentile"):
         """
         It generates the structural clustering of ligand poses.
 
@@ -355,9 +359,12 @@ class Analysis(object):
             model. Default is 10
         max_top_clusters : int
             Maximum number of clusters to return. Default is 8
-        cluster_selection : str
+        top_clusters_criterion : str
             Method of cluster selection, e.g. "5_percentile", "25_percentile", "population". Choose one of the values
-            from constants.metric_selection.
+            from constants.metric_top_clusters_criterion.
+        cluster_representatives_criterion : str
+            Method of selecting cluster representatives, default is "5_percentile" but any from
+            constants.cluster_representatives_criterion will work.
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
@@ -388,8 +395,7 @@ class Analysis(object):
                                            dataframe, os.path.dirname(path))
 
         # Analyze and save clustering results
-        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters,
-                                                         coordinates)
+        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
         cluster_summary = self._analyze_clusters(clusters, dataframe,
                                                  rmsd_per_cluster)
 
@@ -399,10 +405,11 @@ class Analysis(object):
 
             return
 
-        print(f"Retrieve best cluster poses based on {constants.metric_selection[cluster_selection]}.")
+        print(
+            f"Retrieve best cluster poses based on {constants.metric_top_clusters_criterion[cluster_representatives_criterion]}.")
 
         cluster_subset, cluster_summary = self._select_top_clusters(
-            clusters, cluster_summary, cluster_selection=cluster_selection,
+            clusters, cluster_summary, top_clusters_criterion=top_clusters_criterion,
             max_clusters_to_select=max_top_clusters,
             min_population_to_select=min_population)
 
@@ -414,7 +421,8 @@ class Analysis(object):
                                        cluster_summary, path)
 
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
-        self._save_clusters(cluster_subset, dataframe, path, cluster_summary)
+        self._save_cluster_representatives(cluster_subset, dataframe, path,
+                                           user_metric=cluster_representatives_criterion)
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):
@@ -700,7 +708,7 @@ class Analysis(object):
 
         return summary
 
-    def _select_top_clusters(self, clusters, cluster_summary, cluster_selection="5_percentile",
+    def _select_top_clusters(self, clusters, cluster_summary, top_clusters_criterion="25_percentile",
                              max_clusters_to_select=8,
                              min_population_to_select=0.01):
         """
@@ -734,16 +742,14 @@ class Analysis(object):
 
         metrics = list(cluster_summary.columns)
 
-        user_metric = constants.metric_selection[cluster_selection.lower()]
+        user_metric = constants.metric_top_clusters_criterion[top_clusters_criterion.lower()]
 
         if user_metric in metrics:
             metric = user_metric
         else:
             metric = "Population"
 
-        filtered_cluster_summary = \
-            cluster_summary[cluster_summary["Population"] >=
-                            min_population_to_select]
+        filtered_cluster_summary = cluster_summary[cluster_summary["Population"] >= min_population_to_select]
 
         if metric == "Population":
             filtered_cluster_summary = filtered_cluster_summary.nlargest(max_clusters_to_select, metric)
@@ -1005,6 +1011,7 @@ class Analysis(object):
 
         # Calculate mean RMSD of each cluster with respect to their centroid
         rmsd_per_cluster = {}
+
         for cluster, conformations in conformations_per_cluster.items():
             rmsds = []
             for conformation in conformations:
@@ -1012,11 +1019,12 @@ class Analysis(object):
                     conformation.reshape(-1, 3) - centroid_per_cluster[cluster]
                 norm_factor = len(centroid_per_cluster[cluster])
                 rmsds.append(np.sqrt((diff * diff).sum() / norm_factor))
+
             rmsd_per_cluster[cluster] = np.mean(rmsds)
 
         return rmsd_per_cluster
 
-    def _save_clusters(self, clusters, dataframe, path, cluster_summary):
+    def _save_cluster_representatives(self, clusters, dataframe, path, user_metric):
         """
         It saves the resulting clusters to disk. The selection of the
         representative structures is based on the total energy. The
@@ -1032,12 +1040,12 @@ class Analysis(object):
             follows the same ordering as the array of clusters
         path : str
             The path where the clusters will be saved at
-        cluster_summary : pandas.DataFrame
-            Dataframe with detailed metric of each cluster.
+        user_metric : str
+            User-defined metric to select cluster representatives, default "5_percentile", but any from
+            constants.cluster_representatives_criterion can be used.
         """
         import os
         from collections import defaultdict
-        import numpy as np
 
         from pele_platform.Utilities.Helpers import get_suffix
         from pele_platform.Utilities.Helpers.bestStructs import (
@@ -1045,38 +1053,26 @@ class Analysis(object):
             extract_snapshot_from_xtc)
         from pele_platform.analysis.clustering import get_cluster_label
 
-        energies = list(dataframe["currentEnergy"])
-        energies_per_cluster = defaultdict(list)
-        for cluster, energy in zip(clusters, energies):
+        # Get Binding Energy per cluster
+        metrics = list(dataframe["Binding Energy"])
+        metrics_per_cluster = defaultdict(list)
+        for cluster, metric in zip(clusters, metrics):
             # Skip outliers such as clusters with label -1
             if cluster < 0:
                 continue
-            energies_per_cluster[cluster].append(energy)
+            metrics_per_cluster[cluster].append(metric)
 
-        percentiles_per_cluster = {}
-        for cluster, energies_array in energies_per_cluster.items():
-            percentiles_per_cluster[cluster] = np.percentile(energies_array, 5)
+        # Get percentile values or mean energy (based on user metric)
+        if user_metric == "25_percentile":
+            representative_structures = self._get_percentile_per_cluster(metrics_per_cluster, 25, dataframe, clusters,
+                                                                         metrics)
+        elif user_metric == "mean":
+            representative_structures = self._get_mean_per_cluster(metrics_per_cluster, dataframe, clusters, metrics)
+        else:
+            representative_structures = self._get_percentile_per_cluster(metrics_per_cluster, 5, dataframe, clusters,
+                                                                         metrics)
 
-        representative_structures = {}
-        lowest_energetic_diff = {}
-        trajectories = list(dataframe["trajectory"])
-        steps = list(dataframe["numberOfAcceptedPeleSteps"])
-        for cluster, energy, trajectory, step in zip(clusters, energies,
-                                                     trajectories, steps):
-            # Skip outliers such as clusters with label -1
-            if cluster < 0:
-                continue
-
-            energetic_diff = np.abs(percentiles_per_cluster[cluster] - energy)
-            if cluster not in representative_structures:
-                representative_structures[cluster] = [trajectory, step]
-                lowest_energetic_diff[cluster] = energetic_diff
-
-            elif lowest_energetic_diff[cluster] > energetic_diff:
-                representative_structures[cluster] = [trajectory, step]
-                lowest_energetic_diff[cluster] = energetic_diff
-
-        for cluster, [trajectory, step] in representative_structures.items():
+        for cluster, [trajectory, step, _] in representative_structures.items():
             if not self.topology:
                 try:
                     label = get_cluster_label(cluster)
@@ -1106,9 +1102,92 @@ class Analysis(object):
 
             representative_structures[cluster].append(label)
 
-        self._save_top_selections(representative_structures, path, cluster_summary)
+        self._save_top_selections(representative_structures, path, dataframe)
 
-    def _save_top_selections(self, dictionary, path, cluster_summary):
+    def _get_percentile_per_cluster(self, metrics_per_cluster, percentile_value, dataframe, clusters, metrics):
+        """
+
+        Parameters
+        ----------
+        metrics_per_cluster :
+        percentile_value :
+        dataframe :
+        clusters :
+        metrics :
+
+        Returns
+        -------
+
+        """
+        import numpy as np
+
+        percentiles_per_cluster = {}
+        for cluster, metric in metrics_per_cluster.items():
+            percentiles_per_cluster[cluster] = np.percentile(metric, percentile_value)
+
+        representative_structures = {}
+        lowest_energetic_diff = {}
+        trajectories = list(dataframe["trajectory"])
+        steps = list(dataframe["numberOfAcceptedPeleSteps"])
+        for cluster, energy, trajectory, step in zip(clusters, metrics,
+                                                     trajectories, steps):
+            # Skip outliers such as clusters with label -1
+            if cluster < 0:
+                continue
+
+            energetic_diff = np.abs(percentiles_per_cluster[cluster] - energy)
+            if cluster not in representative_structures:
+                representative_structures[cluster] = [trajectory, step, energy]
+                lowest_energetic_diff[cluster] = energetic_diff
+
+            elif lowest_energetic_diff[cluster] > energetic_diff:
+                representative_structures[cluster] = [trajectory, step, energy]
+                lowest_energetic_diff[cluster] = energetic_diff
+
+        return representative_structures
+
+    def _get_mean_per_cluster(self, metrics_per_cluster, dataframe, clusters, metrics):
+        """
+        Calculates mean energy value per cluster and retrieves pose with energy closest to that value.
+
+        Parameters
+        ----------
+        metrics_per_cluster : dict
+            Dict with cluster IDs as keys and user-defined metric as values.
+        dataframe : pandas.DataFrame
+            Dataframe with trajectory info.
+        clusters : list
+            List of cluster IDs.
+        metrics : list
+            List of metrics.
+
+        Returns
+        -------
+            Dictionary where cluster ID is the key and values correspond to trajectory, step and metric (energy).
+        """
+        import numpy as np
+
+        mean = {}
+        mean_per_cluster = {}
+        representative_structures = {}
+        trajectories = list(dataframe["trajectory"])
+        steps = list(dataframe["numberOfAcceptedPeleSteps"])
+
+        for cluster, metric in metrics_per_cluster.items():
+            mean[cluster] = np.mean(metric)  # actual mean
+            closest_to_mean = min(metric, key=lambda x: abs(x - mean[cluster]))  # energy value closes to actual mean
+            mean_per_cluster[cluster] = closest_to_mean
+
+        for cluster, energy, trajectory, step in zip(clusters, metrics, trajectories, steps):
+            # Skip outliers such as clusters with label -1
+            if cluster < 0:
+                continue
+
+            if mean_per_cluster[cluster] == energy:
+                representative_structures[cluster] = [trajectory, step, energy]
+        return representative_structures
+
+    def _save_top_selections(self, dictionary, path, dataframe):
         """
         It saves trajectory information about cluster representatives to a CSV file, then joins that data with metric
         from cluster summary dataframe (containing energies, percentiles, etc.).
@@ -1120,18 +1199,18 @@ class Analysis(object):
             with [trajectory, step, cluster label]
         path : str
             The path where the CSV file will be saved at
-        cluster_summary : pandas.DataFrame
-            Dataframe with detailed metric of each cluster.
+        dataframe : pandas.DataFrame
+            Dataframe with data on energies, SASA, etc. for each pose.
         """
         import os
         import pandas as pd
 
-        # Retrieve trajectory and step data
+        # Retrieve trajectory and user metric
         cluster_ids, steps, trajectories, labels = ([] for _ in range(4))
 
         for cluster_id, values in dictionary.items():
-            trajectory, step, label = values
-            cluster_ids.append(cluster_id)
+            trajectory, step, metric, label = values
+            cluster_ids.append(str(cluster_id))
             trajectories.append(trajectory)
             steps.append(step)
             labels.append(label)
@@ -1139,15 +1218,20 @@ class Analysis(object):
         file_name = os.path.join(path, "top_selections.csv")
         trajectory_data = pd.DataFrame({"Cluster": cluster_ids,
                                         "Cluster label": labels,
-                                        "Trajectory": trajectories,
+                                        "trajectory": trajectories,
                                         "Step": steps})
+        breakpoint()
+        # Merge selected cluster representatives with original report data
+        extended_dataframe = dataframe.merge(trajectory_data, how="right", on=["Step", "trajectory", "Cluster"])
 
-        # Join detailed metrics data from cluster summary
-        merged_dataframe = pd.merge(trajectory_data, cluster_summary, left_on="Cluster", right_on="Cluster")
+        # Clean up column order
+        report_headers = dataframe.columns.tolist()
+        all_headers = extended_dataframe.columns.tolist()
+        end_headers = [header for header in all_headers if header not in report_headers]
+        sorted_columns = report_headers + end_headers
+        extended_dataframe = extended_dataframe[sorted_columns]
 
-        # Remove column duplicated in both dataframes
-        merged_dataframe = merged_dataframe.drop(["Cluster label"], axis=1)
-        merged_dataframe.to_csv(file_name, index=False)
+        extended_dataframe.to_csv(file_name, index=False)
 
     @staticmethod
     def _check_existing_directory(path):
