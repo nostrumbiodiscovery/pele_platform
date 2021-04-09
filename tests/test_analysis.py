@@ -343,10 +343,10 @@ def test_get_dataframe(analysis, filter, threshold, expected_length):
 @pytest.mark.parametrize(
     ("cluster_selection", "expected_value"),
     [
-        ("25_percentile", 0.879497),
-        ("5_percentile", 0.879497),
+        ("interaction_25_percentile", 0.879497),
+        ("interaction_5_percentile", 0.879497),
         ("population", 0.2),
-        ("mean", 0.879497),
+        ("interaction_mean", 0.879497),
     ],
 )
 def test_top_clusters_criterion_flag(analysis, cluster_selection, expected_value):
@@ -367,26 +367,25 @@ def test_top_clusters_criterion_flag(analysis, cluster_selection, expected_value
     output_folder = "cluster_selection_test"
     csv = os.path.join(output_folder, "info.csv")
 
-    analysis.generate_clusters(
-        path=output_folder,
-        clustering_type="meanshift",
-        bandwidth=2.5,
-        analysis_nclust=10,
-        max_top_clusters=1,
-        top_clusters_criterion=cluster_selection,
-        min_population=0.01,
-    )
+    analysis.generate_clusters(path=output_folder,
+                               clustering_type="meanshift",
+                               bandwidth=2.5,
+                               analysis_nclust=10,
+                               max_top_clusters=1,
+                               top_clusters_criterion=cluster_selection,
+                               min_population=0.01)
 
     df = pd.read_csv(csv)
     clusterA_index = df.index[df["Selected labels"] == "A"]
-    (top_value,) = (
-        df[cs.metric_top_clusters_criterion[cluster_selection]].iloc[clusterA_index].tolist()
-    )
+    (top_value,) = \
+        (df[cs.metric_top_clusters_criterion[cluster_selection]].iloc[clusterA_index].tolist())
     assert top_value == expected_value
     check_remove_folder(output_folder)
 
 
-@pytest.mark.parametrize(("criterion", "expected"), [("5_percentile", ""), ("25_percentile", ""), ("mean", "")])
+@pytest.mark.parametrize(("criterion", "expected"),
+                         [("interaction_5_percentile", ""),
+                          ("interaction_25_percentile", ""), ("interaction_mean", "")])
 def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
     """
     Tests the user-defined method of selecting cluster representatives.
@@ -405,17 +404,16 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
     output_folder = "cluster_rep_selection"
     csv = os.path.join(output_folder, "top_selections.csv")
 
-    analysis.generate_clusters(
-        path=output_folder,
-        clustering_type="meanshift",
-        bandwidth=2.5,
-        max_top_clusters=1,
-        cluster_representatives_criterion=criterion,
-    )
+    analysis.generate_clusters(path=output_folder,
+                               clustering_type="meanshift",
+                               bandwidth=2.5,
+                               max_top_clusters=1,
+                               representatives_criterion=criterion)
 
     df = pd.read_csv(csv)
     assert all(x in df.columns for x in
-               ["#Task", "Step", "numberOfAcceptedPeleSteps", "currentEnergy", "Binding Energy", "sasaLig", "epoch",
+               ["#Task", "Step", "numberOfAcceptedPeleSteps",
+                "currentEnergy", "Binding Energy", "sasaLig", "epoch",
                 "trajectory", "Cluster", "Cluster label"])
     assert not df.isnull().values.any()
 
@@ -447,11 +445,7 @@ def analysis():
     """
     output = "../pele_platform/Examples/clustering"
 
-    analysis = Analysis(
-        resname="LIG",
-        chain="Z",
-        simulation_output=output,
-        skip_initial_structures=False,
-    )
+    analysis = Analysis(resname="LIG", chain="Z", simulation_output=output,
+                        skip_initial_structures=False)
 
     return analysis
