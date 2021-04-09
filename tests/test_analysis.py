@@ -236,7 +236,10 @@ def test_api_analysis_generation(analysis):
     # Check cluster representatives CSV by testing for the presence of columns from both trajectory and metrics dfs
     top_selections = os.path.join(working_folder, "clusters", "top_selections.csv")
     df = pd.read_csv(top_selections)
-    assert all(x in df.columns for x in ["#Task", "Step", "numberOfAcceptedPeleSteps", "currentEnergy", "Binding Energy", "sasaLig", "epoch", "trajectory","Cluster","Cluster label"])
+    assert all(x in df.columns for x in ["Cluster", "Cluster label", "epoch",
+                                         "trajectory", "Step", "currentEnergy",
+                                         "Binding Energy", "sasaLig",
+                                         "ligandRMSD"])
 
     # Check if data.csv exists and is not empty
     data_csv = os.path.join(working_folder, "data.csv")
@@ -410,10 +413,10 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
                                representatives_criterion=criterion)
 
     df = pd.read_csv(csv)
-    assert all(x in df.columns for x in
-               ["#Task", "Step", "numberOfAcceptedPeleSteps",
-                "currentEnergy", "Binding Energy", "sasaLig", "epoch",
-                "trajectory", "Cluster", "Cluster label"])
+    assert all(x in df.columns for x in ["Cluster", "Cluster label", "epoch",
+                                         "trajectory", "Step", "currentEnergy",
+                                         "Binding Energy", "sasaLig",
+                                         "ligandRMSD"])
     assert not df.isnull().values.any()
 
     check_remove_folder(output_folder)
