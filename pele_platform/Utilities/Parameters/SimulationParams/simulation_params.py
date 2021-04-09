@@ -531,12 +531,14 @@ class SimulationParams(
     def interaction_restrictions_params(self, args):
         """
         Sets parameters for interaction restrictions.
+        Fills the pele_params INTERACTION_RESTRICTIONS template with an additional section of parameters change.
         """
         if args.interaction_restrictions:
             restrictions = InteractionRestrictionsBuilder()
             restrictions.parse_interaction_restrictions(self.system, args.interaction_restrictions)
             self.met_interaction_restrictions = restrictions.metrics_to_json()
             self.interaction_restrictions = restrictions.conditions_to_json()
+            self.parameters = restrictions.fill_template(self.parameters)
         else:
             self.met_interaction_restrictions = ""
             self.interaction_restrictions = ""
