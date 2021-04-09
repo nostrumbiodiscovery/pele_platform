@@ -356,35 +356,6 @@ Water perturbation
         - "W:15" # chain ID and residue number
         - "W:21"
 
-Interaction restrictions
-----------------------------
-
-Interaction restrictions allow for biased exploration, where the simulation results are limited to those that fit the specified conditions.
-
-Users can define two types of conditions using the atom strings (format "chain:resnum:atomname", e.g. A:2:CA) to select the atoms:
-
-- **distance**: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.
-
-- **angle**: Angle between three atoms with a user-defined maximum, minimum or both.
-
-
-..  code-block:: yaml
-
-    interaction_restrictions:
-    - distance:  # distance between the two atoms will not exceed 3 A
-        max: 3
-      atoms:
-        - "A:318:OG1"   # chain A, residue number 318, atom OG1
-        - "Z:201:O3"
-    - angle:  # angle between those three atoms will remain betwenn 90 and 180 degrees
-        min: 90
-        max: 180
-      atoms:
-        - "A:318:OG1"
-        - "A:318:HG1"
-        - "Z:201:O3"
-
-
 Metrics
 ---------
 
@@ -431,6 +402,29 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
 
+- **max_top_clusters**: Maximum number of clusters to be selected. Default = 8.
+
+- **cluster_representatives_criterion**: Method of selecting representative structures for each cluster, you can choose one of:
+
+        - "total_25_percentile" - total energy 25th percentile
+        - "total_5_percentile" - total energy 5th percentile
+        - "total_mean" - total energy mean
+        - "interaction_25_percentile" - interaction energy 25th percentile
+        - "interaction_5_percentile" - interaction energy 5th percentile (default)
+        - "interaction_mean" - interaction energy mean
+
+- **top_clusters_criterion**: Method of selecting top clusters, you can choose one of:
+
+        - "total_25_percentile" - total energy 25th percentile
+        - "total_5_percentile" - total energy 5th percentile
+        - "total_mean" - total energy mean
+        - "interaction_25_percentile" - interaction energy 25th percentile (default)
+        - "interaction_5_percentile" - interaction energy 5th percentile
+        - "interaction_mean" - interaction energy mean
+        - "population" - cluster population
+
+- **max_top_poses**: Maximum number of top poses to be retrieved. Default = 100.
+
 ..  code-block:: yaml
 
     only_analysis: true
@@ -440,6 +434,9 @@ Run a post simulation analysis to extract plots, top poses and clusters.
     mae: true
     clustering_method: "meanshift"
     bandwidth: 7.0
+    top_clusters_criterion: "population"
+    max_top_clusters: 5
+    cluster_representatives_criterion: "interaction_mean"
 
 The bandwidth parameter hugely influences the clustering results, therefore, it might be worth trying out different values depending on your system.
 In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD allowed within the cluster, whereas in HDBSCAN to distances between your data points.

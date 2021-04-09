@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Minimize your protein &mdash; pele platform 1.6.0b2 documentation</title>
@@ -62,7 +63,7 @@
             
             
               <div class="version">
-                1.6.6
+                1.6
               </div>
             
           
@@ -99,6 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Fragment growing simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow a custom fragment library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../interaction_restrictions/index.html">Interaction restrictions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
@@ -206,13 +208,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="minimize-your-protein">
+  <section id="minimize-your-protein">
 <h1>Minimize your protein<a class="headerlink" href="#minimize-your-protein" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
+<section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The package to minimize the energy of the system by slightly perturbing the protein and the ligand to optimize all
 interactions.</p>
-<div class="section" id="inputs">
+<section id="inputs">
 <h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -220,8 +222,8 @@ interactions.</p>
 <li><p>YAML file with parameters</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="default-parameters">
+</section>
+<section id="default-parameters">
 <h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -230,17 +232,17 @@ interactions.</p>
 <li><p><a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_platform/flags/all_packages/index.html#carbon-alpha-constraints">constraint level</a>: 2</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="recommendations">
+</section>
+<section id="recommendations">
 <h3>Recommendations<a class="headerlink" href="#recommendations" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>Expected computational time is ~30 mins.</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="complex-preparation">
+</section>
+</section>
+<section id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the system consisting of protein and docked ligand with Schrödinger Protein Preparation Wizard. We would usually
 recommend protonating the protein (mandatory), deleting water molecules and ions as well as filling in missing loops
@@ -253,8 +255,8 @@ and side chains.</p>
 <li><p>any residue name except for <code class="docutils literal notranslate"><span class="pre">UNK</span></code></p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="input-file-preparation">
+</section>
+<section id="input-file-preparation">
 <h2>2. Input file preparation<a class="headerlink" href="#input-file-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span> <span class="c1"># Protein-ligand PDB</span>
@@ -266,35 +268,35 @@ and side chains.</p>
 </pre></div>
 </div>
 <p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a></p>
-</div>
-<div class="section" id="run-simulation">
+</section>
+<section id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
 <p>To run the system launch the simulation with the following command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
-</div>
-<div class="section" id="output">
+</section>
+<section id="output">
 <h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="raw-output">
+<section id="raw-output">
 <h3>Raw output<a class="headerlink" href="#raw-output" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory and report files for each simulation are located in <code class="docutils literal notranslate"><span class="pre">working_folder/output</span></code>. That’s where you can find
 detailed information on each snapshot (PDB file, binding energy, metrics, etc.).</p>
-</div>
-<div class="section" id="selected-poses">
+</section>
+<section id="selected-poses">
 <h3>Selected poses<a class="headerlink" href="#selected-poses" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="clusters">
+<section id="clusters">
 <h4>Clusters<a class="headerlink" href="#clusters" title="Permalink to this headline">¶</a></h4>
 <p>Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/clusters</span></code></p>
-</div>
-<div class="section" id="best-snapshots">
+</section>
+<section id="best-snapshots">
 <h4>Best snapshots<a class="headerlink" href="#best-snapshots" title="Permalink to this headline">¶</a></h4>
 <p>In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/top_poses</span></code></p>
-</div>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
+</section>
 
 
            </div>

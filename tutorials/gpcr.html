@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>GPCR tutorial &mdash; pele platform 1.6.0b2 documentation</title>
@@ -62,7 +63,7 @@
             
             
               <div class="version">
-                1.6.6
+                1.6
               </div>
             
           
@@ -196,14 +197,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="gpcr-tutorial">
+  <section id="gpcr-tutorial">
 <h1>GPCR tutorial<a class="headerlink" href="#gpcr-tutorial" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial we will run a GPCR cross-simulation which aims to find the path of BU72 agonist (PDB code 5C1M)
 to the orthosteric site of μ-opioid receptor (PDB code 6DDE).</p>
 <p>Initially, the software will randomise the position of the ligand around the specified initial site, then perform a simulation
 slightly biased against the solvent accessible surface area. The setup will automatically constrain α-carbons to prevent the collapse of
 the initial structure due to the lack of membrane as well as set up a simulation box encompassing both the initial and the orthosteric site.</p>
-<div class="section" id="protein-preparation">
+<section id="protein-preparation">
 <h2>1. Protein preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
 <p>We will import the complex from Protein Data Bank and preprocess it using Schrödinger Maestro (release 2020-1).</p>
 <p>a. Launch Maestro and <strong>import the structure from PDB</strong> by clicking <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB...</span></code>, type in your PDB ID, e.g. <code class="docutils literal notranslate"><span class="pre">6DDE</span></code>,
@@ -222,8 +223,8 @@ Check the following options and hit <code class="docutils literal notranslate"><
 tab of the Protein Preparation Wizard and perform restrained minimization on hydrogens only.</p>
 <a class="reference internal image-reference" href="../_images/gpcr_tutorial_1c.png"><img alt="../_images/gpcr_tutorial_1c.png" class="align-center" src="../_images/gpcr_tutorial_1c.png" style="width: 400px;" /></a>
 <p>In the end you should see <code class="docutils literal notranslate"><span class="pre">6DDE</span> <span class="pre">-</span> <span class="pre">minimized</span></code> entry in the table on your left.</p>
-</div>
-<div class="section" id="ligand-preparation">
+</section>
+<section id="ligand-preparation">
 <h2>2. Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
 <p>a. Import structure <code class="docutils literal notranslate"><span class="pre">5C1M</span></code> from PDB and preprocess with Protein Preparation Wizard like before. Maestro will prompt you about
 some double occupancy issues, you can resolve them by selecting all entries and clicking <code class="docutils literal notranslate"><span class="pre">Commit</span></code>.</p>
@@ -258,8 +259,8 @@ moves it to the simulation box created based on the specified initial and orthos
 selected atoms. In this case, we will pick ligand atom <code class="docutils literal notranslate"><span class="pre">Z:401:C13</span></code> and then track its distance to the orthosteric site.</p>
 <p>e. <strong>Export merged structure</strong> by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures...</span></code> and save all workspace atoms as <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>
 in your working directory. You can close Maestro now.</p>
-</div>
-<div class="section" id="pele-input-file">
+</section>
+<section id="pele-input-file">
 <h2>3. PELE input file<a class="headerlink" href="#pele-input-file" title="Permalink to this headline">¶</a></h2>
 <p>Create <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file in your working directory, it should contain the following flags:</p>
 <blockquote>
@@ -290,8 +291,8 @@ in your working directory. You can close Maestro now.</p>
 </div>
 <p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong> Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test flag and start a full production run.
 Otherwise, inspect the logs and correct any mistakes indicated in the error codes.</p>
-</div>
-<div class="section" id="launching-the-simulation">
+</section>
+<section id="launching-the-simulation">
 <h2>4. Launching the simulation<a class="headerlink" href="#launching-the-simulation" title="Permalink to this headline">¶</a></h2>
 <p>Once you have <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code> and <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> in your working directory, you can launch the simulation using one of the following methods:</p>
 <blockquote>
@@ -313,8 +314,8 @@ Otherwise, inspect the logs and correct any mistakes indicated in the error code
 </div>
 <p>You can download ready slurm files for <code class="xref download docutils literal notranslate"><span class="pre">MareNostrum</span></code> and the <code class="xref download docutils literal notranslate"><span class="pre">NBD</span> <span class="pre">cluster</span></code>.
 If you are running the simulation on the NBD cluster, you have to include <code class="docutils literal notranslate"><span class="pre">usesrun:</span> <span class="pre">true</span></code> in your input.yaml!</p>
-</div>
-<div class="section" id="analysis-of-the-results">
+</section>
+<section id="analysis-of-the-results">
 <h2>5. Analysis of the results<a class="headerlink" href="#analysis-of-the-results" title="Permalink to this headline">¶</a></h2>
 <p>To ensure the simulation has finished, check the standard output file (in our case <code class="docutils literal notranslate"><span class="pre">mpi_xxxxx.out</span></code>, as indicated in the slurm file). It should contain the
 following line at the end:</p>
@@ -331,30 +332,30 @@ the content of each folder.</p>
 <li><p><a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline">adaptive.conf</a></p></li>
 </ul>
 </div></blockquote>
-<div class="section" id="a-plots">
+<section id="a-plots">
 <h3>a. Plots<a class="headerlink" href="#a-plots" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">Plots</span></code> directory contains several plots to help you get the general idea of the progress of the simulation, showing relationships between
 the binding energy and solvent accessible surface area of the ligand, distance between two selected atoms or any other metric of your choice.</p>
 <p>For example, the following plot clearly shows how binding energy improves as the distance between the ligand and the orthosteric site decreases.</p>
 <a class="reference internal image-reference" href="../_images/gpcr_tutorial_5a.png"><img alt="../_images/gpcr_tutorial_5a.png" class="align-center" src="../_images/gpcr_tutorial_5a.png" style="width: 400px;" /></a>
-</div>
-<div class="section" id="b-best-structures">
+</section>
+<section id="b-best-structures">
 <h3>b. Best structures<a class="headerlink" href="#b-best-structures" title="Permalink to this headline">¶</a></h3>
 <p>PELE scans all produced poses and retrieves the top 100 lowest binding energy structures to the <code class="docutils literal notranslate"><span class="pre">BestStructs</span></code> folder. The file names indicate
 the trajectory and model IDs of each structure as well as its associated binding energy.</p>
 <p>Shown below is an example of a pose with binding energy of -91.1362 (green) superposed with
 the original native structure (pink). The RMSD between the two ligands was 1.88 Å and most pharmacophore features were correctly reproduced.</p>
 <a class="reference internal image-reference" href="../_images/gpcr_tutorial_5b.png"><img alt="../_images/gpcr_tutorial_5b.png" class="align-center" src="../_images/gpcr_tutorial_5b.png" style="width: 400px;" /></a>
-</div>
-<div class="section" id="c-clusters">
+</section>
+<section id="c-clusters">
 <h3>c. Clusters<a class="headerlink" href="#c-clusters" title="Permalink to this headline">¶</a></h3>
 <p>To ensure no binding modes were omitted in the previous step, we also cluster all poses based on ligand heavy atom coordinates and retrieve the lowest
 binding energy representative of each cluster. In this case, four cluster representatives show a similar binding mode to the one discussed above.</p>
 <a class="reference internal image-reference" href="../_images/gpcr_tutorial_5c.png"><img alt="../_images/gpcr_tutorial_5c.png" class="align-center" src="../_images/gpcr_tutorial_5c.png" style="width: 400px;" /></a>
 <p>For more information regarding the outputs of the tutorial see <a class="reference external" href="outputs.html">Output files</a></p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

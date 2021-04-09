@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>All packages &mdash; pele platform 1.6.0b2 documentation</title>
@@ -62,7 +63,7 @@
             
             
               <div class="version">
-                1.6.6
+                1.6
               </div>
             
           
@@ -109,7 +110,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#box-parameters">Box parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#metal-polarisation">Metal polarisation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#water-perturbation">Water perturbation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#interaction-restrictions">Interaction restrictions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#metrics">Metrics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#analysis">Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
@@ -202,9 +202,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="all-packages">
+  <section id="all-packages">
 <h1>All packages<a class="headerlink" href="#all-packages" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="general-settings">
+<section id="general-settings">
 <h2>General settings<a class="headerlink" href="#general-settings" title="Permalink to this headline">¶</a></h2>
 <p>Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).</p>
 <ul class="simple">
@@ -225,8 +225,8 @@
 <span class="nt">schrodinger</span><span class="p">:</span> <span class="s">&quot;/home/pele/schrodinger2020-1/&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="simulation-parameters">
+</section>
+<section id="simulation-parameters">
 <h2>Simulation parameters<a class="headerlink" href="#simulation-parameters" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>seed</strong>: Seed of the job for reproducibility. Default=12345</p></li>
@@ -260,8 +260,8 @@
 <span class="nt">steric_trials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">250</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="pele-parameters">
+</section>
+<section id="pele-parameters">
 <h2>PELE++ parameters<a class="headerlink" href="#pele-parameters" title="Permalink to this headline">¶</a></h2>
 <p><strong>These flags are exclusive of the PELE modes not fragPELE</strong></p>
 <ul class="simple">
@@ -293,8 +293,8 @@
 <span class="nt">traj</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trajectory.xtc</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="receptor-preparation">
+</section>
+<section id="receptor-preparation">
 <h2>Receptor preparation<a class="headerlink" href="#receptor-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Configure the parameters of the PPP (Protein Pele Preparation)</p>
 <ul class="simple">
@@ -312,8 +312,8 @@
 <span class="nt">prepwizard</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="ligand-preparation">
+</section>
+<section id="ligand-preparation">
 <h2>Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.</p>
 <ul class="simple">
@@ -341,8 +341,8 @@
   <span class="p p-Indicator">-</span> <span class="s">&quot;LIG&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="constraints">
+</section>
+<section id="constraints">
 <h2>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>water_constr</strong>: Water constraints. Default=5</p></li>
@@ -380,7 +380,7 @@
 <span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
-<div class="section" id="carbon-alpha-constraints">
+<section id="carbon-alpha-constraints">
 <h3>Carbon-alpha constraints<a class="headerlink" href="#carbon-alpha-constraints" title="Permalink to this headline">¶</a></h3>
 <p>Each package in the platform has its own predefined constraint parameters which are likely to be the best choice in each
 type of study. However, the platform provides the users with several different levels of constraining the alpha carbons
@@ -409,8 +409,8 @@ constraints levels and those predefined in each package.</p>
 <span class="nt">ca_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="metal-constraints">
+</section>
+<section id="metal-constraints">
 <h3>Metal constraints<a class="headerlink" href="#metal-constraints" title="Permalink to this headline">¶</a></h3>
 <p>Algorithm to automatically set metal constraints around the ligand.</p>
 <ul class="simple">
@@ -428,9 +428,9 @@ constraints levels and those predefined in each package.</p>
 <span class="nt">constrain_core_spring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>  <span class="c1"># optional, default 50.0</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="box-parameters">
+</section>
+</section>
+<section id="box-parameters">
 <h2>Box parameters<a class="headerlink" href="#box-parameters" title="Permalink to this headline">¶</a></h2>
 <p>Parameters to set the exploration Box:</p>
 <ul class="simple">
@@ -444,8 +444,8 @@ constraints levels and those predefined in each package.</p>
   <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="metal-polarisation">
+</section>
+<section id="metal-polarisation">
 <h2>Metal polarisation<a class="headerlink" href="#metal-polarisation" title="Permalink to this headline">¶</a></h2>
 <p>An optional flag to adjust charges on the metals by dividing them by certain factor.</p>
 <ul class="simple">
@@ -456,8 +456,8 @@ constraints levels and those predefined in each package.</p>
 <span class="nt">polarization_factor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span> <span class="c1"># Mg2+ will have a charge of +1</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="water-perturbation">
+</section>
+<section id="water-perturbation">
 <h2>Water perturbation<a class="headerlink" href="#water-perturbation" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p><strong>n_waters</strong>: Number of waters to randomly add into your simulation and perturb. Default=0</p></li>
@@ -485,32 +485,8 @@ constraints levels and those predefined in each package.</p>
     <span class="p p-Indicator">-</span> <span class="s">&quot;W:21&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="interaction-restrictions">
-<h2>Interaction restrictions<a class="headerlink" href="#interaction-restrictions" title="Permalink to this headline">¶</a></h2>
-<p>Interaction restrictions allow for biased exploration, where the simulation results are limited to those that fit the specified conditions.</p>
-<p>Users can define two types of conditions using the atom strings (format “chain:resnum:atomname”, e.g. A:2:CA) to select the atoms:</p>
-<ul class="simple">
-<li><p><strong>distance</strong>: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.</p></li>
-<li><p><strong>angle</strong>: Angle between three atoms with a user-defined maximum, minimum or both.</p></li>
-</ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">interaction_restrictions</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="nt">distance</span><span class="p">:</span>  <span class="c1"># distance between the two atoms will not exceed 3 A</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
-  <span class="nt">atoms</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;A:318:OG1&quot;</span>   <span class="c1"># chain A, residue number 318, atom OG1</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;Z:201:O3&quot;</span>
-<span class="p p-Indicator">-</span> <span class="nt">angle</span><span class="p">:</span>  <span class="c1"># angle between those three atoms will remain betwenn 90 and 180 degrees</span>
-    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">180</span>
-  <span class="nt">atoms</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;A:318:OG1&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;A:318:HG1&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;Z:201:O3&quot;</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="metrics">
+</section>
+<section id="metrics">
 <h2>Metrics<a class="headerlink" href="#metrics" title="Permalink to this headline">¶</a></h2>
 <p>Metrics to track along the simulation</p>
 <ul>
@@ -532,11 +508,11 @@ constraints levels and those predefined in each package.</p>
 <span class="nt">rmsd_pdb</span><span class="p">:</span> <span class="s">&quot;/home/dsoler/native.pdb&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="analysis">
+</section>
+<section id="analysis">
 <h2>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
 <p>Run a post simulation analysis to extract plots, top poses and clusters.</p>
-<ul class="simple">
+<ul>
 <li><p><strong>only_analysis</strong>: Analyse PELE simulation without running it.</p></li>
 <li><p><strong>analysis_nclust</strong>: Numbers of clusters out of the simulation, if using the standard clustering method. Default: 10</p></li>
 <li><p><strong>be_column</strong>: Column of the binding energy in the reports starting by 1. Default: 5</p></li>
@@ -546,6 +522,33 @@ constraints levels and those predefined in each package.</p>
 <li><p><strong>analysis</strong>: Whether to run or not the analysis at the end of the simulation. Default: true</p></li>
 <li><p><strong>clustering_method</strong>: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to <code class="docutils literal notranslate"><span class="pre">MeanShift</span></code> or <code class="docutils literal notranslate"><span class="pre">HDBSCAN</span></code>.</p></li>
 <li><p><strong>bandwidth</strong>: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0</p></li>
+<li><p><strong>max_top_clusters</strong>: Maximum number of clusters to be selected. Default = 8.</p></li>
+<li><p><strong>cluster_representatives_criterion</strong>: Method of selecting representative structures for each cluster, you can choose one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“total_25_percentile” - total energy 25th percentile</p></li>
+<li><p>“total_5_percentile” - total energy 5th percentile</p></li>
+<li><p>“total_mean” - total energy mean</p></li>
+<li><p>“interaction_25_percentile” - interaction energy 25th percentile</p></li>
+<li><p>“interaction_5_percentile” - interaction energy 5th percentile (default)</p></li>
+<li><p>“interaction_mean” - interaction energy mean</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>top_clusters_criterion</strong>: Method of selecting top clusters, you can choose one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“total_25_percentile” - total energy 25th percentile</p></li>
+<li><p>“total_5_percentile” - total energy 5th percentile</p></li>
+<li><p>“total_mean” - total energy mean</p></li>
+<li><p>“interaction_25_percentile” - interaction energy 25th percentile (default)</p></li>
+<li><p>“interaction_5_percentile” - interaction energy 5th percentile</p></li>
+<li><p>“interaction_mean” - interaction energy mean</p></li>
+<li><p>“population” - cluster population</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>max_top_poses</strong>: Maximum number of top poses to be retrieved. Default = 100.</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">be_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
@@ -554,12 +557,15 @@ constraints levels and those predefined in each package.</p>
 <span class="nt">mae</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">clustering_method</span><span class="p">:</span> <span class="s">&quot;meanshift&quot;</span>
 <span class="nt">bandwidth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7.0</span>
+<span class="nt">top_clusters_criterion</span><span class="p">:</span> <span class="s">&quot;population&quot;</span>
+<span class="nt">max_top_clusters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">cluster_representatives_criterion</span><span class="p">:</span> <span class="s">&quot;interaction_mean&quot;</span>
 </pre></div>
 </div>
 <p>The bandwidth parameter hugely influences the clustering results, therefore, it might be worth trying out different values depending on your system.
 In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD allowed within the cluster, whereas in HDBSCAN to distances between your data points.</p>
-</div>
-<div class="section" id="output">
+</section>
+<section id="output">
 <h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>Configure the output</p>
 <ul class="simple">
@@ -570,8 +576,8 @@ In case of the mean shift algorithm, the bandwidth refers to the maximum RMSD al
 <span class="nt">output</span><span class="p">:</span> <span class="s">&quot;output_sim&quot;</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

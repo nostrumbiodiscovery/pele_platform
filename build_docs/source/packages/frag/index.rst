@@ -11,7 +11,7 @@ as well as discover cryptic pockets.
 For more details, you can refer to:
 
 - `FragPELE: Dynamic Ligand Growing within a Binding Site. A Novel Tool for Hit-To-Lead Drug Design <https://pubmed.ncbi.nlm.nih.gov/32027130/>`_
-- `frag_pele documantation <https://carlesperez94.github.io/frag_pele/>`_.
+- `frag_pele documentation <https://carlesperez94.github.io/frag_pele/>`_.
 
 Inputs
 ++++++++++++++

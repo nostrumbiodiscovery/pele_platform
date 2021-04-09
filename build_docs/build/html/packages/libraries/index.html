@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Grow a custom fragment library &mdash; pele platform 1.6.0b2 documentation</title>
@@ -62,7 +63,7 @@
             
             
               <div class="version">
-                1.6.6
+                1.6
               </div>
             
           
@@ -123,6 +124,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../interaction_restrictions/index.html">Interaction restrictions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
@@ -214,14 +216,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="grow-a-custom-fragment-library">
+  <section id="grow-a-custom-fragment-library">
 <h1>Grow a custom fragment library<a class="headerlink" href="#grow-a-custom-fragment-library" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="introduction">
+<section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>FragPELE is now able to grow fragments from custom-made libraries! All you have to do is provide it with a directory
 containing your fragments (in PDB or SDF format) and a docked core to let the software rank your fragments and return the
 best binding modes for each.</p>
-<div class="section" id="inputs">
+<section id="inputs">
 <h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -230,8 +232,8 @@ best binding modes for each.</p>
 <li><p>input.yaml configuration file</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="default-parameters">
+</section>
+<section id="default-parameters">
 <h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -240,19 +242,19 @@ best binding modes for each.</p>
 <li><p>frag_steps: 3</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="recommendations">
+</section>
+<section id="recommendations">
 <h3>Recommendations<a class="headerlink" href="#recommendations" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ol class="arabic simple">
 <li><p>Computational time is estimated between 30min and 3h per fragment (depending on the number of rotatable bonds).</p></li>
 </ol>
 </div></blockquote>
-</div>
-</div>
-<div class="section" id="complex-preparation">
+</section>
+</section>
+<section id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="protein-scaffold-pdb-file">
+<section id="protein-scaffold-pdb-file">
 <h3>Protein-scaffold PDB file<a class="headerlink" href="#protein-scaffold-pdb-file" title="Permalink to this headline">¶</a></h3>
 <p>The PDB file should be preprocessed with Maestro Protein Preparation Wizard. We usually recommend protonating the
 protein (obligatory), deleting water molecules more than 5Å away from ligands and ions as well as filling in missing
@@ -267,14 +269,14 @@ Additionally, ensure the ligand has:</p>
 <li><p>well-defined aromatic bonds.</p></li>
 </ul>
 </div></blockquote>
-</div>
-<div class="section" id="directory-with-fragments">
+</section>
+<section id="directory-with-fragments">
 <h3>Directory with fragments<a class="headerlink" href="#directory-with-fragments" title="Permalink to this headline">¶</a></h3>
 <p>The fragment library should be preprocessed using Schrodinger LigPrep (default settings should be sufficient) and
 have unique molecule names.</p>
-</div>
-</div>
-<div class="section" id="input-preparation">
+</section>
+</section>
+<section id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare input.yaml file:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span>  <span class="c1"># Protein-scaffold complex</span>
@@ -285,35 +287,35 @@ have unique molecule names.</p>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
 </pre></div>
 </div>
-<div class="section" id="defining-frag-core-atom">
+<section id="defining-frag-core-atom">
 <h3>Defining frag_core_atom<a class="headerlink" href="#defining-frag-core-atom" title="Permalink to this headline">¶</a></h3>
 <p>Not sure how to define <code class="docutils literal notranslate"><span class="pre">frag_core_atom</span></code>?
 Open your PDB file in Schrodinger Maestro and hover over the atoms to see their PDB names on the panel below.
 The starting point for fragment growing should consist of a heavy atom and a hydrogen, e.g. “C6-H6” on the picture below.</p>
 <a class="reference internal image-reference" href="../../_images/libraries_2.png"><img alt="../../_images/libraries_2.png" class="align-center" src="../../_images/libraries_2.png" style="width: 400px;" /></a>
-</div>
-</div>
-<div class="section" id="run-simulation">
+</section>
+</section>
+<section id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
 <p>To run the system launch the simulation with the following command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
-</div>
-<div class="section" id="output">
+</section>
+<section id="output">
 <h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
 <p>The simulation will create a TSV file with scored fragments as well as a number of fragment folders, the names of which will consist of the scaffold and molecule names.</p>
-<div class="section" id="scored-fragments">
+<section id="scored-fragments">
 <h3>Scored fragments<a class="headerlink" href="#scored-fragments" title="Permalink to this headline">¶</a></h3>
 <p>The list of all grown fragments together with their associated scores (average binding energy of the top 25% of all poses)
 can be found in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">simulation_score.tsv</span></code></p>
-</div>
-<div class="section" id="top-poses">
+</section>
+<section id="top-poses">
 <h3>Top poses<a class="headerlink" href="#top-poses" title="Permalink to this headline">¶</a></h3>
 <p>Each fragment folder contains a top_results folder with PDB files corresponding to the best poses for that fragment:</p>
 <p><code class="docutils literal notranslate"><span class="pre">fragment_folder/top_results/</span></code></p>
-</div>
-</div>
-<div class="section" id="analysis">
+</section>
+</section>
+<section id="analysis">
 <h2>5. Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
 <p>Once your simulation is finished, you can run an automated analysis to retrieve most promising fragments based on their
 proximity to a certain point, for example a side chain atom you would like your fragment to interact with.</p>
@@ -366,8 +368,8 @@ proximity to a certain point, for example a side chain atom you would like your 
 </li>
 </ul>
 </div></blockquote>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

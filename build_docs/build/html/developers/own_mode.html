@@ -4,7 +4,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Add custom simulation mode &mdash; pele platform 1.6.0b2 documentation</title>
@@ -62,7 +63,7 @@
             
             
               <div class="version">
-                1.6.6
+                1.6
               </div>
             
           
@@ -189,10 +190,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="add-custom-simulation-mode">
+  <section id="add-custom-simulation-mode">
 <h1>Add custom simulation mode<a class="headerlink" href="#add-custom-simulation-mode" title="Permalink to this headline">¶</a></h1>
 <p>If your simulation set up requires tweaking a lot of parameters, you can add a new <strong>feature</strong> to the platform.</p>
-<div class="section" id="generate-your-own-mode">
+<section id="generate-your-own-mode">
 <h2>1. Generate your own mode<a class="headerlink" href="#generate-your-own-mode" title="Permalink to this headline">¶</a></h2>
 <p>Add a new feature with your own defaults under <code class="docutils literal notranslate"><span class="pre">simulation_params</span></code> key in <code class="docutils literal notranslate"><span class="pre">pele_platform/features/adaptive.py</span></code>, e.g.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;induced_fit_exhaustive&quot;</span> <span class="p">:</span> <span class="p">{</span><span class="s2">&quot;spawning_type&quot;</span><span class="p">:</span> <span class="s2">&quot;independent&quot;</span><span class="p">,</span> <span class="s2">&quot;bias_column&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;epsilon&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="s2">&quot;null&quot;</span><span class="p">,</span>
@@ -202,16 +203,16 @@
          <span class="s2">&quot;box_radius&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="include-it-in-the-pipeline">
+</section>
+<section id="include-it-in-the-pipeline">
 <h2>2. Include it in the pipeline<a class="headerlink" href="#include-it-in-the-pipeline" title="Permalink to this headline">¶</a></h2>
 <p>Assign the type of the simulation depending on the YAML arguments in <code class="docutils literal notranslate"><span class="pre">pele_platform/features/adaptive.py</span></code>, e.g.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">induced_fit_fast</span><span class="p">:</span>
     <span class="n">type_simulation</span> <span class="o">=</span> <span class="s2">&quot;induced_fit_fast&quot;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="add-an-input-option">
+</section>
+<section id="add-an-input-option">
 <h2>3. Add an input option<a class="headerlink" href="#add-an-input-option" title="Permalink to this headline">¶</a></h2>
 <p>A new input flag will not be recognised by the platform, unless you add it to:</p>
 <blockquote>
@@ -224,15 +225,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">induced_fit_fast</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">valid_flags</span><span class="p">[</span><span class="s2">&quot;induced_fit_fast&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="run-your-mode">
+</section>
+<section id="run-your-mode">
 <h2>4. Run your mode<a class="headerlink" href="#run-your-mode" title="Permalink to this headline">¶</a></h2>
 <p>To run your simulation mode in the input file, include the previously generated YAML flag, for example:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

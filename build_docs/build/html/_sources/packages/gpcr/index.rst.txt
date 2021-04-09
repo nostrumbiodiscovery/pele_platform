@@ -4,7 +4,7 @@ GPCR orthosteric site simulation
 Introduction
 ---------------
 
-The GPCR packe aims to find the binding path of a small molecule to the orthosteric site of a G protein-coupled receptor.
+The GPCR package aims to find the binding path of a small molecule to the orthosteric site of a G protein-coupled receptor.
 
 Initially, the software will place the ligand all around the user-defined initial site and create a simulation box encompassing
 the initial and orthosteric sites. The simulation will be performed with a slight bias towards ligand's SASA as well as
