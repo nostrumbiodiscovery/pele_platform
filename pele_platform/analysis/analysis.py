@@ -212,13 +212,15 @@ class Analysis(object):
         top_clusters_criterion : str
             Criterion to select top clusters. Default is
             "interaction_25_percentile". One of ["total_25_percentile",
-            "total_5_percentile", "total_mean", "interaction_25_percentile",
-            "interaction_5_percentile", "interaction_mean", "population"]
+            "total_5_percentile", "total_mean", "total_min",
+            "interaction_25_percentile", "interaction_5_percentile",
+            "interaction_mean", "interaction_min", "population"]
         representatives_criterion : str
             Criterion to select cluster representative structures. Default is
             "interaction_5_percentile". One of ["total_25_percentile",
-            "total_5_percentile", "total_mean", "interaction_25_percentile",
-            "interaction_5_percentile", "interaction_mean"]
+            "total_5_percentile", "total_mean", "total_min",
+            "interaction_25_percentile", "interaction_5_percentile",
+            "interaction_mean", "interaction_min"]
         """
         import os
         path = self._check_existing_directory(path)
@@ -370,16 +372,18 @@ class Analysis(object):
         top_clusters_criterion : str
             Criterion to select top clusters. Default is
             "interaction_25_percentile". One of ["total_25_percentile",
-            "total_5_percentile", "total_mean", "interaction_25_percentile",
-            "interaction_5_percentile", "interaction_mean", "population"]
+            "total_5_percentile", "total_mean", "total_min",
+            "interaction_25_percentile", "interaction_5_percentile",
+            "interaction_mean", "population"]
         min_population : float
             The minimum amount of structures in a cluster, takes a value
             between 0 and 1. Default is 0.01 (i.e. 1%)
         representatives_criterion : str
             Criterion to select cluster representative structures. Default is
             "interaction_5_percentile". One of ["total_25_percentile",
-            "total_5_percentile", "total_mean", "interaction_25_percentile",
-            "interaction_5_percentile", "interaction_mean"]
+            "total_5_percentile", "total_mean", "total_min",
+            "interaction_25_percentile", "interaction_5_percentile",
+            "interaction_mean", "interaction_min"]
         """
         import os
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
@@ -745,8 +749,9 @@ class Analysis(object):
             analyzed
         top_clusters_criterion : str
             Criterion to select top clusters. One of ["total_25_percentile",
-            "total_5_percentile", "total_mean", "interaction_25_percentile",
-            "interaction_5_percentile", "interaction_mean", "population"]
+            "total_5_percentile", "total_mean", "total_min",
+            "interaction_25_percentile", "interaction_5_percentile",
+            "interaction_mean", "interaction_min", "population"]
         max_clusters_to_select : int
             The maximum number of clusters to select as top
         min_population_to_select : float
@@ -1095,8 +1100,9 @@ class Analysis(object):
         representatives_criterion : str
             Criterion to select cluster representative structures.
             One of ["total_25_percentile", "total_5_percentile",
-            "total_mean", "interaction_25_percentile",
-            "interaction_5_percentile", "interaction_mean"]
+            "total_mean", "total_min", "interaction_25_percentile",
+            "interaction_5_percentile", "interaction_mean",
+            "interaction_min"]
         """
         import os
         from collections import defaultdict
@@ -1142,6 +1148,10 @@ class Analysis(object):
             for cluster, metrics_array in metrics_per_cluster.items():
                 golden_values_per_cluster[cluster] = \
                     np.percentile(metrics_array, 5)
+        elif '_min' in representatives_criterion:
+            for cluster, metrics_array in metrics_per_cluster.items():
+                golden_values_per_cluster[cluster] = \
+                    np.min(metrics_array, 5)
         else:
             for cluster, metrics_array in metrics_per_cluster.items():
                 golden_values_per_cluster[cluster] = np.mean(metrics_array)
