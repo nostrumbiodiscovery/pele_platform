@@ -523,28 +523,32 @@ constraints levels and those predefined in each package.</p>
 <li><p><strong>clustering_method</strong>: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to <code class="docutils literal notranslate"><span class="pre">MeanShift</span></code> or <code class="docutils literal notranslate"><span class="pre">HDBSCAN</span></code>.</p></li>
 <li><p><strong>bandwidth</strong>: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0</p></li>
 <li><p><strong>max_top_clusters</strong>: Maximum number of clusters to be selected. Default = 8.</p></li>
-<li><p><strong>cluster_representatives_criterion</strong>: Method of selecting representative structures for each cluster, you can choose one of:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>“total_25_percentile” - total energy 25th percentile</p></li>
-<li><p>“total_5_percentile” - total energy 5th percentile</p></li>
-<li><p>“total_mean” - total energy mean</p></li>
-<li><p>“interaction_25_percentile” - interaction energy 25th percentile</p></li>
-<li><p>“interaction_5_percentile” - interaction energy 5th percentile (default)</p></li>
-<li><p>“interaction_mean” - interaction energy mean</p></li>
-</ul>
-</div></blockquote>
-</li>
 <li><p><strong>top_clusters_criterion</strong>: Method of selecting top clusters, you can choose one of:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>“total_25_percentile” - total energy 25th percentile</p></li>
 <li><p>“total_5_percentile” - total energy 5th percentile</p></li>
 <li><p>“total_mean” - total energy mean</p></li>
+<li><p>“total_min” - total energy min</p></li>
 <li><p>“interaction_25_percentile” - interaction energy 25th percentile (default)</p></li>
 <li><p>“interaction_5_percentile” - interaction energy 5th percentile</p></li>
 <li><p>“interaction_mean” - interaction energy mean</p></li>
+<li><p>“interaction_min” - interaction energy min</p></li>
 <li><p>“population” - cluster population</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>cluster_representatives_criterion</strong>: Method of selecting representative structures for each cluster, you can choose one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“total_25_percentile” - total energy 25th percentile</p></li>
+<li><p>“total_5_percentile” - total energy 5th percentile</p></li>
+<li><p>“total_mean” - total energy mean</p></li>
+<li><p>“total_min” - total energy min</p></li>
+<li><p>“interaction_25_percentile” - interaction energy 25th percentile</p></li>
+<li><p>“interaction_5_percentile” - interaction energy 5th percentile (default)</p></li>
+<li><p>“interaction_mean” - interaction energy mean</p></li>
+<li><p>“interaction_min” - interaction energy min</p></li>
 </ul>
 </div></blockquote>
 </li>
