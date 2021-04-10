@@ -1128,16 +1128,16 @@ class Analysis(object):
         if representatives_criterion.startswith('total'):
             metric = 'currentEnergy'
         else:
-            metric = dataframe.columns[self.be_column]
+            metric = dataframe.columns[self.be_column - 1]
 
         # Get Binding Energy per cluster
         metrics = list(dataframe[metric])
         metrics_per_cluster = defaultdict(list)
-        for cluster, metric in zip(clusters, metrics):
+        for cluster, value in zip(clusters, metrics):
             # Skip outliers such as clusters with label -1
             if cluster < 0:
                 continue
-            metrics_per_cluster[cluster].append(metric)
+            metrics_per_cluster[cluster].append(value)
 
         golden_values_per_cluster = {}
         if '_25_percentile' in representatives_criterion:
@@ -1150,8 +1150,7 @@ class Analysis(object):
                     np.percentile(metrics_array, 5)
         elif '_min' in representatives_criterion:
             for cluster, metrics_array in metrics_per_cluster.items():
-                golden_values_per_cluster[cluster] = \
-                    np.min(metrics_array, 5)
+                golden_values_per_cluster[cluster] = np.min(metrics_array)
         else:
             for cluster, metrics_array in metrics_per_cluster.items():
                 golden_values_per_cluster[cluster] = np.mean(metrics_array)
