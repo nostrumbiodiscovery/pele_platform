@@ -516,12 +516,18 @@ class DataHandler(object):
             with Pool(n_proc) as pool:
                 coordinates = pool.map(parallel_function, trajectories)
 
-        # In case we no coordinates were extracted
+        # In case no coordinates were extracted
         if len(coordinates) == 0:
             return None, None
 
-        # Concatenate resulting array
-        coordinates = np.concatenate(coordinates)
+        # Filter out empty coordinate arrays
+        filtered_coordinates = []
+        for coord_array in coordinates:
+            if len(coord_array) != 0:
+                filtered_coordinates.append(coord_array)
+
+        # Concatenate resulting coordinate arrays
+        coordinates = np.concatenate(filtered_coordinates)
 
         # Reorder entries in the dataset to match with the coordinate
         # ordering
@@ -529,6 +535,7 @@ class DataHandler(object):
 
         for trajectory in trajectories:
             # Retrieve entries belonging to this trajectory, sorted by step
+            # to match with coordinates
             trajectory_rows = dataframe.query(
                 'trajectory=="{}"'.format(trajectory))
             trajectory_rows = trajectory_rows.sort_values(['Step'],
