@@ -533,7 +533,7 @@ class DataHandler(object):
             return None, None
 
         # Concatenate resulting coordinate arrays
-        coordinates = np.concatenate(filtered_coordinates)
+        coordinates = np.concatenate(coordinates)
 
         # Reorder entries in the dataset to match with the coordinate
         # ordering
