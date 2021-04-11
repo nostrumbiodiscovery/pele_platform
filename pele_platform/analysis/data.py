@@ -516,15 +516,21 @@ class DataHandler(object):
             with Pool(n_proc) as pool:
                 coordinates = pool.map(parallel_function, trajectories)
 
+        # Remove possible empty arrays
+        coord_to_remove = []
+        traj_to_remove = []
+        for coordinates_array, trajectory in zip(coordinates, trajectories):
+            if len(coordinates_array) == 0:
+                coord_to_remove.append(coordinates_array)
+                traj_to_remove.append(trajectory)
+        for coord in coord_to_remove:
+            coordinates.remove(coord)
+        for traj in traj_to_remove:
+            trajectories.remove(traj)
+
         # In case no coordinates were extracted
         if len(coordinates) == 0:
             return None, None
-
-        # Filter out empty coordinate arrays
-        filtered_coordinates = []
-        for coord_array in coordinates:
-            if len(coord_array) != 0:
-                filtered_coordinates.append(coord_array)
 
         # Concatenate resulting coordinate arrays
         coordinates = np.concatenate(filtered_coordinates)
