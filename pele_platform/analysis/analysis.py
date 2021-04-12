@@ -75,6 +75,8 @@ class Analysis(object):
         self.topology = topology
         self.cpus = cpus
 
+        self._check_residue_exists()
+
         self._data_handler = DataHandler(
             sim_path=self.output,
             report_name=self.report,
@@ -1328,3 +1330,24 @@ class Analysis(object):
             new_path = os.path.join(dir_name, new_folder_name)
 
         return new_path
+
+    def _check_residue_exists(self):
+        """
+        Checks if self.resname is present in the first output trajectory. If not, it will raise ValueError to prompt
+        the user to check the arguments passed to Analysis class.
+        """
+        import glob
+        import mdtraj
+        import os
+
+        path = glob.glob(os.path.join(self.output, "0", "trajectory_1.*"))[0]
+
+        # load the first trajectory and select the residue
+        traj = mdtraj.load_frame(path, 0, top=self.topology)
+        residue = traj.topology.select(f"resname {self.residue}")
+
+        # if empty array is returned, raise error
+        if residue.size == 0:
+            raise ValueError(
+                f"Residue {self.residue} was not found in output trajectories. Make sure you are passing a correct "
+                f"'resname' argument to Analysis.")
