@@ -15,7 +15,7 @@ class Analysis(object):
     _REPORT = "report"
     _STEP_LABEL = "numberOfAcceptedPeleSteps"
 
-    def __init__(self, resname, chain, simulation_output,
+    def __init__(self, simulation_output, resname=None, chain=None,
                  be_column=4, limit_column=None, traj="trajectory.pdb",
                  report=None, skip_initial_structures=True, kde=False,
                  kde_structs=1000, topology=None, cpus=1):
@@ -25,10 +25,10 @@ class Analysis(object):
 
         Parameters
         ----------
-        resname : str
-            Residue name of the ligand, e.g. "LIG"
-        chain : str
-            Chain ID of the ligand, e.g. "Z."
+        resname : Union[str, None]
+            Residue name of the ligand, e.g. "LIG", default = None.
+        chain : Union[str, None]
+            Chain ID of the ligand, e.g. "Z", default = None.
         simulation_output : str
             Path to the output folder of the simulation, e.g.
             "LIG_Pele/output"
@@ -75,7 +75,8 @@ class Analysis(object):
         self.topology = topology
         self.cpus = cpus
 
-        self._check_residue_exists()
+        if self.residue:
+            self._check_residue_exists()
 
         self._data_handler = DataHandler(
             sim_path=self.output,
@@ -106,18 +107,33 @@ class Analysis(object):
 
         simulation_output = os.path.join(parameters.pele_dir, parameters.output)
 
-        analysis = Analysis(resname=parameters.residue,
-                            chain=parameters.chain,
-                            simulation_output=simulation_output,
-                            be_column=parameters.be_column,
-                            limit_column=parameters.limit_column,
-                            traj=parameters.traj_name,
-                            report=parameters.report_name,
-                            skip_initial_structures=not parameters.test,
-                            kde=parameters.kde,
-                            kde_structs=parameters.kde_structs,
-                            topology=parameters.topology,
-                            cpus=parameters.cpus)
+        if parameters.perturbation:
+            analysis = Analysis(resname=parameters.residue,
+                                chain=parameters.chain,
+                                simulation_output=simulation_output,
+                                be_column=parameters.be_column,
+                                limit_column=parameters.limit_column,
+                                traj=parameters.traj_name,
+                                report=parameters.report_name,
+                                skip_initial_structures=not parameters.test,
+                                kde=parameters.kde,
+                                kde_structs=parameters.kde_structs,
+                                topology=parameters.topology,
+                                cpus=parameters.cpus)
+
+        else:
+            analysis = Analysis(resname=None,
+                                chain=None,
+                                simulation_output=simulation_output,
+                                be_column=parameters.be_column,
+                                limit_column=parameters.limit_column,
+                                traj=parameters.traj_name,
+                                report=parameters.report_name,
+                                skip_initial_structures=not parameters.test,
+                                kde=parameters.kde,
+                                kde_structs=parameters.kde_structs,
+                                topology=parameters.topology,
+                                cpus=parameters.cpus)
 
         return analysis
 
