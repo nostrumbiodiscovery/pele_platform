@@ -516,11 +516,23 @@ class DataHandler(object):
             with Pool(n_proc) as pool:
                 coordinates = pool.map(parallel_function, trajectories)
 
-        # In case we no coordinates were extracted
+        # Remove possible empty arrays
+        coord_to_remove = []
+        traj_to_remove = []
+        for coordinates_array, trajectory in zip(coordinates, trajectories):
+            if len(coordinates_array) == 0:
+                coord_to_remove.append(coordinates_array)
+                traj_to_remove.append(trajectory)
+        for coord in coord_to_remove:
+            coordinates.remove(coord)
+        for traj in traj_to_remove:
+            trajectories.remove(traj)
+
+        # In case no coordinates were extracted
         if len(coordinates) == 0:
             return None, None
 
-        # Concatenate resulting array
+        # Concatenate resulting coordinate arrays
         coordinates = np.concatenate(coordinates)
 
         # Reorder entries in the dataset to match with the coordinate
@@ -529,6 +541,7 @@ class DataHandler(object):
 
         for trajectory in trajectories:
             # Retrieve entries belonging to this trajectory, sorted by step
+            # to match with coordinates
             trajectory_rows = dataframe.query(
                 'trajectory=="{}"'.format(trajectory))
             trajectory_rows = trajectory_rows.sort_values(['Step'],
