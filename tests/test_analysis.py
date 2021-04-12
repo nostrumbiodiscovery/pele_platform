@@ -7,7 +7,6 @@ import pele_platform.constants.constants as cs
 import pele_platform.main as main
 from pele_platform.analysis import Analysis, DataHandler, Plotter
 from pele_platform.Utilities.Helpers.helpers import check_remove_folder
-from . import test_adaptive as ta
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
@@ -418,6 +417,16 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
     assert not df.isnull().values.any()
 
     check_remove_folder(output_folder)
+
+
+def test_empty_reports_handling():
+    """
+    Checks if we handle reports with no accepted PELE steps to make sure the returned empty coordinates array doesn't
+    cause any errors.
+    """
+    simulation_output = os.path.join(test_path, "analysis/data/empty_reports_output")
+    analysis = Analysis(simulation_output=simulation_output, chain='Z', resname='LIG', skip_initial_structures=True)
+    analysis.generate(path="empty_reports")
 
 
 @pytest.fixture
