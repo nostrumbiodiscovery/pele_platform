@@ -79,7 +79,7 @@ Last stable release from source code
 
 
 Test installation
-----------------
+--------------------
 
 .. code-block:: bash
 

@@ -24,7 +24,7 @@ of hours. We are constantly improving and developing new features, currently the
 You can also check out our repository on `github <https://github.com/NostrumBioDiscovery/pele_platform>`_!
 
 Requirements
----------------
+--------------
 
 - Schrödinger Suite (any version)
 
