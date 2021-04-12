@@ -1,5 +1,6 @@
 import glob
 import os
+import pytest
 import shutil
 
 from pele_platform.constants import constants
@@ -13,7 +14,6 @@ def test_mutagenesis_production():
     """
     Tests end-to-end saturated mutagenesis run on 5 CPUs to make sure we get the right output and pele.conf looks
     as expected (i.e. has induced_fit_exhaustive defaults).
-    TODO: This is a very primitive implementation, needs a lot more testing!
     """
     yaml = os.path.join(test_path, "saturated_mutagenesis.yaml")
     all_jobs = main.run_platform_from_yaml(yaml)
@@ -47,6 +47,9 @@ def test_mutagenesis_production():
 
 
 def test_mutagenesis_restart():
+    """
+    Test restarting saturated mutagenesis, it should skip the systems that were already marked as complete in the log.
+    """
     yaml = os.path.join(test_path, "restart_saturated_mutagenesis.yaml")
     pele_dir = "restart_ANL_Pele"
     restart_folder = os.path.join(test_path, "directory_to_restart")
@@ -60,3 +63,12 @@ def test_mutagenesis_restart():
     mutation_folder = os.path.splitext(os.path.basename(last_job.input[0]))[0]
     restart_trajectories = glob.glob(os.path.join(last_job.pele_dir, last_job.output, mutation_folder, "traj*"))
     assert len(restart_trajectories) == 2
+
+
+def test_cpus_error():
+    """
+    Checks for ValueError when number of CPUs per mutation exceeds the number of available CPUs.
+    """
+    yaml = os.path.join(test_path, "wrong_cpus.yaml")
+    with pytest.raises(ValueError):
+        main.run_platform_from_yaml(yaml)

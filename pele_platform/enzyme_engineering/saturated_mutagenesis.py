@@ -26,17 +26,17 @@ class SaturatedMutagenesis:
 
     Parameters
     ----------
-    env: pele_env.EnviroBuilder)
+    env : pele_env.EnviroBuilder)
         Arguments provided by the user in input.yaml.
-    already_computed: List[str]
+    already_computed : List[str]
         Initially empty list of already computed systems.
     all jobs: List[EnviroBuilder]
         Initially empty list of all completed jobs.
-    original_dir: str
+    original_dir : str
         Directory from which the job is launched.
-    start: int
+    start : int
         Index to enumerate subset folders, if restarting adaptive, otherwise default = 1
-    subset_folder: str
+    subset_folder : str
     See Also folder name, default = "Subset_"
     """
     env: parameters.ParametersBuilder
@@ -114,14 +114,15 @@ class SaturatedMutagenesis:
             self.start = set_starting_point(logged_subset_folders)
             self.env.adaptive_restart = False
 
-    def postprocessing(self, job):
+    @staticmethod
+    def postprocessing(job):
         """
         Matches output reports and trajectories with a particular system within the subset and copies them to the right
         folder.
 
         Parameters
         ----------
-        job: parameters.ParametersBuilder
+        job : parameters.ParametersBuilder
             Output job parameters.
         """
         output_path = os.path.join(job.pele_dir, job.output)
