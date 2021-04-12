@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Common errors &mdash; pele platform 1.6.0b2 documentation</title>
@@ -181,9 +180,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="common-errors">
+  <div class="section" id="common-errors">
 <h1>Common errors<a class="headerlink" href="#common-errors" title="Permalink to this headline">¶</a></h1>
-<section id="check-atoms">
+<div class="section" id="check-atoms">
 <h2>Check atoms<a class="headerlink" href="#check-atoms" title="Permalink to this headline">¶</a></h2>
 <p>The following error message indicates that the atom(s) you chose to calculate the distance metric or constrain does not exist.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Check the atoms A:999:C given to calculate the distance metric.</span>
@@ -196,8 +195,8 @@
 </ul>
 <p>You can easily check residue numbers and atom names in the bottom panel in Maestro by hovering the mouse pointer over a specific atom. In this example, the correct atom string would be <code class="docutils literal notranslate"><span class="pre">&quot;A:106:OH&quot;</span></code>.</p>
 <a class="reference internal image-reference" href="../_images/ppi_tutorial_1e.png"><img alt="../_images/ppi_tutorial_1e.png" class="align-center" src="../_images/ppi_tutorial_1e.png" style="width: 400px;" /></a>
-</section>
-<section id="filenotfound">
+</div>
+<div class="section" id="filenotfound">
 <h2>FileNotFound<a class="headerlink" href="#filenotfound" title="Permalink to this headline">¶</a></h2>
 <p>If PELE raises <code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code>, it probably means it cannot find one of the files specified in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> such as system, ligand or RMSD reference. Make sure:</p>
 <blockquote>
@@ -209,16 +208,16 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">FileNotFoundError: [Errno 2] No such file or directory: &#39;/home/anna/errors/file.pdb&#39;</span>
 </pre></div>
 </div>
-</section>
-<section id="valueerror-ligand">
+</div>
+<div class="section" id="valueerror-ligand">
 <h2>ValueError - ligand<a class="headerlink" href="#valueerror-ligand" title="Permalink to this headline">¶</a></h2>
 <p>This error indicates that the software was not able to find the ligand in the PDB file. Make sure <code class="docutils literal notranslate"><span class="pre">chain</span></code> and <code class="docutils literal notranslate"><span class="pre">resname</span></code> flags
 in your input file have correct values. Remember that ligands needs to have a unique chain ID!</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ValueError: Something went wrong when extracting the ligand. Check residue&amp;Chain on input</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

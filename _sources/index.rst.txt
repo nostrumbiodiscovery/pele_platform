@@ -26,7 +26,7 @@ You can also check out our repository on `github <https://github.com/NostrumBioD
 Requirements
 --------------
 
-- Schrödinger Suite (any version)
+    - Schrödinger Suite (any version)
 
 
 .. toctree::

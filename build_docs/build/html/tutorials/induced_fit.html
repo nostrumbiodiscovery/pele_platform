@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Docking pose refinement tutorial &mdash; pele platform 1.6.0b2 documentation</title>
@@ -195,17 +194,17 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="docking-pose-refinement-tutorial">
+  <div class="section" id="docking-pose-refinement-tutorial">
 <h1>Docking pose refinement tutorial<a class="headerlink" href="#docking-pose-refinement-tutorial" title="Permalink to this headline">¶</a></h1>
 <p>The aim of this tutorial is to refine a Glide docking pose of flu virus hemagglutinin inhibitor JNJ4796.</p>
-<section id="protein-file">
+<div class="section" id="protein-file">
 <h2>1. Protein file<a class="headerlink" href="#protein-file" title="Permalink to this headline">¶</a></h2>
 <p>We will be using a preprocessed docking pose of JNJ4796 ligand extracted from PDB 6CF7 in hemagglutinin structure (PDB code 5W6T).
 You can download the structure <a class="reference download internal" download="" href="../_downloads/059d8f3c96131a359f21dcb73f4c2831/docking.pdb"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a> .</p>
 <p>The superposition of Glide docking output (green) with the native pose (pink) resulted in the ligand RMSD of 7.68Å. Let’s see, if we can improve that with PELE’s induced fit simulation!</p>
 <a class="reference internal image-reference" href="../_images/induced_fit_tutorial_1.png"><img alt="../_images/induced_fit_tutorial_1.png" class="align-center" src="../_images/induced_fit_tutorial_1.png" style="width: 400px;" /></a>
-</section>
-<section id="pele-input-file">
+</div>
+<div class="section" id="pele-input-file">
 <h2>2. PELE input file<a class="headerlink" href="#pele-input-file" title="Permalink to this headline">¶</a></h2>
 <p>Create <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file in your working directory, it should contain the following flags:</p>
 <blockquote>
@@ -233,8 +232,8 @@ You can download the structure <a class="reference download internal" download="
 </div>
 <p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong> Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test flag and start a full production run.
 Otherwise, inspect the logs and correct any mistakes indicated in the error codes.</p>
-</section>
-<section id="launching-the-simulation">
+</div>
+<div class="section" id="launching-the-simulation">
 <h2>3. Launching the simulation<a class="headerlink" href="#launching-the-simulation" title="Permalink to this headline">¶</a></h2>
 <p>Once you have <code class="docutils literal notranslate"><span class="pre">docking.pdb</span></code> and <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> in your working directory, you can launch the simulation using one of the following methods:</p>
 <blockquote>
@@ -256,8 +255,8 @@ Otherwise, inspect the logs and correct any mistakes indicated in the error code
 </div>
 <p>You can download ready slurm files for <a class="reference download internal" download="" href="../_downloads/ce002e6255f67d6ef772d0861152748b/slurm_mn.sl"><code class="xref download docutils literal notranslate"><span class="pre">MareNostrum</span></code></a> and the <a class="reference download internal" download="" href="../_downloads/2ca137a2a9ce5ae49ee4fd0fa76203ec/slurm_nbd.sl"><code class="xref download docutils literal notranslate"><span class="pre">NBD</span> <span class="pre">cluster</span></code></a>.
 If you are running the simulation on the NBD cluster, you have to include <code class="docutils literal notranslate"><span class="pre">usesrun:</span> <span class="pre">true</span></code> in your input.yaml!</p>
-</section>
-<section id="analysis-of-the-results">
+</div>
+<div class="section" id="analysis-of-the-results">
 <h2>4. Analysis of the results<a class="headerlink" href="#analysis-of-the-results" title="Permalink to this headline">¶</a></h2>
 <p>Inside your <code class="docutils literal notranslate"><span class="pre">LIG_Pele</span></code> directory, you will find several folders containing simulation configuration and data, raw output as well as <code class="docutils literal notranslate"><span class="pre">results</span></code> folder, which
 we will be mostly concerned with in this tutorial.</p>
@@ -269,22 +268,22 @@ we will be mostly concerned with in this tutorial.</p>
 <li><p><a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline">adaptive.conf</a></p></li>
 </ul>
 </div></blockquote>
-<section id="a-plots">
+<div class="section" id="a-plots">
 <h3>a. Plots<a class="headerlink" href="#a-plots" title="Permalink to this headline">¶</a></h3>
 <p>In the <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results/Plots</span></code> folder you will find several plots, you can inspect them to get the general idea of the progression of the simulation.
 For example, you can see a clear relationship between the ligand’s solvent accessible surface area and binding energy on <code class="docutils literal notranslate"><span class="pre">currentEnergy_Binding_Energy_sasaLig_plot.png</span></code>.</p>
 <a class="reference internal image-reference" href="../_images/induced_tutorial_sasa.png"><img alt="../_images/induced_tutorial_sasa.png" class="align-center" src="../_images/induced_tutorial_sasa.png" style="width: 400px;" /></a>
-</section>
-<section id="b-selected-binding-modes">
+</div>
+<div class="section" id="b-selected-binding-modes">
 <h3>b. Selected binding modes<a class="headerlink" href="#b-selected-binding-modes" title="Permalink to this headline">¶</a></h3>
 <p>The software extracts the top 100 lowest binding energy structures in <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results/BestStructs/</span></code>. Additionally, it clusters all poses based on
 ligand heavy atom coordinates, the best energy representative of each cluster can be found in <code class="docutils literal notranslate"><span class="pre">LIG_Pele/results/clusters/</span></code>. The figure below shows
 a representative of cluster 5 (green) superposed with the native pose (pink, PDB code 6CF7), the resulting RMSD is 4.99Å.</p>
 <a class="reference internal image-reference" href="../_images/induced_tutorial_cluster5.png"><img alt="../_images/induced_tutorial_cluster5.png" class="align-center" src="../_images/induced_tutorial_cluster5.png" style="width: 400px;" /></a>
 <p>For more information regarding the outputs of the tutorial see <a class="reference external" href="outputs.html">Output files</a></p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

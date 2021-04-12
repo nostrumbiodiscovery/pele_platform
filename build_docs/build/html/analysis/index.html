@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Analysis &mdash; pele platform 1.6.0b2 documentation</title>
@@ -198,11 +197,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="analysis">
+  <div class="section" id="analysis">
 <h1>Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h1>
-<section id="output-files">
+<div class="section" id="output-files">
 <h2>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
-<section id="folder-structure">
+<div class="section" id="folder-structure">
 <h3>Folder structure<a class="headerlink" href="#folder-structure" title="Permalink to this headline">¶</a></h3>
 <p>Each simulation will create a number of output folders, as indicated on the tree below.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">.</span>
@@ -221,21 +220,21 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">plots</span></code> - plots of multiple metrics selected by the user</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">clusters</span></code> - lowest binding energy cluster representatives and clustering plots.</p></li>
 </ul>
-</section>
-<section id="detailed-metrics">
+</div>
+<div class="section" id="detailed-metrics">
 <h3>Detailed metrics<a class="headerlink" href="#detailed-metrics" title="Permalink to this headline">¶</a></h3>
 <p>Additionally, the simulation will create a two CSV files with more detailed metrics:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">results/data.csv</span></code> contains a summary of all created poses together with their metrics and the clusters they belong to</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">results/clusters/info.csv</span></code> provides detailed metric on each cluster, such as its population, mean RMSD, energy percentiles, etc.</p></li>
 </ul>
-</section>
-</section>
-<section id="plots">
+</div>
+</div>
+<div class="section" id="plots">
 <h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
 <p>The software will automatically create scatter plots for all metrics, however, if you want to enhance your analysis, you
 can check out our interactive and KDE plots.</p>
-<section id="interactive-plots">
+<div class="section" id="interactive-plots">
 <h3>Interactive plots<a class="headerlink" href="#interactive-plots" title="Permalink to this headline">¶</a></h3>
 <p>You can also create your own interactive plots. Simply go to the <code class="docutils literal notranslate"><span class="pre">output</span></code> folder and run the following command:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.analysis.interactive_plot 6 5</span>
@@ -245,8 +244,8 @@ can check out our interactive and KDE plots.</p>
 case we used columns 5 and 6 corresponding to the binding energy and SASA of the ligand. You can click on data points to get the file names of the structures.</p>
 <a class="reference internal image-reference" href="../_images/interactive_plot.png"><img alt="../_images/interactive_plot.png" class="align-center" src="../_images/interactive_plot.png" style="width: 400px;" /></a>
 <p>For more advanced interactive plots, please refer to <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html">PELE++ documentation</a>.</p>
-</section>
-<section id="kernel-density-estimate-plot">
+</div>
+<div class="section" id="kernel-density-estimate-plot">
 <h3>Kernel density estimate plot<a class="headerlink" href="#kernel-density-estimate-plot" title="Permalink to this headline">¶</a></h3>
 <p>The KDE plots can aid the simulation analysis by visualising the distribution of ligand poses (similarly to a histogram)
 in respect to plotted metrics, such as distance between two atoms (atom_dist) or solvent exposed surface area (SASA).
@@ -258,9 +257,9 @@ poses plotted using the <code class="docutils literal notranslate"><span class="
 </div>
 <p>Example plot of binding energy vs ligand SASA with a KDE including 1000 best energy poses.</p>
 <a class="reference internal image-reference" href="../_images/kde.png"><img alt="../_images/kde.png" class="align-center" src="../_images/kde.png" style="width: 400px;" /></a>
-</section>
-</section>
-<section id="clusters">
+</div>
+</div>
+<div class="section" id="clusters">
 <h2>Clusters<a class="headerlink" href="#clusters" title="Permalink to this headline">¶</a></h2>
 <p>Once the ligand clustering is finished, this folder will contain PDB files with the representatives of each selected cluster
 (marked with a letter) as well as a CSV summary of metrics for all clusters, not only the selected one.</p>
@@ -269,13 +268,13 @@ poses plotted using the <code class="docutils literal notranslate"><span class="
 <p>Moreover, the overall simulation metrics coloured by cluster are plotted to easily compare the performance of each cluster
 throughout the simulation.</p>
 <a class="reference internal image-reference" href="../_images/cluster_scatter.png"><img alt="../_images/cluster_scatter.png" class="align-center" src="../_images/cluster_scatter.png" style="width: 400px;" /></a>
-</section>
-<section id="api">
+</div>
+<div class="section" id="api">
 <h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
 <p>We included an option to run analysis as API for those of our users, who are familiar with Python. All you have to do is
 initialize the Analysis class with the three mandatory parameters (resname, chain and simulation_output) and any optional
 you might want to include.</p>
-<section id="class-analysis">
+<div class="section" id="class-analysis">
 <h3>class Analysis<a class="headerlink" href="#class-analysis" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><dl class="simple">
@@ -311,8 +310,8 @@ with only one step.</p>
 </pre></div>
 </div>
 <p>Then you can use one of the available methods to generate top poses, perform clustering or run the whole analysis workflow, e.g.</p>
-</section>
-<section id="generate">
+</div>
+<div class="section" id="generate">
 <h3>generate()<a class="headerlink" href="#generate" title="Permalink to this headline">¶</a></h3>
 <p>Runs the full analysis workflow (plots, top poses and clusters) and saves the results in the supplied path.</p>
 <blockquote>
@@ -361,8 +360,8 @@ with only one step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;my_folder&quot;</span><span class="p">,</span> <span class="n">clustering_type</span><span class="o">=</span><span class="s2">&quot;gaussianmixture&quot;</span><span class="p">,</span> <span class="n">analysis_nclust</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="generate-clusters">
+</div>
+<div class="section" id="generate-clusters">
 <h3>generate_clusters()<a class="headerlink" href="#generate-clusters" title="Permalink to this headline">¶</a></h3>
 <p>Performs clustering of the output poses based on ligand heavy atom coordinates using a user-defined method.</p>
 <blockquote>
@@ -409,8 +408,8 @@ with only one step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_clusters</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;my_clusters&quot;</span><span class="p">,</span> <span class="n">clustering_type</span><span class="o">=</span><span class="s2">&quot;gaussianmixture&quot;</span><span class="p">,</span> <span class="n">analysis_nclust</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="generate-plots">
+</div>
+<div class="section" id="generate-plots">
 <h3>generate_plots()<a class="headerlink" href="#generate-plots" title="Permalink to this headline">¶</a></h3>
 <p>Generates scatter plots for all metrics versus binding energy and total energy.</p>
 <blockquote>
@@ -422,8 +421,8 @@ with only one step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_plots</span><span class="p">(</span><span class="s2">&quot;my_plots_folder&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="generate-top-poses">
+</div>
+<div class="section" id="generate-top-poses">
 <h3>generate_top_poses()<a class="headerlink" href="#generate-top-poses" title="Permalink to this headline">¶</a></h3>
 <p>Retrieves the best binding energy poses and saves them in the PDB format, returns a list of metrics associated with each pose.</p>
 <blockquote>
@@ -437,8 +436,8 @@ with only one step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">best_metrics</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_top_poses</span><span class="p">(</span><span class="s2">&quot;my_working_folder&quot;</span><span class="p">,</span> <span class="n">n_poses</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="generate-report">
+</div>
+<div class="section" id="generate-report">
 <h3>generate_report()<a class="headerlink" href="#generate-report" title="Permalink to this headline">¶</a></h3>
 <p>It generates the final simulation report as a PDF file.</p>
 <blockquote>
@@ -458,9 +457,9 @@ with only one step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_report</span><span class="p">(</span><span class="s2">&quot;my_plots_folder&quot;</span><span class="p">,</span> <span class="s2">&quot;my_working_folder&quot;</span><span class="p">,</span> <span class="s2">&quot;my_clusters&quot;</span><span class="p">,</span> <span class="n">best_metrics</span><span class="p">,</span> <span class="s2">&quot;report.pdf&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

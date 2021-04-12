@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Installation &mdash; pele platform 1.6.0b2 documentation</title>
@@ -183,9 +182,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="installation">
+  <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<section id="conda-recommended">
+<div class="section" id="conda-recommended">
 <h2>Conda (recommended)<a class="headerlink" href="#conda-recommended" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c nostrumbiodiscovery -c conda-forge -c anaconda <span class="nv">pele_platform</span><span class="o">==</span><span class="m">1</span>.5.1
 
@@ -197,8 +196,8 @@ Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
 specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
-</section>
-<section id="singularity">
+</div>
+<div class="section" id="singularity">
 <h2>Singularity<a class="headerlink" href="#singularity" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
 
@@ -215,8 +214,8 @@ bash singularity.sl  <span class="c1"># If not queue system</span>
 sbatch singularity.sl  <span class="c1"># If slurm queue system</span>
 </pre></div>
 </div>
-</section>
-<section id="pypi">
+</div>
+<div class="section" id="pypi">
 <h2>Pypi<a class="headerlink" href="#pypi" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install numpy cython
 
@@ -232,8 +231,8 @@ Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
 specified via input.yaml flag, i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
-</section>
-<section id="last-stable-release-from-source-code">
+</div>
+<div class="section" id="last-stable-release-from-source-code">
 <h2>Last stable release from source code<a class="headerlink" href="#last-stable-release-from-source-code" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
 
@@ -251,8 +250,8 @@ Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
 specified via input.yaml flag, i.e license: /path/to/licenses/folder/
 </pre></div>
 </div>
-</section>
-<section id="test-installation">
+</div>
+<div class="section" id="test-installation">
 <h2>Test installation<a class="headerlink" href="#test-installation" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
 
@@ -261,8 +260,8 @@ specified via input.yaml flag, i.e license: /path/to/licenses/folder/
 python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

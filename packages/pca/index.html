@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Simulate big conformational moves of your receptor with PCA-PELE &mdash; pele platform 1.6.0b2 documentation</title>
@@ -207,14 +206,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="simulate-big-conformational-moves-of-your-receptor-with-pca-pele">
+  <div class="section" id="simulate-big-conformational-moves-of-your-receptor-with-pca-pele">
 <h1>Simulate big conformational moves of your receptor with PCA-PELE<a class="headerlink" href="#simulate-big-conformational-moves-of-your-receptor-with-pca-pele" title="Permalink to this headline">¶</a></h1>
-<section id="introduction">
+<div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>This package aims to analyse and enhance the receptor movement by performing the principal component analysis (PCA)
 on three or more trajectory snapshots, which is especially useful when the protein undergoes big conformational changes.
 The best binding modes of the simulated ligand are ranked and extracted for user inspection.</p>
-<section id="inputs">
+<div class="section" id="inputs">
 <h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
@@ -223,14 +222,14 @@ The best binding modes of the simulated ligand are ranked and extracted for user
 <li><p>YAML file with parameters</p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="default-parameters">
+</div>
+<div class="section" id="default-parameters">
 <h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
 <p>Exact parameters depend on the selected simulation type, the PCA only enhances the receptor movements.</p>
 <p><strong>Computational time</strong>: 5h</p>
-</section>
-</section>
-<section id="complex-preparation">
+</div>
+</div>
+<div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the system with Maestro (Protein Preparation Wizard) and output a <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>. The file must contain the
 protein-ligand in the desired initial configuration.</p>
@@ -242,8 +241,8 @@ protein-ligand in the desired initial configuration.</p>
 <li><p>any residue name except <code class="docutils literal notranslate"><span class="pre">UNK</span></code></p></li>
 </ul>
 </div></blockquote>
-</section>
-<section id="input-preparation">
+</div>
+<div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;complex.pdb&#39;</span> <span class="c1"># protein-ligand complex</span>
@@ -265,27 +264,27 @@ protein-ligand in the desired initial configuration.</p>
 </pre></div>
 </div>
 <p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a>.</p>
-</section>
-<section id="run-simulation">
+</div>
+<div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
 <p>To run the system launch the simulation with the following command:</p>
 <p><code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yml</span></code></p>
-</section>
-<section id="output">
+</div>
+<div class="section" id="output">
 <h2>4. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
-<section id="clusters">
+<div class="section" id="clusters">
 <h3>Clusters<a class="headerlink" href="#clusters" title="Permalink to this headline">¶</a></h3>
 <p>Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/clusters</span></code></p>
-</section>
-<section id="best-snapshots">
+</div>
+<div class="section" id="best-snapshots">
 <h3>Best snapshots<a class="headerlink" href="#best-snapshots" title="Permalink to this headline">¶</a></h3>
 <p>In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:</p>
 <p><code class="docutils literal notranslate"><span class="pre">working_folder/results/top_poses</span></code></p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

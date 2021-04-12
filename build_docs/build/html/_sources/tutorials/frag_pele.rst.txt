@@ -9,8 +9,8 @@ This tutorial aims to describe the general protocol to run FragPELE.
 Previous Requisites
 -----------------------
 
-* **Complex PDB:** The PDB processed file. Prepare the system with the **Schrödinger Protein Preparation Wizard**. It is recommended to delete all water molecules as well as filling in missing loops and side chains.
-It is obligatory that the protein is protonated.
+* **Complex PDB:** The PDB processed file. Prepare the system with the **Schrödinger Protein Preparation Wizard**. It is recommended to delete all water molecules as well as filling in missing loops and side chains. It is obligatory that the protein is protonated.
+
 Furthermore, make sure the ligand has:
     * A unique chain ID.
     * Unique PDB atom names with no spaces or single letters.

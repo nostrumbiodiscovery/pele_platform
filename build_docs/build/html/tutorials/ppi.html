@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Protein-protein interaction tutorial &mdash; pele platform 1.6.0b2 documentation</title>
@@ -196,12 +195,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="protein-protein-interaction-tutorial">
+  <div class="section" id="protein-protein-interaction-tutorial">
 <h1>Protein-protein interaction tutorial<a class="headerlink" href="#protein-protein-interaction-tutorial" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial we will set up a <strong>protein-protein interaction</strong> simulation aimed to elucidate a binding pocket of a bromodomain-histone
 inhibitor. We will be using bromodomain-containing protein 9/histone 4 X-ray structure (PDB code 4YY6) and
 a ligand from PDB 4UIT co-crystal.</p>
-<section id="protein-preparation">
+<div class="section" id="protein-preparation">
 <h2>1. Protein preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
 <p>We will import the complex from Protein Data Bank and preprocess it using Schrödinger Maestro (release 2020-1).</p>
 <p>a. Launch Maestro and <strong>import the structure from PDB</strong> by clicking <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB...</span></code>, type in your PDB ID, e.g. <code class="docutils literal notranslate"><span class="pre">4YY6</span></code>,
@@ -223,8 +222,8 @@ bottom panel in Maestro by hovering the mouse pointer over a specific atom.</p>
 <a class="reference internal image-reference" href="../_images/ppi_tutorial_1e1.png"><img alt="../_images/ppi_tutorial_1e1.png" class="align-center" src="../_images/ppi_tutorial_1e1.png" style="width: 400px;" /></a>
 <p>d. <strong>Export structure</strong> by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures...</span></code> and save all workspace atoms as <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>
 in your working directory.</p>
-</section>
-<section id="ligand-preparation">
+</div>
+<div class="section" id="ligand-preparation">
 <h2>2. Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
 <p>a. Import and preprocess PDB structure <code class="docutils literal notranslate"><span class="pre">4UIT</span></code>. You can ignore multiple occupancy issues, since we are only interested in
 the ligand.</p>
@@ -250,8 +249,8 @@ the ligand is forming expected interactions at the protein-protein interface or 
 <p>d. <strong>Export the ligand</strong> by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures...</span></code> and save all workspace atoms as <code class="docutils literal notranslate"><span class="pre">ligand.pdb</span></code>
 in your working directory.</p>
 <p>You can close Maestro now.</p>
-</section>
-<section id="pele-input-file">
+</div>
+<div class="section" id="pele-input-file">
 <h2>3. PELE input file<a class="headerlink" href="#pele-input-file" title="Permalink to this headline">¶</a></h2>
 <p>Create <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file in your working directory, it should contain the following flags:</p>
 <blockquote>
@@ -286,8 +285,8 @@ in your working directory.</p>
 </div>
 <p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong> Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test flag and start a full production run.
 Otherwise, inspect the logs and correct any mistakes indicated in the error codes.</p>
-</section>
-<section id="launching-the-simulation">
+</div>
+<div class="section" id="launching-the-simulation">
 <h2>4. Launching the simulation<a class="headerlink" href="#launching-the-simulation" title="Permalink to this headline">¶</a></h2>
 <p>Once you have <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>, <code class="docutils literal notranslate"><span class="pre">ligand.pdb</span></code> and <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> in your working directory, you can launch the simulation using one of the following methods:</p>
 <blockquote>
@@ -309,8 +308,8 @@ Otherwise, inspect the logs and correct any mistakes indicated in the error code
 </div>
 <p>You can download ready slurm files for <code class="xref download docutils literal notranslate"><span class="pre">MareNostrum</span></code> and the <code class="xref download docutils literal notranslate"><span class="pre">NBD</span> <span class="pre">cluster</span></code>.
 If you are running the simulation on the NBD cluster, you have to include <code class="docutils literal notranslate"><span class="pre">usesrun:</span> <span class="pre">true</span></code> in your input.yaml!</p>
-</section>
-<section id="analysis-of-the-results">
+</div>
+<div class="section" id="analysis-of-the-results">
 <h2>5. Analysis of the results<a class="headerlink" href="#analysis-of-the-results" title="Permalink to this headline">¶</a></h2>
 <p>The PPI exploration consists of two steps. Initially, the position of the ligand is randomised all around the protein
 to perform <strong>interface exploration</strong>. Then, all results are clustered based on ligand coordinates and the best binding energy
@@ -325,7 +324,7 @@ the global exploration output or any other PELE simulation.</p>
 <li><p><a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline">adaptive.conf</a></p></li>
 </ul>
 </div></blockquote>
-<section id="a-plots">
+<div class="section" id="a-plots">
 <h3>a. Plots<a class="headerlink" href="#a-plots" title="Permalink to this headline">¶</a></h3>
 <p>1. Got to <code class="docutils literal notranslate"><span class="pre">LIG_Pele/2_refinement_simulation/results/Plots/</span></code> folder. It should contain a number of plots which allow you to get a
 general idea of the progression of the simulation.</p>
@@ -336,8 +335,8 @@ Note there are few local binding energy minima, which indicates the software dis
 the binding energy.</p>
 <a class="reference internal image-reference" href="../_images/ppi_currentEnergy_Binding_Energy_sasaLig_plot.png"><img alt="../_images/ppi_currentEnergy_Binding_Energy_sasaLig_plot.png" class="align-center" src="../_images/ppi_currentEnergy_Binding_Energy_sasaLig_plot.png" style="width: 400px;" /></a>
 <p>Feel free to explore other plots as well.</p>
-</section>
-<section id="b-selected-binding-modes">
+</div>
+<div class="section" id="b-selected-binding-modes">
 <h3>b. Selected binding modes<a class="headerlink" href="#b-selected-binding-modes" title="Permalink to this headline">¶</a></h3>
 <ol class="arabic">
 <li><p>Go to <code class="docutils literal notranslate"><span class="pre">LIG_Pele/2_refinement_simulation/results</span></code> folder, which contains the best binding poses split into two categories:</p>
@@ -364,9 +363,9 @@ with Tyr106.</p>
 the superposition of 10 lowest energy structures (green) with the native pose (pink).</p>
 <a class="reference internal image-reference" href="../_images/ppi_BestStructs.png"><img alt="../_images/ppi_BestStructs.png" class="align-center" src="../_images/ppi_BestStructs.png" style="width: 400px;" /></a>
 <p>For more information regarding the outputs of the tutorial see <a class="reference external" href="outputs.html">Output files</a></p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

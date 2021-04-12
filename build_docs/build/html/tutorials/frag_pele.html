@@ -4,8 +4,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Fragment growing tutorial &mdash; pele platform 1.6.0b2 documentation</title>
@@ -195,32 +194,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="fragment-growing-tutorial">
+  <div class="section" id="fragment-growing-tutorial">
 <h1>Fragment growing tutorial<a class="headerlink" href="#fragment-growing-tutorial" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/32027130/">FragPELE</a>  is a new tool for in silico hit-to-lead drug design, capable of growing a fragment from a bound core while exploring the protein-ligand conformational space.</p>
 <p>This tutorial aims to describe the general protocol to run FragPELE.</p>
-<section id="previous-requisites">
+<div class="section" id="previous-requisites">
 <h2>Previous Requisites<a class="headerlink" href="#previous-requisites" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p><strong>Complex PDB:</strong> The PDB processed file. Prepare the system with the <strong>Schrödinger Protein Preparation Wizard</strong>. It is recommended to delete all water molecules as well as filling in missing loops and side chains.</p></li>
+<li><p><strong>Complex PDB:</strong> The PDB processed file. Prepare the system with the <strong>Schrödinger Protein Preparation Wizard</strong>. It is recommended to delete all water molecules as well as filling in missing loops and side chains. It is obligatory that the protein is protonated.</p></li>
 </ul>
-<p>It is obligatory that the protein is protonated.
-Furthermore, make sure the ligand has:</p>
-<blockquote>
-<div><ul class="simple">
+<dl class="simple">
+<dt>Furthermore, make sure the ligand has:</dt><dd><ul class="simple">
 <li><p>A unique chain ID.</p></li>
 <li><p>Unique PDB atom names with no spaces or single letters.</p></li>
 <li><p>NO residue name except for UNK.</p></li>
 </ul>
-</div></blockquote>
+</dd>
+</dl>
 <ul class="simple">
 <li><p><strong>Fragment PDB:</strong> The PDB with the desired fragment. The chain of the fragment <strong>must be renamed to “L”</strong>.</p></li>
 </ul>
-</section>
-<section id="launch-a-fragpele-simulation">
+</div>
+<div class="section" id="launch-a-fragpele-simulation">
 <h2>Launch a FragPELE simulation<a class="headerlink" href="#launch-a-fragpele-simulation" title="Permalink to this headline">¶</a></h2>
-</section>
-<section id="protein-preparation">
+</div>
+<div class="section" id="protein-preparation">
 <h2>1. Protein Preparation<a class="headerlink" href="#protein-preparation" title="Permalink to this headline">¶</a></h2>
 <ol class="loweralpha simple">
 <li><p>Launch Schrödinger Maestro.</p></li>
@@ -262,8 +260,8 @@ Furthermore, make sure the ligand has:</p>
 </li>
 <li><p>Finally, export the structure by going to <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">structures</span></code> and save it to your working directory.</p></li>
 </ol>
-</section>
-<section id="ligand-preparation">
+</div>
+<div class="section" id="ligand-preparation">
 <h2>2. Ligand Preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
 <ol class="loweralpha">
 <li><p>Select the ligand with a mouse click and extract it to a separate entry opening <code class="docutils literal notranslate"><span class="pre">Build</span></code> and clicking <code class="docutils literal notranslate"><span class="pre">Copy</span> <span class="pre">selected</span> <span class="pre">atoms</span> <span class="pre">to</span> <span class="pre">new</span> <span class="pre">entry</span></code>.</p></li>
@@ -293,8 +291,8 @@ Furthermore, make sure the ligand has:</p>
 <li><p>A new group on the entry list is created after LigPrep finishes. Select all the entries of the group as in step <code class="docutils literal notranslate"><span class="pre">2c</span></code>.</p></li>
 <li><p>Go to <code class="docutils literal notranslate"><span class="pre">Export</span> <span class="pre">-&gt;</span> <span class="pre">Structures</span></code> and save the file as <code class="docutils literal notranslate"><span class="pre">ligands.sdf</span></code> in your working directory.</p></li>
 </ol>
-</section>
-<section id="yaml-input-file">
+</div>
+<div class="section" id="yaml-input-file">
 <h2>3. YAML Input File<a class="headerlink" href="#yaml-input-file" title="Permalink to this headline">¶</a></h2>
 <p>The input file <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> must contain:</p>
 <blockquote>
@@ -321,15 +319,15 @@ Furthermore, make sure the ligand has:</p>
 <span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 </pre></div>
 </div>
-</section>
-<section id="launching-fragpele">
+</div>
+<div class="section" id="launching-fragpele">
 <h2>4. Launching FragPELE<a class="headerlink" href="#launching-fragpele" title="Permalink to this headline">¶</a></h2>
 <p>To run the system launch the simulation with the following command:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pele_platform</span><span class="o">.</span><span class="n">main</span> <span class="nb">input</span><span class="o">.</span><span class="n">yaml</span>
 </pre></div>
 </div>
-</section>
-<section id="results">
+</div>
+<div class="section" id="results">
 <h2>5. Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
 <dl>
 <dt>The simulation will create a folder with the following organization:</dt><dd><ul>
@@ -366,12 +364,12 @@ Furthermore, make sure the ligand has:</p>
 </ul>
 </dd>
 </dl>
-</section>
-<section id="optative-flags">
+</div>
+<div class="section" id="optative-flags">
 <h2>Optative Flags<a class="headerlink" href="#optative-flags" title="Permalink to this headline">¶</a></h2>
 <p>See <a class="reference external" href="../documentation/frag/index.html">here</a> the optative flags for FragPELE.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
