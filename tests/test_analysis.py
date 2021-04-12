@@ -467,11 +467,12 @@ def test_empty_reports_handling():
     analysis.generate(path="empty_reports")
 
 
-def test_residue_checker():
+@pytest.mark.parametrize("path", ["analysis/data/xtc", "analysis/data/empty_reports_output"])
+def test_residue_checker(path):
     """
     Check, if we catch an error when the resname passed to Analysis doesn't exist in the output trajectories.
     """
-    simulation_output = os.path.join(test_path, "analysis/data/empty_reports_output")
+    simulation_output = os.path.join(test_path, path)
 
     with pytest.raises(ValueError):
         analysis = Analysis(
