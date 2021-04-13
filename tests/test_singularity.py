@@ -5,6 +5,8 @@ import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Checker.valid_flags as vf
 from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 from pele_platform.Utilities.Helpers.launcher import Launcher
+import pele_platform.Checker.main as ck
+import pele_platform.Errors.custom_errors as ce
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -20,23 +22,42 @@ testdata = [
     (ARGS_2, False, FRAG_PELE_EXEC, None),
 ]
 
-@pytest.mark.parametrize("ext_args, check_mpi, expected1, expected2", testdata)
-def test_singularity_params(ext_args, check_mpi, expected1, expected2):
+def test_singularity_exec(ext_args=ARGS_1):
     """
-    Test for the pele_exec and mpi_params values.
+    Test singularity checker (throw an ExecutableNotInPath exception).
+
+    Parameters
+    ----------
+    ext_args : Path of the input.yaml file.
 
     Returns
     ----------
     boolean : result of the test.
     """
-    # Parse yaml file
-    yaml_obj = yp.YamlParser(ext_args, vf.VALID_FLAGS_PLATFORM)
-    yaml_obj.read()
-
     # Prepare params
-    launcher = Launcher(yaml_obj)
-    launcher._define_package_to_run()
-    params = launcher._args
+    params = _read_args(ext_args)
+
+    with pytest.raises(ce.ExecutableNotInPath):
+        ck.check_executable_and_env_variables(params)
+
+@pytest.mark.parametrize("ext_args, check_mpi, expected1, expected2", testdata)
+def test_singularity_params(ext_args, check_mpi, expected1, expected2):
+    """
+    Test for the pele_exec and mpi_params values.
+
+    Parameters
+    ----------
+    ext_args : Path of the input.yaml file.
+    check_mpi: Boolean, activates mpi_params check.
+    expected1: Expected value for pele_exec.
+    expected2: Expected value for mpi_params.
+
+    Returns
+    ----------
+    boolean : result of the test.
+    """
+    # Prepare params
+    params = _read_args(ext_args)
     builder = ParametersBuilder()
     simulation_params = builder.build_adaptive_variables(params)
 
@@ -54,3 +75,25 @@ def test_singularity_params(ext_args, check_mpi, expected1, expected2):
 
     assert not errors
 
+
+def _read_args (file):
+    """
+    Internal function: parse yaml file and prepare args.
+
+    Parameters
+    ----------
+    file : Path of the input.yaml file.
+
+    Returns
+    ----------
+    args : simulation args.
+    """
+    # Parse yaml file
+    yaml_obj = yp.YamlParser(file, vf.VALID_FLAGS_PLATFORM)
+    yaml_obj.read()
+
+    # Prepare params
+    launcher = Launcher(yaml_obj)
+    launcher._define_package_to_run()
+
+    return launcher._args
