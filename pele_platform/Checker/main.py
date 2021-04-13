@@ -28,19 +28,36 @@ class Checker():
         ]
         return self.env_variables
 
-
     def _generate_executables(self) -> list:
         self.executables = [ex.Executable(executable) for executable in EXECUTABLES_TO_CHECK]
         return self.executables
 
 
-    
+@dataclass
+class Singularity_Checker(Checker):
+
+    def check_variables(self, args: yp.YamlParser) -> None:
+        super().check_variables(args)
+        self._check_singularity_exec(args.singularity_exec)
+
+    def _generate_env_variables(self, args: yp.YamlParser) -> list:
+        self.env_variables = [
+        en.EnvVariable("pele_license", args.pele_license, os.path.join(cs.PELE, "licenses"), "--pele_license /path/to/licenses", "export PELE=/path/to/PELE-1.X/"),
+        en.EnvVariable("schrodinger", args.schrodinger, cs.SCHRODINGER, "--schrodinger /path/to/schrodinger-20XX/", "export SCHRODINGER=/path/to/schrodinger-20XX/")
+        ]
+        return self.env_variables
+
+    def _check_singularity_exec(self, fpath) -> None:
+        exec_path = ex.Executable(fpath)
+        exec_path.is_in_path()
+
+
 def check_executable_and_env_variables(args: yp.YamlParser):
     """
     Check all external requirements are there
     before starting the simulation.
     1) Check env variables
-    2) Check executables 
+    2) Check executables
     """
-    checker = Checker()
+    checker = (Singularity_Checker() if args.singularity_exec else Checker())
     checker.check_variables(args)
