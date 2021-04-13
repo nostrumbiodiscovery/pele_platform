@@ -28,7 +28,7 @@ class SiteFinderLauncher:
         self._set_params_global()
         self.global_simulation = self._launch_global()
 
-        if not self.args.skip_refinement:
+        if not self.args.skip_refinement and not self.args.debug:
             self._choose_refinement_input()
             self._set_params_refinement()
             self.refinement_simulation = self._launch_refinement()
