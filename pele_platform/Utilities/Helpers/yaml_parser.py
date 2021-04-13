@@ -279,6 +279,8 @@ class YamlParser(object):
         # site_finder
         self.site_finder = data.get(valid_flags["site_finder"], None)
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
+        self.site_finder_local = data.get(valid_flags["site_finder_local"], None)
+        self.site_finder_global = data.get(valid_flags["site_finder_global"], None)
 
         # RNA
         self.rna = data.get(valid_flags["rna"], None)

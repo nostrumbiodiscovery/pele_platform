@@ -190,6 +190,32 @@ def retrieve_software_settings(args, pele_dir):
                 "params": pcs.INTERACTION_RESTRICTIONS,
                 "box_radius": 6,
             },
+            "site_finder_global": {
+                "spawning_type": "inverselyProportional",
+                "epsilon": 0.25,
+                "iterations": 50,
+                "pele_steps": 12,
+                "cluster_values": "[2.5, 4, 6]",
+                "cluster_conditions": "[1, 0.5, 0.0]",
+                "sidechain_freq": 2,
+                "temperature": 1500,
+                "overlap_factor": 0.65,
+                "steric_trials": 200,
+                "params": pcs.SITE_FINDER_GLOBAL,
+            },
+            "site_finder_local": {
+                "spawning_type": "inverselyProportional",
+                "epsilon": 0.25,
+                "iterations": 10,
+                "pele_steps": 50,
+                "cluster_values": "[2.0, 4, 6]",
+                "cluster_conditions": "[1, 0.5, 0.0]",
+                "sidechain_freq": 2,
+                "temperature": 1500,
+                "overlap_factor": 0.65,
+                "steric_trials": 200,
+                "params": pcs.SITE_FINDER_LOCAL,
+            }
         },
     }
 
@@ -212,6 +238,10 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "gpcr_orth"
     elif args.interaction_restrictions:
         type_simulation = "interaction_restrictions"
+    elif args.site_finder_global:
+        type_simulation = "site_finder_global"
+    elif args.site_finder_local:
+        type_simulation = "site_finder_local"
     else:
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"
