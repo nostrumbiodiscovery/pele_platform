@@ -278,7 +278,7 @@ class SimulationParams(
             f'"{mpi_params_name}": "{args.mpi_params}",' if args.mpi_params else ""
         )
         if (args.singularity_exec):
-            args.pele_exec = "Pele_mpi"
+            args.pele_exec = ("Pele_mpi" if not self.frag_pele else args.mpi_params + " Pele_mpi")
 
     def optative_params(self, args):
         self.forcefield = (
