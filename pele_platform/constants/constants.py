@@ -259,3 +259,27 @@ custom_colors = ((0.12156862745098039, 0.4666666666666667, 0.7058823529411765),
 INTERSTEPLOGGER = ''',
             "useInterStepLogger": true'''
 
+
+# Top cluster selection - mapping between table metrics and YAML arguments
+metric_top_clusters_criterion = {
+    "total_25_percentile": "currentEnergy 25-percentile",
+    "total_5_percentile": "currentEnergy 5-percentile",
+    "total_mean": "currentEnergy mean",
+    "total_min": "currentEnergy minb",
+    "interaction_25_percentile": "Binding Energy 25-percentile",
+    "interaction_5_percentile": "Binding Energy 5-percentile",
+    "interaction_mean": "Binding Energy mean",
+    "interaction_min": "Binding Energy min",
+    "population": "Population"}
+
+# Cluster representatives selection - mapping between table metrics and
+# YAML arguments
+cluster_representatives_criterion = {
+    "total_25_percentile": "currentEnergy 25-percentile",
+    "total_5_percentile": "currentEnergy 5-percentile",
+    "total_mean": "currentEnergy mean",
+    "total_min": "currentEnergy min",
+    "interaction_25_percentile": "Binding Energy 25-percentile",
+    "interaction_5_percentile": "Binding Energy 5-percentile",
+    "interaction_mean": "Binding Energy mean",
+    "interaction_min": "Binding Energy min"}

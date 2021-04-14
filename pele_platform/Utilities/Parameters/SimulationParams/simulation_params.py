@@ -495,6 +495,8 @@ class SimulationParams(
         self.min_population = args.min_population if args.min_population is not None else 0.01
         self.max_top_clusters = args.max_top_clusters if args.max_top_clusters is not None else 8
         self.max_top_poses = args.max_top_poses if args.max_top_poses is not None else 100
+        self.top_clusters_criterion = args.top_clusters_criterion if args.top_clusters_criterion is not None else "interaction_25_percentile"
+        self.cluster_representatives_criterion = args.cluster_representatives_criterion if args.cluster_representatives_criterion is not None else "interaction_5_percentile"
 
     def constraints_params(self, args):
         """
@@ -533,12 +535,14 @@ class SimulationParams(
     def interaction_restrictions_params(self, args):
         """
         Sets parameters for interaction restrictions.
+        Fills the pele_params INTERACTION_RESTRICTIONS template with an additional section of parameters change.
         """
         if args.interaction_restrictions:
             restrictions = InteractionRestrictionsBuilder()
             restrictions.parse_interaction_restrictions(self.system, args.interaction_restrictions)
             self.met_interaction_restrictions = restrictions.metrics_to_json()
             self.interaction_restrictions = restrictions.conditions_to_json()
+            self.parameters = restrictions.fill_template(self.parameters)
         else:
             self.met_interaction_restrictions = ""
             self.interaction_restrictions = ""

@@ -190,5 +190,7 @@ VALID_FLAGS_PLATFORM = {
     "max_top_clusters": "max_top_clusters",
     "min_population": "min_population",
     "max_top_poses": "max_top_poses",
-    "singularity_exec": "singularity_exec"
+    "singularity_exec": "singularity_exec",
+    "top_clusters_criterion": "top_clusters_criterion",
+    "cluster_representatives_criterion": "cluster_representatives_criterion",
 }
