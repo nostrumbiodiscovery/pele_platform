@@ -308,6 +308,8 @@ class YamlParser(object):
         self.top_clusters_criterion = data.get(valid_flags["top_clusters_criterion"], None)
         self.cluster_representatives_criterion = data.get(valid_flags["cluster_representatives_criterion"], None)
 
+        self.charge_parametrization_method = data.get(valid_flags["charge_parametrization_method"], None)
+
         if self.test:
             warnings.warn(
                 "WARNING: This simulation is a test do not use the input files to run production simulations"

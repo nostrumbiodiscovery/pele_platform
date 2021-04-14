@@ -400,10 +400,11 @@ class SimulationParams(
         self.core = args.core
         self.n = args.n
         self.mtor = args.mtor
-        self.forcefield = args.forcefield
+        self.forcefield = args.forcefield if args.forcefield is not None else "OPLS2005"
         self.mae_lig = args.mae_lig
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
         self.gridres = args.gridres
+        self.charge_parametrization_method = args.charge_parametrization_method if args.charge_parametrization_method else "am1bcc"
 
     def water_params(self, args):
         self.water_temp = (

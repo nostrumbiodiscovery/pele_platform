@@ -228,8 +228,7 @@ def run_adaptive(args):
 
         # Ligand parameters and simulation box
         if parameters.perturbation:
-            ligand_params = lg.LigandParametrization(parameters)
-            ligand_params.generate()
+            lg.LigandParametrization.from_parameters(parameters).generate()
             box = bx.BoxSetter(
                 parameters.box_center,
                 parameters.box_radius,

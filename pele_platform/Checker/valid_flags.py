@@ -194,4 +194,5 @@ VALID_FLAGS_PLATFORM = {
     "cluster_representatives_criterion": "cluster_representatives_criterion",
     "site_finder_local": "site_finder_local",
     "site_finder_global": "site_finder_global",
+    "charge_parametrization_method": "charge_parametrization_method",
 }
