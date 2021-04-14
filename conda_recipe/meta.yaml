@@ -39,7 +39,7 @@ requirements:
     - rdkit
     - frag_pele==2.2.1
     - lib_prep
-    #- peleffy not ready yet
+    - peleffy
     #- drug_learning not ready yet
     - hdbscan==0.8.27
     - mdtraj==1.9.5
