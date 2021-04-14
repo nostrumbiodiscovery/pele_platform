@@ -1,10 +1,12 @@
+import os
+import shutil
+
 from peleffy.utils.input import PDB
 from peleffy.utils import OutputPathHandler
 from peleffy.topology import RotamerLibrary, Topology
 from peleffy import forcefield as ff
 from peleffy.template import Impact
 
-from pele_platform.constants import constants
 from pele_platform.Errors import custom_errors
 
 
@@ -17,6 +19,9 @@ class LigandParametrization:
 
     TEMPLATE_FILE = "{}z"
     ROTAMER_FILE = "{}.rot.assign"
+
+    OPLS_IMPACT_TEMPLATE_PATH = "DataLocal/Templates/OPLS2005/HeteroAtoms/"
+    ROTAMER_LIBRARY_PATH = "DataLocal/LigandRotamerLibs/"
 
     # Mapping between args.forcefield and peleffy classes
     forcefields = {
@@ -116,7 +121,9 @@ class LigandParametrization:
         """
         for ligand in self.ligands:
 
-            output_handler = OutputPathHandler(ligand, self.forcefield, as_datalocal=True, output_path=self.pele_dir)
+            output_handler = OutputPathHandler(
+                ligand, self.forcefield, as_datalocal=True, output_path=self.pele_dir
+            )
             rotamer_library_path = output_handler.get_rotamer_library_path()
             impact_template_path = output_handler.get_impact_template_path()
             # solvent_template_path = output_handler.get_solvent_template_path()
@@ -133,14 +140,46 @@ class LigandParametrization:
                 impact = Impact(topology)
                 impact.to_file(impact_template_path)
 
-        self.copy_external_parameters()
+        if not self.ligands:
+            rotamer_library_path = os.path.join(
+                self.pele_dir, self.ROTAMER_LIBRARY_PATH
+            )
+            impact_template_path = os.path.join(
+                self.pele_dir, self.OPLS_IMPACT_TEMPLATE_PATH
+            )
 
-    def copy_external_parameters(self) -> None:
+        self.copy_external_parameters(
+            os.path.dirname(rotamer_library_path), os.path.dirname(impact_template_path)
+        )
+
+    def copy_external_parameters(self, rotamer_path, template_path) -> None:
         """
-        TODO: Copy external ligand templates and rotamers specified by the user. Raised raise TemplateFileNotFound if file
-        not found.
+        Copy external ligand templates and rotamers specified by the user. Raised raise TemplateFileNotFound
+        RotamersFileNotFound error if file not found.
+
+        Parameters
+        -----------
+        rotamer_path : str
+            Path to rotamers directory in pele_dir.
+        template_path : str
+            Path to template directory in pele_dir.
         """
-        pass
+        for file in self.external_templates:
+            try:
+                shutil.copy(file, template_path)
+            except IOError:
+                raise custom_errors.TemplateFileNotFound(
+                    f"Could not locate {file} file. Please double-check the path."
+                )
+
+        for file in self.external_rotamers:
+            try:
+                shutil.copy(file, rotamer_path)
+                print(f"Copied external rotamer file {file} to {rotamer_path}.")
+            except IOError:
+                raise custom_errors.RotamersFileNotFound(
+                    f"Could not locate {file} file. Please double-check the path."
+                )
 
     def _retrieve_forcefield(self, forcefield):
         """
@@ -153,7 +192,7 @@ class LigandParametrization:
         """
         Checks if charge parametrization method selected by the user is supported.
         """
-        if method.lower() not in constants.charge_parametrization_methods:
+        if method.lower() not in self.charge_parametrization_methods:
             raise ValueError(
                 f"Invalid charge parametrization method, choose one of: {self.charge_parametrization_methods}."
             )
