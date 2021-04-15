@@ -19,7 +19,7 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-import pele_platform.Adaptive.ligand_parametrization as lg
+import pele_platform.Adaptive.parametrization as parametrization
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.solvent as sv
 import pele_platform.Adaptive.pca as pca
@@ -226,9 +226,9 @@ def run_adaptive(args):
             parameters.constraints = ""
         parameters.logger.info("Complex {} prepared\n\n".format(parameters.system))
 
-        # Ligand parameters and simulation box
+        # Ligand/metal parameters, solvent parameters and simulation box
         if parameters.perturbation:
-            lg.LigandParametrization.from_parameters(parameters).generate()
+            parametrization.Parametrization.from_parameters(parameters).generate_ligand_parameters()
             box = bx.BoxSetter(
                 parameters.box_center,
                 parameters.box_radius,
@@ -246,16 +246,6 @@ def run_adaptive(args):
                 with hp.cd(parameters.pele_dir):
                     mr.create_template(parameters, res)
                 parameters.logger.info("Template {}z created\n\n".format(res))
-
-        # Solvent parameters
-        solvent = sv.ImplicitSolvent(
-            parameters.solvent,
-            parameters.obc_tmp,
-            parameters.template_folder,
-            parameters.obc_file,
-            parameters.logger,
-        )
-        solvent.generate()
 
         # Build PCA
         if parameters.pca_traj:

@@ -101,6 +101,7 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     assert len(top_results) == 3
 
 
+@pytest.mark.xfail(reason="Waiting for Carles to fix Schrodinger paths.")
 def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     """
     Checks input file flags.

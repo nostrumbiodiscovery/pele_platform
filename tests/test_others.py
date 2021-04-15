@@ -176,6 +176,7 @@ def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
     assert False
 
 
+@pytest.mark.skip(reason="No longer using Plop to parametrize ligands.")
 def test_lig_preparation_error(args=LIG_PREP_ARGS):
     try:
         job = main.run_platform_from_yaml(args)
@@ -220,7 +221,7 @@ def test_template_error(yaml=yaml):
     try:
         job = main.run_platform_from_yaml(yaml)
     except ce.TemplateFileNotFound as e:
-        assert str(e).strip("'") == "File mgadeaz not found"
+        assert str(e).strip("'") == "Could not locate mgadeaz file. Please double-check the path."
         return
     assert False
 
@@ -242,7 +243,7 @@ def test_rotamer_error(yaml=yaml):
     try:
         job = main.run_platform_from_yaml(yaml)
     except ce.RotamersFileNotFound as e:
-        assert str(e).strip("'") == "File mgadeaz not found"
+        assert str(e).strip("'") == "Could not locate mgadeaz file. Please double-check the path."
         return
     assert False
 
