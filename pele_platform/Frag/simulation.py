@@ -10,7 +10,7 @@ import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
 import frag_pele.main as frag
-
+import pele_platform.constants.constants as cs
 
 
 class FragRunner(object):
@@ -89,7 +89,7 @@ class FragRunner(object):
 
     def _run(self):
         params = self.parameters
-
+        params.spython = cs.SCHRODINGER
         if params.frag_run:
             try:
                 frag.main(params.core_process, params.input, params.gr_steps,
