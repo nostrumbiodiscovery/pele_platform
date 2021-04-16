@@ -4,6 +4,7 @@ import pele_platform.Errors.custom_errors as ce
 import pele_platform.constants.constants as cs
 import glob
 import os
+import re
 
 test_path = os.path.join(cs.DIR, "Examples")
 METAL_CONSTR_ARGS = os.path.join(test_path, "constraints/input_metals.yaml")

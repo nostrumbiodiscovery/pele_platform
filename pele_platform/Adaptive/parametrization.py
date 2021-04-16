@@ -36,13 +36,12 @@ class Parametrization:
     # Mapping between args.solvent and peleffy models
     solvents = {
         "obc2": solvent.OBC2,
-        "obc1": solvent.OBC1,
         "opls_obc": solvent.OPLSOBC,
         "vdgbnp": None,
     }
 
     # Available methods of charge parametrization
-    charge_parametrization_methods = ["am1bcc", "gasteiger", "OPLS"]
+    charge_parametrization_methods = ["am1bcc", "gasteiger", "opls2005"]
 
     def __init__(
         self,
@@ -90,7 +89,9 @@ class Parametrization:
         self.external_templates = external_templates
         self.external_rotamers = external_rotamers
         self.as_datalocal = as_datalocal
-        self.hetero_molecules = self.extract_ligands(pdb_file=self.pdb, gridres=self.gridres)
+        self.hetero_molecules = self.extract_ligands(
+            pdb_file=self.pdb, gridres=self.gridres
+        )
         self.rotamers_to_skip, self.templates_to_skip = self._check_external_files()
         self.pele_dir = pele_dir
 
@@ -106,8 +107,8 @@ class Parametrization:
 
         Returns
         --------
-        obj : LigandParametrization object
-            LigandParametrization object initialized from simulation parameters.
+        obj : Parametrization object
+            Parametrization object initialized from simulation parameters.
         """
         obj = Parametrization(
             pdb_file=parameters.system,
@@ -133,6 +134,12 @@ class Parametrization:
             Path to PDB file.
         gridres : int
             Resolution of the rotamers when sampling.
+
+        Returns
+        ---------
+        unique_molecules : List[peleffy.topology.Molecule]
+            List of hetero molecules extracted from the PDB file, without any duplicates, water molecules or single atom
+            anions (e.g. Cl-, F-, etc.).
         """
         reader = PDB(pdb_file)
         molecules = reader.get_hetero_molecules(
@@ -162,17 +169,18 @@ class Parametrization:
 
         return unique_molecules
 
-    def _copy_external_parameters(self, rotamer_path, template_paths) -> None:
+    def _copy_external_parameters(self, rotamer_path, template_paths):
         """
-        Copy external ligand templates and rotamers specified by the user. Raised raise TemplateFileNotFound
-        RotamersFileNotFound error if file not found.
+        Copy external ligand templates and rotamers specified by the user to both OPLS2005 and OpenFF directories, since
+        we do not know which FF was used to generate them. Raised raise TemplateFileNotFound RotamersFileNotFound error,
+        if file not found.
 
         Parameters
         -----------
         rotamer_path : str
             Path to rotamers directory in pele_dir.
         template_paths : List[str]
-            Paths to template directories in pele_dir.
+            Paths to template directories in pele_dir (OPLS2005 and OpenFF).
         """
         if self.external_templates:
             for file in self.external_templates:
@@ -194,7 +202,8 @@ class Parametrization:
                 try:
                     shutil.copy(file, rotamer_path)
                     print(
-                        "Copied external rotamer files:", ", ".join(self.external_rotamers)
+                        "Copied external rotamer files:",
+                        ", ".join(self.external_rotamers),
                     )
                 except IOError:
                     raise custom_errors.RotamersFileNotFound(
@@ -205,6 +214,18 @@ class Parametrization:
     def _check_solvent(solvent, forcefield):
         """
         Checks if solvent is compatible with the forcefield. OpenFF forcefield supports OBC solvent only.
+
+        Parameters
+        -----------
+        solvent : str
+            Solvent selected by the user.
+        forcefield : str
+            Forcefield selected by the user.
+
+        Returns
+        --------
+        solvent : str
+            Solvent string, if it is compatible. Otherwise raises ValueError.
         """
         if forcefield.lower() != "opls2005" and solvent.lower() == "vdgbnp":
             raise ValueError(
@@ -221,6 +242,11 @@ class Parametrization:
         -------------
         forcefield : str
             Forcefield defined by the user in args.forcefield.
+
+        Returns
+        ---------
+        forcefield : peleffy.forcefield.X
+            Forcefield object from peleffy, where X depends on the forcefield selected by the user.
         """
         forcefield = self.forcefields.get(forcefield.lower(), ff.OPLS2005ForceField)
         return forcefield
@@ -235,6 +261,11 @@ class Parametrization:
             Method of charge parametrization selected by the user.
         forcefield : str
             Forcefield selected by the user.
+
+        Returns
+        --------
+        method : str
+            Method of charge parametrization compatible with the forcefield.
         """
         if method.lower() not in self.charge_parametrization_methods:
             raise ValueError(
@@ -243,7 +274,9 @@ class Parametrization:
 
         # Override user-defined method, if not compatible with OPLS2005 force field.
         if forcefield.lower() == "opls2005" and method.lower() != "opls":
-            print(f"Charge parametrization method {method} incompatible with {forcefield}. Defaulting to OPLS2005.")
+            print(
+                f"Charge parametrization method {method} incompatible with {forcefield}. Defaulting to OPLS2005."
+            )
             method = "opls2005"
 
         return method.lower()
@@ -252,6 +285,13 @@ class Parametrization:
         """
         Checks if any of the hetero molecules extracted from PDB has a user-defined rotamers or template file, so they
         can be skipped.
+
+        Returns
+        --------
+        rotamers_to_skip : List[str]
+            List of hetero molecules for which the rotamers have been supplied in an external file.
+        templates_to_skip : List[str]
+            List of hetero molecules for which the templates have been supplied in an external file.
         """
         ligands = [ligand.tag for ligand in self.hetero_molecules]
 
@@ -277,14 +317,17 @@ class Parametrization:
 
         return rotamers_to_skip, templates_to_skip
 
-    def generate_ligand_parameters(self) -> None:
+    def generate_ligand_parameters(self):
         """
         Generates forcefield templates and rotamer files for ligands, then copies the one provided by the user.
         """
         for molecule in self.hetero_molecules:
 
             output_handler = OutputPathHandler(
-                molecule, self.forcefield, as_datalocal=self.as_datalocal, output_path=self.pele_dir
+                molecule,
+                self.forcefield,
+                as_datalocal=self.as_datalocal,
+                output_path=self.pele_dir,
             )
             rotamer_library_path = output_handler.get_rotamer_library_path()
             impact_template_path = output_handler.get_impact_template_path()
@@ -307,11 +350,13 @@ class Parametrization:
                     try:
                         parameters = fallback_forcefield.parameterize(molecule)
                         warnings.warn(
-                            f"Could not parametrize residue {molecule.tag.strip()} with the selected forcefield. Parametrized "
-                            f"with {default} instead. "
+                            f"Could not parametrize residue {molecule.tag.strip()} with the selected forcefield. "
+                            f"Parametrized with {default} instead. "
                         )
                     except subprocess.CalledProcessError as e:
-                        raise Exception(f"Could not parametrize {molecule.tag.strip()}. The error was {e}.")
+                        raise Exception(
+                            f"Could not parametrize {molecule.tag.strip()}. The error was {e}."
+                        )
 
                 topology = Topology(molecule, parameters)
                 impact = Impact(topology)
@@ -351,6 +396,11 @@ class Parametrization:
             Solvent defined by the user in YAML.
         forcefield : str
             Forcefield defined by the user in YAML.
+
+        Returns
+        --------
+        solvent_class : peleffy.solvent.X
+            Solvent object from peleffy, X depends on the selected solvent type.
         """
         if not solvent:
             return None

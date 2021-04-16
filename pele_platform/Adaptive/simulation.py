@@ -21,7 +21,6 @@ import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
 import pele_platform.Adaptive.parametrization as parametrization
 import pele_platform.Adaptive.box as bx
-import pele_platform.Adaptive.solvent as sv
 import pele_platform.Adaptive.pca as pca
 
 

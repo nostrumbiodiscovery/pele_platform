@@ -29,7 +29,6 @@ def test_ligand_extraction(pdb, ligands):
     assert len(extracted_ligands) == len(ligands)
 
 
-@pytest.mark.xfail(reason="Waiting for Laura to fix spaces in file names.")
 def test_generate_ligand_parameters(parametrize):
     """
     Runs the whole parametrization flow and checks if all expected files were created.
@@ -43,11 +42,10 @@ def test_generate_ligand_parameters(parametrize):
     expected_rotamers = ["MG.rot.assign", "LIG.rot.assign"]
     parametrize.generate_ligand_parameters()
 
-    for template in expected_templates:
-        assert os.path.exists(template)
-
-    for rotamer in expected_rotamers:
-        assert os.path.exists(rotamer)
+    # Check if all expected files were created and clean them up
+    for file in expected_templates + expected_rotamers:
+        assert os.path.exists(file)
+        os.remove(file)
 
 
 @pytest.mark.parametrize(
@@ -83,10 +81,45 @@ def test_check_solvent(solvent, forcefield, error):
         )
 
 
+@pytest.mark.parametrize(("method", "forcefield", "error", "expected_output"),
+                         [
+                             ("BLABLABLA", "OPLS2005", True, None),
+                         ]
+                         )
+def test_check_charge_parametrization_method(parametrize, method, forcefield, error, expected_output):
+    """
+    Tests the checker for charge parametrization method.
+
+    Parameters
+    ------------
+    parametrize : parametrize.Parametrization
+        Object created in the fixture.
+    method : str
+        User-defined charge parametrization method.
+    forcefield : str
+        User-defined forcefield
+    error : bool
+        True if we're expecting the combination of arguments to raise an error.
+    expected_output : str
+        Expected compatible method to be returned.
+    """
+    if error:
+        with pytest.raises(ValueError):
+            parametrize._check_charge_parametrization_method(method, forcefield)
+    else:
+        output = parametrize._check_charge_parametrization_method(method, forcefield)
+        assert output == expected_output
+
+
 @pytest.fixture
 def parametrize():
     """
     Creates Parametrization class to use in other tests.
+
+    Returns
+    --------
+    obj : parametrization.Parametrization
+        Parametrization object to use in tests.
     """
     obj = parametrization.Parametrization(
         pdb_file=os.path.join(test_path, "1zop.pdb"),
