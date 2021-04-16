@@ -48,27 +48,25 @@ def _search_core_fragment_linker(ligand,
     substructure_results = ligand.GetSubstructMatches(ligand_core)
 
     try:
-
         print("Running substructure search on {}...".format(ligand.GetProp('_Name')))
         core_atoms = substructure_results[result]
         print("RESULT SUBSTRUCTURE", core_atoms)
-        if frag_core_atom is not None:
-
-            for atom in ligand_core.GetAtoms():
-                if atom.GetPDBResidueInfo().GetName().strip() == frag_core_atom.strip():
-                    atom_core_idx = atom.GetIdx()
-            bonds = [(x.GetBeginAtomIdx(), x.GetEndAtomIdx()) for x in ligand.GetBonds()]
-            for bond in bonds:
-                if atom_core_idx in bond:
-                    if bond[0] == atom_core_idx:
-                        atom_fragment = bond[1]
-                    else:
-                        atom_fragment = bond[0]
-            return atom_core_idx, core_atoms, atom_fragment
     except IndexError:
         raise IndexError(
             "Make sure core from pdb and full fragment are the same. Make sure that both core and fragment have "
             "correctly defined aromatic bonds. Also, all fragments must have different molecule name.")
+
+    # Sometimes substructure search messes up symmetry. Check that!
+    if check_symmetry:
+        core_atoms = ch.check_substructure_match(ligand, ligand_core, core_atoms)
+    for atom in ligand.GetAtoms():
+        if atom.GetIdx() in core_atoms or atom.GetAtomicNum() == 1:
+            continue
+        else:
+            atoms_bonded = atom.GetNeighbors()
+            for neighbour in atoms_bonded:
+                if neighbour.GetIdx() in core_atoms:
+                    return core_atoms.index(neighbour.GetIdx()), core_atoms, atom.GetIdx()
 
     # Sometimes substructure search messes up symmetry. Check that!
     if check_symmetry:
