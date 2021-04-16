@@ -239,6 +239,7 @@ def run_adaptive(args):
             parameters.box = ""
 
         # Parametrize missing residues
+        # TODO: Check if we can remove this whole section
         for res, __, _ in missing_residues:
             if res != args.residue and res not in parameters.skip_ligand_prep:
                 parameters.logger.info("Creating template for residue {}".format(res))

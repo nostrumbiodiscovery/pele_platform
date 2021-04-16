@@ -1,7 +1,4 @@
 import os
-import pytest
-from subprocess import Popen, PIPE
-import glob
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
@@ -173,16 +170,6 @@ def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
         os.environ["PATH"] = path_variables
         return
     os.environ["PATH"] = path_variables
-    assert False
-
-
-@pytest.mark.skip(reason="No longer using Plop to parametrize ligands.")
-def test_lig_preparation_error(args=LIG_PREP_ARGS):
-    try:
-        job = main.run_platform_from_yaml(args)
-    except ce.LigandPreparationError:
-        assert True
-        return
     assert False
 
 

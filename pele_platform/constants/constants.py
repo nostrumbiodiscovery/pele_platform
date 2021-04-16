@@ -286,3 +286,7 @@ cluster_representatives_criterion = {
     "interaction_5_percentile": "Binding Energy 5-percentile",
     "interaction_mean": "Binding Energy mean",
     "interaction_min": "Binding Energy min"}
+
+
+# Templates in PELE Data folder, no need to parametrize those
+in_pele_data = ["caz", "clz", "cuiz", "cuz", "hohz", "mgz", "naz", "spcz", "znz"]

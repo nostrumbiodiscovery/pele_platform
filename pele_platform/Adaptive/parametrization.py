@@ -86,8 +86,8 @@ class Parametrization:
         )
         self.gridres = gridres
         self.solvent = self._retrieve_solvent_model(solvent, forcefield)
-        self.external_templates = external_templates
-        self.external_rotamers = external_rotamers
+        self.external_templates = external_templates if external_templates is not None else list()
+        self.external_rotamers = external_rotamers if external_rotamers is not None else list()
         self.as_datalocal = as_datalocal
         self.hetero_molecules = self.extract_ligands(
             pdb_file=self.pdb, gridres=self.gridres
@@ -293,11 +293,12 @@ class Parametrization:
         templates_to_skip : List[str]
             List of hetero molecules for which the templates have been supplied in an external file.
         """
-        ligands = [ligand.tag for ligand in self.hetero_molecules]
+        ligands = [ligand.tag.strip() for ligand in self.hetero_molecules]
 
         if self.external_rotamers:
+            # Get residue names from rotamer files.
             external_rotamer_residues = [
-                file.split(".")[0] for file in self.external_rotamers
+                os.path.basename(file).split(".")[0] for file in self.external_rotamers
             ]
             rotamers_to_skip = [
                 residue for residue in external_rotamer_residues if residue in ligands
@@ -306,14 +307,12 @@ class Parametrization:
             rotamers_to_skip = list()
 
         if self.external_templates:
-            external_template_residues = [
-                file.replace("z", "").upper() for file in self.external_templates
-            ]
-            templates_to_skip = [
-                residue for residue in external_template_residues if residue in ligands
-            ]
+            all_templates = self.external_templates + constants.in_pele_data
         else:
-            templates_to_skip = list()
+            all_templates = constants.in_pele_data
+
+        external_template_residues = [os.path.basename(file).rstrip("z").upper() for file in all_templates]
+        templates_to_skip = [residue for residue in external_template_residues if residue in ligands]
 
         return rotamers_to_skip, templates_to_skip
 
@@ -333,11 +332,11 @@ class Parametrization:
             impact_template_path = output_handler.get_impact_template_path()
             solvent_template_path = output_handler.get_solvent_template_path()
 
-            if molecule not in self.rotamers_to_skip:
+            if molecule.tag.strip() not in self.rotamers_to_skip:
                 rotamer_library = RotamerLibrary(molecule)
                 rotamer_library.to_file(rotamer_library_path)
 
-            if molecule not in self.templates_to_skip:
+            if molecule.tag.strip() not in self.templates_to_skip:
                 # Try to parametrize with OPLS if OpenFF fails
                 try:
                     parameters = self.forcefield.parameterize(
@@ -354,7 +353,7 @@ class Parametrization:
                             f"Parametrized with {default} instead. "
                         )
                     except subprocess.CalledProcessError as e:
-                        raise Exception(
+                        raise custom_errors.LigandPreparationError(
                             f"Could not parametrize {molecule.tag.strip()}. The error was {e}."
                         )
 

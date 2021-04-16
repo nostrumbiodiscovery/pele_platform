@@ -38,7 +38,7 @@ def test_generate_ligand_parameters(parametrize):
     parametrize : Parametrization
         Object created in fixture.
     """
-    expected_templates = ["mgz", "ligz"]
+    expected_templates = ["ligz"]  # MG template included in pele Data
     expected_rotamers = ["MG.rot.assign", "LIG.rot.assign"]
     parametrize.generate_ligand_parameters()
 
