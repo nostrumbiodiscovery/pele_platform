@@ -12,7 +12,6 @@ from pele_platform.Utilities.Helpers.constraints import (
 )
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.system_prep as sp
-import pele_platform.Utilities.Helpers.missing_residues as mr
 import pele_platform.Utilities.Helpers.randomize as rd
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
@@ -237,15 +236,6 @@ def run_adaptive(args):
             parameters.box = box.generate_json()
         else:
             parameters.box = ""
-
-        # Parametrize missing residues
-        # TODO: Check if we can remove this whole section
-        for res, __, _ in missing_residues:
-            if res != args.residue and res not in parameters.skip_ligand_prep:
-                parameters.logger.info("Creating template for residue {}".format(res))
-                with hp.cd(parameters.pele_dir):
-                    mr.create_template(parameters, res)
-                parameters.logger.info("Template {}z created\n\n".format(res))
 
         # Build PCA
         if parameters.pca_traj:
