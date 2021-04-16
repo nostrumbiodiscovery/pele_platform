@@ -155,7 +155,7 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     ("yaml_file", "expected_lines"),
     [(FRAG_SDF_LIBRARIES, SDF_lines), (FRAG_PDB_LIBRARIES, PDB_lines)],
 )
-def test_libraries(yaml_file, expected_lines):
+def test_libraries(capsys, yaml_file, expected_lines):
     """
     Tests the growing of fragments from a custom-made SDF and PDB libraries.
 
@@ -166,12 +166,15 @@ def test_libraries(yaml_file, expected_lines):
     expected_lines : list[str]
         List of lines expected in input.conf.
     """
+    errors = []
     if os.path.exists("input.conf"):
         os.remove("input.conf")
-
-    job = main.run_platform_from_yaml(yaml_file)
-    errors = []
-    errors = td.check_file(os.getcwd(), "input.conf", expected_lines, errors)
+    try:
+        jon = main.run_platform_from_yaml(yaml_file)
+        captured = capsys.readouterr()
+        assert "Skipped - FragPELE will not run." not in captured.out
+    except Exception:
+        assert False
     assert not errors
 
 
