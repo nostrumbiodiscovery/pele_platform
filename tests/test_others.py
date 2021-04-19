@@ -332,3 +332,12 @@ def test_SmilesConstraints_class():
     )
     assert matches == ((9, 0, 1, 2, 3, 4, 5, 6, 7, 8),)
     assert constraints == SMILES_CONSTR
+
+
+def test_protonation_error():
+    """
+    Checks if we catch unprotonated systems and raise an error.
+    """
+    from pele_platform.Adaptive.parametrization import Parametrization
+    with pytest.raises(ce.ProtonationError):
+        Parametrization(pdb_file=os.path.join(test_path, "preparation/6qmk_correct.pdb"))

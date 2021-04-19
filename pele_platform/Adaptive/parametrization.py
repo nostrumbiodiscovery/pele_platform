@@ -3,8 +3,10 @@ import shutil
 import subprocess
 import warnings
 
+from Bio.PDB import PDBParser
+
 from peleffy import solvent
-from peleffy.utils.input import PDB
+from peleffy.utils.input import PDBFile
 from peleffy.utils import OutputPathHandler
 from peleffy.topology import RotamerLibrary, Topology
 from peleffy import forcefield as ff
@@ -88,6 +90,7 @@ class Parametrization:
             Residue name of the ligand. Default = None.
         """
         self.pdb = pdb_file
+        self.check_system_protonation()
         self.forcefield = self._retrieve_forcefield(forcefield)
         self.charge_parametrization_method = self._check_charge_parametrization_method(
             charge_parametrization_method, forcefield
@@ -101,15 +104,19 @@ class Parametrization:
             external_rotamers if external_rotamers is not None else list()
         )
         self.as_datalocal = as_datalocal
+        self.ligand_core_constraints = self._fix_atom_names(
+            ligand_resname, ligand_core_constraints, self.pdb
+        )
         self.hetero_molecules = self.extract_ligands(
             pdb_file=self.pdb,
             gridres=self.gridres,
             exclude_terminal_rotamers=exclude_terminal_rotamers,
             ligand_resname=ligand_resname,
-            ligand_core_constraints=ligand_core_constraints,
+            ligand_core_constraints=self.ligand_core_constraints,
         )
         self.rotamers_to_skip, self.templates_to_skip = self._check_external_files()
         self.pele_dir = pele_dir
+        self.exclude_terminal_rotamers = exclude_terminal_rotamers
 
     @classmethod
     def from_parameters(cls, parameters):
@@ -138,7 +145,7 @@ class Parametrization:
             pele_dir=parameters.pele_dir,
             exclude_terminal_rotamers=parameters.exclude_terminal_rotamers,
             ligand_core_constraints=parameters.core,
-            ligand_resname=parameters.resname,
+            ligand_resname=parameters.residue,
         )
         return obj
 
@@ -172,7 +179,10 @@ class Parametrization:
             List of hetero molecules extracted from the PDB file, without any duplicates, water molecules or single atom
             anions (e.g. Cl-, F-, etc.).
         """
-        reader = PDB(pdb_file)
+        if not ligand_core_constraints:
+            ligand_resname = None
+
+        reader = PDBFile(pdb_file)
         molecules = reader.get_hetero_molecules(
             rotamer_resolution=gridres,
             allow_undefined_stereo=True,
@@ -264,7 +274,7 @@ class Parametrization:
         """
         if forcefield.lower() != "opls2005" and solvent.lower() == "vdgbnp":
             raise ValueError(
-                "OpenFF supports OBC solvent only. Change forcefield to 'OPLS2005' or solvent to 'OBC2' or 'OBC1'."
+                "OpenFF supports OBC solvent only. Change forcefield to 'OPLS2005' or solvent to 'OBC2'."
             )
         else:
             return solvent.lower()
@@ -448,3 +458,66 @@ class Parametrization:
             checked_solvent = self._check_solvent(solvent, forcefield)
             solvent_class = self.solvents.get(checked_solvent.lower(), None)
             return solvent_class
+
+    @staticmethod
+    def _fix_atom_names(ligand_resname, ligand_core_constraints, pdb):
+        """
+        Adds spaces around PDB atom names to ensure peleffy can correctly identify core atoms.
+
+        Parameters
+        -----------
+        ligand_resname : str
+            Residue name of the ligand.
+        ligand_core_constraints : List[str]
+            List of PDB atom names to constrain as core defined by the user, e.g. ["N1", "O1"]
+        pdb : str
+            Path to PDB file (self.pdb).
+
+        Returns
+        --------
+        ligand_core_constraints : List[str]
+            List of fixed PDB atom names of the ligand.
+        """
+        if ligand_core_constraints:
+            parser = PDBParser()
+            structure = parser.get_structure("system", pdb)
+            user_constraints = [atom.strip() for atom in ligand_core_constraints]
+            fixed_atoms = []
+
+            for residue in structure.get_residues():
+                if residue.get_resname() == ligand_resname:
+                    for atom in residue.get_atoms():
+                        if atom.name in user_constraints:
+                            fixed_atoms.append(atom.fullname)
+
+            # If the number of fixed atoms doesn't match the input, raise a warning with a list of missing atoms.
+            if len(user_constraints) != len(fixed_atoms):
+                not_found = [
+                    atom
+                    for atom in user_constraints
+                    if atom not in [pdb_atom.strip() for pdb_atom in fixed_atoms]
+                ]
+                raise ValueError(f"Atom(s) {not_found} were not found in {pdb}.")
+
+            return fixed_atoms
+
+    def check_system_protonation(self):
+        """
+        Raises an error if not a single hydrogen is found in the PDB.
+        """
+        with open(self.pdb) as f:
+            lines = f.readlines()
+            atom_lines = [
+                line
+                for line in lines
+                if line.startswith("ATOM") or line.startswith("HETATM")
+            ]
+
+            for line in atom_lines:
+                if line[12:16].strip().startswith("H"):
+                    return
+
+        raise custom_errors.ProtonationError(
+            "We did not find any hydrogens in your system - looks like you forgot to "
+            "protonate it."
+        )

@@ -200,7 +200,7 @@ If you want the PELE Platform to parametrize hetero molecules for you:
 Alternatively, you can provide your own template and/or rotamer files as long as they follow PELE's naming convention
 (see examples in the block code below).
 
-    - **template**: External forcefield template files.
+    - **templates**: External forcefield template files.
 
     - **rotamers**: External rotamer library files.
 
