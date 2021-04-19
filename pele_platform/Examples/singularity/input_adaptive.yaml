@@ -1,0 +1,6 @@
+system: '../pele_platform/Examples/singularity/complex.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+cpus: 5
+singularity_exec: "/path/to/singularity_container.sif"
