@@ -18,7 +18,8 @@ class Analysis(object):
     def __init__(self, resname, chain, simulation_output,
                  be_column=4, limit_column=None, traj="trajectory.pdb",
                  report=None, skip_initial_structures=True, kde=False,
-                 kde_structs=1000, topology=None, cpus=1):
+                 kde_structs=1000, topology=None, cpus=1,
+                 water_ids_to_track=[]):
         """
         It initializes an Analysis instance which it depends on
         the general Parameters class of the PELE Platform.
@@ -52,6 +53,10 @@ class Analysis(object):
         kde_structs : int
             Maximum number of structures to consider for the KDE plot.
             Default is 1000
+        water_ids_to_track : list[tuple[str, int]]
+            The list of water ids to track. Each water id is defined with
+            a tuple that contains the PDB chain and the residue number
+            corresponding to each water molecule to track. Default is []
         topology : str
             Path to the topology file, if using XTC trajectories. Default
              is None
@@ -74,6 +79,7 @@ class Analysis(object):
         self.skip_initial_structures = skip_initial_structures
         self.topology = topology
         self.cpus = cpus
+        self.water_ids = water_ids_to_track
 
         self._data_handler = DataHandler(
             sim_path=self.output,
@@ -104,6 +110,7 @@ class Analysis(object):
 
         simulation_output = os.path.join(parameters.pele_dir, parameters.output)
 
+        # TODO initialize Analysis with water ids according to parameters
         analysis = Analysis(resname=parameters.residue,
                             chain=parameters.chain,
                             simulation_output=simulation_output,
@@ -549,13 +556,15 @@ class Analysis(object):
         print(f"Extract coordinates for clustering")
 
         if not self.topology:
-            coordinates, dataframe = self._data_handler.extract_PDB_coords(
-                self.residue, remove_hydrogen=True,
-                n_proc=self.cpus, max_coordinates=max_coordinates)
+            coordinates, dataframe, water_coords = \
+                self._data_handler.extract_PDB_coords(
+                    self.residue, self.water_ids, remove_hydrogen=True,
+                    n_proc=self.cpus, max_coordinates=max_coordinates)
         else:
-            coordinates, dataframe = self._data_handler.extract_XTC_coords(
-                self.residue, self.topology,
-                remove_hydrogen=True, max_coordinates=max_coordinates)
+            coordinates, dataframe, water_coords = \
+                self._data_handler.extract_XTC_coords(
+                    self.residue, self.topology, self.water_ids,
+                    remove_hydrogen=True, max_coordinates=max_coordinates)
 
         if coordinates is None or dataframe is None:
             print(f"Coordinate extraction failed, " +
