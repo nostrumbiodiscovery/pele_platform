@@ -154,41 +154,66 @@ Configure the parameters of the PPP (Protein Pele Preparation)
 Ligand preparation
 ----------------------
 
-Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.
+The users can select methodology for creating PELE parameter files:
 
-- **gridres**: Resolution of the rotamers when sampling. Default: 10 degrees
+    - **IMPACT template** containing atom types and parameters of the ligand
+    - **rotamer library** file containing the branches that can rotate with respect to a central atomic core.
 
-- **core**: Atomnumber of the atom that will be included as part of the rigid core. Default=None
+If you want the PELE Platform to parametrize hetero molecules for you:
 
-- **maxtorsion**: Maximum number of rotamers per flexible sidechain. Default: 4
+- **forcefield**: Forcefield used to parametrize hetero molecules, you can use one of:
 
-- **n**: Maximum number of flexible sidechains in a molecule, Default: None
+        - "OPLS2005" (default)
+        - "openff-1.3.0"
+        - "openff-1.2.1"
+        - "openff-1.2.0"
+        - "openff-1.1.1"
+        - "openff-1.1.0"
+        - "openff-1.0.1"
+        - "openff-1.0.0"
 
-- **mae_lig**: Mae file to extract the cuantum charges from. Default: None
+- **charge_parametrization_method**: When using the default OPLS2005 forcefield, the only available charge parametrization method is "OPLS2005", however, you can select one of the following when using OpenFF forcefield:
 
-- **template**: External forcefield templaters
+        - "gasteiger"
+        - "am1bcc" (default)
+        - "OPLS2005".
 
-- **rotamers**: External rotamer libraries
+- **gridres**: Resolution of the rotamers when sampling. Default=10 degrees
 
-- **skip_ligand_prep**: Skip preparation of that resiude. This could be usefull to bypass problems with PlopRotTemp when creating the ligand parameters.
+- **core**: List of PDB atom names that will be included as part of the rigid core. Default=None
 
+- **exclude_terminal_rotamers**: Exclude terminal rotamers during parametrization of hetero molecules. Default=True
+
+- **mae_lig**: External MAE file with quantum charges generated with Schrödinger suite. Default=None
 
 ..  code-block:: yaml
 
-  gridres: 10
-  core: -1
-  maxtorsion: 4
-  n: 5
-  mae_lig: "/home/dsoler/lig.mae"
+    charge_parametrization_method: "gasteiger"
+    forcefield: "openff-1.3.0"
+    gridres: 20
+    core:
+        - "O1"
+        - "C1"
+        - "C2"
+        - "N1"
+
+Alternatively, you can provide your own template and/or rotamer files as long as they follow PELE's naming convention
+(see examples in the block code below).
+
+    - **template**: External forcefield template files.
+
+    - **rotamers**: External rotamer library files.
+
+..  code-block:: yaml
+
   templates:
     - "/home/dsoler/mgz"
     - "/home/dsoler/ligz"
   rotamers:
     - "/home/dsoler/MG.rot.assign"
     - "/home/dsoler/LIG.rot.assign"
-  skip_ligand_prep:
-    - "LIG"
 
+For more technical details about ligand parametrization, you can refer to the `PELE Force Field Yielder documentation <https://martimunicoy.github.io/peleffy/>`_.
 
 Constraints
 --------------
