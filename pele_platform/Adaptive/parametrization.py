@@ -15,7 +15,6 @@ from pele_platform.constants import constants
 
 
 class Parametrization:
-
     # Fallback paths, if only external templates available
     OPLS_IMPACT_TEMPLATE_PATH = "DataLocal/Templates/OPLS2005/HeteroAtoms/"
     OFF_IMPACT_TEMPLATE_PATH = "DataLocal/Templates/OpenFF/Parsley/"
@@ -54,6 +53,9 @@ class Parametrization:
         external_rotamers=None,
         as_datalocal=False,
         pele_dir=None,
+        exclude_terminal_rotamers=True,
+        ligand_core_constraints=None,
+        ligand_resname=None,
     ):
         """
         Initializes Parametrization to generate template and rotamer files.
@@ -78,6 +80,12 @@ class Parametrization:
             Save output files to DataLocal folder. Default = False.
         pele_dir : str
             Path to PELE directory, e.g. LIG_Pele.
+        exclude_terminal_rotamers : bool
+            Toggle to exclude terminal rotamers.
+        ligand_core_constraints : List[str]
+            List of PDB atom names to be constrained as core. Default = None
+        ligand_resname : str
+            Residue name of the ligand. Default = None.
         """
         self.pdb = pdb_file
         self.forcefield = self._retrieve_forcefield(forcefield)
@@ -86,11 +94,19 @@ class Parametrization:
         )
         self.gridres = gridres
         self.solvent = self._retrieve_solvent_model(solvent, forcefield)
-        self.external_templates = external_templates if external_templates is not None else list()
-        self.external_rotamers = external_rotamers if external_rotamers is not None else list()
+        self.external_templates = (
+            external_templates if external_templates is not None else list()
+        )
+        self.external_rotamers = (
+            external_rotamers if external_rotamers is not None else list()
+        )
         self.as_datalocal = as_datalocal
         self.hetero_molecules = self.extract_ligands(
-            pdb_file=self.pdb, gridres=self.gridres
+            pdb_file=self.pdb,
+            gridres=self.gridres,
+            exclude_terminal_rotamers=exclude_terminal_rotamers,
+            ligand_resname=ligand_resname,
+            ligand_core_constraints=ligand_core_constraints,
         )
         self.rotamers_to_skip, self.templates_to_skip = self._check_external_files()
         self.pele_dir = pele_dir
@@ -120,11 +136,20 @@ class Parametrization:
             external_rotamers=parameters.external_rotamers,
             as_datalocal=True,
             pele_dir=parameters.pele_dir,
+            exclude_terminal_rotamers=parameters.exclude_terminal_rotamers,
+            ligand_core_constraints=parameters.core,
+            ligand_resname=parameters.resname,
         )
         return obj
 
     @staticmethod
-    def extract_ligands(pdb_file, gridres):
+    def extract_ligands(
+        pdb_file,
+        gridres,
+        exclude_terminal_rotamers=True,
+        ligand_core_constraints=None,
+        ligand_resname=None,
+    ):
         """
         Extracts all hetero molecules in PDB and returns them as peleffy.topology.Molecule objects.
 
@@ -134,6 +159,12 @@ class Parametrization:
             Path to PDB file.
         gridres : int
             Resolution of the rotamers when sampling.
+        exclude_terminal_rotamers : bool
+            Toggle to exclude terminal rotamers. Default = True.
+        ligand_core_constraints : List[str]
+            List of PDB atom names to be constrained as core. Default = None
+        ligand_resname : str
+            Residue name of the ligand. Default = None.
 
         Returns
         ---------
@@ -143,7 +174,11 @@ class Parametrization:
         """
         reader = PDB(pdb_file)
         molecules = reader.get_hetero_molecules(
-            rotamer_resolution=gridres, allow_undefined_stereo=True
+            rotamer_resolution=gridres,
+            allow_undefined_stereo=True,
+            exclude_terminal_rotamers=exclude_terminal_rotamers,
+            ligand_core_constraints=ligand_core_constraints,
+            ligand_resname=ligand_resname,
         )
 
         # Filter out water molecules and single ions.
@@ -311,8 +346,12 @@ class Parametrization:
         else:
             all_templates = constants.in_pele_data
 
-        external_template_residues = [os.path.basename(file).rstrip("z").upper() for file in all_templates]
-        templates_to_skip = [residue for residue in external_template_residues if residue in ligands]
+        external_template_residues = [
+            os.path.basename(file).rstrip("z").upper() for file in all_templates
+        ]
+        templates_to_skip = [
+            residue for residue in external_template_residues if residue in ligands
+        ]
 
         return rotamers_to_skip, templates_to_skip
 
@@ -320,6 +359,8 @@ class Parametrization:
         """
         Generates forcefield templates and rotamer files for ligands, then copies the one provided by the user.
         """
+        rotamer_library_path, impact_template_paths = None, None
+
         for molecule in self.hetero_molecules:
 
             output_handler = OutputPathHandler(
