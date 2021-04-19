@@ -2,6 +2,8 @@ import random
 import os
 import glob
 
+from prody.ensemble import conformation
+
 import pele_platform.constants.constants as cs
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
@@ -104,6 +106,11 @@ class SimulationParams(
             if args.water_freq is not None
             else self.simulation_params.get("water_freq", 1)
         )
+        self.conformation_freq = (
+            args.conformation_freq
+            if args.conformation_freq is not None
+            else self.conformation_freq.get("conformation_freq", 0)
+        )
         self.temperature = (
             args.temperature
             if args.temperature
@@ -129,6 +136,11 @@ class SimulationParams(
             if args.overlap_factor
             else self.simulation_params.get("overlap_factor", 0.65)
         )
+        self.overlap_factor_conformation = (
+            args.overlap_factor_conformation
+            if args.overlap_factor_conformation
+            else self.simulation_params.get("overlap_factor_conformation", 0.65)
+        )
         self.steering = (
             args.steering
             if args.steering
@@ -144,6 +156,11 @@ class SimulationParams(
             args.com
             if args.com
             else self.simulation_params.get("COMligandConstraint", 0)
+        )
+        self.conformation_perturbation = (
+            ""
+            if args.conformation_perturbation is False
+            else self.simulation_params.get("conformation_perturbation", cs.CONFORMATION_PERTURBATION)
         )
 
     def anm_params(self, args):

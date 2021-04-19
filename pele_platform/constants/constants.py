@@ -153,6 +153,13 @@ PERTURBATION = '''
                 
             },
 '''
+CONFORMATION_PERTURBATION = '''
+        "ConformationPerturbation":{
+            "parameters": {
+                "overlapFactor": $OVERLAP_CONFORMATION
+            }
+        },
+'''
 BE = '''
                         { "type": "bindingEnergy",
 
