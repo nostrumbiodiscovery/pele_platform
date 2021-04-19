@@ -34,13 +34,27 @@ class Checker():
 
 
 @dataclass
-class Singularity_Checker(Checker):
+class SingularityChecker(Checker):
+    """
+    Class to generate a valid checker for executions with singularity containers
+    """
 
     def check_variables(self, args: yp.YamlParser) -> None:
+        """
+        Check all external requirements
+        """
         super().check_variables(args)
         self._check_singularity_exec(args.singularity_exec)
 
     def _generate_env_variables(self, args: yp.YamlParser) -> list:
+        """
+        Define environment variables to check
+
+        Returns
+        ----------
+        env_variables : list
+            List of environment variables.
+        """
         self.env_variables = [
         en.EnvVariable("pele_license", args.pele_license, os.path.join(cs.PELE, "licenses"), "--pele_license /path/to/licenses", "export PELE=/path/to/PELE-1.X/"),
         en.EnvVariable("schrodinger", args.schrodinger, cs.SCHRODINGER, "--schrodinger /path/to/schrodinger-20XX/", "export SCHRODINGER=/path/to/schrodinger-20XX/")
@@ -48,6 +62,9 @@ class Singularity_Checker(Checker):
         return self.env_variables
 
     def _check_singularity_exec(self, fpath) -> None:
+        """
+        Check if singularity container binary exists
+        """
         exec_path = ex.Executable(fpath)
         exec_path.is_in_path()
 
@@ -59,5 +76,5 @@ def check_executable_and_env_variables(args: yp.YamlParser):
     1) Check env variables
     2) Check executables
     """
-    checker = (Singularity_Checker() if args.singularity_exec else Checker())
+    checker = SingularityChecker() if args.singularity_exec else Checker()
     checker.check_variables(args)

@@ -68,7 +68,7 @@ def test_singularity_params(ext_args, check_mpi, expected1, expected2):
             f"conditions assert: [{simulation_params.pele_exec}] == [{expected1}] "
         )
 
-    if check_mpi and not simulation_params.mpi_params ==  expected2:
+    if check_mpi and not simulation_params.mpi_params == expected2:
         errors.append(
             f"conditions assert: [{simulation_params.mpi_params}] == [{expected2}] "
         )
@@ -76,13 +76,14 @@ def test_singularity_params(ext_args, check_mpi, expected1, expected2):
     assert not errors
 
 
-def _read_args (file):
+def _read_args(file):
     """
     Internal function: parse yaml file and prepare args.
 
     Parameters
     ----------
-    file : Path of the input.yaml file.
+    file : str
+        Path of the input.yaml file.
 
     Returns
     ----------

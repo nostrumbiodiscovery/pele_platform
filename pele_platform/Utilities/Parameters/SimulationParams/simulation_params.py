@@ -273,7 +273,7 @@ class SimulationParams(
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates")
         )
         self.usesrun = "true" if args.usesrun else "false"
-        mpi_params_name = ("srunParameters" if args.usesrun else "mpiParameters")
+        mpi_params_name = "srunParameters" if args.usesrun else "mpiParameters"
         self.mpi_params = (
             f'"{mpi_params_name}": "{args.mpi_params}",' if args.mpi_params else ""
         )
@@ -547,10 +547,10 @@ class SimulationParams(
             self.met_interaction_restrictions = ""
             self.interaction_restrictions = ""
 
-    def singularity_params (self, args):
+    def singularity_params(self, args):
         """
         Sets parameters for singularity containers.
         """
-        args.mpi_params = (args.singularity_exec if args.singularity_exec else args.mpi_params)
-        if (args.singularity_exec):
-            args.pele_exec = ("Pele_mpi" if not self.frag_pele else args.mpi_params + " Pele_mpi")
+        args.mpi_params = args.singularity_exec if args.singularity_exec else args.mpi_params
+        if args.singularity_exec:
+            args.pele_exec = "Pele_mpi" if not self.frag_pele else args.mpi_params + " Pele_mpi"
