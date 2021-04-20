@@ -23,6 +23,12 @@ test_path = os.path.join(constants.DIR, "Examples", "constraints")
             None,
             None,
         ),
+        (
+            os.path.join(test_path, "4zu9_prep.pdb"),
+            ["MET", "MG", "SO4", "LIG"],
+            None,
+            "LIG",
+        ),
     ],
 )
 def test_ligand_extraction(pdb, ligands, core, resname):
