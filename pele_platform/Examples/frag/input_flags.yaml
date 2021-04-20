@@ -11,7 +11,6 @@ iterations: 1
 steps: 1
 skip_preprocess: true
 gridres: 60
-maxtorsion: 2
 templates:
   - "data/mgz"
   - "data/strz"
