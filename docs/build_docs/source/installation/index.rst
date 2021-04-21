@@ -12,9 +12,9 @@ Conda (recommended)
 
     export SCHRODINGER=/path/to/schoringer/20XX/
 
-    Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-    specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
+    export PELE_LICENSE=/path/to/pele/licenses/
 
+For more information on setting up your environment, see `Environment Variables <../environment/index.html>`_
 
 Singularity
 ----------------
