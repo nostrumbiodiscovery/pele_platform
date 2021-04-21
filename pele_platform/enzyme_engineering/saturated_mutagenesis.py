@@ -127,16 +127,18 @@ class SaturatedMutagenesis:
         output_path = os.path.join(job.pele_dir, job.output)
         reports_path = os.path.join(output_path, "*", "{}*".format(job.report_name))
         trajectory_path = os.path.join(output_path, "*", "trajectory*pdb")
-        all_reports = sorted(glob.glob(reports_path))
-        all_trajectories = sorted(glob.glob(trajectory_path))
+
+        # Sort all trajectories and reports by their IDs
+        sorted_reports = self.sort_numerically(reports_path)
+        sorted_trajectories = self.sort_numerically(trajectory_path)
 
         new_dirs = [os.path.splitext(os.path.basename(file))[0] for file in job.input]
-        abs_new_dirs = sorted([os.path.join(output_path, path) for path in new_dirs])
+        abs_new_dirs = [os.path.join(output_path, path) for path in new_dirs]
 
         for folder in abs_new_dirs:
             os.mkdir(folder)
 
-        for directory, report, traj in zip(cycle(abs_new_dirs), all_reports, all_trajectories):
+        for directory, report, traj in zip(cycle(abs_new_dirs), sorted_reports, sorted_trajectories):
             shutil.move(report, directory)
             shutil.move(traj, directory)
 
@@ -227,3 +229,15 @@ class SaturatedMutagenesis:
             )
         else:
             self.working_folder = os.path.abspath(self.env.folder)
+
+    @staticmethod
+    def sort_numerically(path):
+        """
+        Extracts IDs of reports or trajectories, uses them to sort the paths numerically, then returns sorted list.
+        """
+        all_files = sorted(glob.glob(path))
+        all_files_ids = [re.findall(r"\d+", os.path.basename(file))[0] for file in all_files]
+        sorted_files = sorted(zip(all_files_ids, all_files), key=lambda x: x[0])
+        reports = [file for _, file in sorted_files]
+
+        return reports
