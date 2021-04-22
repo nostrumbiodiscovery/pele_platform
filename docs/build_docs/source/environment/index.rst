@@ -1,7 +1,10 @@
 Environment variables
 ======================
 
-Mandatory variables, they must be defined for the pele_platform to work correctly:
+Mandatory variables
+-------------------
+
+They must be defined for the pele_platform to work correctly:
 	- PELE: path to PELE installation
 	- SCHRODINGER: path to Schrodinger installation
 
@@ -13,6 +16,7 @@ Mandatory variables, they must be defined for the pele_platform to work correctl
 		export SCHRODINGER=/path/to/schoringer/20XX/
 
 Optional variables:
+-------------------
     - PELE_LICENSE:
 
     	Licenses can be configured in several ways:
