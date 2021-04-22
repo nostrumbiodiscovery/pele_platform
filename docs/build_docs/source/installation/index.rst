@@ -14,28 +14,7 @@ Conda (recommended)
 
     export PELE_LICENSE=/path/to/pele/licenses/
 
-For more information on setting up your environment, see `Environment Variables <../environment/index.html>`_
-
-Singularity
-----------------
-
-.. code-block:: bash
-
-   git clone https://github.com/NostrumBioDiscovery/pele_platform.git
-
-   cd pele_platform/singularity/
-   
-   bash create_pele_image.sh (You will need acces to PELE dockerhub)
-   
-   cd test/
-   
-   # Change the licenses and folders inside singularity.sl (IT section)
-   
-   bash singularity.sl  # If not queue system
-   
-   sbatch singularity.sl  # If slurm queue system
-
-
+For more information on setting up your environment and licenses, see `Environment Variables <../environment/index.html>`_
 
 Pypi
 ------
@@ -49,11 +28,19 @@ Pypi
     export PELE=/path/to/PELE-1.X/
 
     export SCHRODINGER=/path/to/schrodinger/20XX/
+
+    export PELE_LICENSE=/path/to/pele/licenses/
     
     conda install rdkit (or compile from source code)
 
-    Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-    specified via input.yaml flag, i.e license: /path/to/licenses/folder/
+For more information on setting up your environment and licenses, see `Environment Variables <../environment/index.html>`_
+
+Singularity
+----------------
+
+We have several ways available to run pele_platform from Singularity containers. This method is ideal for running pele_platform and PELE software on HPC systems.
+
+If you are interested in learning more, please contact with it@nostrumbiodiscovery.com.
 
 
 Last stable release from source code
@@ -71,11 +58,11 @@ Last stable release from source code
 
     export SCHRODINGER=/path/to/schoringer/20XX/
 
+    export PELE_LICENSE=/path/to/pele/licenses/
+
     conda install rdkit (if you want to have the possibility to build constraints by SMILES)
 
-    Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-    specified via input.yaml flag, i.e license: /path/to/licenses/folder/
-
+For more information on setting up your environment and licenses, see `Environment Variables <../environment/index.html>`_
 
 
 Test installation
