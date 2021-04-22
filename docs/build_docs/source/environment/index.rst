@@ -15,8 +15,8 @@ They must be defined for the pele_platform to work correctly:
 		export PELE=/path/to/PELE-1.X/
 		export SCHRODINGER=/path/to/schoringer/20XX/
 
-Optional variables:
--------------------
+Optional variables
+------------------
     - PELE_LICENSE:
 
     	Licenses can be configured in several ways:
