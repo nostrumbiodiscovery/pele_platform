@@ -34,7 +34,7 @@ Optional variables:
 
     - SINGULARITY_EXEC:
 
-    	Path of the singularity container that contains the pele executable. It can be configured in two ways:
+    	Path of the singularity container that contains the PELE executable. It can be configured in two ways:
 
     	  1. Can be specified by input.yaml flag
 
