@@ -1,7 +1,7 @@
 Environment variables
 ======================
 
-Mandatory variables, they must be defined for the pele_platform works correctly:
+Mandatory variables, they must be defined for the pele_platform to work correctly:
 	- PELE: path to PELE installation
 	- SCHRODINGER: path to Schrodinger installation
 
