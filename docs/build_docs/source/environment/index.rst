@@ -19,7 +19,7 @@ Optional variables
 ------------------
     - PELE_LICENSE:
 
-    	Licenses can be configured in several ways:
+    	Licenses can be configured in several ways (from highest to lowest precedence):
 
     	  1. Can be specified by input.yaml flag: 
 
@@ -33,7 +33,7 @@ Optional variables
 
     	  	export PELE_LICENSE=/path/to/licenses/folder/
 
-          3. If no path is specified, licenses must be under /path/to/PELE-1.X/licenses/
+          3. If no path is specified, licenses must be under /path/to/PELE-1.X/licenses/ (according to the path specified by the environment variable PELE)
 
 
     - SINGULARITY_EXEC:
@@ -51,4 +51,4 @@ Optional variables
 
     	  .. code-block:: bash
 
-    		export PELE_LICENSE=/path/to/singularity/container/
+    		export SINGULARITY_EXEC=/path/to/singularity/container/

@@ -40,7 +40,7 @@ Singularity
 
 We have several ways available to run pele_platform from Singularity containers. This method is ideal for running pele_platform and PELE software on HPC systems.
 
-If you are interested in learning more, please contact with it@nostrumbiodiscovery.com.
+If you are interested in learning more about it, please contact it@nostrumbiodiscovery.com.
 
 
 Last stable release from source code
