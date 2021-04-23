@@ -134,6 +134,7 @@ class SaturatedMutagenesis:
 
         new_dirs = [os.path.splitext(os.path.basename(file))[0] for file in job.input]
         abs_new_dirs = [os.path.join(output_path, path) for path in new_dirs]
+        abs_new_dirs = abs_new_dirs[1:] + abs_new_dirs[:1]
 
         for folder in abs_new_dirs:
             os.mkdir(folder)
@@ -236,8 +237,14 @@ class SaturatedMutagenesis:
         Extracts IDs of reports or trajectories, uses them to sort the paths numerically, then returns sorted list.
         """
         all_files = sorted(glob.glob(path))
-        all_files_ids = [re.findall(r"\d+", os.path.basename(file))[0] for file in all_files]
-        sorted_files = sorted(zip(all_files_ids, all_files), key=lambda x: x[0])
-        reports = [file for _, file in sorted_files]
+        dictionary = {}
 
-        return reports
+        for file in all_files:
+            file_name = os.path.basename(file)
+            key = re.findall(r"\d+", file_name)[0]
+            dictionary[int(key)] = file
+
+        sorted_dict = sorted(dictionary.items())
+        sorted_list = [element[1] for element in sorted_dict]
+
+        return sorted_list
