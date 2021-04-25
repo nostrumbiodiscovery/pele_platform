@@ -83,7 +83,7 @@ class SimulationParams(
         self.license = (
             args.pele_license
             if args.pele_license
-            else os.path.join(cs.PELE, "licenses")
+            else cs.DEFAULT_PELE_LICENSE
         )
         self.anm_freq = (
             args.anm_freq

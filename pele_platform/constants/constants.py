@@ -6,6 +6,16 @@ import os
 
 SCHRODINGER = os.environ.get("SCHRODINGER", "")
 PELE = os.environ.get("PELE", "")
+SINGULARITY_EXEC = os.environ.get("SINGULARITY_EXEC", "")
+PELE_LICENSE = os.environ.get("PELE_LICENSE", "")
+DEFAULT_PELE_LICENSE = (
+    # Priority for the default license variable:
+    #    1. Environment variable (PELE_LICENSE)
+    #    2. Path_to_PELE + licenses
+    PELE_LICENSE
+    if PELE_LICENSE
+    else os.path.join(PELE, "licenses")
+)
 
 # DEFAULTS
 # --------
