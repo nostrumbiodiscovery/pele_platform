@@ -66,7 +66,7 @@ For more information on setting up your environment and licenses, see `Environme
 
 
 Test installation
-----------------
+--------------------
 
 .. code-block:: bash
 
