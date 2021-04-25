@@ -90,8 +90,8 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#conda-recommended">Conda (recommended)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#singularity">Singularity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pypi">Pypi</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#singularity">Singularity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#last-stable-release-from-source-code">Last stable release from source code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#test-installation">Test installation</a></li>
 </ul>
@@ -99,6 +99,9 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
@@ -192,28 +195,10 @@
 
 <span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
 
-Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-specifed via input.yaml flag. i.e license: /path/to/licenses/folder/
+<span class="nb">export</span> <span class="nv">PELE_LICENSE</span><span class="o">=</span>/path/to/pele/licenses/
 </pre></div>
 </div>
-</div>
-<div class="section" id="singularity">
-<h2>Singularity<a class="headerlink" href="#singularity" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
-
-<span class="nb">cd</span> pele_platform/singularity/
-
-bash create_pele_image.sh <span class="o">(</span>You will need acces to PELE dockerhub<span class="o">)</span>
-
-<span class="nb">cd</span> test/
-
-<span class="c1"># Change the licenses and folders inside singularity.sl (IT section)</span>
-
-bash singularity.sl  <span class="c1"># If not queue system</span>
-
-sbatch singularity.sl  <span class="c1"># If slurm queue system</span>
-</pre></div>
-</div>
+<p>For more information on setting up your environment and licenses, see <a class="reference external" href="../environment/index.html">Environment Variables</a></p>
 </div>
 <div class="section" id="pypi">
 <h2>Pypi<a class="headerlink" href="#pypi" title="Permalink to this headline">¶</a></h2>
@@ -225,12 +210,17 @@ pip install <span class="nv">pele_platform</span><span class="o">==</span><span 
 
 <span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schrodinger/20XX/
 
-conda install rdkit <span class="o">(</span>or compile from <span class="nb">source</span> code<span class="o">)</span>
+<span class="nb">export</span> <span class="nv">PELE_LICENSE</span><span class="o">=</span>/path/to/pele/licenses/
 
-Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-specified via input.yaml flag, i.e license: /path/to/licenses/folder/
+conda install rdkit <span class="o">(</span>or compile from <span class="nb">source</span> code<span class="o">)</span>
 </pre></div>
 </div>
+<p>For more information on setting up your environment and licenses, see <a class="reference external" href="../environment/index.html">Environment Variables</a></p>
+</div>
+<div class="section" id="singularity">
+<h2>Singularity<a class="headerlink" href="#singularity" title="Permalink to this headline">¶</a></h2>
+<p>We have several ways available to run pele_platform from Singularity containers. This method is ideal for running pele_platform and PELE software on HPC systems.</p>
+<p>If you are interested in learning more about it, please contact <a class="reference external" href="mailto:it&#37;&#52;&#48;nostrumbiodiscovery&#46;com">it<span>&#64;</span>nostrumbiodiscovery<span>&#46;</span>com</a>.</p>
 </div>
 <div class="section" id="last-stable-release-from-source-code">
 <h2>Last stable release from source code<a class="headerlink" href="#last-stable-release-from-source-code" title="Permalink to this headline">¶</a></h2>
@@ -244,12 +234,12 @@ pip install .
 
 <span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
 
-conda install rdkit <span class="o">(</span><span class="k">if</span> you want to have the possibility to build constraints by SMILES<span class="o">)</span>
+<span class="nb">export</span> <span class="nv">PELE_LICENSE</span><span class="o">=</span>/path/to/pele/licenses/
 
-Licenses must be under /path/to/PELE-1.X/licenses/. Otherwise, they can be
-specified via input.yaml flag, i.e license: /path/to/licenses/folder/
+conda install rdkit <span class="o">(</span><span class="k">if</span> you want to have the possibility to build constraints by SMILES<span class="o">)</span>
 </pre></div>
 </div>
+<p>For more information on setting up your environment and licenses, see <a class="reference external" href="../environment/index.html">Environment Variables</a></p>
 </div>
 <div class="section" id="test-installation">
 <h2>Test installation<a class="headerlink" href="#test-installation" title="Permalink to this headline">¶</a></h2>

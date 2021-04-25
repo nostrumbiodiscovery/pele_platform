@@ -16,6 +16,8 @@ Configure the settings of the simulation and the path to all dependencies in cas
 
 - **pele_documents**: Use a pele documents folder that is not the default one. default: $PELE/Documents
 
+- **singularity_exec**: Use a singularity container that contains the pele executable. **Cannot be used with pele_exec**.
+
 - **pele_license**: Use a pele_license path that is not the default one. default: $PELE/licenses
 
 - **schrodinger**: Use a schrodinger path that is not the default one. default: $SCHRODINGER
@@ -28,6 +30,7 @@ Configure the settings of the simulation and the path to all dependencies in cas
   pele_exec: "/home/pele/bin/Pele_mpi"
   pele_data: "/home/pele/Data/"
   pele_documents: "/home/pele/Documents/"
+  singularity_exec: "/home/pele/pele_release.sif"
   pele_license: "/home/pele/licenses"
   schrodinger: "/home/pele/schrodinger2020-1/"
 

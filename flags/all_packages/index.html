@@ -93,6 +93,9 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../packages/index.html">Run simulation</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../environment/index.html">Environment variables</a></li>
+</ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Optional flags</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">All packages</a><ul>
@@ -212,6 +215,7 @@
 <li><p><strong>pele_exec</strong>: Use a pele executable that is not the default one. <strong>Needs to be used with pele_data and pele_documents</strong>. default: $PELE/bin/Pele_mpi</p></li>
 <li><p><strong>pele_data</strong>: Use a pele data folder that is not the default one. default: $PELE/Data</p></li>
 <li><p><strong>pele_documents</strong>: Use a pele documents folder that is not the default one. default: $PELE/Documents</p></li>
+<li><p><strong>singularity_exec</strong>: Use a singularity container that contains the pele executable. <strong>Cannot be used with pele_exec</strong>.</p></li>
 <li><p><strong>pele_license</strong>: Use a pele_license path that is not the default one. default: $PELE/licenses</p></li>
 <li><p><strong>schrodinger</strong>: Use a schrodinger path that is not the default one. default: $SCHRODINGER</p></li>
 </ul>
@@ -220,6 +224,7 @@
 <span class="nt">pele_exec</span><span class="p">:</span> <span class="s">&quot;/home/pele/bin/Pele_mpi&quot;</span>
 <span class="nt">pele_data</span><span class="p">:</span> <span class="s">&quot;/home/pele/Data/&quot;</span>
 <span class="nt">pele_documents</span><span class="p">:</span> <span class="s">&quot;/home/pele/Documents/&quot;</span>
+<span class="nt">singularity_exec</span><span class="p">:</span> <span class="s">&quot;/home/pele/pele_release.sif&quot;</span>
 <span class="nt">pele_license</span><span class="p">:</span> <span class="s">&quot;/home/pele/licenses&quot;</span>
 <span class="nt">schrodinger</span><span class="p">:</span> <span class="s">&quot;/home/pele/schrodinger2020-1/&quot;</span>
 </pre></div>

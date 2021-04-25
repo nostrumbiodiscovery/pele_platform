@@ -38,6 +38,10 @@ Requirements
    :hidden:
 
 .. toctree::
+   environment/index.rst
+   :hidden:
+
+.. toctree::
    flags/index.rst
    :hidden:
 
