@@ -127,11 +127,11 @@ class WaterIncluder():
     
         # get maximum residue and atom numbers keep original waters
         with open(self.input_pdbs[0], "r") as file:
-            pdb_lines = [
-                line
-                for line in file.readlines()
-                if "END" not in line and "CONECT" not in line
-            ]
+
+            lines = file.readlines()
+            conect = [line for line in lines if "CONECT" in line]
+            pdb_lines = [line for line in lines if "END" not in line and "CONECT" not in line]
+
             for line in pdb_lines:
                 if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER"):
                     try:
