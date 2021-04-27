@@ -322,6 +322,7 @@ class YamlParser(object):
             self.n_components = 3
             self.analysis_nclust = 4
             self.max_top_clusters = 4
+            self.cpus_per_mutation = 2
 
 
 @dataclass

@@ -14,7 +14,8 @@ from pele_platform.Adaptive import simulation
 
 
 def set_starting_point(logged_subsets):
-    indexes = [int(subset.replace("Subset_", "")) for subset in logged_subsets]
+    indexes = [int(subset.replace("Subset_", ""))
+               for subset in logged_subsets]
     next_index = max(indexes) + 1
     return next_index
 
@@ -26,17 +27,18 @@ class SaturatedMutagenesis:
 
     Parameters
     ----------
-    env: pele_env.EnviroBuilder)
+    env : pele_env.EnviroBuilder)
         Arguments provided by the user in input.yaml.
-    already_computed: List[str]
+    already_computed : List[str]
         Initially empty list of already computed systems.
     all jobs: List[EnviroBuilder]
         Initially empty list of all completed jobs.
-    original_dir: str
+    original_dir : str
         Directory from which the job is launched.
-    start: int
-        Index to enumerate subset folders, if restarting adaptive, otherwise default = 1
-    subset_folder: str
+    start : int
+        Index to enumerate subset folders, if restarting adaptive,
+        otherwise default = 1
+    subset_folder : str
     See Also folder name, default = "Subset_"
     """
     env: parameters.ParametersBuilder
@@ -52,7 +54,9 @@ class SaturatedMutagenesis:
 
         Returns
         -------
-            A list of job parameters (EnviroBuilder objects) for each simulation subset.
+        all_jobs : list
+            A list of job parameters (EnviroBuilder objects) for each
+            simulation subset
         """
         self.set_package_params()
         self.check_cpus()
@@ -78,14 +82,17 @@ class SaturatedMutagenesis:
 
     def restart_checker(self):
         """
-        If adaptive_restart: true, check which mutations were already completed based on the log file, get the right
-        ID for the subset output folder and set adaptive_restart to False (since we're not restarting adaptive for real,
-        just ignoring some input files.)
+        If adaptive_restart: true, check which mutations were already
+        completed based on the log file, get the right ID for the subset
+        output folder and set adaptive_restart to False (since we're not
+        restarting adaptive for real, just ignoring some input files).
         """
-        logger_file = os.path.join(self.working_folder, "completed_mutations.log")
+        logger_file = os.path.join(self.working_folder,
+                                   "completed_mutations.log")
         logged_systems = []
         logged_subset_folders = []
-        pattern = r"Completed (?P<system>.+\.pdb) simulation .+ directory (?P<folder>Subset_\d+)"
+        pattern = r"Completed (?P<system>.+\.pdb) simulation .+ " + \
+                  r"directory (?P<folder>Subset_\d+)"
 
         # Check what systems and folders are already in the log
         if os.path.exists(logger_file) and self.env.adaptive_restart:
@@ -103,9 +110,14 @@ class SaturatedMutagenesis:
                 if os.path.basename(mutation) not in logged_systems
             ]
 
-            # Remove subset folders that exist but were not completed according to the log
-            existing_subsets = glob.glob(os.path.join(self.working_folder, "{}*".format(self.subset_folder)))
-            to_remove = [subset for subset in existing_subsets if os.path.basename(subset) not in logged_subset_folders]
+            # Remove subset folders that exist but were not completed
+            # according to the log
+            existing_subsets = glob.glob(
+                os.path.join(self.working_folder,
+                             "{}*".format(self.subset_folder)))
+            to_remove = [subset for subset in existing_subsets
+                         if os.path.basename(subset)
+                         not in logged_subset_folders]
 
             for folder in to_remove:
                 shutil.rmtree(folder)
@@ -116,53 +128,62 @@ class SaturatedMutagenesis:
 
     def postprocessing(self, job):
         """
-        Matches output reports and trajectories with a particular system within the subset and copies them to the right
-        folder.
+        Matches output reports and trajectories with a particular system
+        within the subset and copies them to the right folder.
 
         Parameters
         ----------
-        job: parameters.ParametersBuilder
+        job : parameters.ParametersBuilder
             Output job parameters.
         """
         output_path = os.path.join(job.pele_dir, job.output)
-        reports_path = os.path.join(output_path, "*", "{}*".format(job.report_name))
+        reports_path = os.path.join(output_path, "*",
+                                    "{}*".format(job.report_name))
         trajectory_path = os.path.join(output_path, "*", "trajectory*pdb")
 
         # Sort all trajectories and reports by their IDs
         sorted_reports = self.sort_numerically(reports_path)
         sorted_trajectories = self.sort_numerically(trajectory_path)
 
-        new_dirs = [os.path.splitext(os.path.basename(file))[0] for file in job.input]
-        abs_new_dirs = [os.path.join(output_path, path) for path in new_dirs]
+        new_dirs = [os.path.splitext(os.path.basename(file))[0]
+                    for file in job.input]
+        abs_new_dirs = [os.path.join(output_path, path)
+                        for path in new_dirs]
         abs_new_dirs = abs_new_dirs[1:] + abs_new_dirs[:1]
 
         for folder in abs_new_dirs:
             os.mkdir(folder)
 
-        for directory, report, traj in zip(cycle(abs_new_dirs), sorted_reports, sorted_trajectories):
+        for directory, report, traj in zip(cycle(abs_new_dirs),
+                                           sorted_reports,
+                                           sorted_trajectories):
             shutil.move(report, directory)
             shutil.move(traj, directory)
 
     def logger(self, job):
         """
-        Creates a logger file in the top level directory and appends the list of completed mutations after each run.
+        Creates a logger file in the top level directory and appends the
+        list of completed mutations after each run.
 
         Parameters
         ----------
         job: parameters.ParametersBuilder
             Object returned from simulation.run_adaptive
         """
-        logger_file = os.path.join(self.working_folder, "completed_mutations.log")
-        finished_systems = job.input if isinstance(job.input, list) else [job.input]
+        logger_file = os.path.join(self.working_folder,
+                                   "completed_mutations.log")
+        if isinstance(job.input, list):
+            finished_systems = job.input
+        else:
+            finished_systems = [job.input]
         self.already_computed.extend(finished_systems)
 
         with open(logger_file, "a+") as logger:
             for inp in finished_systems:
                 logger.write(
                     "Completed {} simulation in directory {}\n".format(
-                        os.path.basename(inp), os.path.basename(job.pele_dir)
-                    )
-                )
+                        os.path.basename(inp),
+                        os.path.basename(job.pele_dir)))
 
     def retrieve_inputs(self):
         """
@@ -184,33 +205,39 @@ class SaturatedMutagenesis:
 
     def split_into_subsets(self):
         """
-        Finds all PDB files with mutations and splits them into subsets according to the available CPUs.
+        Finds all PDB files with mutations and splits them into subsets
+        according to the available CPUs.
         """
         available_cpus = self.env.cpus - 1
         if available_cpus % self.env.cpus_per_mutation != 0:
             warnings.warn(
-                "The total number of CPUs - 1 should be divisible by the number of CPUs per mutation."
-            )
+                "The total number of CPUs - 1 should be divisible by the " +
+                "number of CPUs per mutation.")
 
         max_systems = int(available_cpus / self.env.cpus_per_mutation)
-        self.mutation_subsets = [
-            self.all_mutations[i: i + max_systems]
-            for i in range(0, len(self.all_mutations), max_systems)
-        ]
+        self.mutation_subsets = [self.all_mutations[i: i + max_systems]
+                                 for i in range(0, len(self.all_mutations),
+                                                max_systems)]
 
     def check_cpus(self):
         """
         Checks if there are enough available CPUs.
+
+        Raises
+        ------
+        ValueError if the number of CPUs per mutation is higher than the
+            total number of available CPUs
         """
         if self.env.cpus_per_mutation > self.env.cpus - 1:
             raise ValueError(
-                "The number of CPUs per mutation needs to be lower than the total number of CPUs - 1."
-            )
+                "The number of CPUs per mutation needs to be lower than " +
+                "the total number of CPUs - 1.")
 
     def set_package_params(self):
         """
-        Adds package-specific parameters to the environment, such as skipping the analysis, setting
-        the right simulation and clustering types, etc.
+        Adds package-specific parameters to the environment, such as
+        skipping the analysis, setting the right simulation and
+        clustering types, etc.
         """
         self.env.clust_type = "null"
         self.env.induced_fit_exhaustive = True
@@ -218,8 +245,10 @@ class SaturatedMutagenesis:
 
     def set_working_folder(self):
         """
-        Sets top level working folder named after the residue (unless the user specified 'working_folder' in YAML.
-        Folders for each mutation subset are enumerated automatically and placed within the top level directory.
+        Sets top level working folder named after the residue (unless the
+        user specified 'working_folder' in YAML. Folders for each mutation
+        subset are enumerated automatically and placed within the top
+        level directory.
         """
         resname_folder = os.path.abspath("{}_Pele".format(self.env.residue))
         if not self.env.folder:
@@ -234,7 +263,19 @@ class SaturatedMutagenesis:
     @staticmethod
     def sort_numerically(path):
         """
-        Extracts IDs of reports or trajectories, uses them to sort the paths numerically, then returns sorted list.
+        Extracts IDs of reports or trajectories, uses them to sort the paths
+        numerically, then returns sorted list.
+
+        Parameters
+        ----------
+        path : str
+            The pattern where to find the reports or trajectories that will
+            be numerically sorted
+
+        Returns
+        -------
+        sorted_list : list[str]
+            The list of reports or trajectories numerically sorted
         """
         all_files = sorted(glob.glob(path))
         dictionary = {}
