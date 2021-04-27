@@ -126,8 +126,7 @@ class SaturatedMutagenesis:
             self.start = set_starting_point(logged_subset_folders)
             self.env.adaptive_restart = False
 
-    @staticmethod
-    def postprocessing(job):
+    def postprocessing(self, job):
         """
         Matches output reports and trajectories with a particular system
         within the subset and copies them to the right folder.
