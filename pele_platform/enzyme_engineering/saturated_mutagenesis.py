@@ -35,7 +35,8 @@ class SaturatedMutagenesis:
     original_dir : str
         Directory from which the job is launched.
     start : int
-        Index to enumerate subset folders, if restarting adaptive, otherwise default = 1
+        Index to enumerate subset folders, if restarting adaptive,
+        otherwise default = 1
     subset_folder : str
     See Also folder name, default = "Subset_"
     """
@@ -52,7 +53,9 @@ class SaturatedMutagenesis:
 
         Returns
         -------
-            A list of job parameters (EnviroBuilder objects) for each simulation subset.
+        all_jobs : list
+            A list of job parameters (EnviroBuilder objects) for each
+            simulation subset
         """
         self.set_package_params()
         self.check_cpus()
@@ -78,14 +81,16 @@ class SaturatedMutagenesis:
 
     def restart_checker(self):
         """
-        If adaptive_restart: true, check which mutations were already completed based on the log file, get the right
-        ID for the subset output folder and set adaptive_restart to False (since we're not restarting adaptive for real,
-        just ignoring some input files.)
+        If adaptive_restart: true, check which mutations were already
+        completed based on the log file, get the right ID for the subset
+        output folder and set adaptive_restart to False (since we're not
+        restarting adaptive for real, just ignoring some input files).
         """
         logger_file = os.path.join(self.working_folder, "completed_mutations.log")
         logged_systems = []
         logged_subset_folders = []
-        pattern = r"Completed (?P<system>.+\.pdb) simulation .+ directory (?P<folder>Subset_\d+)"
+        pattern = r"Completed (?P<system>.+\.pdb) simulation .+ " + \
+                  r"directory (?P<folder>Subset_\d+)"
 
         # Check what systems and folders are already in the log
         if os.path.exists(logger_file) and self.env.adaptive_restart:
@@ -103,9 +108,14 @@ class SaturatedMutagenesis:
                 if os.path.basename(mutation) not in logged_systems
             ]
 
-            # Remove subset folders that exist but were not completed according to the log
-            existing_subsets = glob.glob(os.path.join(self.working_folder, "{}*".format(self.subset_folder)))
-            to_remove = [subset for subset in existing_subsets if os.path.basename(subset) not in logged_subset_folders]
+            # Remove subset folders that exist but were not completed
+            # according to the log
+            existing_subsets = glob.glob(
+                os.path.join(self.working_folder,
+                             "{}*".format(self.subset_folder)))
+            to_remove = [subset for subset in existing_subsets
+                         if os.path.basename(subset)
+                         not in logged_subset_folders]
 
             for folder in to_remove:
                 shutil.rmtree(folder)
@@ -117,8 +127,8 @@ class SaturatedMutagenesis:
     @staticmethod
     def postprocessing(job):
         """
-        Matches output reports and trajectories with a particular system within the subset and copies them to the right
-        folder.
+        Matches output reports and trajectories with a particular system
+        within the subset and copies them to the right folder.
 
         Parameters
         ----------
