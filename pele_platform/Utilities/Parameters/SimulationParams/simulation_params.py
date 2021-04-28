@@ -30,6 +30,7 @@ class SimulationParams(
     def __init__(self, args):
         self.simulation_type(args)
         self.main_pele_params(args)
+        self.singularity_params(args)
         self.main_adaptive_params(args)
         self.optative_params(args)
         self.system_preparation_params(args)
@@ -85,7 +86,7 @@ class SimulationParams(
         self.license = (
             args.pele_license
             if args.pele_license
-            else os.path.join(cs.PELE, "licenses")
+            else cs.DEFAULT_PELE_LICENSE
         )
         self.anm_freq = (
             args.anm_freq
@@ -572,3 +573,11 @@ class SimulationParams(
         else:
             self.met_interaction_restrictions = ""
             self.interaction_restrictions = ""
+
+    def singularity_params(self, args):
+        """
+        Sets parameters for singularity containers.
+        """
+        args.mpi_params = args.singularity_exec if args.singularity_exec else args.mpi_params
+        if args.singularity_exec:
+            args.pele_exec = "Pele_mpi" if not self.frag_pele else args.mpi_params + " Pele_mpi"

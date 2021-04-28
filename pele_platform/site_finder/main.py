@@ -22,14 +22,17 @@ class SiteFinderLauncher:
         2) Run induced fit simulation to find deep pockets.
 
         Returns
-        --------
-            Tuple of ParametersBuilder object with simulation parameters of global and local.
+        -------
+        global_simulation: a ParametersBuilder object
+            The ParametersBuilder object with global simulation parameters
+        refinement_simulation: a ParametersBuilder object
+            The ParametersBuilder object with local simulation parameters
         """
         self._set_params_global()
         self.global_simulation = self._launch_global()
 
         if not self.args.skip_refinement and not self.args.debug:
-            self._choose_refinement_input()
+            self._generate_clusters()
             self._set_params_refinement()
             self.refinement_simulation = self._launch_refinement()
         else:
@@ -39,7 +42,8 @@ class SiteFinderLauncher:
 
     def _set_params_global(self):
         """
-        Set parameters for global exploration. Users can choose their own working folder.
+        Set parameters for global exploration. Users can choose their own
+        working folder.
         """
 
         # Handling nested directories which will become pele_dir
@@ -54,7 +58,8 @@ class SiteFinderLauncher:
             )
         else:
             self.working_folder = os.path.abspath(self.args.folder)
-        self.args.folder = os.path.join(self.working_folder, "1_global_exploration")
+        self.args.folder = os.path.join(self.working_folder,
+                                        "1_global_exploration")
 
         # Global exploration parameters
         self.args.site_finder_global = True
@@ -62,16 +67,18 @@ class SiteFinderLauncher:
         # Warn about using less than 60 CPUs
         if not self.args.test:
             if self.args.cpus < 60:
-                warnings.warn(f"You are using only {self.args.cpus} CPUs. We recommend using at least 60 for the "
-                              f"site_finder package.")
+                warnings.warn(f"You are using only {self.args.cpus} "
+                              f"CPUs. We recommend using at least 60 for "
+                              f"the site_finder package.")
 
     def _launch_global(self):
         sim_params = si.run_adaptive(self.args)
         return sim_params
 
-    def _choose_refinement_input(self):
+    def _generate_clusters(self):
         """
-        Selects the system for refinement based on meanshift clustering and copies them into the refinement_input folder.
+        Selects the system for refinement based on meanshift clustering and
+        copies them into the refinement_input folder.
         """
         from pele_platform.analysis import analysis
 
@@ -85,8 +92,10 @@ class SiteFinderLauncher:
         cluster_representatives_criterion = "interaction_min"
 
         # Directories within top-level "LIG_Pele"
-        output_folder = os.path.join(self.global_simulation.folder, self.global_simulation.output)
-        refinement_directory = os.path.join(self.working_folder, "refinement_input")
+        output_folder = os.path.join(self.global_simulation.folder,
+                                     self.global_simulation.output)
+        refinement_directory = os.path.join(self.working_folder,
+                                            "refinement_input")
 
         # Instantiate Analysis and generate clusters
         analysis = analysis.Analysis(
@@ -95,8 +104,7 @@ class SiteFinderLauncher:
             chain=self.global_simulation.chain,
             traj=self.global_simulation.traj_name,
             topology=self.global_simulation.topology,
-            cpus=1,
-        )
+            cpus=1)
 
         analysis.generate_clusters(
             refinement_directory,
@@ -105,15 +113,16 @@ class SiteFinderLauncher:
             min_population=min_population,
             max_top_clusters=max_top_clusters,
             top_clusters_criterion=top_clusters_criterion,
-            representatives_criterion=cluster_representatives_criterion,
-        )
+            representatives_criterion=cluster_representatives_criterion)
 
     def _set_params_refinement(self):
         """
         Sets parameters and working folder for the refinement simulation.
         """
-        self.args.system = os.path.join(self.working_folder, "refinement_input/cluster*.pdb")
-        self.args.folder = os.path.join(self.working_folder, "2_refinement_simulation")
+        self.args.system = os.path.join(self.working_folder,
+                                        "refinement_input/cluster*.pdb")
+        self.args.folder = os.path.join(self.working_folder,
+                                        "2_refinement_simulation")
 
         # Cleaning up args after global simulation
         self.args.site_finder_global = None

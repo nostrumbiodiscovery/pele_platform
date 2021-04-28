@@ -105,35 +105,31 @@ class Analysis(object):
         """
         import os
 
-        simulation_output = os.path.join(parameters.pele_dir, parameters.output)
+        # Set the simulation output path from parameters
+        simulation_output = os.path.join(parameters.pele_dir,
+                                         parameters.output)
 
+        # We do not need to specify resname and chain if we are not
+        # perturbing any ligand
+        resname = None
+        chain = None
         if parameters.perturbation:
-            analysis = Analysis(resname=parameters.residue,
-                                chain=parameters.chain,
-                                simulation_output=simulation_output,
-                                be_column=parameters.be_column,
-                                limit_column=parameters.limit_column,
-                                traj=parameters.traj_name,
-                                report=parameters.report_name,
-                                skip_initial_structures=not parameters.test,
-                                kde=parameters.kde,
-                                kde_structs=parameters.kde_structs,
-                                topology=parameters.topology,
-                                cpus=parameters.cpus)
+            resname = parameters.residue
+            chain = parameters.chain
 
-        else:
-            analysis = Analysis(resname=None,
-                                chain=None,
-                                simulation_output=simulation_output,
-                                be_column=parameters.be_column,
-                                limit_column=parameters.limit_column,
-                                traj=parameters.traj_name,
-                                report=parameters.report_name,
-                                skip_initial_structures=not parameters.test,
-                                kde=parameters.kde,
-                                kde_structs=parameters.kde_structs,
-                                topology=parameters.topology,
-                                cpus=parameters.cpus)
+        # Initialize the Analysis class
+        analysis = Analysis(resname=resname,
+                            chain=chain,
+                            simulation_output=simulation_output,
+                            be_column=parameters.be_column,
+                            limit_column=parameters.limit_column,
+                            traj=parameters.traj_name,
+                            report=parameters.report_name,
+                            skip_initial_structures=not parameters.test,
+                            kde=parameters.kde,
+                            kde_structs=parameters.kde_structs,
+                            topology=parameters.topology,
+                            cpus=parameters.cpus)
 
         return analysis
 
@@ -1349,8 +1345,13 @@ class Analysis(object):
 
     def _check_residue_exists(self):
         """
-        Checks if self.resname is present in the first output trajectory. If not, it will raise ValueError to prompt
+        Checks if self.resname is present in the first output trajectory.
+        If not, it will raise ValueError to prompt
         the user to check the arguments passed to Analysis class.
+
+        Raises
+        ------
+        ValueError if residue is not found in the first output trajectory
         """
         import glob
         import mdtraj
@@ -1365,5 +1366,6 @@ class Analysis(object):
         # if empty array is returned, raise error
         if residue.size == 0:
             raise ValueError(
-                f"Residue {self.residue} was not found in output trajectories. Make sure you are passing a correct "
+                f"Residue {self.residue} was not found in output "
+                f"trajectories. Make sure you are passing a correct "
                 f"'resname' argument to Analysis.")
