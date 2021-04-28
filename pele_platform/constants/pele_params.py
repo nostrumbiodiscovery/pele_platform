@@ -208,3 +208,47 @@ INTERACTION_RESTRICTIONS = '''
          "otherwise": {{ "Perturbation::parameters": {{ "rotationScalingFactor": 0.25, "translationRange": 1.0 }} }}
      }}]
 '''
+
+SITE_FINDER_GLOBAL = """
+,
+    "parametersChanges" : [
+         { "ifAnyIsTrue": [ "rand >= .5" ],
+             "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
+             "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.25 } }
+         },
+         { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+             "doThesechanges": { "Perturbation::parameters": { "translationRange": 2.0 } },
+             "otherwise": { "Perturbation::parameters": { "translationRange": 1.0 } }
+         },
+         { "ifAnyIsTrue": [ "rand2 >= 0.5"],
+             "doThesechanges": { "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials" : 10} },
+             "otherwise": { "Perturbation::parameters": { "steeringUpdateFrequency": 1, "numberOfTrials" : 10}  }
+         },
+         { "ifAnyIsTrue": [ "sasaLig >= 0.85" ],
+             "doThesechanges": { "Perturbation::parameters": { "translationRange": 3.0, "numberOfTrials" : 20 } },
+             "otherwise": {  }
+         },
+         { "ifAnyIsTrue": [ "sasaLig <= 0.35" ],
+             "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.75} },
+             "otherwise": {  }
+         }
+         ]
+"""
+
+SITE_FINDER_LOCAL = """
+,
+        "parametersChanges" : [
+         { "ifAnyIsTrue": [ "rand >= .5" ],
+             "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } },
+             "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.20 } }
+         },
+         { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+             "doThesechanges": { "Perturbation::parameters": { "translationRange": 1.0 } },
+             "otherwise": { "Perturbation::parameters": { "translationRange": 0.5 } }
+         },
+         { "ifAnyIsTrue": [ "rand2 >= 0.5"],
+             "doThesechanges": { "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials" : 10} },
+             "otherwise": { "Perturbation::parameters": { "steeringUpdateFrequency": 1, "numberOfTrials" : 10} }
+         }
+         ]
+"""
