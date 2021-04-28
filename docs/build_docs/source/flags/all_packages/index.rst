@@ -58,7 +58,7 @@ Simulation parameters
 
 - **temperature**: Temperature of the simulation. Default=1500
 
-- **solvent**: Solvent of the simulation. (OBC or VDGBNP). Default=VDGBNP
+- **solvent**: Solvent of the simulation. (OBC or VDGBNP). Please, take into account that any OpenFF force field can only run with the OBC solvent model. Default=VDGBNP (unless for the OpenFF, which the default is OBC)
 
 - **sidechain_res**: Receptor sidechain resolution. Default=10
 
@@ -155,14 +155,16 @@ Configure the parameters of the PPP (Protein Pele Preparation)
 
 
 Ligand preparation
-----------------------
+------------------
 
-The users can select methodology for creating PELE parameter files:
+In order to run a simulation, PELE requires the following files for every non standard molecule (i.e. any non standard small molecule or residue):
 
-    - **IMPACT template** containing atom types and parameters of the ligand
-    - **rotamer library** file containing the branches that can rotate with respect to a central atomic core.
+    - **IMPACT template**: it contains the force field parameters. Please, check `this site <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format>`_ to get further information about it.
+    - **rotamer library**: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. Please, check `this site <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers>`_
+    - **solvent template**: some special solvents like "OBC" require extra parameters.
 
-If you want the PELE Platform to parametrize hetero molecules for you:
+All these files can be automatically generated with `peleffy (PELE Force Field Yielder) <https://github.com/martimunicoy/peleffy>`_, one of the dependencies of the PELE Platform.
+The following parameters below control the way how the PELE Platform will parametrize non standard molecules for you:
 
 - **forcefield**: Forcefield used to parametrize hetero molecules, you can use one of:
 
@@ -175,19 +177,19 @@ If you want the PELE Platform to parametrize hetero molecules for you:
         - "openff-1.0.1"
         - "openff-1.0.0"
 
-- **charge_parametrization_method**: When using the default OPLS2005 forcefield, the only available charge parametrization method is "OPLS2005", however, you can select one of the following when using OpenFF forcefield:
+- **charge_parametrization_method**: The method to use to assign partial charges to atoms:
 
         - "gasteiger"
-        - "am1bcc" (default)
-        - "OPLS2005".
+        - "am1bcc" (default when using any "OpenFF" force field)
+        - "OPLS2005" (default when using "OPLS2005")
 
-- **gridres**: Resolution of the rotamers when sampling. Default=10 degrees
+- **gridres**: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees
 
-- **core**: List of PDB atom names that will be included as part of the rigid core. Default=None
+- **core**: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None
 
-- **exclude_terminal_rotamers**: Exclude terminal rotamers during parametrization of hetero molecules. Default=True
+- **exclude_terminal_rotamers**: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True
 
-- **mae_lig**: External MAE file with quantum charges generated with Schrödinger suite. Default=None
+- **mae_lig**: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None
 
 ..  code-block:: yaml
 
@@ -201,7 +203,7 @@ If you want the PELE Platform to parametrize hetero molecules for you:
         - "N1"
 
 Alternatively, you can provide your own template and/or rotamer files as long as they follow PELE's naming convention
-(see examples in the block code below).
+(see examples in the block code below). When templates
 
     - **templates**: External forcefield template files.
 
@@ -210,16 +212,16 @@ Alternatively, you can provide your own template and/or rotamer files as long as
 ..  code-block:: yaml
 
   templates:
-    - "/home/dsoler/mgz"
-    - "/home/dsoler/ligz"
+    - "/home/simulation_files/mgz"
+    - "/home/simulation_files/ligz"
   rotamers:
-    - "/home/dsoler/MG.rot.assign"
-    - "/home/dsoler/LIG.rot.assign"
+    - "/home/simulation_files/MG.rot.assign"
+    - "/home/simulation_files/LIG.rot.assign"
 
 For more technical details about ligand parametrization, you can refer to the `PELE Force Field Yielder documentation <https://martimunicoy.github.io/peleffy/>`_.
 
 Constraints
---------------
+-----------
 
 - **water_constr**: Water constraints. Default=5
 
