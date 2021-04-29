@@ -392,15 +392,18 @@ class DataHandler(object):
         import numpy as np
         import pandas as pd
 
+        from pele_platform.Utilities.Helpers import helpers
+
         try:
             indices_to_retrieve = self._coordinate_reduction(residue_name,
                                                              remove_hydrogen,
                                                              topology,
                                                              max_coordinates)
         except ValueError:
-            return None, None
+            return None, None, None
 
         # Load topology
+        topology_file = topology
         topology = mdtraj.load(topology)
 
         # Select atom subset
@@ -411,7 +414,9 @@ class DataHandler(object):
             selection_str = 'resname == {}'.format(residue_name)
         atom_indices = topology.top.select(selection_str)
 
+        water_atom_indices = helpers.get_atom_indices(water_ids, topology_file, pdb_atom_name="OW")
         filtered_atom_indices = []
+
         # Apply the indices to retrieve
         for residue_index, atom_index in enumerate(atom_indices):
             if residue_index in indices_to_retrieve:
@@ -424,10 +429,16 @@ class DataHandler(object):
         trajectories = list(set(dataframe[self._TRAJECTORY_LABEL]))
 
         coordinates = []
+        water_coordinates = []
         for trajectory in trajectories:
             # Extract coordinates
-            residue_frames = mdtraj.load(trajectory, top=topology,
-                                         atom_indices=filtered_atom_indices)
+            residue_frames = mdtraj.load(trajectory, top=topology, atom_indices=filtered_atom_indices)
+
+            if any(water_atom_indices):
+                water_frames = mdtraj.load(trajectory, top=topology, atom_indices=water_atom_indices)
+            else:
+                water_frames = []
+
 
             # Reorder entries in the dataset to match with the coordinate
             # ordering
@@ -439,16 +450,22 @@ class DataHandler(object):
             # Remove first entry
             if self.skip_initial_structures:
                 residue_frames = residue_frames[1:]
+                water_frames = water_frames[1:]
                 trajectory_rows = trajectory_rows.query('Step!=0')
 
             # Save extracted data
             coordinates.extend(residue_frames.xyz * 10)
-            reordered_dataframe = \
-                reordered_dataframe.append(trajectory_rows)
+
+            if water_frames:
+                water_coordinates.extend(water_frames.xyz * 10)
+
+            reordered_dataframe = reordered_dataframe.append(trajectory_rows)
 
         coordinates = np.array(coordinates)
 
-        return coordinates, reordered_dataframe
+        if water_ids:
+            water_coordinates = np.array(np.concatenate(water_coordinates))
+        return coordinates, water_coordinates, reordered_dataframe
 
     # TODO this should be a static method!!!
     def extract_PDB_coords(self, residue_name, water_ids=[],
@@ -520,7 +537,7 @@ class DataHandler(object):
                                                trajectories[0],
                                                max_coordinates)
             except ValueError:
-                return None, None
+                return None, None, None
 
         if no_multiprocessing or n_proc == 1:
             residue_coordinates = []
@@ -540,27 +557,34 @@ class DataHandler(object):
                                         water_ids=water_ids)
 
             with Pool(n_proc) as pool:
-                residue_coordinates, water_coordinates = \
-                    pool.map(parallel_function, trajectories)
+                out = pool.map(parallel_function, trajectories)
+
+            residue_coordinates = [elem[0] for elem in out]
+            water_coordinates = [elem[1] for elem in out]
+
+        residue_coordinates = np.concatenate(residue_coordinates)
+        water_coordinates = np.concatenate(water_coordinates)
 
         # Remove possible empty arrays
         coord_to_remove = []
         traj_to_remove = []
-        for coordinates_array, trajectory in zip(coordinates, trajectories):
+        for coordinates_array, trajectory in zip(residue_coordinates, trajectories):
             if len(coordinates_array) == 0:
                 coord_to_remove.append(coordinates_array)
                 traj_to_remove.append(trajectory)
+
         for coord in coord_to_remove:
-            coordinates.remove(coord)
+            residue_coordinates.remove(coord)
+
         for traj in traj_to_remove:
             trajectories.remove(traj)
 
         # In case no coordinates were extracted
-        if len(coordinates) == 0:
-            return None, None
+        if len(residue_coordinates) == 0:
+            return None, None, None
 
-        # Concatenate resulting coordinate arrays
-        coordinates = np.concatenate(coordinates)
+        if water_coordinates.any():
+            water_coordinates = np.concatenate(water_coordinates)
 
         # Reorder entries in the dataset to match with the coordinate
         # ordering
@@ -582,7 +606,7 @@ class DataHandler(object):
             reordered_dataframe = \
                 reordered_dataframe.append(trajectory_rows)
 
-        return coordinates, reordered_dataframe
+        return residue_coordinates, water_coordinates, reordered_dataframe
 
     def _coordinate_reduction(self, residue_name, remove_hydrogen,
                               trajectory, max_coordinates):
@@ -623,7 +647,7 @@ class DataHandler(object):
         residue_indices = []
 
         # Extract the coordinates
-        coordinates = \
+        coordinates, water_coords = \
             self._get_coordinates_from_trajectory(residue_name,
                                                   remove_hydrogen,
                                                   trajectory,
@@ -678,7 +702,6 @@ class DataHandler(object):
 
             # Add new best point's index to the array
             residue_indices.append(index)
-
         return residue_indices
 
     def _get_coordinates_from_trajectory(self, residue_name, remove_hydrogen,
@@ -730,7 +753,6 @@ class DataHandler(object):
             supplied water ids
         """
         import numpy as np
-
         residue_coordinates = list()
         water_coordinates = list()
 
@@ -773,8 +795,9 @@ class DataHandler(object):
                     # not empty (to fulfill the dimensionality later on)
                     if len(model_coords) > 0:
                         residue_coordinates.append(np.array(model_coords))
-                        water_coordinates.append(np.array(model_coords))
                         model_coords = []
+                    if len(water_coords) > 0:
+                        water_coordinates.append(np.array(water_coords))
                         water_coords = []
 
                     # In case we are only interested in obtaining the
@@ -821,16 +844,15 @@ class DataHandler(object):
                                   'line {}'.format(i) +
                                   'of trajectory {}. '.format(trajectory) +
                                   'Its coordinates will be skipped.')
-
                         point = np.array((x, y, z))
                         model_coords.append(point)
 
                     # Look for water coordinates
-                    if (current_chain, current_residue_number) in water_ids:
-                        pdb_atom_name = line[12:16]
+                    if (current_chain, int(current_residue_number)) in water_ids:
+                        pdb_atom_name = line[12:16].strip()
 
                         # We only want the coordinates of oxygen atom
-                        if pdb_atom_name == "_OW_":
+                        if pdb_atom_name == "OW":
                             try:
                                 x = float(line[30:38])
                                 y = float(line[38:46])
@@ -842,19 +864,25 @@ class DataHandler(object):
                                       'Its coordinates will be skipped.')
                             point = np.array((x, y, z))
                             water_coords.append(point)
-
         # In case MODEL section was missing
         if not inside_model and len(model_coords) > 0:
             residue_coordinates.append(np.array(model_coords))
-        if not inside_model and len(water_coords) > 0:
-            water_coordinates.append(np.array(water_coords))
+
+        if water_ids:
+            if not inside_model and len(water_coords) > 0:
+                water_coordinates.append(np.array(water_coords))
 
         residue_coordinates = np.array(residue_coordinates)
         water_coordinates = np.array(water_coordinates)
 
+        if water_ids:
+            n_models, water_atoms, dimensions = water_coordinates.shape
+            water_coordinates = water_coordinates.reshape(n_models * water_atoms, dimensions)
+
         # When np.array.shape does not return a tuple of len 3 is because
         # its subarrays does not share the same dimensionality, so ligand
         # or water sizes are different.
+
         try:
             n_models_loaded, ligand_size, spatial_dimension = \
                 residue_coordinates.shape
@@ -874,25 +902,21 @@ class DataHandler(object):
                   'Its coordinates will be skipped.')
 
         try:
-            n_models_loaded, num_waters, spatial_dimension = \
+            n_molecules, spatial_dimension = \
                 water_coordinates.shape
         except ValueError:
             if len(water_coordinates) > 0:
                 print('Warning: trajectory {} '.format(trajectory) +
-                      'has an inconsistent ligand size throughout the ' +
-                      'models. Its coordinates will be skipped.')
-
-            # Return empty array
-            return np.array(()), np.array(())
+                      'has an inconsistent water size throughout the ' +
+                      'models. Its coordinates will be skipped. ')
 
         if (n_models_loaded != current_model - 1
-            or num_waters != len(water_ids)
-                or spatial_dimension != 3) and skip_initial_structures:
+            or water_atoms != len(water_ids)
+            or spatial_dimension != 3) and skip_initial_structures:
             print('Warning: unexpected dimensions found in the ' +
                   'coordinate array from trajectory {}. '.format(trajectory) +
                   'Its coordinates will be skipped.')
 
             # Return empty array
             return np.array(()), np.array(())
-
         return residue_coordinates, water_coordinates

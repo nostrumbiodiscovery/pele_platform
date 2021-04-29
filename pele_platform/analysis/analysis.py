@@ -404,8 +404,8 @@ class Analysis(object):
                                                            bandwidth,
                                                            analysis_nclust)
 
-        # Extract coordinates
-        coordinates, dataframe = self._extract_coordinates(max_coordinates)
+        # Extract ligand and water coordinates
+        coordinates, water_coordinates, dataframe = self._extract_coordinates(max_coordinates)
 
         # Skip clustering in case
         if coordinates is None or dataframe is None:
@@ -556,12 +556,12 @@ class Analysis(object):
         print(f"Extract coordinates for clustering")
 
         if not self.topology:
-            coordinates, dataframe, water_coords = \
+            coordinates, water_coords, dataframe = \
                 self._data_handler.extract_PDB_coords(
                     self.residue, self.water_ids, remove_hydrogen=True,
                     n_proc=self.cpus, max_coordinates=max_coordinates)
         else:
-            coordinates, dataframe, water_coords = \
+            coordinates, water_coords, dataframe = \
                 self._data_handler.extract_XTC_coords(
                     self.residue, self.topology, self.water_ids,
                     remove_hydrogen=True, max_coordinates=max_coordinates)
@@ -569,14 +569,14 @@ class Analysis(object):
         if coordinates is None or dataframe is None:
             print(f"Coordinate extraction failed, " +
                   f"clustering analysis is skipped")
-            return None, None
+            return None, None, None
 
         if len(coordinates) < 2:
             print(f"Not enough coordinates, " +
                   f"clustering analysis is skipped")
-            return None, None
+            return None, None, None
 
-        return coordinates, dataframe
+        return coordinates, water_coords, dataframe
 
     def _extract_poses(self, dataframe, metric, output_path):
         """
