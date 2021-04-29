@@ -287,14 +287,20 @@ class SimulationParams(
             if args.forcefield
             else self.simulation_params.get("forcefield", "OPLS2005")
         )
-        self.solvent = (
-            args.solvent
-            if args.solvent
-            else self.simulation_params.get("solvent", "VDGBNP")
-        )
+        # Keep in mind the the default solvent is "VDGBNP" when using OPLS2005
+        # and "OBC" when using any OpenFF force field
+        if args.solvent is None:
+            if 'openff' in self.forcefield.lower():
+                self.solvent = 'OBC'
+            else:
+                self.solvent = 'VDGBNP'
+        else:
+            self.solvent = args.solvent
+
         self.verbose = (
             "true" if args.verbose else self.simulation_params.get("verbose", "false")
         )
+
         self.cpus = args.cpus = (
             args.cpus if args.cpus else self.simulation_params.get("cpus", 60)
         )

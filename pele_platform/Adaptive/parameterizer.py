@@ -5,7 +5,6 @@ import warnings
 
 from Bio.PDB import PDBParser
 
-from peleffy import solvent
 from peleffy import forcefield as ff
 
 from pele_platform.Errors import custom_errors
@@ -29,17 +28,12 @@ class Parameterizer:
         "openff-1.0.1": ff.OpenForceField("openff_unconstrained-1.0.1.offxml"),
         "openff-1.0.0": ff.OpenForceField("openff_unconstrained-1.0.0.offxml")}
 
-    # Mapping between args.solvent and peleffy models
-    solvents = {"obc2": solvent.OBC2,
-                "opls_obc": solvent.OPLSOBC,
-                "vdgbnp": None}
-
     # Available methods of charge parametrization
     charge_parametrization_methods = ["am1bcc", "gasteiger", "opls2005"]
 
     def __init__(self, pdb_file, forcefield="OPLS2005",
                  charge_parametrization_method="am1bcc",
-                 gridres=10, solvent="OBC", external_templates=None,
+                 gridres=10, solvent=None, external_templates=None,
                  external_rotamers=None, as_datalocal=False,
                  pele_dir=None, exclude_terminal_rotamers=True,
                  ligand_core_constraints=None, ligand_resname=None):
@@ -60,8 +54,9 @@ class Parameterizer:
         gridres : int
             Resolution of the rotamers when sampling. Default is 10 degrees
         solvent : str
-            Simulation solvent. Default is "OBC" if using OpenFF,
-            otherwise "VDGBNP"
+            Simulation solvent. Default is None and it will use
+            default values: "OBC" if using any OpenFF force field and
+            "VDGBNP" otherwise
         external_rotamers : list[str]
             List of paths to external rotamer files. Default is None
         external_templates : list[str]
@@ -462,15 +457,15 @@ class Parameterizer:
                                        [os.path.dirname(path)
                                         for path in impact_template_paths])
 
-    def _retrieve_solvent_model(self, solvent, forcefield):
+    def _retrieve_solvent_model(self, solvent_name, forcefield):
         """
         Checks solvent compatibility with the forcefield and returns the
         solvent class from peleffy.
 
         Parameters
         -----------
-        solvent : str
-            Solvent defined by the user in YAML
+        solvent_name : str
+            Name of solvent defined by the user in YAML
         forcefield : str
             Forcefield defined by the user in YAML
 
@@ -479,12 +474,20 @@ class Parameterizer:
         solvent_class : a peleffy.solvent object
             The solvent object from peleffy that is selected
         """
-        if not solvent:
-            return None
+        from peleffy.solvent import OBC2, OPLSOBC
+
+        solvent_class = None
+
+        if solvent_name is None:
+            if 'openff' in forcefield.lower():
+                solvent_class = OBC2
         else:
-            checked_solvent = self._check_solvent(solvent, forcefield)
-            solvent_class = self.solvents.get(checked_solvent.lower(), None)
-            return solvent_class
+            checked_solvent = self._check_solvent(solvent_name, forcefield)
+
+        if forcefield.lower() == 'opls2005' and solvent == 'obc':
+            solvent_class = OPLSOBC
+
+        return solvent_class
 
     @staticmethod
     def _fix_atom_names(ligand_resname, ligand_core_constraints, pdb):
