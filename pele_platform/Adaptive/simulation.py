@@ -307,6 +307,7 @@ def run_adaptive(args):
         )
         water_obj.run()
         parameters.parameters = water_obj.ligand_perturbation_params
+        parameters.water_ids_to_track = water_obj.water_ids_to_track
 
         # Check if atoms need mapping due to preprocessing
         args = AtomMapper(args, parameters, syst.system).run()

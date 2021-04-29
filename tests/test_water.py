@@ -113,3 +113,14 @@ def test_include_water_ligand_API(pdb=pdb, n_waters=n_waters, water_center=False
     #os.remove(input_file)
     assert water_object.water_line == '\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 6, "fixedCenter": [-87.5760388319, -7.1355193027, -64.8428620317], "type": "sphericalBox"}}]\n         }, \n'
     assert not errors
+
+
+def test_retrieve_indices_to_track():
+    """
+    Run the function to check, if it correctly parses retrieved waters to a format used by Analysis.
+    """
+    inp = ["A:202", "B:1000", "C:1"]
+    expected_out = [("A", 202), ("B", 1000), ("C", 1)]
+
+    output = wt.WaterIncluder.retrieve_indices_to_track(inp)
+    assert output == expected_out

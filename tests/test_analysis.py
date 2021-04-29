@@ -523,8 +523,25 @@ def test_water_clustering(path, topology):
     Tests full water clustering on both XTC and PDB trajectories.
     """
     traj = "xtc" if topology else "pdb"
+    analysis_output = "water_clustering"
+
     obj = get_analysis(path, topology, traj)
-    obj.generate_clusters(path="water_clustering", clustering_type="meanshift")
+    obj.generate_clusters(path=analysis_output, clustering_type="meanshift")
+    # TODO: Write a proper test for water clustering output once it's implemented.
+
+    check_remove_folder(analysis_output)
+
+
+def test_water_clustering_production():
+    """
+    Tests water clustering running from YAML.
+    """
+    yaml = os.path.join(test_path, "clustering_xtc", "water_clustering.yaml")
+    parameters = main.run_platform_from_yaml(yaml)
+
+    # Checking if water indices to track are correctly parsed
+    assert parameters.water_ids_to_track == [("A", 2334), ("A", 2451)]
+
     # TODO: Write a proper test for water clustering output once it's implemented.
 
 

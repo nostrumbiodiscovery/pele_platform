@@ -110,7 +110,6 @@ class Analysis(object):
 
         simulation_output = os.path.join(parameters.pele_dir, parameters.output)
 
-        # TODO initialize Analysis with water ids according to parameters
         analysis = Analysis(resname=parameters.residue,
                             chain=parameters.chain,
                             simulation_output=simulation_output,
@@ -122,7 +121,9 @@ class Analysis(object):
                             kde=parameters.kde,
                             kde_structs=parameters.kde_structs,
                             topology=parameters.topology,
-                            cpus=parameters.cpus)
+                            cpus=parameters.cpus,
+                            water_ids_to_track=parameters.water_ids_to_track,
+                            )
 
         return analysis
 
