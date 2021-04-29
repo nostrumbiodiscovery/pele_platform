@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from pele_platform.Adaptive import parametrization
+from pele_platform.Adaptive import parameterizer
 from pele_platform.constants import constants
 from pele_platform import main
 
@@ -42,7 +42,7 @@ def test_ligand_extraction(pdb, ligands, core, resname):
     ligands : List[str]
         List of expected residue names to be extracted from the PDB.
     """
-    extracted_ligands = parametrization.Parametrization.extract_ligands(
+    extracted_ligands = parameterizer.Parameterizer.extract_ligands(
         pdb, gridres=10, ligand_core_constraints=core, ligand_resname=resname
     )
     assert len(extracted_ligands) == len(ligands)
@@ -91,11 +91,11 @@ def test_check_solvent(solvent, forcefield, error):
     """
     if error:
         with pytest.raises(ValueError):
-            parametrization.Parametrization._check_solvent(
+            parameterizer.Parameterizer._check_solvent(
                 solvent=solvent, forcefield=forcefield
             )
     else:
-        parametrization.Parametrization._check_solvent(
+        parameterizer.Parameterizer._check_solvent(
             solvent=solvent, forcefield=forcefield
         )
 
@@ -165,7 +165,7 @@ def test_fix_atom_names(user_input, expected_output, resname, pdb):
     pdb : str
         Path to PDB file.
     """
-    output = parametrization.Parametrization._fix_atom_names(
+    output = parameterizer.Parameterizer._fix_atom_names(
         ligand_resname=resname, ligand_core_constraints=user_input, pdb=pdb
     )
     assert expected_output == output
@@ -189,10 +189,10 @@ def parametrize():
 
     Returns
     --------
-    obj : parametrization.Parametrization
+    obj : parametrization.Parameterizer
         Parametrization object to use in tests.
     """
-    obj = parametrization.Parametrization(
+    obj = parameterizer.Parameterizer(
         pdb_file=os.path.join(test_path, "1zop.pdb"),
         forcefield="openff-1.3.0",
         solvent="OBC",

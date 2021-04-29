@@ -273,6 +273,8 @@ INTERSTEPLOGGER = ''',
             "useInterStepLogger": true'''
 
 
+# ANALYSIS
+#---------
 # Top cluster selection - mapping between table metrics and YAML arguments
 metric_top_clusters_criterion = {
     "total_25_percentile": "currentEnergy 25-percentile",
@@ -298,5 +300,8 @@ cluster_representatives_criterion = {
     "interaction_min": "Binding Energy min"}
 
 
+# LIGAND PARAMETERIZATION
+#------------------------
 # Templates in PELE Data folder, no need to parametrize those
-in_pele_data = ["caz", "clz", "cuiz", "cuz", "hohz", "mgz", "naz", "spcz", "znz"]
+in_pele_data = ["caz", "clz", "cuiz", "cuz", "hohz", "mgz", "mnz",
+                "naz", "spcz", "znz"]
