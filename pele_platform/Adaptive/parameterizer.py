@@ -16,17 +16,7 @@ class Parameterizer:
     OPLS_IMPACT_TEMPLATE_PATH = "DataLocal/Templates/OPLS2005/HeteroAtoms/"
     OFF_IMPACT_TEMPLATE_PATH = "DataLocal/Templates/OpenFF/Parsley/"
     ROTAMER_LIBRARY_PATH = "DataLocal/LigandRotamerLibs/"
-
-    # Mapping between args.forcefield and peleffy classes
-    forcefields = {
-        "opls2005": ff.OPLS2005ForceField(),
-        "openff-1.3.0": ff.OpenForceField("openff_unconstrained-1.3.0.offxml"),
-        "openff-1.2.1": ff.OpenForceField("openff_unconstrained-1.2.1.offxml"),
-        "openff-1.2.0": ff.OpenForceField("openff_unconstrained-1.2.0.offxml"),
-        "openff-1.1.1": ff.OpenForceField("openff_unconstrained-1.1.1.offxml"),
-        "openff-1.1.0": ff.OpenForceField("openff_unconstrained-1.1.0.offxml"),
-        "openff-1.0.1": ff.OpenForceField("openff_unconstrained-1.0.1.offxml"),
-        "openff-1.0.0": ff.OpenForceField("openff_unconstrained-1.0.0.offxml")}
+    OBC_TEMPLATE_PATH = "DataLocal/OBC/ligandParams.txt"
 
     # Available methods of charge parametrization
     charge_parametrization_methods = ["am1bcc", "gasteiger", "opls2005"]
@@ -224,9 +214,9 @@ class Parameterizer:
         if self.external_templates:
             for file in self.external_templates:
                 try:
-                    if "opls2005" in self.forcefield.lowercase():
+                    if "opls2005" in self.forcefield.type.lowercase():
                         shutil.copy(file, template_paths[0])
-                    elif "openFF" in self.forcefield.lowercase():
+                    elif "openFF" in self.forcefield.type.lowercase():
                         shutil.copy(file, template_paths[-1])
                     # Copy into both OPLS2005 and OpenFF template directories,
                     # since we don't know which force field we are supposed
@@ -279,29 +269,39 @@ class Parameterizer:
         else:
             return solvent.lower()
 
-    def _retrieve_forcefield(self, forcefield):
+    def _retrieve_forcefield(self, forcefield_name):
         """
         Maps forcefield YAML argument with peleffy classes.
 
         Parameters
         ----------
-        forcefield : str
-            Forcefield name defined by the user in args.forcefield
+        forcefield_name : str
+            The force field name defined by the user in args.forcefield
 
         Returns
         -------
-        forcefield : a peleffy.forcefield object
+        forcefield_obj : a peleffy.forcefield object
             The corresponding forcefield object from peleffy selected by
             the user
         """
-        default_ff = ff.OPLS2005ForceField
+        from peleffy.forcefield import ForceFieldSelector
+        from peleffy.forcefield import OPLS2005ForceField
 
-        if forcefield.lower() not in self.forcefields:
+        # If OpenFF extension is missing, add it
+        if ('openff' in forcefield_name.lower() and
+                not forcefield_name.lower().endswith('offxml')):
+            forcefield_name += '.offxml'
+
+        # Select force field by name
+        selector = ForceFieldSelector()
+        try:
+            forcefield_obj = selector.get_by_name(forcefield_name)
+        except ValueError:
             print(f"Warning, invalid force field supplied, using the "
-                  f"default one: {default_ff.name}")
+                  f"default one: \'OPLS2005\'")
+            forcefield_obj = OPLS2005ForceField()
 
-        forcefield = self.forcefields.get(forcefield.lower(), default_ff)
-        return forcefield
+        return forcefield_obj
 
     def _check_charge_parametrization_method(self, method, forcefield):
         """
@@ -391,15 +391,17 @@ class Parameterizer:
         from peleffy.topology import RotamerLibrary, Topology
         from peleffy.utils import OutputPathHandler
         from peleffy.template import Impact
+        from peleffy.solvent import OBC2, OPLSOBC
 
         rotamer_library_path, impact_template_paths = None, None
 
         rotamers_to_skip, templates_to_skip = self._check_external_files()
+        topologies = list()
 
         for molecule in self.hetero_molecules:
             output_handler = OutputPathHandler(molecule,
                                                self.forcefield,
-                                               as_datalocal=self.as_datalocal,
+                                               as_datalocal=True,
                                                output_path=self.pele_dir)
 
             rotamer_library_path = output_handler.get_rotamer_library_path()
@@ -410,29 +412,46 @@ class Parameterizer:
                 rotamer_library = RotamerLibrary(molecule)
                 rotamer_library.to_file(rotamer_library_path)
 
+            # This boolean indicates whether we needed to reparameterize
+            # this ligand with OPLS2005 or not
+            opls_reparameterization = False
+
             if molecule.tag.strip() not in templates_to_skip:
                 # Try to parametrize with OPLS if OpenFF fails
                 try:
                     parameters = self.forcefield.parameterize(
-                        molecule, charge_method=self.charge_parametrization_method
-                    )
-                except (subprocess.CalledProcessError, TypeError):
+                        molecule,
+                        self.charge_parametrization_method)
+                except (subprocess.CalledProcessError, TypeError) as e1:
+                    warnings.warn(f"Could not parameterize residue "
+                                  f"{molecule.tag.strip()} with the selected "
+                                  f"forcefield. The following error was "
+                                  f"obtained: {e1}")
+
                     default = "OPLS2005"
                     fallback_forcefield = self._retrieve_forcefield(default)
 
                     try:
                         parameters = fallback_forcefield.parameterize(molecule)
-                        warnings.warn(
-                            f"Could not parametrize residue "
-                            f"{molecule.tag.strip()} with the selected "
-                            f"forcefield. Parametrized with {default} "
-                            f"instead. ")
-                    except subprocess.CalledProcessError as e:
+                        warnings.warn(f"Parametrized with {default} "
+                                      f"instead.")
+                    except subprocess.CalledProcessError as e2:
                         raise custom_errors.LigandPreparationError(
                             f"Could not parametrize {molecule.tag.strip()}. "
-                            f"The error was {e}.")
+                            f"The error was {e2}.")
+
+                    opls_reparameterization = True
 
                 topology = Topology(molecule, parameters)
+                topologies.append(topology)
+
+                # In case we reparameterized the templates with OPLS,
+                # we need to convert atom types to OFFT (unique atom
+                # type for OpenFF). Otherwise, PELE will complain about it
+                if opls_reparameterization:
+                    for atom in topology.atoms:
+                        atom.set_OPLS_type('OFFT')
+
                 impact = Impact(topology)
                 impact.to_file(impact_template_path)
 
@@ -440,9 +459,20 @@ class Parameterizer:
 
                 print(f"Parametrized {molecule.tag.strip()}.")
 
-                if self.solvent:
-                    solvent_parameters = self.solvent(topology)
-                    solvent_parameters.to_file(solvent_template_path)
+        if self.solvent is not None:
+            if self.solvent.upper() == 'OBC':
+                if 'openff' in self.forcefield.type.lower():
+                    solvent_parameters = OBC2(topologies)
+                else:
+                    solvent_parameters = OPLSOBC(topologies)
+
+                solvent_parameters.to_file(os.path.join(self.pele_dir,
+                                                        self.OBC_TEMPLATE_PATH))
+        else:
+            if 'openff' in self.forcefield.type.lower():
+                solvent_parameters = OBC2(topologies)
+                solvent_parameters.to_file(os.path.join(self.pele_dir,
+                                                        self.OBC_TEMPLATE_PATH))
 
         if not rotamer_library_path:
             rotamer_library_path = os.path.join(self.pele_dir,

@@ -282,11 +282,12 @@ class SimulationParams(
         )
 
     def optative_params(self, args):
-        self.forcefield = (
-            args.forcefield
-            if args.forcefield
-            else self.simulation_params.get("forcefield", "OPLS2005")
-        )
+        if args.forcefield is None:
+            self.forcefield = self.simulation_params.get("forcefield",
+                                                         "OPLS2005")
+        else:
+            self.forcefield = args.forcefield
+
         # Keep in mind the the default solvent is "VDGBNP" when using OPLS2005
         # and "OBC" when using any OpenFF force field
         if args.solvent is None:
