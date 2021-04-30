@@ -117,7 +117,9 @@ def run_adaptive(args):
                 user_center=parameters.center_of_interface,
                 logger=parameters.logger,
             )
-            if not args.gpcr_orth:
+            # We do not need to randomize the starting position for
+            # GPCR_orth nor out --> in simulations
+            if not args.gpcr_orth and not args.out_in:
                 parameters.box_center = box_center
                 parameters.box_radius = box_radius
             if parameters.no_ppp:
