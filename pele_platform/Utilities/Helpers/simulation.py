@@ -51,7 +51,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
                         "WATER_RADIUS": water_obj.water_radius, "WATER_CENTER": water_obj.water_center, "WATER": water_obj.water_line,
                         "WATER_ENERGY": water_obj.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, 
                         "TRAJ_NAME": env.traj_name,
-                        "SOLVENT": env.solvent, "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
+                        "SOLVENT": env.solvent.upper(), "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
                         "OVERLAP": env.overlap_factor, "STERIC_TRIALS": env.steric_trials, "TEMPERATURE": env.temperature, 
                         "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq, "BOX" : env.box, "PROXIMITY": env.proximityDetection, "WATER_FREQ": env.water_freq, "VERBOSE": env.verbose, "ANM_DISPLACEMENT": env.anm_displacement, "ANM_MODES_CHANGE": env.anm_modes_change, "ANM_DIRECTION": env.anm_direction, "ANM_MIX_MODES": env.anm_mix_modes, "ANM_PICKING_MODE": env.anm_picking_mode,
                         "ANM_NUM_OF_MODES": env.anm_num_of_modes, "ANM_RELAXATION_CONST": env.anm_relaxation_constr,

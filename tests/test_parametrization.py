@@ -59,7 +59,7 @@ def test_generate_ligand_parameters(parametrize):
     """
     expected_templates = ["ligz"]  # MG template included in pele Data
     expected_rotamers = ["MG.rot.assign", "LIG.rot.assign"]
-    parametrize.generate_ligand_parameters()
+    parametrize.parameterize_ligands_from()
 
     # Check if all expected files were created and clean them up
     for file in expected_templates + expected_rotamers:
@@ -91,13 +91,11 @@ def test_check_solvent(solvent, forcefield, error):
     """
     if error:
         with pytest.raises(ValueError):
-            parameterizer.Parameterizer._check_solvent(
-                solvent=solvent, forcefield=forcefield
-            )
+            parameterizer.Parameterizer._check_solvent(solvent=solvent,
+                                                       forcefield=forcefield)
     else:
-        parameterizer.Parameterizer._check_solvent(
-            solvent=solvent, forcefield=forcefield
-        )
+        parameterizer.Parameterizer._check_solvent(solvent=solvent,
+                                                   forcefield=forcefield)
 
 
 @pytest.mark.parametrize(

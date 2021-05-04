@@ -45,9 +45,7 @@ def run_adaptive(args):
     elif not parameters.only_analysis:
         parameters.logger.info(
             "System: {}; Platform Functionality: {}\n\n".format(
-                parameters.residue, parameters.software
-            )
-        )
+                parameters.residue, parameters.software))
 
         # Create inputs directory
         if not os.path.exists(parameters.inputs_dir):
@@ -59,16 +57,14 @@ def run_adaptive(args):
                 args.mae_lig,
                 args.residue,
                 parameters.pele_dir,
-                inputs_dir=parameters.inputs_dir,
-            )
+                inputs_dir=parameters.inputs_dir)
         else:
             syst = sp.SystemBuilder(
                 parameters.system,
                 None,
                 None,
                 parameters.pele_dir,
-                inputs_dir=parameters.inputs_dir,
-            )
+                inputs_dir=parameters.inputs_dir)
 
         parameters.logger.info("Prepare complex {}".format(syst.system))
 
@@ -78,8 +74,7 @@ def run_adaptive(args):
 
             for input in parameters.input:
                 input_path = os.path.join(
-                    parameters.inputs_dir, os.path.basename(input)
-                )
+                    parameters.inputs_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
 
                 if parameters.no_ppp:
@@ -89,15 +84,11 @@ def run_adaptive(args):
                         ppp.main(
                             input_path,
                             parameters.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
-                            output_pdb=[
-                                "",
-                            ],
+                            output_pdb=["", ],
                             charge_terminals=args.charge_ter,
                             no_gaps_ter=args.gaps_ter,
                             constrain_smiles=None,
-                            ligand_pdb=parameters.ligand_ref,
-                        )[0]
-                    )
+                            ligand_pdb=parameters.ligand_ref)[0])
                 input_proc = os.path.join(parameters.inputs_dir, input_proc)
                 parameters.inputs_simulation.append(input_proc)
             parameters.adap_ex_input = ", ".join(
@@ -113,8 +104,7 @@ def run_adaptive(args):
                 nposes=parameters.poses,
                 test=parameters.test,
                 user_center=parameters.center_of_interface,
-                logger=parameters.logger,
-            )
+                logger=parameters.logger)
             if not args.gpcr_orth:
                 parameters.box_center = box_center
                 parameters.box_radius = box_radius
@@ -124,22 +114,19 @@ def run_adaptive(args):
                 receptor = ppp.main(
                     syst.system,
                     parameters.inputs_dir,  # to ensure it goes to pele_dir/input, not pele_dir
-                    output_pdb=[
-                        "",
-                    ],
+                    output_pdb=["", ],
                     charge_terminals=args.charge_ter,
                     no_gaps_ter=args.gaps_ter,
                     constrain_smiles=None,
-                    ligand_pdb=parameters.ligand_ref,
-                )[0]
+                    ligand_pdb=parameters.ligand_ref)[0]
             inputs = rd.join(
                 receptor,
                 ligand_positions,
                 parameters.residue,
-                output_folder=parameters.inputs_dir,
-            )
+                output_folder=parameters.inputs_dir)
 
-            inputs = [os.path.join(parameters.inputs_dir, inp) for inp in inputs]
+            inputs = [os.path.join(parameters.inputs_dir, inp)
+                      for inp in inputs]
 
             parameters.adap_ex_input = ", ".join(
                 ['"' + input + '"' for input in inputs]
@@ -147,9 +134,7 @@ def run_adaptive(args):
             hp.silentremove(ligand_positions)
 
         # Prepare System
-        if (
-            parameters.no_ppp or parameters.input
-        ):  # No need to run system through PPP, if we already preprocessed parameters.input
+        if parameters.no_ppp or parameters.input:  # No need to run system through PPP, if we already preprocessed parameters.input
             missing_residues = []
             if parameters.input:
                 # If we have more than one input
@@ -162,7 +147,7 @@ def run_adaptive(args):
             parameters.system, missing_residues, _, _, _ = ppp.main(
                 syst.system,
                 parameters.inputs_dir,
-                output_pdb=["",],
+                output_pdb=["", ],
                 charge_terminals=args.charge_ter,
                 no_gaps_ter=args.gaps_ter,
                 mid_chain_nonstd_residue=parameters.nonstandard,
@@ -219,7 +204,8 @@ def run_adaptive(args):
         # Ligand/metal parameters, solvent parameters and simulation box
         if parameters.perturbation:
             parameterizer = Parameterizer.from_parameters(parameters)
-            parameterizer.generate_ligand_parameters()
+
+            parameterizer.parameterize_ligands_from(syst.system)
             box = bx.BoxSetter(parameters.box_center,
                                parameters.box_radius,
                                parameters.ligand_ref,

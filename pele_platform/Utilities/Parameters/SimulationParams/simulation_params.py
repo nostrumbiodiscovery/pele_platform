@@ -413,11 +413,13 @@ class SimulationParams(
         self.forcefield = args.forcefield if args.forcefield is not None else "OPLS2005"
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
         self.gridres = args.gridres
-        self.charge_parametrization_method = (
-            args.charge_parametrization_method
-            if args.charge_parametrization_method
-            else "am1bcc"
-        )
+
+        # Take into account that the defaults for the parameterization method
+        # are the following:
+        #  - OPLS2005 when OPLS2005 force field is used
+        #  - am1bcc when any OpenFF force field is used
+        self.charge_parametrization_method = args.charge_parametrization_method
+
         self.exclude_terminal_rotamers = (
             args.exclude_terminal_rotamers
             if args.exclude_terminal_rotamers is not None

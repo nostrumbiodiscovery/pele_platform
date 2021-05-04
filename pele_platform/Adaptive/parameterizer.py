@@ -21,8 +21,8 @@ class Parameterizer:
     # Available methods of charge parametrization
     charge_parametrization_methods = ["am1bcc", "gasteiger", "opls2005"]
 
-    def __init__(self, pdb_file, forcefield="OPLS2005",
-                 charge_parametrization_method="am1bcc",
+    def __init__(self, forcefield="OPLS2005",
+                 charge_parametrization_method="OPLS2005",
                  gridres=10, solvent=None, external_templates=None,
                  external_rotamers=None, as_datalocal=False,
                  pele_dir=None, exclude_terminal_rotamers=True,
@@ -32,9 +32,6 @@ class Parameterizer:
 
         Parameters
         ----------
-        pdb_file : str
-            Path to the PDB file from which all HET groups will be extracted
-            and parametrized
         forcefield : str
             User-defined string to select forcefield for parametrization.
             Default is "OPLS2005"
@@ -62,8 +59,6 @@ class Parameterizer:
         ligand_resname : str
             Residue name of the ligand. Default is None
         """
-        self.pdb = pdb_file
-        self.check_system_protonation()
         self.forcefield = self._retrieve_forcefield(forcefield)
         self.charge_parametrization_method = \
             self._check_charge_parametrization_method(
@@ -83,18 +78,10 @@ class Parameterizer:
             self.external_rotamers = list()
 
         self.as_datalocal = as_datalocal
-        self.ligand_core_constraints = \
-            self._fix_atom_names(ligand_resname, ligand_core_constraints,
-                                 self.pdb)
-        self.hetero_molecules = self.extract_ligands(
-            pdb_file=self.pdb,
-            gridres=self.gridres,
-            exclude_terminal_rotamers=exclude_terminal_rotamers,
-            ligand_resname=ligand_resname,
-            ligand_core_constraints=self.ligand_core_constraints)
-
+        self.ligand_core_constraints = ligand_core_constraints
         self.pele_dir = pele_dir
         self.exclude_terminal_rotamers = exclude_terminal_rotamers
+        self.ligand_resname = ligand_resname
 
     @classmethod
     def from_parameters(cls, parameters):
@@ -113,7 +100,6 @@ class Parameterizer:
             Parametrization object initialized from simulation parameters
         """
         obj = Parameterizer(
-            pdb_file=parameters.system,
             forcefield=parameters.forcefield,
             charge_parametrization_method=parameters.charge_parametrization_method,
             gridres=parameters.gridres,
@@ -261,13 +247,14 @@ class Parameterizer:
         Raises
         ------
         ValueError if the chosen solvent is not compatible with the
-            current force field
+            current force field or if the solvent is unknown
         """
-        if forcefield.lower() != "opls2005" and solvent.lower() == "vdgbnp":
+        if forcefield.upper() != "OPLS2005" and solvent.upper() == "VDGBNP":
             raise ValueError("OpenFF supports OBC solvent only. Change"
-                             "forcefield to 'OPLS2005' or solvent to 'OBC2'.")
-        else:
-            return solvent.lower()
+                             "forcefield to 'OPLS2005' or solvent to 'OBC'.")
+
+        if solvent.upper() != "OBC" and solvent.upper() != "VDGBNP":
+            raise ValueError(f"Solvent {solvent} is unknown")
 
     def _retrieve_forcefield(self, forcefield_name):
         """
@@ -306,7 +293,8 @@ class Parameterizer:
     def _check_charge_parametrization_method(self, method, forcefield):
         """
         Checks if charge parametrization method selected by the user
-        is supported.
+        is supported and returns the correct method if none was
+        selected.
 
         Parameters
         ----------
@@ -328,7 +316,12 @@ class Parameterizer:
         # If no method is supplied, peleffy will use its default (which
         # depends on the force field employed)
         if method is None:
-            return None
+            if 'openff' in self.forcefield.type.lower():
+                method = 'am1bcc'
+            else:
+                method = 'opls2005'
+
+            return method
 
         if method.lower() not in self.charge_parametrization_methods:
             raise ValueError(f"Invalid charge parametrization method, "
@@ -337,10 +330,17 @@ class Parameterizer:
 
         return method.lower()
 
-    def _check_external_files(self):
+    def _check_external_files(self, hetero_molecules):
         """
         Checks if any of the hetero molecules extracted from PDB has a
         user-defined rotamers or template file, so they can be skipped.
+
+        Parameters
+        ----------
+        hetero_molecules : list[peleffy.topology.Molecule]
+            List of hetero molecules extracted from the PDB file,
+            without any duplicates, water molecules or single atom
+            anions (e.g. Cl-, F-, etc.)
 
         Returns
         --------
@@ -351,7 +351,7 @@ class Parameterizer:
             List of hetero molecules for which the templates have been
             supplied in an external file.
         """
-        ligands = [ligand.tag.strip() for ligand in self.hetero_molecules]
+        ligands = [ligand.tag.strip() for ligand in hetero_molecules]
 
         if self.external_rotamers:
             # Get residue names from rotamer files.
@@ -378,10 +378,16 @@ class Parameterizer:
 
         return rotamers_to_skip, templates_to_skip
 
-    def generate_ligand_parameters(self):
+    def parameterize_ligands_from(self, pdb_file):
         """
         Generates forcefield templates and rotamer files for ligands,
-        then copies the one provided by the user.
+        then copies the ones provided by the user (if any).
+
+        Parameters
+        ----------
+        pdb_file : str
+            Path to the PDB file from which all HET groups will be extracted
+            and parametrized
 
         Raises
         ------
@@ -392,43 +398,71 @@ class Parameterizer:
         from peleffy.utils import OutputPathHandler
         from peleffy.template import Impact
         from peleffy.solvent import OBC2, OPLSOBC
+        from peleffy.forcefield.parameters import BaseParameterWrapper
+
+        self.check_system_protonation(pdb_file)
+
+        ligand_core_constraints = self._fix_atom_names(
+            self.ligand_resname,
+            self.ligand_core_constraints,
+            pdb_file)
+
+        hetero_molecules = self.extract_ligands(
+            pdb_file=pdb_file,
+            gridres=self.gridres,
+            exclude_terminal_rotamers=self.exclude_terminal_rotamers,
+            ligand_resname=self.ligand_resname,
+            ligand_core_constraints=ligand_core_constraints)
 
         rotamer_library_path, impact_template_paths = None, None
 
-        rotamers_to_skip, templates_to_skip = self._check_external_files()
+        rotamers_to_skip, templates_to_skip = \
+            self._check_external_files(hetero_molecules)
         topologies = list()
 
-        for molecule in self.hetero_molecules:
+        for molecule in hetero_molecules:
+            # Handle paths
             output_handler = OutputPathHandler(molecule,
                                                self.forcefield,
                                                as_datalocal=True,
                                                output_path=self.pele_dir)
-
             rotamer_library_path = output_handler.get_rotamer_library_path()
             impact_template_path = output_handler.get_impact_template_path()
-            solvent_template_path = output_handler.get_solvent_template_path()
-
-            if molecule.tag.strip() not in rotamers_to_skip:
-                rotamer_library = RotamerLibrary(molecule)
-                rotamer_library.to_file(rotamer_library_path)
 
             # This boolean indicates whether we needed to reparameterize
             # this ligand with OPLS2005 or not
             opls_reparameterization = False
 
+            # Parameterize molecule if we do not have a template for it
+            # specified in the input.yaml nor in Data folder
             if molecule.tag.strip() not in templates_to_skip:
-                # Try to parametrize with OPLS if OpenFF fails
+                # Generate rotamer library (only if the molecule is
+                # the ligand to perturb if its rotamer library is not
+                # supposed to be skipped)
+                if (molecule.tag.strip() == self.ligand_resname
+                        and molecule.tag.strip() not in rotamers_to_skip):
+                    # ToDo branches = self.molecule.rotamers
+                    rotamer_library = RotamerLibrary(molecule)
+                    rotamer_library.to_file(rotamer_library_path)
+
+                # Try to parametrize with OPLS2005 if OpenFF fails
                 try:
                     parameters = self.forcefield.parameterize(
                         molecule,
                         self.charge_parametrization_method)
-                except (subprocess.CalledProcessError, TypeError) as e1:
+                except (subprocess.CalledProcessError,
+                        TypeError, KeyError) as e1:
                     warnings.warn(f"Could not parameterize residue "
                                   f"{molecule.tag.strip()} with the selected "
                                   f"forcefield. The following error was "
                                   f"obtained: {e1}")
 
                     default = "OPLS2005"
+
+                    if self.forcefield.type == default:
+                        raise custom_errors.LigandPreparationError(
+                            f"Could not parametrize {molecule.tag.strip()}")
+
                     fallback_forcefield = self._retrieve_forcefield(default)
 
                     try:
@@ -458,6 +492,15 @@ class Parameterizer:
                 impact_template_paths = [impact_template_path]
 
                 print(f"Parametrized {molecule.tag.strip()}.")
+
+            # Even though molecule has not been parameterized, we might need
+            # to generate its solvent parameters if it is not in PELE data.
+            # So, we need to save its topology
+            elif molecule not in constants.in_pele_data:
+                print('Molecule', molecule.tag)
+                empty_params = BaseParameterWrapper()  # Needed to create a topology
+                topology = Topology(molecule, empty_params)
+                topologies.append(topology)
 
         if self.solvent is not None:
             if self.solvent.upper() == 'OBC':
@@ -504,23 +547,22 @@ class Parameterizer:
         solvent_class : a peleffy.solvent object
             The solvent object from peleffy that is selected
         """
-        from peleffy.solvent import OBC2, OPLSOBC
+        solvent = None
 
-        solvent_class = None
-
+        # In case solvent_name is None, set the default values:
+        #  - SGB when using OPLS2005 (since it does not require especial
+        #    templates, it is set to None)
+        #  - OBC2 when using OpenFF
         if solvent_name is None:
             if 'openff' in forcefield.lower():
-                solvent_class = OBC2
+                solvent = 'OBC'
         else:
-            checked_solvent = self._check_solvent(solvent_name, forcefield)
+            self._check_solvent(solvent_name, forcefield)
 
-        if forcefield.lower() == 'opls2005' and solvent == 'obc':
-            solvent_class = OPLSOBC
-
-        return solvent_class
+        return solvent
 
     @staticmethod
-    def _fix_atom_names(ligand_resname, ligand_core_constraints, pdb):
+    def _fix_atom_names(ligand_resname, ligand_core_constraints, pdb_file):
         """
         Adds spaces around PDB atom names to ensure peleffy can correctly
         identify core atoms.
@@ -532,8 +574,8 @@ class Parameterizer:
         ligand_core_constraints : list[str]
             List of PDB atom names to constrain as core defined by the
             user, e.g. ["N1", "O1"]
-        pdb : str
-            Path to PDB file (self.pdb)
+        pdb_file : str
+            Path to PDB file
 
         Returns
         --------
@@ -546,7 +588,7 @@ class Parameterizer:
         """
         if ligand_core_constraints:
             parser = PDBParser()
-            structure = parser.get_structure("system", pdb)
+            structure = parser.get_structure("system", pdb_file)
             user_constraints = [atom.strip()
                                 for atom in ligand_core_constraints]
             fixed_atoms = []
@@ -564,20 +606,26 @@ class Parameterizer:
                              if atom not in [pdb_atom.strip()
                                              for pdb_atom in fixed_atoms]]
                 raise ValueError(f"Atom(s) {not_found} were not "
-                                 f"found in {pdb}.")
+                                 f"found in {pdb_file}.")
 
             return fixed_atoms
 
-    def check_system_protonation(self):
+    def check_system_protonation(self, pdb_file):
         """
         It checks for hydrogen atoms in the input PDB to ensure that
         it has been protonated and complaints otherwise.
+
+        Parameters
+        ----------
+        pdb_file : str
+            Path to the PDB file from which all HET groups will be extracted
+            and parametrized
 
         Raises
         ------
         ProtonationError if no hydrogen atoms are found in the input PDB
         """
-        with open(self.pdb) as f:
+        with open(pdb_file) as f:
             lines = f.readlines()
             atom_lines = [line for line in lines
                           if line.startswith("ATOM")
