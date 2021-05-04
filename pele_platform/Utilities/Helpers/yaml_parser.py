@@ -309,6 +309,7 @@ class YamlParser(object):
         # peleffy parametrization
         self.charge_parametrization_method = data.get(valid_flags["charge_parametrization_method"], None)
         self.exclude_terminal_rotamers = data.get(valid_flags["exclude_terminal_rotamers"], None)
+        self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
 
         if self.test:
             warnings.warn(

@@ -194,4 +194,5 @@ VALID_FLAGS_PLATFORM = {
     "site_finder_global": "site_finder_global",
     "charge_parametrization_method": "charge_parametrization_method",
     "exclude_terminal_rotamers": "exclude_terminal_rotamers",
+    "skip_ligand_prep": "skip_ligand_prep",
 }

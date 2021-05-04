@@ -425,6 +425,7 @@ class SimulationParams(
             if args.exclude_terminal_rotamers is not None
             else True
         )
+        self.skip_ligand_prep = args.skip_ligand_prep if args.skip_ligand_prep else []
 
     def water_params(self, args):
         self.water_temp = (

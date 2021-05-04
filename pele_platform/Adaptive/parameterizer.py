@@ -5,8 +5,6 @@ import warnings
 
 from Bio.PDB import PDBParser
 
-from peleffy import forcefield as ff
-
 from pele_platform.Errors import custom_errors
 from pele_platform.constants import constants
 
@@ -26,7 +24,8 @@ class Parameterizer:
                  gridres=10, solvent=None, external_templates=None,
                  external_rotamers=None, as_datalocal=False,
                  pele_dir=None, exclude_terminal_rotamers=True,
-                 ligand_core_constraints=None, ligand_resname=None):
+                 ligand_core_constraints=None, ligand_resname=None,
+                 ligands_to_skip=None):
         """
         Initializes Parametrization to generate template and rotamer files.
 
@@ -58,6 +57,8 @@ class Parameterizer:
             List of PDB atom names to be constrained as core. Default is None
         ligand_resname : str
             Residue name of the ligand. Default is None
+        ligands_to_skip : List[str]
+            List of residue names to skip
         """
         self.forcefield = self._retrieve_forcefield(forcefield)
         self.charge_parametrization_method = \
@@ -82,6 +83,10 @@ class Parameterizer:
         self.pele_dir = pele_dir
         self.exclude_terminal_rotamers = exclude_terminal_rotamers
         self.ligand_resname = ligand_resname
+        if ligands_to_skip:
+            self.ligands_to_skip = ligands_to_skip
+        else:
+            self.ligands_to_skip = []
 
     @classmethod
     def from_parameters(cls, parameters):
@@ -110,7 +115,9 @@ class Parameterizer:
             pele_dir=parameters.pele_dir,
             exclude_terminal_rotamers=parameters.exclude_terminal_rotamers,
             ligand_core_constraints=parameters.core,
-            ligand_resname=parameters.residue)
+            ligand_resname=parameters.residue,
+            ligands_to_skip=parameters.skip_ligand_prep,
+        )
 
         return obj
 
@@ -376,7 +383,11 @@ class Parameterizer:
             [residue for residue in external_template_residues
              if residue in ligands]
 
-        return rotamers_to_skip, templates_to_skip
+        external_template_residues.extend(self.ligands_to_skip)
+        templates_to_skip.extend(self.ligands_to_skip)
+
+        # Remove any duplicates
+        return list(set(rotamers_to_skip)), list(set(templates_to_skip))
 
     def parameterize_ligands_from(self, pdb_file):
         """
@@ -421,6 +432,10 @@ class Parameterizer:
         topologies = list()
 
         for molecule in hetero_molecules:
+            # Check if we need to skip the current molecule
+            if molecule.tag.strip() in self.ligands_to_skip:
+                continue
+
             # Handle paths
             output_handler = OutputPathHandler(molecule,
                                                self.forcefield,
