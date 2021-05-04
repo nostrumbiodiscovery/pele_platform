@@ -214,9 +214,9 @@ class Parameterizer:
         if self.external_templates:
             for file in self.external_templates:
                 try:
-                    if "opls2005" in self.forcefield.type.lowercase():
+                    if "opls2005" in self.forcefield.type.lower():
                         shutil.copy(file, template_paths[0])
-                    elif "openFF" in self.forcefield.type.lowercase():
+                    elif "openFF" in self.forcefield.type.lower():
                         shutil.copy(file, template_paths[-1])
                     # Copy into both OPLS2005 and OpenFF template directories,
                     # since we don't know which force field we are supposed
