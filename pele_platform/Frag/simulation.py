@@ -92,6 +92,13 @@ class FragRunner(object):
     def _run(self):
         params = self.parameters
         params.spython = cs.SCHRODINGER
+        pdb_basename = params.core.split(".pdb")[0]  # Get the name of the pdb without extension
+        if "/" in pdb_basename:
+            pdb_basename = pdb_basename.split("/")[-1]  # And if it is a path, get only the name
+        current_path = os.path.abspath(".")
+        ID = open(params.input,'r').readlines()[0].split('.pdb')
+        ID = "".join(ID[:]).replace(" ","")
+        params.working_dir = os.path.join(current_path, "{}_{}".format(pdb_basename, ID))
         if params.frag_run:
             try:
                 frag.main(params.core_process, params.input, params.gr_steps,
