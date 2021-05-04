@@ -253,6 +253,19 @@ class FragRunner(object):
                 top_clusters_criterion=self.parameters.top_clusters_criterion,
                 min_population=self.parameters.min_population,
                 representatives_criterion=self.parameters.cluster_representatives_criterion)
+    def _filtering(self):
+        from glob import glob
+        from rdkit import Chem
+
+        sim_directories = glob(self.parameters.core_process.split(".pdb")[0] + '_*')
+        binding_energies = {}
+        for sim_directory in sim_directories:
+            top_results = glob(sim_directory + "/top_result/*")
+            for top_result in top_results:
+                binding_energies[top_result] = os.path.splitext(top_result)[0].split('y')[-1]
+        system_min_energy = min(binding_energies, key=binding_energies.get)
+        ligand_min_energy = system_min_energy.split("/")[:-2][0] + '/pregrow/growing_result_p.pdb'
+        filtering_results = fl.main(ligand_min_energy, self.parameters.database, self.parameters.filters)
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
