@@ -5,8 +5,6 @@ import warnings
 
 from Bio.PDB import PDBParser
 
-from peleffy import forcefield as ff
-
 from pele_platform.Errors import custom_errors
 from pele_platform.constants import constants
 
@@ -26,7 +24,7 @@ class Parameterizer:
                  gridres=10, solvent=None, external_templates=None,
                  external_rotamers=None, as_datalocal=False,
                  pele_dir=None, exclude_terminal_rotamers=True,
-                 ligand_core_constraints=None, ligand_resname=None):
+                 ligand_core_constraints=None, ligand_resname=None, ligands_to_skip=None):
         """
         Initializes Parametrization to generate template and rotamer files.
 
@@ -61,6 +59,8 @@ class Parameterizer:
             List of PDB atom names to be constrained as core. Default is None
         ligand_resname : str
             Residue name of the ligand. Default is None
+        ligands_to_skip : List[str]
+            List of residue names to skip.
         """
         self.pdb = pdb_file
         self.check_system_protonation()
@@ -95,6 +95,7 @@ class Parameterizer:
 
         self.pele_dir = pele_dir
         self.exclude_terminal_rotamers = exclude_terminal_rotamers
+        self.ligands_to_skip = [ligand.upper() for ligand in ligands_to_skip] if ligands_to_skip else []
 
     @classmethod
     def from_parameters(cls, parameters):
@@ -124,7 +125,9 @@ class Parameterizer:
             pele_dir=parameters.pele_dir,
             exclude_terminal_rotamers=parameters.exclude_terminal_rotamers,
             ligand_core_constraints=parameters.core,
-            ligand_resname=parameters.residue)
+            ligand_resname=parameters.residue,
+            ligands_to_skip=parameters.skip_ligand_prep,
+        )
 
         return obj
 
@@ -376,7 +379,11 @@ class Parameterizer:
             [residue for residue in external_template_residues
              if residue in ligands]
 
-        return rotamers_to_skip, templates_to_skip
+        external_template_residues.extend(self.ligands_to_skip)
+        templates_to_skip.extend(self.ligands_to_skip)
+
+        # Remove any duplicates
+        return list(set(rotamers_to_skip)), list(set(templates_to_skip))
 
     def generate_ligand_parameters(self):
         """
