@@ -2,17 +2,19 @@ import argparse
 import glob
 import os
 import yaml
+import time
+import pickle
+import sys
+
+from drug_learning.two_dimensions.Input import fingerprints as fp
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import QED
 from rdkit.Chem import RDConfig
 from yaml import load, Loader
 from collections import ChainMap
-import time
-import pickle
 from multiprocessing import Pool
 from functools import partial
-import sys
 
 
 class Library:
@@ -41,16 +43,26 @@ class Library:
         self.sd_files = self._retrieve_files()
         self.main(self.sd_files)
 
+    def generate_fingerprint(self, input_sdf):
+        mor = fp.MorganFP()
+        structures = mor.fit(input_sdf)
+        features = mor.transform()
+        return features
+
     def main(self, files_sdf):
+        fingerprints = {}
         for file_sdf in files_sdf:
             try:
+                counter = 0
+                fingerprint = self.generate_fingerprint(file_sdf)
                 mols = Chem.SDMolSupplier(file_sdf, removeHs=False)
                 name = os.path.basename(file_sdf).rsplit(".")[0]
             except:
                 continue
-            for mol in mols:
-                self.molecule = mol
-                self.fragments_dum = [Fragment(mol)]
+            for i in range(len(mols)):
+                fingerprints[mols[i]] = fingerprint[i]
+                self.molecule = mols[i]
+                self.fragments_dum = [Fragment(mols[i])]
                 self.filters_f()
                 self.save()
             print("\ (•◡•) / File %s finished \ (•◡•) / " % name)

@@ -11,6 +11,7 @@ import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
 import frag_pele.main as frag
 import pele_platform.constants.constants as cs
+import pele_platform.Frag.filtering as fl
 
 
 class FragRunner(object):
@@ -31,6 +32,8 @@ class FragRunner(object):
         self._prepare_control_file()
         self._launch()
         self._analysis()
+        if self.parameters.filters:
+            self._filtering()
 
         return self.parameters
 
@@ -253,6 +256,7 @@ class FragRunner(object):
                 top_clusters_criterion=self.parameters.top_clusters_criterion,
                 min_population=self.parameters.min_population,
                 representatives_criterion=self.parameters.cluster_representatives_criterion)
+
     def _filtering(self):
         from glob import glob
         from rdkit import Chem
