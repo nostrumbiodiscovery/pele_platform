@@ -92,13 +92,25 @@ class FragRunner(object):
     def _run(self):
         params = self.parameters
         params.spython = cs.SCHRODINGER
-        pdb_basename = params.core.split(".pdb")[0]  # Get the name of the pdb without extension
-        if "/" in pdb_basename:
-            pdb_basename = pdb_basename.split("/")[-1]  # And if it is a path, get only the name
-        current_path = os.path.abspath(".")
-        ID = open(params.input,'r').readlines()[0].split('.pdb')
-        ID = "".join(ID[:]).replace(" ","")
-        params.working_dir = os.path.join(current_path, "{}_{}".format(pdb_basename, ID))
+        if params.frag_library:
+            params.working_dir = []
+            pdb_basename = params.core.split(".pdb")[0] + "_processed" # Get the name of the pdb without extension
+            if "/" in pdb_basename:
+                pdb_basename = pdb_basename.split("/")[-1]  # And if it is a path, get only the name
+            current_path = os.path.abspath(".")
+            with open(params.input, "r") as input_file:
+                for line in input_file.readlines():
+                    ID = line.split('/')[-1].split(".pdb")
+                    ID = "".join(ID[:]).replace(" ", "")
+                    params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n'))
+        else:
+            pdb_basename = params.core.split(".pdb")[0] + "_processed"  # Get the name of the pdb without extension
+            if "/" in pdb_basename:
+                pdb_basename = pdb_basename.split("/")[-1] # And if it is a path, get only the name
+            current_path = os.path.abspath(".")
+            ID = open(params.input,'r').readlines()[0].split('.pdb')
+            ID = "".join(ID[:]).replace(" ","")
+            params.working_dir = os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n')
         if params.frag_run:
             try:
                 frag.main(params.core_process, params.input, params.gr_steps,
@@ -215,27 +227,10 @@ class FragRunner(object):
         return line, fragment
 
     def _analysis(self):
-        self.parameters.analysis_to_point = \
-            self.parameters.args.analysis_to_point
-
-        if self.parameters.analysis_to_point and self.parameters.folder:
-            ana.main(path=self.parameters.folder,
-                     atom_coords=self.parameters.analysis_to_point,
-                     pattern=os.path.basename(self.parameters.system))
-
-        # TODO create a list of the libraries defined in the current input.yaml
-        from pele_platform.analysis import Analysis
-        from glob import glob
-
-        sim_directories = glob(os.path.splitext(self.parameters.system)[0]
-                               + '_processed_*' + '*')
-
-        for sim_directory in sim_directories:
-            simulation_output = os.path.join(sim_directory, 'sampling_result')
+        def run_analysis(sim_directory, simulation_output):
 
             # Only proceed if sampling_result folder exists
-            if not os.path.isdir(simulation_output):
-                continue
+
 
             analysis_folder = os.path.join(sim_directory, "results")
 
@@ -260,6 +255,28 @@ class FragRunner(object):
                 top_clusters_criterion=self.parameters.top_clusters_criterion,
                 min_population=self.parameters.min_population,
                 representatives_criterion=self.parameters.cluster_representatives_criterion)
+
+        self.parameters.analysis_to_point = \
+            self.parameters.args.analysis_to_point
+
+        if self.parameters.analysis_to_point and self.parameters.folder:
+            ana.main(path=self.parameters.folder,
+                     atom_coords=self.parameters.analysis_to_point,
+                     pattern=os.path.basename(self.parameters.system))
+
+        # TODO create a list of the libraries defined in the current input.yaml
+        from pele_platform.analysis import Analysis
+        from glob import glob
+        if self.parameters.frag_library:
+            for sim_directory in self.parameters.working_dir:
+                simulation_output = sim_directory + '/sampling_result'
+                run_analysis(sim_directory, simulation_output)
+        else:
+            simulation_output = self.parameters.working_dir +  '/sampling_result'
+            if not os.path.isdir(simulation_output):
+                return 0
+            run_analysis(self.parameters.working_dir,simulation_output)
+
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
