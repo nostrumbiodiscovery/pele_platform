@@ -15,6 +15,7 @@ class Parameterizer:
     OFF_IMPACT_TEMPLATE_PATH = "DataLocal/Templates/OpenFF/Parsley/"
     ROTAMER_LIBRARY_PATH = "DataLocal/LigandRotamerLibs/"
     OBC_TEMPLATE_PATH = "DataLocal/OBC/ligandParams.txt"
+    OPLSOBC_TEMPLATE_PATH = "DataLocal/OBC/solventParamsHCTOBC.txt"
 
     # Available methods of charge parametrization
     charge_parametrization_methods = ["am1bcc", "gasteiger", "opls2005"]
@@ -60,7 +61,7 @@ class Parameterizer:
         ligands_to_skip : List[str]
             List of residue names to skip
         solvent_template : str
-            Path to solvent template file.
+            Path to solvent template file, if any. Default is None
         """
         self.forcefield = self._retrieve_forcefield(forcefield)
         self.charge_parametrization_method = \
@@ -120,8 +121,7 @@ class Parameterizer:
             ligand_core_constraints=parameters.core,
             ligand_resname=parameters.residue,
             ligands_to_skip=parameters.skip_ligand_prep,
-            solvent_template=parameters.solvent_template
-        )
+            solvent_template=parameters.solvent_template)
 
         return obj
 
@@ -412,7 +412,6 @@ class Parameterizer:
         from peleffy.topology import RotamerLibrary, Topology
         from peleffy.utils import OutputPathHandler
         from peleffy.template import Impact
-        from peleffy.solvent import OBC2, OPLSOBC
         from peleffy.forcefield.parameters import BaseParameterWrapper
 
         self.check_system_protonation(pdb_file)
@@ -516,26 +515,14 @@ class Parameterizer:
             # to generate its solvent parameters if it is not in PELE data.
             # So, we need to save its topology
             elif molecule not in constants.in_pele_data:
-                print('Molecule', molecule.tag)
                 empty_params = BaseParameterWrapper()  # Needed to create a topology
                 topology = Topology(molecule, empty_params)
                 topologies.append(topology)
 
-        if self.solvent is not None:
-            if self.solvent.upper() == 'OBC':
-                if 'openff' in self.forcefield.type.lower():
-                    solvent_parameters = OBC2(topologies)
-                else:
-                    solvent_parameters = OPLSOBC(topologies)
+        # Handle solvent template
+        self._handle_solvent_template(topologies)
 
-                solvent_parameters.to_file(os.path.join(self.pele_dir,
-                                                        self.OBC_TEMPLATE_PATH))
-        else:
-            if 'openff' in self.forcefield.type.lower():
-                solvent_parameters = OBC2(topologies)
-                solvent_parameters.to_file(os.path.join(self.pele_dir,
-                                                        self.OBC_TEMPLATE_PATH))
-
+        # Copy external parameters, supplied by the user, if any
         if not rotamer_library_path:
             rotamer_library_path = os.path.join(self.pele_dir,
                                                 self.ROTAMER_LIBRARY_PATH)
@@ -577,6 +564,7 @@ class Parameterizer:
                 solvent = 'OBC'
         else:
             self._check_solvent(solvent_name, forcefield)
+            solvent = solvent_name
 
         return solvent
 
@@ -658,3 +646,227 @@ class Parameterizer:
                                              "atoms in your system - looks "
                                              "like you forgot to "
                                              "protonate it.")
+
+    def _handle_solvent_template(self, topologies):
+        """
+        It handles the solvent template that needs to be created according
+        to the parameters retrieved from peleffy and the hypothetical
+        solvent template that the user can provide.
+
+        Parameters
+        ----------
+        topologies : list[peleffy.topology.Topology]
+            The list of topologies of hetero molecules whose solvent
+            parameters need to be incorporated to the template
+        """
+        from peleffy.solvent import OBC2, OPLSOBC
+
+        # First, we will create the solvent template with peleffy
+        solvent_parameters = None
+
+        if self.solvent is not None:
+            if self.solvent.upper() == 'OBC':
+                if 'openff' in self.forcefield.type.lower():
+                    solvent_parameters = OBC2(topologies)
+                else:
+                    solvent_parameters = OPLSOBC(topologies)
+        else:
+            if 'openff' in self.forcefield.type.lower():
+                solvent_parameters = OBC2(topologies)
+
+        # Then, we add the parameters from the template provided by the
+        # user, if any
+        if self.solvent_template is not None:
+            if not os.path.isfile(self.solvent_template):
+                print(f'Warning: invalid path to solvent template '
+                      f'{self.solvent_template}. It will be ignored')
+
+            else:
+                if 'openff' in self.forcefield.type.lower():
+                    self._save_openff_solvent_template(topologies,
+                                                       solvent_parameters)
+                    return
+                else:
+                    self._save_opls_solvent_template(topologies,
+                                                     solvent_parameters)
+                    return
+
+        # Finally, we save solvent parameters to file
+        if solvent_parameters is not None:
+            solvent_parameters.to_file(os.path.join(self.pele_dir,
+                                                    self.OBC_TEMPLATE_PATH))
+
+    def _save_openff_solvent_template(self, topologies, solvent_parameters):
+        """
+        It saves the solvent template compatible with OpenFF. It also
+        takes into account the hypothetical solvent template given
+        by the user and replaces any hetero molecule parameters from this
+        file in the final solvent template.
+
+        Parameters
+        ----------
+        topologies : list[peleffy.topology.Topology]
+            The list of topologies of hetero molecules whose solvent
+            parameters need to be incorporated to the template
+        solvent_parameters : a peleffy.solvent._SolventWrapper object
+            The solvent object containing the solvent parameters
+            obtained from the list of topologies by peleffy
+        """
+        import json
+        from simtk import unit
+
+        resnames = list()
+        parameters = list()
+        resname_to_topology = {}
+        for topology in topologies:
+            resname = topology.molecule.tag
+            resname_to_topology[resname] = topology
+
+        with open(self.solvent_template) as json_file:
+            try:
+                data = json.load(json_file)
+                data = data['SolventParameters']
+
+                for key, values in data.items():
+                    if key == 'Name':
+                        if values != 'OBC2':
+                            raise ValueError('Invalid solvent name')
+
+                    elif key == 'General':
+                        sv_de = values['solvent_dielectric']
+                        su_de = values['solute_dielectric']
+                        sr = values['solvent_radius']
+                        sa = values['surface_area_penalty']
+                        sp_sr = solvent_parameters.solvent_radius
+                        sp_sr = sp_sr.value_in_unit(unit.angstrom)
+                        sp_sa = solvent_parameters.surface_area_penalty
+                        sp_sa = sp_sa.value_in_unit(unit.kilocalorie
+                                                    / unit.angstrom ** 2
+                                                    / unit.mole)
+
+                        if (solvent_parameters is not None and
+                            (solvent_parameters.solvent_dielectric != sv_de
+                             or solvent_parameters.solute_dielectric != su_de
+                             or sp_sr != sr or sp_sa != sa)):
+                            raise ValueError('General solvent parameters do '
+                                             'not match with those coming '
+                                             'from peleffy')
+
+                    else:
+                        resnames.append(key)
+                        parameters.append(values)
+
+                for resname in resnames:
+                    if resname in resname_to_topology:
+                        print(f'Adding solvent parameters from {resname} to '
+                              f'solvent template')
+                        topology = resname_to_topology[resname]
+                        top_idx = solvent_parameters.topologies.index(topology)
+                        solvent_parameters.topologies.pop(top_idx)
+                        solvent_parameters.radii.pop(top_idx)
+                        solvent_parameters.scales.pop(top_idx)
+
+                params_dict = solvent_parameters.to_dict()
+
+                for resname, atom_params in zip(resnames, parameters):
+                    params_dict['SolventParameters'][resname] = dict()
+
+                    for atom_name, params in atom_params.items():
+                        params_dict['SolventParameters'][resname][atom_name] = \
+                            params
+
+                with open(os.path.join(self.pele_dir,
+                                       self.OBC_TEMPLATE_PATH), 'w') as f:
+                    json.dump(params_dict, f, indent=4)
+
+            except (json.decoder.JSONDecodeError, IndexError,
+                    ValueError) as e:
+                print(f'Warning: OpenFF OBC solvent template '
+                      f'{self.solvent_template} is not a '
+                      f'valid JSON file')
+                print(e)
+
+    def _save_opls_solvent_template(self, topologies, solvent_parameters):
+        """
+        It saves the solvent template compatible with OPLS2005. It also
+        takes into account the hypothetical solvent template given
+        by the user and replaces any hetero molecule parameters from this
+        file in the final solvent template.
+
+        Parameters
+        ----------
+        topologies : list[peleffy.topology.Topology]
+            The list of topologies of hetero molecules whose solvent
+            parameters need to be incorporated to the template
+        solvent_parameters : a peleffy.solvent._SolventWrapper object
+            The solvent object containing the solvent parameters
+            obtained from the list of topologies by peleffy
+        """
+
+        resnames = list()
+        atom_names = list()
+        atom_types = list()
+        radii = list()
+        scales = list()
+
+        resname_to_topology = dict()
+        for topology in topologies:
+            resname = topology.molecule.tag
+            resname_to_topology[resname] = topology
+
+        try:
+            with open(self.solvent_template) as template:
+                for line in template:
+                    resname, atom_name, atom_type, scale, radius = line.split()
+
+                    resnames.append(resname)
+                    atom_names.append(atom_name)
+                    atom_types.append(atom_type)
+                    scales.append(scale)
+                    radii.append(radius)
+
+            for resname in set(resnames):
+                if resname in resname_to_topology:
+                    print(f'Adding solvent parameters from {resname} to '
+                          f'solvent template')
+                    topology = resname_to_topology[resname]
+                    top_idx = solvent_parameters.topologies.index(topology)
+                    solvent_parameters.topologies.pop(top_idx)
+                    solvent_parameters.radii.pop(top_idx)
+                    solvent_parameters.scales.pop(top_idx)
+
+            with open(os.path.join(constants.DIR,
+                                   "Templates/solventParamsHCTOBC.txt")) as f:
+                params = f.read()
+
+            for resname, atom_name, atom_type, scale, radius in zip(resnames,
+                                                                    atom_names,
+                                                                    atom_types,
+                                                                    radii,
+                                                                    scales):
+                params += resname + '   ' + atom_name + \
+                          '   ' + atom_type + '    ' + scale + \
+                          '   ' + radius + '\n'
+
+            for topology, radii, scales in zip(solvent_parameters.topologies,
+                                               solvent_parameters.radii,
+                                               solvent_parameters.scales):
+
+                atom_names = [param.replace('_', '') for param in
+                              topology.molecule.get_pdb_atom_names()]
+
+                for atom_name, scale, radius in zip(atom_names, scales, radii):
+
+                    params += topology.molecule.tag + 'Z'.upper() + \
+                              '   ' + atom_name + '   UNK    ' + \
+                              str(scale) + '   ' + str(radius._value) + '\n'
+
+            with open(os.path.join(self.pele_dir,
+                                   self.OPLSOBC_TEMPLATE_PATH), 'w') as f:
+                f.write(params)
+
+        except (IndexError, ValueError) as e:
+            print(f'Warning: OPLS OBC solvent template '
+                  f'{self.solvent_template} has not a '
+                  f'valid format')
+            print(e)
