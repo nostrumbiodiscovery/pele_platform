@@ -25,7 +25,7 @@ class Parameterizer:
                  external_rotamers=None, as_datalocal=False,
                  pele_dir=None, exclude_terminal_rotamers=True,
                  ligand_core_constraints=None, ligand_resname=None,
-                 ligands_to_skip=None):
+                 ligands_to_skip=None, solvent_template=None):
         """
         Initializes Parametrization to generate template and rotamer files.
 
@@ -59,6 +59,8 @@ class Parameterizer:
             Residue name of the ligand. Default is None
         ligands_to_skip : List[str]
             List of residue names to skip
+        solvent_template : str
+            Path to solvent template file.
         """
         self.forcefield = self._retrieve_forcefield(forcefield)
         self.charge_parametrization_method = \
@@ -87,6 +89,7 @@ class Parameterizer:
             self.ligands_to_skip = ligands_to_skip
         else:
             self.ligands_to_skip = []
+        self.solvent_template = solvent_template
 
     @classmethod
     def from_parameters(cls, parameters):
@@ -117,6 +120,7 @@ class Parameterizer:
             ligand_core_constraints=parameters.core,
             ligand_resname=parameters.residue,
             ligands_to_skip=parameters.skip_ligand_prep,
+            solvent_template=parameters.solvent_template
         )
 
         return obj

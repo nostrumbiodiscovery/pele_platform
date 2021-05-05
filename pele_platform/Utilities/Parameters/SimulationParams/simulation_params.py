@@ -426,6 +426,7 @@ class SimulationParams(
             else True
         )
         self.skip_ligand_prep = args.skip_ligand_prep if args.skip_ligand_prep else []
+        self.solvent_template = args.solvent_template
 
     def water_params(self, args):
         self.water_temp = (
