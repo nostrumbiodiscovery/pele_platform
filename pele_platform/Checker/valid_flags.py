@@ -194,5 +194,8 @@ VALID_FLAGS_PLATFORM = {
     "singularity_exec": "singularity_exec",
     "top_clusters_criterion": "top_clusters_criterion",
     "cluster_representatives_criterion": "cluster_representatives_criterion",
-    "fragment_atom": "fragment_atom"
+    "fragment_atom": "fragment_atom",
+    "filters": "filters",
+    "database": "database"
+
 }

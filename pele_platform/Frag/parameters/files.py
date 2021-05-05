@@ -100,4 +100,7 @@ class FragInputFiles(object):
         parameters.ligands = args.frag_ligands
         parameters.frag_library = args.frag_library
         parameters.fragment_atom = args.fragment_atom
+        parameters.frag_library = args.frag_library
+        parameters.database = args.database
+        parameters.filters = args.filters
 
