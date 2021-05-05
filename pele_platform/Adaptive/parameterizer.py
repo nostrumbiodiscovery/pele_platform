@@ -650,7 +650,7 @@ class Parameterizer:
                 if line[12:16].strip().startswith("H"):
                     return
 
-        raise custom_errors.ProtonationError("We did not find any hydrogens "
-                                             "in your system - looks like "
-                                             "you forgot to "
+        raise custom_errors.ProtonationError("We did not find any hydrogen "
+                                             "atoms in your system - looks "
+                                             "like you forgot to "
                                              "protonate it.")
