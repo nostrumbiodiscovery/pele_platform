@@ -15,20 +15,29 @@ from yaml import load, Loader
 from collections import ChainMap
 from multiprocessing import Pool
 from functools import partial
+import openbabel
+from openbabel import pybel
 
 
 class Library:
 
-    def __init__(self, path, init_mol, filters=None, save=False):
+    def __init__(self, path, ligand, filters=None, save=False):
         self.path = path  # not using absolute path since we defined path on parse_args()
+        self.ligand = ligand
         self.filters = filters
         self.errors = 0
         self.mol_num = 0
         self.filtered_final = []
+        self.init_mol = Chem.MolFromPDBFile(ligand, removeHs=False)
+
         # self.sd_files=self._retrieve_files()
-        if init_mol:
+        if self.init_mol:
+            mol = next(pybel.readfile("pdb", self.ligand))
+            finalSDF = pybel.Outputfile("sdf", "input_ligand.sdf", overwrite=True)
+            finalSDF.write(mol)
+            self.init_mol.fingerprint = self.generate_fingerprint("input_ligand.sdf")
             mol_descriptors = {}
-            frag = Fragment(init_mol)
+            frag = Fragment(self.init_mol)
             mol_descriptors['mw'] = [frag.mw - 50, frag.mw + 50]
             mol_descriptors['logP'] = [frag.logP - 5, frag.logP + 5]
             mol_descriptors['hbd'] = [frag.hbd - 5, frag.hbd + 5]
@@ -49,22 +58,41 @@ class Library:
         features = mor.transform()
         return features
 
+    def tanimoto_coefficient(self, input_ligand, database_molecule):
+        input_ligand = input_ligand.tolist()
+        database_molecule = database_molecule[0].tolist()
+        both = 0
+        only_x = 0
+        only_y = 0
+        for x, y in zip(input_ligand, database_molecule):
+            if x == y and x == 1:
+                both += 1
+            if x == 1 and y != x:
+                only_x += 1
+            if x == 0 and y != x:
+                only_y += 1
+        return both / (only_x + only_y + both)
+
     def main(self, files_sdf):
-        fingerprints = {}
         for file_sdf in files_sdf:
-            try:
-                counter = 0
-                fingerprint = self.generate_fingerprint(file_sdf)
-                mols = Chem.SDMolSupplier(file_sdf, removeHs=False)
-                name = os.path.basename(file_sdf).rsplit(".")[0]
-            except:
-                continue
-            for i in range(len(mols)):
-                fingerprints[mols[i]] = fingerprint[i]
-                self.molecule = mols[i]
-                self.fragments_dum = [Fragment(mols[i])]
-                self.filters_f()
-                self.save()
+            counter = 0
+            get_fingerprint = self.generate_fingerprint(file_sdf)
+            mols = Chem.SDMolSupplier(file_sdf, removeHs=False)
+            name = os.path.basename(file_sdf).rsplit(".")[0]
+            for mol in mols:
+                if mol:
+                    try:
+                        mol.fingerprint = get_fingerprint[counter]
+                    except:
+                        print(counter, len(mols), len(get_fingerprint))
+                        continue
+                    mol.tanimoto = self.tanimoto_coefficient(mol.fingerprint, self.init_mol.fingerprint)
+                    print( "Tanimoto coefficient: %s" % mol.tanimoto)
+                    self.molecule = mol
+                    self.fragments_dum = [Fragment(mol)]
+                    self.filters_f()
+                    self.save()
+                counter += 1
             print("\ (•◡•) / File %s finished \ (•◡•) / " % name)
             print(".。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。.")
 
@@ -100,8 +128,6 @@ class Library:
 
         for frag in self.fragments_dum:
             if frag.molecule_name:
-                # import pdb
-                # pdb.set_trace()
                 filter_pass = []
                 # print('mw:',float(self.parsed_filters['mw'][0])<frag.mw<float(self.parsed_filters['mw'][1]))
                 # print('logP:,',abs(float(self.parsed_filters['logP'][0]))<abs(frag.logP)<abs(float(self.parsed_filters['logP'][1])))
@@ -192,5 +218,5 @@ def main(ligand, path, filters):
     mol = Chem.MolFromPDBFile(ligand, removeHs=False)
     Chem.MolToPDBFile(mol, "original.pdb")
 
-    lib = Library(path, mol, filters)
+    lib = Library(path, ligand, filters)
     return lib.filtered_final
