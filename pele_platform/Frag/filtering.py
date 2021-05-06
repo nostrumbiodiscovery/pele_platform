@@ -1,10 +1,10 @@
 import argparse
-import glob
 import os
 import yaml
 import time
 import pickle
 import sys
+import csv
 
 from drug_learning.two_dimensions.Input import fingerprints as fp
 from rdkit import Chem
@@ -17,22 +17,26 @@ from multiprocessing import Pool
 from functools import partial
 import openbabel
 from openbabel import pybel
+from rdkit import DataStructs
+from glob import glob
 
 
 class Library:
 
-    def __init__(self, path, ligand, filters=None, save=False):
+    def __init__(self, path, ligand, ligand_path, filters=None, save=False):
         self.path = path  # not using absolute path since we defined path on parse_args()
         self.ligand = ligand
         self.filters = filters
         self.errors = 0
         self.mol_num = 0
         self.filtered_final = []
-        self.init_mol = Chem.MolFromPDBFile(ligand, removeHs=False)
-
+        #self.init_mol = Chem.MolFromPDBFile(ligand, removeHs=False)
+        self.init_mol = ligand
+        self.init_mol_path = ligand_path
+        self.database_files = glob(path + '/*.csv')
         # self.sd_files=self._retrieve_files()
         if self.init_mol:
-            mol = next(pybel.readfile("pdb", self.ligand))
+            mol = next(pybel.readfile("pdb", self.init_mol_path))
             finalSDF = pybel.Outputfile("sdf", "input_ligand.sdf", overwrite=True)
             finalSDF.write(mol)
             self.init_mol.fingerprint = self.generate_fingerprint("input_ligand.sdf")
@@ -53,48 +57,72 @@ class Library:
         self.main(self.sd_files)
 
     def generate_fingerprint(self, input_sdf):
-        mor = fp.MorganFP()
-        structures = mor.fit(input_sdf)
-        features = mor.transform()
+        try:
+            mor = fp.MorganFP()
+            structures = mor.fit(input_sdf)
+            features = mor.transform()
+        except:
+            return 'None'
         return features
 
+    def read_fingerprints(self):
+        dict = {}
+        for f in self.database_files:
+            with open(f) as csvfile:
+                reader = csv.reader(csvfile, delimiter='\n')
+                for row in reader:
+                    dict[row[0].split(',')[0]] = row[0].split(',')[1:]
+        return dict
+
     def tanimoto_coefficient(self, input_ligand, database_molecule):
-        input_ligand = input_ligand.tolist()
-        database_molecule = database_molecule[0].tolist()
-        both = 0
-        only_x = 0
-        only_y = 0
-        for x, y in zip(input_ligand, database_molecule):
-            if x == y and x == 1:
-                both += 1
-            if x == 1 and y != x:
-                only_x += 1
-            if x == 0 and y != x:
-                only_y += 1
-        return both / (only_x + only_y + both)
+        input_ligand = input_ligand[0].tolist()
+        N = len(input_ligand)
+        assert N == len(database_molecule)
+        v1v2, v1v1, v2v2 = 0., 0., 0.
+        for i in range(N):
+            v1v2 += input_ligand[i] * int(database_molecule[i])
+            v1v1 += input_ligand[i] * input_ligand[i]
+            v2v2 += int(database_molecule[i]) * int(database_molecule[i])
+        return v1v2 / (v1v1 + v2v2 - v1v2)
+
 
     def main(self, files_sdf):
+        self.fingerprints = self.read_fingerprints()
+        self.names = {}
+        self.coefficients = {}
         for file_sdf in files_sdf:
-            counter = 0
-            get_fingerprint = self.generate_fingerprint(file_sdf)
             mols = Chem.SDMolSupplier(file_sdf, removeHs=False)
             name = os.path.basename(file_sdf).rsplit(".")[0]
             for mol in mols:
                 if mol:
-                    try:
-                        mol.fingerprint = get_fingerprint[counter]
-                    except:
-                        print(counter, len(mols), len(get_fingerprint))
-                        continue
-                    mol.tanimoto = self.tanimoto_coefficient(mol.fingerprint, self.init_mol.fingerprint)
-                    print( "Tanimoto coefficient: %s" % mol.tanimoto)
-                    self.molecule = mol
-                    self.fragments_dum = [Fragment(mol)]
-                    self.filters_f()
-                    self.save()
-                counter += 1
+                    self.names[mol.GetProp("_Name")] = mol
+                    self.coefficients[mol.GetProp("_Name")]= self.tanimoto_coefficient(self.init_mol.fingerprint, self.fingerprints[mol.GetProp("_Name")])
+                    print("Tanimoto coefficient: %s" % self.coefficients[mol.GetProp("_Name")])
+
+                #         if mol:
+        #             Chem.MolToPDBFile(mol, "molecule_database.pdb")
+        #             mol_to_sdf = next(pybel.readfile("pdb", "molecule_database.pdb"))
+        #             finalSDF = pybel.Outputfile("sdf", "database_molecule.sdf", overwrite=True)
+        #             finalSDF.write(mol_to_sdf)
+        #             mol.fingerprint = self.generate_fingerprint("database_molecule.sdf")
+        #             if mol.fingerprint == 'None':
+        #                 continue
+        #             mol.tanimoto = self.tanimoto_coefficient(mol.fingerprint, self.init_mol.fingerprint)
+        #             coefficients[mol] = mol.tanimoto
+        #             print( "Tanimoto coefficient: %s" % mol.tanimoto)
+        #             #self.molecule = mol
+        #             #self.fragments_dum = [Fragment(mol)]
+        #             #self.filters_f()
+        #             #self.save()
             print("\ (•◡•) / File %s finished \ (•◡•) / " % name)
             print(".。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。.")
+        #top_similar = max(self.coefficients, key=self.coefficients.get)
+        top_similar = sorted(self.coefficients, key=self.coefficients.get, reverse=True)[:(int(len(self.coefficients)/4))]
+        print('top_similar:', top_similar)
+        for molecule in top_similar:
+            substructure_results = self.names[molecule].GetSubstructMatches(self.init_mol)
+            print('substructure_results:', substructure_results)
+        print(len(self.names))
 
     def filters_f(self):
         self.filtered_fragments = self._apply_filters()
@@ -105,7 +133,7 @@ class Library:
 
     def _retrieve_files(self):  # deleted argument path since we can access it within method
         sdf_path = os.path.join(self.path, "*.sdf")
-        sd_files = glob.glob(sdf_path)
+        sd_files = glob(sdf_path)
 
         return sd_files
 
@@ -129,21 +157,11 @@ class Library:
         for frag in self.fragments_dum:
             if frag.molecule_name:
                 filter_pass = []
-                # print('mw:',float(self.parsed_filters['mw'][0])<frag.mw<float(self.parsed_filters['mw'][1]))
-                # print('logP:,',abs(float(self.parsed_filters['logP'][0]))<abs(frag.logP)<abs(float(self.parsed_filters['logP'][1])))
-                # print('hbd:',int(self.parsed_filters['hbd'][0])<frag.hbd<int(self.parsed_filters['hbd'][1]))
-                # print('hba:',int(self.parsed_filters['hba'][0])<frag.hba<int(self.parsed_filters['hba'][1]))
-                # print('psa:',int(self.parsed_filters['psa'][0])<frag.psa<int(self.parsed_filters['psa'][1]))
-                # print('rotb:',int(self.parsed_filters['rotb'][0])<frag.rotb<int(self.parsed_filters['rotb'][1]))
-
                 if 'mw' in self.parsed_filters:
-                    # print(float(self.parsed_filters['mw'][0]),frag.mw,float(self.parsed_filters['mw'][1]))
-                    # sys.exit()
                     if float(self.parsed_filters['mw'][0]) < frag.mw < float(self.parsed_filters['mw'][1]):
                         filter_pass.append(True)
                     else:
                         filter_pass.append(False)
-                        #print('mw:', float(self.parsed_filters['mw'][0]) , frag.mw , float(self.parsed_filters['mw'][1]))
                 if 'logP' in self.parsed_filters:
                     if float(self.parsed_filters['logP'][0]) < frag.logP < float(self.parsed_filters['logP'][1]):
                         filter_pass.append(True)
@@ -154,25 +172,21 @@ class Library:
                         filter_pass.append(True)
                     else:
                         filter_pass.append(False)
-                        #print('hbd:', int(self.parsed_filters['hbd'][0]) , frag.hbd , int(self.parsed_filters['hbd'][1]))
                 if 'hba' in self.parsed_filters:
                     if int(self.parsed_filters['hba'][0]) < frag.hba < int(self.parsed_filters['hba'][1]):
                         filter_pass.append(True)
                     else:
                         filter_pass.append(False)
-                        #print('hba:', int(self.parsed_filters['hba'][0]) , frag.hba , int(self.parsed_filters['hba'][1]))
                 if 'psa' in self.parsed_filters:
                     if int(self.parsed_filters['psa'][0]) < frag.psa < int(self.parsed_filters['psa'][1]):
                         filter_pass.append(True)
                     else:
                         filter_pass.append(False)
-                        #print('psa:', int(self.parsed_filters['psa'][0]) , frag.psa , int(self.parsed_filters['psa'][1]))
                 if 'rotb' in self.parsed_filters:
                     if int(self.parsed_filters['rotb'][0]) <= frag.rotb <= int(self.parsed_filters['rotb'][1]):
                         filter_pass.append(True)
                     else:
                         filter_pass.append(False)
-                        #print('rotb:', int(self.parsed_filters['rotb'][0]) , frag.rotb , int(self.parsed_filters['rotb'][1]))
                 if 'arom' in self.parsed_filters:
                     if frag.arom > 1:
                         filter_pass.append(True)
@@ -213,10 +227,10 @@ class Fragment():
         return "Molecule {name}\nMW = {mw}\nlogP = {logp}\n".format(name=self.molecule_name, mw=self.mw, logp=self.logP)
 
 
-def main(ligand, path, filters):
+def main(ligand, ligand_path, path, filters):
     print("INITIALIZING FILTERING")
-    mol = Chem.MolFromPDBFile(ligand, removeHs=False)
-    Chem.MolToPDBFile(mol, "original.pdb")
+    #mol = Chem.MolFromPDBFile(ligand, removeHs=False)
+    #Chem.MolToPDBFile(ligand, "original.pdb")
 
-    lib = Library(path, ligand, filters)
+    lib = Library(path, ligand, ligand_path, filters)
     return lib.filtered_final

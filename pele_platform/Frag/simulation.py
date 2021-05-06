@@ -30,8 +30,8 @@ class FragRunner(object):
     def run_simulation(self):
         self._set_test_variables()
         self._prepare_control_file()
-        self._launch()
-        self._analysis()
+        #self._launch()
+        #self._analysis()
         if self.parameters.filters:
             self._filtering()
 
@@ -269,7 +269,9 @@ class FragRunner(object):
                 binding_energies[top_result] = os.path.splitext(top_result)[0].split('y')[-1]
         system_min_energy = min(binding_energies, key=binding_energies.get)
         ligand_min_energy = system_min_energy.split("/")[:-2][0] + '/pregrow/growing_result_p.pdb'
-        filtering_results = fl.main(ligand_min_energy, self.parameters.database, self.parameters.filters)
+        ligand_min_energy_mol = Chem.rdmolfiles.MolFromPDBFile(ligand_min_energy, removeHs= False)
+        Chem.rdmolops.AssignStereochemistryFrom3D(ligand_min_energy_mol)
+        filtering_results = fl.main(ligand_min_energy_mol, ligand_min_energy, self.parameters.database, self.parameters.filters)
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
