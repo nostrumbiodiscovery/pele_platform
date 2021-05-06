@@ -348,10 +348,10 @@ def test_protonation_error():
     """
     Checks if we catch unprotonated systems and raise an error.
     """
-    from pele_platform.Adaptive.parameterizer import Parameterizer
+    from pele_platform.Adaptive.parametrizer import Parametrizer
 
     with pytest.raises(ce.ProtonationError):
-        Parameterizer(pdb_file=os.path.join(test_path, "preparation/6qmk_correct.pdb"))
+        Parametrizer(pdb_file=os.path.join(test_path, "preparation/6qmk_correct.pdb"))
 
 
 @pytest.mark.parametrize(

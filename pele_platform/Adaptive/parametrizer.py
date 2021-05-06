@@ -9,7 +9,7 @@ from pele_platform.Errors import custom_errors
 from pele_platform.constants import constants
 
 
-class Parameterizer:
+class Parametrizer:
     # Fallback paths, if only external templates available
     OPLS_IMPACT_TEMPLATE_PATH = "DataLocal/Templates/OPLS2005/HeteroAtoms/"
     OFF_IMPACT_TEMPLATE_PATH = "DataLocal/Templates/OpenFF/Parsley/"
@@ -20,12 +20,12 @@ class Parameterizer:
     # Available methods of charge parametrization
     charge_parametrization_methods = ["am1bcc", "gasteiger", "opls2005"]
 
-    def __init__(self, forcefield="OPLS2005",
+    def __init__(self, ligand_resname, forcefield="OPLS2005",
                  charge_parametrization_method="OPLS2005",
                  gridres=10, solvent=None, external_templates=None,
                  external_rotamers=None, as_datalocal=False,
                  pele_dir=None, exclude_terminal_rotamers=True,
-                 ligand_core_constraints=None, ligand_resname=None,
+                 ligand_core_constraints=None,
                  ligands_to_skip=None, solvent_template=None):
         """
         Initializes Parametrization to generate template and rotamer files.
@@ -51,13 +51,13 @@ class Parameterizer:
         as_datalocal : bool
             Save output files to DataLocal folder. Default is False
         pele_dir : str
-            Path to PELE directory, e.g. LIG_Pele. Default is None
+            Path to PELE directory, e.g. LIG_Pele. If None, it will default to current working directory.
         exclude_terminal_rotamers : bool
             Toggle to exclude terminal rotamers. Default is True
         ligand_core_constraints : list[str]
             List of PDB atom names to be constrained as core. Default is None
         ligand_resname : str
-            Residue name of the ligand. Default is None
+            Residue name of the ligand.
         ligands_to_skip : List[str]
             List of residue names to skip
         solvent_template : str
@@ -83,7 +83,7 @@ class Parameterizer:
 
         self.as_datalocal = as_datalocal
         self.ligand_core_constraints = ligand_core_constraints
-        self.pele_dir = pele_dir
+        self.working_dir = pele_dir if pele_dir is not None else os.getcwd()
         self.exclude_terminal_rotamers = exclude_terminal_rotamers
         self.ligand_resname = ligand_resname
         if ligands_to_skip:
@@ -108,7 +108,7 @@ class Parameterizer:
         obj : Parametrization object
             Parametrization object initialized from simulation parameters
         """
-        obj = Parameterizer(
+        obj = Parametrizer(
             forcefield=parameters.forcefield,
             charge_parametrization_method=parameters.charge_parametrization_method,
             gridres=parameters.gridres,
@@ -205,10 +205,11 @@ class Parameterizer:
         RotamersFileNotFound if rotamer library file is not found in the
             path supplied by the user
         """
-        print("Copying external template files:",
-              ", ".join(self.external_templates))
-
         if self.external_templates:
+
+            print("Copying external template files:",
+                  ", ".join(self.external_templates))
+
             for file in self.external_templates:
                 try:
                     if "opls2005" in self.forcefield.type.lower():
@@ -393,7 +394,7 @@ class Parameterizer:
         # Remove any duplicates
         return list(set(rotamers_to_skip)), list(set(templates_to_skip))
 
-    def parameterize_ligands_from(self, pdb_file, ppp_file=None):
+    def parametrize_ligands_from(self, pdb_file, ppp_file=None):
         """
         Generates forcefield templates and rotamer files for ligands,
         then copies the ones provided by the user (if any).
@@ -417,7 +418,7 @@ class Parameterizer:
         from peleffy.template import Impact
         from peleffy.forcefield.parameters import BaseParameterWrapper
 
-        self.check_system_protonation(pdb_file)
+        self.check_protein_file(pdb_file)
 
         ligand_core_constraints = self._fix_atom_names(
             self.ligand_resname,
@@ -452,8 +453,8 @@ class Parameterizer:
             # Handle paths
             output_handler = OutputPathHandler(molecule,
                                                self.forcefield,
-                                               as_datalocal=True,
-                                               output_path=self.pele_dir)
+                                               as_datalocal=self.as_datalocal,
+                                               output_path=self.working_dir)
             rotamer_library_path = output_handler.get_rotamer_library_path()
             impact_template_path = output_handler.get_impact_template_path()
 
@@ -521,7 +522,6 @@ class Parameterizer:
 
                 impact = Impact(topology)
                 impact.to_file(impact_template_path)
-
                 impact_template_paths = [impact_template_path]
 
                 print(f"Parametrized {molecule.tag.strip()}.")
@@ -539,13 +539,13 @@ class Parameterizer:
 
         # Copy external parameters, supplied by the user, if any
         if not rotamer_library_path:
-            rotamer_library_path = os.path.join(self.pele_dir,
+            rotamer_library_path = os.path.join(self.working_dir,
                                                 self.ROTAMER_LIBRARY_PATH)
 
         if not impact_template_paths:
             impact_template_paths = [
-                os.path.join(self.pele_dir, self.OPLS_IMPACT_TEMPLATE_PATH),
-                os.path.join(self.pele_dir, self.OFF_IMPACT_TEMPLATE_PATH)]
+                os.path.join(self.working_dir, self.OPLS_IMPACT_TEMPLATE_PATH),
+                os.path.join(self.working_dir, self.OFF_IMPACT_TEMPLATE_PATH)]
 
         self._copy_external_parameters(os.path.dirname(rotamer_library_path),
                                        [os.path.dirname(path)
@@ -632,7 +632,8 @@ class Parameterizer:
 
             return fixed_atoms
 
-    def check_system_protonation(self, pdb_file):
+    @staticmethod
+    def check_protein_file(pdb_file):
         """
         It checks for hydrogen atoms in the input PDB to ensure that
         it has been protonated and complaints otherwise.
@@ -645,22 +646,32 @@ class Parameterizer:
 
         Raises
         ------
-        ProtonationError if no hydrogen atoms are found in the input PDB
+        ProtonationError if no hydrogen atoms are found in the input PDB.
+        ConnectionsError if the PDB file is missing CONECT lines.
         """
+        hydrogen_lines = []
+
         with open(pdb_file) as f:
             lines = f.readlines()
             atom_lines = [line for line in lines
                           if line.startswith("ATOM")
                           or line.startswith("HETATM")]
+            connect_lines = [line for line in lines
+                             if line.startswith("CONECT")]
 
             for line in atom_lines:
                 if line[12:16].strip().startswith("H"):
-                    return
+                    hydrogen_lines.append(line)
 
-        raise custom_errors.ProtonationError("We did not find any hydrogen "
-                                             "atoms in your system - looks "
-                                             "like you forgot to "
-                                             "protonate it.")
+        if len(hydrogen_lines) < 1:
+            raise custom_errors.ProtonationError("We did not find any hydrogen "
+                                                 "atoms in your system - looks "
+                                                 "like you forgot to "
+                                                 "protonate it.")
+
+        if len(connect_lines) < 1:
+            raise custom_errors.ConnectionsError("Your PDB file is missing the CONECT lines. Please do not remove "
+                                                 "them after Schrodinger preprocessing.")
 
     def _handle_solvent_template(self, topologies):
         """
@@ -708,7 +719,12 @@ class Parameterizer:
 
         # Finally, we save solvent parameters to file
         if solvent_parameters is not None:
-            solvent_parameters.to_file(os.path.join(self.pele_dir,
+
+            solvent_dir = os.path.dirname(os.path.join(self.working_dir, self.OBC_TEMPLATE_PATH))
+            if not os.path.exists(solvent_dir):
+                os.makedirs(solvent_dir)
+
+            solvent_parameters.to_file(os.path.join(self.working_dir,
                                                     self.OBC_TEMPLATE_PATH))
 
     def _save_openff_solvent_template(self, topologies, solvent_parameters):
@@ -760,9 +776,9 @@ class Parameterizer:
                                                     / unit.mole)
 
                         if (solvent_parameters is not None and
-                            (solvent_parameters.solvent_dielectric != sv_de
-                             or solvent_parameters.solute_dielectric != su_de
-                             or sp_sr != sr or sp_sa != sa)):
+                                (solvent_parameters.solvent_dielectric != sv_de
+                                 or solvent_parameters.solute_dielectric != su_de
+                                 or sp_sr != sr or sp_sa != sa)):
                             raise ValueError('General solvent parameters do '
                                              'not match with those coming '
                                              'from peleffy')
@@ -790,7 +806,7 @@ class Parameterizer:
                         params_dict['SolventParameters'][resname][atom_name] = \
                             params
 
-                with open(os.path.join(self.pele_dir,
+                with open(os.path.join(self.working_dir,
                                        self.OBC_TEMPLATE_PATH), 'w') as f:
                     json.dump(params_dict, f, indent=4)
 
@@ -871,12 +887,11 @@ class Parameterizer:
                               topology.molecule.get_pdb_atom_names()]
 
                 for atom_name, scale, radius in zip(atom_names, scales, radii):
-
                     params += topology.molecule.tag + 'Z'.upper() + \
                               '   ' + atom_name + '   UNK    ' + \
                               str(scale) + '   ' + str(radius._value) + '\n'
 
-            with open(os.path.join(self.pele_dir,
+            with open(os.path.join(self.working_dir,
                                    self.OPLSOBC_TEMPLATE_PATH), 'w') as f:
                 f.write(params)
 

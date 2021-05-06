@@ -1,1 +1,1 @@
-from .parameterizer import Parameterizer
+from .parametrizer import Parametrizer

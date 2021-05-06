@@ -55,3 +55,6 @@ class SubstructureError(Exception):
 
 class ProtonationError(Exception):
     pass
+
+class ConnectionsError(Exception):
+    pass

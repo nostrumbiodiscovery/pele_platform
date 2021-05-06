@@ -1,8 +1,9 @@
 import os
 import pytest
 
-from pele_platform.Adaptive import parameterizer
+from pele_platform.Adaptive import parametrizer
 from pele_platform.constants import constants
+from pele_platform.Errors import custom_errors
 from pele_platform import main
 
 test_path = os.path.join(constants.DIR, "Examples", "constraints")
@@ -42,7 +43,7 @@ def test_ligand_extraction(pdb, ligands, core, resname):
     ligands : List[str]
         List of expected residue names to be extracted from the PDB.
     """
-    extracted_ligands = parameterizer.Parameterizer.extract_ligands(
+    extracted_ligands = parametrizer.Parametrizer.extract_ligands(
         pdb, gridres=10, ligand_core_constraints=core, ligand_resname=resname
     )
     assert len(extracted_ligands) == len(ligands)
@@ -57,9 +58,9 @@ def test_generate_ligand_parameters(parametrize):
     parametrize : Parametrization
         Object created in fixture.
     """
-    expected_templates = ["ligz"]  # MG template included in pele Data
-    expected_rotamers = ["MG.rot.assign", "LIG.rot.assign"]
-    parametrize.parameterize_ligands_from()
+    expected_templates = ["ligz", "atpz"]  # MG template included in pele Data
+    expected_rotamers = ["LIG.rot.assign"]
+    parametrize.parametrize_ligands_from(os.path.join(test_path, "4qnr_prep.pdb"))
 
     # Check if all expected files were created and clean them up
     for file in expected_templates + expected_rotamers:
@@ -70,9 +71,9 @@ def test_generate_ligand_parameters(parametrize):
 @pytest.mark.parametrize(
     ("solvent", "forcefield", "error"),
     [
-        ("OBC2", "OPLS2005", False),
+        ("OBC", "OPLS2005", False),
         ("vdgbnp", "OPLS2005", False),
-        ("OBC2", "openff-1.2.0", False),
+        ("OBC", "openff-1.2.0", False),
         ("vdgbnp", "openff-1.3.0", True),
     ],
 )
@@ -91,11 +92,11 @@ def test_check_solvent(solvent, forcefield, error):
     """
     if error:
         with pytest.raises(ValueError):
-            parameterizer.Parameterizer._check_solvent(solvent=solvent,
-                                                       forcefield=forcefield)
+            parametrizer.Parametrizer._check_solvent(solvent=solvent,
+                                                     forcefield=forcefield)
     else:
-        parameterizer.Parameterizer._check_solvent(solvent=solvent,
-                                                   forcefield=forcefield)
+        parametrizer.Parametrizer._check_solvent(solvent=solvent,
+                                                 forcefield=forcefield)
 
 
 @pytest.mark.parametrize(
@@ -163,8 +164,8 @@ def test_fix_atom_names(user_input, expected_output, resname, pdb):
     pdb : str
         Path to PDB file.
     """
-    output = parameterizer.Parameterizer._fix_atom_names(
-        ligand_resname=resname, ligand_core_constraints=user_input, pdb=pdb
+    output = parametrizer.Parametrizer._fix_atom_names(
+        ligand_resname=resname, ligand_core_constraints=user_input, pdb_file=pdb
     )
     assert expected_output == output
 
@@ -180,6 +181,14 @@ def test_production():
     main.run_platform_from_yaml(os.path.join(yaml_path))
 
 
+def test_missing_connects_error():
+    """
+    Checks if we raise an error when PDB file is missing CONECT lines.
+    """
+    with pytest.raises(custom_errors.ConnectionsError):
+        parametrizer.Parametrizer.check_protein_file(os.path.join(test_path, "1zop.pdb"))
+
+
 @pytest.fixture
 def parametrize():
     """
@@ -187,13 +196,13 @@ def parametrize():
 
     Returns
     --------
-    obj : parametrization.Parameterizer
+    obj : parametrization.Parametrizer
         Parametrization object to use in tests.
     """
-    obj = parameterizer.Parameterizer(
-        pdb_file=os.path.join(test_path, "1zop.pdb"),
-        forcefield="openff-1.3.0",
+    obj = parametrizer.Parametrizer(
+        forcefield="openff_unconstrained-1.3.0.offxml",
         solvent="OBC",
         as_datalocal=False,
+        ligand_resname="LIG",
     )
     return obj

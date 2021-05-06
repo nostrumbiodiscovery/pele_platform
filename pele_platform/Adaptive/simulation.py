@@ -18,7 +18,7 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-from pele_platform.Adaptive import Parameterizer
+from pele_platform.Adaptive import Parametrizer
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.pca as pca
 
@@ -203,9 +203,9 @@ def run_adaptive(args):
 
         # Ligand/metal parameters, solvent parameters and simulation box
         if parameters.perturbation:
-            parametrizer = Parameterizer.from_parameters(parameters)
+            parametrizer = Parametrizer.from_parameters(parameters)
 
-            parametrizer.parameterize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
+            parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
             box = bx.BoxSetter(parameters.box_center,
                                parameters.box_radius,
                                parameters.ligand_ref,
