@@ -51,7 +51,7 @@ in your input file have correct values. Remember that ligands needs to have a un
 Connections Error
 ------------------
 
-This error indicates the the PDB file is missing the connectivity section. To resolve the issue, you should import the PDB in Schrödinger aestro and preprocess it, launching the Protein Preparation Wizard. 
+This error indicates the the PDB file is missing the connectivity section. To resolve the issue, you should import the PDB in SchrödingerMaestro and preprocess it, launching the Protein Preparation Wizard. 
 
 ..  code-block:: console
 
