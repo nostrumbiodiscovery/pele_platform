@@ -203,9 +203,9 @@ def run_adaptive(args):
 
         # Ligand/metal parameters, solvent parameters and simulation box
         if parameters.perturbation:
-            parameterizer = Parameterizer.from_parameters(parameters)
+            parametrizer = Parameterizer.from_parameters(parameters)
 
-            parameterizer.parameterize_ligands_from(syst.system)
+            parametrizer.parameterize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
             box = bx.BoxSetter(parameters.box_center,
                                parameters.box_radius,
                                parameters.ligand_ref,

@@ -393,7 +393,7 @@ class Parameterizer:
         # Remove any duplicates
         return list(set(rotamers_to_skip)), list(set(templates_to_skip))
 
-    def parameterize_ligands_from(self, pdb_file):
+    def parameterize_ligands_from(self, pdb_file, ppp_file=None):
         """
         Generates forcefield templates and rotamer files for ligands,
         then copies the ones provided by the user (if any).
@@ -402,13 +402,16 @@ class Parameterizer:
         ----------
         pdb_file : str
             Path to the PDB file from which all HET groups will be extracted
-            and parametrized
+            and parametrized (syst.system).
+        ppp_file : str
+            Path to the PDB file preprocessed by PPP with changed atom names.
 
         Raises
         ------
         LigandPreparationError if any error is obtained throughout
             the ligand preparation process
         """
+        from pele_platform.Utilities.Helpers import helpers
         from peleffy.topology import RotamerLibrary, Topology
         from peleffy.utils import OutputPathHandler
         from peleffy.template import Impact
@@ -427,6 +430,13 @@ class Parameterizer:
             exclude_terminal_rotamers=self.exclude_terminal_rotamers,
             ligand_resname=self.ligand_resname,
             ligand_core_constraints=ligand_core_constraints)
+
+        # retrieve PDB atom names from second PDB file (if any is supplied)
+        if ppp_file is not None:
+            hetero_residues = [molecule.tag.strip() for molecule in hetero_molecules]
+            pdb_atom_names = helpers.retrieve_atom_names(ppp_file, hetero_residues)
+        else:
+            pdb_atom_names = None
 
         rotamer_library_path, impact_template_paths = None, None
 
@@ -503,6 +513,11 @@ class Parameterizer:
                 if opls_reparameterization:
                     for atom in topology.atoms:
                         atom.set_OPLS_type('OFFT')
+
+                # Iterate over topology atoms and change their names, if necessary
+                if pdb_atom_names is not None:
+                    for atom, new_atom_name in zip(topology.atoms, pdb_atom_names[molecule]):
+                        atom._PDB_name = new_atom_name
 
                 impact = Impact(topology)
                 impact.to_file(impact_template_path)
