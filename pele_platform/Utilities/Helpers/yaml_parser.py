@@ -281,6 +281,8 @@ class YamlParser(object):
         # site_finder
         self.site_finder = data.get(valid_flags["site_finder"], None)
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
+        self.site_finder_local = data.get(valid_flags["site_finder_local"], None)
+        self.site_finder_global = data.get(valid_flags["site_finder_global"], None)
 
         # RNA
         self.rna = data.get(valid_flags["rna"], None)
@@ -323,6 +325,7 @@ class YamlParser(object):
             self.n_components = 3
             self.analysis_nclust = 4
             self.max_top_clusters = 4
+            self.cpus_per_mutation = 2
 
 
 @dataclass

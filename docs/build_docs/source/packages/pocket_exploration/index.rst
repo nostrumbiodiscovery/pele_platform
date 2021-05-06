@@ -23,13 +23,13 @@ optimize the binding modes.
 
 Parameters for stage 1:
 
-    - iterations: 100
-    - pele steps: 8
+    - iterations: 50
+    - pele steps: 12
 
 Parameters for stage 2:
 
-    - iterations: 1
-    - pele steps: 250
+    - iterations: 10
+    - pele steps: 50
 
 Recommendations
 +++++++++++++++++

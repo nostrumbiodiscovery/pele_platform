@@ -23,7 +23,7 @@ class Checker():
         en.EnvVariable("pele_data", args.pele_data, os.path.join(cs.PELE, "Data"), "--pele_data /path/to/data/folder/", "export PELE=/path/to/PELE-1.X/"),
         en.EnvVariable("pele_documents", args.pele_documents, os.path.join(cs.PELE, "Documents"), "--pele_documents /path/to/documents/folder", "export PELE=/path/to/PELE-1.X/"),
         en.EnvVariable("pele_exec", args.pele_exec, os.path.join(cs.PELE, "bin/Pele_mpi"), "--pele_exec /path/to/PELE_exec", "export PELE=/path/to/PELE-1.X/"),
-        en.EnvVariable("pele_license", args.pele_license, os.path.join(cs.PELE, "licenses"), "--pele_license /path/to/licenses", "export PELE=/path/to/PELE-1.X/"),
+        en.EnvVariable("pele_license", args.pele_license, cs.DEFAULT_PELE_LICENSE, "--pele_license /path/to/licenses", "export PELE=/path/to/PELE-1.X/"),
         en.EnvVariable("schrodinger", args.schrodinger, cs.SCHRODINGER, "--schrodinger /path/to/schrodinger-20XX/", "export SCHRODINGER=/path/to/schrodinger-20XX/")
         ]
         return self.env_variables
@@ -56,7 +56,7 @@ class SingularityChecker(Checker):
             List of environment variables.
         """
         self.env_variables = [
-        en.EnvVariable("pele_license", args.pele_license, os.path.join(cs.PELE, "licenses"), "--pele_license /path/to/licenses", "export PELE=/path/to/PELE-1.X/"),
+        en.EnvVariable("pele_license", args.pele_license, cs.DEFAULT_PELE_LICENSE, "--pele_license /path/to/licenses", "export PELE_LICENSE=/path/to/pele_license/"),
         en.EnvVariable("schrodinger", args.schrodinger, cs.SCHRODINGER, "--schrodinger /path/to/schrodinger-20XX/", "export SCHRODINGER=/path/to/schrodinger-20XX/")
         ]
         return self.env_variables
@@ -76,5 +76,6 @@ def check_executable_and_env_variables(args: yp.YamlParser):
     1) Check env variables
     2) Check executables
     """
+    args.singularity_exec = args.singularity_exec if args.singularity_exec else cs.SINGULARITY_EXEC
     checker = SingularityChecker() if args.singularity_exec else Checker()
     checker.check_variables(args)
