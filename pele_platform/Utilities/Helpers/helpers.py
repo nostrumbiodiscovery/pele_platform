@@ -383,3 +383,46 @@ def check_remove_folder(*output_folders):
     for folder in output_folders:
         if os.path.exists(folder):
             shutil.rmtree(folder)
+
+
+def retrieve_atom_names(pdb_file, residues):
+    """
+    Retrieves PDB atom names for a specific residue.
+
+    Parameters
+    -----------
+    pdb_file : str
+        Path to PDB file.
+    residues : List[str]
+        List of residue names for which the PDB atom names should be extracted.
+    """
+    from collections import defaultdict
+
+    output = defaultdict(list)
+    extracted_residues = list()
+
+    with open(pdb_file, "r") as f:
+        lines = f.readlines()
+
+    # Retrieve HETATM lines only
+    pdb_lines = [line for line in lines if line.startswith("HETATM")]
+
+    for index, line in enumerate(pdb_lines):
+
+        found_residue_name = line[17:20].strip()
+        found_residue_number = line[22:26].strip()
+
+        # Check if atom names for this residue are supposed to be extracted (or where already)
+        if found_residue_name in residues and found_residue_name not in extracted_residues:
+            atom_name = line[12:16]
+            output[found_residue_name].append(atom_name)
+
+        # Mark residue as extracted, if the next line has a different residue number
+        try:
+            next_residue_number = pdb_lines[index+1][22:26].strip()
+            if next_residue_number != found_residue_number:
+                extracted_residues.append(found_residue_name)
+        except IndexError:  # In case it's the end of PDB and index+1 doesn't exist
+            continue
+
+    return output

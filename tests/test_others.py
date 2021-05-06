@@ -12,7 +12,8 @@ from pele_platform.Utilities.Helpers.constraints import smiles_constraints as sm
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(
-    test_path, "constraints/input_external_constraints.yaml")
+    test_path, "constraints/input_external_constraints.yaml"
+)
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
 ATOM_GPCR_ERROR_ARGS = os.path.join(test_path, "gpcr/input_atom_error.yaml")
@@ -23,19 +24,6 @@ MAPPED = ['atoms": { "ids":["Z:1:_C13"]}']
 EXT_CONSTR = [
     '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_H__" },',
     '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"}',
-]
-
-SMILES_CONSTR = [
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C7_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N1_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C1_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C2_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N2_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C3_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',
-        '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },',
 ]
 
 SMILES_CONSTR = [
@@ -50,6 +38,20 @@ SMILES_CONSTR = [
     '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',
     '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },',
 ]
+
+SMILES_CONSTR = [
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C7_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N1_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C1_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C2_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N2_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C3_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },',
+]
+
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
@@ -208,7 +210,10 @@ def test_template_error(yaml=yaml):
     try:
         job = main.run_platform_from_yaml(yaml)
     except ce.TemplateFileNotFound as e:
-        assert str(e).strip("'") == "Could not locate mgadeaz file. Please double-check the path."
+        assert (
+            str(e).strip("'")
+            == "Could not locate mgadeaz file. Please double-check the path."
+        )
         return
     assert False
 
@@ -230,12 +235,16 @@ def test_rotamer_error(yaml=yaml):
     try:
         job = main.run_platform_from_yaml(yaml)
     except ce.RotamersFileNotFound as e:
-        assert str(e).strip("'") == "Could not locate mgadeaz file. Please double-check the path."
+        assert (
+            str(e).strip("'")
+            == "Could not locate mgadeaz file. Please double-check the path."
+        )
         return
     assert False
 
 
 yaml = os.path.join(test_path, "out_in/input_flag_error.yaml")
+
 
 def test_out_in_flag(yaml=yaml):
     try:
@@ -249,6 +258,7 @@ def test_out_in_flag(yaml=yaml):
 
 
 yaml = os.path.join(test_path, "checker/input_atom_string.yaml")
+
 
 def test_atom_string_error(yaml=yaml):
     try:
@@ -339,5 +349,34 @@ def test_protonation_error():
     Checks if we catch unprotonated systems and raise an error.
     """
     from pele_platform.Adaptive.parameterizer import Parameterizer
+
     with pytest.raises(ce.ProtonationError):
         Parameterizer(pdb_file=os.path.join(test_path, "preparation/6qmk_correct.pdb"))
+
+
+@pytest.mark.parametrize(
+    ("pdb_file", "residues", "expected"),
+    [
+        ("1zop.pdb", ["MG"], {"MG": [" MG "]}),
+        ("4w4o_prep.pdb", ["ZN"], {"ZN": ["ZN  "]}),
+    ],
+)
+def test_retrieve_atom_names(pdb_file, residues, expected):
+    """
+    Tests extraction of PDB atom names from a PDB file for a specific set of residues.
+
+    Parameters
+    -----------
+    pdb_file : str
+        File name in Examples/constraints.
+    residues : List[str]
+        List of residue names to extract.
+    expected : dict
+        Expected output dictionary, where keys are residue names and values - a list of PDB atom names.
+    """
+    from pele_platform.Utilities.Helpers import helpers
+
+    pdb_file = os.path.join(test_path, "constraints", pdb_file)
+    output = helpers.retrieve_atom_names(pdb_file, residues)
+
+    assert output == expected
