@@ -32,9 +32,10 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
     
     new_protein_file = os.path.basename(protein_file).replace(".pdb", "_prep.pdb")
     new_protein_file = os.path.abspath(new_protein_file)
-    
+    temp_file = os.path.join(os.getcwd(), "temp.mae")
+
     # join protein and ligand PDBs into new file
-    with open(new_protein_file, "w+") as file:
+    with open(temp_file, "w+") as file:
         for line in protein:
             file.write(line)
         file.write("\n")
@@ -42,14 +43,9 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
             file.write(line)
 
     # Run through Schrodinger again to add CONECT lines.
-    schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/structconvert")
-    temp_file = os.path.join(os.getcwd(), "temp.mae")
-    command_mae = "{} -ipdb {} -omae {}".format(schrodinger_path, new_protein_file, temp_file)
-    command_pdb = "{} -imae {} -opdb {}".format(schrodinger_path, temp_file, new_protein_file)
-
-    subprocess.call(command_mae.split())
+    schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/pdbconvert")
+    command_pdb = "{} -ipdb {} -opdb {}".format(schrodinger_path, temp_file, new_protein_file)
     subprocess.call(command_pdb.split())
-
     os.remove(temp_file)
 
     return new_protein_file
