@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import os
+from pathlib import Path
 import warnings
 
 from pele_platform.Utilities.Helpers.helpers import (
@@ -33,6 +34,7 @@ class SiteFinderLauncher:
 
         if not self.args.skip_refinement and not self.args.debug:
             self._generate_clusters()
+            self._retrieve_external_templates()
             self._set_params_refinement()
             self.refinement_simulation = self._launch_refinement()
         else:
@@ -132,6 +134,23 @@ class SiteFinderLauncher:
         self.args.site_finder_local = True
         self.args.box_center = self.global_simulation.box_center
         self.args.box_radius = self.global_simulation.box_radius
+
+    def _retrieve_external_templates(self):
+        """
+        Finds templates and rotamers created in the global exploration and adds them to the refinement input arguments,
+        then ensures they will not be parametrized again by adding them to "skip_ligand_prep" flag.
+        """
+        datalocal_dir = os.path.join(self.global_simulation.pele_dir, "DataLocal")
+        templates = [path for path in Path(datalocal_dir).rglob('*z')]
+        rotamers = [path for path in Path(datalocal_dir).rglob('*.assign')]
+
+        self.args.templates = templates
+        self.args.rotamers = rotamers
+
+        templates_names = [os.path.basename(file).rstrip("z") for file in templates]
+        rotamers_names = [os.path.basename(file).rstrip("rot.assign") for file in rotamers]
+
+        self.args.skip_ligand_prep = list(set(templates_names + rotamers_names))
 
     def _launch_refinement(self):
         """
