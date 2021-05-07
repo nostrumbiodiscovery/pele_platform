@@ -141,10 +141,10 @@ class SiteFinderLauncher:
         then ensures they will not be parametrized again by adding them to "skip_ligand_prep" flag.
         """
         datalocal_dir = os.path.join(self.global_simulation.pele_dir, "DataLocal")
-        templates = [path for path in Path(datalocal_dir).rglob('*z')]
-        rotamers = [path for path in Path(datalocal_dir).rglob('*.assign')]
+        templates = [str(path) for path in Path(datalocal_dir).rglob('*z')]
+        rotamers = [str(path) for path in Path(datalocal_dir).rglob('*.assign')]
 
-        self.args.templates = templates
+        self.args.template = templates
         self.args.rotamers = rotamers
 
         templates_names = [os.path.basename(file).rstrip("z") for file in templates]
