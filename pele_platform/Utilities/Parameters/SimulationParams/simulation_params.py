@@ -109,7 +109,7 @@ class SimulationParams(
         self.conformation_freq = (
             args.conformation_freq
             if args.conformation_freq is not None
-            else self.conformation_freq.get("conformation_freq", 0)
+            else self.simulation_params.get("conformation_freq", 0)
         )
         self.temperature = (
             args.temperature
