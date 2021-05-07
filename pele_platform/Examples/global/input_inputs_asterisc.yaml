@@ -4,6 +4,6 @@ resname: 'IK1'
 restart: false
 seed: 12345
 induced_fit_fast: true
-skip_preprocess: true
+skip_preprocess: false
 cpus: 5
 test: true
