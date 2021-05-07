@@ -1,4 +1,7 @@
 import os
+import subprocess
+
+from pele_platform.constants import constants
 
 
 def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
@@ -37,5 +40,16 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
         file.write("\n")
         for line in ligand:
             file.write(line)
- 
+
+    # Run through Schrodinger again to add CONECT lines.
+    schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/structconvert")
+    temp_file = os.path.join(os.getcwd(), "temp.mae")
+    command_mae = "{} -ipdb {} -omae {}".format(schrodinger_path, new_protein_file, temp_file)
+    command_pdb = "{} -imae {} -opdb {}".format(schrodinger_path, temp_file, new_protein_file)
+
+    subprocess.call(command_mae.split())
+    subprocess.call(command_pdb.split())
+
+    os.remove(temp_file)
+
     return new_protein_file
