@@ -344,16 +344,6 @@ def test_SmilesConstraints_class():
     assert constraints == SMILES_CONSTR
 
 
-def test_protonation_error():
-    """
-    Checks if we catch unprotonated systems and raise an error.
-    """
-    from pele_platform.Adaptive.parametrizer import Parametrizer
-
-    with pytest.raises(ce.ProtonationError):
-        Parametrizer(pdb_file=os.path.join(test_path, "preparation/6qmk_correct.pdb"))
-
-
 @pytest.mark.parametrize(
     ("pdb_file", "residues", "expected"),
     [

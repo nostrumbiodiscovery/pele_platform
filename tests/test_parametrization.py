@@ -181,12 +181,22 @@ def test_production():
     main.run_platform_from_yaml(os.path.join(yaml_path))
 
 
+def test_protonation_error(parametrize):
+    """
+    Checks if we catch unprotonated systems and raise an error.
+    """
+    file = os.path.join(constants.DIR, "Examples", "preparation/6qmk_correct.pdb")
+
+    with pytest.raises(custom_errors.ProtonationError):
+        parametrize.parametrize_ligands_from(pdb_file=file)
+
+
 def test_missing_connects_error():
     """
     Checks if we raise an error when PDB file is missing CONECT lines.
     """
     with pytest.raises(custom_errors.ConnectionsError):
-        parametrizer.Parametrizer.check_protein_file(os.path.join(test_path, "1zop.pdb"))
+        parametrizer.Parametrizer.check_protein_file(os.path.join(test_path, "no_connects.pdb"))
 
 
 @pytest.fixture
