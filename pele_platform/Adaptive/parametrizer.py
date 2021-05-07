@@ -670,7 +670,7 @@ class Parametrizer:
                                                  "protonate it.")
 
         if len(connect_lines) < 1:
-            raise custom_errors.ConnectionsError("Your PDB file is missing the CONECT lines. Please do not remove "
+            raise custom_errors.ConnectionsError(f"PDB file {pdb_file} is missing the CONECT lines. Please do not remove "
                                                  "them after Schrodinger preprocessing.")
 
     def _handle_solvent_template(self, topologies):
