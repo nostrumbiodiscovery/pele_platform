@@ -1361,7 +1361,8 @@ class Analysis(object):
 
         # load the first trajectory and select the residue
         traj = mdtraj.load_frame(path, 0, top=self.topology)
-        residue = traj.topology.select(f"resname {self.residue}")
+        residue = traj.topology.select(f"resname '{self.residue}'")
+        print (f"resname {self.residue}")
 
         # if empty array is returned, raise error
         if residue.size == 0:

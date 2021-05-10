@@ -396,9 +396,9 @@ class DataHandler(object):
         # Select atom subset
         if remove_hydrogen:
             selection_str = \
-                'resname == {} and symbol != H'.format(residue_name)
+                'resname == "{}" and symbol != H'.format(residue_name)
         else:
-            selection_str = 'resname == {}'.format(residue_name)
+            selection_str = 'resname == "{}"'.format(residue_name)
         atom_indices = topology.top.select(selection_str)
 
         filtered_atom_indices = []
