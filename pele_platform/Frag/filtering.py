@@ -33,7 +33,7 @@ class Library:
         #self.init_mol = Chem.MolFromPDBFile(ligand, removeHs=False)
         self.init_mol = ligand
         self.init_mol_path = ligand_path
-        self.database_files = glob(path + '/*.csv')
+        self.database_files = glob(path + '/*.csv')[:20]
         # self.sd_files=self._retrieve_files()
         if self.init_mol:
             mol = next(pybel.readfile("pdb", self.init_mol_path))
