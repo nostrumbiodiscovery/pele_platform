@@ -300,6 +300,34 @@ class MeanShiftClustering(Clustering):
         return clusters
 
 
+class WaterClustering():
+    """
+    Class to clusterize waters.
+    """
+    def get_clusters(self, coordinates):
+        """
+        It builds the clusters according to the atomic coordinates that are supplied.
+
+        Parameters
+        ----------
+        coordinates : list
+                      list of ordered atom coordinates
+
+        Returns
+        -------
+        estimator : sklearn.cluster.MeanShift object
+                    clusterization implementation that clusterizes through the MeanShift method.
+        results : list
+                  list with the results of the clusterization. Each element is the cluster in which each atom belongs.
+
+        """
+        estimator = MeanShift(brandwith=self._bandwidth,
+                                      cluster_all=True)
+        results = estimator.fit_predict(coordinates)
+
+        return estimator, results
+
+
 def get_cluster_label(cluster_id):
     """
     It assigns a cluster label according to the cluster id that is
