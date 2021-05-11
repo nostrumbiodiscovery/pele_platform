@@ -58,9 +58,6 @@ class ParametersBuilder(object):
             # If the simulation is being restarted (after debug), adaptive_restarted (from last epoch)
             # or if we're running only_analysis we need to retrieve the LAST pele_dir. Otherwise create a new one
             # with a new index.
-            # TODO the restart flag is undocumented and counterintuitive
-            #      since it apparently is doing the opposite of
-            #      adaptive_restart
             if args.restart or args.adaptive_restart or args.only_analysis:
                 pele_dir = helpers.get_latest_peledir(main_dir)
             else:
