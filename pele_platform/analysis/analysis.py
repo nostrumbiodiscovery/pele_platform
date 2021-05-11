@@ -516,7 +516,8 @@ class Analysis(object):
         """
         from pele_platform.analysis import (GaussianMixtureClustering,
                                             HDBSCANClustering,
-                                            MeanShiftClustering)
+                                            MeanShiftClustering,
+                                            WaterClustering)
 
         if clustering_type.lower() == "gaussianmixture":
             clustering = GaussianMixtureClustering(analysis_nclust)
@@ -527,11 +528,14 @@ class Analysis(object):
         elif clustering_type.lower() == "meanshift":
             clustering = MeanShiftClustering(bandwidth)
             max_coordinates = 5
+        elif clustering_type.lower() == "waters":
+            clustering = WaterClustering(bandwidth)
+            max_coordinates = ""
         else:
             raise ValueError("Invalid clustering type: " +
                              "'{}'. ".format(clustering_type) +
                              "It should be one of ['GaussianMixture', " +
-                             "'HDBSCAN', 'MeanShift']")
+                             "'HDBSCAN', 'MeanShift', 'Waters']")
 
         return clustering, max_coordinates
 
