@@ -489,6 +489,28 @@ class Analysis(object):
 
         print("PDF summary report successfully written to: {}".format(report))
 
+    def _generate_water_clusters(self, bandwidth):
+        """
+        It retrun the clustering object of water clusters.
+
+        Parameters
+        ----------
+        bandwidth : float
+                    Bandwidth for the mean shift clustering. Default is 2.5.
+        Returns
+        -------
+        clustering : sklearn.cluster.MeanShift object
+                    clusterization implementation that clusterizes through the MeanShift method.
+        max_coordinates : int
+                          The maximum number of coordinates to extract from the
+                          residue
+        """
+
+        water_clustering = self._get_clustering("waters", bandwidth)
+        water_clusters, max_coordinates = water_clustering.get_clusters()
+
+        return water_clusters, max_coordinates
+
     def _get_clustering(self, clustering_type, bandwidth, analysis_nclust):
         """
         It returns the clustering object according to the supplied
