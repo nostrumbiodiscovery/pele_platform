@@ -300,7 +300,7 @@ class MeanShiftClustering(Clustering):
         return clusters
 
 
-class WaterClustering():
+class WaterClustering(Clustering):
     """
     Class to clusterize waters.
     """
