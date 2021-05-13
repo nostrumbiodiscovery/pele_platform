@@ -47,3 +47,46 @@ in your input file have correct values. Remember that ligands needs to have a un
 ..  code-block:: console
 
     ValueError: Something went wrong when extracting the ligand. Check residue&Chain on input
+
+
+Parametrization
+------------------
+
+Sometimes parametrization of a hetero molecule (cofactor, modified residue, crystallization factor) will fail, which
+should result in the following warning message:
+
+..  code-block:: console
+
+    Failed to parametrize residue MET. You can skip it or parametrize manually
+    (see documentation: https://nostrumbiodiscovery.github.io/pele_platform/errors/index.html#parametrization).
+    The error raised was: Size of atom parameter lists should match.
+
+Remove the residue
++++++++++++++++++++++
+
+If the hetero molecule is **not necessary** to study your system, the easiest way to handle this is to **remove it from the PDB file**. Similarly, you can ignore the warning, it will not halt the simulation.
+
+
+Parametrize manually
+++++++++++++++++++++++++
+Alternatively, you can **parametrize the molecule manually** and pass obtained template and rotamer files in the ``input.yaml``.
+
+    1. Save the residue to a separate PDB file, ensure the CONECT lines are included and the Lewis structure is correct.
+
+    2. Run the following command to create the default rotamer and template files. For more options, please refer to the `Open Force Field for PELE documentation <https://martimunicoy.github.io/peleffy/usage.html>`_.
+
+    ..  code-block:: console
+
+        python -m peleffy.main ligand.pdb
+
+
+    3. Add paths to your newly created files to the input.yaml, for example:
+
+
+    .. code-block:: yaml
+
+        templates:
+          - "/path/to/metz"
+
+        rotamers:
+          - "/path/to/MET.rot.assign"
