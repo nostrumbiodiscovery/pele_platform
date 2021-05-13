@@ -36,7 +36,7 @@ def test_ppi_default(energy_result=-1.99, yaml=yaml):
     nfiles_refinement = len(glob.glob(os.path.join(job2.pele_dir, "results/top_poses/*.pdb")))
 
     # test
-    assert nfiles == job.n_components 
+    assert nfiles > 0
     assert best_energy == energy_result
     assert nfiles_refinement
 

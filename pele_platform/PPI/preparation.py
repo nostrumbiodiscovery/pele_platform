@@ -44,7 +44,7 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
 
     # Run through Schrodinger again to add CONECT lines.
     schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/pdbconvert")
-    command_pdb = "{} -ipdb {} -opdb {}".format(schrodinger_path, temp_file, new_protein_file)
+    command_pdb = f"{schrodinger_path} {temp_file} {new_protein_file} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID"
     subprocess.call(command_pdb.split())
     os.remove(temp_file)
 

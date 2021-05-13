@@ -418,7 +418,7 @@ class Parametrizer:
         from peleffy.template import Impact
         from peleffy.forcefield.parameters import BaseParameterWrapper
 
-        self.check_protein_file(pdb_file)
+        pdb_file = self.check_protein_file(pdb_file)
 
         ligand_core_constraints = self._fix_atom_names(
             self.ligand_resname,
@@ -505,26 +505,33 @@ class Parametrizer:
 
                     opls_reparameterization = True
 
-                topology = Topology(molecule, parameters)
-                topologies.append(topology)
+                try:
+                    topology = Topology(molecule, parameters)
+                    topologies.append(topology)
 
-                # In case we reparameterized the templates with OPLS,
-                # we need to convert atom types to OFFT (unique atom
-                # type for OpenFF). Otherwise, PELE will complain about it
-                if opls_reparameterization:
-                    for atom in topology.atoms:
-                        atom.set_OPLS_type('OFFT')
+                    # In case we reparameterized the templates with OPLS,
+                    # we need to convert atom types to OFFT (unique atom
+                    # type for OpenFF). Otherwise, PELE will complain about it
+                    if opls_reparameterization:
+                        for atom in topology.atoms:
+                            atom.set_OPLS_type('OFFT')
 
-                # Iterate over topology atoms and change their names, if necessary
-                if pdb_atom_names is not None:
-                    for atom, new_atom_name in zip(topology.atoms, pdb_atom_names[molecule]):
-                        atom._PDB_name = new_atom_name
+                    # Iterate over topology atoms and change their names, if necessary
+                    if pdb_atom_names is not None:
+                        for atom, new_atom_name in zip(topology.atoms, pdb_atom_names[molecule]):
+                            atom._PDB_name = new_atom_name
 
-                impact = Impact(topology)
-                impact.to_file(impact_template_path)
-                impact_template_paths = [impact_template_path]
+                    impact = Impact(topology)
+                    impact.to_file(impact_template_path)
+                    impact_template_paths = [impact_template_path]
 
-                print(f"Parametrized {molecule.tag.strip()}.")
+                    print(f"Parametrized {molecule.tag.strip()}.")
+                except AssertionError as e:
+                    warnings.warn(
+                        f"Failed to parametrize residue {molecule.tag.strip()}. You can skip it or "
+                        f"parametrize manually (see documentation: "
+                        f"https://nostrumbiodiscovery.github.io/pele_platform/errors/index.html#parametrization"
+                        f"). The error raised was: {e}.")
 
             # Even though molecule has not been parameterized, we might need
             # to generate its solvent parameters if it is not in PELE data.
@@ -671,6 +678,18 @@ class Parametrizer:
 
         if len(connect_lines) < 1:
             warnings.warn(f"CAREFUL: PDB file {pdb_file} is missing the CONECT lines at the end!")
+
+            # Import and export with Schrodinger to add CONECT lines without making any other changes
+            print("Adding CONECT lines with Schrodinger...")
+            schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/prepwizard")
+            file_name, ext = os.path.splitext(pdb_file)
+            conect_pdb_file = f"{file_name}_conect{ext}"
+            command_pdb = f"{schrodinger_path} {pdb_file} {conect_pdb_file} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID"
+            subprocess.call(command_pdb.split())
+
+            return conect_pdb_file
+
+        return pdb_file
 
     def _handle_solvent_template(self, topologies):
         """

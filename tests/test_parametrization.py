@@ -193,11 +193,14 @@ def test_protonation_error(parametrize):
 
 def test_missing_connects_error():
     """
-    Checks if we raise an warning when PDB file is missing CONECT lines.
+    Checks if we raise an warning when PDB file is missing CONECT lines and create a new file with Schrodinger.
     """
     file = os.path.join(test_path, "no_connects.pdb")
+    expected_output = os.path.join(test_path, "no_connects_conect.pdb")
     with pytest.warns(UserWarning):
         parametrizer.Parametrizer.check_protein_file(file)
+    assert os.path.exists(expected_output)
+    os.remove(expected_output)
 
 
 @pytest.fixture
