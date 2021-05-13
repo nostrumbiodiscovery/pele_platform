@@ -173,6 +173,10 @@ class Parametrizer:
             if (molecule.tag.upper().strip() in constants.ions9
                     and len(molecule.get_pdb_atom_names()) == 1):
                 to_remove.append(molecule)
+            if molecule.rdkit_molecule is None:  # In case rdkit is complaining
+                to_remove.append(molecule)
+                warnings.warn(f"Molecule {molecule.tag.strip()} seems to have some protonation or valence issue. "
+                              f"Please check your PDB file, if you want to parametrize this hetero molecule.")
 
         molecules = [molecule for molecule in molecules
                      if molecule not in to_remove]
