@@ -684,7 +684,7 @@ class Parametrizer:
             schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/prepwizard")
             file_name, ext = os.path.splitext(pdb_file)
             conect_pdb_file = f"{file_name}_conect{ext}"
-            command_pdb = f"{schrodinger_path} {pdb_file} {conect_pdb_file} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID"
+            command_pdb = f"{schrodinger_path} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID {pdb_file} {conect_pdb_file}"
             subprocess.call(command_pdb.split())
 
             return conect_pdb_file
