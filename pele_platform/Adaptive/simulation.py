@@ -44,7 +44,7 @@ def run_adaptive(args):
             adaptiveSampling.main(parameters.ad_ex_temp)
             parameters.logger.info("Simulation run successfully (:\n\n")
 
-    elif not parameters.only_analysis:
+    elif not parameters.only_analysis and not parameters.restart:
         parameters.logger.info(
             "System: {}; Platform Functionality: {}\n\n".format(
                 parameters.residue, parameters.software
@@ -117,7 +117,9 @@ def run_adaptive(args):
                 user_center=parameters.center_of_interface,
                 logger=parameters.logger,
             )
-            if not args.gpcr_orth:
+            # We do not need to randomize the starting position for
+            # GPCR_orth nor out --> in simulations
+            if not args.gpcr_orth and not args.out_in:
                 parameters.box_center = box_center
                 parameters.box_radius = box_radius
             if parameters.no_ppp:
@@ -354,6 +356,13 @@ def run_adaptive(args):
             parameters.logger.info("Running Simulation")
             adaptive.run()
             parameters.logger.info("Simulation run successfully (:\n\n")
+
+    elif parameters.restart:
+        # Start simulation from scratch (unlike adaptive_restart) but use files created in debug mode
+        parameters.logger.info(f"Launching simulation from {parameters.pele_dir}")
+        adaptive = ad.SimulationBuilder(parameters.ad_ex_temp, parameters.pele_exit_temp, parameters.topology)
+        adaptive.run()
+        parameters.logger.info("Simulation run successfully (:\n\n")
 
     # Run analysis
     if parameters.analyse and not parameters.debug:

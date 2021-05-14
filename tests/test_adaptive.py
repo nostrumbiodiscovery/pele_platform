@@ -227,3 +227,32 @@ def test_gpcr(args=GPCR_ARGS):
     if not os.path.exists(input_file):
         errors.append("skip_ppp")
     assert not errors
+
+
+def test_restart_flag():
+    """
+    Checks if the platform can correctly restart a simulation from existing files (created in debug mode) without
+    overwriting configuration files.
+    """
+
+    # Retrieve restart simulation from Examples directory and copy to test folder
+    pele_dir = "STR_Pele"
+    new_pele_dir = os.path.join(os.getcwd(), pele_dir)
+    restart_dir = os.path.join(test_path, "restart", pele_dir)
+    restart_yaml = os.path.join(test_path, "restart", "restart.yaml")
+
+    if os.path.exists(new_pele_dir):
+        shutil.rmtree(new_pele_dir)
+    shutil.copytree(restart_dir, new_pele_dir)
+    shutil.copy(restart_yaml, os.getcwd())
+
+    # Run platform
+    job_params = main.run_platform_from_yaml("restart.yaml")
+
+    # Assert it reused existing directory and did not create a new one
+    assert os.path.basename(job_params.pele_dir) == os.path.basename(restart_dir)
+
+    # Assert it did not overwrite pele.conf
+    expected_line = '{ "type": "constrainAtomToPosition", "springConstant": 666, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" },'
+    errors = check_file(job_params.pele_dir, "pele.conf", expected_line, [])
+    assert not errors

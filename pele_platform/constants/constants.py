@@ -6,6 +6,16 @@ import os
 
 SCHRODINGER = os.environ.get("SCHRODINGER", "")
 PELE = os.environ.get("PELE", "")
+SINGULARITY_EXEC = os.environ.get("SINGULARITY_EXEC", "")
+PELE_LICENSE = os.environ.get("PELE_LICENSE", "")
+DEFAULT_PELE_LICENSE = (
+    # Priority for the default license variable:
+    #    1. Environment variable (PELE_LICENSE)
+    #    2. Path_to_PELE + licenses
+    PELE_LICENSE
+    if PELE_LICENSE
+    else os.path.join(PELE, "licenses")
+)
 
 # DEFAULTS
 # --------
@@ -208,14 +218,6 @@ atom_string_flags = ["atom_dist", "final_site", "orthosteric_site", "initial_sit
 #------------------
 
 GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
-
-#RESTARTS:
-#-----------
-
-FIRST_RESTART = ["all",]
-SECOND_RESTART = ["all", "adaptive"]
-THIRD_RESTART = ["all", "adaptive", "pele"]
-FOURTH_RESTART = ["all", "adaptive", "pele", "msm"] 
 
 #PATHS
 #-------

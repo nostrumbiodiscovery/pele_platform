@@ -29,6 +29,7 @@ class SimulationParams(
     def __init__(self, args):
         self.simulation_type(args)
         self.main_pele_params(args)
+        self.singularity_params(args)
         self.main_adaptive_params(args)
         self.optative_params(args)
         self.system_preparation_params(args)
@@ -82,7 +83,7 @@ class SimulationParams(
         self.license = (
             args.pele_license
             if args.pele_license
-            else os.path.join(cs.PELE, "licenses")
+            else cs.DEFAULT_PELE_LICENSE
         )
         self.anm_freq = (
             args.anm_freq
@@ -272,7 +273,7 @@ class SimulationParams(
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates")
         )
         self.usesrun = "true" if args.usesrun else "false"
-        mpi_params_name = ("srunParameters" if args.usesrun else "mpiParameters")
+        mpi_params_name = "srunParameters" if args.usesrun else "mpiParameters"
         self.mpi_params = (
             f'"{mpi_params_name}": "{args.mpi_params}",' if args.mpi_params else ""
         )
@@ -299,8 +300,8 @@ class SimulationParams(
 
         self.restart = (
             args.restart
-            if args.restart
-            else self.simulation_params.get("restart", "all")
+            if args.restart is not None
+            else False
         )
         self.test = args.test
         # +1 to avoid being 0
@@ -313,6 +314,11 @@ class SimulationParams(
             "true"
             if args.equilibration
             else self.simulation_params.get("equilibration", "false")
+        )
+        self.equilibration_mode = (
+                args.equilibration_mode 
+                if args.equilibration_mode
+                else self.simulation_params.get("equilibration_mode", "equilibrationSelect")
         )
         self.adaptive_restart = args.adaptive_restart
         self.poses = (
@@ -546,3 +552,11 @@ class SimulationParams(
         else:
             self.met_interaction_restrictions = ""
             self.interaction_restrictions = ""
+
+    def singularity_params(self, args):
+        """
+        Sets parameters for singularity containers.
+        """
+        args.mpi_params = args.singularity_exec if args.singularity_exec else args.mpi_params
+        if args.singularity_exec:
+            args.pele_exec = "Pele_mpi" if not self.frag_pele else args.mpi_params + " Pele_mpi"

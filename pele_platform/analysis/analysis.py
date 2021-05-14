@@ -15,7 +15,7 @@ class Analysis(object):
     _REPORT = "report"
     _STEP_LABEL = "numberOfAcceptedPeleSteps"
 
-    def __init__(self, resname, chain, simulation_output,
+    def __init__(self, simulation_output, resname=None, chain=None,
                  be_column=4, limit_column=None, traj="trajectory.pdb",
                  report=None, skip_initial_structures=True, kde=False,
                  kde_structs=1000, topology=None, cpus=1,
@@ -26,10 +26,10 @@ class Analysis(object):
 
         Parameters
         ----------
-        resname : str
-            Residue name of the ligand, e.g. "LIG"
-        chain : str
-            Chain ID of the ligand, e.g. "Z."
+        resname : Union[str, None]
+            Residue name of the ligand, e.g. "LIG", default = None.
+        chain : Union[str, None]
+            Chain ID of the ligand, e.g. "Z", default = None.
         simulation_output : str
             Path to the output folder of the simulation, e.g.
             "LIG_Pele/output"
@@ -81,6 +81,9 @@ class Analysis(object):
         self.cpus = cpus
         self.water_ids = water_ids_to_track
 
+        if self.residue:
+            self._check_residue_exists()
+
         self._data_handler = DataHandler(
             sim_path=self.output,
             report_name=self.report,
@@ -108,10 +111,21 @@ class Analysis(object):
         """
         import os
 
-        simulation_output = os.path.join(parameters.pele_dir, parameters.output)
+        # Set the simulation output path from parameters
+        simulation_output = os.path.join(parameters.pele_dir,
+                                         parameters.output)
 
-        analysis = Analysis(resname=parameters.residue,
-                            chain=parameters.chain,
+        # We do not need to specify resname and chain if we are not
+        # perturbing any ligand
+        resname = None
+        chain = None
+        if parameters.perturbation:
+            resname = parameters.residue
+            chain = parameters.chain
+
+        # Initialize the Analysis class
+        analysis = Analysis(resname=resname,
+                            chain=chain,
                             simulation_output=simulation_output,
                             be_column=parameters.be_column,
                             limit_column=parameters.limit_column,
@@ -1432,3 +1446,30 @@ class Analysis(object):
             new_path = os.path.join(dir_name, new_folder_name)
 
         return new_path
+
+    def _check_residue_exists(self):
+        """
+        Checks if self.resname is present in the first output trajectory.
+        If not, it will raise ValueError to prompt
+        the user to check the arguments passed to Analysis class.
+
+        Raises
+        ------
+        ValueError if residue is not found in the first output trajectory
+        """
+        import glob
+        import mdtraj
+        import os
+
+        path = glob.glob(os.path.join(self.output, "0", "trajectory_1.*"))[0]
+
+        # load the first trajectory and select the residue
+        traj = mdtraj.load_frame(path, 0, top=self.topology)
+        residue = traj.topology.select(f"resname '{self.residue}'")
+
+        # if empty array is returned, raise error
+        if residue.size == 0:
+            raise ValueError(
+                f"Residue {self.residue} was not found in output "
+                f"trajectories. Make sure you are passing a correct "
+                f"'resname' argument to Analysis.")

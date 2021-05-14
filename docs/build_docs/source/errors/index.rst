@@ -47,3 +47,13 @@ in your input file have correct values. Remember that ligands needs to have a un
 ..  code-block:: console
 
     ValueError: Something went wrong when extracting the ligand. Check residue&Chain on input
+
+Connections Error
+------------------
+
+This error indicates the the PDB file is missing the connectivity section. To resolve the issue, you should import the PDB in Schrödinger Maestro and preprocess it, launching the Protein Preparation Wizard. 
+
+..  code-block:: console
+
+    pele_platform.Errors.custom_errors.ConnectionsError: Your PDB file is missing the CONECT lines. Please do not remove them after Schrodinger preprocessing.
+

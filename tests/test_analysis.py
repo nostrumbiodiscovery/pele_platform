@@ -7,7 +7,6 @@ import pele_platform.constants.constants as cs
 import pele_platform.main as main
 from pele_platform.analysis import Analysis, DataHandler, Plotter
 from pele_platform.Utilities.Helpers.helpers import check_remove_folder
-from . import test_adaptive as ta
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
@@ -456,7 +455,6 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
 
     check_remove_folder(output_folder)
 
-
 def test_coordinates_extraction_from_trajectory():
     """
     Test extraction of water coordinates and clustering.
@@ -546,6 +544,35 @@ def test_water_clustering_production():
 
     # TODO: Write a proper test for water clustering output once it's implemented.
 
+def test_empty_reports_handling():
+    """
+    Checks if we handle reports with no accepted PELE steps to make sure the returned empty coordinates array doesn't
+    cause any errors.
+    """
+    simulation_output = os.path.join(test_path, "analysis/data/empty_reports_output")
+    analysis = Analysis(
+        simulation_output=simulation_output,
+        chain="Z",
+        resname="LIG",
+        skip_initial_structures=True,
+    )
+    analysis.generate(path="empty_reports")
+
+
+@pytest.mark.parametrize("path", ["analysis/data/xtc", "analysis/data/empty_reports_output"])
+def test_residue_checker(path):
+    """
+    Check, if we catch an error when the resname passed to Analysis doesn't exist in the output trajectories.
+    """
+    simulation_output = os.path.join(test_path, path)
+
+    with pytest.raises(ValueError):
+        analysis = Analysis(
+            simulation_output=simulation_output,
+            chain="Z",
+            resname="STR",
+            skip_initial_structures=True,
+        )
 
 @pytest.fixture
 def generate_folders():
@@ -571,4 +598,5 @@ def analysis():
         Analysis object.
     """
     output = "../pele_platform/Examples/clustering"
-    return get_analysis(output, None, None)
+    return analysis
+
