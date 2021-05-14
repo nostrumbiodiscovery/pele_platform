@@ -107,7 +107,9 @@ class Analysis(object):
             supplied
         """
         import os
+
         simulation_output = os.path.join(parameters.pele_dir, parameters.output)
+
         analysis = Analysis(resname=parameters.residue,
                             chain=parameters.chain,
                             simulation_output=simulation_output,
@@ -230,7 +232,6 @@ class Analysis(object):
         """
         import os
         path = self._check_existing_directory(path)
-        self.working_dir = path
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
         top_poses_folder = os.path.join(path, "top_poses")
@@ -419,7 +420,7 @@ class Analysis(object):
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
         clusters = clustering.get_clusters(coordinates, self._dataframe,
-                                               dataframe, os.path.dirname(path))
+                                           dataframe, os.path.dirname(path))
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
         cluster_summary = self._analyze_clusters(clusters, dataframe,
@@ -437,7 +438,8 @@ class Analysis(object):
                                       max_clusters_to_select=max_top_clusters,
                                       min_population_to_select=min_population)
 
-        # IF there are water ids to track, keep water ids from top clusters, then perform Mean Shift clusterization
+        # If there are water ids to track, keep water ids from top clusters,
+        # then perform Mean Shift clusterization
         if self.water_ids:
             import numpy as np
             ids_to_delete = []
@@ -540,9 +542,6 @@ class Analysis(object):
         elif clustering_type.lower() == "meanshift":
             clustering = MeanShiftClustering(bandwidth)
             max_coordinates = 5
-        # elif clustering_type.lower() == "waters":
-        #     clustering = WaterClustering(bandwidth)
-        #     max_coordinates= 5
         else:
             raise ValueError("Invalid clustering type: " +
                              "'{}'. ".format(clustering_type) +
