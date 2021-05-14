@@ -419,7 +419,7 @@ class Analysis(object):
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
-        clusters = clustering.get_clusters(coordinates, self._dataframe,
+        clusters, _ = clustering.get_clusters(coordinates, self._dataframe,
                                            dataframe, os.path.dirname(path))
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
@@ -449,7 +449,9 @@ class Analysis(object):
             water_coordinates = np.delete(water_coordinates, ids_to_delete, axis= 0)
             from pele_platform.analysis.clustering import MeanShiftClustering
             clustering = MeanShiftClustering(bandwidth)
-            water_clusters = clustering.get_clusters(water_coordinates)
+            water_clusters, estimator = clustering.get_clusters(water_coordinates)
+            densities = self.get_densities(water_clusters)
+            self.write_centroids(densities, estimator)
 
         print(f"Retrieve top clusters based on " +
               f"{metric_top_clusters_criterion[top_clusters_criterion]}.")
@@ -1052,7 +1054,6 @@ class Analysis(object):
                     filtered_coordinates.append(coors_array)
         filtered_coordinates = np.array(filtered_coordinates)
         filtered_water_coordinates = np.array(filtered_water_coordinates)
-        print("filtered_coordinates", filtered_coordinates)
 
         filtered_dataframe = \
             dataframe.query('currentEnergy<={}'.format(energetic_threshold))
@@ -1318,6 +1319,69 @@ class Analysis(object):
         # Save csv file
         file_name = os.path.join(path, "top_selections.csv")
         representatives_data.to_csv(file_name, index=False)
+
+    def get_densities(self, water_clusters):
+        """
+        It calculates the densities of each cluster. That means the number of
+            times a water molecule visited each cluster along the whole simulation.
+            PARAMETERS
+            ----------
+            water_clusters: numpy array
+                            array containing the cluster ids from which every water belongs to.
+            RETURNS
+            -------
+            density : dictionary
+                      dictionary with cluster ids as keys and their corresponding
+                      densities as items.
+            """
+        densities = {}
+        for i in water_clusters:
+            if i in densities:
+                densities[i] += 1
+            else:
+                densities[i] = 1
+        return densities
+
+    def write_centroids(self, densities, estimator, out_path='clusters_watersites.pdb'):
+        """
+        It writes the centroids as a PDB file.
+
+        Parameters
+        ----------
+        estimator : sklearn.cluster.MeanShift object
+                    clusterization implementation that clusterizes through the
+                    MeanShift method.
+        densities : dictionary
+                    dictionary with cluster ids as keys and their corresponding
+                    densities as items.
+        out_path : string
+                   name of the output PDB file containing centroids
+        """
+        def single_write(f, i, centroid, density=None):
+            f.write("ATOM    {:3d}  CEN BOX A {:3d} {:>11.3f}{:>8.3f}{:>8.3f}  1.00  0.00\n".format(i, i, *centroid))
+
+        def density_write(f, i, centroid, density):
+            f.write("ATOM    {:3d}  CEN BOX A {:3d} {:>11.3f}{:>8.3f}{:>8.3f}  1.00{:>5.2f}\n".format(i, i, *centroid, density))
+
+        centroids = estimator.cluster_centers_
+        writer = single_write
+
+        # Select writer function
+        if (densities is not None):
+            if (len(densities) == len(centroids)):
+                writer = density_write
+
+        # Normalize
+        if (densities):
+            normalization_factor = 1 / max(densities.values())
+            norm_densities = []
+            for density in densities.values():
+                norm_densities.append(density * normalization_factor)
+
+        # Write centroids to PDB
+        with open(out_path, 'w') as f:
+            for i, centroid in enumerate(centroids):
+                writer(f, i + 1, centroid, norm_densities[i])
 
     @staticmethod
     def _check_existing_directory(path):

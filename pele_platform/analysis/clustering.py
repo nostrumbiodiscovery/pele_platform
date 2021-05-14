@@ -182,7 +182,7 @@ class GaussianMixtureClustering(Clustering):
         clusters = clustering_method.fit_predict(coordinates)
         self._save_cluster_info(original_df, coordinates_df,
                                 clusters, csv_path)
-        return clusters
+        return clusters, clustering_method
 
 
 class HDBSCANClustering(Clustering):
@@ -237,7 +237,7 @@ class HDBSCANClustering(Clustering):
         clusters = clustering_method.fit_predict(coordinates)
         self._save_cluster_info(original_df, coordinates_df,
                                 clusters, csv_path)
-        return clusters
+        return clusters, clustering_method
 
 
 class MeanShiftClustering(Clustering):
@@ -298,7 +298,7 @@ class MeanShiftClustering(Clustering):
             self._save_cluster_info(original_df, coordinates_df,
                                     clusters, csv_path)
 
-        return clusters
+        return clusters, clustering_method
 
 
 def get_cluster_label(cluster_id):
