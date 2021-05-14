@@ -111,7 +111,7 @@ class Parametrizer:
         if hasattr(parameters, "as_datalocal"):  # to allow initializing Parametrizer from YamlParser object
             as_datalocal = parameters.as_datalocal
         else:
-            as_datalocal = False
+            as_datalocal = True
 
         obj = Parametrizer(
             forcefield=parameters.forcefield,
