@@ -58,3 +58,6 @@ class ProtonationError(Exception):
 
 class ConnectionsError(Exception):
     pass
+
+class IncompatibleForcefield(Exception):
+    pass

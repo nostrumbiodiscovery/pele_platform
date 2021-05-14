@@ -195,5 +195,6 @@ VALID_FLAGS_PLATFORM = {
     "charge_parametrization_method": "charge_parametrization_method",
     "exclude_terminal_rotamers": "exclude_terminal_rotamers",
     "skip_ligand_prep": "skip_ligand_prep",
-    "solvent_template": "solvent_template"
+    "solvent_template": "solvent_template",
+    "use_peleffy": "use_peleffy",
 }

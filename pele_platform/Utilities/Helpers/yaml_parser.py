@@ -311,6 +311,7 @@ class YamlParser(object):
         self.exclude_terminal_rotamers = data.get(valid_flags["exclude_terminal_rotamers"], None)
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.solvent_template = data.get(valid_flags["solvent_template"], None)
+        self.use_peleffy = data.get(valid_flags["use_peleffy"], None)
 
         if self.test:
             warnings.warn(

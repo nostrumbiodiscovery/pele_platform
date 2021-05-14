@@ -202,11 +202,22 @@ def run_adaptive(args):
 
         parameters.logger.info(f"Complex {parameters.system} prepared\n\n")
 
-        # Ligand/metal parameters, solvent parameters and simulation box
-        if parameters.perturbation:
+        # Ligand/metal and solvent parameters
+        if parameters.perturbation and parameters.use_peleffy:
             parametrizer = Parametrizer.from_parameters(parameters)
-
             parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
+
+        elif parameters.perturbation and not parameters.use_peleffy:
+            # Parametrize missing residues with Plop
+            for res, __, _ in missing_residues:
+                if res != args.residue and res not in parameters.skip_ligand_prep:
+                    parameters.logger.info("Creating template for residue {}".format(res))
+                    with hp.cd(parameters.pele_dir):
+                        mr.create_template(parameters, res)
+                    parameters.logger.info("Template {}z created\n\n".format(res))
+
+        # Create simulation box, if performing perturbation
+        if parameters.perturbation:
             box = bx.BoxSetter(parameters.box_center,
                                parameters.box_radius,
                                parameters.ligand_ref,
@@ -214,15 +225,6 @@ def run_adaptive(args):
             parameters.box = box.generate_json()
         else:
             parameters.box = ""
-
-        # Parametrize missing residues
-        # TODO: Check if we can remove this whole section
-        for res, __, _ in missing_residues:
-            if res != args.residue and res not in parameters.skip_ligand_prep:
-                parameters.logger.info("Creating template for residue {}".format(res))
-                with hp.cd(parameters.pele_dir):
-                    mr.create_template(parameters, res)
-                parameters.logger.info("Template {}z created\n\n".format(res))
 
         # Build PCA
         if parameters.pca_traj:

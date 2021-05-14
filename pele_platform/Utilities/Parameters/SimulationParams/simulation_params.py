@@ -3,6 +3,7 @@ import os
 import glob
 
 import pele_platform.constants.constants as cs
+from pele_platform.Errors import custom_errors
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
 from pele_platform.Utilities.Parameters.SimulationParams.GlideParams import glide_params
 from pele_platform.Utilities.Parameters.SimulationParams.BiasParams import bias_params
@@ -413,6 +414,7 @@ class SimulationParams(
         self.forcefield = args.forcefield if args.forcefield is not None else "OPLS2005"
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
         self.gridres = args.gridres
+        self.use_peleffy = args.use_peleffy if args.use_peleffy is not None else False
 
         # Take into account that the defaults for the parameterization method
         # are the following:
@@ -427,6 +429,10 @@ class SimulationParams(
         )
         self.skip_ligand_prep = args.skip_ligand_prep if args.skip_ligand_prep else []
         self.solvent_template = args.solvent_template
+
+        if not self.use_peleffy and self.forcefield.upper() != "OPLS2005":
+            raise custom_errors.IncompatibleForcefield(f"PlopRotTemp is incompatible with {self.forcefield}. Set "
+                                                       f"'use_peleffy: true' in input.yaml.")
 
     def water_params(self, args):
         self.water_temp = (
