@@ -108,6 +108,11 @@ class Parametrizer:
         obj : Parametrization object
             Parametrization object initialized from simulation parameters
         """
+        if hasattr(parameters, "as_datalocal"):  # to allow initializing Parametrizer from YamlParser object
+            as_datalocal = parameters.as_datalocal
+        else:
+            as_datalocal = False
+
         obj = Parametrizer(
             forcefield=parameters.forcefield,
             charge_parametrization_method=parameters.charge_parametrization_method,
@@ -115,7 +120,7 @@ class Parametrizer:
             solvent=parameters.solvent,
             external_templates=parameters.external_template,
             external_rotamers=parameters.external_rotamers,
-            as_datalocal=True,
+            as_datalocal=as_datalocal,
             pele_dir=parameters.pele_dir,
             exclude_terminal_rotamers=parameters.exclude_terminal_rotamers,
             ligand_core_constraints=parameters.core,
