@@ -7,7 +7,6 @@ import pele_platform.constants.constants as cs
 import pele_platform.main as main
 from pele_platform.analysis import Analysis, DataHandler, Plotter
 from pele_platform.Utilities.Helpers.helpers import check_remove_folder
-from . import test_adaptive as ta
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
@@ -203,8 +202,9 @@ def test_generate_clusters(analysis, method, bandwidth, n_clusters):
     results = os.path.join(working_folder, "*pdb")
     check_remove_folder(working_folder)
 
-    analysis.generate_clusters(working_folder, method, bandwidth=bandwidth,
-                               analysis_nclust=n_clusters)
+    analysis.generate_clusters(
+        working_folder, method, bandwidth=bandwidth, analysis_nclust=n_clusters
+    )
     assert len(glob.glob(results)) == n_clusters
     check_remove_folder(working_folder)
 
@@ -236,9 +236,19 @@ def test_api_analysis_generation(analysis):
     # Check cluster representatives CSV by testing for the presence of columns from both trajectory and metrics dfs
     top_selections = os.path.join(working_folder, "clusters", "top_selections.csv")
     df = pd.read_csv(top_selections)
-    assert all(x in df.columns for x in ["Cluster", "Cluster label", "epoch",
-                                         "trajectory", "Step", "currentEnergy",
-                                         "Binding Energy", "sasaLig"])
+    assert all(
+        x in df.columns
+        for x in [
+            "Cluster",
+            "Cluster label",
+            "epoch",
+            "trajectory",
+            "Step",
+            "currentEnergy",
+            "Binding Energy",
+            "sasaLig",
+        ]
+    )
 
     # Check if data.csv exists and is not empty
     data_csv = os.path.join(working_folder, "data.csv")
@@ -368,25 +378,35 @@ def test_top_clusters_criterion_flag(analysis, cluster_selection, expected_value
     output_folder = "cluster_selection_test"
     csv = os.path.join(output_folder, "info.csv")
 
-    analysis.generate_clusters(path=output_folder,
-                               clustering_type="meanshift",
-                               bandwidth=2.5,
-                               analysis_nclust=10,
-                               max_top_clusters=1,
-                               top_clusters_criterion=cluster_selection,
-                               min_population=0.01)
+    analysis.generate_clusters(
+        path=output_folder,
+        clustering_type="meanshift",
+        bandwidth=2.5,
+        analysis_nclust=10,
+        max_top_clusters=1,
+        top_clusters_criterion=cluster_selection,
+        min_population=0.01,
+    )
 
     df = pd.read_csv(csv)
     clusterA_index = df.index[df["Selected labels"] == "A"]
-    (top_value,) = \
-        (df[cs.metric_top_clusters_criterion[cluster_selection]].iloc[clusterA_index].tolist())
+    (top_value,) = (
+        df[cs.metric_top_clusters_criterion[cluster_selection]]
+        .iloc[clusterA_index]
+        .tolist()
+    )
     assert top_value == expected_value
     check_remove_folder(output_folder)
 
 
-@pytest.mark.parametrize(("criterion", "expected"),
-                         [("interaction_5_percentile", ""),
-                          ("interaction_25_percentile", ""), ("interaction_mean", "")])
+@pytest.mark.parametrize(
+    ("criterion", "expected"),
+    [
+        ("interaction_5_percentile", ""),
+        ("interaction_25_percentile", ""),
+        ("interaction_mean", ""),
+    ],
+)
 def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
     """
     Tests the user-defined method of selecting cluster representatives.
@@ -405,19 +425,62 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
     output_folder = "cluster_rep_selection"
     csv = os.path.join(output_folder, "top_selections.csv")
 
-    analysis.generate_clusters(path=output_folder,
-                               clustering_type="meanshift",
-                               bandwidth=2.5,
-                               max_top_clusters=1,
-                               representatives_criterion=criterion)
+    analysis.generate_clusters(
+        path=output_folder,
+        clustering_type="meanshift",
+        bandwidth=2.5,
+        max_top_clusters=1,
+        representatives_criterion=criterion,
+    )
 
     df = pd.read_csv(csv)
-    assert all(x in df.columns for x in ["Cluster", "Cluster label", "epoch",
-                                         "trajectory", "Step", "currentEnergy",
-                                         "Binding Energy", "sasaLig"])
+    assert all(
+        x in df.columns
+        for x in [
+            "Cluster",
+            "Cluster label",
+            "epoch",
+            "trajectory",
+            "Step",
+            "currentEnergy",
+            "Binding Energy",
+            "sasaLig",
+        ]
+    )
     assert not df.isnull().values.any()
 
     check_remove_folder(output_folder)
+
+
+def test_empty_reports_handling():
+    """
+    Checks if we handle reports with no accepted PELE steps to make sure the returned empty coordinates array doesn't
+    cause any errors.
+    """
+    simulation_output = os.path.join(test_path, "analysis/data/empty_reports_output")
+    analysis = Analysis(
+        simulation_output=simulation_output,
+        chain="Z",
+        resname="LIG",
+        skip_initial_structures=True,
+    )
+    analysis.generate(path="empty_reports")
+
+
+@pytest.mark.parametrize("path", ["analysis/data/xtc", "analysis/data/empty_reports_output"])
+def test_residue_checker(path):
+    """
+    Check, if we catch an error when the resname passed to Analysis doesn't exist in the output trajectories.
+    """
+    simulation_output = os.path.join(test_path, path)
+
+    with pytest.raises(ValueError):
+        analysis = Analysis(
+            simulation_output=simulation_output,
+            chain="Z",
+            resname="STR",
+            skip_initial_structures=True,
+        )
 
 
 @pytest.fixture
@@ -445,7 +508,11 @@ def analysis():
     """
     output = "../pele_platform/Examples/clustering"
 
-    analysis = Analysis(resname="LIG", chain="Z", simulation_output=output,
-                        skip_initial_structures=False)
+    analysis = Analysis(
+        resname="LIG",
+        chain="Z",
+        simulation_output=output,
+        skip_initial_structures=False,
+    )
 
     return analysis

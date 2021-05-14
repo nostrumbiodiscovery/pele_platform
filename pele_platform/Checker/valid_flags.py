@@ -32,6 +32,7 @@ VALID_FLAGS_PLATFORM = {
     "cluster_conditions": "cluster_conditions",
     "simulation_type": "simulation_type",
     "equilibration": "equilibration",
+    "equilibration_mode": "equilibration_mode",
     "eq_steps": "equilibration_steps",
     "adaptive_restart": "adaptive_restart",
     "input": "global_inputs",
@@ -193,4 +194,6 @@ VALID_FLAGS_PLATFORM = {
     "singularity_exec": "singularity_exec",
     "top_clusters_criterion": "top_clusters_criterion",
     "cluster_representatives_criterion": "cluster_representatives_criterion",
+    "site_finder_local": "site_finder_local",
+    "site_finder_global": "site_finder_global",
 }

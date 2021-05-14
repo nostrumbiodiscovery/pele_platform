@@ -18,24 +18,24 @@ Inputs
 Default parameters
 +++++++++++++++++++
 
-The pocket exploration consists of two steps - global exploration to identify the pockets, followed by refinement to
-optimize the binding modes.
-
 Parameters for stage 1:
 
-    - iterations: 100
-    - pele steps: 8
+    - iterations: 50
+    - pele steps: 12
+    - number of structures: ``number of available CPUs - 1`` (cannot be changed)
 
 Parameters for stage 2:
 
-    - iterations: 1
-    - pele steps: 250
+    - iterations: 10
+    - pele steps: 50
+    - number of structures: ``number of available cpus / 6`` (cannot be changed)
 
 Recommendations
 +++++++++++++++++
 
     #. Expected computational time is around 24 h.
     #. Initial position of the small molecule is irrelevant, since it will be extracted and randomly placed all around the protein.
+    #. We recommend using at least 60 CPUs for the this package.
 
 
 1. Complex Preparation
