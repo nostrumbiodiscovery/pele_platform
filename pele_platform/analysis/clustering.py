@@ -66,7 +66,7 @@ class Clustering(ABC):
         -------
         reshaped_coordinates : numpy.array
             The reshaped array of coordinates that will be clustered. They
-            now have the following shape: [M, N, 3], where M is the
+            now have the following shape: [M, N * 3], where M is the
             total number of models that have been sampled with PELE and
             N is the total number of atoms belonging to the residue that
             is being analyzed
@@ -258,8 +258,8 @@ class MeanShiftClustering(Clustering):
         super().__init__()
         self._bandwidth = bandwidth
 
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df=None, coordinates_df=None,
+                     csv_path=None):
         """
         It employs the Mean Shift method to gather the supplied coordinates
         into clusters.
@@ -294,38 +294,11 @@ class MeanShiftClustering(Clustering):
                                       cluster_all=True,
                                       max_iter=10000)
         clusters = clustering_method.fit_predict(coordinates)
-        self._save_cluster_info(original_df, coordinates_df,
-                                clusters, csv_path)
+        if csv_path:
+            self._save_cluster_info(original_df, coordinates_df,
+                                    clusters, csv_path)
 
         return clusters
-
-
-class WaterClustering(Clustering):
-    """
-    Class to clusterize waters.
-    """
-    def get_clusters(self, coordinates):
-        """
-        It builds the clusters according to the atomic coordinates that are supplied.
-
-        Parameters
-        ----------
-        coordinates : list
-                      list of ordered atom coordinates
-
-        Returns
-        -------
-        estimator : sklearn.cluster.MeanShift object
-                    clusterization implementation that clusterizes through the MeanShift method.
-        results : list
-                  list with the results of the clusterization. Each element is the cluster in which each atom belongs.
-
-        """
-        estimator = MeanShift(brandwith=self._bandwidth,
-                                      cluster_all=True)
-        results = estimator.fit_predict(coordinates)
-
-        return estimator, results
 
 
 def get_cluster_label(cluster_id):

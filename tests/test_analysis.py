@@ -137,6 +137,7 @@ def test_analysis_flags(yaml_file, n_expected_outputs, expected_files):
     main.run_platform_from_yaml(yaml_file)
 
     # Check if all expected file names are present
+
     for file in expected_files:
         file_path = os.path.join(plots_folder, file)
         assert os.path.exists(file_path)
@@ -295,11 +296,12 @@ def test_extract_and_filter_coordinates(analysis, max_coordinates):
     max_coordinates : int
         Number of coordinates to extract per ligand.
     """
+
     coordinates, water_coordinates, dataframe = analysis._extract_coordinates(
         max_coordinates
     )
-    coordinates_filtered, _, _ = analysis._filter_coordinates(
-        coordinates, dataframe, 0.5
+    coordinates_filtered, _, _, _ = analysis._filter_coordinates(
+        coordinates, dataframe, [], 0.5
     )
 
     assert len(coordinates) == 7

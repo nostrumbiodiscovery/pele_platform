@@ -107,9 +107,7 @@ class Analysis(object):
             supplied
         """
         import os
-
         simulation_output = os.path.join(parameters.pele_dir, parameters.output)
-
         analysis = Analysis(resname=parameters.residue,
                             chain=parameters.chain,
                             simulation_output=simulation_output,
@@ -232,7 +230,7 @@ class Analysis(object):
         """
         import os
         path = self._check_existing_directory(path)
-
+        self.working_dir = path
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
         top_poses_folder = os.path.join(path, "top_poses")
@@ -253,12 +251,13 @@ class Analysis(object):
 
         # Generate analysis results
         self.generate_plots(plots_folder)
+
         best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
+
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
                                max_top_clusters, top_clusters_criterion,
                                min_population, representatives_criterion)
-
         self.generate_report(plots_folder, top_poses_folder,
                              clusters_folder, best_metrics, report_file)
 
@@ -398,6 +397,7 @@ class Analysis(object):
         from pele_platform.constants.constants import \
             metric_top_clusters_criterion, cluster_representatives_criterion
 
+
         check_make_folder(path)
 
         # Get clustering object
@@ -413,16 +413,15 @@ class Analysis(object):
             return
 
         # Filter coordinates
-        coordinates, dataframe, energetic_threshold = \
-            self._filter_coordinates(coordinates, dataframe)
+        coordinates, water_coordinates, dataframe, energetic_threshold = \
+            self._filter_coordinates(coordinates, dataframe, water_coordinates)
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
         clusters = clustering.get_clusters(coordinates, self._dataframe,
-                                           dataframe, os.path.dirname(path))
-
-        # Analyze and save clustering results
+                                               dataframe, os.path.dirname(path))
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
+
         cluster_summary = self._analyze_clusters(clusters, dataframe,
                                                  rmsd_per_cluster)
 
@@ -437,6 +436,19 @@ class Analysis(object):
                                       top_clusters_criterion,
                                       max_clusters_to_select=max_top_clusters,
                                       min_population_to_select=min_population)
+
+        # IF there are water ids to track, keep water ids from top clusters, then perform Mean Shift clusterization
+        if self.water_ids:
+            import numpy as np
+            ids_to_delete = []
+            for i in range(len(cluster_subset)):
+                if cluster_subset[i] == -1:
+                    ids_to_delete.append(i)
+            water_coordinates = np.delete(water_coordinates, ids_to_delete, axis= 0)
+            from pele_platform.analysis.clustering import MeanShiftClustering
+            clustering = MeanShiftClustering(bandwidth)
+            water_clusters = clustering.get_clusters(water_coordinates)
+
         print(f"Retrieve top clusters based on " +
               f"{metric_top_clusters_criterion[top_clusters_criterion]}.")
 
@@ -489,28 +501,6 @@ class Analysis(object):
 
         print("PDF summary report successfully written to: {}".format(report))
 
-    def _generate_water_clusters(self, bandwidth):
-        """
-        It retrun the clustering object of water clusters.
-
-        Parameters
-        ----------
-        bandwidth : float
-                    Bandwidth for the mean shift clustering. Default is 2.5.
-        Returns
-        -------
-        clustering : sklearn.cluster.MeanShift object
-                    clusterization implementation that clusterizes through the MeanShift method.
-        max_coordinates : int
-                          The maximum number of coordinates to extract from the
-                          residue
-        """
-
-        water_clustering = self._get_clustering("waters", bandwidth)
-        water_clusters, max_coordinates = water_clustering.get_clusters()
-
-        return water_clusters, max_coordinates
-
     def _get_clustering(self, clustering_type, bandwidth, analysis_nclust):
         """
         It returns the clustering object according to the supplied
@@ -536,10 +526,10 @@ class Analysis(object):
             The maximum number of coordinates to extract from the
             residue
         """
-        from pele_platform.analysis import (GaussianMixtureClustering,
-                                            HDBSCANClustering,
-                                            MeanShiftClustering,
-                                            WaterClustering)
+        from pele_platform.analysis.clustering import (GaussianMixtureClustering,
+                                                       HDBSCANClustering,
+                                                       MeanShiftClustering)
+
 
         if clustering_type.lower() == "gaussianmixture":
             clustering = GaussianMixtureClustering(analysis_nclust)
@@ -550,14 +540,14 @@ class Analysis(object):
         elif clustering_type.lower() == "meanshift":
             clustering = MeanShiftClustering(bandwidth)
             max_coordinates = 5
-        elif clustering_type.lower() == "waters":
-            clustering = WaterClustering(bandwidth)
-            max_coordinates = ""
+        # elif clustering_type.lower() == "waters":
+        #     clustering = WaterClustering(bandwidth)
+        #     max_coordinates= 5
         else:
             raise ValueError("Invalid clustering type: " +
                              "'{}'. ".format(clustering_type) +
                              "It should be one of ['GaussianMixture', " +
-                             "'HDBSCAN', 'MeanShift', 'Waters']")
+                             "'HDBSCAN', 'MeanShift']")
 
         return clustering, max_coordinates
 
@@ -581,17 +571,22 @@ class Analysis(object):
             follows the same ordering as the array of coordinates
         """
         print(f"Extract coordinates for clustering")
-
         if not self.topology:
             coordinates, water_coords, dataframe = \
                 self._data_handler.extract_PDB_coords(
                     self.residue, self.water_ids, remove_hydrogen=True,
                     n_proc=self.cpus, max_coordinates=max_coordinates)
+            if self.water_ids:
+                dimensions = coordinates.shape
+                water_coords = water_coords.reshape(dimensions[0],len(self.water_ids),3)
         else:
             coordinates, water_coords, dataframe = \
                 self._data_handler.extract_XTC_coords(
                     self.residue, self.topology, self.water_ids,
                     remove_hydrogen=True, max_coordinates=max_coordinates)
+            if self.water_ids:
+                dimensions = coordinates.shape
+                water_coords = water_coords.reshape(dimensions[0],len(self.water_ids),3)
 
         if coordinates is None or dataframe is None:
             print(f"Coordinate extraction failed, " +
@@ -629,7 +624,6 @@ class Analysis(object):
         from pele_platform.Utilities.Helpers.bestStructs import (
             extract_snapshot_from_pdb,
             extract_snapshot_from_xtc)
-
         values = dataframe[metric].tolist()
         paths = dataframe[self._TRAJECTORY_LABEL].tolist()
         epochs = dataframe[self._EPOCH_LABEL].tolist()
@@ -1015,7 +1009,7 @@ class Analysis(object):
             plotter.plot_clusters(metric, energy, output_folder=path,
                                   clusters=clusters)
 
-    def _filter_coordinates(self, coordinates, dataframe, threshold=0.25):
+    def _filter_coordinates(self, coordinates, dataframe, water_coordinates= [], threshold=0.25):
         """
         It filters the coordinates by total energy according to the
         threshold that is supplied. A threshold of 0.25 means that the
@@ -1047,15 +1041,26 @@ class Analysis(object):
         energetic_threshold = np.quantile(total_energies, 1 - threshold)
 
         filtered_coordinates = []
-        for coors_array, total_energy in zip(coordinates, total_energies):
-            if total_energy <= energetic_threshold:
-                filtered_coordinates.append(coors_array)
+        filtered_water_coordinates = []
+        if len(water_coordinates) > 0:
+            for coors_array, total_energy, waters_array in zip(coordinates, total_energies, water_coordinates):
+                if total_energy <= energetic_threshold:
+                    filtered_coordinates.append(coors_array)
+                    filtered_water_coordinates.append(waters_array)
+        else:
+            for coors_array, total_energy in zip(coordinates, total_energies):
+                if total_energy <= energetic_threshold:
+                    filtered_coordinates.append(coors_array)
         filtered_coordinates = np.array(filtered_coordinates)
+        filtered_water_coordinates = np.array(filtered_water_coordinates)
+        print("filtered_coordinates", filtered_coordinates)
 
         filtered_dataframe = \
             dataframe.query('currentEnergy<={}'.format(energetic_threshold))
 
-        return filtered_coordinates, filtered_dataframe, energetic_threshold
+        return filtered_coordinates, filtered_water_coordinates, filtered_dataframe, energetic_threshold
+
+
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """
