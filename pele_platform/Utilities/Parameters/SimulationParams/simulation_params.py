@@ -447,6 +447,7 @@ class SimulationParams(
         self.water_center = None
         self.water = ""
         self.water_energy = None
+        self.water_ids_to_track = []
 
     def box_params(self, args):
         self.box_radius = (
