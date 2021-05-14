@@ -107,7 +107,9 @@ PELE++ parameters
 
 - **equilibration_steps**: Equilibration steps. Default: 2
 
-- **adaptive_restart**: Use adaptive restart with the working folder option to restart the simulation. Default: false
+- **adaptive_restart**: Use adaptive restart with the working folder option to restart the simulation from the last epoch. Default: false
+
+- **restart**: Use restart flag set to true to start a simulation from scratch (with existing input PDBs and configuration files), for example after using the debug mode or manually editing pele.conf or adaptive.conf. Default: false
 
 - **report**: Change the name of the report file. Default: report
 

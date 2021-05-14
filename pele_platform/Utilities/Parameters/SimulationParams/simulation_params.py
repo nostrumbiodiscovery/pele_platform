@@ -300,8 +300,8 @@ class SimulationParams(
 
         self.restart = (
             args.restart
-            if args.restart
-            else self.simulation_params.get("restart", "all")
+            if args.restart is not None
+            else False
         )
         self.test = args.test
         # +1 to avoid being 0
