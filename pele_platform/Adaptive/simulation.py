@@ -368,6 +368,7 @@ def run_adaptive(args):
     if parameters.analyse and not parameters.debug:
         from pele_platform.analysis import Analysis
 
+        # TODO handle waters when running on only_analysis
         analysis_folder = os.path.join(parameters.pele_dir, "results")
 
         analysis = Analysis.from_parameters(parameters)
@@ -380,7 +381,6 @@ def run_adaptive(args):
             min_population=parameters.min_population,
             max_top_poses=parameters.max_top_poses,
             top_clusters_criterion=parameters.top_clusters_criterion,
-            representatives_criterion=parameters.cluster_representatives_criterion,
-            )
+            representatives_criterion=parameters.cluster_representatives_criterion)
 
     return parameters

@@ -72,7 +72,10 @@ class Clustering(ABC):
             is being analyzed
         """
         try:
-            n_models, n_atoms, n_dimensions = coordinates.shape
+            if len(coordinates.shape) == 2:
+                n_atoms, n_dimensions = coordinates.shape
+            else:
+                n_models, n_atoms, n_dimensions = coordinates.shape
             if n_dimensions != 3:
                 raise ValueError
         except ValueError:
@@ -84,6 +87,9 @@ class Clustering(ABC):
                              'sampled with PELE and N is the total ' +
                              'number of atoms belonging to the residue ' +
                              'that is being analyzed')
+
+        if len(coordinates.shape) == 2:
+            return coordinates
 
         reshaped_coordinates = coordinates.reshape(-1, n_atoms * n_dimensions)
         return reshaped_coordinates
@@ -294,6 +300,7 @@ class MeanShiftClustering(Clustering):
                                       cluster_all=True,
                                       max_iter=10000)
         clusters = clustering_method.fit_predict(coordinates)
+
         if csv_path:
             self._save_cluster_info(original_df, coordinates_df,
                                     clusters, csv_path)

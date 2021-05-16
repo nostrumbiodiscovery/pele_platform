@@ -299,9 +299,8 @@ def test_extract_and_filter_coordinates(analysis, max_coordinates):
     coordinates, water_coordinates, dataframe = analysis._extract_coordinates(
         max_coordinates
     )
-    coordinates_filtered, _, _, _ = analysis._filter_coordinates(
-        coordinates, dataframe, [], 0.5
-    )
+    coordinates_filtered, _, _, _ = \
+        analysis._filter_coordinates(coordinates, [], dataframe, 0.5)
 
     assert len(coordinates) == 7
     assert coordinates.shape == (
