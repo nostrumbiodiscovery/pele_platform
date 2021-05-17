@@ -197,12 +197,29 @@ Please refer to the following table for the comparison of the two methods and av
 PlopRotTemp
 ++++++++++++
 
-To continue using PlopRotTemp, you do not need to make any changes to your YAML file, unless you want to select a
-specific solvent:
+To continue using PlopRotTemp, you do not need to make any changes to your YAML file, previously existing flags are still
+available:
+
+    - **gridres**: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees
+
+    - **core**: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None
+
+    - **exclude_terminal_rotamers**: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True
+
+    - **mae_lig**: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None
+
+    - **maxtorsion**: Maximum number of rotamers per flexible side chain. Default=4
+
+    - **n**: Maximum number of flexible side chains in a molecule. Default=None
+
 
 ..  code-block:: yaml
 
     solvent: "OBC"
+    maxtorsion: 4
+    n: 5
+    mae_lig: "/home/dsoler/lig.mae"
+    gridres: 10
 
 Peleffy
 ++++++++++
@@ -226,12 +243,7 @@ You can use the following parameters to control the way peleffy will parametrize
         - "am1bcc" (default when using any "OpenFF" force field)
         - "OPLS2005" (default when using "OPLS2005")
 
-- **use_peleffy**: You have to set it to True to use peleffy instead of the default parameters builder.
-
-Shared parameters
-+++++++++++++++++++
-
-The following parameters remain available in both implementations:
+- **use_peleffy**: You have to set it to True to use peleffy instead of the default parameters builder. Default=False
 
 - **gridres**: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees
 
