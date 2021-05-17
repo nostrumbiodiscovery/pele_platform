@@ -222,14 +222,6 @@ atom_string_flags = ["atom_dist", "final_site", "orthosteric_site", "initial_sit
 
 GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
 
-#RESTARTS:
-#-----------
-
-FIRST_RESTART = ["all",]
-SECOND_RESTART = ["all", "adaptive"]
-THIRD_RESTART = ["all", "adaptive", "pele"]
-FOURTH_RESTART = ["all", "adaptive", "pele", "msm"] 
-
 #PATHS
 #-------
 

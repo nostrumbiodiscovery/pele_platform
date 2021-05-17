@@ -1,4 +1,7 @@
 import os
+import pytest
+from subprocess import Popen, PIPE
+import glob
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
@@ -175,6 +178,15 @@ def test_mpirun_in_path(ext_args=EXTERNAL_CONSTR_ARGS):
     assert False
 
 
+def test_lig_preparation_error(args=LIG_PREP_ARGS):
+    try:
+        job = main.run_platform_from_yaml(args)
+    except ce.LigandPreparationError:
+        assert True
+        return
+    assert False
+
+
 def test_env_variable(ext_args=ENV_ARGS):
     try:
         job = main.run_platform_from_yaml(ext_args)
@@ -342,6 +354,16 @@ def test_SmilesConstraints_class():
     )
     assert matches == ((9, 0, 1, 2, 3, 4, 5, 6, 7, 8),)
     assert constraints == SMILES_CONSTR
+
+
+def test_check_multiple_simulations():
+    """
+    Ensures the platform raises an error, if the user sets more than one simulation type in YAML.
+    """
+    yaml_file = os.path.join(test_path, "checker", "multiple_simulations.yaml")
+
+    with pytest.raises(ce.MultipleSimulationTypes):
+        main.run_platform_from_yaml(yaml_file)
 
 
 @pytest.mark.parametrize(

@@ -61,3 +61,6 @@ class ConnectionsError(Exception):
 
 class IncompatibleForcefield(Exception):
     pass
+
+class MultipleSimulationTypes(Exception):
+    pass

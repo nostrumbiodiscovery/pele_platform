@@ -23,7 +23,7 @@ setup(
     package_data={"pele_platform/AdaptivePELE/atomset": ['*.pxd'],
                   "pele_platform/AdaptivePELE/freeEnergies/": ['*.pyx']},
     include_package_data=True,
-    install_requires=["AdaptivePELE", "frag_pele==2.2.1", "lib_prep",
+    install_requires=["AdaptivePELE=1.7.1", "frag_pele==2.2.1", "lib_prep",
                       "PPPele==1.0.6", "PlopRotTemp==1.0.1", "PyYAML",
                       "fpdf", "scikit-learn>0.20", "pillow", "scipy",
                       "matplotlib", "mdtraj==1.9.5", "biopython",
