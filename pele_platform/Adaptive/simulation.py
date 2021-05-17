@@ -108,7 +108,7 @@ def run_adaptive(args):
                 test=parameters.test,
                 user_center=parameters.center_of_interface,
                 logger=parameters.logger)
-            if not args.gpcr_orth:
+            if not args.gpcr_orth and not args.out_in:
                 parameters.box_center = box_center
                 parameters.box_radius = box_radius
             if parameters.no_ppp:

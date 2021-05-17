@@ -159,14 +159,55 @@ Configure the parameters of the PPP (Protein Pele Preparation)
 Ligand preparation
 ------------------
 
-In order to run a simulation, PELE requires the following files for every non standard molecule (i.e. any non standard small molecule or residue):
+In order to run a simulation, PELE requires the following files for every non-standard molecule (i.e. any non-standard small molecule or residue):
 
-    - **IMPACT template**: it contains the force field parameters. Please, check `this site <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format>`_ to get further information about it.
-    - **rotamer library**: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. Please, check `this site <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers>`_
-    - **solvent template**: some special solvents like "OBC" require extra parameters.
+    - **IMPACT template**: containing force field parameters, please refer to `this site <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format>`_ for further information.
+    - **rotamer library**: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. More information available `here <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers>`_.
+    - **solvent template**: some special solvents like "OBC" require extra parameters, which are set in this file.
 
-All these files can be automatically generated with `peleffy (PELE Force Field Yielder) <https://github.com/martimunicoy/peleffy>`_, one of the dependencies of the PELE Platform.
-The following parameters below control the way how the PELE Platform will parametrize non standard molecules for you:
+The platform currently has **two implementations** for building hetero molecule parameters - PlopRotTemp (soon to be deprecated) and
+`Peleffy <https://github.com/martimunicoy/peleffy>`_ (PELE Force Field Yielder), which offers more functionality but is still in beta testing.
+
+Please refer to the following table for the comparison of the two methods and available forcefields:
+
++-------------+----------------------+--------------+------------------------------------+
+| **Builder** | **Forcefields**      | **Solvents** | **Charge parametrization methods** |
++-------------+----------------------+--------------+------------------------------------+
+| PlopRotTemp | "OPLS2005"           | "OBC"        | "OPLS2005"                         |
+|             |                      |              |                                    |
+| (default)   |                      | "VDGBNP"     |                                    |
++-------------+----------------------+--------------+------------------------------------+
+| Peleffy     | "OPLS2005" (default) | "OBC"        | "gasteiger"                        |
+|             |                      |              |                                    |
+| (beta)      | "openff-1.3.0"       | "VDGBNP"     | "am1bcc" (default for OpenFF)      |
+|             |                      |              |                                    |
+|             | "openff-1.2.1"       |              | "OPLS2005" (default for OPLS2005)  |
+|             |                      |              |                                    |
+|             | "openff-1.2.0"       |              |                                    |
+|             |                      |              |                                    |
+|             | "openff-1.1.1"       |              |                                    |
+|             |                      |              |                                    |
+|             | "openff-1.1.0"       |              |                                    |
+|             |                      |              |                                    |
+|             | "openff-1.0.1"       |              |                                    |
+|             |                      |              |                                    |
+|             | "openff-1.0.0"       |              |                                    |
++-------------+----------------------+--------------+------------------------------------+
+
+PlopRotTemp
+++++++++++++
+
+To continue using PlopRotTemp, you do not need to make any changes to your YAML file, unless you want to select a
+specific solvent:
+
+..  code-block:: yaml
+
+    solvent: "OBC"
+
+Peleffy
+++++++++++
+
+You can use the following parameters to control the way peleffy will parametrize non-standard molecules for you:
 
 - **forcefield**: Forcefield used to parametrize hetero molecules, you can use one of:
 
@@ -185,6 +226,13 @@ The following parameters below control the way how the PELE Platform will parame
         - "am1bcc" (default when using any "OpenFF" force field)
         - "OPLS2005" (default when using "OPLS2005")
 
+- **use_peleffy**: You have to set it to True to use peleffy instead of the default parameters builder.
+
+Shared parameters
++++++++++++++++++++
+
+The following parameters remain available in both implementations:
+
 - **gridres**: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees
 
 - **core**: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None
@@ -195,6 +243,7 @@ The following parameters below control the way how the PELE Platform will parame
 
 ..  code-block:: yaml
 
+    use_peleffy: true
     charge_parametrization_method: "gasteiger"
     forcefield: "openff-1.3.0"
     gridres: 20
@@ -204,8 +253,11 @@ The following parameters below control the way how the PELE Platform will parame
         - "C2"
         - "N1"
 
-Alternatively, you can provide your own template and/or rotamer files as long as they follow PELE's naming convention
-(see examples in the block code below). When templates
+Use your own files
++++++++++++++++++++
+
+Alternatively, as before, you can provide your own template and/or rotamer files as long as they follow PELE's naming convention
+(see examples in the block code below).
 
     - **templates**: External forcefield template files.
 
@@ -220,7 +272,6 @@ Alternatively, you can provide your own template and/or rotamer files as long as
     - "/home/simulation_files/MG.rot.assign"
     - "/home/simulation_files/LIG.rot.assign"
 
-For more technical details about ligand parametrization, you can refer to the `PELE Force Field Yielder documentation <https://martimunicoy.github.io/peleffy/>`_.
 
 Constraints
 -----------
