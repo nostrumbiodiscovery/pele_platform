@@ -58,7 +58,7 @@ Simulation parameters
 
 - **temperature**: Temperature of the simulation. Default=1500
 
-- **solvent**: Solvent of the simulation. (OBC or VDGBNP). Default=VDGBNP
+- **solvent**: Solvent of the simulation. (OBC or VDGBNP). Please, take into account that any OpenFF force field can only run with the OBC solvent model. Default=VDGBNP (unless for the OpenFF, which the default is OBC)
 
 - **sidechain_res**: Receptor sidechain resolution. Default=10
 
@@ -157,46 +157,136 @@ Configure the parameters of the PPP (Protein Pele Preparation)
 
 
 Ligand preparation
-----------------------
+------------------
 
-Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.
+In order to run a simulation, PELE requires the following files for every non-standard molecule (i.e. any non-standard small molecule or residue):
 
-- **gridres**: Resolution of the rotamers when sampling. Default: 10 degrees
+    - **IMPACT template**: containing force field parameters, please refer to `this site <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format>`_ for further information.
+    - **rotamer library**: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. More information available `here <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers>`_.
+    - **solvent template**: some special solvents like "OBC" require extra parameters, which are set in this file.
 
-- **core**: Atomnumber of the atom that will be included as part of the rigid core. Default=None
+The platform currently has **two implementations** for building hetero molecule parameters - PlopRotTemp (soon to be deprecated) and
+`Peleffy <https://github.com/martimunicoy/peleffy>`_ (PELE Force Field Yielder), which offers more functionality but is still in beta testing.
 
-- **maxtorsion**: Maximum number of rotamers per flexible sidechain. Default: 4
+Please refer to the following table for the comparison of the two methods and available forcefields:
 
-- **n**: Maximum number of flexible sidechains in a molecule, Default: None
++-------------+----------------------+--------------+------------------------------------+
+| **Builder** | **Forcefields**      | **Solvents** | **Charge parametrization methods** |
++-------------+----------------------+--------------+------------------------------------+
+| PlopRotTemp | "OPLS2005"           | "OBC"        | "OPLS2005"                         |
+|             |                      |              |                                    |
+| (default)   |                      | "VDGBNP"     |                                    |
++-------------+----------------------+--------------+------------------------------------+
+| Peleffy     | "OPLS2005" (default) | "OBC"        | "gasteiger"                        |
+|             |                      |              |                                    |
+| (beta)      | "openff-1.3.0"       | "VDGBNP"     | "am1bcc" (default for OpenFF)      |
+|             |                      |              |                                    |
+|             | "openff-1.2.1"       |              | "OPLS2005" (default for OPLS2005)  |
+|             |                      |              |                                    |
+|             | "openff-1.2.0"       |              |                                    |
+|             |                      |              |                                    |
+|             | "openff-1.1.1"       |              |                                    |
+|             |                      |              |                                    |
+|             | "openff-1.1.0"       |              |                                    |
+|             |                      |              |                                    |
+|             | "openff-1.0.1"       |              |                                    |
+|             |                      |              |                                    |
+|             | "openff-1.0.0"       |              |                                    |
++-------------+----------------------+--------------+------------------------------------+
 
-- **mae_lig**: Mae file to extract the cuantum charges from. Default: None
+PlopRotTemp
+++++++++++++
 
-- **template**: External forcefield templaters
+To continue using PlopRotTemp, you do not need to make any changes to your YAML file, previously existing flags are still
+available:
 
-- **rotamers**: External rotamer libraries
+    - **gridres**: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees
 
-- **skip_ligand_prep**: Skip preparation of that resiude. This could be usefull to bypass problems with PlopRotTemp when creating the ligand parameters.
+    - **core**: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None
+
+    - **exclude_terminal_rotamers**: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True
+
+    - **mae_lig**: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None
+
+    - **maxtorsion**: Maximum number of rotamers per flexible side chain. Default=4
+
+    - **n**: Maximum number of flexible side chains in a molecule. Default=None
 
 
 ..  code-block:: yaml
 
-  gridres: 10
-  core: -1
-  maxtorsion: 4
-  n: 5
-  mae_lig: "/home/dsoler/lig.mae"
+    solvent: "OBC"
+    maxtorsion: 4
+    n: 5
+    mae_lig: "/home/dsoler/lig.mae"
+    gridres: 10
+
+Peleffy
+++++++++++
+
+You can use the following parameters to control the way peleffy will parametrize non-standard molecules for you:
+
+- **forcefield**: Forcefield used to parametrize hetero molecules, you can use one of:
+
+        - "OPLS2005" (default)
+        - "openff-1.3.0"
+        - "openff-1.2.1"
+        - "openff-1.2.0"
+        - "openff-1.1.1"
+        - "openff-1.1.0"
+        - "openff-1.0.1"
+        - "openff-1.0.0"
+
+- **charge_parametrization_method**: The method to use to assign partial charges to atoms:
+
+        - "gasteiger"
+        - "am1bcc" (default when using any "OpenFF" force field)
+        - "OPLS2005" (default when using "OPLS2005")
+
+- **use_peleffy**: You have to set it to True to use peleffy instead of the default parameters builder. Default=False
+
+- **gridres**: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees
+
+- **core**: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None
+
+- **exclude_terminal_rotamers**: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True
+
+- **mae_lig**: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None
+
+..  code-block:: yaml
+
+    use_peleffy: true
+    charge_parametrization_method: "gasteiger"
+    forcefield: "openff-1.3.0"
+    gridres: 20
+    core:
+        - "O1"
+        - "C1"
+        - "C2"
+        - "N1"
+
+Use your own files
++++++++++++++++++++
+
+Alternatively, as before, you can provide your own template and/or rotamer files as long as they follow PELE's naming convention
+(see examples in the block code below).
+
+    - **templates**: External forcefield template files.
+
+    - **rotamers**: External rotamer library files.
+
+..  code-block:: yaml
+
   templates:
-    - "/home/dsoler/mgz"
-    - "/home/dsoler/ligz"
+    - "/home/simulation_files/mgz"
+    - "/home/simulation_files/ligz"
   rotamers:
-    - "/home/dsoler/MG.rot.assign"
-    - "/home/dsoler/LIG.rot.assign"
-  skip_ligand_prep:
-    - "LIG"
+    - "/home/simulation_files/MG.rot.assign"
+    - "/home/simulation_files/LIG.rot.assign"
 
 
 Constraints
---------------
+-----------
 
 - **water_constr**: Water constraints. Default=5
 
