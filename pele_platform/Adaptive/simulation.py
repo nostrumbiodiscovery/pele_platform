@@ -22,6 +22,8 @@ import pele_platform.Utilities.Helpers.water as wt
 from pele_platform.Adaptive import Parametrizer
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.pca as pca
+import pele_platform.Adaptive.solvent as sv
+import pele_platform.Adaptive.ligand_parametrization as lg
 
 
 def run_adaptive(args):
@@ -208,7 +210,11 @@ def run_adaptive(args):
             parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
 
         elif parameters.perturbation and not parameters.use_peleffy:
-            # Parametrize missing residues with Plop
+            # Parametrize the ligand
+            ligand_params = lg.LigandParametrization(parameters)
+            ligand_params.generate()
+
+            # Parametrize missing residues identified by PPP
             for res, __, _ in missing_residues:
                 if res != args.residue and res not in parameters.skip_ligand_prep:
                     parameters.logger.info("Creating template for residue {}".format(res))
@@ -225,6 +231,16 @@ def run_adaptive(args):
             parameters.box = box.generate_json()
         else:
             parameters.box = ""
+
+        # Solvent parameters
+        solvent = sv.ImplicitSolvent(
+            parameters.solvent,
+            parameters.obc_tmp,
+            parameters.template_folder,
+            parameters.obc_file,
+            parameters.logger,
+        )
+        solvent.generate()
 
         # Build PCA
         if parameters.pca_traj:

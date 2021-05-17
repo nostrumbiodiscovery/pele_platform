@@ -10,5 +10,6 @@ core:
 #forcefield: "openff-1.3.0"
 #solvent: "OPLS_OBC"
 gridres: 30
+use_peleffy: true
 exclude_terminal_rotamers: False
 charge_parametrization_method: "gasteiger"

@@ -197,4 +197,6 @@ VALID_FLAGS_PLATFORM = {
     "skip_ligand_prep": "skip_ligand_prep",
     "solvent_template": "solvent_template",
     "use_peleffy": "use_peleffy",
+    "mtor": "maxtorsion",  # plop
+    "n": "n",  # plop
 }

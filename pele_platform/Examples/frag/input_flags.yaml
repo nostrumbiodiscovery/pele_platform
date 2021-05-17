@@ -11,6 +11,7 @@ iterations: 1
 steps: 1
 skip_preprocess: true
 gridres: 60
+maxtorsion: 2  # plop
 templates:
   - "data/mgz"
   - "data/strz"

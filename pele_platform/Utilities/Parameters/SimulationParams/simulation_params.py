@@ -411,6 +411,8 @@ class SimulationParams(
             else self.simulation_params.get("rotamers", [])
         )
         self.core = args.core
+        self.mtor = args.mtor
+        self.n = args.n
         self.forcefield = args.forcefield if args.forcefield is not None else "OPLS2005"
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
         self.gridres = args.gridres
@@ -430,7 +432,10 @@ class SimulationParams(
         self.skip_ligand_prep = args.skip_ligand_prep if args.skip_ligand_prep else []
         self.solvent_template = args.solvent_template
 
-        if not self.use_peleffy and self.forcefield.upper() != "OPLS2005":
+        if not self.use_peleffy and self.core is None:  # plop
+            self.core = -1
+
+        if not self.use_peleffy and self.forcefield.upper() != "OPLS2005":  # plop
             raise custom_errors.IncompatibleForcefield(f"PlopRotTemp is incompatible with {self.forcefield}. Set "
                                                        f"'use_peleffy: true' in input.yaml.")
 

@@ -30,8 +30,14 @@ def run_ppi(parsed_yaml: dict) -> (pv.ParametersBuilder, pv.ParametersBuilder):
     chain = parsed_yaml.protein
     ligand_pdb = parsed_yaml.ligand_pdb
 
-    # Parametrize hetero molecules before merging PDBs
-    parsed_yaml.template, parsed_yaml.rotamers, parsed_yaml.skip_ligand_prep = parametrize_hetero_ppi(parsed_yaml)
+    # Parametrize hetero molecules before merging PDBs, if using peleffy. Otherwise they will go through Plop in
+    # Adaptive.simulation.
+    if parsed_yaml.use_peleffy:
+        templates, rotamers, to_skip = parametrize_hetero_ppi(parsed_yaml)
+
+        parsed_yaml.template = parsed_yaml.template.extend(templates) if parsed_yaml.template else templates
+        parsed_yaml.rotamers = parsed_yaml.rotamers.extend(rotamers) if parsed_yaml.rotamers else rotamers
+        parsed_yaml.skip_ligand_prep = parsed_yaml.skip_ligand_prep.extend(to_skip) if parsed_yaml.skip_ligand_prep else to_skip
 
     # no waters in the first simulation
     parsed_yaml.water_arg = None

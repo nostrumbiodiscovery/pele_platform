@@ -313,6 +313,10 @@ class YamlParser(object):
         self.solvent_template = data.get(valid_flags["solvent_template"], None)
         self.use_peleffy = data.get(valid_flags["use_peleffy"], None)
 
+        # Plop
+        self.mtor = data.get(valid_flags["mtor"], 4)  # plop
+        self.n = data.get(valid_flags["n"], 10000)  # plop
+
         if self.test:
             warnings.warn(
                 "WARNING: This simulation is a test do not use the input files to run production simulations"

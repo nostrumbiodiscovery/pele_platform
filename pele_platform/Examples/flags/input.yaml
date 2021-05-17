@@ -10,6 +10,7 @@ steps: 1
 ca_interval: 1
 skip_preprocess: true
 gridres: 60
+maxtorsion: 2  # plop
 templates:
   - "../pele_platform/Examples/analysis/data/mgz"
   - "../pele_platform/Examples/analysis/data/strz"
