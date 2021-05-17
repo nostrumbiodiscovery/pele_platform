@@ -4,12 +4,14 @@ from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch, Vector
 import glob
 import numpy as np
 import os
+import re
 import pele_platform.constants.constants as cs
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.pele_params as pp
 
 TEMPLATE = '{{"watersToPerturb": {{"links": {{"ids": [{index}] }}}}, "Box": {{"radius": {radius}, "fixedCenter": [{com}], "type": "sphericalBox"}}}}'
+
 
 @dataclass
 class WaterIncluder():
@@ -125,7 +127,11 @@ class WaterIncluder():
     
         # get maximum residue and atom numbers keep original waters
         with open(self.input_pdbs[0], "r") as file:
-            pdb_lines = [ line for line in file.readlines() if "END" not in line]
+            pdb_lines = [
+                line
+                for line in file.readlines()
+                if "END" not in line and "CONECT" not in line
+            ]
             for line in pdb_lines:
                 if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER"):
                     try:
@@ -273,6 +279,30 @@ class WaterIncluder():
             output.append((chain, int(resnum)))
 
         return output
+
+
+def water_ids_from_conf(configuration_file):
+    """
+    Extract IDs of perturbed water molecules from pele.conf file.
+
+    Parameters
+    -----------
+    configuration_file : str
+        Path to pele.conf file.
+
+    Returns
+    --------
+    water_indices : List[tuple[str]]
+        List of tuples indicating water indices, e.g. [("A", 202), ("A", 203), ("A", 204)]
+    """
+    with open(configuration_file, "r") as file:
+        content = file.read()
+
+    pattern =r"waterSites\":.+?ids.+?(\[.+?\])"
+    match = re.findall(pattern, content)[0]
+    as_list = eval(match)
+    output = WaterIncluder.retrieve_indices_to_track(as_list)
+    return output
 
 
 def ligand_com(refinement_input, ligand_chain):

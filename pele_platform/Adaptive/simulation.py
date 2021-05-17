@@ -338,7 +338,10 @@ def run_adaptive(args):
     if parameters.analyse and not parameters.debug:
         from pele_platform.analysis import Analysis
 
-        # TODO handle waters when running on only_analysis
+        # Retrieve water IDs to track from existing pele.conf, if running analysis only
+        if parameters.only_analysis:
+            parameters.water_ids_to_track = wt.water_ids_from_conf(parameters.pele_temp)
+
         analysis_folder = os.path.join(parameters.pele_dir, "results")
 
         analysis = Analysis.from_parameters(parameters)

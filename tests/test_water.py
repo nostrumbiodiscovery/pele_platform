@@ -124,3 +124,14 @@ def test_retrieve_indices_to_track():
 
     output = wt.WaterIncluder.retrieve_indices_to_track(inp)
     assert output == expected_out
+
+
+def test_water_ids_from_conf():
+    """
+    Tests if we can correctly extract water indices from pele.conf.
+    """
+    from pele_platform.Utilities.Helpers.water import water_ids_from_conf
+
+    configuration_file = os.path.join(test_path, "water", "water_pele.conf")
+    output = water_ids_from_conf(configuration_file)
+    assert output == [("A", 202), ("A", 203), ("A", 204)]
