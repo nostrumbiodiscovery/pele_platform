@@ -1,12 +1,18 @@
 Versions
 ############
 
-v1.6.0 beta
+v1.6.0 beta 5
 ==============
 
 - Interaction restrictions
 
-- HDBSCAN and mean shift clustering algorithms
+- Integrate peleffy and support OpenFF force fields
+
+- New module and API for analysis
+
+- Integrate Mean Shift and HDBSCAN clustering algorithms
+
+- Add water sites analysis
 
 - Support for growing custom fragment libraries
 
@@ -14,7 +20,7 @@ v1.6.0 beta
 
 - Constraints levels for alpha carbons
 
-- Changes to Monte Carlo parameters
+- Changes to Monte Carlo default parameters for some packages
 
 - Allosteric package renamed to site finder
 
@@ -24,7 +30,16 @@ v1.6.0 beta
 
 - Optimisation of coordinates parser and bugfixes
 
-- Implemented "restart" flag to restart the simulation from scratch using exisiting configuration files
+- Recover restart flag to allow the users to manually curate control files and use them in a new run
+
+- Support for the new equilibration mode flag of Adaptive
+
+- Fix problems with the box of the Out --> In package
+
+- Add user warnings to facilitate the system preparation
+
+- Other minor improvements
+
 
 v1.5.1
 ==========================
@@ -47,7 +62,8 @@ v1.5.1
 
 - Improved documentation
 
-v1.5.0 
+
+v1.5.0
 ==========================
 
 - PPI package
@@ -74,7 +90,8 @@ v1.5.0
 
 - Coverage up to 94%
 
-v1.4.4 
+
+v1.4.4
 =====================
 
 - Include further testing of alignment and rdkit symmetry problem
@@ -83,12 +100,14 @@ v1.4.4
 
 - Improve exceptions with custom errors
 
-v1.4.3 
+
+v1.4.3
 ======================
 
 - Fix rdkit substructure search symmetry problem by alignment
 
-v1.4.2 
+
+v1.4.2
 ====================
 
 - FragPELE better tested
@@ -101,12 +120,14 @@ v1.4.2
 
 - Minor fixes
 
-v1.4.1 
+
+v1.4.1
 ======================
 
 - Wrongly updated
 
-v1.4.0 
+
+v1.4.0
 =======================
 
 - FragPELE supported (Beta-version)
@@ -126,7 +147,7 @@ v1.4.0
 - Better coverage (77%)
 
 
-v1.3.4 
+v1.3.4
 =======================
 
 - Make mae flag convert clusters as well as top poses to mae
@@ -135,12 +156,14 @@ v1.3.4
 
 - Allow user to specify the columns of the report via be_column, te_column and limit_column.
 
-v1.3.3 
+
+v1.3.3
 =======================
 
 - Include only analysis flag
 
-v1.3.2 
+
+v1.3.2
 =======================
 
 - Automatically score the simulation by making the average of the 25% best energy structures.
@@ -149,12 +172,14 @@ v1.3.2
 
 - Support conda deployment for python 3.8
 
-v1.3.1 
+
+v1.3.1
 =======================
 
 - Fixed bug in xtc analysis
 
 - Renew environment on SCHRODINGER subprocess
+
 
 v1.3.0 
 =======================
@@ -173,7 +198,8 @@ v1.3.0
 
 - Fix minor bugs
 
-v1.2.3 
+
+v1.2.3
 =======================
 
 - Automatic PCA mode
@@ -182,7 +208,8 @@ v1.2.3
 
 - Set PPP as external dependence
 
-v1.2.2 
+
+v1.2.2
 =======================
 
 - Fix global exploration bug when joining ligand & receptor
@@ -194,7 +221,7 @@ v1.2.2
 - Some minor fixes
 
 
-v1.2.1 
+v1.2.1
 =======================
 
 - Add verboseMode
@@ -205,7 +232,8 @@ v1.2.1
 
 - Minor fixes
 
-v1.2.0 
+
+v1.2.0
 =======================
 
 - Conda installation
@@ -214,7 +242,8 @@ v1.2.0
 
 - Fix minor bugs
 
-v1.1.0 
+
+v1.1.0
 =======================
 
 - Automatic Platform to automatically launch PELE&adaptivePELE. It creates the forcefield parameters, the control files, the PELE input.pdb and finally launch the simulation.
