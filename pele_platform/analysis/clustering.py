@@ -66,13 +66,16 @@ class Clustering(ABC):
         -------
         reshaped_coordinates : numpy.array
             The reshaped array of coordinates that will be clustered. They
-            now have the following shape: [M, N, 3], where M is the
+            now have the following shape: [M, N * 3], where M is the
             total number of models that have been sampled with PELE and
             N is the total number of atoms belonging to the residue that
             is being analyzed
         """
         try:
-            n_models, n_atoms, n_dimensions = coordinates.shape
+            if len(coordinates.shape) == 2:
+                n_atoms, n_dimensions = coordinates.shape
+            else:
+                n_models, n_atoms, n_dimensions = coordinates.shape
             if n_dimensions != 3:
                 raise ValueError
         except ValueError:
@@ -84,6 +87,9 @@ class Clustering(ABC):
                              'sampled with PELE and N is the total ' +
                              'number of atoms belonging to the residue ' +
                              'that is being analyzed')
+
+        if len(coordinates.shape) == 2:
+            return coordinates
 
         reshaped_coordinates = coordinates.reshape(-1, n_atoms * n_dimensions)
         return reshaped_coordinates
@@ -182,7 +188,7 @@ class GaussianMixtureClustering(Clustering):
         clusters = clustering_method.fit_predict(coordinates)
         self._save_cluster_info(original_df, coordinates_df,
                                 clusters, csv_path)
-        return clusters
+        return clusters, clustering_method
 
 
 class HDBSCANClustering(Clustering):
@@ -237,7 +243,7 @@ class HDBSCANClustering(Clustering):
         clusters = clustering_method.fit_predict(coordinates)
         self._save_cluster_info(original_df, coordinates_df,
                                 clusters, csv_path)
-        return clusters
+        return clusters, clustering_method
 
 
 class MeanShiftClustering(Clustering):
@@ -258,8 +264,8 @@ class MeanShiftClustering(Clustering):
         super().__init__()
         self._bandwidth = bandwidth
 
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df=None, coordinates_df=None,
+                     csv_path=None):
         """
         It employs the Mean Shift method to gather the supplied coordinates
         into clusters.
@@ -294,10 +300,12 @@ class MeanShiftClustering(Clustering):
                                       cluster_all=True,
                                       max_iter=10000)
         clusters = clustering_method.fit_predict(coordinates)
-        self._save_cluster_info(original_df, coordinates_df,
-                                clusters, csv_path)
 
-        return clusters
+        if csv_path:
+            self._save_cluster_info(original_df, coordinates_df,
+                                    clusters, csv_path)
+
+        return clusters, clustering_method
 
 
 def get_cluster_label(cluster_id):

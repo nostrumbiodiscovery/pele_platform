@@ -32,6 +32,7 @@ VALID_FLAGS_PLATFORM = {
     "cluster_conditions": "cluster_conditions",
     "simulation_type": "simulation_type",
     "equilibration": "equilibration",
+    "equilibration_mode": "equilibration_mode",
     "eq_steps": "equilibration_steps",
     "adaptive_restart": "adaptive_restart",
     "input": "global_inputs",
@@ -42,8 +43,6 @@ VALID_FLAGS_PLATFORM = {
     "bias_column": "bias_column",
     "gridres": "gridres",
     "core": "core",
-    "mtor": "maxtorsion",
-    "n": "n",
     "template": "templates",
     "ext_temp": "template",
     "rotamers": "rotamers",
@@ -130,7 +129,6 @@ VALID_FLAGS_PLATFORM = {
     "selection_to_perturb": "selection_to_perturb",
     "mae": "mae",
     "constrain_core": "constrain_core",
-    "skip_ligand_prep": "skip_ligand_prep",
     "spawning_condition": "spawning_condition",
     "external_constraints": "external_constraints",
     "only_analysis": "only_analysis",
@@ -194,7 +192,14 @@ VALID_FLAGS_PLATFORM = {
     "singularity_exec": "singularity_exec",
     "top_clusters_criterion": "top_clusters_criterion",
     "cluster_representatives_criterion": "cluster_representatives_criterion",
-    "fragment_atom": "fragment_atom"
+    "fragment_atom": "fragment_atom",
     "site_finder_local": "site_finder_local",
     "site_finder_global": "site_finder_global",
+    "charge_parametrization_method": "charge_parametrization_method",
+    "exclude_terminal_rotamers": "exclude_terminal_rotamers",
+    "skip_ligand_prep": "skip_ligand_prep",
+    "solvent_template": "solvent_template",
+    "use_peleffy": "use_peleffy",
+    "mtor": "maxtorsion",  # plop
+    "n" : "n"  # plop
 }

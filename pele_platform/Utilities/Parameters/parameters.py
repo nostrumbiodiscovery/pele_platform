@@ -55,22 +55,12 @@ class ParametersBuilder(object):
         # the best candidate considering whether we want to restart a previous
         # simulation or we want to run a new one from scratch.
         if not args.folder:
-            # Check if the simulation is being restarted or not
-            # TODO the restart flag is undocumented and counterintuitive
-            #      since it apparently is doing the opposite of
-            #      adaptive_restart
-            if args.restart in constants.FIRST_RESTART:
-                pele_dir = helpers.get_next_peledir(main_dir)
-            else:
-                pele_dir = helpers.get_latest_peledir(main_dir)
-
-            # Check if the adaptive simulation is being restarted or not
-            # Also check if we are only running the analysis
-            if args.adaptive_restart or args.only_analysis:
-                # Take the last folder name
+            # If the simulation is being restarted (after debug), adaptive_restarted (from last epoch)
+            # or if we're running only_analysis we need to retrieve the LAST pele_dir. Otherwise create a new one
+            # with a new index.
+            if args.restart or args.adaptive_restart or args.only_analysis:
                 pele_dir = helpers.get_latest_peledir(main_dir)
             else:
-                # Get a new folder name
                 pele_dir = helpers.get_next_peledir(main_dir)
 
         # In case that the user has specified the output folder, we will
@@ -254,12 +244,10 @@ class Parameters(simulation_params.SimulationParams,
             setattr(self, key, value)
 
     def create_files_and_folders(self):
-        if not self.adaptive_restart:
+        if not self.adaptive_restart and not self.only_analysis and not self.restart:
             self.create_folders()
             self.create_files()
-            self.create_logger()
-        else:
-            self.create_logger()
+        self.create_logger()
 
     def create_folders(self):
         """

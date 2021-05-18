@@ -136,6 +136,7 @@ def test_analysis_flags(yaml_file, n_expected_outputs, expected_files):
     main.run_platform_from_yaml(yaml_file)
 
     # Check if all expected file names are present
+
     for file in expected_files:
         file_path = os.path.join(plots_folder, file)
         assert os.path.exists(file_path)
@@ -294,10 +295,12 @@ def test_extract_and_filter_coordinates(analysis, max_coordinates):
     max_coordinates : int
         Number of coordinates to extract per ligand.
     """
-    coordinates, dataframe = analysis._extract_coordinates(max_coordinates)
-    coordinates_filtered, _, _ = analysis._filter_coordinates(
-        coordinates, dataframe, 0.5
+
+    coordinates, water_coordinates, dataframe = analysis._extract_coordinates(
+        max_coordinates
     )
+    coordinates_filtered, _, _, _ = \
+        analysis._filter_coordinates(coordinates, [], dataframe, 0.5)
 
     assert len(coordinates) == 7
     assert coordinates.shape == (
@@ -451,6 +454,94 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
 
     check_remove_folder(output_folder)
 
+def test_coordinates_extraction_from_trajectory():
+    """
+    Test extraction of water coordinates and clustering.
+    """
+    output = "../pele_platform/Examples/clustering"
+
+    data_handler = DataHandler(
+        sim_path=output,
+        report_name=REPORT_NAME,
+        trajectory_name=TRAJ_NAME,
+        be_column=5,
+        skip_initial_structures=False,
+    )
+
+    trajectory = glob.glob(os.path.join(output, "*", "trajectory*"))[0]
+    residue, water = data_handler._get_coordinates_from_trajectory(
+        "LIG",
+        True,
+        trajectory,
+        only_first_model=False,
+        water_ids=[("A", 2109), ("A", 2124)],
+    )
+    assert residue.shape == (2, 18, 3)
+    assert water.shape == (4, 3)
+
+
+def get_analysis(output, topology, traj):
+    """
+    Calls analysis fixture with the right arguments depending on the trajectory type.
+
+    Parameters
+    -----------
+    output : str
+        Path to simulation 'output' folder.
+    topology : str
+        Path to the topology file.
+    traj : str
+        Trajectory type: xtc or pdb.
+    """
+    traj = traj if traj else "pdb"
+    trajectory = f"trajectory.{traj}"
+    analysis = Analysis(
+        resname="LIG",
+        chain="Z",
+        simulation_output=output,
+        skip_initial_structures=False,
+        topology=topology,
+        water_ids_to_track=[("A", 2109), ("A", 2124)],
+        traj=trajectory,
+    )
+    return analysis
+
+
+@pytest.mark.parametrize(
+    ("path", "topology"),
+    [
+        (
+            "../pele_platform/Examples/clustering_xtc",
+            "../pele_platform/Examples/clustering_xtc/0/topology.pdb",
+        ),
+        ("../pele_platform/Examples/clustering", None),
+    ],
+)
+def test_water_clustering(path, topology):
+    """
+    Tests full water clustering on both XTC and PDB trajectories.
+    """
+    traj = "xtc" if topology else "pdb"
+    analysis_output = "water_clustering"
+
+    obj = get_analysis(path, topology, traj)
+    obj.generate_clusters(path=analysis_output, clustering_type="meanshift")
+    # TODO: Write a proper test for water clustering output once it's implemented.
+
+    check_remove_folder(analysis_output)
+
+
+def test_water_clustering_production():
+    """
+    Tests water clustering running from YAML.
+    """
+    yaml = os.path.join(test_path, "clustering_xtc", "water_clustering.yaml")
+    parameters = main.run_platform_from_yaml(yaml)
+
+    # Checking if water indices to track are correctly parsed
+    assert parameters.water_ids_to_track == [("A", 2334), ("A", 2451)]
+
+    # TODO: Write a proper test for water clustering output once it's implemented.
 
 def test_empty_reports_handling():
     """
@@ -482,7 +573,6 @@ def test_residue_checker(path):
             skip_initial_structures=True,
         )
 
-
 @pytest.fixture
 def generate_folders():
     """
@@ -507,12 +597,5 @@ def analysis():
         Analysis object.
     """
     output = "../pele_platform/Examples/clustering"
-
-    analysis = Analysis(
-        resname="LIG",
-        chain="Z",
-        simulation_output=output,
-        skip_initial_structures=False,
-    )
-
     return analysis
+

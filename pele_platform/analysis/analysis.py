@@ -18,7 +18,8 @@ class Analysis(object):
     def __init__(self, simulation_output, resname=None, chain=None,
                  be_column=4, limit_column=None, traj="trajectory.pdb",
                  report=None, skip_initial_structures=True, kde=False,
-                 kde_structs=1000, topology=None, cpus=1):
+                 kde_structs=1000, topology=None, cpus=1,
+                 water_ids_to_track=[]):
         """
         It initializes an Analysis instance which it depends on
         the general Parameters class of the PELE Platform.
@@ -52,6 +53,10 @@ class Analysis(object):
         kde_structs : int
             Maximum number of structures to consider for the KDE plot.
             Default is 1000
+        water_ids_to_track : list[tuple[str, int]]
+            The list of water ids to track. Each water id is defined with
+            a tuple that contains the PDB chain and the residue number
+            corresponding to each water molecule to track. Default is []
         topology : str
             Path to the topology file, if using XTC trajectories. Default
              is None
@@ -74,6 +79,7 @@ class Analysis(object):
         self.skip_initial_structures = skip_initial_structures
         self.topology = topology
         self.cpus = cpus
+        self.water_ids = water_ids_to_track
 
         if self.residue:
             self._check_residue_exists()
@@ -129,7 +135,8 @@ class Analysis(object):
                             kde=parameters.kde,
                             kde_structs=parameters.kde_structs,
                             topology=parameters.topology,
-                            cpus=parameters.cpus)
+                            cpus=parameters.cpus,
+                            water_ids_to_track=parameters.water_ids_to_track)
 
         return analysis
 
@@ -238,7 +245,6 @@ class Analysis(object):
         """
         import os
         path = self._check_existing_directory(path)
-
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
         top_poses_folder = os.path.join(path, "top_poses")
@@ -259,12 +265,13 @@ class Analysis(object):
 
         # Generate analysis results
         self.generate_plots(plots_folder)
+
         best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
+
         self.generate_clusters(clusters_folder, clustering_type,
                                bandwidth, analysis_nclust,
                                max_top_clusters, top_clusters_criterion,
                                min_population, representatives_criterion)
-
         self.generate_report(plots_folder, top_poses_folder,
                              clusters_folder, best_metrics, report_file)
 
@@ -411,24 +418,24 @@ class Analysis(object):
                                                            bandwidth,
                                                            analysis_nclust)
 
-        # Extract coordinates
-        coordinates, dataframe = self._extract_coordinates(max_coordinates)
+        # Extract ligand and water coordinates
+        coordinates, water_coordinates, dataframe = \
+            self._extract_coordinates(max_coordinates)
 
         # Skip clustering in case
         if coordinates is None or dataframe is None:
             return
 
         # Filter coordinates
-        coordinates, dataframe, energetic_threshold = \
-            self._filter_coordinates(coordinates, dataframe)
+        coordinates, water_coordinates, dataframe, energetic_threshold = \
+            self._filter_coordinates(coordinates, water_coordinates, dataframe)
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
-        clusters = clustering.get_clusters(coordinates, self._dataframe,
-                                           dataframe, os.path.dirname(path))
-
-        # Analyze and save clustering results
+        clusters, _ = clustering.get_clusters(coordinates, self._dataframe,
+                                              dataframe, os.path.dirname(path))
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
+
         cluster_summary = self._analyze_clusters(clusters, dataframe,
                                                  rmsd_per_cluster)
 
@@ -443,6 +450,12 @@ class Analysis(object):
                                       top_clusters_criterion,
                                       max_clusters_to_select=max_top_clusters,
                                       min_population_to_select=min_population)
+
+        # If water coordinates have been extracted, use them to locate
+        # main water sites for each top cluster
+        if water_coordinates is not None:
+            self._get_water_sites(cluster_subset, water_coordinates, path)
+
         print(f"Retrieve top clusters based on " +
               f"{metric_top_clusters_criterion[top_clusters_criterion]}.")
 
@@ -520,9 +533,10 @@ class Analysis(object):
             The maximum number of coordinates to extract from the
             residue
         """
-        from pele_platform.analysis import (GaussianMixtureClustering,
-                                            HDBSCANClustering,
-                                            MeanShiftClustering)
+        from pele_platform.analysis.clustering import (GaussianMixtureClustering,
+                                                       HDBSCANClustering,
+                                                       MeanShiftClustering)
+
 
         if clustering_type.lower() == "gaussianmixture":
             clustering = GaussianMixtureClustering(analysis_nclust)
@@ -555,33 +569,36 @@ class Analysis(object):
         Returns
         -------
         coordinates : numpy.array
-            The array of coordinates to filter
+            The array of coordinates belonging to the ligand
+        water_coordinates : numpy.array
+            The array of coordinates belonging to tracked water molecules
         dataframe : a pandas.dataframe object
             The dataframe containing the PELE reports information that
             follows the same ordering as the array of coordinates
         """
         print(f"Extract coordinates for clustering")
-
         if not self.topology:
-            coordinates, dataframe = self._data_handler.extract_PDB_coords(
-                self.residue, remove_hydrogen=True,
-                n_proc=self.cpus, max_coordinates=max_coordinates)
+            coordinates, water_coords, dataframe = \
+                self._data_handler.extract_PDB_coords(
+                    self.residue, self.water_ids, remove_hydrogen=True,
+                    n_proc=self.cpus, max_coordinates=max_coordinates)
         else:
-            coordinates, dataframe = self._data_handler.extract_XTC_coords(
-                self.residue, self.topology,
-                remove_hydrogen=True, max_coordinates=max_coordinates)
+            coordinates, water_coords, dataframe = \
+                self._data_handler.extract_XTC_coords(
+                    self.residue, self.topology, self.water_ids,
+                    remove_hydrogen=True, max_coordinates=max_coordinates)
 
         if coordinates is None or dataframe is None:
             print(f"Coordinate extraction failed, " +
                   f"clustering analysis is skipped")
-            return None, None
+            return None, None, None
 
         if len(coordinates) < 2:
             print(f"Not enough coordinates, " +
                   f"clustering analysis is skipped")
-            return None, None
+            return None, None, None
 
-        return coordinates, dataframe
+        return coordinates, water_coords, dataframe
 
     def _extract_poses(self, dataframe, metric, output_path):
         """
@@ -607,7 +624,6 @@ class Analysis(object):
         from pele_platform.Utilities.Helpers.bestStructs import (
             extract_snapshot_from_pdb,
             extract_snapshot_from_xtc)
-
         values = dataframe[metric].tolist()
         paths = dataframe[self._TRAJECTORY_LABEL].tolist()
         epochs = dataframe[self._EPOCH_LABEL].tolist()
@@ -846,6 +862,85 @@ class Analysis(object):
 
         return cluster_subset, cluster_summary
 
+    def _get_water_sites(self, cluster_subset, water_coordinates, path):
+        """
+        Given a water coordinates array for each top cluster, it
+        identifies the main water sites corresponding to each of them.
+        It also saves a csv file containing the information about
+        water sites.
+
+        Parameters
+        ----------
+        cluster_subset : a numpy.array object
+            The array of cluster after the selection. Those clusters
+            that were not selected are labeled with a -1
+        water_coordinates : numpy.array
+            The array of water coordinates to cluster
+        path : string
+            The path where the water sites will be saved at
+        """
+        import os
+        import numpy as np
+        import pandas as pd
+        from pele_platform.analysis.clustering import get_cluster_label
+        from pele_platform.analysis.clustering import MeanShiftClustering
+
+        top_clusters_set = set(cluster_subset)
+        top_clusters_set.discard(-1)  # Remove filtered entries, if any
+
+        # Initialize dataframe data
+        watersites_data = list()
+
+        for top_cluster in top_clusters_set:
+            coords_to_cluster = []
+            label = get_cluster_label(top_cluster)
+            for cluster, coords in zip(cluster_subset, water_coordinates):
+                if cluster == top_cluster:
+                    try:
+                        n_waters, n_dimensions = coords.shape
+                        if n_dimensions != 3:
+                            raise ValueError
+                    except ValueError:
+                        raise ValueError('Array of water coordinates have ' +
+                                         'invalid dimensions: ' +
+                                         '{}. '.format(coords.shape) +
+                                         'Its shape must fulfill the ' +
+                                         'following dimensions: [N, 3], ' +
+                                         'where N is the total number ' +
+                                         'of water molecules that are ' +
+                                         'tracked in each snapshot')
+
+                    coords_to_cluster.extend(coords)
+
+            coords_to_cluster = np.array(coords_to_cluster)
+
+            clustering = MeanShiftClustering(1.5)  # Hardcoded bandwidth value for water
+            water_clusters, estimator = \
+                clustering.get_clusters(coords_to_cluster)
+
+            populations = self._get_cluster_populations(water_clusters)
+            output_path = os.path.join(path,
+                                       'cluster_{}_watersites.pdb'.format(label))
+            self._write_centroids(populations, estimator, output_path)
+
+            # Append data to dataframe
+            centroids = estimator.cluster_centers_
+
+            for cluster, centroid in enumerate(centroids):
+                watersites_data.append([label, cluster, *centroid,
+                                        populations[cluster]])
+
+        # Build dataframe
+        watersites_info = pd.DataFrame(watersites_data,
+                                       columns=['Ligand top cluster',
+                                                'Water cluster',
+                                                'x', 'y', 'z',
+                                                'Population'])
+
+        # Save csv file
+        file_name = os.path.join(path, "watersites.csv")
+        watersites_info.to_csv(file_name, index=False)
+
     def _plot_cluster_descriptors(self, clusters, dataframe,
                                   cluster_summary, path):
         """
@@ -993,7 +1088,8 @@ class Analysis(object):
             plotter.plot_clusters(metric, energy, output_folder=path,
                                   clusters=clusters)
 
-    def _filter_coordinates(self, coordinates, dataframe, threshold=0.25):
+    def _filter_coordinates(self, coordinates, water_coordinates,
+                            dataframe, threshold=0.25):
         """
         It filters the coordinates by total energy according to the
         threshold that is supplied. A threshold of 0.25 means that the
@@ -1003,6 +1099,9 @@ class Analysis(object):
         ----------
         coordinates : numpy.array
             The array of coordinates to filter
+        water_coordinates : numpy.array
+            The array of water coordinates to filter. It has the same size
+            (and order) of the coordinates array
         dataframe : a pandas.dataframe object
             The dataframe containing the PELE reports information that
             follows the same ordering as the array of coordinates
@@ -1025,15 +1124,29 @@ class Analysis(object):
         energetic_threshold = np.quantile(total_energies, 1 - threshold)
 
         filtered_coordinates = []
-        for coors_array, total_energy in zip(coordinates, total_energies):
-            if total_energy <= energetic_threshold:
-                filtered_coordinates.append(coors_array)
+        if water_coordinates is None:
+            filtered_water_coordinates = None
+            for coors_array, total_energy in zip(coordinates, total_energies):
+                if total_energy <= energetic_threshold:
+                    filtered_coordinates.append(coors_array)
+        else:
+            filtered_water_coordinates = []
+            for coors_array, total_energy, waters_array in \
+                    zip(coordinates, total_energies, water_coordinates):
+                if total_energy <= energetic_threshold:
+                    filtered_coordinates.append(coors_array)
+                    filtered_water_coordinates.append(waters_array)
+
+        # Convert lists to numpy arrays
         filtered_coordinates = np.array(filtered_coordinates)
+        if filtered_water_coordinates is not None:
+            filtered_water_coordinates = np.array(filtered_water_coordinates)
 
         filtered_dataframe = \
             dataframe.query('currentEnergy<={}'.format(energetic_threshold))
 
-        return filtered_coordinates, filtered_dataframe, energetic_threshold
+        return filtered_coordinates, filtered_water_coordinates, \
+            filtered_dataframe, energetic_threshold
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """
@@ -1293,6 +1406,62 @@ class Analysis(object):
         file_name = os.path.join(path, "top_selections.csv")
         representatives_data.to_csv(file_name, index=False)
 
+    def _get_cluster_populations(self, water_clusters):
+        """
+        It calculates the population of each cluster. This means the
+        number of times a water molecule visited each cluster along
+        the whole simulation.
+
+        PARAMETERS
+        ----------
+        water_clusters: a numpy.array object
+            Array containing the cluster ids that belongs to each water
+            molecule
+
+        RETURNS
+        -------
+        populations : dict
+             A dictionary with cluster ids as keys and their corresponding
+             densities as items
+        """
+        populations = {}
+        for i in water_clusters:
+            if i in populations:
+                populations[i] += 1
+            else:
+                populations[i] = 1
+        return populations
+
+    def _write_centroids(self, populations, estimator, path):
+        """
+        It writes the centroids as a PDB file.
+
+        Parameters
+        ----------
+        estimator : a sklearn.cluster.MeanShift object
+            The resulting clustering estimator
+        populations : dict
+            A dictionary with cluster ids as keys and their corresponding
+            populations as items
+        path : string
+            Output path where the centroids will be saved as a PDB file
+        """
+        centroids = estimator.cluster_centers_
+
+        # Normalize
+        normalization_factor = 1 / max(populations.values())
+        norm_populations = {}
+        for label, population in populations.items():
+            norm_populations[label] = population * normalization_factor
+
+        # Write centroids to PDB
+        with open(path, 'w') as f:
+            for label, centroid in enumerate(centroids):
+                f.write("ATOM    {:3d}  ".format(label) +
+                        "CEN BOX A {:3d} ".format(label) +
+                        "{:>11.3f}{:>8.3f}{:>8.3f}  ".format(*centroid) +
+                        "1.00{:>5.2f}\n".format(norm_populations[label]))
+
     @staticmethod
     def _check_existing_directory(path):
         """
@@ -1361,7 +1530,7 @@ class Analysis(object):
 
         # load the first trajectory and select the residue
         traj = mdtraj.load_frame(path, 0, top=self.topology)
-        residue = traj.topology.select(f"resname {self.residue}")
+        residue = traj.topology.select(f"resname '{self.residue}'")
 
         # if empty array is returned, raise error
         if residue.size == 0:
