@@ -224,6 +224,8 @@ available:
 Peleffy
 ++++++++++
 
+In order to use Peleffy instead of PlopRotTemp, you need to set ``use_peleffy: true`` in input YAML.
+
 You can use the following parameters to control the way peleffy will parametrize non-standard molecules for you:
 
 - **forcefield**: Forcefield used to parametrize hetero molecules, you can use one of:
@@ -252,6 +254,8 @@ You can use the following parameters to control the way peleffy will parametrize
 - **exclude_terminal_rotamers**: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True
 
 - **mae_lig**: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None
+
+Important: Peleffy requires CONECT lines in the PDB file, otherwise they are automatically added with Schrödinger Protein Preparation Wizard.
 
 ..  code-block:: yaml
 

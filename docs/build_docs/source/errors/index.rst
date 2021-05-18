@@ -48,10 +48,13 @@ in your input file have correct values. Remember that ligands needs to have a un
 
     ValueError: Something went wrong when extracting the ligand. Check residue&Chain on input
 
-Connections Error
+Connections Warning
 ------------------
 
-This error indicates the the PDB file is missing the connectivity section. To resolve the issue, you should import the PDB in Schrödinger Maestro and preprocess it, launching the Protein Preparation Wizard.
+This warning indicates the the PDB file is missing the connectivity section. To resolve the issue, you should import the PDB in Schrödinger Maestro and preprocess it, launching the Protein Preparation Wizard.
+
+
+Note that **CONECT lines are required for peleffy** forcefield builder.
 
 ..  code-block:: console
 
@@ -81,7 +84,7 @@ Alternatively, you can **parametrize the molecule manually** and pass obtained t
 
     1. Save the residue to a separate PDB file, ensure the CONECT lines are included and the Lewis structure is correct.
 
-    2. Run the following command to create the default rotamer and template files. For more options, please refer to the `Open Force Field for PELE documentation <https://martimunicoy.github.io/peleffy/usage.html>`_.
+    2. Run the following command inside the Python environment of the platform to create the default rotamer and template files. For more options, please refer to the `Open Force Field for PELE documentation <https://martimunicoy.github.io/peleffy/usage.html>`_.
 
     ..  code-block:: console
 
