@@ -1526,7 +1526,12 @@ class Analysis(object):
         import mdtraj
         import os
 
-        path = glob.glob(os.path.join(self.output, "0", "trajectory_1.*"))[0]
+        # On Frag, the pdb of the trajectories aer in the sampling_result folder and not in the =/ folder.
+        try:
+            path = glob.glob(os.path.join(self.output, "0", "trajectory_1.*"))[0]
+        except:
+            # If we are running analysis for a FragPELE simulation
+            path = glob.glob(os.path.join(self.output, "trajectory_1.*"))[0]
 
         # load the first trajectory and select the residue
         traj = mdtraj.load_frame(path, 0, top=self.topology)
