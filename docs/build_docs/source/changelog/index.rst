@@ -14,6 +14,8 @@ v1.6.0 beta 5
 
 - Add water sites analysis
 
+- Support for PELE installations on docker and singularity containers
+
 - Support for growing custom fragment libraries
 
 - Kernel density estimator plots
