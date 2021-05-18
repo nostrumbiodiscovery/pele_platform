@@ -93,31 +93,7 @@ class FragRunner(object):
     def _run(self):
         params = self.parameters
         params.spython = cs.SCHRODINGER
-        if params.frag_library:
-            params.working_dir = []
-            pdb_basename = params.core.split(".pdb")[0] + "_processed" # Get the name of the pdb without extension
-            if "/" in pdb_basename:
-                pdb_basename = pdb_basename.split("/")[-1]  # And if it is a path, get only the name
-            current_path = os.path.abspath(".")
-            with open(params.input, "r") as input_file:
-                for line in input_file.readlines():
-                    ID = line.split('/')[-1].split(".pdb")
-                    ID = "".join(ID[:]).replace(" ", "")
-                    params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n'))
-        else:
-            pdb_basename = params.core.split(".pdb")[0] + "_processed"  # Get the name of the pdb without extension
-            if "/" in pdb_basename:
-                pdb_basename = pdb_basename.split("/")[-1] # And if it is a path, get only the name
-            current_path = os.path.abspath(".")
-            if "/" in self.parameters.input:
-                ID = open(self.parameters.input, 'r').readlines()[0].split('.pdb')[0].split('/')[-1]
-                residues = ''.join(open(self.parameters.input, 'r').readlines()[0].split('.pdb')[1].split())
-                ID = [ID, residues]
-                ID = "".join(ID)
-            else:
-                ID = open(params.input,'r').readlines()[0].split('.pdb')
-                ID = "".join(ID[:]).replace(" ","")
-            params.working_dir = os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n')
+        self._extract_working_directory()
         if params.frag_run:
             try:
                 frag.main(
@@ -350,8 +326,40 @@ class FragRunner(object):
                      atom_coords=self.parameters.analysis_to_point,
                      pattern=os.path.basename(self.parameters.system))
 
-
     def _clean_up(self, fragment_files):
         for file in fragment_files:
             if os.path.isfile(file):
                 os.remove(file)
+
+    def _extract_working_directory(self):
+        params = self.parameters
+        if params.frag_library:
+            params.working_dir = []
+            pdb_basename = params.core.split(".pdb")[0] + "_processed"  # Get the name of the pdb without extension
+            if "/" in pdb_basename:
+                pdb_basename = pdb_basename.split("/")[-1]  # And if it is a path, get only the name
+            current_path = os.path.abspath(".")
+
+            with open(params.input, "r") as input_file:
+                for line in input_file.readlines():
+
+                    ID = line.split('/')[-1].split(".pdb")
+                    ID = "".join(ID[:]).replace(" ", "")
+                    params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n'))
+        else:
+            pdb_basename = params.core.split(".pdb")[0] + "_processed"  # Get the name of the pdb without extension
+            if "/" in pdb_basename:
+                pdb_basename = pdb_basename.split("/")[-1]  # And if it is a path, get only the name
+            current_path = os.path.abspath(".")
+            # If we are using an input.conf file from a previous
+            # simulation, that is, we are defining the flag frag_input
+            if "/" in self.parameters.input:
+                ID = open(self.parameters.input, 'r').readlines()[0].split('.pdb')[0].split('/')[-1]
+                residues = ''.join(open(self.parameters.input, 'r').readlines()[0].split('.pdb')[1].split())
+                ID = [ID, residues]
+                ID = "".join(ID)
+            else:
+                ID = open(params.input, 'r').readlines()[0].split('.pdb')
+                ID = "".join(ID[:]).replace(" ", "")
+            params.working_dir = os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n')
+
