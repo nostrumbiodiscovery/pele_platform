@@ -482,6 +482,8 @@ class DataHandler(object):
                 water_coordinates = None
             else:
                 water_coordinates = np.array(water_coordinates)
+        else:
+            water_coordinates = None
 
         return coordinates, water_coordinates, reordered_dataframe
 

@@ -421,6 +421,7 @@ class Analysis(object):
         # Extract ligand and water coordinates
         coordinates, water_coordinates, dataframe = \
             self._extract_coordinates(max_coordinates)
+        print(water_coordinates)
 
         # Skip clustering in case
         if coordinates is None or dataframe is None:
