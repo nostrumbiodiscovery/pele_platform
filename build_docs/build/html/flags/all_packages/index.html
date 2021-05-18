@@ -103,7 +103,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#simulation-parameters">Simulation parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pele-parameters">PELE++ parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#receptor-preparation">Receptor preparation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">Ligand preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">Ligand preparation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ploprottemp">PlopRotTemp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Peleffy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#use-your-own-files">Use your own files</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#carbon-alpha-constraints">Carbon-alpha constraints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#metal-constraints">Metal constraints</a></li>
@@ -243,7 +248,7 @@
 <li><p><strong>min_freq</strong>: Every how many steps to perform minimization. Default=1</p></li>
 <li><p><strong>water_freq</strong>: Every how many steps to perform water perturbation. Default=1</p></li>
 <li><p><strong>temperature</strong>: Temperature of the simulation. Default=1500</p></li>
-<li><p><strong>solvent</strong>: Solvent of the simulation. (OBC or VDGBNP). Default=VDGBNP</p></li>
+<li><p><strong>solvent</strong>: Solvent of the simulation. (OBC or VDGBNP). Please, take into account that any OpenFF force field can only run with the OBC solvent model. Default=VDGBNP (unless for the OpenFF, which the default is OBC)</p></li>
 <li><p><strong>sidechain_res</strong>: Receptor sidechain resolution. Default=10</p></li>
 <li><p><strong>overlap_factor</strong>: Vanderwals overlap factor (More in PELE docs). Default=0.65</p></li>
 <li><p><strong>steric_trials</strong>: Number of steric trials (More in PELE docs). Default=250</p></li>
@@ -278,7 +283,8 @@
 <li><p><strong>cluster_conditions</strong>: Clusterization condition. More in AdaptivePELE. Default: Depending on simulation type</p></li>
 <li><p><strong>equilibration</strong>: Whether to run initial equilibration or not. Default: false</p></li>
 <li><p><strong>equilibration_steps</strong>: Equilibration steps. Default: 2</p></li>
-<li><p><strong>adaptive_restart</strong>: Use adaptive restart with the working folder option to restart the simulation. Default: false</p></li>
+<li><p><strong>adaptive_restart</strong>: Use adaptive restart with the working folder option to restart the simulation from the last epoch. Default: false</p></li>
+<li><p><strong>restart</strong>: Use restart flag set to true to start a simulation from scratch (with existing input PDBs and configuration files), for example after using the debug mode or manually editing pele.conf or adaptive.conf. Default: false</p></li>
 <li><p><strong>report</strong>: Change the name of the report file. Default: report</p></li>
 <li><p><strong>traj</strong>: Change the name of the trajectory file. Default: trajectory.pdb</p></li>
 </ul>
@@ -319,31 +325,148 @@
 </div>
 <div class="section" id="ligand-preparation">
 <h2>Ligand preparation<a class="headerlink" href="#ligand-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Configure the parameters of the PlopRotTemp to extract the ligand forcefield parameters.</p>
-<ul class="simple">
-<li><p><strong>gridres</strong>: Resolution of the rotamers when sampling. Default: 10 degrees</p></li>
-<li><p><strong>core</strong>: Atomnumber of the atom that will be included as part of the rigid core. Default=None</p></li>
-<li><p><strong>maxtorsion</strong>: Maximum number of rotamers per flexible sidechain. Default: 4</p></li>
-<li><p><strong>n</strong>: Maximum number of flexible sidechains in a molecule, Default: None</p></li>
-<li><p><strong>mae_lig</strong>: Mae file to extract the cuantum charges from. Default: None</p></li>
-<li><p><strong>template</strong>: External forcefield templaters</p></li>
-<li><p><strong>rotamers</strong>: External rotamer libraries</p></li>
-<li><p><strong>skip_ligand_prep</strong>: Skip preparation of that resiude. This could be usefull to bypass problems with PlopRotTemp when creating the ligand parameters.</p></li>
+<p>In order to run a simulation, PELE requires the following files for every non-standard molecule (i.e. any non-standard small molecule or residue):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>IMPACT template</strong>: containing force field parameters, please refer to <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format">this site</a> for further information.</p></li>
+<li><p><strong>rotamer library</strong>: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. More information available <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers">here</a>.</p></li>
+<li><p><strong>solvent template</strong>: some special solvents like “OBC” require extra parameters, which are set in this file.</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">gridres</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">core</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">-1</span>
+</div></blockquote>
+<p>The platform currently has <strong>two implementations</strong> for building hetero molecule parameters - PlopRotTemp (soon to be deprecated) and
+<a class="reference external" href="https://github.com/martimunicoy/peleffy">Peleffy</a> (PELE Force Field Yielder), which offers more functionality but is still in beta testing.</p>
+<p>Please refer to the following table for the comparison of the two methods and available forcefields:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 26%" />
+<col style="width: 16%" />
+<col style="width: 42%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Builder</strong></p></td>
+<td><p><strong>Forcefields</strong></p></td>
+<td><p><strong>Solvents</strong></p></td>
+<td><p><strong>Charge parametrization methods</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>PlopRotTemp</p>
+<p>(default)</p>
+</td>
+<td><p>“OPLS2005”</p></td>
+<td><p>“OBC”</p>
+<p>“VDGBNP”</p>
+</td>
+<td><p>“OPLS2005”</p></td>
+</tr>
+<tr class="row-odd"><td><p>Peleffy</p>
+<p>(beta)</p>
+</td>
+<td><p>“OPLS2005” (default)</p>
+<p>“openff-1.3.0”</p>
+<p>“openff-1.2.1”</p>
+<p>“openff-1.2.0”</p>
+<p>“openff-1.1.1”</p>
+<p>“openff-1.1.0”</p>
+<p>“openff-1.0.1”</p>
+<p>“openff-1.0.0”</p>
+</td>
+<td><p>“OBC”</p>
+<p>“VDGBNP”</p>
+</td>
+<td><p>“gasteiger”</p>
+<p>“am1bcc” (default for OpenFF)</p>
+<p>“OPLS2005” (default for OPLS2005)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="ploprottemp">
+<h3>PlopRotTemp<a class="headerlink" href="#ploprottemp" title="Permalink to this headline">¶</a></h3>
+<p>To continue using PlopRotTemp, you do not need to make any changes to your YAML file, previously existing flags are still
+available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>gridres</strong>: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees</p></li>
+<li><p><strong>core</strong>: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None</p></li>
+<li><p><strong>exclude_terminal_rotamers</strong>: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True</p></li>
+<li><p><strong>mae_lig</strong>: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None</p></li>
+<li><p><strong>maxtorsion</strong>: Maximum number of rotamers per flexible side chain. Default=4</p></li>
+<li><p><strong>n</strong>: Maximum number of flexible side chains in a molecule. Default=None</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">solvent</span><span class="p">:</span> <span class="s">&quot;OBC&quot;</span>
 <span class="nt">maxtorsion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
 <span class="nt">n</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
 <span class="nt">mae_lig</span><span class="p">:</span> <span class="s">&quot;/home/dsoler/lig.mae&quot;</span>
-<span class="nt">templates</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/mgz&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/ligz&quot;</span>
-<span class="nt">rotamers</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/MG.rot.assign&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/dsoler/LIG.rot.assign&quot;</span>
-<span class="nt">skip_ligand_prep</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;LIG&quot;</span>
+<span class="nt">gridres</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h3>Peleffy<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>In order to use Peleffy instead of PlopRotTemp, you need to set <code class="docutils literal notranslate"><span class="pre">use_peleffy:</span> <span class="pre">true</span></code> in input YAML.</p>
+<p>You can use the following parameters to control the way peleffy will parametrize non-standard molecules for you:</p>
+<ul>
+<li><p><strong>forcefield</strong>: Forcefield used to parametrize hetero molecules, you can use one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“OPLS2005” (default)</p></li>
+<li><p>“openff-1.3.0”</p></li>
+<li><p>“openff-1.2.1”</p></li>
+<li><p>“openff-1.2.0”</p></li>
+<li><p>“openff-1.1.1”</p></li>
+<li><p>“openff-1.1.0”</p></li>
+<li><p>“openff-1.0.1”</p></li>
+<li><p>“openff-1.0.0”</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>charge_parametrization_method</strong>: The method to use to assign partial charges to atoms:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“gasteiger”</p></li>
+<li><p>“am1bcc” (default when using any “OpenFF” force field)</p></li>
+<li><p>“OPLS2005” (default when using “OPLS2005”)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>use_peleffy</strong>: You have to set it to True to use peleffy instead of the default parameters builder. Default=False</p></li>
+<li><p><strong>gridres</strong>: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees</p></li>
+<li><p><strong>core</strong>: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None</p></li>
+<li><p><strong>exclude_terminal_rotamers</strong>: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True</p></li>
+<li><p><strong>mae_lig</strong>: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None</p></li>
+</ul>
+<p>Important: Peleffy requires CONECT lines in the PDB file, otherwise they are automatically added with Schrödinger Protein Preparation Wizard.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">use_peleffy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">charge_parametrization_method</span><span class="p">:</span> <span class="s">&quot;gasteiger&quot;</span>
+<span class="nt">forcefield</span><span class="p">:</span> <span class="s">&quot;openff-1.3.0&quot;</span>
+<span class="nt">gridres</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="nt">core</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;O1&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;C1&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;C2&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;N1&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="use-your-own-files">
+<h3>Use your own files<a class="headerlink" href="#use-your-own-files" title="Permalink to this headline">¶</a></h3>
+<p>Alternatively, as before, you can provide your own template and/or rotamer files as long as they follow PELE’s naming convention
+(see examples in the block code below).</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>templates</strong>: External forcefield template files.</p></li>
+<li><p><strong>rotamers</strong>: External rotamer library files.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">templates</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/simulation_files/mgz&quot;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/simulation_files/ligz&quot;</span>
+<span class="nt">rotamers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/simulation_files/MG.rot.assign&quot;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/simulation_files/LIG.rot.assign&quot;</span>
+</pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="constraints">
@@ -524,7 +647,7 @@ constraints levels and those predefined in each package.</p>
 <li><p><strong>limit_column</strong>: Specify the column where your external metrics start. Default: 6</p></li>
 <li><p><strong>mae</strong>: To extract the best energy and cluster poses as .mae files with the metrics as properties (schrodinger need it). Default: false</p></li>
 <li><p><strong>analysis</strong>: Whether to run or not the analysis at the end of the simulation. Default: true</p></li>
-<li><p><strong>clustering_method</strong>: If you want to override the default clustering method (Gaussian mixture model), you can set this flag to <code class="docutils literal notranslate"><span class="pre">MeanShift</span></code> or <code class="docutils literal notranslate"><span class="pre">HDBSCAN</span></code>.</p></li>
+<li><p><strong>clustering_method</strong>: If you want to override the default clustering method (meanshift), you can set this flag to <code class="docutils literal notranslate"><span class="pre">gaussianmixture</span></code> or <code class="docutils literal notranslate"><span class="pre">HDBSCAN</span></code>.</p></li>
 <li><p><strong>bandwidth</strong>: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0</p></li>
 <li><p><strong>max_top_clusters</strong>: Maximum number of clusters to be selected. Default = 8.</p></li>
 <li><p><strong>top_clusters_criterion</strong>: Method of selecting top clusters, you can choose one of:</p>

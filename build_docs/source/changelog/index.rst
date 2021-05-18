@@ -24,6 +24,8 @@ v1.6.0 beta
 
 - Optimisation of coordinates parser and bugfixes
 
+- Implemented "restart" flag to restart the simulation from scratch using exisiting configuration files
+
 v1.5.1
 ==========================
 

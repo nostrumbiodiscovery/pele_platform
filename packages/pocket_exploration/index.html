@@ -224,20 +224,20 @@ putative binding sites of the ligand.</p>
 </div>
 <div class="section" id="default-parameters">
 <h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
-<p>The pocket exploration consists of two steps - global exploration to identify the pockets, followed by refinement to
-optimize the binding modes.</p>
 <p>Parameters for stage 1:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>iterations: 100</p></li>
-<li><p>pele steps: 8</p></li>
+<li><p>iterations: 50</p></li>
+<li><p>pele steps: 12</p></li>
+<li><p>number of structures: <code class="docutils literal notranslate"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">available</span> <span class="pre">CPUs</span> <span class="pre">-</span> <span class="pre">1</span></code> (cannot be changed)</p></li>
 </ul>
 </div></blockquote>
 <p>Parameters for stage 2:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>iterations: 1</p></li>
-<li><p>pele steps: 250</p></li>
+<li><p>iterations: 10</p></li>
+<li><p>pele steps: 50</p></li>
+<li><p>number of structures: <code class="docutils literal notranslate"><span class="pre">number</span> <span class="pre">of</span> <span class="pre">available</span> <span class="pre">cpus</span> <span class="pre">/</span> <span class="pre">6</span></code> (cannot be changed)</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -247,6 +247,7 @@ optimize the binding modes.</p>
 <div><ol class="arabic simple">
 <li><p>Expected computational time is around 24 h.</p></li>
 <li><p>Initial position of the small molecule is irrelevant, since it will be extracted and randomly placed all around the protein.</p></li>
+<li><p>We recommend using at least 60 CPUs for the this package.</p></li>
 </ol>
 </div></blockquote>
 </div>

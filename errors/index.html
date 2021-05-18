@@ -110,6 +110,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#check-atoms">Check atoms</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#filenotfound">FileNotFound</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#valueerror-ligand">ValueError - ligand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#connections-warning">Connections Warning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parametrization">Parametrization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#remove-the-residue">Remove the residue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parametrize-manually">Parametrize manually</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -218,6 +224,51 @@
 in your input file have correct values. Remember that ligands needs to have a unique chain ID!</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ValueError: Something went wrong when extracting the ligand. Check residue&amp;Chain on input</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="connections-warning">
+<h2>Connections Warning<a class="headerlink" href="#connections-warning" title="Permalink to this headline">¶</a></h2>
+<p>This warning indicates the the PDB file is missing the connectivity section. To resolve the issue, you should import the PDB in Schrödinger Maestro and preprocess it, launching the Protein Preparation Wizard.</p>
+<p>Note that <strong>CONECT lines are required for peleffy</strong> forcefield builder.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pele_platform.Errors.custom_errors.ConnectionsError: Your PDB file is missing the CONECT lines. Please do not remove them after Schrodinger preprocessing.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parametrization">
+<h2>Parametrization<a class="headerlink" href="#parametrization" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes parametrization of a hetero molecule (cofactor, modified residue, crystallization factor) will fail, which
+should result in the following warning message:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Failed to parametrize residue MET. You can skip it or parametrize manually</span>
+<span class="gp gp-VirtualEnv">(see documentation: https://nostrumbiodiscovery.github.io/pele_platform/errors/index.html#parametrization)</span><span class="go">.</span>
+<span class="go">The error raised was: Size of atom parameter lists should match.</span>
+</pre></div>
+</div>
+<div class="section" id="remove-the-residue">
+<h3>Remove the residue<a class="headerlink" href="#remove-the-residue" title="Permalink to this headline">¶</a></h3>
+<p>If the hetero molecule is <strong>not necessary</strong> to study your system, the easiest way to handle this is to <strong>remove it from the PDB file</strong>. Similarly, you can ignore the warning, but PELE is likely going to crash because it will miss the template.</p>
+</div>
+<div class="section" id="parametrize-manually">
+<h3>Parametrize manually<a class="headerlink" href="#parametrize-manually" title="Permalink to this headline">¶</a></h3>
+<p>Alternatively, you can <strong>parametrize the molecule manually</strong> and pass obtained template and rotamer files in the <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Save the residue to a separate PDB file, ensure the CONECT lines are included and the Lewis structure is correct.</p></li>
+<li><p>Run the following command inside the Python environment of the platform to create the default rotamer and template files. For more options, please refer to the <a class="reference external" href="https://martimunicoy.github.io/peleffy/usage.html">Open Force Field for PELE documentation</a>.</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m peleffy.main ligand.pdb</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Add paths to your newly created files to the input.yaml, for example:</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">templates</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/path/to/metz&quot;</span>
+
+<span class="nt">rotamers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/path/to/MET.rot.assign&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
 </div>
 </div>
 </div>
