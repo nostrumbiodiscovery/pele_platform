@@ -40,7 +40,6 @@ class FragRunner(object):
             if params.ligands:  # Full ligands as sdf
                 fragment_files = self._prepare_input_file(logger=params.logger)
             elif params.frag_library:
-<<<<<<< HEAD
                 params.input = lb.main(params.core,
                                        params.frag_core_atom,
                                        params.frag_library,
@@ -48,14 +47,7 @@ class FragRunner(object):
                                        params.fragment_atom,
                                        params.frag_restart,
                                        tmpdirname)
-=======
-                params.input = lb.main(
-                    params.frag_core_atom,
-                    params.frag_library,
-                    params.logger,
-                    tmpdirname,
-                )
->>>>>>> devel
+
             else:
                 fragment_files = None
                 assert params.input is not None, (
