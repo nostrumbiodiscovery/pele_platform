@@ -200,13 +200,15 @@ def test_generate_clusters(analysis, method, bandwidth, n_clusters):
         Number of clusters for the Gaussian mixture model.
     """
     working_folder = "clustering_method"
-    results = os.path.join(working_folder, "*pdb")
-    check_remove_folder(working_folder)
 
     analysis.generate_clusters(
         working_folder, method, bandwidth=bandwidth, analysis_nclust=n_clusters
     )
-    assert len(glob.glob(results)) == n_clusters
+
+    results = glob.glob(os.path.join(working_folder, "*pdb"))
+    results = [element for element in results if "water" not in element]
+
+    assert len(results) == n_clusters
     check_remove_folder(working_folder)
 
 
@@ -232,7 +234,7 @@ def test_api_analysis_generation(analysis):
 
     # Check clusters
     clusters = glob.glob(os.path.join(working_folder, "clusters", "*pdb"))
-    assert len(clusters) == n_clusts
+    assert len(clusters) == 6  # includes water and ligand clusters, so n_clusts x 2
 
     # Check cluster representatives CSV by testing for the presence of columns from both trajectory and metrics dfs
     top_selections = os.path.join(working_folder, "clusters", "top_selections.csv")
@@ -295,12 +297,11 @@ def test_extract_and_filter_coordinates(analysis, max_coordinates):
     max_coordinates : int
         Number of coordinates to extract per ligand.
     """
-
     coordinates, water_coordinates, dataframe = analysis._extract_coordinates(
         max_coordinates
     )
     coordinates_filtered, _, _, _ = \
-        analysis._filter_coordinates(coordinates, [], dataframe, 0.5)
+        analysis._filter_coordinates(coordinates, None, dataframe, 0.5)
 
     assert len(coordinates) == 7
     assert coordinates.shape == (
@@ -454,6 +455,7 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
 
     check_remove_folder(output_folder)
 
+
 def test_coordinates_extraction_from_trajectory():
     """
     Test extraction of water coordinates and clustering.
@@ -477,7 +479,7 @@ def test_coordinates_extraction_from_trajectory():
         water_ids=[("A", 2109), ("A", 2124)],
     )
     assert residue.shape == (2, 18, 3)
-    assert water.shape == (4, 3)
+    assert water.shape == (2, 2, 3)
 
 
 def get_analysis(output, topology, traj):
@@ -543,6 +545,7 @@ def test_water_clustering_production():
 
     # TODO: Write a proper test for water clustering output once it's implemented.
 
+
 def test_empty_reports_handling():
     """
     Checks if we handle reports with no accepted PELE steps to make sure the returned empty coordinates array doesn't
@@ -573,6 +576,7 @@ def test_residue_checker(path):
             skip_initial_structures=True,
         )
 
+
 @pytest.fixture
 def generate_folders():
     """
@@ -597,5 +601,4 @@ def analysis():
         Analysis object.
     """
     output = "../pele_platform/Examples/clustering"
-    return analysis
-
+    return get_analysis(output, None, None)
