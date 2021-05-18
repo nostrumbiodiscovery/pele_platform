@@ -316,7 +316,6 @@ def water_ids_from_conf(configuration_file):
         return []
 
 
->>>>>>> devel
 def ligand_com(refinement_input, ligand_chain):
     parser = PDBParser()
     output = []
