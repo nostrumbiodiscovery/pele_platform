@@ -285,6 +285,7 @@ def run_adaptive(args):
             ligand_residue=parameters.residue)
         water_obj.run()
         parameters.parameters = water_obj.ligand_perturbation_params
+        parameters.water_ids_to_track = water_obj.water_ids_to_track
 
         # Check if atoms need mapping due to preprocessing
         args = AtomMapper(args, parameters, syst.system).run()
@@ -337,6 +338,10 @@ def run_adaptive(args):
     if parameters.analyse and not parameters.debug:
         from pele_platform.analysis import Analysis
 
+        # Retrieve water IDs to track from existing pele.conf, if running analysis only
+        if parameters.only_analysis:
+            parameters.water_ids_to_track = wt.water_ids_from_conf(parameters.pele_temp)
+
         analysis_folder = os.path.join(parameters.pele_dir, "results")
 
         analysis = Analysis.from_parameters(parameters)
@@ -349,7 +354,6 @@ def run_adaptive(args):
             min_population=parameters.min_population,
             max_top_poses=parameters.max_top_poses,
             top_clusters_criterion=parameters.top_clusters_criterion,
-            representatives_criterion=parameters.cluster_representatives_criterion,
-            )
+            representatives_criterion=parameters.cluster_representatives_criterion)
 
     return parameters
