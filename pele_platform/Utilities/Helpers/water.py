@@ -81,7 +81,8 @@ class WaterIncluder():
         try:
             self.set_box_center(inp)
         except TypeError:
-            raise ce.NotCenterOfWaterBox('Center of water box not found. Specify with the next flag\n\n"water_center":\n - 18\n - 17\n - 18')
+            raise ce.NotCenterOfWaterBox('Center of water box not found. Set it with "water_center" flag or ensure '
+                                         'you specified the residue name, so it can be retrieved automatically.')
         self.set_box_radius()
 
         waters = sorted(hp.retrieve_all_waters(inp, exclude=self.water_to_exclude))
