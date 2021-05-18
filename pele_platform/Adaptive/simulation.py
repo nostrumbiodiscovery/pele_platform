@@ -22,8 +22,8 @@ import pele_platform.Utilities.Helpers.water as wt
 from pele_platform.Adaptive import Parametrizer
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.pca as pca
-import pele_platform.Adaptive.solvent as sv
-import pele_platform.Adaptive.ligand_parametrization as lg
+import pele_platform.Adaptive.plop_solvent as sv
+import pele_platform.Adaptive.plop_ligand_parametrization as lg
 
 
 def run_adaptive(args):
