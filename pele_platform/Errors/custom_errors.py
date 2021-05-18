@@ -53,5 +53,14 @@ class LigandNameNotSupported(Exception):
 class SubstructureError(Exception):
     pass
 
+class ProtonationError(Exception):
+    pass
+
+class ConnectionsError(Exception):
+    pass
+
+class IncompatibleForcefield(Exception):
+    pass
+
 class MultipleSimulationTypes(Exception):
     pass
