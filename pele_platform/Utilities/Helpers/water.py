@@ -298,11 +298,17 @@ def water_ids_from_conf(configuration_file):
     with open(configuration_file, "r") as file:
         content = file.read()
 
-    pattern =r"waterSites\":.+?ids.+?(\[.+?\])"
-    match = re.findall(pattern, content)[0]
-    as_list = eval(match)
-    output = WaterIncluder.retrieve_indices_to_track(as_list)
-    return output
+    pattern =r"watersToPerturb\":.+?ids.+?(\[.+?\])"
+
+    match = re.findall(pattern, content)
+
+    if match:
+        as_list = eval(match[0])
+        output = WaterIncluder.retrieve_indices_to_track(as_list)
+        # Easier to remove duplicates that do a super complicated regex
+        return list(set(output))
+    else:
+        return []
 
 
 def ligand_com(refinement_input, ligand_chain):
