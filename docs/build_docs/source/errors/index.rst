@@ -75,7 +75,7 @@ should result in the following warning message:
 Remove the residue
 +++++++++++++++++++++
 
-If the hetero molecule is **not necessary** to study your system, the easiest way to handle this is to **remove it from the PDB file**. Similarly, you can ignore the warning, it will not halt the simulation.
+If the hetero molecule is **not necessary** to study your system, the easiest way to handle this is to **remove it from the PDB file**. Similarly, you can ignore the warning, but PELE is likely going to crash because it will miss the template.
 
 
 Parametrize manually
