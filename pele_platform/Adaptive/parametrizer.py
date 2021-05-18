@@ -663,7 +663,6 @@ class Parametrizer:
         Raises
         ------
         ProtonationError if no hydrogen atoms are found in the input PDB.
-        ConnectionsError if the PDB file is missing CONECT lines.
         """
         hydrogen_lines = []
 
