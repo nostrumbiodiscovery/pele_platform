@@ -305,17 +305,27 @@ class FragRunner(object):
 
         # Retrieve water indices to cluster, if running analysis only
         if self.parameters.only_analysis:
+            self._prepare_parameters()
             self.parameters.water_ids_to_track = water.water_ids_from_conf(
-                self.parameters.pele_temp
+                self.parameters.control_file
             )
+            if self.parameters.frag_library:
+                for path in self.parameters.working_dir:
+                    simulation_output = os.path.join(path, 'sampling_result')
+                    run_analysis(path, simulation_output)
+            else:
+                simulation_output = os.path.join(path, 'sampling_result')
+                run_analysis(self.parameters.working_dir, simulation_output)
+            return 0
+
         if self.parameters.frag_library:
             for sim_directory in self.parameters.working_dir:
-                simulation_output = sim_directory + '/sampling_result'
+                simulation_output = os.path.join(self.parameters.working_dir, 'sampling_result')
                 if not os.path.isdir(simulation_output):
                     continue
                 run_analysis(sim_directory, simulation_output)
         else:
-            simulation_output = self.parameters.working_dir + '/sampling_result'
+            simulation_output = os.path.join(self.parameters.working_dir, 'sampling_result')
             if not os.path.isdir(simulation_output):
                 return 0
             run_analysis(self.parameters.working_dir, simulation_output)
