@@ -60,7 +60,7 @@ Simulation parameters
 
 - **solvent**: Solvent of the simulation. (OBC or VDGBNP). Please, take into account that any OpenFF force field can only run with the OBC solvent model. Default=VDGBNP (unless for the OpenFF, which the default is OBC)
 
-- **sidechain_res**: Receptor sidechain resolution. Default=10
+- **sidechain_res**: Receptor sidechain resolution. Default=30
 
 - **overlap_factor**: Vanderwals overlap factor (More in PELE docs). Default=0.65
 
