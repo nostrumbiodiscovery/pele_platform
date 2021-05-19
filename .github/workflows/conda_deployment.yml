@@ -30,7 +30,7 @@ jobs:
       # logout to prevent anaconda complaints
       - name: Configurate conda-client from anaconda
         run: |
-          anaconda login --hostname PELEPlat160-host${{ matrix.os }}${{ matrix.python-version }} --username ${{ secrets.ANACONDA_USER }} --password ${{ secrets.ANACONDA_PASSWD }}
+          anaconda login --hostname PELEPlat160b5-host${{ matrix.os }}${{ matrix.python-version }} --username ${{ secrets.ANACONDA_USER }} --password ${{ secrets.ANACONDA_PASSWD }}
       - name: Deploy package to conda
         # Once peleffy is built through conda-forge --> run: conda build -c conda-forge -c nostrumbiodiscovery -c martimunicoy conda_recipe
         run: conda build -c omnia -c conda-forge -c nostrumbiodiscovery -c martimunicoy conda_recipe
