@@ -56,6 +56,7 @@ class FragRunner(object):
                 )
 
             if not params.only_analysis:
+                self._prepare_parameters()
                 self._run()
 
             if params.cleanup and fragment_files:
@@ -76,6 +77,10 @@ class FragRunner(object):
 
         return self.parameters.control_file
 
+    def _prepare_parameters(self):
+        # self.parameters.spython = cs.SCHRODINGER Commented to use Frag 2.2.1 instead of Frag 3.0.0
+        self._extract_working_directory()
+
     def _set_test_variables(self):
         if self.parameters.test:
             self.parameters.gr_steps = 1
@@ -92,8 +97,6 @@ class FragRunner(object):
 
     def _run(self):
         params = self.parameters
-        params.spython = cs.SCHRODINGER
-        self._extract_working_directory()
         if params.frag_run:
             try:
                 frag.main(
@@ -362,4 +365,4 @@ class FragRunner(object):
                 ID = open(params.input, 'r').readlines()[0].split('.pdb')
                 ID = "".join(ID[:]).replace(" ", "")
             params.working_dir = os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n')
-
+        return 0
