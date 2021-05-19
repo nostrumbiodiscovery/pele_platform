@@ -1,7 +1,6 @@
 import os
 import tempfile
 import shutil
-import sys
 
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Frag.helpers as hp
@@ -10,7 +9,8 @@ import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
 import frag_pele.main as frag
-import pele_platform.constants.constants as cs
+from pele_platform.analysis import Analysis
+from pele_platform.Utilities.Helpers import water
 
 
 class FragRunner(object):
@@ -257,13 +257,32 @@ class FragRunner(object):
 
     def _analysis(self):
 
-        def run_analysis(sim_directory, simulation_output):
-            # Only proceed if sampling_result folder exists
+        # Run analysis to point, if required
+        self.parameters.analysis_to_point = self.parameters.args.analysis_to_point
+        if self.parameters.analysis_to_point and self.parameters.folder:
+            ana.main(
+                path=self.parameters.folder,
+                atom_coords=self.parameters.analysis_to_point,
+                pattern=os.path.basename(self.parameters.system),
+            )
 
-            analysis_folder = os.path.join(sim_directory, "results")
+        # TODO create a list of the libraries defined in the current input.yaml
+
+        # Retrieve water indices to cluster, if running analysis only
+        if self.parameters.only_analysis:
+            self._prepare_parameters()
+            self.parameters.water_ids_to_track = water.water_ids_from_conf(self.parameters.control_file)
+
+        # Handle one vs multiple paths (if running frag libraries)
+        if isinstance(self.parameters.working_dir, str):
+            self.parameters.working_dir = list(self.parameters.working_dir)
+
+        for path in self.parameters.working_dir:
+            simulation_output = os.path.join(path, 'sampling_result')
+            analysis_folder = os.path.join(path, "results")
 
             analysis = Analysis(
-                resname="GRW",
+                resname=self.parameters.residue,
                 chain=self.parameters.chain,
                 simulation_output=simulation_output,
                 be_column=self.parameters.be_column,
@@ -287,57 +306,6 @@ class FragRunner(object):
                 min_population=self.parameters.min_population,
                 representatives_criterion=self.parameters.cluster_representatives_criterion,
             )
-
-
-        self.parameters.analysis_to_point = self.parameters.args.analysis_to_point
-
-        if self.parameters.analysis_to_point and self.parameters.folder:
-            ana.main(
-                path=self.parameters.folder,
-                atom_coords=self.parameters.analysis_to_point,
-                pattern=os.path.basename(self.parameters.system),
-            )
-
-        # TODO create a list of the libraries defined in the current input.yaml
-        from pele_platform.analysis import Analysis
-        from pele_platform.Utilities.Helpers import water
-        from glob import glob
-
-        # Retrieve water indices to cluster, if running analysis only
-        if self.parameters.only_analysis:
-            self._prepare_parameters()
-            self.parameters.water_ids_to_track = water.water_ids_from_conf(
-                self.parameters.control_file
-            )
-            if self.parameters.frag_library:
-                for path in self.parameters.working_dir:
-                    simulation_output = os.path.join(path, 'sampling_result')
-                    run_analysis(path, simulation_output)
-            else:
-                simulation_output = os.path.join(self.parameters.working_dir, 'sampling_result')
-                run_analysis(self.parameters.working_dir, simulation_output)
-            return 0
-
-        if self.parameters.frag_library:
-            for sim_directory in self.parameters.working_dir:
-                simulation_output = os.path.join(self.parameters.working_dir, 'sampling_result')
-                if not os.path.isdir(simulation_output):
-                    continue
-                run_analysis(sim_directory, simulation_output)
-        else:
-            simulation_output = os.path.join(self.parameters.working_dir, 'sampling_result')
-            if not os.path.isdir(simulation_output):
-                return 0
-            run_analysis(self.parameters.working_dir, simulation_output)
-
-
-        self.parameters.analysis_to_point = \
-            self.parameters.args.analysis_to_point
-
-        if self.parameters.analysis_to_point and self.parameters.folder:
-            ana.main(path=self.parameters.folder,
-                     atom_coords=self.parameters.analysis_to_point,
-                     pattern=os.path.basename(self.parameters.system))
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
