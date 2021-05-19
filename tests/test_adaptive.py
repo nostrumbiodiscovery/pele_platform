@@ -137,7 +137,7 @@ def test_restart_flag():
     errors = check_file(job_params.pele_dir, "pele.conf", expected_line, [])
     assert not errors
 
-    shutil.rmtree(new_pele_dir)
+    shutil.rmtree(new_pele_dir, ignore_errors=True)
 
 
 def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
