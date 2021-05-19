@@ -314,7 +314,7 @@ class FragRunner(object):
                     simulation_output = os.path.join(path, 'sampling_result')
                     run_analysis(path, simulation_output)
             else:
-                simulation_output = os.path.join(path, 'sampling_result')
+                simulation_output = os.path.join(self.parameters.working_dir, 'sampling_result')
                 run_analysis(self.parameters.working_dir, simulation_output)
             return 0
 
