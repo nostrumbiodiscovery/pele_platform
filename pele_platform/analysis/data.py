@@ -614,11 +614,11 @@ class DataHandler(object):
                 water_coordinates = None
                 break
 
-        residue_coordinates = np.concatenate(residue_coordinates)
-
         # In case no coordinates were extracted
         if len(residue_coordinates) == 0:
             return None, None, None
+
+        residue_coordinates = np.concatenate(residue_coordinates)
 
         if water_coordinates is not None:
             water_coordinates = np.concatenate(water_coordinates)
