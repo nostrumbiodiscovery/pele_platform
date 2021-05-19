@@ -80,7 +80,7 @@ class FragRunner(object):
         return self.parameters.control_file
 
     def _prepare_parameters(self):
-        self.parameters.spython = cs.SCHRODINGER #Commented to use Frag 2.2.1 instead of Frag 3.0.0
+        #self.parameters.spython = cs.SCHRODINGER #Commented to use Frag 2.2.1 instead of Frag 3.0.0
         self._extract_working_directory()
 
     def _set_test_variables(self):
@@ -319,6 +319,6 @@ class FragRunner(object):
         current_path = os.path.abspath(".")
         with open(params.input, "r") as input_file:
             for line in input_file.readlines():
-                ID = os.path.basename(line).replace(".pdb","")
+                ID = os.path.basename(line).replace(".pdb", "")
                 sentence = re.sub(r"\s+", "", ID, flags=re.UNICODE)
                 params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
