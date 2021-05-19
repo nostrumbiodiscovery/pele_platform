@@ -1,15 +1,19 @@
 from dataclasses import dataclass, field
 from typing import List
 from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch, Vector
+#import xpdb  # this is the module described below
 import glob
 import numpy as np
 import os
+import re
 import pele_platform.constants.constants as cs
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.pele_params as pp
+import sys
 
 TEMPLATE = '{{"watersToPerturb": {{"links": {{"ids": [{index}] }}}}, "Box": {{"radius": {radius}, "fixedCenter": [{com}], "type": "sphericalBox"}}}}'
+
 
 @dataclass
 class WaterIncluder():
@@ -32,7 +36,7 @@ class WaterIncluder():
     all_waters: str=""
     perturbed_waters=[]
     test: bool=False
-
+    water_ids_to_track: List = field(default_factory=list)
     
     def run(self):
         self.set_empty_selectors()
@@ -77,13 +81,15 @@ class WaterIncluder():
         try:
             self.set_box_center(inp)
         except TypeError:
-            raise ce.NotCenterOfWaterBox('Center of water box not found. Specify with the next flag\n\n"water_center":\n - 18\n - 17\n - 18')
+            raise ce.NotCenterOfWaterBox('Center of water box not found. Set it with "water_center" flag or ensure '
+                                         'you specified the residue name, so it can be retrieved automatically.')
         self.set_box_radius()
+
         waters = sorted(hp.retrieve_all_waters(inp, exclude=self.water_to_exclude))
+        self.water_ids_to_track = self.retrieve_indices_to_track(waters)
         waters = ", ".join(['"{}"'.format(water) for water in waters])
         self.all_waters += waters + ", "
         return TEMPLATE.format(index=waters, radius=self.water_radius, com=self.water_center)
-             
 
     def set_water_control_file(self):
         if self.n_waters != 0 or self.user_waters:
@@ -99,8 +105,7 @@ class WaterIncluder():
             self.water_radius = None
             self.water_center = None
             self.water_line = ""
-    
-    
+
     def water_checker(self):
         max_water = 4
         min_water = 1
@@ -110,13 +115,11 @@ class WaterIncluder():
             elif self.n_waters < min_water:
                 raise ValueError(
                     "Number of water molecules (n_waters) has to be between {} and {}".format(min_water, max_water))
-    
-    
+
     def add_water(self):
         if self.test:
             np.random.seed(42)
-    
-    
+
         output = []
         n_inputs = len(self.input_pdbs)
         water_coords = []
@@ -127,7 +130,11 @@ class WaterIncluder():
     
         # get maximum residue and atom numbers keep original waters
         with open(self.input_pdbs[0], "r") as file:
-            pdb_lines = [ line for line in file.readlines() if "END" not in line]
+
+            lines = file.readlines()
+            conect = [line for line in lines if "CONECT" in line]
+            pdb_lines = [line for line in lines if "END" not in line and "CONECT" not in line]
+
             for line in pdb_lines:
                 if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER"):
                     try:
@@ -192,8 +199,8 @@ class WaterIncluder():
                     file.write("\n")
                     for line in w:
                         file.write(line)
+
                     file.write("END")
-    
                 # load again with Biopython
                 parser = PDBParser()
                 structure = parser.get_structure("complex", new_protein_file)
@@ -201,7 +208,7 @@ class WaterIncluder():
                 protein_list = Selection.unfold_entities(structure, "A")
                 temp_protein_file = os.path.join(os.path.dirname(inp),
                                                  os.path.basename(inp).replace(".pdb", "_temp.pdb"))
-    
+                
                 for res in structure.get_residues():
                     resnum = res._id[1]
                     if res.resname == 'HOH':
@@ -228,7 +235,7 @@ class WaterIncluder():
                 io.set_structure(structure)
                 io.save(temp_protein_file)
                 output.append(new_protein_file)
-    
+
                 new_water_lines = []
                 with open(temp_protein_file, "r") as temp:
                     temp_lines = temp.readlines()
@@ -238,9 +245,9 @@ class WaterIncluder():
                             if line[12:15] == "2HW":
                                 line = line.strip("\n") + "\nTER\n"
                             new_water_lines.append(line)
-    
+
                 del new_water_lines[-1] #Last biopython line is a not need it TER
-                
+
                 with open(new_protein_file, "w+") as file:
                     for line in pdb_lines:
                         file.write(line)
@@ -248,9 +255,66 @@ class WaterIncluder():
                         file.write("TER\n")
                     for line in new_water_lines:
                         file.write(line)
+                    for line in conect:
+                        file.write(line)
+                    file.write("\n")
                     file.write("END")
-    
                 os.remove(temp_protein_file)
+
+
+    @staticmethod
+    def retrieve_indices_to_track(retrieved_waters):
+        """
+        Retrieves water indices to track in a manner compatible with Analysis.
+
+        Parameters
+        -----------
+        retrieved_waters : List[str]
+            List of user-defined or retrieved waters, e.g. ['A:202', 'A:203', 'A:204']
+
+        Returns
+        --------
+        water_indices : List[tuple[str]]
+            List of tuples indicating water indices, e.g. [("A", 202), ("A", 203), ("A", 204)]
+        """
+
+        output = list()
+
+        for water in retrieved_waters:
+            chain, resnum = water.split(":")
+            output.append((chain, int(resnum)))
+
+        return output
+
+
+def water_ids_from_conf(configuration_file):
+    """
+    Extract IDs of perturbed water molecules from pele.conf file.
+
+    Parameters
+    -----------
+    configuration_file : str
+        Path to pele.conf file.
+
+    Returns
+    --------
+    water_indices : List[tuple[str]]
+        List of tuples indicating water indices, e.g. [("A", 202), ("A", 203), ("A", 204)]
+    """
+    with open(configuration_file, "r") as file:
+        content = file.read()
+
+    pattern =r"watersToPerturb\":.+?ids.+?(\[.+?\])"
+
+    match = re.findall(pattern, content)
+
+    if match:
+        as_list = eval(match[0])
+        output = WaterIncluder.retrieve_indices_to_track(as_list)
+        # Easier to remove duplicates that do a super complicated regex
+        return list(set(output))
+    else:
+        return []
 
 
 def ligand_com(refinement_input, ligand_chain):

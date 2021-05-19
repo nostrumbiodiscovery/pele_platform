@@ -383,3 +383,94 @@ def check_remove_folder(*output_folders):
     for folder in output_folders:
         if os.path.exists(folder):
             shutil.rmtree(folder)
+
+
+def get_atom_indices(ids, pdb, pdb_atom_name=None):
+    """
+    Extracts atom indices from a PDB file based on a tuple of chain IDs and residue names.
+
+    Parameters
+    -----------
+    ids : List[Tuple(str, int)]
+        List of atom IDs to be mapped
+    pdb : str
+        Path to PDB file.
+    pdb_atom_name : str
+        Set to desired PDB atom name, otherwise the whole residue will be extracted.
+
+    Returns
+    --------
+    atom_indices : List[int]
+        List of atom indices extracted from PDB
+    """
+
+    # Extract residue numbers and chain IDs from the list of tuples
+    resnums = [element[1] for element in ids] if ids else []
+    chains = [element[0] for element in ids] if ids else []
+
+    # Extract relevant lines from PDB file
+    with open(pdb, "r") as file:
+        lines = file.readlines()
+        lines = [line for line in lines if line.startswith("ATOM") or line.startswith("HETATM")]
+
+    atom_indices = list()
+
+    for resnum, chain in zip(resnums, chains):
+        for line in lines:
+            # If chain and residue number match...
+            if line[21:22].strip() == chain and line[22:26].strip() == str(resnum):
+                atom_id = line[6:11].strip()
+
+                # If the user specified PDB atom name, check that as well before appending
+                if not pdb_atom_name:
+                    atom_indices.append(atom_id)
+                else:
+                    if line[12:16].strip() == pdb_atom_name:
+                        atom_indices.append(atom_id)
+
+    # Explicitly convert to integers (mdtraj complains without dtype)
+    atom_indices = list(np.array([int(atom_idx) for atom_idx in atom_indices], dtype=int))
+    return atom_indices
+
+
+def retrieve_atom_names(pdb_file, residues):
+    """
+    Retrieves PDB atom names for a specific residue.
+
+    Parameters
+    -----------
+    pdb_file : str
+        Path to PDB file.
+    residues : List[str]
+        List of residue names for which the PDB atom names should be extracted.
+    """
+    from collections import defaultdict
+
+    output = defaultdict(list)
+    extracted_residues = list()
+
+    with open(pdb_file, "r") as f:
+        lines = f.readlines()
+
+    # Retrieve HETATM lines only
+    pdb_lines = [line for line in lines if line.startswith("HETATM")]
+
+    for index, line in enumerate(pdb_lines):
+
+        found_residue_name = line[17:20].strip()
+        found_residue_number = line[22:26].strip()
+
+        # Check if atom names for this residue are supposed to be extracted (or where already)
+        if found_residue_name in residues and found_residue_name not in extracted_residues:
+            atom_name = line[12:16]
+            output[found_residue_name].append(atom_name)
+
+        # Mark residue as extracted, if the next line has a different residue number
+        try:
+            next_residue_number = pdb_lines[index+1][22:26].strip()
+            if next_residue_number != found_residue_number:
+                extracted_residues.append(found_residue_name)
+        except IndexError:  # In case it's the end of PDB and index+1 doesn't exist
+            continue
+
+    return output

@@ -1,6 +1,7 @@
 """
 This module handles the assignment of simulation parameters for FragPELE.
 """
+from pele_platform.constants import constants as cs
 
 
 class FragSimulationParameters(object):
@@ -83,3 +84,6 @@ class FragSimulationParameters(object):
             parameters.usesrun = True
         else:
             parameters.usesrun = False
+
+        # TODO: Uncomment when frag_pele 3.0 is ready
+        # parameters.spython = cs.SCHRODINGER

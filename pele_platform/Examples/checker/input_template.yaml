@@ -4,3 +4,4 @@ resname: 'LIG'
 debug: true
 templates:
   - "mgadeaz"
+use_peleffy: true  # plop
