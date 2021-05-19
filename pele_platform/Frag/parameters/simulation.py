@@ -85,5 +85,4 @@ class FragSimulationParameters(object):
         else:
             parameters.usesrun = False
 
-        # TODO: Uncomment when frag_pele 3.0 is ready
-        # parameters.spython = cs.SCHRODINGER
+
