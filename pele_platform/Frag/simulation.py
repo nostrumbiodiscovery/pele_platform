@@ -1,6 +1,7 @@
 import os
 import tempfile
 import shutil
+import re
 
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Frag.helpers as hp
@@ -8,6 +9,7 @@ import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
+import pele_platform.constants.constants as cs
 import frag_pele.main as frag
 from pele_platform.analysis import Analysis
 from pele_platform.Utilities.Helpers import water
@@ -78,7 +80,7 @@ class FragRunner(object):
         return self.parameters.control_file
 
     def _prepare_parameters(self):
-        # self.parameters.spython = cs.SCHRODINGER Commented to use Frag 2.2.1 instead of Frag 3.0.0
+        self.parameters.spython = cs.SCHRODINGER #Commented to use Frag 2.2.1 instead of Frag 3.0.0
         self._extract_working_directory()
 
     def _set_test_variables(self):
@@ -273,16 +275,12 @@ class FragRunner(object):
             self._prepare_parameters()
             self.parameters.water_ids_to_track = water.water_ids_from_conf(self.parameters.control_file)
 
-        # Handle one vs multiple paths (if running frag libraries)
-        if isinstance(self.parameters.working_dir, str):
-            self.parameters.working_dir = list(self.parameters.working_dir)
-
         for path in self.parameters.working_dir:
             simulation_output = os.path.join(path, 'sampling_result')
             analysis_folder = os.path.join(path, "results")
 
             analysis = Analysis(
-                resname=self.parameters.residue,
+                resname="GRW",
                 chain=self.parameters.chain,
                 simulation_output=simulation_output,
                 be_column=self.parameters.be_column,
@@ -314,33 +312,13 @@ class FragRunner(object):
 
     def _extract_working_directory(self):
         params = self.parameters
-        if params.frag_library:
-            params.working_dir = []
-            pdb_basename = params.core.split(".pdb")[0] + "_processed"  # Get the name of the pdb without extension
-            if "/" in pdb_basename:
-                pdb_basename = pdb_basename.split("/")[-1]  # And if it is a path, get only the name
-            current_path = os.path.abspath(".")
-
-            with open(params.input, "r") as input_file:
-                for line in input_file.readlines():
-
-                    ID = line.split('/')[-1].split(".pdb")
-                    ID = "".join(ID[:]).replace(" ", "")
-                    params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n'))
-        else:
-            pdb_basename = params.core.split(".pdb")[0] + "_processed"  # Get the name of the pdb without extension
-            if "/" in pdb_basename:
-                pdb_basename = pdb_basename.split("/")[-1]  # And if it is a path, get only the name
-            current_path = os.path.abspath(".")
-            # If we are using an input.conf file from a previous
-            # simulation, that is, we are defining the flag frag_input
-            if "/" in self.parameters.input:
-                ID = open(self.parameters.input, 'r').readlines()[0].split('.pdb')[0].split('/')[-1]
-                residues = ''.join(open(self.parameters.input, 'r').readlines()[0].split('.pdb')[1].split())
-                ID = [ID, residues]
-                ID = "".join(ID)
-            else:
-                ID = open(params.input, 'r').readlines()[0].split('.pdb')
-                ID = "".join(ID[:]).replace(" ", "")
-            params.working_dir = os.path.join(current_path, "{}_{}".format(pdb_basename, ID)).strip('\n')
-        return 0
+        params.working_dir = []
+        pdb_basename = params.core.split(".pdb")[0] + "_processed"
+        if os.path.isdir(pdb_basename):
+            pdb_basename = os.path.basename(pdb_basename)  # And if it is a path, get only the name
+        current_path = os.path.abspath(".")
+        with open(params.input, "r") as input_file:
+            for line in input_file.readlines():
+                ID = os.path.basename(line).replace(".pdb","")
+                sentence = re.sub(r"\s+", "", ID, flags=re.UNICODE)
+                params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
