@@ -96,7 +96,14 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Environment variables</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#mandatory-variables">Mandatory variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#optional-variables">Optional variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-variables">Optional variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pele-exec">PELE_EXEC:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-data">PELE_DATA:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-documents">PELE_DOCUMENTS:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-license">PELE_LICENSE:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#singularity-exec">SINGULARITY_EXEC:</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -186,8 +193,9 @@
 <h1>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="mandatory-variables">
 <h2>Mandatory variables<a class="headerlink" href="#mandatory-variables" title="Permalink to this headline">¶</a></h2>
-<dl>
-<dt>They must be defined for the pele_platform to work correctly:</dt><dd><ul class="simple">
+<p>They must be defined for the pele_platform to work correctly:</p>
+<blockquote>
+<div><ul class="simple">
 <li><p>PELE: path to PELE installation</p></li>
 <li><p>SCHRODINGER: path to Schrodinger installation</p></li>
 </ul>
@@ -196,14 +204,81 @@
 <span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
 </pre></div>
 </div>
-</dd>
-</dl>
+</div></blockquote>
 </div>
 <div class="section" id="optional-variables">
 <h2>Optional variables<a class="headerlink" href="#optional-variables" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pele-exec">
+<h3>PELE_EXEC:<a class="headerlink" href="#pele-exec" title="Permalink to this headline">¶</a></h3>
 <blockquote>
-<div><ul>
-<li><p>PELE_LICENSE:</p>
+<div><p>The PELE executable can be configured in several ways (from highest to lowest precedence):</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Can be specified by input.yaml flag:</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pele_exec</span><span class="p">:</span> <span class="s">&quot;/home/pele/bin/Pele_mpi&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Can be specified by environment variable:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PELE_EXEC</span><span class="o">=</span>/home/pele/bin/Pele_mpi
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>If no path is specified, the PELE executable must be <code class="docutils literal notranslate"><span class="pre">/path/to/PELE-1.X/bin/Pele_mpi</span></code> (according to the path specified by the environment variable PELE).</p></li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="pele-data">
+<h3>PELE_DATA:<a class="headerlink" href="#pele-data" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>The PELE data folder can be configured in several ways (from highest to lowest precedence):</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Can be specified by input.yaml flag:</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pele_data</span><span class="p">:</span> <span class="s">&quot;/home/pele/Data/&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Can be specified by environment variable:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PELE_DATA</span><span class="o">=</span>/home/pele/Data/
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>If no path is specified, the PELE data folder must be <code class="docutils literal notranslate"><span class="pre">/path/to/PELE-1.X/Data</span></code> (according to the path specified by the environment variable PELE).</p></li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="pele-documents">
+<h3>PELE_DOCUMENTS:<a class="headerlink" href="#pele-documents" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>The PELE documents folder can be configured in several ways (from highest to lowest precedence):</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Can be specified by input.yaml flag:</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pele_documents</span><span class="p">:</span> <span class="s">&quot;/home/pele/Documents/&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Can be specified by environment variable:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PELE_DOCUMENTS</span><span class="o">=</span>/home/pele/Documents/
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>If no path is specified, the PELE documents folder must be <code class="docutils literal notranslate"><span class="pre">/path/to/PELE-1.X/Documents</span></code> (according to the path specified by the environment variable PELE).</p></li>
+</ol>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="pele-license">
+<h3>PELE_LICENSE:<a class="headerlink" href="#pele-license" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Licenses can be configured in several ways (from highest to lowest precedence):</p>
 <blockquote>
@@ -220,17 +295,18 @@
 </pre></div>
 </div>
 <ol class="arabic simple" start="3">
-<li><p>If no path is specified, licenses must be under /path/to/PELE-1.X/licenses/ (according to the path specified by the environment variable PELE)</p></li>
+<li><p>If no path is specified, licenses must be under <code class="docutils literal notranslate"><span class="pre">/path/to/PELE-1.X/licenses/</span></code> (according to the path specified by the environment variable PELE).</p></li>
 </ol>
 </div></blockquote>
 </div></blockquote>
-</li>
-<li><p>SINGULARITY_EXEC:</p>
+</div>
+<div class="section" id="singularity-exec">
+<h3>SINGULARITY_EXEC:<a class="headerlink" href="#singularity-exec" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Path of the singularity container that contains the PELE executable. It can be configured in two ways:</p>
 <blockquote>
 <div><ol class="arabic simple">
-<li><p>Can be specified by input.yaml flag</p></li>
+<li><p>Can be specified by input.yaml flag:</p></li>
 </ol>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">singularity_exec</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/singularity/container/</span>
 </pre></div>
@@ -243,9 +319,7 @@
 </div>
 </div></blockquote>
 </div></blockquote>
-</li>
-</ul>
-</div></blockquote>
+</div>
 </div>
 </div>
 
