@@ -22,8 +22,8 @@ class WaterIncluder:
     user_waters: List = field(default_factory=lambda: [])
     ligand_perturbation_params: str = ""
     ligand_residue: str = ""
-    water_center: List[float] = field(default_factory=list)
-    water_radius: float = None
+    water_center: bool = False
+    water_radius: bool = False
     water_to_exclude: List = field(default_factory=lambda: [])
     sim_path: str = "."
     allow_empty_selectors: bool = False
