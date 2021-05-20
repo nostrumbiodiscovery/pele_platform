@@ -31,8 +31,8 @@ class FragRunner(object):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()
-        self._analysis()
-
+        if not self.parameters.debug:
+            self._analysis()
         return self.parameters
 
     def _launch(self):
@@ -80,7 +80,7 @@ class FragRunner(object):
         return self.parameters.control_file
 
     def _prepare_parameters(self):
-        #self.parameters.spython = cs.SCHRODINGER #Commented to use Frag 2.2.1 instead of Frag 3.0.0
+        self.parameters.spython = cs.SCHRODINGER #Commented to use Frag 2.2.1 instead of Frag 3.0.0
         self._extract_working_directory()
 
     def _set_test_variables(self):
@@ -99,63 +99,62 @@ class FragRunner(object):
 
     def _run(self):
         params = self.parameters
-        if params.frag_run:
-            try:
-                frag.main(
-                    params.core_process,
-                    params.input,
-                    params.gr_steps,
-                    params.criteria,
-                    params.plop_path,
-                    params.spython,
-                    params.pele_exec,
-                    params.control_file,
-                    params.license,
-                    params.output_folder,
-                    params.report_name,
-                    "trajectory",
-                    params.cluster_folder,
-                    params.cpus,
-                    params.distcont,
-                    params.threshold,
-                    params.epsilon,
-                    params.condition,
-                    params.metricweights,
-                    params.nclusters,
-                    params.frag_eq_steps,
-                    params.frag_restart,
-                    params.min_overlap,
-                    params.max_overlap,
-                    params.chain_core,
-                    params.frag_chain,
-                    params.frag_steps,
-                    params.temperature,
-                    params.seed,
-                    params.gridres,
-                    params.banned,
-                    params.limit,
-                    params.mae,
-                    params.rename,
-                    params.threshold_clash,
-                    params.steering,
-                    params.translation_high,
-                    params.rotation_high,
-                    params.translation_low,
-                    params.rotation_low,
-                    params.explorative,
-                    params.frag_radius,
-                    params.sampling_control,
-                    params.pele_data,
-                    params.pele_documents,
-                    params.only_prepare,
-                    params.only_grow,
-                    params.no_check,
-                    params.debug,
-                    srun=params.usesrun,
-                )
-            except Exception as e:
-                print("Skipped - FragPELE will not run.")
-                print(e)
+        try:
+            frag.main(
+                params.core_process,
+                params.input,
+                params.gr_steps,
+                params.criteria,
+                params.plop_path,
+                params.spython,
+                params.pele_exec,
+                params.control_file,
+                params.license,
+                params.output_folder,
+                params.report_name,
+                "trajectory",
+                params.cluster_folder,
+                params.cpus,
+                params.distcont,
+                params.threshold,
+                params.epsilon,
+                params.condition,
+                params.metricweights,
+                params.nclusters,
+                params.frag_eq_steps,
+                params.frag_restart,
+                params.min_overlap,
+                params.max_overlap,
+                params.chain_core,
+                params.frag_chain,
+                params.frag_steps,
+                params.temperature,
+                params.seed,
+                params.gridres,
+                params.banned,
+                params.limit,
+                params.mae,
+                params.rename,
+                params.threshold_clash,
+                params.steering,
+                params.translation_high,
+                params.rotation_high,
+                params.translation_low,
+                params.rotation_low,
+                params.explorative,
+                params.frag_radius,
+                params.sampling_control,
+                params.pele_data,
+                params.pele_documents,
+                params.only_prepare,
+                params.only_grow,
+                params.no_check,
+                params.debug,
+                srun=params.usesrun,
+            )
+        except Exception as e:
+            print("Skipped - FragPELE will not run.")
+            print(e)
 
     def _prepare_input_file(self, logger=None):
         from rdkit import Chem
@@ -258,7 +257,6 @@ class FragRunner(object):
         return line, fragment
 
     def _analysis(self):
-
         # Run analysis to point, if required
         self.parameters.analysis_to_point = self.parameters.args.analysis_to_point
         if self.parameters.analysis_to_point and self.parameters.folder:
@@ -313,9 +311,11 @@ class FragRunner(object):
     def _extract_working_directory(self):
         params = self.parameters
         params.working_dir = []
-        pdb_basename = params.core.split(".pdb")[0] + "_processed"
-        if os.path.isdir(pdb_basename):
-            pdb_basename = os.path.basename(pdb_basename)  # And if it is a path, get only the name
+        if os.path.isfile(params.core):
+            complex_name = os.path.basename(params.core).split(".pdb")[0]  # And if it is a path, get only the name
+        else:
+            complex_name = params.core.split(".pdb")[0]
+        pdb_basename = complex_name + "_processed" if not params.skip_prep else complex_name
         current_path = os.path.abspath(".")
         with open(params.input, "r") as input_file:
             for line in input_file.readlines():
