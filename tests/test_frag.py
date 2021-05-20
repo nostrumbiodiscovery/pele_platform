@@ -58,6 +58,7 @@ water_lines = [
    "HETATM 2495 2HW  HOH B 607      20.258  64.845  43.583  1.00  0.00           H",
 ]
 
+
 def test_frag_sim(
     capsys,
     ext_args=FRAG_SIM_ARGS,
@@ -113,8 +114,9 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     assert "Skipped - FragPELE will not run." not in captured.out
     assert os.path.exists(new_output_path)
     assert len(top_results) == 3
+    
 
-
+@pytest.mark.xfail
 def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     """
     Checks input file flags.
@@ -223,7 +225,8 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
-    
+
+
 def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
     """
     Tests the frag_core_atom flag.
@@ -242,6 +245,7 @@ def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
 
     except Exception:
         assert False
+
 
 def test_frag_waters(ext_args=FRAG_WATERS,
                      output="1dyi_waters_processed_*/"):
@@ -266,3 +270,49 @@ def test_frag_waters(ext_args=FRAG_WATERS,
     assert water_lines == water_output
 
 
+def test_ligand_clustering_production(ext_args=FRAG_CORE_ARGS):
+    """
+    Tests ligand clustering.
+
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file,
+    """
+    job = main.run_platform_from_yaml(ext_args)
+    for path in job.working_dir:
+        analysis_folder = os.path.join(path, "results")
+        if not os.path.isdir(analysis_folder):
+            assert False
+
+
+def test_ligand_clustering_libraries(ext_args=FRAG_SDF_LIBRARIES):
+    """
+    Tests ligand clustering for fragment libraries.
+
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file,
+    """
+    job = main.run_platform_from_yaml(ext_args)
+    for path in job.working_dir:
+        analysis_folder = os.path.join(path, "results")
+        if not os.path.isdir(analysis_folder):
+            assert False
+
+
+def test_water_clustering(ext_args=FRAG_WATERS):
+    """
+    Tests water clustering.
+
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file,
+    """
+    job = main.run_platform_from_yaml(ext_args)
+    for path in job.working_dir:
+        analysis_folder = os.path.join(path, "results")
+        if not os.path.isdir(analysis_folder):
+            assert False
