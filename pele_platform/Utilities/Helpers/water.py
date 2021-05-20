@@ -1,30 +1,29 @@
 from dataclasses import dataclass, field
-from typing import List
-from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch, Vector
-
 import glob
 import numpy as np
 import os
 import re
+from typing import List
+
+from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch, Vector
+
 import pele_platform.constants.constants as cs
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Utilities.Helpers.helpers as hp
 import pele_platform.constants.pele_params as pp
-
 
 TEMPLATE = '{{"watersToPerturb": {{"links": {{"ids": [{index}] }}}}, "Box": {{"radius": {radius}, "fixedCenter": [{com}], "type": "sphericalBox"}}}}'
 
 
 @dataclass
 class WaterIncluder:
-
     input_pdbs: list
     n_waters: int
     user_waters: List = field(default_factory=lambda: [])
     ligand_perturbation_params: str = ""
     ligand_residue: str = ""
-    water_center: bool = False
-    water_radius: bool = False
+    water_center: List[float] = field(default_factory=list)
+    water_radius: float = None
     water_to_exclude: List = field(default_factory=lambda: [])
     sim_path: str = "."
     allow_empty_selectors: bool = False
@@ -97,7 +96,7 @@ class WaterIncluder:
 
     def set_water_input(self, inp):
         """
-        Sets water sites JSON (box, radius, water IDs) by formating the TEMPLATE.
+        Sets water sites JSON (box, radius, water IDs) by formatting the TEMPLATE.
         """
         try:
             self.set_box_center(inp)
@@ -181,7 +180,6 @@ class WaterIncluder:
         chains = []
         resnames = []
 
-        # get maximum residue and atom numbers keep original waters
         # Open the original PDB file
         with open(self.input_pdbs[0], "r") as file:
 
@@ -221,9 +219,6 @@ class WaterIncluder:
                     # Line too short - Remarks pdb
                     except IndexError:
                         pass
-
-        # Check if waters were added to the system in the previous run
-        self.check_added_waters()
 
         # Return if no waters are supposed to be added
         if self.n_waters < 1:
@@ -276,7 +271,7 @@ class WaterIncluder:
             # Slice created water PDB lines and split between different input PDBs
             sliced_water_output = []
             for i in range(0, len(water_output), self.n_waters * 3):
-                sliced_water_output.append(water_output[i: i + self.n_waters * 3])
+                sliced_water_output.append(water_output[i : i + self.n_waters * 3])
 
             # Loop over PDB inputs and
             for input_pdb, water_output in zip(self.input_pdbs, sliced_water_output):
@@ -404,13 +399,6 @@ class WaterIncluder:
             output.append((chain, int(resnum)))
 
         return output
-
-    def check_added_waters(self):
-        """
-        Checks if any waters were already added to the system based on the "added_waters.txt" file and adjusts
-        self.n_waters accordingly.
-        """
-        pass
 
 
 def water_ids_from_conf(configuration_file):
