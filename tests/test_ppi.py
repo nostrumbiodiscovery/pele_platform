@@ -98,6 +98,6 @@ yaml = os.path.join(test_path, "PPI/input_folder.yaml")
 
 def test_working_folder(yaml=yaml, output="ppi_folder"):
     if os.path.exists(output):
-        shutil.rmtree(output)
+        shutil.rmtree(output, ignore_errors=True)
     job, _ = main.run_platform_from_yaml(yaml)
     assert os.path.exists(job.folder)
