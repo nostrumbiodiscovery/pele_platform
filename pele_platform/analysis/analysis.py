@@ -1529,7 +1529,7 @@ class Analysis(object):
         # On Frag, the pdb of the trajectories aer in the sampling_result folder and not in the =/ folder.
         try:
             path = glob.glob(os.path.join(self.output, "0", "trajectory_1.*"))[0]
-        except:
+        except IndexError:
             # If we are running analysis for a FragPELE simulation
             path = glob.glob(os.path.join(self.output, "trajectory_1.*"))[0]
 
