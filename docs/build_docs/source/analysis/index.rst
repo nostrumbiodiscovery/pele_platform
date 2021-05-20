@@ -132,6 +132,10 @@ class Analysis
             Path to the topology file, if using XTC trajectories.
         cpus: int (optional, default = 1)
             Number of CPUs to use.
+        water_ids_to_track : List (optional, default = [])
+            List of IDs of water molecules to cluster. Each water ID is defined by
+            a tuple that contains the PDB chain and the residue number, e.g.
+            ``water_ids_to_track = [("A", 234), ("A", 235)]``
 
 .. code-block:: python
 
