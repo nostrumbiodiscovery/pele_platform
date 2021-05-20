@@ -338,15 +338,15 @@ class SimulationParams(
             else self.simulation_params.get("poses", self.cpus - 1)
         )
         self.pele_exec = (
-            args.pele_exec if args.pele_exec else os.path.join(cs.PELE, "bin/Pele_mpi")
+            args.pele_exec if args.pele_exec else cs.DEFAULT_PELE_EXEC
         )
         self.pele_data = (
-            args.pele_data if args.pele_data else os.path.join(cs.PELE, "Data")
+            args.pele_data if args.pele_data else cs.DEFAULT_PELE_DATA
         )
         self.pele_documents = (
             args.pele_documents
             if args.pele_documents
-            else os.path.join(cs.PELE, "Documents")
+            else cs.DEFAULT_PELE_DOCUMENTS
         )
         self.polarize_metals = args.polarize_metals if args.polarize_metals else False
         self.polarization_factor = (
