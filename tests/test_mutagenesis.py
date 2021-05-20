@@ -55,7 +55,7 @@ def test_mutagenesis_restart():
     restart_folder = os.path.join(test_path, "directory_to_restart")
 
     if os.path.exists(pele_dir):
-        shutil.rmtree(pele_dir)
+        shutil.rmtree(pele_dir, ignore_errors=True)
     shutil.copytree(restart_folder, pele_dir)
 
     all_jobs = main.run_platform_from_yaml(yaml)

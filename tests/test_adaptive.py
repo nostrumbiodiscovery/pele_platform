@@ -122,7 +122,7 @@ def test_restart_flag():
     restart_yaml = os.path.join(test_path, "restart", "restart.yaml")
 
     if os.path.exists(new_pele_dir):
-        shutil.rmtree(new_pele_dir)
+        shutil.rmtree(new_pele_dir, ignore_errors=True)
     shutil.copytree(restart_dir, new_pele_dir)
     shutil.copy(restart_yaml, os.getcwd())
 
