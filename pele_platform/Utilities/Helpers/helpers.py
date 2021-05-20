@@ -382,7 +382,7 @@ def check_remove_folder(*output_folders):
     """
     for folder in output_folders:
         if os.path.exists(folder):
-            shutil.rmtree(folder)
+            shutil.rmtree(folder, ignore_errors=True)
 
 
 def get_atom_indices(ids, pdb, pdb_atom_name=None):
