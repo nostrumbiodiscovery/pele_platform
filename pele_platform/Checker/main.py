@@ -20,10 +20,10 @@ class Checker():
 
     def _generate_env_variables(self, args: yp.YamlParser) -> list:
         self.env_variables = [
-        en.EnvVariable("pele_data", args.pele_data, os.path.join(cs.PELE, "Data"), "--pele_data /path/to/data/folder/", "export PELE=/path/to/PELE-1.X/"),
-        en.EnvVariable("pele_documents", args.pele_documents, os.path.join(cs.PELE, "Documents"), "--pele_documents /path/to/documents/folder", "export PELE=/path/to/PELE-1.X/"),
-        en.EnvVariable("pele_exec", args.pele_exec, os.path.join(cs.PELE, "bin/Pele_mpi"), "--pele_exec /path/to/PELE_exec", "export PELE=/path/to/PELE-1.X/"),
-        en.EnvVariable("pele_license", args.pele_license, cs.DEFAULT_PELE_LICENSE, "--pele_license /path/to/licenses", "export PELE=/path/to/PELE-1.X/"),
+        en.EnvVariable("pele_data", args.pele_data, cs.DEFAULT_PELE_DATA, "--pele_data /path/to/data/folder/", "export PELE_DATA=/path/to/PELE-Data/folder"),
+        en.EnvVariable("pele_documents", args.pele_documents, cs.DEFAULT_PELE_DOCUMENTS, "--pele_documents /path/to/documents/folder", "export PELE_DOCUMENTS=/path/to/PELE-Documents/folder"),
+        en.EnvVariable("pele_exec", args.pele_exec, cs.DEFAULT_PELE_EXEC, "--pele_exec /path/to/PELE_exec", "export PELE_EXEC=/path/to/PELE-1.X/binary"),
+        en.EnvVariable("pele_license", args.pele_license, cs.DEFAULT_PELE_LICENSE, "--pele_license /path/to/licenses", "export PELE_LICENSE=/path/to/PELE-License/folder"),
         en.EnvVariable("schrodinger", args.schrodinger, cs.SCHRODINGER, "--schrodinger /path/to/schrodinger-20XX/", "export SCHRODINGER=/path/to/schrodinger-20XX/")
         ]
         return self.env_variables

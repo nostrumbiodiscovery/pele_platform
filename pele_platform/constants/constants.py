@@ -7,7 +7,34 @@ import os
 SCHRODINGER = os.environ.get("SCHRODINGER", "")
 PELE = os.environ.get("PELE", "")
 SINGULARITY_EXEC = os.environ.get("SINGULARITY_EXEC", "")
+PELE_EXEC = os.environ.get("PELE_EXEC", "")
+PELE_DATA = os.environ.get("PELE_DATA", "")
+PELE_DOCUMENTS = os.environ.get("PELE_DOCUMENTS", "")
 PELE_LICENSE = os.environ.get("PELE_LICENSE", "")
+DEFAULT_PELE_EXEC = (
+    # Priority for the default pele_exec variable:
+    #    1. Environment variable (PELE_EXEC)
+    #    2. Path_to_PELE + bin/Pele_mpi
+    PELE_EXEC
+    if PELE_EXEC
+    else os.path.join(PELE, "bin/Pele_mpi")
+)
+DEFAULT_PELE_DATA = (
+    # Priority for the default data variable:
+    #    1. Environment variable (PELE_DATA)
+    #    2. Path_to_PELE + Data
+    PELE_DATA
+    if PELE_DATA
+    else os.path.join(PELE, "Data")
+)
+DEFAULT_PELE_DOCUMENTS = (
+    # Priority for the default data variable:
+    #    1. Environment variable (PELE_DOCUMENTS)
+    #    2. Path_to_PELE + Documents
+    PELE_DOCUMENTS
+    if PELE_DOCUMENTS
+    else os.path.join(PELE, "Documents")
+)
 DEFAULT_PELE_LICENSE = (
     # Priority for the default license variable:
     #    1. Environment variable (PELE_LICENSE)
