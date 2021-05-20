@@ -114,9 +114,8 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     assert "Skipped - FragPELE will not run." not in captured.out
     assert os.path.exists(new_output_path)
     assert len(top_results) == 3
-    
 
-@pytest.mark.xfail
+
 def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     """
     Checks input file flags.
