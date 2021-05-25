@@ -2,6 +2,8 @@ import os
 import tempfile
 import shutil
 import re
+from pathlib import Path
+
 
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Frag.helpers as hp
@@ -31,8 +33,10 @@ class FragRunner(object):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()
-        if not self.parameters.debug:
+        if not self.parameters.debug and not self.parameters.args.analysis_to_point:
             self._analysis()
+        if self.parameters.args.analysis_to_point:
+            self._analysis_to_point()
         return self.parameters
 
     def _launch(self):
@@ -81,7 +85,6 @@ class FragRunner(object):
 
     def _prepare_parameters(self):
         self.parameters.spython = cs.SCHRODINGER #Commented to use Frag 2.2.1 instead of Frag 3.0.0
-        self._extract_working_directory()
 
     def _set_test_variables(self):
         if self.parameters.test:
@@ -99,6 +102,11 @@ class FragRunner(object):
 
     def _run(self):
         params = self.parameters
+        new_file = os.path.join(os.path.abspath("."), Path(params.core_process).stem + "_frag.pdb")
+        shutil.copy(params.core, new_file)
+        params.core = new_file
+        params.core_process = os.path.basename(new_file)
+        self._extract_working_directory()
         try:
             frag.main(
                 params.core_process,
@@ -257,19 +265,11 @@ class FragRunner(object):
         return line, fragment
 
     def _analysis(self):
-        # Run analysis to point, if required
-        self.parameters.analysis_to_point = self.parameters.args.analysis_to_point
-        if self.parameters.analysis_to_point and self.parameters.folder:
-            ana.main(
-                path=self.parameters.folder,
-                atom_coords=self.parameters.analysis_to_point,
-                pattern=os.path.basename(self.parameters.system),
-            )
-
         # TODO create a list of the libraries defined in the current input.yaml
 
         # Retrieve water indices to cluster, if running analysis only
         if self.parameters.only_analysis:
+            self._extract_working_directory()
             self._prepare_parameters()
             self.parameters.water_ids_to_track = water.water_ids_from_conf(self.parameters.control_file)
 
@@ -303,6 +303,14 @@ class FragRunner(object):
                 representatives_criterion=self.parameters.cluster_representatives_criterion,
             )
 
+    def _analysis_to_point(self):
+        self.parameters.analysis_to_point = self.parameters.args.analysis_to_point
+        ana.main(
+            path=self.parameters.folder,
+            atom_coords=self.parameters.analysis_to_point,
+            pattern=os.path.basename(self.parameters.system),
+        )
+
     def _clean_up(self, fragment_files):
         for file in fragment_files:
             if os.path.isfile(file):
@@ -315,7 +323,7 @@ class FragRunner(object):
             complex_name = os.path.basename(params.core).split(".pdb")[0]  # And if it is a path, get only the name
         else:
             complex_name = params.core.split(".pdb")[0]
-        pdb_basename = complex_name + "_processed" if not params.skip_prep else complex_name
+        pdb_basename = complex_name #+ "_processed" if not params.skip_prep else complex_name
         current_path = os.path.abspath(".")
         with open(params.input, "r") as input_file:
             for line in input_file.readlines():
