@@ -14,7 +14,7 @@ ARGS_1 = os.path.join(test_path, "singularity/input_adaptive.yaml")
 ARGS_2 = os.path.join(test_path, "singularity/input_frag.yaml")
 
 ADAPTIVE_PELE_EXEC = "Pele_mpi"
-ADAPTIVE_MPI_PARAMS = '"mpiParameters": "/path/to/singularity_container.sif",'
+ADAPTIVE_MPI_PARAMS = '"/path/to/singularity_container.sif",'
 FRAG_PELE_EXEC = "/path/to/singularity_container.sif Pele_mpi"
 
 testdata = [
@@ -66,7 +66,9 @@ def test_singularity_params(ext_args, check_mpi, expected1, expected2):
     # Check parameters
     assert simulation_params.pele_exec == expected1
     if check_mpi:
-        assert simulation_params.mpi_params == expected2
+        mpi_params_name = "srunParameters" if params.usesrun else "mpiParameters"
+        mpi_expected_params = f'"{mpi_params_name}": {expected2}'
+        assert simulation_params.mpi_params == mpi_expected_params
 
 
 def _read_args(file):

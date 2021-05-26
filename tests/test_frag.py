@@ -80,7 +80,7 @@ def test_frag_sim(
     """
 
     if os.path.exists(output):
-        shutil.rmtree(output)
+        shutil.rmtree(output,  ignore_errors=True)
 
     job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
@@ -107,7 +107,7 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     output_paths = glob.glob(output)
     for path in output_paths:
         if os.path.exists(path):
-            shutil.rmtree(path)
+            shutil.rmtree(path, ignore_errors=True)
 
     job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()

@@ -1,8 +1,10 @@
 import os
 import math
 import glob
+import pytest
 import shutil
 import re
+import yaml
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
@@ -109,35 +111,44 @@ GPCR_VALUES = [
 ]
 
 
-def test_restart_flag():
+@pytest.mark.parametrize("restart_type",
+                         [
+                             "restart",
+                             "adaptive_restart"
+                         ])
+def test_restart_flag(restart_type):
     """
-    Checks if the platform can correctly restart a simulation from existing files (created in debug mode) without
-    overwriting configuration files.
+    Checks if the platform can correctly restart and adaptive_restart a simulation from existing files (created in
+    debug mode).
     """
-
-    # Retrieve restart simulation from Examples directory and copy to test folder
-    pele_dir = "STR_Pele"
-    new_pele_dir = os.path.join(os.getcwd(), pele_dir)
-    restart_dir = os.path.join(test_path, "restart", pele_dir)
+    # First, run the platform in debug mode
     restart_yaml = os.path.join(test_path, "restart", "restart.yaml")
+    job_parameters = main.run_platform_from_yaml(restart_yaml)
 
-    if os.path.exists(new_pele_dir):
-        shutil.rmtree(new_pele_dir)
-    shutil.copytree(restart_dir, new_pele_dir)
-    shutil.copy(restart_yaml, os.getcwd())
+    # Edit the original YAML file
+    with open(restart_yaml, "r") as file:
+        new_parameters = yaml.safe_load(file)
 
-    # Run platform
-    job_params = main.run_platform_from_yaml("restart.yaml")
+    new_parameters[restart_type] = True
+    new_parameters['debug'] = False
+    new_parameters['working_folder'] = job_parameters.pele_dir
+
+    updated_restart_yaml = "updated_restart.yaml"
+    with open(updated_restart_yaml, "w+") as new_file:
+        yaml.dump(new_parameters, new_file)
+
+    # Restart the simulation
+    job_parameters2 = main.run_platform_from_yaml(updated_restart_yaml)
 
     # Assert it reused existing directory and did not create a new one
-    assert os.path.basename(job_params.pele_dir) == os.path.basename(restart_dir)
+    assert job_parameters.pele_dir == job_parameters2.pele_dir
 
-    # Assert it did not overwrite pele.conf
-    expected_line = '{ "type": "constrainAtomToPosition", "springConstant": 666, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" },'
-    errors = check_file(job_params.pele_dir, "pele.conf", expected_line, [])
+    # Make sure pele.conf was not overwritten
+    errors = check_file(job_parameters2.pele_dir, "pele.conf", 'overlapFactor": 0.5', [])
     assert not errors
 
-    shutil.rmtree(new_pele_dir, ignore_errors=True)
+    # Check if it finished
+    assert os.path.exists(os.path.join(job_parameters2.pele_dir, "results"))
 
 
 def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
@@ -197,10 +208,6 @@ def test_water_lig(ext_args=WATERLIG_ARGS):
 
 
 def test_out_in(ext_args=OUT_IN_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_restart(ext_args=RESTART_ARGS):
     main.run_platform_from_yaml(ext_args)
 
 

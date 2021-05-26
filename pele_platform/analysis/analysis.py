@@ -1532,9 +1532,36 @@ class Analysis(object):
         except IndexError:
             # If we are running analysis for a FragPELE simulation
             path = glob.glob(os.path.join(self.output, "trajectory_1.*"))[0]
+            
+        # Get list of epoch directories
+        epoch_dirs = glob.glob(os.path.join(self.output, '[0-9]*'))
+
+        # Tweak to read a directory from standard PELE (not coming
+        # from adaptive)
+        if len(epoch_dirs) == 0:
+            output_path = self.output
+        else:
+            output_path = epoch_dirs[0]
+
+        # Get trajectory name
+        trajectory_prefix = \
+            str(os.path.splitext(self.traj)[0])
+        trajectory_format = \
+            str(os.path.splitext(self.traj)[-1])
+
+        # Find trajectory
+        trajectory_path = glob.glob(os.path.join(output_path,
+                                                 trajectory_prefix + '_*'
+                                                 + trajectory_format))
+        if len(trajectory_path) == 0:
+            trajectory_path = os.path.join(output_path,
+                                           trajectory_prefix
+                                           + trajectory_format)
+        else:
+            trajectory_path = trajectory_path[0]
 
         # load the first trajectory and select the residue
-        traj = mdtraj.load_frame(path, 0, top=self.topology)
+        traj = mdtraj.load_frame(trajectory_path, 0, top=self.topology)
         residue = traj.topology.select(f"resname '{self.residue}'")
 
         # if empty array is returned, raise error

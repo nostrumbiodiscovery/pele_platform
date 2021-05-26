@@ -93,7 +93,7 @@ PELE++ parameters
 
 - **steps**: Pele steps in each iteration
 
-- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)
+- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run.
 
 - **spawning**: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional
 

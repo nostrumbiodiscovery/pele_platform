@@ -41,9 +41,10 @@ def run_ppi(parsed_yaml: dict) -> (pv.ParametersBuilder, pv.ParametersBuilder):
 
     # no waters in the first simulation
     parsed_yaml.water_arg = None
+    parsed_yaml.use_peleffy = parsed_yaml.use_peleffy if parsed_yaml.use_peleffy is not None else False
 
     # remove chains except for "protein" flag
-    protein_file = prepare_structure(protein_file, ligand_pdb, chain, True)
+    protein_file = prepare_structure(protein_file, ligand_pdb, chain, True, peleffy=parsed_yaml.use_peleffy)
     parsed_yaml.system = protein_file
 
     # start simulation 1 - induced fit
