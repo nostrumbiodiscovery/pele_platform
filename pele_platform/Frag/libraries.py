@@ -226,7 +226,7 @@ def write_config_file(output_name,
     Generates the configuration file.
     """
     if frag_restart:
-        for i in bond_list:
+        for bond in bond_list:
 
             name= os.getcwd() + "/"+ frag_core.split("/")[-1][:-4]+"_processed_"+ \
                   i.split("/")[6].split(" ")[0].replace(".pdb","") + \
