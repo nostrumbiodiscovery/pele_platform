@@ -1,25 +1,36 @@
-Minimize your pdb
-#####################################################################
+Minimize your protein
+==========================
 
-The minimization package aims at minimizing the energy of the system. 
-PELE will optimize all present interactions in your input pdb by slightly
-perturbing protein and ligand.
+Introduction
+------------------
 
-**Input** (further explained below):
+The package to minimize the energy of the system by slightly perturbing the protein and the ligand to optimize all
+interactions.
 
+Inputs
+++++++++++
     - protein-ligand complex PDB file
+    - YAML file with parameters
 
-**Output** (further explained below):
+Default parameters
+++++++++++++++++++++
 
-    - ranked binding modes
+    - iterations: 20
+    - pele_steps: 12
+    - `constraint level <https://nostrumbiodiscovery.github.io/pele_platform/flags/all_packages/index.html#carbon-alpha-constraints>`_: 2
 
-**Computational time**: 30min
+Recommendations
+++++++++++++++++++
+
+    #. Expected computational time is ~30 mins.
+
 
 1. Complex Preparation
-========================
+-------------------------
    
-Prepare the system consisting of protein and docked ligand with Schrödinger Protein Preparation Wizard. We would usually recommend protonating the protein (obligatory), deleting water molecules more than 5Å away from ligands
-and ions as well as filling in missing loops and side chains.
+Prepare the system consisting of protein and docked ligand with Schrödinger Protein Preparation Wizard. We would usually
+recommend protonating the protein (mandatory), deleting water molecules and ions as well as filling in missing loops
+and side chains.
 
 Make sure the ligand has:
 
@@ -27,8 +38,8 @@ Make sure the ligand has:
  - unique PDB atom names with no spaces or single letters
  - any residue name except for ``UNK``
 
-2. Input Preparation
-=====================
+2. Input file preparation
+---------------------------
 
 Prepare the input file ``input.yml``:
 
@@ -39,19 +50,19 @@ Prepare the input file ``input.yml``:
     resname: 'THC' # Ligand residue name
     seed: 12345
     cpus: 20
-    rescoring: true #Minimize
+    rescoring: true # Minimize
 
-For more optional flags please refer to `optative flags <../../documentation/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_
 
 3. Run simulation
-====================
+---------------------
 
 To run the system launch the simulation with the following command:
 
 ``python -m pele_platform.main input.yml``
 
 4. Output
-=================
+------------
 
 Raw output
 +++++++++++++
@@ -61,15 +72,17 @@ detailed information on each snapshot (PDB file, binding energy, metrics, etc.).
 Selected poses
 ++++++++++++++++
 
-**Clusters**
+Clusters
+**************
 
 Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:
 
 ``working_folder/results/clusters``
 
-**Best snapshots**
+Best snapshots
+*****************
 
 In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
 
-``working_folder/results/BestStructs``
+``working_folder/results/top_poses``

@@ -4,3 +4,4 @@ resname: 'LIG'
 debug: true
 rotamers:
   - "mgadeaz"
+use_peleffy: true  # plop

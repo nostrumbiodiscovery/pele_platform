@@ -1,0 +1,8 @@
+system: '../pele_platform/Examples/clustering_xtc/0/topology.pdb'
+resname: 'LIG'
+chain: 'Z'
+waters:
+  - 'A:2451'
+  - 'A:2334'
+test: true
+rescoring: true

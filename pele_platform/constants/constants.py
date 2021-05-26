@@ -6,6 +6,43 @@ import os
 
 SCHRODINGER = os.environ.get("SCHRODINGER", "")
 PELE = os.environ.get("PELE", "")
+SINGULARITY_EXEC = os.environ.get("SINGULARITY_EXEC", "")
+PELE_EXEC = os.environ.get("PELE_EXEC", "")
+PELE_DATA = os.environ.get("PELE_DATA", "")
+PELE_DOCUMENTS = os.environ.get("PELE_DOCUMENTS", "")
+PELE_LICENSE = os.environ.get("PELE_LICENSE", "")
+DEFAULT_PELE_EXEC = (
+    # Priority for the default pele_exec variable:
+    #    1. Environment variable (PELE_EXEC)
+    #    2. Path_to_PELE + bin/Pele_mpi
+    PELE_EXEC
+    if PELE_EXEC
+    else os.path.join(PELE, "bin/Pele_mpi")
+)
+DEFAULT_PELE_DATA = (
+    # Priority for the default data variable:
+    #    1. Environment variable (PELE_DATA)
+    #    2. Path_to_PELE + Data
+    PELE_DATA
+    if PELE_DATA
+    else os.path.join(PELE, "Data")
+)
+DEFAULT_PELE_DOCUMENTS = (
+    # Priority for the default data variable:
+    #    1. Environment variable (PELE_DOCUMENTS)
+    #    2. Path_to_PELE + Documents
+    PELE_DOCUMENTS
+    if PELE_DOCUMENTS
+    else os.path.join(PELE, "Documents")
+)
+DEFAULT_PELE_LICENSE = (
+    # Priority for the default license variable:
+    #    1. Environment variable (PELE_LICENSE)
+    #    2. Path_to_PELE + licenses
+    PELE_LICENSE
+    if PELE_LICENSE
+    else os.path.join(PELE, "licenses")
+)
 
 # DEFAULTS
 # --------
@@ -210,7 +247,6 @@ INTERACTION_RESTRICTIONS = """
 [
 	"{0}"
 ]
->>>>>>> devel
 """
 
 LIGAND = '"ligandResname" : "$LIG_RES",'
@@ -348,6 +384,9 @@ metals = [
     "LV",
 ]
 
+# Group 9 ions
+ions9 = ["F", "CL", "BR", "I", "AT"]
+
 # FLAGS WITH ATOM STRINGS
 atom_string_flags = [
     "atom_dist",
@@ -361,16 +400,6 @@ atom_string_flags = [
 # ------------------
 
 GLIDE_TEMPLATE = ["INPUT", "PRECISION"]
-
-# RESTARTS:
-# -----------
-
-FIRST_RESTART = [
-    "all",
-]
-SECOND_RESTART = ["all", "adaptive"]
-THIRD_RESTART = ["all", "adaptive", "pele"]
-FOURTH_RESTART = ["all", "adaptive", "pele", "msm"]
 
 # PATHS
 # -------
@@ -392,3 +421,65 @@ constraint_levels = {
     2: {"ca_constr": 2.5, "terminal_constr": 5.0, "ca_interval": 8},
     3: {"ca_constr": 5.0, "terminal_constr": 5.0, "ca_interval": 5},
 }
+
+custom_colors = (
+    (0.12156862745098039, 0.4666666666666667, 0.7058823529411765),
+    (0.6823529411764706, 0.7803921568627451, 0.9098039215686274),
+    (1.0, 0.4980392156862745, 0.054901960784313725),
+    (1.0, 0.7333333333333333, 0.47058823529411764),
+    (0.17254901960784313, 0.6274509803921569, 0.17254901960784313),
+    (0.596078431372549, 0.8745098039215686, 0.5411764705882353),
+    (0.8392156862745098, 0.15294117647058825, 0.1568627450980392),
+    (1.0, 0.596078431372549, 0.5882352941176471),
+    (0.5803921568627451, 0.403921568627451, 0.7411764705882353),
+    (0.7725490196078432, 0.6901960784313725, 0.8352941176470589),
+    (0.5490196078431373, 0.33725490196078434, 0.29411764705882354),
+    (0.7686274509803922, 0.611764705882353, 0.5803921568627451),
+    (0.8901960784313725, 0.4666666666666667, 0.7607843137254902),
+    (0.9686274509803922, 0.7137254901960784, 0.8235294117647058),
+    (0.7372549019607844, 0.7411764705882353, 0.13333333333333333),
+    (0.8588235294117647, 0.8588235294117647, 0.5529411764705883),
+    (0.09019607843137255, 0.7450980392156863, 0.8117647058823529),
+    (0.6196078431372549, 0.8549019607843137, 0.8980392156862745),
+)
+
+
+# INTER STEP LOGGER
+# -------------------
+INTERSTEPLOGGER = """,
+            "useInterStepLogger": true"""
+
+
+# ANALYSIS
+# ---------
+# Top cluster selection - mapping between table metrics and YAML arguments
+metric_top_clusters_criterion = {
+    "total_25_percentile": "currentEnergy 25-percentile",
+    "total_5_percentile": "currentEnergy 5-percentile",
+    "total_mean": "currentEnergy mean",
+    "total_min": "currentEnergy minb",
+    "interaction_25_percentile": "Binding Energy 25-percentile",
+    "interaction_5_percentile": "Binding Energy 5-percentile",
+    "interaction_mean": "Binding Energy mean",
+    "interaction_min": "Binding Energy min",
+    "population": "Population",
+}
+
+# Cluster representatives selection - mapping between table metrics and
+# YAML arguments
+cluster_representatives_criterion = {
+    "total_25_percentile": "currentEnergy 25-percentile",
+    "total_5_percentile": "currentEnergy 5-percentile",
+    "total_mean": "currentEnergy mean",
+    "total_min": "currentEnergy min",
+    "interaction_25_percentile": "Binding Energy 25-percentile",
+    "interaction_5_percentile": "Binding Energy 5-percentile",
+    "interaction_mean": "Binding Energy mean",
+    "interaction_min": "Binding Energy min",
+}
+
+
+# LIGAND PARAMETERIZATION
+# ------------------------
+# Templates in PELE Data folder, no need to parametrize those
+in_pele_data = ["caz", "clz", "cuiz", "cuz", "hohz", "mgz", "mnz", "naz", "spcz", "znz"]

@@ -1,29 +1,42 @@
-Prepare your own biased simulation
-####################################
+Biased simulation
+====================
 
-This simulation aims to find a binding mode containing a specific interaction between two atoms.
+Introduction
+--------------
 
-**Article** https://www.nature.com/articles/s41598-017-08445-5
+This simulation aims to find a binding mode containing a specific interaction between two atoms, it provides the user
+with a list of ranked binding modes of the chosen small molecule with the desired interaction.
 
-**Input** (further explained below):
+For more details, check out our article: `Adaptive simulations, towards interactive protein-ligand modeling <https://www.nature.com/articles/s41598-017-08445-5>`_.
+
+Inputs
++++++++++
 
     - protein-ligand PDB file
+    - YAML file with parameters
 
-**Output** (further explained below):
 
-    - ranked binding modes of the chosen small molecule
-      with the desired interaction
+Default parameters
++++++++++++++++++++
 
-**Computational Time**: 3h
+    - iterations: 100
+    - pele steps: 8
+
+Recommendations
+++++++++++++++++++
+
+    #. We recommend using **at least 50 CPUs**.
+
+    #. Expected computational time is 3h but it is system-dependent.
 
 1. Complex Preparation
-======================
+-------------------------
    
 Prepare the system with maestro (Protein Preparation Wizard) and output a complex.pdb. The complex.pdb must contain the protein-ligand in the desired initial conformation.
 If the binding site is known, the ligand must be set as close as possible to the protein surface on that side of the protein.
 
 2. Input Preparation
-=====================
+-------------------------
 
 Prepare the input file ``input.yml``:
 
@@ -47,18 +60,18 @@ Prepare the input file ``input.yml``:
     epsilon: 0.25 # Level of bias ranging from 0 to 1
     bias_column: 7 # Column of the report starting by one to bias the results towards. (You may want to first launch a simulation with the default bias_column, then inspect the simulation report. Last, kill that simulation to launch another one with the optimized bias column value)
 
-For more optional flags please refer to `optional flags <../../documentation/index.html>`_
+For more optional flags please refer to `optional flags <../../flags/index.html>`_
 
 
 3. Run simulation
-====================
+-------------------
 
 To run the system launch the simulation with the following command:
 
 ``python -m pele_platform.main input.yml``
 
 4. Output
-=================
+-------------
 
 Raw output
 +++++++++++++
@@ -68,15 +81,17 @@ detailed information on each snapshot (PDB file, binding energy, metrics, etc.).
 Selected poses
 ++++++++++++++++
 
-**Clusters**
+Clusters
+*********
 
 Upon completion of the simulation, all trajectories are clustered based on ligand heavy atom coordinates. Then, a cluster representative with the best binding energy (or metric of your choice) is selected.
 Ranked cluster representatives can be found in:
 
 ``working_folder/results/clusters``
 
-**Best snapshots**
+Best snapshots
+****************
 
 In addition, top 100 structures with the best binding energy (or metric of your choice) are retrieved. This is done to ensure the clustering algorithm did not skip any valuable results. They are stored in:
 
-``working_folder/results/BestStructs``
+``working_folder/results/top_poses``

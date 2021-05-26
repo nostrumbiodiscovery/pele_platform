@@ -6,7 +6,10 @@ import PPP.main as ppp
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
-from pele_platform.Utilities.Helpers.constraints import alpha_constraints, smiles_constraints
+from pele_platform.Utilities.Helpers.constraints import (
+    alpha_constraints,
+    smiles_constraints,
+)
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Utilities.Helpers.system_prep as sp
 import pele_platform.Utilities.Helpers.missing_residues as mr
@@ -16,12 +19,11 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-import pele_platform.analysis.plot as pt
-import pele_platform.Adaptive.ligand_parametrization as lg
+from pele_platform.Adaptive import Parametrizer
 import pele_platform.Adaptive.box as bx
-import pele_platform.Adaptive.solvent as sv
 import pele_platform.Adaptive.pca as pca
-import pele_platform.Adaptive.interaction_restrictions as ir
+import pele_platform.Adaptive.plop_solvent as sv
+import pele_platform.Adaptive.plop_ligand_parametrization as lg
 
 
 def run_adaptive(args):
@@ -43,12 +45,10 @@ def run_adaptive(args):
             adaptiveSampling.main(parameters.ad_ex_temp)
             parameters.logger.info("Simulation run successfully (:\n\n")
 
-    elif not parameters.only_analysis:
+    elif not parameters.only_analysis and not parameters.restart:
         parameters.logger.info(
             "System: {}; Platform Functionality: {}\n\n".format(
-                parameters.residue, parameters.software
-            )
-        )
+                parameters.residue, parameters.software))
 
         # Create inputs directory
         if not os.path.exists(parameters.inputs_dir):
@@ -60,12 +60,14 @@ def run_adaptive(args):
                 args.mae_lig,
                 args.residue,
                 parameters.pele_dir,
-                inputs_dir=parameters.inputs_dir,
-            )
+                inputs_dir=parameters.inputs_dir)
         else:
             syst = sp.SystemBuilder(
-                parameters.system, None, None, parameters.pele_dir, inputs_dir=parameters.inputs_dir
-            )
+                parameters.system,
+                None,
+                None,
+                parameters.pele_dir,
+                inputs_dir=parameters.inputs_dir)
 
         parameters.logger.info("Prepare complex {}".format(syst.system))
 
@@ -74,7 +76,8 @@ def run_adaptive(args):
             parameters.inputs_simulation = []
 
             for input in parameters.input:
-                input_path = os.path.join(parameters.inputs_dir, os.path.basename(input))
+                input_path = os.path.join(
+                    parameters.inputs_dir, os.path.basename(input))
                 shutil.copy(input, input_path)
 
                 if parameters.no_ppp:
@@ -84,15 +87,11 @@ def run_adaptive(args):
                         ppp.main(
                             input_path,
                             parameters.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
-                            output_pdb=[
-                                "",
-                            ],
+                            output_pdb=["", ],
                             charge_terminals=args.charge_ter,
                             no_gaps_ter=args.gaps_ter,
                             constrain_smiles=None,
-                            ligand_pdb=parameters.ligand_ref,
-                        )[0]
-                    )
+                            ligand_pdb=parameters.ligand_ref)[0])
                 input_proc = os.path.join(parameters.inputs_dir, input_proc)
                 parameters.inputs_simulation.append(input_proc)
             parameters.adap_ex_input = ", ".join(
@@ -108,9 +107,8 @@ def run_adaptive(args):
                 nposes=parameters.poses,
                 test=parameters.test,
                 user_center=parameters.center_of_interface,
-                logger=parameters.logger,
-            )
-            if not args.gpcr_orth:
+                logger=parameters.logger)
+            if not args.gpcr_orth and not args.out_in:
                 parameters.box_center = box_center
                 parameters.box_radius = box_radius
             if parameters.no_ppp:
@@ -119,19 +117,19 @@ def run_adaptive(args):
                 receptor = ppp.main(
                     syst.system,
                     parameters.inputs_dir,  # to ensure it goes to pele_dir/input, not pele_dir
-                    output_pdb=[
-                        "",
-                    ],
+                    output_pdb=["", ],
                     charge_terminals=args.charge_ter,
                     no_gaps_ter=args.gaps_ter,
                     constrain_smiles=None,
-                    ligand_pdb=parameters.ligand_ref,
-                )[0]
+                    ligand_pdb=parameters.ligand_ref)[0]
             inputs = rd.join(
-                receptor, ligand_positions, parameters.residue, output_folder=parameters.inputs_dir
-            )
+                receptor,
+                ligand_positions,
+                parameters.residue,
+                output_folder=parameters.inputs_dir)
 
-            inputs = [os.path.join(parameters.inputs_dir, inp) for inp in inputs]
+            inputs = [os.path.join(parameters.inputs_dir, inp)
+                      for inp in inputs]
 
             parameters.adap_ex_input = ", ".join(
                 ['"' + input + '"' for input in inputs]
@@ -139,9 +137,7 @@ def run_adaptive(args):
             hp.silentremove(ligand_positions)
 
         # Prepare System
-        if (
-                parameters.no_ppp or parameters.input
-        ):  # No need to run system through PPP, if we already preprocessed parameters.input
+        if parameters.no_ppp or parameters.input:  # No need to run system through PPP, if we already preprocessed parameters.input
             missing_residues = []
             if parameters.input:
                 # If we have more than one input
@@ -154,9 +150,7 @@ def run_adaptive(args):
             parameters.system, missing_residues, _, _, _ = ppp.main(
                 syst.system,
                 parameters.inputs_dir,
-                output_pdb=[
-                    "",
-                ],
+                output_pdb=["", ],
                 charge_terminals=args.charge_ter,
                 no_gaps_ter=args.gaps_ter,
                 mid_chain_nonstd_residue=parameters.nonstandard,
@@ -164,74 +158,87 @@ def run_adaptive(args):
                 back_constr=parameters.ca_constr,
                 constrain_smiles=None,
                 ligand_pdb=parameters.ligand_ref,
-                ca_interval=parameters.ca_interval,
-            )
+                ca_interval=parameters.ca_interval)
 
         parameters.constraints = alpha_constraints.retrieve_constraints(
             parameters.system,
             interval=parameters.ca_interval,
             back_constr=parameters.ca_constr,
-            ter_constr=parameters.terminal_constr,
-        )
+            ter_constr=parameters.terminal_constr)
 
         # Metal constraints
         if not args.no_metal_constraints:
             metal_constraints, parameters.external_constraints = mc.main(
                 args.external_constraints,
                 os.path.join(
-                    parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"')
-                ),
+                    parameters.inputs_dir,
+                    parameters.adap_ex_input.split(",")[0].strip().strip('"')),
                 syst.system,
                 permissive=parameters.permissive_metal_constr,
                 all_metals=args.constrain_all_metals,
                 external=parameters.external_constraints,
-                logger=parameters.logger,
-            )
+                logger=parameters.logger)
+
             parameters.external_constraints = hp.retrieve_constraints_for_pele(
-                parameters.external_constraints, parameters.system
-            )
+                parameters.external_constraints, parameters.system)
 
             metal_constraints_json = hp.retrieve_constraints_for_pele(
                 metal_constraints,
-                os.path.join(parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"'))
-            )
+                os.path.join(
+                    parameters.inputs_dir,
+                    parameters.adap_ex_input.split(",")[0].strip().strip('"')))
+
             parameters.external_constraints.extend(metal_constraints_json)
+
         else:
             parameters.external_constraints = hp.retrieve_constraints_for_pele(
-                parameters.external_constraints, parameters.system
-            )
+                parameters.external_constraints, parameters.system)
 
         # Keep JSON ordered by having first title and then constraints
         if parameters.external_constraints:
-            parameters.constraints = (
-                    parameters.constraints[0:1] + parameters.external_constraints + parameters.constraints[1:]
-            )
+            parameters.constraints = (parameters.constraints[0:1]
+                                      + parameters.external_constraints
+                                      + parameters.constraints[1:])
         if parameters.remove_constraints:
             parameters.constraints = ""
-        parameters.logger.info("Complex {} prepared\n\n".format(parameters.system))
 
-        # Ligand parameters and simulation box
-        if parameters.perturbation:
+        parameters.logger.info(f"Complex {parameters.system} prepared\n\n")
+
+        # Ligand/metal and solvent parameters
+        if parameters.perturbation and parameters.use_peleffy:
+            parametrizer = Parametrizer.from_parameters(parameters)
+            parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
+
+        elif parameters.perturbation and not parameters.use_peleffy:
+            # Parametrize the ligand
             ligand_params = lg.LigandParametrization(parameters)
             ligand_params.generate()
-            box = bx.BoxSetter(
-                parameters.box_center, parameters.box_radius, parameters.ligand_ref, parameters.logger
-            )
+
+            # Parametrize missing residues identified by PPP
+            for res, __, _ in missing_residues:
+                if res != args.residue and res not in parameters.skip_ligand_prep:
+                    parameters.logger.info("Creating template for residue {}".format(res))
+                    with hp.cd(parameters.pele_dir):
+                        mr.create_template(parameters, res)
+                    parameters.logger.info("Template {}z created\n\n".format(res))
+
+        # Create simulation box, if performing perturbation
+        if parameters.perturbation:
+            box = bx.BoxSetter(parameters.box_center,
+                               parameters.box_radius,
+                               parameters.ligand_ref,
+                               parameters.logger)
             parameters.box = box.generate_json()
         else:
             parameters.box = ""
 
-        # Parametrize missing residues
-        for res, __, _ in missing_residues:
-            if res != args.residue and res not in parameters.skip_ligand_prep:
-                parameters.logger.info("Creating template for residue {}".format(res))
-                with hp.cd(parameters.pele_dir):
-                    mr.create_template(parameters, res)
-                parameters.logger.info("Template {}z created\n\n".format(res))
-
         # Solvent parameters
         solvent = sv.ImplicitSolvent(
-            parameters.solvent, parameters.obc_tmp, parameters.template_folder, parameters.obc_file, parameters.logger
+            parameters.solvent,
+            parameters.obc_tmp,
+            parameters.template_folder,
+            parameters.obc_file,
+            parameters.logger,
         )
         solvent.generate()
 
@@ -250,18 +257,17 @@ def run_adaptive(args):
                 parameters.constrain_core,
                 parameters.residue,
                 parameters.chain,
-                parameters.constrain_core_spring,
-            )
+                parameters.constrain_core_spring)
             smi_constraint = smiles.run()
-            parameters.constraints = (
-                    parameters.constraints[0:1] + smi_constraint + parameters.constraints[1:]
-            )
+            parameters.constraints = (parameters.constraints[0:1]
+                                      + smi_constraint
+                                      + parameters.constraints[1:])
 
         # Waters
-        input_waters = [
-            input.strip().strip('"') for input in parameters.adap_ex_input.split(",")
-        ]
-        input_waters = [os.path.join(parameters.inputs_dir, inp) for inp in input_waters]
+        input_waters = [input.strip().strip('"')
+                        for input in parameters.adap_ex_input.split(",")]
+        input_waters = [os.path.join(parameters.inputs_dir, inp)
+                        for inp in input_waters]
         water_obj = wt.WaterIncluder(
             input_waters,
             parameters.n_waters,
@@ -276,44 +282,45 @@ def run_adaptive(args):
             water_constr=parameters.water_constr,
             test=parameters.test,
             water_freq=parameters.water_freq,
-            ligand_residue=parameters.residue,
-        )
+            ligand_residue=parameters.residue)
         water_obj.run()
         parameters.parameters = water_obj.ligand_perturbation_params
+        parameters.water_ids_to_track = water_obj.water_ids_to_track
 
         # Check if atoms need mapping due to preprocessing
         args = AtomMapper(args, parameters, syst.system).run()
 
-        # Metrics builder - builds JSON strings for PELE to be able to track atom distances, RMSD, etc.
+        # Metrics builder - builds JSON strings for PELE to be able to
+        # track atom distances, RMSD, etc.
         metrics = mt.MetricBuilder()
         parameters.metrics = (
             metrics.distance_to_atom_json(
-                os.path.join(parameters.inputs_dir, parameters.adap_ex_input.split(",")[0].strip().strip('"')),
-                args.atom_dist)
+                os.path.join(
+                    parameters.inputs_dir,
+                    parameters.adap_ex_input.split(",")[0].strip().strip('"'),
+                ),
+                args.atom_dist,
+            )
             if args.atom_dist
             else ""
         )
-        parameters.native = metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
-
-        #interaction restrictions
-        # TODO this is not the place to initialize parameters for the interaction restrictions
-        if args.interaction_restrictions:
-            interaction_restrictions = ir.InteractionRestrictionsBuilder()
-            interaction_restrictions.parse_interaction_restrictions(parameters.system, args.interaction_restrictions)
-            parameters.met_interaction_restrictions = interaction_restrictions.metrics_to_json()
-            parameters.interaction_restrictions = interaction_restrictions.conditions_to_json()
-        else:
-            parameters.met_interaction_restrictions = ""
-            parameters.interaction_restrictions = ""
+        parameters.native = (
+            metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
+        )
 
         # metal polarisation
         if parameters.polarize_metals:
             mp.change_metal_charges(
-                parameters.template_folder, parameters.forcefield, parameters.polarization_factor, parameters.system
+                parameters.template_folder,
+                parameters.forcefield,
+                parameters.polarization_factor,
+                parameters.system,
             )
 
         # Point adaptive.conf to input dir
-        parameters.adap_ex_input = os.path.join(parameters.inputs_dir, parameters.adap_ex_input)
+        parameters.adap_ex_input = os.path.join(
+            parameters.inputs_dir, parameters.adap_ex_input
+        )
 
         # Fill in simulation templates
         adaptive = ad.SimulationBuilder(
@@ -327,13 +334,33 @@ def run_adaptive(args):
             adaptive.run()
             parameters.logger.info("Simulation run successfully (:\n\n")
 
+    elif parameters.restart:
+        # Start simulation from scratch (unlike adaptive_restart) but use files created in debug mode
+        parameters.logger.info(f"Launching simulation from {parameters.pele_dir}")
+        adaptive = ad.SimulationBuilder(parameters.ad_ex_temp, parameters.pele_exit_temp, parameters.topology)
+        adaptive.run()
+        parameters.logger.info("Simulation run successfully (:\n\n")
+
     # Run analysis
     if parameters.analyse and not parameters.debug:
         from pele_platform.analysis import Analysis
 
-        analysis = Analysis(parameters)
+        # Retrieve water IDs to track from existing pele.conf, if running analysis only
+        if parameters.only_analysis:
+            parameters.water_ids_to_track = wt.water_ids_from_conf(parameters.pele_temp)
+
         analysis_folder = os.path.join(parameters.pele_dir, "results")
-        analysis.generate(analysis_folder,
-                          clustering_type=parameters.clustering_method.lower())
+
+        analysis = Analysis.from_parameters(parameters)
+        analysis.generate(
+            analysis_folder,
+            clustering_type=parameters.clustering_method.lower(),
+            bandwidth=parameters.bandwidth,
+            analysis_nclust=parameters.analysis_nclust,
+            max_top_clusters=parameters.max_top_clusters,
+            min_population=parameters.min_population,
+            max_top_poses=parameters.max_top_poses,
+            top_clusters_criterion=parameters.top_clusters_criterion,
+            representatives_criterion=parameters.cluster_representatives_criterion)
 
     return parameters

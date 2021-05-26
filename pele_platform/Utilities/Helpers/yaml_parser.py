@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from pele_platform.Errors.custom_errors import LigandNameNotSupported
+from pele_platform.Errors.custom_errors import LigandNameNotSupported, MultipleSimulationTypes
+from pele_platform.features.adaptive import SOFTWARE_CONSTANTS
 from difflib import SequenceMatcher
 import os
 import yaml
@@ -13,10 +14,10 @@ def _yaml_error_wrapper(error):
     """
     custom_errors = {
         "expected '<document start>', but found '<block mapping start>'": "Please ensure every key in input.yaml is "
-        "followed by a colon and "
-        "a space. There seem to be some issues on line {}, character {}.",
+                                                                          "followed by a colon and "
+                                                                          "a space. There seem to be some issues on line {}, character {}.",
         "found character '\\t' that cannot start any token": "Please remove any trailing tabs from input.yaml, there "
-        "seem to be one on line {}, character {}.",
+                                                             "seem to be one on line {}, character {}.",
     }
 
     custom = custom_errors.get(str(error.problem).strip(), None)
@@ -38,6 +39,7 @@ class YamlParser(object):
         self.data = self._parse_yaml()
         self._check()
         self._check_residue()
+        self._check_multiple_simulations()
         self._parse()
         self._get_value_from_env()
 
@@ -53,7 +55,6 @@ class YamlParser(object):
     def _get_value_from_env(self):
         self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
 
-
     def _check(self) -> None:
         # Check if valids in yaml file are valids
         for key in self.data.keys():
@@ -66,6 +67,18 @@ class YamlParser(object):
                 raise LigandNameNotSupported(
                     "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
                 )
+
+    def _check_multiple_simulations(self):
+        """
+        Raises an error, if the user specified more than one simulation type in YAML.
+        """
+        available_simulations = SOFTWARE_CONSTANTS.get("simulation_params", {})
+        specified_simulations = [key for key in self.data.keys() if key in available_simulations.keys()]
+
+        if len(specified_simulations) > 1:
+            raise MultipleSimulationTypes(
+                f"You cannot select multiple simulation types in input.yaml, please select one of "
+                f"{', '.join(specified_simulations)}.")
 
     def _recommend(self, key):
         most_similar_flag = None
@@ -115,6 +128,7 @@ class YamlParser(object):
         self.cluster_conditions = data.get(valid_flags["cluster_conditions"], None)
         self.simulation_type = data.get(valid_flags["simulation_type"], None)
         self.equilibration = data.get(valid_flags["equilibration"], None)
+        self.equilibration_mode = data.get(valid_flags["equilibration_mode"], None)
         self.clust_type = data.get(valid_flags["clust_type"], None)
         self.eq_steps = data.get(valid_flags["eq_steps"], None)
         self.adaptive_restart = data.get(valid_flags["adaptive_restart"], None)
@@ -126,9 +140,7 @@ class YamlParser(object):
         self.out_in = data.get(valid_flags["out_in"], None)
         self.bias_column = data.get(valid_flags["bias_column"], None)
         self.gridres = data.get(valid_flags["gridres"], 10)
-        self.core = data.get(valid_flags["core"], -1)
-        self.mtor = data.get(valid_flags["mtor"], 4)
-        self.n = data.get(valid_flags["n"], 10000)
+        self.core = data.get(valid_flags["core"], None)
         self.template = data.get(valid_flags["template"], None)
         self.ext_temp = self.template
         self.rotamers = data.get(valid_flags["rotamers"], None)
@@ -220,7 +232,6 @@ class YamlParser(object):
         self.constrain_core_spring = data.get(
             valid_flags["constrain_core_spring"], 50.0
         )
-        self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.spawning_condition = data.get(valid_flags["spawning_condition"], None)
         self.external_constraints = data.get(valid_flags["external_constraints"], [])
         self.only_analysis = data.get(valid_flags["only_analysis"], False)
@@ -238,6 +249,8 @@ class YamlParser(object):
         self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
         self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
         self.interaction_restrictions = data.get(valid_flags["interaction_restrictions"], None)
+        self.inter_step_logger = data.get(valid_flags["inter_step_logger"], None)
+        self.singularity_exec = data.get(valid_flags["singularity_exec"], None)
 
         # Metal constraints
         self.permissive_metal_constr = data.get(
@@ -278,6 +291,8 @@ class YamlParser(object):
         # site_finder
         self.site_finder = data.get(valid_flags["site_finder"], None)
         self.skip_refinement = data.get(valid_flags["skip_refinement"], None)
+        self.site_finder_local = data.get(valid_flags["site_finder_local"], None)
+        self.site_finder_global = data.get(valid_flags["site_finder_global"], None)
 
         # RNA
         self.rna = data.get(valid_flags["rna"], None)
@@ -299,6 +314,22 @@ class YamlParser(object):
         self.bandwidth = data.get(valid_flags["bandwidth"], None)
         self.kde = data.get(valid_flags["kde"], None)
         self.kde_structs = data.get(valid_flags["kde_structs"], None)
+        self.max_top_clusters = data.get(valid_flags["max_top_clusters"], None)
+        self.min_population = data.get(valid_flags["min_population"], None)
+        self.max_top_poses = data.get(valid_flags["max_top_poses"], None)
+        self.top_clusters_criterion = data.get(valid_flags["top_clusters_criterion"], None)
+        self.cluster_representatives_criterion = data.get(valid_flags["cluster_representatives_criterion"], None)
+
+        # peleffy parametrization
+        self.charge_parametrization_method = data.get(valid_flags["charge_parametrization_method"], None)
+        self.exclude_terminal_rotamers = data.get(valid_flags["exclude_terminal_rotamers"], None)
+        self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
+        self.solvent_template = data.get(valid_flags["solvent_template"], None)
+        self.use_peleffy = data.get(valid_flags["use_peleffy"], None)
+
+        # Plop
+        self.mtor = data.get(valid_flags["mtor"], 4)  # plop
+        self.n = data.get(valid_flags["n"], 10000)  # plop
 
         if self.test:
             warnings.warn(
@@ -314,6 +345,8 @@ class YamlParser(object):
             self.temperature = self.temp = 10000
             self.n_components = 3
             self.analysis_nclust = 4
+            self.max_top_clusters = 4
+            self.cpus_per_mutation = 2
 
 
 @dataclass

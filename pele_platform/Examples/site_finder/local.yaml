@@ -1,0 +1,11 @@
+system: '../pele_platform/Examples/site_finder/complex.pdb'
+chain: 'Z'
+resname: 'API'
+seed: 12345
+site_finder_local: true
+poses: 3
+atom_dist:
+- 4555
+- 10
+debug: true
+cpus: 5

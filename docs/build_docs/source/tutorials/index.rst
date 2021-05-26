@@ -9,11 +9,9 @@ We assume you have already installed the software and have access to Schrödinge
     - `Disturbing protein-protein interaction between a bromodomain and a histone <ppi.html>`_
     - `Glide docking pose refinement in hemagglutinin binding site <induced_fit.html>`_
     - `GPCR simulation of BU72 agonist of the μ-opioid receptor <gpcr.html>`_
-    - `Performing a fragment growing simulation into a p38 kynase <frag_pele.html>`_
+    - `Performing a fragment growing simulation in p38 kinase <frag_pele.html>`_
 
-All tutorial files are available in ``pele_platform/Examples/tutorials``.
-
-For further information about the outputs obtained, refear `here <outputs.rst>`_
+For further information about the obtained outputs files, refer to `this page <outputs.html>`_.
 
 .. toctree::
    ppi.rst
@@ -31,6 +29,6 @@ For further information about the outputs obtained, refear `here <outputs.rst>`_
    frag_pele.rst
    :hidden:
 
-.. here: 
-   <outputs.rst>
+.. toctree::
+   outputs.rst
    :hidden:

@@ -1,0 +1,8 @@
+system: '../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb'
+chain: 'Z'
+resname: 'STR'
+seed: 12345
+induced_fit_fast: true
+debug: true
+test: true
+overlap_factor: 0.5

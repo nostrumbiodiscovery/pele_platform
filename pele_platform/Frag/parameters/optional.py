@@ -42,7 +42,7 @@ class FragOptionalParameters(object):
         if args.chain_core:
             parameters.chain_core = args.chain_core
         else:
-            parameters.simulation_params.get("chain_core", "L")
+            parameters.chain_core = parameters.simulation_params.get("chain_core", "L")
 
         # Set box
         if parameters.box_radius:

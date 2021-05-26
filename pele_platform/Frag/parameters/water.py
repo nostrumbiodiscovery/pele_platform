@@ -61,3 +61,6 @@ class FragWaterParams(object):
             ligand_residue=parameters.residue)
 
         parameters.water_object.run()
+
+        # Save water IDs as main parameters attribute for analysis
+        parameters.water_ids_to_track = parameters.water_object.water_ids_to_track
