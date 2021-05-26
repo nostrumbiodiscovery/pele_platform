@@ -37,14 +37,14 @@ def create_dir(base_dir, extension=None):
     if extension:
         path = os.path.join(base_dir, extension)
         if os.path.isdir(path):
-            warnings.warn("Directory {} already exists.".format(path),
-                          RuntimeWarning)
+            warnings.warn("Directory {} already exists.".format(path), RuntimeWarning)
         else:
             os.makedirs(path)
     else:
         if os.path.isdir(base_dir):
-            warnings.warn("Directory {} already exists.".format(base_dir),
-                          RuntimeWarning)
+            warnings.warn(
+                "Directory {} already exists.".format(base_dir), RuntimeWarning
+            )
         else:
             os.makedirs(base_dir)
 
@@ -87,10 +87,10 @@ def get_directory_new_index(pele_dir):
     folder_name = os.path.basename(pele_dir)
     split_name = folder_name.split("_")
 
-    if (len(split_name) < 2 or len(split_name) > 3
-            or split_name[1] != 'Pele'):
-        raise ValueError('Invalid PELE directory {}. '.format(folder_name)
-                         + 'Its format is unknown')
+    if len(split_name) < 2 or len(split_name) > 3 or split_name[1] != "Pele":
+        raise ValueError(
+            "Invalid PELE directory {}. ".format(folder_name) + "Its format is unknown"
+        )
 
     original_dir = split_name[0]
 
@@ -158,16 +158,18 @@ def get_latest_peledir(pele_dir):
         The newest PELE directory that has been found in the working
         directory according to the original name that is supplied
     """
+    new_index, old_index, original_dir = get_directory_new_index(pele_dir)
 
-    _, old_index, original_dir = get_directory_new_index(pele_dir)
-
+    # If the basic LIG_Pele already exists...
     if os.path.isdir(pele_dir):
-        latest_pele_dir = "{}_Pele_{}".format(original_dir, old_index)
+        # If the potential "next" pele directory doesn't exist, the current pele_dir is the latest.
+        latest_pele_dir = f"{original_dir}_Pele_{new_index}"
         if not os.path.isdir(latest_pele_dir):
             return pele_dir
         else:
+            # Otherwise enumerate another one
             latest_pele_dir = get_latest_peledir(latest_pele_dir)
-            return latest_pele_dir
+            return os.path.join(os.path.dirname(pele_dir), latest_pele_dir)
     else:
         return pele_dir
 
@@ -411,7 +413,11 @@ def get_atom_indices(ids, pdb, pdb_atom_name=None):
     # Extract relevant lines from PDB file
     with open(pdb, "r") as file:
         lines = file.readlines()
-        lines = [line for line in lines if line.startswith("ATOM") or line.startswith("HETATM")]
+        lines = [
+            line
+            for line in lines
+            if line.startswith("ATOM") or line.startswith("HETATM")
+        ]
 
     atom_indices = list()
 
@@ -429,7 +435,9 @@ def get_atom_indices(ids, pdb, pdb_atom_name=None):
                         atom_indices.append(atom_id)
 
     # Explicitly convert to integers (mdtraj complains without dtype)
-    atom_indices = list(np.array([int(atom_idx) for atom_idx in atom_indices], dtype=int))
+    atom_indices = list(
+        np.array([int(atom_idx) for atom_idx in atom_indices], dtype=int)
+    )
     return atom_indices
 
 
@@ -461,13 +469,16 @@ def retrieve_atom_names(pdb_file, residues):
         found_residue_number = line[22:26].strip()
 
         # Check if atom names for this residue are supposed to be extracted (or where already)
-        if found_residue_name in residues and found_residue_name not in extracted_residues:
+        if (
+            found_residue_name in residues
+            and found_residue_name not in extracted_residues
+        ):
             atom_name = line[12:16]
             output[found_residue_name].append(atom_name)
 
         # Mark residue as extracted, if the next line has a different residue number
         try:
-            next_residue_number = pdb_lines[index+1][22:26].strip()
+            next_residue_number = pdb_lines[index + 1][22:26].strip()
             if next_residue_number != found_residue_number:
                 extracted_residues.append(found_residue_name)
         except IndexError:  # In case it's the end of PDB and index+1 doesn't exist

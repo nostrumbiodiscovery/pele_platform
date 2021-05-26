@@ -1,7 +1,6 @@
 import os
-import pytest
-from subprocess import Popen, PIPE
-import glob
+import shutil
+
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
@@ -11,6 +10,7 @@ import pele_platform.Utilities.Helpers.protein_wizard as pp
 import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.Utilities.Helpers.constraints import smiles_constraints as smi
+from pele_platform.Utilities.Helpers import helpers
 
 
 test_path = os.path.join(cs.DIR, "Examples")
@@ -386,9 +386,32 @@ def test_retrieve_atom_names(pdb_file, residues, expected):
     expected : dict
         Expected output dictionary, where keys are residue names and values - a list of PDB atom names.
     """
-    from pele_platform.Utilities.Helpers import helpers
-
     pdb_file = os.path.join(test_path, "constraints", pdb_file)
     output = helpers.retrieve_atom_names(pdb_file, residues)
 
     assert output == expected
+
+
+@pytest.mark.parametrize(("dir_index", "pele_dir"), [(0, "XXX_Pele"), (3, "XXX_Pele_2")])
+def test_latest_pele_dir(dir_index, pele_dir):
+    """
+    Tests if the platform correctly retrieves the latest pele_dir.
+
+    Parameters
+    -----------
+    dir_index : int
+        Index of the expected latest directory.
+    pele_dir : str
+        PELE directory that would normally be created by the platform.
+    """
+    # Make folders to mock existing simulation output (mind that range indexes from 0)
+    for i in range(dir_index + 1):
+        os.mkdir(f"XXX_Pele_{i}")
+
+    output = helpers.get_latest_peledir(pele_dir)
+    expected_output = f"XXX_Pele_{dir_index}" if dir_index > 0 else "XXX_Pele"
+    assert output == expected_output
+
+    # Clean up
+    for i in range(dir_index + 1):
+        shutil.rmtree(f"XXX_Pele_{i}")
