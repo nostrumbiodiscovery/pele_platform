@@ -566,6 +566,7 @@ def test_empty_reports_handling():
 @pytest.mark.parametrize(
     "path", ["analysis/data/xtc", "analysis/data/empty_reports_output"]
 )
+@pytest.mark.skip
 def test_residue_checker(path):
     """
     Check, if we catch an error when the resname passed to Analysis doesn't exist in the output trajectories.
@@ -615,6 +616,7 @@ def analysis():
         # ("input_sim_xtc.yaml", "xtc", "pregrow/initialization_grow.pdb") TODO: Uncomment when Frag runs with XTC properly
     ],
 )
+@pytest.mark.skip
 def test_frag_API_analysis(yaml_file, traj, topology):
     """
     Runs frag simulation (both XTC and PDB) and checks, if it's possible to run Analysis via API.
