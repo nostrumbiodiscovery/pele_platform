@@ -564,14 +564,35 @@ def test_empty_reports_handling():
 
 
 @pytest.mark.parametrize(
-    "path", ["analysis/data/xtc", "analysis/data/empty_reports_output"]
+    ("path", "traj", "top"),
+    [
+        (
+            "analysis/data/xtc",
+            "trajectory.xtc",
+            "analysis/data/xtc/topologies/topology_0.pdb",
+        ),
+        ("analysis/data/empty_reports_output", "trajectory.pdb", None),
+    ],
 )
-@pytest.mark.skip
-def test_residue_checker(path):
+def test_residue_checker(path, traj, top):
     """
     Check, if we catch an error when the resname passed to Analysis doesn't exist in the output trajectories.
+
+    Parameters
+    -----------
+    path : str
+        Path to the simulation output folder.
+    traj : str
+        Trajectory type (as the user would set in the YAML), e.g. "trajectory.xtc".
+    top : str
+        Path to topology file.
+
+    Raises
+    --------
+    ValueError if the residue name is not found in any of the trajectories.
     """
     simulation_output = os.path.join(test_path, path)
+    topology = os.path.join(test_path, top) if top else None
 
     with pytest.raises(ValueError):
         analysis = Analysis(
@@ -579,6 +600,8 @@ def test_residue_checker(path):
             chain="Z",
             resname="STR",
             skip_initial_structures=True,
+            traj=traj,
+            topology=topology,
         )
 
 
@@ -616,7 +639,6 @@ def analysis():
         # ("input_sim_xtc.yaml", "xtc", "pregrow/initialization_grow.pdb") TODO: Uncomment when Frag runs with XTC properly
     ],
 )
-@pytest.mark.skip
 def test_frag_API_analysis(yaml_file, traj, topology):
     """
     Runs frag simulation (both XTC and PDB) and checks, if it's possible to run Analysis via API.

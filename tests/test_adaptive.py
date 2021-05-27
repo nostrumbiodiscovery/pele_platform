@@ -111,11 +111,7 @@ GPCR_VALUES = [
 ]
 
 
-@pytest.mark.parametrize("restart_type",
-                         [
-                             "restart",
-                             "adaptive_restart"
-                         ])
+@pytest.mark.parametrize("restart_type", ["restart", "adaptive_restart"])
 def test_restart_flag(restart_type):
     """
     Checks if the platform can correctly restart and adaptive_restart a simulation from existing files (created in
@@ -130,8 +126,7 @@ def test_restart_flag(restart_type):
         new_parameters = yaml.safe_load(file)
 
     new_parameters[restart_type] = True
-    new_parameters['debug'] = False
-    new_parameters['working_folder'] = job_parameters.pele_dir
+    new_parameters["debug"] = False
 
     updated_restart_yaml = "updated_restart.yaml"
     with open(updated_restart_yaml, "w+") as new_file:
@@ -144,7 +139,9 @@ def test_restart_flag(restart_type):
     assert job_parameters.pele_dir == job_parameters2.pele_dir
 
     # Make sure pele.conf was not overwritten
-    errors = check_file(job_parameters2.pele_dir, "pele.conf", 'overlapFactor": 0.5', [])
+    errors = check_file(
+        job_parameters2.pele_dir, "pele.conf", 'overlapFactor": 0.5', []
+    )
     assert not errors
 
     # Check if it finished
@@ -166,7 +163,7 @@ def test_n_water(ext_args=NWATER_ARGS):
     # Result has waters
     for result in results:
         with open(result, "r") as f:
-            if not "HOH" in "".join(f.readlines()):
+            if "HOH" not in "".join(f.readlines()):
                 error = True
     # Input has no water
     with open("../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb", "r") as f:
