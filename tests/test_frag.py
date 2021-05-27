@@ -271,26 +271,13 @@ def test_frag_waters(ext_args=FRAG_WATERS):
 
     assert water_lines == water_output
 
-
-def test_ligand_clustering_production(ext_args=FRAG_CORE_ARGS):
+@pytest.mark.parametrize(
+    ("ext_args"),
+    [(FRAG_CORE_ARGS), (FRAG_SDF_LIBRARIES)],
+)
+def test_ligand_clustering(ext_args):
     """
     Tests ligand clustering.
-
-    Parameters
-    ----------
-    ext_args : str
-        Path to PELE input file,
-    """
-    job = main.run_platform_from_yaml(ext_args)
-    for path in job.working_dir:
-        analysis_folder = os.path.join(path, "results")
-        if not os.path.isdir(analysis_folder):
-            assert False
-
-
-def test_ligand_clustering_libraries(ext_args=FRAG_SDF_LIBRARIES):
-    """
-    Tests ligand clustering for fragment libraries.
 
     Parameters
     ----------
