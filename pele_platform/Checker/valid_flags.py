@@ -174,7 +174,6 @@ VALID_FLAGS_PLATFORM = {
     "polarization_factor": "polarization_factor",
     "constrain_core_spring": "constrain_core_spring",
     "frag_library": "frag_library",
-    "frag_core_atom": "frag_core_atom",
     "analysis_to_point": "analysis_to_point",
     "interaction_restrictions": "interaction_restrictions",
     "constraint_level": "constraint_level",

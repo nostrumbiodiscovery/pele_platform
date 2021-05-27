@@ -2,7 +2,6 @@ import glob
 import os
 import subprocess
 import shutil
-import sys
 
 from rdkit import Chem
 from pele_platform.constants import constants as cs
