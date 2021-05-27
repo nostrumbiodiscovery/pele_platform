@@ -9,6 +9,7 @@ from Bio.PDB import PDBParser
 import pele_platform.Errors.custom_errors as cs
 from multiprocessing import Pool
 from functools import partial
+from pele_platform.Errors.custom_errors import ResidueNotFound
 
 
 __all__ = ["get_suffix", "backup_logger"]
@@ -485,3 +486,64 @@ def retrieve_atom_names(pdb_file, residues):
             continue
 
     return output
+
+
+def get_residue_name(pdb_file, chain, residue_number):
+    """
+    Retrieves residue name from a PDB file based on residue number and chain.
+
+    Parameters
+    ------------
+    pdb_file : str
+        Path to PDB file.
+    chain : str
+        Chain ID.
+    residue_number : str
+        Number of the residue to check.
+
+    Returns
+    ---------
+    resname : str
+        Three letter name of the residue in lowercase, e.g. "cys".
+    """
+    if isinstance(residue_number, int):
+        residue_number = str(residue_number)
+
+    with open(pdb_file, "r") as file:
+        lines = [line for line in file.readlines() if line.startswith("ATOM") or line.startswith("HETATM")]
+
+    for line in lines:
+        if line[21].strip() == chain and line[22:26].strip() == residue_number:
+            residue_name = line[17:20].strip().lower()
+            return residue_name
+    else:
+        raise ResidueNotFound(f"Could not find residue {residue_number} in chain {chain} in PDB file {pdb_file}.")
+
+
+def correct_protein_wizard(ligand_file):
+    """
+    Removes terminal hydrogens added by Schrodinger Protein Preparation Wizard to make sure the ligand is suitable
+    for building the template for covalent docking.
+
+    Parameters
+    ------------
+    ligand_file : str
+        Path to PDB file with extracted ligand.
+    """
+    with open(ligand_file, "r") as file:
+        lines = file.readlines()
+
+    # Filter out hydrogens
+    h_to_remove = ["H11", "H51"]  # TODO: Write a proper algorithm for this
+
+    output = list()
+    for line in lines:
+        print("LINE:", line)
+        if line[12:16].strip() not in h_to_remove:
+            output.append(line)
+        else:
+            print(line[12:16])
+
+    with open(ligand_file, "w") as fout:
+        for line in output:
+            fout.write(line)

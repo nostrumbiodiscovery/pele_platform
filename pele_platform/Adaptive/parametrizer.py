@@ -1,3 +1,4 @@
+import glob
 import os
 import shutil
 import subprocess
@@ -7,6 +8,7 @@ from Bio.PDB import PDBParser
 
 from pele_platform.Errors import custom_errors
 from pele_platform.constants import constants
+from pele_platform.Utilities.Helpers import helpers
 
 
 class Parametrizer:
@@ -926,3 +928,62 @@ class Parametrizer:
                   f'{self.solvent_template} has not a '
                   f'valid format')
             print(e)
+
+
+def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligand_name):
+    """
+    Create template and rotamer files for the covalent residue.
+
+    Parameters
+    ------------
+    folder : str
+        Path to working folder.
+    gridres : int
+        Grid resolution for sampling rotamers.
+    residue_type : str
+        Residue name that covalent ligand is bound to, e.g. "cys".
+    """
+    from frag_pele.Covalent import pdb_corrector, correct_template_of_backbone_res
+    from frag_pele.Helpers import create_templates
+
+    template_name = ligand_name.lower()
+    extracted_ligand = os.path.join(os.getcwd(), f"{ligand_name.upper()}.pdb")
+
+    # Create template for ligand + side chain
+    create_templates.get_datalocal(
+        extracted_ligand,
+        outdir=folder,
+        aminoacid=True,
+        rot_res=gridres,
+        template_name=template_name,
+        sch_path=constants.SCHRODINGER
+    )
+
+    helpers.correct_protein_wizard(extracted_ligand.replace(".pdb", "_p.pdb"))
+
+    create_templates.get_datalocal(
+        extracted_ligand,
+        outdir=folder,
+        aminoacid=True,
+        rot_res=gridres,
+        template_name=template_name,
+        sch_path=constants.SCHRODINGER
+    )
+
+    # Copy amino acid from PELE Data
+    generated_templates_path = os.path.join(folder, "DataLocal/Templates/OPLS2005/Protein/templates_generated/{}")
+    aminoacid_path = os.path.join(pele_data, "Templates/OPLS2005/Protein", residue_type)
+    shutil.copy(aminoacid_path, generated_templates_path.format(residue_type))
+
+    # Join with the backbone
+    correct_template_of_backbone_res.correct_template(
+        os.path.join(folder, generated_templates_path.format(template_name)),
+        aminoacid_path=generated_templates_path.format(residue_type),
+        work_dir=folder,
+    )
+
+    # Copy everything from "templates_generated"
+    created_templates = glob.glob(generated_templates_path.format("*"))
+    final_templates_destination = os.path.join(folder, "DataLocal/Templates/OPLS2005/Protein")
+    for template in created_templates:
+        shutil.copy(template, final_templates_destination)

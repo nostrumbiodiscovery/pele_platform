@@ -1,5 +1,5 @@
 """
-Dictionary with valid flags for platform in input.yalm
+Dictionary with valid flags for platform in input.yaml
 """
 
 
@@ -200,4 +200,8 @@ VALID_FLAGS_PLATFORM = {
     "use_peleffy": "use_peleffy",
     "mtor": "maxtorsion",  # plop
     "n": "n",  # plop
+    "covalent_residue": "covalent_residue",
+    "refinement_distance": "refinement_distance",
+    "nonbonding_radius": "nonbonding_radius",
+    "perturbation_trials": "perturbation_trials",
 }

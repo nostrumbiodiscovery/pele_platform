@@ -4,7 +4,9 @@ import os
 from pele_platform.Utilities.Parameters import parameters
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Adaptive import simulation
-from pele_platform.site_finder.cluster import cluster_best_structures
+from pele_platform.analysis import analysis
+
+from frag_pele.Covalent import pdb_corrector
 
 
 @dataclass
@@ -19,6 +21,8 @@ class CovalentDocking:
         -------
             A tuple of EnviroBuilder objects with job variables for both simulations.
         """
+        self.env.residue_type = self.get_residue_type()
+        self.env.system = self.correct_system()
         self.set_general_perturbation_params()
         job1 = simulation.run_adaptive(self.env)
         self.choose_refinement_input(job1)
@@ -37,6 +41,30 @@ class CovalentDocking:
         self.set_top_level_directory()
         self.env.folder = os.path.join(self.working_folder, "1_covalent_docking")
 
+    def correct_system(self):
+        """
+        Correct the system PDB file and create templates for the covalent residue.
+
+        Return
+        --------
+        corrected_system : str
+            Path to the new system PDB (with corrected covalent ligand, etc.).
+        """
+        # Move the HETATM to the residue lines
+        corrected_system = os.path.join(self.original_dir, os.path.basename(self.env.system.replace(".pdb", "_corrected.pdb")))
+        chain, residue_number = self.env.covalent_residue.split(":")
+
+        pdb_corrector.run(
+            self.env.system,
+            chain,
+            int(residue_number),
+            corrected_system,
+            ligand_resname=self.env.residue,
+            ligand_chain=self.env.chain,
+        )
+
+        return corrected_system
+
     def set_top_level_directory(self):
         """
         Sets top level working folder to contain all simulation steps.
@@ -45,9 +73,9 @@ class CovalentDocking:
 
         if not self.env.folder:
             self.working_folder = (
-                helpers.is_repeated(working_folder)
+                helpers.get_next_peledir(working_folder)
                 if not self.env.adaptive_restart
-                else helpers.is_last(working_folder)
+                else helpers.get_next_peledir(working_folder)
             )
         else:
             self.working_folder = os.path.abspath(self.env.folder)
@@ -68,15 +96,36 @@ class CovalentDocking:
         if not self.env.debug:
             output_path = os.path.join(simulation1.pele_dir, simulation1.output)
 
-            with helpers.cd(output_path):
-                cluster_best_structures(5, n_components=simulation1.n_components,
-                                        residue=simulation1.residue, topology=simulation1.topology,
-                                        directory=self.refinement_dir, logger=simulation1.logger)
+            analysis_object = analysis.Analysis(
+                simulation_output=output_path,
+                resname=self.simulation1.residue,
+                chain=self.simulation1.chain,
+                traj=self.simulation1.traj_name,
+                topology=self.simulation1.topology,
+                cpus=1)
+
+            analysis_object.generate_clusters(
+                self.refinement_dir,
+                clustering_type="meanshift",
+                representatives_criterion="local_nonbonding_energy")
 
     def set_refinement_perturbation_params(self):
         """
         Sets parameters for the refinement side chain perturbation, including the refinement distance (default = 10 A).
         """
-        self.env.refinement_distance = self.env._refinement_distance if self.env._refinement_distance else 10.0
+        template_json = '"refinementDistance": {}'
+        self.env.refinement_distance = (
+            template_json.format(self.env._refinement_distance)
+            if self.env._refinement_distance
+            else template_json.format(10.0)
+        )
         self.env.folder = os.path.join(self.working_folder, "2_refinement")
         self.env.system = os.path.join(self.refinement_dir, "*.pdb")
+
+    def get_residue_type(self):
+        """
+        Extracts name of the residue the covalent ligand is bound to before correcting the system.
+        """
+        chain, residue_number = self.env.covalent_residue.split(":")
+        residue_type = helpers.get_residue_name(self.env.system, chain, residue_number)
+        return residue_type

@@ -115,7 +115,6 @@ DISTANCE_ATOMS = """
                      }},
                      """
 
-
 LOCAL_NONBONDING_ENERGY = """
                      {{
                      "type": "localNonBondingEnergy",
@@ -185,9 +184,7 @@ SIDECHAIN_PERTURBATION = """
                         "sideChainsToPerturb": { "links": {"ids": ["$COVALENT_RESIDUE"] } },
                         "parameters":{
                                 "overlapFactor": $OVERLAP,
-                                "numberOfStericTrials": $STERIC_TRIALS,
                                 "numberOfTrials": $TRIALS,
-                                "gridResolution": $GRIDRES,
                                 $REFINEMENT_DISTANCE
                                 "atLeastOneSelectedTrial": true 
                         }
@@ -282,7 +279,6 @@ AMINO_ACIDS = [
     "CYS",
     "HID",
 ]
-
 
 # Nucleotides
 NUCLEOTIDES = ["G", "U", "A", "C"]
@@ -443,12 +439,10 @@ custom_colors = (
     (0.6196078431372549, 0.8549019607843137, 0.8980392156862745),
 )
 
-
 # INTER STEP LOGGER
 # -------------------
 INTERSTEPLOGGER = """,
             "useInterStepLogger": true"""
-
 
 # ANALYSIS
 # ---------
@@ -477,7 +471,6 @@ cluster_representatives_criterion = {
     "interaction_mean": "Binding Energy mean",
     "interaction_min": "Binding Energy min",
 }
-
 
 # LIGAND PARAMETERIZATION
 # ------------------------

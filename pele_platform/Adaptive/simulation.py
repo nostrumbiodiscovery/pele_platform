@@ -19,7 +19,7 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-from pele_platform.Adaptive import Parametrizer
+from pele_platform.Adaptive import parametrizer
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.pca as pca
 import pele_platform.Adaptive.plop_solvent as sv
@@ -206,8 +206,8 @@ def run_adaptive(args):
 
         # Ligand/metal and solvent parameters
         if parameters.perturbation and parameters.use_peleffy:
-            parametrizer = Parametrizer.from_parameters(parameters)
-            parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
+            ligand_parametrizer = parametrizer.Parametrizer.from_parameters(parameters)
+            ligand_parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
 
         elif parameters.perturbation and not parameters.use_peleffy:
             # Parametrize the ligand
@@ -221,6 +221,9 @@ def run_adaptive(args):
                     with hp.cd(parameters.pele_dir):
                         mr.create_template(parameters, res)
                     parameters.logger.info("Template {}z created\n\n".format(res))
+
+        if parameters.covalent_residue:
+            parametrizer.parametrize_covalent_residue(parameters.pele_data, parameters.pele_dir, parameters.gridres, parameters.residue_type, parameters.residue)
 
         # Create simulation box, if performing perturbation
         if parameters.perturbation:
@@ -307,6 +310,9 @@ def run_adaptive(args):
         parameters.native = (
             metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
         )
+
+        parameters.local_nonbonding_energy = metrics.local_nonbonding_energy_json(args.covalent_residue,
+                                                                                  args.nonbonding_radius)
 
         # metal polarisation
         if parameters.polarize_metals:

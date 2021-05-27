@@ -26,5 +26,8 @@ class MetricBuilder:
         return self.rmsd
 
     def local_nonbonding_energy_json(self, covalent_residue, radius):
-        self.local_nonbonding_energy = cs.LOCAL_NONBONDING_ENERGY.format(covalent_residue, radius)
+        if covalent_residue:
+            self.local_nonbonding_energy = cs.LOCAL_NONBONDING_ENERGY.format(covalent_residue, radius)
+        else:
+            self.local_nonbonding_energy = ""
         return self.local_nonbonding_energy

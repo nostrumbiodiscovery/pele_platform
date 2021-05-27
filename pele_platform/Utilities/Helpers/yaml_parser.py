@@ -331,6 +331,12 @@ class YamlParser(object):
         self.mtor = data.get(valid_flags["mtor"], 4)  # plop
         self.n = data.get(valid_flags["n"], 10000)  # plop
 
+        # Covalent docking
+        self.covalent_residue = data.get(valid_flags["covalent_residue"], None)
+        self.refinement_distance = data.get(valid_flags["refinement_distance"], None)
+        self.nonbonding_radius = data.get(valid_flags["nonbonding_radius"], None)
+        self.perturbation_trials = data.get(valid_flags["perturbation_trials"], None)
+
         if self.test:
             warnings.warn(
                 "WARNING: This simulation is a test do not use the input files to run production simulations"
