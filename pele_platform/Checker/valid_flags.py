@@ -200,4 +200,6 @@ VALID_FLAGS_PLATFORM = {
     "use_peleffy": "use_peleffy",
     "mtor": "maxtorsion",  # plop
     "n": "n",  # plop
+    "plot_filtering_threshold": "plot_filtering_threshold",
+    "clustering_filtering_threshold": "clustering_filtering_threshold",
 }
