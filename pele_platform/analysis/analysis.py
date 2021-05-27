@@ -1526,13 +1526,6 @@ class Analysis(object):
         import mdtraj
         import os
 
-        # On Frag, the pdb of the trajectories aer in the sampling_result folder and not in the =/ folder.
-        try:
-            path = glob.glob(os.path.join(self.output, "0", "trajectory_1.*"))[0]
-        except IndexError:
-            # If we are running analysis for a FragPELE simulation
-            path = glob.glob(os.path.join(self.output, "trajectory_1.*"))[0]
-            
         # Get list of epoch directories
         epoch_dirs = glob.glob(os.path.join(self.output, '[0-9]*'))
 

@@ -9,6 +9,7 @@ from pele_platform.constants import constants as cs
 
 OUTPUT = "input.conf"
 
+
 def get_symmetry_groups(mol):
     """
     Computes the symmetry class for each atom and returns a list with the idx of non-symmetric atoms.
@@ -221,34 +222,19 @@ def get_fragment_files(path,
 
 
 def write_config_file(output_name,
-                      bond_list, frag_restart, frag_core):
+                      bond_list):
     """
     Generates the configuration file.
     """
-    if frag_restart:
-        for i in bond_list:
-
-            name= os.getcwd() + "/"+ frag_core.split("/")[-1][:-4]+"_processed_"+ \
-                  i.split("/")[6].split(" ")[0].replace(".pdb","") + \
-                  i.split("/")[6].split(" ")[1].replace(" ","") + \
-                  i.split("/")[6].split(" ")[2].replace(" ","")  + \
-                  "/" + i.split("/")[6].split(" ")[0].replace(".pdb","") + \
-                  i.split("/")[6].split(" ")[1].replace(" ", "") + \
-                  i.split("/")[6].split(" ")[2].replace(" ", "") + "_top.pdb"
-
-            if os.path.isfile(name):
-                bond_list.remove(i)
     with open(output_name, "w+") as conf_file:
         for line in bond_list:
             conf_file.write(line+"\n")
 
 
-def main(frag_core,
-         user_bond,
+def main(user_bond,
          frag_library,
          logger,
          fragment_atom,
-         frag_restart,
          tmpdirname):
     # find the library and extract fragments
     path = get_library(frag_library)
@@ -260,6 +246,6 @@ def main(frag_core,
         bond_list.extend(growing_sites(file, user_bond, fragment_atom))
     
     # write input.conf 
-    write_config_file(OUTPUT, bond_list, frag_restart, frag_core)
+    write_config_file(OUTPUT, bond_list)
     
     return OUTPUT

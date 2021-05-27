@@ -201,5 +201,6 @@ VALID_FLAGS_PLATFORM = {
     "solvent_template": "solvent_template",
     "use_peleffy": "use_peleffy",
     "mtor": "maxtorsion",  # plop
-    "n" : "n"  # plop
+    "n" : "n", # plop
+    "frag_restart_libraries": "frag_restart_libraries"
 }
