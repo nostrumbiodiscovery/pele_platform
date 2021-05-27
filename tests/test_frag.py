@@ -252,7 +252,7 @@ def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
 
 def test_frag_waters(ext_args=FRAG_WATERS):
     """
-    Tests waters.
+    Check if water molecules are added to the system.
   
     Parameters
     ----------

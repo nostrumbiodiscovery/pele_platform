@@ -226,6 +226,7 @@ def write_config_file(output_name,
     """
     Generates the configuration file.
     """
+    
     with open(output_name, "w+") as conf_file:
         for line in bond_list:
             conf_file.write(line+"\n")
