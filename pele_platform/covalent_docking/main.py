@@ -1,12 +1,10 @@
 from dataclasses import dataclass
 import os
-import subprocess
 
 from pele_platform.Utilities.Parameters import parameters
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Adaptive import simulation
 from pele_platform.analysis import analysis
-from pele_platform.constants import constants
 
 from frag_pele.Covalent import pdb_corrector
 
@@ -15,6 +13,10 @@ from frag_pele.Covalent import pdb_corrector
 class CovalentDocking:
     env: parameters.Parameters
     original_dir: str = os.path.abspath(os.getcwd())
+    refinement_dir: str = None
+    working_folder: str = None
+    job1: parameters.Parameters = None
+    job2: parameters.Parameters = None
 
     def run(self):
         """
@@ -108,7 +110,7 @@ class CovalentDocking:
                 traj=self.job1.traj_name,
                 topology=self.job1.topology,
                 cpus=1,
-                skip_initial_structures=False
+                skip_initial_structures=False,
             )
 
             analysis_object.generate_clusters(
