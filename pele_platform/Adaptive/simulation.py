@@ -311,8 +311,8 @@ def run_adaptive(args):
             metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
         )
 
-        parameters.local_nonbonding_energy = metrics.local_nonbonding_energy_json(args.covalent_residue,
-                                                                                  args.nonbonding_radius)
+        parameters.local_nonbonding_energy = metrics.local_nonbonding_energy_json(parameters.covalent_residue,
+                                                                                  parameters.nonbonding_radius)
 
         # metal polarisation
         if parameters.polarize_metals:

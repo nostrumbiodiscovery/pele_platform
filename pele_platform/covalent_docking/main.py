@@ -27,9 +27,14 @@ class CovalentDocking:
         self.correct_system()
         self.set_general_perturbation_params()
         self.job1 = simulation.run_adaptive(self.env)
-        self.choose_refinement_input()
-        self.set_refinement_perturbation_params()
-        self.job2 = simulation.run_adaptive(self.env)
+
+        if not self.env.debug:
+            self.choose_refinement_input()
+            self.set_refinement_perturbation_params()
+            self.job2 = simulation.run_adaptive(self.env)
+        else:
+            self.job2 = None
+
         return self.job1, self.job2
 
     def set_general_perturbation_params(self):
