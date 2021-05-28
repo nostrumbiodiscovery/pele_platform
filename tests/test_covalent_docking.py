@@ -1,5 +1,4 @@
 import os
-import pytest
 
 from pele_platform import main
 from pele_platform.constants import constants
@@ -10,15 +9,13 @@ test_path = os.path.join(constants.DIR, "Examples")
 expected_params1 = [
     '"type": "localNonBondingEnergy"',
     '"radius": 5',
-    '"sideChainsToPerturb": { "links": {"ids": ["A:4"] } },',
+    '"sideChainsToPerturb": { "links": {"ids": ["A:273"] } },',
     '"overlapFactor": 0.77,',
-    '"numberOfStericTrials": 20,',
     '"numberOfTrials": 12,',
-    '"gridResolution": 30,',
-    '"atLeastOneSelectedTrial": true,'
+    '"atLeastOneSelectedTrial": true'
 ]
 
-expected_params2 = ['"refinementDistance": 15']
+expected_params2 = ['"refinementAngle": 15']
 
 
 def test_covalent_docking_params():
@@ -29,5 +26,5 @@ def test_covalent_docking_params():
     job, job2 = main.run_platform_from_yaml(yaml_file)
 
     errors = ta.check_file(job.pele_dir, "pele.conf", expected_params1, [])
-    errors = ta.check_file(job2.pele_dir, "pele.conf", expected_params1+expected_params2, errors)
+    errors = ta.check_file(job2.pele_dir, "pele.conf", expected_params1 + expected_params2, errors)
     assert not errors

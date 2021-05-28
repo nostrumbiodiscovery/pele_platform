@@ -185,7 +185,7 @@ SIDECHAIN_PERTURBATION = """
                         "parameters":{
                                 "overlapFactor": $OVERLAP,
                                 "numberOfTrials": $TRIALS,
-                                $REFINEMENT_DISTANCE
+                                $REFINEMENT_ANGLE
                                 "atLeastOneSelectedTrial": true 
                         }
                 },
@@ -470,6 +470,7 @@ cluster_representatives_criterion = {
     "interaction_5_percentile": "Binding Energy 5-percentile",
     "interaction_mean": "Binding Energy mean",
     "interaction_min": "Binding Energy min",
+    "local_nonbonding_energy": "LocalNonBondingEnergy",
 }
 
 # LIGAND PARAMETERIZATION

@@ -201,7 +201,7 @@ VALID_FLAGS_PLATFORM = {
     "mtor": "maxtorsion",  # plop
     "n": "n",  # plop
     "covalent_residue": "covalent_residue",
-    "refinement_distance": "refinement_distance",
+    "refinement_angle": "refinement_angle",
     "nonbonding_radius": "nonbonding_radius",
     "perturbation_trials": "perturbation_trials",
 }

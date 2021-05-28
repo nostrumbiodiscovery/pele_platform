@@ -98,7 +98,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             "INTERACTION_RESTRICTIONS": env.interaction_restrictions,
             "INTER_STEP_LOGGER": env.inter_step_logger,
             "COVALENT_RESIDUE": env.covalent_residue,
-            "REFINEMENT_DISTANCE": env.refinement_distance,
+            "REFINEMENT_ANGLE": env.refinement_angle,
             "LOCAL_NONBONDING_ENERGY": env.local_nonbonding_energy,
             "TRIALS": env.perturbation_trials,
             "COVALENT_SASA": env.covalent_sasa,

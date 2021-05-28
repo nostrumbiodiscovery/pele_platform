@@ -4,6 +4,6 @@ chain: "A"
 covalent_residue: "A:273"  # chain and residue number
 perturbation_trials: 12  # number of trials for covalent docking
 nonbonding_radius: 5  # radius for non-bonding energy metric
-refinement_distance: 15  # refinement distance for the second stage simulation
+refinement_angle: 15  # refinement angle for the second stage simulation
 overlap_factor: 0.77
 test: true

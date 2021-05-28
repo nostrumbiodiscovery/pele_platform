@@ -619,7 +619,7 @@ class SimulationParams(
         self.covalent_residue = args.covalent_residue if args.covalent_residue else None
         if self.covalent_residue:
             # Refinement distance should be empty for the general simulation (handled in CovalentDocking runner).
-            self.refinement_distance = args.refinement_distance if args.refinement_distance is not None else ""
+            self.refinement_angle = args.refinement_angle if args.refinement_angle is not None else ""
             self.nonbonding_radius = args.nonbonding_radius if args.nonbonding_radius is not None else 20.0
             self.perturbation_trials = args.perturbation_trials if args.perturbation_trials is not None else 10.0
             self.sidechain_perturbation = cs.SIDECHAIN_PERTURBATION
@@ -628,5 +628,5 @@ class SimulationParams(
         else:
             self.sidechain_perturbation = ""
             self.covalent_sasa = ""
-            self.refinement_distance = ""
+            self.refinement_angle = ""
             self.perturbation_trials = None
