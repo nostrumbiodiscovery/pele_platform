@@ -25,7 +25,7 @@ def test_covalent_docking_params():
     """
     Runs covalent docking in debug mode to ensure all metrics and user-defined variables are set correctly in pele.conf.
     """
-    yaml_file = os.path.join(test_path, "covalent_docking", "input.yaml")
+    yaml_file = os.path.join(test_path, "covalent_docking", "input2.yaml")
     job, job2 = main.run_platform_from_yaml(yaml_file)
 
     errors = ta.check_file(job.pele_dir, "pele.conf", expected_params1, [])

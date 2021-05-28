@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 import os
+import subprocess
 
 from pele_platform.Utilities.Parameters import parameters
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Adaptive import simulation
 from pele_platform.analysis import analysis
+from pele_platform.constants import constants
 
 from frag_pele.Covalent import pdb_corrector
 
@@ -22,7 +24,7 @@ class CovalentDocking:
             A tuple of EnviroBuilder objects with job variables for both simulations.
         """
         self.env.residue_type = self.get_residue_type()
-        self.env.system = self.correct_system()
+        self.correct_system()
         self.set_general_perturbation_params()
         job1 = simulation.run_adaptive(self.env)
         self.choose_refinement_input(job1)
@@ -41,18 +43,22 @@ class CovalentDocking:
         self.set_top_level_directory()
         self.env.folder = os.path.join(self.working_folder, "1_covalent_docking")
 
+        if isinstance(self.env.skip_ligand_prep, list):
+            self.env.skip_ligand_prep.append(self.env.residue)
+        else:
+            self.env.skip_ligand_prep = self.env.residue
+
     def correct_system(self):
         """
-        Correct the system PDB file and create templates for the covalent residue.
-
-        Return
-        --------
-        corrected_system : str
-            Path to the new system PDB (with corrected covalent ligand, etc.).
+        Moves the covalent ligand to the other residues, replaces HETATM with ATOM and runs Protein Wizard to
+        restore CONECT lines.
         """
-        # Move the HETATM to the residue lines
-        corrected_system = os.path.join(self.original_dir, os.path.basename(self.env.system.replace(".pdb", "_corrected.pdb")))
+        corrected_system = os.path.join(
+            self.original_dir,
+            os.path.basename(self.env.system.replace(".pdb", "_corrected.pdb")),
+        )
         chain, residue_number = self.env.covalent_residue.split(":")
+        schrodinger_output = corrected_system.replace("_corrected.pdb", "_final.pdb")
 
         pdb_corrector.run(
             self.env.system,
@@ -63,7 +69,12 @@ class CovalentDocking:
             ligand_chain=self.env.chain,
         )
 
-        return corrected_system
+        schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/prepwizard")
+        command_pdb = "{} -nohtreat -noepik -noprotassign -noimpref -noccd -NOJOBID {} {}".format(schrodinger_path, corrected_system, schrodinger_output)
+        os.system(command_pdb)
+
+        if os.path.exists(schrodinger_output):
+            self.env.system = schrodinger_output
 
     def set_top_level_directory(self):
         """
@@ -102,12 +113,14 @@ class CovalentDocking:
                 chain=self.simulation1.chain,
                 traj=self.simulation1.traj_name,
                 topology=self.simulation1.topology,
-                cpus=1)
+                cpus=1,
+            )
 
             analysis_object.generate_clusters(
                 self.refinement_dir,
                 clustering_type="meanshift",
-                representatives_criterion="local_nonbonding_energy")
+                representatives_criterion="local_nonbonding_energy",
+            )
 
     def set_refinement_perturbation_params(self):
         """

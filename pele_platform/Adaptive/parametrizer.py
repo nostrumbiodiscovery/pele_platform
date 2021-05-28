@@ -949,18 +949,9 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
     template_name = ligand_name.lower()
     extracted_ligand = os.path.join(os.getcwd(), f"{ligand_name.upper()}.pdb")
 
+    # helpers.correct_protein_wizard(extracted_ligand)
+
     # Create template for ligand + side chain
-    create_templates.get_datalocal(
-        extracted_ligand,
-        outdir=folder,
-        aminoacid=True,
-        rot_res=gridres,
-        template_name=template_name,
-        sch_path=constants.SCHRODINGER
-    )
-
-    helpers.correct_protein_wizard(extracted_ligand.replace(".pdb", "_p.pdb"))
-
     create_templates.get_datalocal(
         extracted_ligand,
         outdir=folder,

@@ -205,11 +205,11 @@ def run_adaptive(args):
         parameters.logger.info(f"Complex {parameters.system} prepared\n\n")
 
         # Ligand/metal and solvent parameters
-        if parameters.perturbation and parameters.use_peleffy:
+        if (parameters.perturbation or parameters.sidechain_perturbation) and parameters.use_peleffy:
             ligand_parametrizer = parametrizer.Parametrizer.from_parameters(parameters)
             ligand_parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
 
-        elif parameters.perturbation and not parameters.use_peleffy:
+        elif (parameters.perturbation or parameters.sidechain_perturbation) and not parameters.use_peleffy:
             # Parametrize the ligand
             ligand_params = lg.LigandParametrization(parameters)
             ligand_params.generate()

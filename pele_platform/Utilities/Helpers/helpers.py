@@ -528,21 +528,14 @@ def correct_protein_wizard(ligand_file):
     Parameters
     ------------
     ligand_file : str
-        Path to PDB file with extracted ligand.
+        Path to PDB file with extracted ligand before Preprocessing.
     """
     with open(ligand_file, "r") as file:
         lines = file.readlines()
 
-    # Filter out hydrogens
+    output = list()
     h_to_remove = ["H11", "H51"]  # TODO: Write a proper algorithm for this
 
-    output = list()
-    for line in lines:
-        print("LINE:", line)
-        if line[12:16].strip() not in h_to_remove:
-            output.append(line)
-        else:
-            print(line[12:16])
 
     with open(ligand_file, "w") as fout:
         for line in output:
