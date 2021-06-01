@@ -43,8 +43,7 @@ def test_covalent_docking_production():
 @pytest.mark.parametrize("input_yaml", ["input1.yaml", "input3.yaml"])
 def test_ligands(input_yaml):
     """
-    Runs covalent docking in test mode to check parametrization of unusual ligands, e.g. double bond (input1.yaml) or
-    aryl sulfonyl (input3.yaml).
+    Runs covalent docking in test mode to check parametrization of covalent ligands.
     """
     yaml_file = os.path.join(test_path, input_yaml)
     main.run_platform_from_yaml(yaml_file)
