@@ -462,7 +462,7 @@ def retrieve_atom_names(pdb_file, residues):
         lines = f.readlines()
 
     # Retrieve HETATM lines only
-    pdb_lines = [line for line in lines if line.startswith("HETATM")]
+    pdb_lines = [line for line in lines if line.startswith("HETATM") or line.startswith("ATOM")]
 
     for index, line in enumerate(pdb_lines):
 
@@ -518,25 +518,3 @@ def get_residue_name(pdb_file, chain, residue_number):
             return residue_name
     else:
         raise ResidueNotFound(f"Could not find residue {residue_number} in chain {chain} in PDB file {pdb_file}.")
-
-
-def correct_protein_wizard(ligand_file):
-    """
-    Removes terminal hydrogens added by Schrodinger Protein Preparation Wizard to make sure the ligand is suitable
-    for building the template for covalent docking.
-
-    Parameters
-    ------------
-    ligand_file : str
-        Path to PDB file with extracted ligand before Preprocessing.
-    """
-    with open(ligand_file, "r") as file:
-        lines = file.readlines()
-
-    output = list()
-    h_to_remove = ["H11", "H51"]  # TODO: Write a proper algorithm for this
-
-
-    with open(ligand_file, "w") as fout:
-        for line in output:
-            fout.write(line)

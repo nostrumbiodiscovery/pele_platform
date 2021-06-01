@@ -13,8 +13,9 @@ except SyntaxError:
 
 def parametrize_miss_residues(env, resname=None, ligand=None):
 
-    if env.residue not in env.skip_ligand_prep:
-        resname = env.residue if not resname else resname
+    resname = env.residue if not resname else resname
+
+    if resname not in env.skip_ligand_prep:
         SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
         if not os.path.exists(SPYTHON):
             SPYTHON = os.path.join(cs.SCHRODINGER, "run")
@@ -27,7 +28,7 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
             cs.SCHRODINGER, "internal/lib/python2.7/site-packages/"
         )
         my_env["SCHRODINGER"] = cs.SCHRODINGER
-        env.logger.info("Running Plop")
+
         ligand = ligand if ligand else env.lig
         env.logger.info(
             "{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(

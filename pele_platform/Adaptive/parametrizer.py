@@ -1,5 +1,6 @@
 import glob
 import os
+import re
 import shutil
 import subprocess
 import warnings
@@ -1017,7 +1018,7 @@ class Parametrizer:
             print(e)
 
 
-def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligand_name):
+def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligand_name, ppp_system):
     """
     Create template and rotamer files for the covalent residue.
 
@@ -1033,12 +1034,15 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
         Residue name that covalent ligand is bound to, e.g. "cys".
     ligand_name : str
         Ligand residue name (from YAML resname flag).
+    ppp_system : str
+        Path to the system after it has been preprocessed by PPP.
     """
     from frag_pele.Covalent import correct_template_of_backbone_res
     from frag_pele.Helpers import create_templates
 
     template_name = ligand_name.lower()
-    extracted_ligand = os.path.join(os.getcwd(), f"{ligand_name.upper()}.pdb")
+    ligand_name = ligand_name.upper()
+    extracted_ligand = os.path.join(os.getcwd(), f"{ligand_name}.pdb")
 
     # Create template for ligand + side chain
     create_templates.get_datalocal(
@@ -1064,6 +1068,8 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
         work_dir=folder,
     )
 
+    correct_atom_names_directly(ligand_name=ligand_name, extracted_ligand=extracted_ligand, ppp_system=ppp_system)
+
     # Copy everything from "templates_generated"
     created_templates = glob.glob(generated_templates_path.format("*"))
     final_templates_destination = os.path.join(
@@ -1071,3 +1077,29 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
     )
     for template in created_templates:
         shutil.copy(template, final_templates_destination)
+
+
+def correct_atom_names_directly(ligand_name, extracted_ligand, ppp_system):
+    """
+    Corrects atom names directly in the PDB file, rather than setting them in Topology. Necessary for covalent docking.
+    """
+
+    # Extract PDB atom names before and after PPP to prevent any template-breaking changes
+    ligands_to_extract = [f"{ligand_name}"]
+    correct_atom_names = helpers.retrieve_atom_names(extracted_ligand, ligands_to_extract)[ligand_name]
+    ppp_atom_names = helpers.retrieve_atom_names(ppp_system, ligands_to_extract)[ligand_name]
+    mapping_dict = {ppp: correct for ppp, correct in zip(ppp_atom_names, correct_atom_names)}
+
+    # Correct any mismatched atom names
+    if correct_atom_names != ppp_atom_names:
+
+        with open(ppp_system, "r") as file:
+            ppp_lines = file.readlines()
+
+            for index, line in enumerate(ppp_lines):
+                if line[17:20].strip() == ligand_name:
+                    ppp_lines[index] = re.sub(line[12:16], mapping_dict[line[12:16]], line)
+
+        with open(ppp_system, "w") as file_out:
+            for line in ppp_lines:
+                file_out.write(line)

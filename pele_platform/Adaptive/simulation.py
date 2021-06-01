@@ -222,8 +222,11 @@ def run_adaptive(args):
                         mr.create_template(parameters, res)
                     parameters.logger.info("Template {}z created\n\n".format(res))
 
-        if parameters.covalent_residue:
-            parametrizer.parametrize_covalent_residue(parameters.pele_data, parameters.pele_dir, parameters.gridres, parameters.residue_type, parameters.residue)
+        # Covalent residue parametrization should not run in refinement simulation
+        if parameters.covalent_residue and os.path.basename(parameters.pele_dir) != "2_refinement":
+            parametrizer.parametrize_covalent_residue(parameters.pele_data, parameters.pele_dir, parameters.gridres,
+                                                      parameters.residue_type, parameters.residue,
+                                                      ppp_system=parameters.system)
 
         # Create simulation box, if performing perturbation
         if parameters.perturbation:
