@@ -1,6 +1,9 @@
 import os
 import tempfile
 import shutil
+import re
+import glob
+
 
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Frag.helpers as hp
@@ -8,7 +11,10 @@ import pele_platform.Frag.checker as ch
 import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
+import pele_platform.constants.constants as cs
 import frag_pele.main as frag
+from pele_platform.analysis import Analysis
+from pele_platform.Utilities.Helpers import water
 
 
 class FragRunner(object):
@@ -27,23 +33,24 @@ class FragRunner(object):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()
-        self._analysis()
-
+        if not self.parameters.debug:
+            self._analysis()
         return self.parameters
 
     def _launch(self):
         params = self.parameters
-
         with tempfile.TemporaryDirectory() as tmpdirname:
             if params.ligands:  # Full ligands as sdf
                 fragment_files = self._prepare_input_file(logger=params.logger)
             elif params.frag_library:
-                params.input = lb.main(
-                    params.frag_core_atom,
-                    params.frag_library,
-                    params.logger,
-                    tmpdirname,
-                )
+                params.input = lb.main(params.frag_core_atom,
+                                       params.frag_library,
+                                       params.logger,
+                                       params.fragment_atom,
+                                       tmpdirname)
+                if params.frag_restart_libraries:
+                    self._frag_restart()
+
             else:
                 fragment_files = None
                 assert params.input is not None, (
@@ -52,6 +59,7 @@ class FragRunner(object):
                 )
 
             if not params.only_analysis:
+                self._prepare_parameters()
                 self._run()
 
             if params.cleanup and fragment_files:
@@ -72,6 +80,9 @@ class FragRunner(object):
 
         return self.parameters.control_file
 
+    def _prepare_parameters(self):
+        self.parameters.spython = cs.SCHRODINGER  # Commented to use Frag 2.2.1 instead of Frag 3.0.0
+
     def _set_test_variables(self):
         if self.parameters.test:
             self.parameters.gr_steps = 1
@@ -88,64 +99,64 @@ class FragRunner(object):
 
     def _run(self):
         params = self.parameters
-
-        if params.frag_run:
-            try:
-                frag.main(
-                    params.core_process,
-                    params.input,
-                    params.gr_steps,
-                    params.criteria,
-                    params.plop_path,
-                    params.spython,
-                    params.pele_exec,
-                    params.control_file,
-                    params.license,
-                    params.output_folder,
-                    params.report_name,
-                    "trajectory",
-                    params.cluster_folder,
-                    params.cpus,
-                    params.distcont,
-                    params.threshold,
-                    params.epsilon,
-                    params.condition,
-                    params.metricweights,
-                    params.nclusters,
-                    params.frag_eq_steps,
-                    params.frag_restart,
-                    params.min_overlap,
-                    params.max_overlap,
-                    params.chain_core,
-                    params.frag_chain,
-                    params.frag_steps,
-                    params.temperature,
-                    params.seed,
-                    params.gridres,
-                    params.banned,
-                    params.limit,
-                    params.mae,
-                    params.rename,
-                    params.threshold_clash,
-                    params.steering,
-                    params.translation_high,
-                    params.rotation_high,
-                    params.translation_low,
-                    params.rotation_low,
-                    params.explorative,
-                    params.frag_radius,
-                    params.sampling_control,
-                    params.pele_data,
-                    params.pele_documents,
-                    params.only_prepare,
-                    params.only_grow,
-                    params.no_check,
-                    params.debug,
-                    srun=params.usesrun,
-                )
-            except Exception as e:
-                print("Skipped - FragPELE will not run.")
-                print(e)
+        if not params.frag_restart_libraries:
+            self._extract_working_directory()
+        try:
+            frag.main(
+                params.core_process,
+                params.input,
+                params.gr_steps,
+                params.criteria,
+                params.plop_path,
+                params.spython,
+                params.pele_exec,
+                params.control_file,
+                params.license,
+                params.output_folder,
+                params.report_name,
+                "trajectory",
+                params.cluster_folder,
+                params.cpus,
+                params.distcont,
+                params.threshold,
+                params.epsilon,
+                params.condition,
+                params.metricweights,
+                params.nclusters,
+                params.frag_eq_steps,
+                params.frag_restart,
+                params.min_overlap,
+                params.max_overlap,
+                params.chain_core,
+                params.frag_chain,
+                params.frag_steps,
+                params.temperature,
+                params.seed,
+                params.gridres,
+                params.banned,
+                params.limit,
+                params.mae,
+                params.rename,
+                params.threshold_clash,
+                params.steering,
+                params.translation_high,
+                params.rotation_high,
+                params.translation_low,
+                params.rotation_low,
+                params.explorative,
+                params.frag_radius,
+                params.sampling_control,
+                params.pele_data,
+                params.pele_documents,
+                params.only_prepare,
+                params.only_grow,
+                params.no_check,
+                params.debug,
+                srun=params.usesrun,
+            )
+        except Exception as e:
+            print("Skipped - FragPELE will not run.")
+            print(e)
 
     def _prepare_input_file(self, logger=None):
         from rdkit import Chem
@@ -212,7 +223,6 @@ class FragRunner(object):
         from rdkit import Chem
 
         params = self.parameters
-
         (
             fragment,
             old_atoms,
@@ -249,38 +259,31 @@ class FragRunner(object):
         return line, fragment
 
     def _analysis(self):
-        self.parameters.analysis_to_point = self.parameters.args.analysis_to_point
+        # TODO create a list of the libraries defined in the current input.yaml
+        # Retrieve water indices to cluster, if running analysis only
+        if self.parameters.only_analysis:
+            self._extract_working_directory()
+            for path in self.parameters.working_dir:
+                if not os.path.exists(path):
+                    self.parameters.working_dir=[self.parameters.folder]
+                    if not os.path.exists(self.parameters.folder):
+                        raise ce.MissingWorkingDir("Missing working_folder parameter. Please set the "
+                                                   "path of the trajectories using the flag working_"
+                                                   "folder in your input.yaml")
+            self._prepare_parameters()
+            self.parameters.water_ids_to_track = water.water_ids_from_conf(self.parameters.control_file)
 
-        if self.parameters.analysis_to_point and self.parameters.folder:
+        if self.parameters.args.analysis_to_point:
+            self.parameters.analysis_to_point = self.parameters.args.analysis_to_point
             ana.main(
                 path=self.parameters.folder,
                 atom_coords=self.parameters.analysis_to_point,
                 pattern=os.path.basename(self.parameters.system),
             )
 
-        # TODO create a list of the libraries defined in the current input.yaml
-        from pele_platform.analysis import Analysis
-        from pele_platform.Utilities.Helpers import water
-        from glob import glob
-
-        sim_directories = glob(
-            os.path.splitext(self.parameters.system)[0] + "_processed_*" + "*"
-        )
-
-        for sim_directory in sim_directories:
-            simulation_output = os.path.join(sim_directory, "sampling_result")
-
-            # Retrieve water indices to cluster, if running analysis only
-            if self.parameters.only_analysis:
-                self.parameters.water_ids_to_track = water.water_ids_from_conf(
-                    self.parameters.pele_temp
-                )
-
-            # Only proceed if sampling_result folder exists
-            if not os.path.isdir(simulation_output):
-                continue
-
-            analysis_folder = os.path.join(sim_directory, "results")
+        for path in self.parameters.working_dir:
+            simulation_output = os.path.join(path, 'sampling_result')
+            analysis_folder = os.path.join(path, "results")
 
             analysis = Analysis(
                 resname="GRW",
@@ -312,3 +315,31 @@ class FragRunner(object):
         for file in fragment_files:
             if os.path.isfile(file):
                 os.remove(file)
+
+    def _extract_working_directory(self):
+        params = self.parameters
+        params.working_dir = []
+        if os.path.isfile(params.core):
+            complex_name = os.path.basename(params.core).split(".pdb")[0]  # And if it is a path, get only the name
+        else:
+            complex_name = params.core.split(".pdb")[0]
+        pdb_basename = complex_name
+        current_path = os.path.abspath(".")
+        with open(params.input, "r") as input_file:
+            for line in input_file.readlines():
+                ID = os.path.basename(line).replace(".pdb", "")
+                sentence = re.sub(r"\s+", "", ID, flags=re.UNICODE)
+                params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
+
+    def _frag_restart(self):
+        self._extract_working_directory()
+        with open(self.parameters.input, "r") as conf_file:
+            final_bonds = []
+            for line, path in zip(conf_file.readlines(), self.parameters.working_dir):
+                if len(glob.glob(os.path.join(path, "*_top.pdb"))) == 0:
+                    if os.path.exists(path):
+                        shutil.rmtree(path)
+                    final_bonds.append(line)
+            with open(self.parameters.input, "w") as conf_file:
+                for line in final_bonds:
+                    conf_file.write(line + "\n")
