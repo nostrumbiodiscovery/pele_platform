@@ -19,17 +19,29 @@ def test_mutagenesis_production():
     all_jobs = main.run_platform_from_yaml(yaml)
 
     # List of mutated PDBs expected in each job
-    expected_pdbs = [('T454A_processed.pdb', 'T454D_processed.pdb'),
-                     ('T454E_processed.pdb', )]
+    expected_pdbs = [
+        ("T454A_processed.pdb", "T454D_processed.pdb"),
+        ("T454E_processed.pdb",),
+    ]
 
     for i, job in enumerate(all_jobs):
         # Output files exist
         output_files = glob.glob(os.path.join(job.pele_dir, job.output, "*/traj*.pdb"))
         assert output_files
 
+        # Check if all files from iterations folder were postprocessed and moved to their respective mutation folders
+        assert not glob.glob(os.path.join(job.pele_dir, job.output, "0/traj*pdb"))
+
+        # Assert the equilibration files remained in their folders
+        assert glob.glob(
+            os.path.join(job.pele_dir, job.output, "equilibration*", "report*")
+        )
+
         # Check if the default induced fit exhaustive lines are present in pele configuration file
         induced_fit_lines = test_adaptive_defaults.INDUCE_FIT_PELE
-        errors = test_adaptive_defaults.check_file(job.pele_dir, "pele.conf", induced_fit_lines, [])
+        errors = test_adaptive_defaults.check_file(
+            job.pele_dir, "pele.conf", induced_fit_lines, []
+        )
         assert not errors
 
         # Make sure all subset directories have correct names
@@ -61,7 +73,9 @@ def test_mutagenesis_restart():
     all_jobs = main.run_platform_from_yaml(yaml)
     last_job = all_jobs[-1]
     mutation_folder = os.path.splitext(os.path.basename(last_job.input[0]))[0]
-    restart_trajectories = glob.glob(os.path.join(last_job.pele_dir, last_job.output, mutation_folder, "traj*"))
+    restart_trajectories = glob.glob(
+        os.path.join(last_job.pele_dir, last_job.output, mutation_folder, "traj*")
+    )
     assert len(restart_trajectories) == 2
 
 
