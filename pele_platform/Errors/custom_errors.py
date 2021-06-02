@@ -67,3 +67,6 @@ class MultipleSimulationTypes(Exception):
 
 class ResidueNotFound(Exception):
     pass
+  
+class MissingWorkingDir(Exception):
+    pass

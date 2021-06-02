@@ -182,7 +182,6 @@ class WaterIncluder:
 
         # Open the original PDB file
         with open(self.input_pdbs[0], "r") as file:
-
             # Figure out which lines refer to the actual structure and CONECTs, drop everything else
             lines = file.readlines()
             conect = [line for line in lines if "CONECT" in line]
