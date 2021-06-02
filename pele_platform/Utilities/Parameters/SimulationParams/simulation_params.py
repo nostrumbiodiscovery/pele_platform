@@ -443,6 +443,7 @@ class SimulationParams(
         if not self.use_peleffy and self.forcefield.upper() != "OPLS2005":  # plop
             raise custom_errors.IncompatibleForcefield(f"PlopRotTemp is incompatible with {self.forcefield}. Set "
                                                        f"'use_peleffy: true' in input.yaml.")
+        self.ligand_conformations = args.ligand_conformations if args.ligand_conformations else []
 
     def water_params(self, args):
         self.water_temp = (

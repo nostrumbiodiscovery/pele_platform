@@ -331,6 +331,8 @@ class YamlParser(object):
         self.mtor = data.get(valid_flags["mtor"], 4)  # plop
         self.n = data.get(valid_flags["n"], 10000)  # plop
 
+        self.ligand_conformations = data.get(valid_flags["ligand_conformations"], None)
+
         if self.test:
             warnings.warn(
                 "WARNING: This simulation is a test do not use the input files to run production simulations"

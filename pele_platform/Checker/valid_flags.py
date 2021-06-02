@@ -200,4 +200,5 @@ VALID_FLAGS_PLATFORM = {
     "use_peleffy": "use_peleffy",
     "mtor": "maxtorsion",  # plop
     "n": "n",  # plop
+    "ligand_conformations": "ligand_conformations",
 }
