@@ -141,9 +141,9 @@ class SaturatedMutagenesis:
         """
         output_path = os.path.join(job.pele_dir, job.output)
         reports_path = os.path.join(
-            output_path, "[!equilibration]*", "{}*".format(job.report_name)
+            output_path, "[0-9]*", "{}*".format(job.report_name)
         )
-        trajectory_path = os.path.join(output_path, "[!equilibration]*", "trajectory*")
+        trajectory_path = os.path.join(output_path, "[0-9]*", "trajectory*")
 
         # Sort all trajectories and reports by their IDs
         sorted_reports = self.sort_numerically(reports_path)
