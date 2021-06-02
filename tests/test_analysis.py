@@ -353,7 +353,7 @@ def test_get_dataframe(analysis, filter, threshold, expected_length):
         Analysis object created in a fixture.
     """
 
-    df = analysis.get_dataframe(filter=filter, threshold=threshold)
+    df = analysis.get_dataframe(threshold=threshold)
     assert len(df) == expected_length
 
 

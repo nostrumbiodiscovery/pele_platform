@@ -40,6 +40,8 @@ v1.6.0 beta 5
 
 - Add user warnings to facilitate the system preparation
 
+- Introduced flexible filtering of output structures taken into account during analysis.
+
 - Other minor improvements
 
 

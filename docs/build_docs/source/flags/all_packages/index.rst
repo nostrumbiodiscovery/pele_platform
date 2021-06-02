@@ -528,6 +528,10 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **max_top_poses**: Maximum number of top poses to be retrieved. Default = 100.
 
+- **clustering_filtering_threshold**: Percentage of output structures to filter our before clustering. Default = 0.25.
+
+- **plot_filtering_threshold**: Percentage of output structures to filter out before creating plots. Default = 0.02
+
 ..  code-block:: yaml
 
     only_analysis: true

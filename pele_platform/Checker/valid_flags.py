@@ -200,6 +200,8 @@ VALID_FLAGS_PLATFORM = {
     "solvent_template": "solvent_template",
     "use_peleffy": "use_peleffy",
     "mtor": "maxtorsion",  # plop
-    "n" : "n", # plop
+    "n": "n",  # plop
+    "plot_filtering_threshold": "plot_filtering_threshold",
+    "clustering_filtering_threshold": "clustering_filtering_threshold",
     "frag_restart_libraries": "frag_restart_libraries"
 }
