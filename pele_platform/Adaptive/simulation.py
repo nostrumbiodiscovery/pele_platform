@@ -99,7 +99,7 @@ def run_adaptive(args):
             ).strip('"')
 
         # If randomization in necessary (PPI, site_finder, global exploration)...
-        elif args.full or args.randomize or args.ppi:
+        elif args.full or args.randomize or args.ppi or args.site_finder:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(
                 parameters.ligand_ref,
                 parameters.receptor,
