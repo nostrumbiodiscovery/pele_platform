@@ -142,6 +142,7 @@ VALID_FLAGS_PLATFORM = {
     "schrodinger": "schrodinger",
     "no_check": "no_check",
     "frag_core": "frag_core",
+    "frag_core_atom": "frag_core_atom",
     "frag_input": "frag_input",
     "frag_ligands": "frag_ligands",
     "growing_steps": "growing_steps",
@@ -173,7 +174,6 @@ VALID_FLAGS_PLATFORM = {
     "polarization_factor": "polarization_factor",
     "constrain_core_spring": "constrain_core_spring",
     "frag_library": "frag_library",
-    "frag_core_atom": "frag_core_atom",
     "analysis_to_point": "analysis_to_point",
     "interaction_restrictions": "interaction_restrictions",
     "constraint_level": "constraint_level",
@@ -191,6 +191,7 @@ VALID_FLAGS_PLATFORM = {
     "singularity_exec": "singularity_exec",
     "top_clusters_criterion": "top_clusters_criterion",
     "cluster_representatives_criterion": "cluster_representatives_criterion",
+    "fragment_atom": "fragment_atom",
     "site_finder_local": "site_finder_local",
     "site_finder_global": "site_finder_global",
     "charge_parametrization_method": "charge_parametrization_method",
@@ -202,4 +203,5 @@ VALID_FLAGS_PLATFORM = {
     "n": "n",  # plop
     "plot_filtering_threshold": "plot_filtering_threshold",
     "clustering_filtering_threshold": "clustering_filtering_threshold",
+    "frag_restart_libraries": "frag_restart_libraries"
 }

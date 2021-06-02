@@ -657,7 +657,7 @@ def test_frag_API_analysis(yaml_file, traj, topology):
     job = main.run_platform_from_yaml(yaml_file)
 
     # Run analysis
-    frag_folder = "1w7h_preparation_structure_2w_processed_aminoC1N1"
+    frag_folder = "1w7h_preparation_structure_2w_processed_frag_aminoC1N1"
     output = os.path.join(frag_folder, "sampling_result")
     analysis_output = f"analysis_{traj}"
     traj = f"trajectory.{traj}"

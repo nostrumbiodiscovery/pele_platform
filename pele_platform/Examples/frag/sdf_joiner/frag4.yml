@@ -1,5 +1,4 @@
 frag_core: "../pele_platform/Examples/frag/sdf_joiner/glide-dockSARS_core.pdb"
-frag_run: False
 frag_ligands: "../pele_platform/Examples/frag/sdf_joiner/13_serie.sdf"
 resname: "LIG"
 cpus: 48

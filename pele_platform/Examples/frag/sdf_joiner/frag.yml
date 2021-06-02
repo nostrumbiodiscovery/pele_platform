@@ -1,4 +1,3 @@
-frag_run: False
 frag_core: "../pele_platform/Examples/frag/sdf_joiner/4RFM_proc.pdb"
 frag_ligands: "../pele_platform/Examples/frag/sdf_joiner/frag.sdf"
 resname: "DRG"
