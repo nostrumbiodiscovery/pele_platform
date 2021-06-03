@@ -203,5 +203,7 @@ VALID_FLAGS_PLATFORM = {
     "n": "n",  # plop
     "plot_filtering_threshold": "plot_filtering_threshold",
     "clustering_filtering_threshold": "clustering_filtering_threshold",
-    "frag_restart_libraries": "frag_restart_libraries"
+    "frag_restart_libraries": "frag_restart_libraries",
+    "pele_minimum_steps": "pele_minimum_steps"
+
 }
