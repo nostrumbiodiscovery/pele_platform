@@ -102,6 +102,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             "LOCAL_NONBONDING_ENERGY": env.local_nonbonding_energy,
             "TRIALS": env.perturbation_trials,
             "COVALENT_SASA": env.covalent_sasa,
+            "MAXTRIALSFORONE": env.max_trials_for_one,
         }
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)

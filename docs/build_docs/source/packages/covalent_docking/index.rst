@@ -19,13 +19,13 @@ Default parameters
 +++++++++++++++++++
 
 Parameters for stage 1:
-    - iterations:
-    - steps:
+    - iterations: 1
+    - steps: 400
     - number of structures: 1
 
 Parameters for stage 2:
-    - iterations:
-    - steps:
+    - iterations: 1
+    - steps: 100
     - number of structures: ``number of available cpus / 6`` (cannot be changed)
 
 Recommendations

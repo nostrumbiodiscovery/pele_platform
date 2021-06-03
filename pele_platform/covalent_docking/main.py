@@ -128,15 +128,11 @@ class CovalentDocking:
         """
         Sets parameters for the refinement side chain perturbation, including the refinement distance (default = 10 A).
         """
-        template_json = '"refinementAngle": {},'
-        self.env.refinement_angle = (
-            template_json.format(self.env._refinement_angle)
-            if self.env._refinement_angle
-            else template_json.format(10)
-        )
+        self.env.refinement_angle = self.env._refinement_angle
         self.env.folder = os.path.join(self.working_folder, "2_refinement")
         self.env.system = os.path.join(self.refinement_dir, "cluster*.pdb")
         self.env.no_ppp = True
+        self.env.covalent_docking_refinement = True
 
         self.recover_templates_from_job1()
 

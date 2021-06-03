@@ -186,6 +186,7 @@ SIDECHAIN_PERTURBATION = """
                                 "overlapFactor": $OVERLAP,
                                 "numberOfTrials": $TRIALS,
                                 $REFINEMENT_ANGLE
+                                "maxTrialsForAtLeastOne": $MAXTRIALSFORONE,
                                 "atLeastOneSelectedTrial": true 
                         }
                 },
@@ -477,3 +478,6 @@ cluster_representatives_criterion = {
 # ------------------------
 # Templates in PELE Data folder, no need to parametrize those
 in_pele_data = ["caz", "clz", "cuiz", "cuz", "hohz", "mgz", "mnz", "naz", "spcz", "znz"]
+
+
+refinement_angle = '"refinementAngle": {},'

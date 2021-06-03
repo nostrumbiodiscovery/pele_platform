@@ -422,7 +422,7 @@ class SimulationParams(
         self.n = args.n
         self.forcefield = args.forcefield if args.forcefield is not None else "OPLS2005"
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
-        self.gridres = args.gridres
+        self.gridres = args.gridres if args.gridres else self.simulation_params.get("gridres", 10)
         self.use_peleffy = args.use_peleffy if args.use_peleffy is not None else False
 
         # Take into account that the defaults for the parameterization method
@@ -620,16 +620,17 @@ class SimulationParams(
         """
         self.covalent_residue = args.covalent_residue if args.covalent_residue else None
         self.nonbonding_radius = args.nonbonding_radius if args.nonbonding_radius is not None else 20.0
-        self.perturbation_trials = args.perturbation_trials if args.perturbation_trials is not None else 10
+        self.perturbation_trials = args.perturbation_trials if args.perturbation_trials is not None else self.simulation_params.get("perturbation_trials", 10)
 
         if self.covalent_residue:
             # Refinement distance should be empty for the general simulation (handled in CovalentDocking runner).
-            self.refinement_angle = args.refinement_angle if args.refinement_angle is not None else ""
+            self.refinement_angle = args.refinement_angle if args.refinement_angle is not None else self.simulation_params.get("refinement_angle", 10)
+            self.refinement_angle = cs.refinement_angle.format(self.refinement_angle)
             self.sidechain_perturbation = cs.SIDECHAIN_PERTURBATION
             self.covalent_sasa = cs.SASA_COVALENT.format(self.covalent_residue)
             self.residue_type = args.residue_type
+            self.max_trials_for_one = self.perturbation_trials * 2
         else:
             self.sidechain_perturbation = ""
             self.covalent_sasa = ""
             self.refinement_angle = ""
-            self.perturbation_trials = None

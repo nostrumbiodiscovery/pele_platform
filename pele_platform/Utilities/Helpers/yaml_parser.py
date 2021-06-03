@@ -340,6 +340,7 @@ class YamlParser(object):
         self.refinement_angle = data.get(valid_flags["refinement_angle"], None)
         self.nonbonding_radius = data.get(valid_flags["nonbonding_radius"], None)
         self.perturbation_trials = data.get(valid_flags["perturbation_trials"], None)
+        self.covalent_docking_refinement = data.get(valid_flags["covalent_docking_refinement"], None)
 
         if self.test:
             warnings.warn(
