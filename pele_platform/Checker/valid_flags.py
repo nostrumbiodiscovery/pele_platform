@@ -204,6 +204,7 @@ VALID_FLAGS_PLATFORM = {
     "covalent_residue": "covalent_residue",
     "refinement_angle": "refinement_angle",
     "nonbonding_radius": "nonbonding_radius",
-    "perturbation_trials": "perturbation_trials",
-    "frag_restart_libraries": "frag_restart_libraries"
+    "plot_filtering_threshold": "plot_filtering_threshold",
+    "clustering_filtering_threshold": "clustering_filtering_threshold",
+    "frag_restart_libraries": "frag_restart_libraries",
 }

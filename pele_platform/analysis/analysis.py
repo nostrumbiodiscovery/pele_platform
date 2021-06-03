@@ -19,7 +19,7 @@ class Analysis(object):
                  be_column=4, limit_column=None, traj="trajectory.pdb",
                  report=None, skip_initial_structures=True, kde=False,
                  kde_structs=1000, topology=None, cpus=1,
-                 water_ids_to_track=[]):
+                 water_ids_to_track=[], plot_filtering_threshold=0.02, clustering_filtering_threshold=0.25):
         """
         It initializes an Analysis instance which it depends on
         the general Parameters class of the PELE Platform.
@@ -62,6 +62,10 @@ class Analysis(object):
              is None
         cpus : int
             Number of CPUs to use. Default is 1
+        plot_filtering_threshold : float
+            User-defined setting to toggle trajectory filtering when generating plots.
+        clustering_filtering_threshold : float
+            User-defined setting to toggle trajectory filtering when generating clusters.
         """
         from pele_platform.analysis import DataHandler
 
@@ -80,6 +84,8 @@ class Analysis(object):
         self.topology = topology
         self.cpus = cpus
         self.water_ids = water_ids_to_track
+        self.plot_filtering_threshold = plot_filtering_threshold
+        self.clustering_filtering_threshold = clustering_filtering_threshold
 
         if self.residue:
             self._check_residue_exists()
@@ -136,7 +142,9 @@ class Analysis(object):
                             kde_structs=parameters.kde_structs,
                             topology=parameters.topology,
                             cpus=parameters.cpus,
-                            water_ids_to_track=parameters.water_ids_to_track)
+                            water_ids_to_track=parameters.water_ids_to_track,
+                            plot_filtering_threshold=parameters.plot_filtering_threshold,
+                            clustering_filtering_threshold=parameters.clustering_filtering_threshold)
 
         return analysis
 
@@ -154,13 +162,10 @@ class Analysis(object):
                   if key[:1] != "_"}
         return params
 
-    def get_dataframe(self, filter=False, threshold=None):
+    def get_dataframe(self, threshold=0.02):
         """
         Parameters
         ----------
-        filter : bool
-            Whether to filter the entries with highest energies according
-            to the threshold value or not. Default is False
         threshold : float
             The ratio of high-energy entries that will be filtered out.
             Default is None and will be initialized with a threshold of
@@ -171,33 +176,7 @@ class Analysis(object):
         dataframe : a pandas.DataFrame object
             The dataframe containing the information from PELE reports
         """
-        if filter:
-            return self._data_handler.remove_outliers_from_dataframe(
-                self._dataframe, threshold)
-        else:
-            return self._dataframe
-
-    def dataframe_to_csv(self, path, filter=False, threshold=None):
-        """
-        It saves the dataframe in the supplied path as a csv file.
-
-        Parameters
-        ----------
-        path : str
-            The path where the dataframe will be saved
-        filter : bool
-            Whether to filter the entries with highest energies according
-            to the threshold value or not. Default is False
-        threshold : float
-            The ratio of high-energy entries that will be filtered out.
-            Default is None and will be initialized with a threshold of
-            0.02
-        """
-        # Get dataframe
-        dataframe = self.get_dataframe(filter, threshold)
-
-        # Save it as a csv file
-        dataframe.to_csv(path, index=False)
+        return self._data_handler.remove_outliers_from_dataframe(self._dataframe, threshold)
 
     def generate(self, path, clustering_type='meanshift',
                  bandwidth=2.5, analysis_nclust=10,
@@ -287,7 +266,7 @@ class Analysis(object):
         from pele_platform.analysis import Plotter
 
         # Get dataframe, filtering highest 2% energies out
-        dataframe = self.get_dataframe(filter=True)
+        dataframe = self.get_dataframe(threshold=self.plot_filtering_threshold)
 
         # Initialize plotter
         plotter = Plotter(dataframe)
@@ -428,7 +407,7 @@ class Analysis(object):
 
         # Filter coordinates
         coordinates, water_coordinates, dataframe, energetic_threshold = \
-            self._filter_coordinates(coordinates, water_coordinates, dataframe)
+            self._filter_coordinates(coordinates, water_coordinates, dataframe, threshold=self.clustering_filtering_threshold)
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")

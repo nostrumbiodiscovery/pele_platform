@@ -321,6 +321,8 @@ class YamlParser(object):
         self.max_top_poses = data.get(valid_flags["max_top_poses"], None)
         self.top_clusters_criterion = data.get(valid_flags["top_clusters_criterion"], None)
         self.cluster_representatives_criterion = data.get(valid_flags["cluster_representatives_criterion"], None)
+        self.plot_filtering_threshold = data.get(valid_flags["plot_filtering_threshold"], None)
+        self.clustering_filtering_threshold = data.get(valid_flags["clustering_filtering_threshold"], None)
 
         # peleffy parametrization
         self.charge_parametrization_method = data.get(valid_flags["charge_parametrization_method"], None)

@@ -353,7 +353,7 @@ def test_get_dataframe(analysis, filter, threshold, expected_length):
         Analysis object created in a fixture.
     """
 
-    df = analysis.get_dataframe(filter=filter, threshold=threshold)
+    df = analysis.get_dataframe(threshold=threshold)
     assert len(df) == expected_length
 
 
@@ -657,7 +657,7 @@ def test_frag_API_analysis(yaml_file, traj, topology):
     job = main.run_platform_from_yaml(yaml_file)
 
     # Run analysis
-    frag_folder = "1w7h_preparation_structure_2w_processed_aminoC1N1"
+    frag_folder = "1w7h_preparation_structure_2w_processed_frag_aminoC1N1"
     output = os.path.join(frag_folder, "sampling_result")
     analysis_output = f"analysis_{traj}"
     traj = f"trajectory.{traj}"
