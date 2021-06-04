@@ -281,6 +281,8 @@ class YamlParser(object):
         self.frag_library = data.get(valid_flags["frag_library"], None)
         self.frag_core_atom = data.get(valid_flags["frag_core_atom"], None)
         self.analysis_to_point = data.get(valid_flags["analysis_to_point"], None)
+        self.fragment_atom = data.get(valid_flags["fragment_atom"], None)
+        self.frag_restart_libraries = data.get(valid_flags["frag_restart_libraries"], False)
 
         # PPI
         self.n_components = data.get(valid_flags["n_components"], None)
@@ -322,6 +324,8 @@ class YamlParser(object):
         self.max_top_poses = data.get(valid_flags["max_top_poses"], None)
         self.top_clusters_criterion = data.get(valid_flags["top_clusters_criterion"], None)
         self.cluster_representatives_criterion = data.get(valid_flags["cluster_representatives_criterion"], None)
+        self.plot_filtering_threshold = data.get(valid_flags["plot_filtering_threshold"], None)
+        self.clustering_filtering_threshold = data.get(valid_flags["clustering_filtering_threshold"], None)
 
         # peleffy parametrization
         self.charge_parametrization_method = data.get(valid_flags["charge_parametrization_method"], None)

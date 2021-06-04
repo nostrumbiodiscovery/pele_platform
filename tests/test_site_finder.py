@@ -59,6 +59,8 @@ def test_site_finder_pdb(yaml):
     job, job2 = main.run_platform_from_yaml(yaml_file)
 
     # checkpoints
+    randomization_output = glob.glob(os.path.join(job.inputs_dir, "input*pdb"))
+
     refinement_input = glob.glob(
         os.path.join(os.path.dirname(job.pele_dir), "refinement_input/cluster_A.pdb")
     )
@@ -73,6 +75,7 @@ def test_site_finder_pdb(yaml):
         "cluster_A.pdb"
     )
 
+    assert len(randomization_output) == job.poses
     assert best_energy_input in refinement_input
     assert nfiles_refinement_output > 0
 

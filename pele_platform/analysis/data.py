@@ -223,7 +223,7 @@ class DataHandler(object):
         # Check threshold value
         if threshold is None:
             threshold = 0.02
-        elif threshold >= 1 or threshold <= 0:
+        elif threshold > 1 or threshold < 0:
             raise ValueError('Invalid threshold value: '
                              'it must be higher than 0 and smaller than 1.')
 

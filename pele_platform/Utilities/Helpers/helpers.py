@@ -214,7 +214,7 @@ def retrieve_all_waters(pdb, exclude=False):
                 [
                     "{}:{}".format(line[21:22], line[22:26].strip())
                     for line in f
-                    if line and "HOH" in line
+                    if line and "HOH" in line and (line.startswith("ATOM") or line.startswith("HETATM"))
                 ]
             )
         )
