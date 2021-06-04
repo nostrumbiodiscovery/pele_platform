@@ -9,6 +9,7 @@ from Bio.PDB import PDBParser
 import pele_platform.Errors.custom_errors as cs
 from multiprocessing import Pool
 from functools import partial
+from pele_platform.Errors.custom_errors import ResidueNotFound
 
 
 __all__ = ["get_suffix", "backup_logger"]
@@ -461,7 +462,7 @@ def retrieve_atom_names(pdb_file, residues):
         lines = f.readlines()
 
     # Retrieve HETATM lines only
-    pdb_lines = [line for line in lines if line.startswith("HETATM")]
+    pdb_lines = [line for line in lines if line.startswith("HETATM") or line.startswith("ATOM")]
 
     for index, line in enumerate(pdb_lines):
 
@@ -485,3 +486,35 @@ def retrieve_atom_names(pdb_file, residues):
             continue
 
     return output
+
+
+def get_residue_name(pdb_file, chain, residue_number):
+    """
+    Retrieves residue name from a PDB file based on residue number and chain.
+
+    Parameters
+    ------------
+    pdb_file : str
+        Path to PDB file.
+    chain : str
+        Chain ID.
+    residue_number : str
+        Number of the residue to check.
+
+    Returns
+    ---------
+    resname : str
+        Three letter name of the residue in lowercase, e.g. "cys".
+    """
+    if isinstance(residue_number, int):
+        residue_number = str(residue_number)
+
+    with open(pdb_file, "r") as file:
+        lines = [line for line in file.readlines() if line.startswith("ATOM") or line.startswith("HETATM")]
+
+    for line in lines:
+        if line[21].strip() == chain and line[22:26].strip() == residue_number:
+            residue_name = line[17:20].strip().lower()
+            return residue_name
+    else:
+        raise ResidueNotFound(f"Could not find residue {residue_number} in chain {chain} in PDB file {pdb_file}.")

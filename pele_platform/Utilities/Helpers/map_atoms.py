@@ -13,7 +13,7 @@ class AtomMapper:
     Input
     args: pele_env.EnviroBuilder - initial arguments passed by the user, passed from Adaptive.simulation
     env: pele_env.EnviroBuilder - passed from Adaptive.simulation
-    original_system: str - complex PDB file before any preprocessing (syst.system)
+    ppp_system: str - complex PDB file before any preprocessing (syst.system)
     flags_to_check: List[str] - list of YAML flags to check, default constants.atom_string_flags
 
     Output

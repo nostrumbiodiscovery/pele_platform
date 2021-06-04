@@ -25,8 +25,8 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         water_obj : a WaterIncluder object
             The parameters for aquaPELE, if applicable
         """
-        # Fill in simulation template with 
-        # simulation parameters specified in  
+        # Fill in simulation template with
+        # simulation parameters specified in
 
         # Fill two times because we have flags inside flags
         self.fill_pele_template(parameters, water_obj)
@@ -34,53 +34,121 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         self.fill_adaptive_template(parameters)
         self.fill_adaptive_template(parameters)
 
-    def fill_pele_template(self, env: pv.ParametersBuilder, water_obj: wt.WaterIncluder) -> None:
+    def fill_pele_template(
+        self, env: pv.ParametersBuilder, water_obj: wt.WaterIncluder
+    ) -> None:
         # Translate OpenFF force field names into the format expected by PELE
-        if 'openff' in env.forcefield.lower():
-            forcefield = 'OpenFF-OPLS2005'
+        if "openff" in env.forcefield.lower():
+            forcefield = "OpenFF-OPLS2005"
         else:
-            forcefield = 'OPLS2005'
+            forcefield = "OPLS2005"
 
         # Fill in PELE template
-        self.pele_keywords = { "PERTURBATION": env.perturbation, "SELECTION_TO_PERTURB": env.selection_to_perturb,
-                        "BE": env.binding_energy, "SASA": env.sasa,
-                        "LOGFILE": env.logfile, "NATIVE": env.native, "FORCEFIELD": forcefield, "CHAIN": env.chain,
-                        "CONSTRAINTS": "\n".join(env.constraints), "CPUS":env.cpus,
-                        "LICENSES": env.license, "BOX_RADIUS": env.box_radius, "BOX_CENTER": env.box_center,
-                        "SASA_min": env.sasa_min, "SASA_max": env.sasa_max,
-                        "WATER_RADIUS": water_obj.water_radius, "WATER_CENTER": water_obj.water_center, "WATER": water_obj.water_line,
-                        "WATER_ENERGY": water_obj.water_energy, "METRICS": env.metrics, "REPORT_NAME": env.report_name, 
-                        "TRAJ_NAME": env.traj_name,
-                        "SOLVENT": env.solvent.upper(), "PARAMETERS": env.parameters, "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
-                        "OVERLAP": env.overlap_factor, "STERIC_TRIALS": env.steric_trials, "TEMPERATURE": env.temperature, 
-                        "MIN_FREQ": env.min_freq, "SIDECHAIN_FREQ": env.sidechain_freq, "ANM_FREQ": env.anm_freq,
-                        "WATER_FREQ": env.water_freq, "COMFPERT_FREQ": env.conformation_freq,
-                        "BOX" : env.box, "PROXIMITY": env.proximityDetection, "VERBOSE": env.verbose, "ANM_DISPLACEMENT": env.anm_displacement, "ANM_MODES_CHANGE": env.anm_modes_change, "ANM_DIRECTION": env.anm_direction, "ANM_MIX_MODES": env.anm_mix_modes, "ANM_PICKING_MODE": env.anm_picking_mode,
-                        "ANM_NUM_OF_MODES": env.anm_num_of_modes, "ANM_RELAXATION_CONST": env.anm_relaxation_constr,
-                        "PCA": env.pca, "COMPLEXES": env.complexes, "PELE_STEPS": env.frag_pele_steps, "OUTPUT_PATH": env.output_path,
-                        "COM": env.com, "STEERING": env.steering, "MET_INTERACTION_RESTRICTIONS":env.met_interaction_restrictions,
-                        "INTERACTION_RESTRICTIONS": env.interaction_restrictions, "INTER_STEP_LOGGER": env.inter_step_logger,
-                        "CONFORMATION_PERTURBATION": env.conformation_perturbation, "OVERLAP_CONFORMATION": env.overlap_factor_conformation
-                        }
+        self.pele_keywords = {
+            "PERTURBATION": env.perturbation,
+            "SIDECHAIN_PERTURBATION": env.sidechain_perturbation,
+            "SELECTION_TO_PERTURB": env.selection_to_perturb,
+            "BE": env.binding_energy,
+            "SASA": env.sasa,
+            "LOGFILE": env.logfile,
+            "NATIVE": env.native,
+            "FORCEFIELD": forcefield,
+            "CHAIN": env.chain,
+            "CONSTRAINTS": "\n".join(env.constraints),
+            "CPUS": env.cpus,
+            "LICENSES": env.license,
+            "BOX_RADIUS": env.box_radius,
+            "BOX_CENTER": env.box_center,
+            "SASA_min": env.sasa_min,
+            "SASA_max": env.sasa_max,
+            "WATER_RADIUS": water_obj.water_radius,
+            "WATER_CENTER": water_obj.water_center,
+            "WATER": water_obj.water_line,
+            "WATER_ENERGY": water_obj.water_energy,
+            "METRICS": env.metrics,
+            "REPORT_NAME": env.report_name,
+            "TRAJ_NAME": env.traj_name,
+            "SOLVENT": env.solvent.upper(),
+            "PARAMETERS": env.parameters,
+            "SIDECHAIN_RESOLUTION": env.sidechain_resolution,
+            "OVERLAP": env.overlap_factor,
+            "STERIC_TRIALS": env.steric_trials,
+            "TEMPERATURE": env.temperature,
+            "MIN_FREQ": env.min_freq,
+            "SIDECHAIN_FREQ": env.sidechain_freq,
+            "WATER_FREQ": env.water_freq,
+            "COMFPERT_FREQ": env.conformation_freq,
+            "ANM_FREQ": env.anm_freq,
+            "BOX": env.box,
+            "PROXIMITY": env.proximityDetection,
+            "WATER_FREQ": env.water_freq,
+            "VERBOSE": env.verbose,
+            "ANM_DISPLACEMENT": env.anm_displacement,
+            "ANM_MODES_CHANGE": env.anm_modes_change,
+            "ANM_DIRECTION": env.anm_direction,
+            "ANM_MIX_MODES": env.anm_mix_modes,
+            "ANM_PICKING_MODE": env.anm_picking_mode,
+            "ANM_NUM_OF_MODES": env.anm_num_of_modes,
+            "ANM_RELAXATION_CONST": env.anm_relaxation_constr,
+            "PCA": env.pca,
+            "COMPLEXES": env.complexes,
+            "PELE_STEPS": env.frag_pele_steps,
+            "OUTPUT_PATH": env.output_path,
+            "COM": env.com,
+            "STEERING": env.steering,
+            "MET_INTERACTION_RESTRICTIONS": env.met_interaction_restrictions,
+            "INTERACTION_RESTRICTIONS": env.interaction_restrictions,
+            "INTER_STEP_LOGGER": env.inter_step_logger,
+            "COVALENT_RESIDUE": env.covalent_residue,
+            "REFINEMENT_ANGLE": env.refinement_angle,
+            "LOCAL_NONBONDING_ENERGY": env.local_nonbonding_energy,
+            "TRIALS": env.perturbation_trials,
+            "COVALENT_SASA": env.covalent_sasa,
+            "MAXTRIALSFORONE": env.max_trials_for_one,
+            "CONFORMATION_PERTURBATION": env.conformation_perturbation,
+            "OVERLAP_CONFORMATION": env.overlap_factor_conformation,
+        }
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
     def fill_adaptive_template(self, env: pv.ParametersBuilder) -> None:
         # Fill in adaptive template
-        self.adaptive_keywords = { "RESTART": env.adaptive_restart, "OUTPUT": env.output, "INPUT":env.adap_ex_input,
-                "CPUS":env.cpus, "PELE_CFILE": os.path.basename(self.pele_file), "LIG_RES": env.residue, "SEED": env.seed, "EQ_STEPS": env.equil_steps,
-                "EQUILIBRATION":env.equilibration, "EQUILIBRATION_MODE": env.equilibration_mode,"EPSILON": env.epsilon, 
-                "BIAS_COLUMN": env.bias_column, "ITERATIONS": env.iterations, 
-                "PELE_STEPS": env.pele_steps, "REPORT_NAME": env.report_name, "SPAWNING_TYPE": env.spawning, "DENSITY": env.density,
-                "SIMULATION_TYPE": env.simulation_type, "CLUSTER_VALUES": env.cluster_values, "CLUSTER_CONDITION": env.cluster_conditions,
-                "UNBINDING": env.unbinding_block, "USESRUN": env.usesrun, "LIGAND": env.ligand,
-                "PELE_BIN": env.pele_exec, "PELE_DATA": env.pele_data, "PELE_DOCUMENTS": env.pele_documents,
-                "CONDITION": env.spawning_condition, "MPI_PARAMS": env.mpi_params, "CLUST_TYPE": env.clust_type}
-        super(SimulationBuilder, self).__init__(self.adaptive_file, self.adaptive_keywords)
-
+        self.adaptive_keywords = {
+            "RESTART": env.adaptive_restart,
+            "OUTPUT": env.output,
+            "INPUT": env.adap_ex_input,
+            "CPUS": env.cpus,
+            "PELE_CFILE": os.path.basename(self.pele_file),
+            "LIG_RES": env.residue,
+            "SEED": env.seed,
+            "EQ_STEPS": env.equil_steps,
+            "EQUILIBRATION": env.equilibration,
+            "EQUILIBRATION_MODE": env.equilibration_mode,
+            "EPSILON": env.epsilon,
+            "BIAS_COLUMN": env.bias_column,
+            "ITERATIONS": env.iterations,
+            "PELE_STEPS": env.pele_steps,
+            "REPORT_NAME": env.report_name,
+            "SPAWNING_TYPE": env.spawning,
+            "DENSITY": env.density,
+            "SIMULATION_TYPE": env.simulation_type,
+            "CLUSTER_VALUES": env.cluster_values,
+            "CLUSTER_CONDITION": env.cluster_conditions,
+            "UNBINDING": env.unbinding_block,
+            "USESRUN": env.usesrun,
+            "LIGAND": env.ligand,
+            "PELE_BIN": env.pele_exec,
+            "PELE_DATA": env.pele_data,
+            "PELE_DOCUMENTS": env.pele_documents,
+            "CONDITION": env.spawning_condition,
+            "MPI_PARAMS": env.mpi_params,
+            "CLUST_TYPE": env.clust_type,
+        }
+        super(SimulationBuilder, self).__init__(
+            self.adaptive_file, self.adaptive_keywords
+        )
 
     def run(self, hook=False) -> None:
         # Launch montecarlo simulation
         with helpers.cd(os.path.dirname(self.adaptive_file)):
-                ad.main(self.adaptive_file)
-
+            ad.main(self.adaptive_file)

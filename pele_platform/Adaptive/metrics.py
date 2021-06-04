@@ -7,6 +7,7 @@ class MetricBuilder:
     def __init__(self):
         self.distance = None
         self.rmsd = None
+        self.local_nonbonding_energy = None
 
     def distance_to_atom_json(self, pdb, atom_dist):
         distances = []
@@ -23,3 +24,10 @@ class MetricBuilder:
     def rsmd_to_json(self, pdb_reference, chain_rmsd):
         self.rmsd = cs.NATIVE.format(os.path.abspath(pdb_reference), chain_rmsd)
         return self.rmsd
+
+    def local_nonbonding_energy_json(self, covalent_residue, radius):
+        if covalent_residue:
+            self.local_nonbonding_energy = cs.LOCAL_NONBONDING_ENERGY.format(covalent_residue, radius)
+        else:
+            self.local_nonbonding_energy = ""
+        return self.local_nonbonding_energy
