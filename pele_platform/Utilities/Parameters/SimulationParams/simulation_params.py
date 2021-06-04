@@ -150,7 +150,7 @@ class SimulationParams(
             if args.com
             else self.simulation_params.get("COMligandConstraint", 0)
         )
-        self.pele_minimum_steps = cs.MINIMUMSTEPS if args.pele_minimum_steps else ""
+        self.minimum_steps = cs.MINIMUMSTEPS if args.minimum_steps else ""
 
     def anm_params(self, args):
         self.anm_displacement = (
