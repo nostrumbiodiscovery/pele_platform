@@ -125,7 +125,7 @@ class Analysis(object):
         # perturbing any ligand
         resname = None
         chain = None
-        if parameters.perturbation:
+        if parameters.perturbation or parameters.sidechain_perturbation:
             resname = parameters.residue
             chain = parameters.chain
 

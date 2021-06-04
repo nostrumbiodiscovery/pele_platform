@@ -16,6 +16,7 @@ from pele_platform.Utilities.Parameters.SimulationParams.site_finder import site
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 import pele_platform.Utilities.Helpers.helpers as hp
 
+
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
@@ -43,6 +44,7 @@ class SimulationParams(
         self.analysis_params(args)
         self.constraints_params(args)
         self.interaction_restrictions_params(args)
+        self.covalent_docking_params(args)
 
         # Create all simulation types (could be more efficient --> chnage in future)
         super().generate_msm_params(args)
@@ -75,7 +77,7 @@ class SimulationParams(
         self.chain = args.chain
         if self.adaptive:
             assert (
-                self.system and self.residue and self.chain
+                    self.system and self.residue and self.chain
             ), "User must define input, residue and chain"
         self.debug = args.debug if args.debug else False
         self.pele_steps = (
@@ -327,9 +329,9 @@ class SimulationParams(
             else self.simulation_params.get("equilibration", "false")
         )
         self.equilibration_mode = (
-                args.equilibration_mode 
-                if args.equilibration_mode
-                else self.simulation_params.get("equilibration_mode", "equilibrationSelect")
+            args.equilibration_mode
+            if args.equilibration_mode
+            else self.simulation_params.get("equilibration_mode", "equilibrationSelect")
         )
         self.adaptive_restart = args.adaptive_restart
         self.poses = (
@@ -420,7 +422,7 @@ class SimulationParams(
         self.n = args.n
         self.forcefield = args.forcefield if args.forcefield is not None else "OPLS2005"
         self.lig = self.mae_lig if self.mae_lig else "{}.mae".format(self.residue)
-        self.gridres = args.gridres
+        self.gridres = args.gridres if args.gridres else self.simulation_params.get("gridres", 10)
         self.use_peleffy = args.use_peleffy if args.use_peleffy is not None else False
 
         # Take into account that the defaults for the parameterization method
@@ -506,7 +508,7 @@ class SimulationParams(
             else:
                 self.box_center = [str(x) for x in args.box_center]
                 self.box_center = (
-                    "[" + ",".join([str(coord) for coord in self.box_center]) + "]"
+                        "[" + ",".join([str(coord) for coord in self.box_center]) + "]"
                 )
         else:
             self.box_center = self.simulation_params.get("box_center", None)
@@ -611,3 +613,24 @@ class SimulationParams(
         args.mpi_params = args.singularity_exec if args.singularity_exec else args.mpi_params
         if args.singularity_exec:
             args.pele_exec = "Pele_mpi" if not self.frag_pele else args.mpi_params + " Pele_mpi"
+
+    def covalent_docking_params(self, args):
+        """
+        Sets covalent docking parameters.
+        """
+        self.covalent_residue = args.covalent_residue if args.covalent_residue else None
+        self.nonbonding_radius = args.nonbonding_radius if args.nonbonding_radius is not None else 20.0
+        self.perturbation_trials = args.perturbation_trials if args.perturbation_trials is not None else self.simulation_params.get("perturbation_trials", 10)
+        self.max_trials_for_one = self.perturbation_trials * 2
+
+        if self.covalent_residue:
+            # Refinement distance should be empty for the general simulation (handled in CovalentDocking runner).
+            self.refinement_angle = args.refinement_angle if args.refinement_angle is not None else self.simulation_params.get("refinement_angle", 10)
+            self.refinement_angle = cs.refinement_angle.format(self.refinement_angle)
+            self.sidechain_perturbation = cs.SIDECHAIN_PERTURBATION
+            self.covalent_sasa = cs.SASA_COVALENT.format(self.covalent_residue)
+            self.residue_type = args.residue_type
+        else:
+            self.sidechain_perturbation = ""
+            self.covalent_sasa = ""
+            self.refinement_angle = ""

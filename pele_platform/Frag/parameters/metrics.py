@@ -42,3 +42,5 @@ class FragMetrics(object):
                                                             parameters.chain)
         else:
             parameters.native = ""
+
+        parameters.local_nonbonding_energy = ""

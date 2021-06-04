@@ -64,5 +64,9 @@ class IncompatibleForcefield(Exception):
 
 class MultipleSimulationTypes(Exception):
     pass
+
+class ResidueNotFound(Exception):
+    pass
+  
 class MissingWorkingDir(Exception):
     pass

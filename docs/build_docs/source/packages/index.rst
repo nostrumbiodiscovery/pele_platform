@@ -15,6 +15,7 @@ Step by step guides to setting up your own simulation.
     - `Biased simulation <bias/index.html>`_
     - `Conformational change simulation <pca/index.html>`_
     - `Protein minimization <minimization/index.html>`_
+    - `Covalent docking <covalent_docking/index.html>`_
 
 .. toctree::
    docking/index.rst
@@ -62,4 +63,8 @@ Step by step guides to setting up your own simulation.
 
 .. toctree::
    minimization/index.rst
+   :hidden:
+
+.. toctree::
+   covalent_docking/index.rst
    :hidden:
