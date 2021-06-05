@@ -29,9 +29,9 @@ setup(
     include_package_data=True,
     install_requires=[
         "AdaptivePELE==1.7.1",
-        "frag_pele==2.2.1",
-        "lib_prep",
-        "PPPele==1.0.6",
+        "frag_pele==3.0.0",
+        "lib_prep==1.1.2",
+        "PPPele==1.0.7",
         "PlopRotTemp==1.0.1",
         "PyYAML",
         "fpdf",
