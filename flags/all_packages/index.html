@@ -276,7 +276,7 @@
 <ul class="simple">
 <li><p><strong>iterations</strong>: Adaptive epochs to run. Set to 1 by default if using PELE</p></li>
 <li><p><strong>steps</strong>: Pele steps in each iteration</p></li>
-<li><p><strong>debug</strong>: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)</p></li>
+<li><p><strong>debug</strong>: Use this flag to only create the inputs of the simulation. No simulation is run.</p></li>
 <li><p><strong>spawning</strong>: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional</p></li>
 <li><p><strong>density</strong>: Density type ([null, exitContinuous…]. More in AdaptivePELE docs). Default: null</p></li>
 <li><p><strong>cluster_values</strong>: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type</p></li>
@@ -680,6 +680,8 @@ constraints levels and those predefined in each package.</p>
 </div></blockquote>
 </li>
 <li><p><strong>max_top_poses</strong>: Maximum number of top poses to be retrieved. Default = 100.</p></li>
+<li><p><strong>clustering_filtering_threshold</strong>: Percentage of output structures to filter our before clustering. Default = 0.25.</p></li>
+<li><p><strong>plot_filtering_threshold</strong>: Percentage of output structures to filter out before creating plots. Default = 0.02</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">be_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>

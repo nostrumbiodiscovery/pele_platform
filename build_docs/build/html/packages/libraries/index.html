@@ -110,6 +110,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#input-preparation">2. Input Preparation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#optional-parameters">Optional Parameters</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#defining-frag-core-atom">Defining frag_core_atom</a></li>
 </ul>
 </li>
@@ -128,6 +129,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../minimization/index.html">Minimize your protein</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../covalent_docking/index.html">Covalent docking</a></li>
 </ul>
 </li>
 </ul>
@@ -288,6 +290,13 @@ have unique molecule names.</p>
 <span class="nt">frag_core_atom</span><span class="p">:</span> <span class="s">&quot;C6-H6&quot;</span>  <span class="c1"># Connection point from which you want to grow the fragments</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
 </pre></div>
+</div>
+<div class="section" id="optional-parameters">
+<h3>Optional Parameters<a class="headerlink" href="#optional-parameters" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><strong>frag_restart_libraries</strong>: To resume a fragment libraries simulation.</p></li>
+<li><p><strong>fragment_atom</strong>: Select a hydrogen of the fragment that we want to attach to the <strong>frag_core_atom</strong>, instead of performing a simulation from every hydrogen of the fragment.</p></li>
+</ul>
 </div>
 <div class="section" id="defining-frag-core-atom">
 <h3>Defining frag_core_atom<a class="headerlink" href="#defining-frag-core-atom" title="Permalink to this headline">¶</a></h3>

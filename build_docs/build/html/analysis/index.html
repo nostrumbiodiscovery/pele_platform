@@ -310,6 +310,10 @@ with only one step.</p>
 a tuple that contains the PDB chain and the residue number, e.g.
 <code class="docutils literal notranslate"><span class="pre">water_ids_to_track</span> <span class="pre">=</span> <span class="pre">[(&quot;A&quot;,</span> <span class="pre">234),</span> <span class="pre">(&quot;A&quot;,</span> <span class="pre">235)]</span></code></p>
 </dd>
+<dt>clustering_filtering_threshold<span class="classifier">float (optional, default = 0.25)</span></dt><dd><p>Percentage of output structures to filter our before clustering.</p>
+</dd>
+<dt>plot_filtering_threshold<span class="classifier">float (optional, default = 0.02)</span></dt><dd><p>Percentage of output structures to filter out before creating plots. Default = 0.02</p>
+</dd>
 </dl>
 </div></blockquote>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pele_platform.analysis</span> <span class="kn">import</span> <span class="n">Analysis</span>
