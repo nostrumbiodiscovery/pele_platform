@@ -52,7 +52,7 @@ class LigandConformations:
         """
         Calculates conformations of the ligand and saves them to DataLocal/conformations folder.
         """
-        bce = topology.BCEConformations(self.topology, self.path)
+        bce = topology.BCEConformations(self.topology, self.path, from_bce=False)
         bce.calculate()
 
         dir_tree = os.path.dirname(self.output_file)
