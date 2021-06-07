@@ -307,7 +307,8 @@ class Parametrizer:
         if solvent.upper() != "OBC" and solvent.upper() != "VDGBNP":
             raise ValueError(f"Solvent {solvent} is unknown")
 
-    def _retrieve_forcefield(self, forcefield_name):
+    @staticmethod
+    def _retrieve_forcefield(forcefield_name):
         """
         Maps forcefield YAML argument with peleffy classes.
 
