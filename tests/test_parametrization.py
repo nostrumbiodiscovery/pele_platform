@@ -100,13 +100,13 @@ def test_check_solvent(solvent, forcefield, error):
 
 
 @pytest.mark.parametrize(
-    ("method", "forcefield", "error", "expected_output"),
+    ("method", "error", "expected_output"),
     [
-        ("BLABLABLA", "OPLS2005", True, None),
+        ("BLABLABLA", True, None),
     ],
 )
 def test_check_charge_parametrization_method(
-    parametrize, method, forcefield, error, expected_output
+    parametrize, method, error, expected_output
 ):
     """
     Tests the checker for charge parametrization method.
@@ -117,8 +117,6 @@ def test_check_charge_parametrization_method(
         Object created in the fixture.
     method : str
         User-defined charge parametrization method.
-    forcefield : str
-        User-defined forcefield
     error : bool
         True if we're expecting the combination of arguments to raise an error.
     expected_output : str
@@ -126,9 +124,9 @@ def test_check_charge_parametrization_method(
     """
     if error:
         with pytest.raises(ValueError):
-            parametrize._check_charge_parametrization_method(method, forcefield)
+            parametrize._check_charge_parametrization_method(method)
     else:
-        output = parametrize._check_charge_parametrization_method(method, forcefield)
+        output = parametrize._check_charge_parametrization_method(method)
         assert output == expected_output
 
 

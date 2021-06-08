@@ -1,0 +1,5 @@
+system: "../pele_platform/Examples/covalent_docking/6P0M_prepared.pdb"
+resname: "NLM"
+chain: "B"
+covalent_residue: "B:82"  # chain and residue number
+test: true
