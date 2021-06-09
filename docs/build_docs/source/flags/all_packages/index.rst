@@ -298,7 +298,7 @@ originating from conformational search or `Bioactive Conformational Ensemble ser
 
 - **ligand_conformations**: Path to the directory contraining ligand clusters in PDB format.
 
-- **conformation_freq**: Frequency of conformation perturbation. Default = 0.
+- **conformation_freq**: Frequency of conformation perturbation. Default = 4.
 
 - **overlap_factor_conformation**: van der Waals overlap factor in conformation perturbation. Default = 0.65
 
