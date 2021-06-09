@@ -44,6 +44,8 @@ v1.6.0 beta 5
 
 - Support for conformation perturbation.
 
+- Support for the new PELE minimum steps.
+
 - Other minor improvements
 
 

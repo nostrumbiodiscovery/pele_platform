@@ -277,6 +277,7 @@
 <ul class="simple">
 <li><p><strong>iterations</strong>: Adaptive epochs to run. Set to 1 by default if using PELE</p></li>
 <li><p><strong>steps</strong>: Pele steps in each iteration</p></li>
+<li><p><strong>minimum_steps</strong>: The explorers will continue running pele steps until all have reached the number of pele steps.</p></li>
 <li><p><strong>debug</strong>: Use this flag to only create the inputs of the simulation. No simulation is run.</p></li>
 <li><p><strong>spawning</strong>: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional</p></li>
 <li><p><strong>density</strong>: Density type ([null, exitContinuous…]. More in AdaptivePELE docs). Default: null</p></li>
@@ -291,6 +292,7 @@
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
 <span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="nt">minimum_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">spawning</span><span class="p">:</span> <span class="s">&quot;epsilon&quot;</span>
 <span class="nt">density</span><span class="p">:</span> <span class="s">&quot;exitContinuous&quot;</span>
