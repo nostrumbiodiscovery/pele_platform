@@ -105,6 +105,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             "TRIALS": env.perturbation_trials,
             "COVALENT_SASA": env.covalent_sasa,
             "MAXTRIALSFORONE": env.max_trials_for_one,
+            "MINIMUM_STEPS": env.minimum_steps,
             "CONFORMATION_PERTURBATION": env.conformation_perturbation,
             "OVERLAP_CONFORMATION": env.overlap_factor_conformation,
         }

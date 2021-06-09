@@ -164,6 +164,7 @@ class SimulationParams(
             if args.com
             else self.simulation_params.get("COMligandConstraint", 0)
         )
+        self.minimum_steps = cs.MINIMUMSTEPS if args.minimum_steps else ""
         self.conformation_perturbation = (
             ""
             if args.conformation_perturbation is False

@@ -449,9 +449,14 @@ custom_colors = (
 )
 
 # INTER STEP LOGGER
-# -------------------
-INTERSTEPLOGGER = """,
-            "useInterStepLogger": true"""
+#-------------------
+INTERSTEPLOGGER = ''',
+            "useInterStepLogger": true'''
+
+# MINIMUM STEPS
+#-------------------
+MINIMUMSTEPS = '''"activateMinimumSteps": true,'''
+
 
 # ANALYSIS
 # ---------

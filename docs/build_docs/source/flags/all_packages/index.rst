@@ -93,6 +93,8 @@ PELE++ parameters
 
 - **steps**: Pele steps in each iteration
 
+- **minimum_steps**: The explorers will continue running pele steps until all have reached the number of pele steps.
+
 - **debug**: Use this flag to only create the inputs of the simulation. No simulation is run.
 
 - **spawning**: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional
@@ -119,6 +121,7 @@ PELE++ parameters
 
     iterations: 30
     steps: 12
+    minimum_steps: true
     debug: true
     spawning: "epsilon"
     density: "exitContinuous"

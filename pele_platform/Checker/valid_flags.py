@@ -211,6 +211,7 @@ VALID_FLAGS_PLATFORM = {
     "plot_filtering_threshold": "plot_filtering_threshold",
     "clustering_filtering_threshold": "clustering_filtering_threshold",
     "frag_restart_libraries": "frag_restart_libraries",
+    "minimum_steps": "minimum_steps",
     "covalent_docking_refinement": "covalent_docking_refinement",
     "perturbation_trials": "perturbation_trials",
 }
