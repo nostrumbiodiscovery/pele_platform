@@ -32,6 +32,7 @@ PCA2_ARGS = os.path.join(test_path, "pca/input_str.yaml")
 FLAGS_ARGS = os.path.join(test_path, "flags/input.yaml")
 RESCORING_ARGS = os.path.join(test_path, "rescoring/input.yaml")
 GPCR_ARGS = os.path.join(test_path, "gpcr/input.yaml")
+MINIMUM_STEPS_ARGS = os.path.join(test_path, "minimum_steps/input.yaml")
 
 ADAPTIVE_VALUES = [
     "water_processed.pdb",
@@ -266,6 +267,15 @@ def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     folder = job.folder
     errors = check_file(folder, "pele.conf", PCA_VALUES, errors)
     assert not errors
+
+
+def test_minimum_steps(ext_args=MINIMUM_STEPS_ARGS):
+    """Integration Test for PELE minimum steps flag
+
+    Requirements:
+        PELE >= V1.7.1
+    """
+    main.run_platform_from_yaml(ext_args)
 
 
 def truncate(f, n):
