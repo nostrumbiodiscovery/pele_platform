@@ -24,6 +24,7 @@ import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.pca as pca
 import pele_platform.Adaptive.plop_solvent as sv
 import pele_platform.Adaptive.plop_ligand_parametrization as lg
+from pele_platform.Utilities.Helpers import ligand_conformations
 
 
 def run_adaptive(args):
@@ -227,6 +228,11 @@ def run_adaptive(args):
             parametrizer.parametrize_covalent_residue(parameters.pele_data, parameters.pele_dir, parameters.gridres,
                                                       parameters.residue_type, parameters.residue,
                                                       ppp_system=parameters.system)
+
+        if parameters.ligand_conformations:
+            ligand_conformations.LigandConformations(path=parameters.ligand_conformations, system=parameters.system,
+                                                     resname=parameters.residue, forcefield=parameters.forcefield,
+                                                     pele_dir=parameters.pele_dir).generate()
 
         # Create simulation box, if performing perturbation
         if parameters.perturbation:

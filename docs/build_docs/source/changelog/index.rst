@@ -42,7 +42,9 @@ v1.6.0 beta 5
 
 - Introduced flexible filtering of output structures taken into account during analysis.
 
-- Support for the new PELE minimum steps
+- Support for conformation perturbation.
+
+- Support for the new PELE minimum steps.
 
 - Other minor improvements
 
