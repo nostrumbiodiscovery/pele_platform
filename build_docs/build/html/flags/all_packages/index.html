@@ -109,6 +109,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#use-your-own-files">Use your own files</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#ligand-conformations">Ligand conformations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#constraints">Constraints</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#carbon-alpha-constraints">Carbon-alpha constraints</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#metal-constraints">Metal constraints</a></li>
@@ -468,6 +469,17 @@ available:</p>
 </pre></div>
 </div>
 </div>
+</div>
+<div class="section" id="ligand-conformations">
+<h2>Ligand conformations<a class="headerlink" href="#ligand-conformations" title="Permalink to this headline">¶</a></h2>
+<p>PELE provides the possibility to narrow down the range of available ligand conformations to increase the efficiency of
+sampling. It will automatically generate a library of conformations when supplied with a directory of ligand clusters
+originating from conformational search or <a class="reference external" href="https://mmb.irbbarcelona.org/BCE/">Bioactive Conformational Ensemble server</a>.</p>
+<ul class="simple">
+<li><p><strong>ligand_conformations</strong>: Path to the directory contraining ligand clusters in PDB format.</p></li>
+<li><p><strong>conformation_freq</strong>: Frequency of conformation perturbation. Default = 4.</p></li>
+<li><p><strong>overlap_factor_conformation</strong>: van der Waals overlap factor in conformation perturbation. Default = 0.65</p></li>
+</ul>
 </div>
 <div class="section" id="constraints">
 <h2>Constraints<a class="headerlink" href="#constraints" title="Permalink to this headline">¶</a></h2>

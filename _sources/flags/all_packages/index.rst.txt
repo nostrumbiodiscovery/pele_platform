@@ -289,6 +289,20 @@ Alternatively, as before, you can provide your own template and/or rotamer files
     - "/home/simulation_files/LIG.rot.assign"
 
 
+Ligand conformations
+----------------------
+
+PELE provides the possibility to narrow down the range of available ligand conformations to increase the efficiency of
+sampling. It will automatically generate a library of conformations when supplied with a directory of ligand clusters
+originating from conformational search or `Bioactive Conformational Ensemble server <https://mmb.irbbarcelona.org/BCE/>`_.
+
+- **ligand_conformations**: Path to the directory contraining ligand clusters in PDB format.
+
+- **conformation_freq**: Frequency of conformation perturbation. Default = 4.
+
+- **overlap_factor_conformation**: van der Waals overlap factor in conformation perturbation. Default = 0.65
+
+
 Constraints
 -----------
 

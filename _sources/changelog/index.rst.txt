@@ -42,6 +42,8 @@ v1.6.0 beta 5
 
 - Introduced flexible filtering of output structures taken into account during analysis.
 
+- Support for conformation perturbation.
+
 - Other minor improvements
 
 
