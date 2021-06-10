@@ -5,9 +5,11 @@ import pytest
 import shutil
 import re
 import yaml
+from packaging import version
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
+from pele_platform.Utilities.Helpers import helpers
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -269,6 +271,10 @@ def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     assert not errors
 
 
+@pytest.mark.skipif(
+    helpers.get_pele_version() < version.parse("1.7.1"),
+    reason="Requires PELE 1.7.1 or higher.",
+)
 def test_minimum_steps(ext_args=MINIMUM_STEPS_ARGS):
     """Integration Test for PELE minimum steps flag
 
