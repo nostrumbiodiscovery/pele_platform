@@ -5,10 +5,11 @@ from pele_platform.Errors.custom_errors import (
     IncompatiblePELEVersion,
 )
 from pele_platform.features.adaptive import SOFTWARE_CONSTANTS
+from pele_platform.Utilities.Helpers import helpers
 from difflib import SequenceMatcher
+import itertools
 import os
-import re
-import subprocess
+from packaging import version
 import yaml
 import warnings
 
@@ -114,22 +115,28 @@ class YamlParser(object):
         -------
         IncompatiblePELEVersion when the package is not supported.
         """
-        # Packages supported only in versions >= 1.7 are: MDQM PELE and Covalent docking
-        unsupported_packages = {
-            "ligand_conformations": "MDQM PELE",
-            "covalent_residue": "Covalent docking",
+        compatibility = {
+            "1.7.1": ["minimum_steps"],
+            "1.7.0": ["ligand_conformations", "covalent_residue"],
         }
 
-        pele_path = os.path.join(os.environ["PELE"], "bin/Pele_mpi")
-        output = subprocess.check_output(f"{pele_path} --version", shell=True)
-        version_number = float(re.findall(r"Version\: (\d+\.\d+)\.", str(output))[0])
+        current_version = helpers.get_pele_version()
 
-        if version_number < 1.7:
-            for key in unsupported_packages.keys():
-                if getattr(self, key, None):
-                    raise IncompatiblePELEVersion(
-                        f"Package {unsupported_packages[key]} requires PELE version 1.7 or higher."
-                    )
+        for pele_version in sorted(compatibility, reverse=True):
+            if current_version < version.parse(pele_version):
+                unsupported_packages = [
+                    compatibility[key]
+                    for key in compatibility
+                    if version.parse(key) > current_version
+                ]
+
+                unsupported_packages = list(itertools.chain(*unsupported_packages))  # reduce the list
+
+                for package in unsupported_packages:
+                    if getattr(self, package, None):
+                        raise IncompatiblePELEVersion(
+                            f"Warning: {package} not supported in version PELE {current_version}."
+                        )
 
     def _recommend(self, key):
         most_similar_flag = None

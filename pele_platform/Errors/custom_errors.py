@@ -92,3 +92,7 @@ class MissingWorkingDir(Exception):
 
 class IncompatiblePELEVersion(Exception):
     pass
+
+
+class PELENotFound(Exception):
+    pass
