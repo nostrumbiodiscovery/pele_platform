@@ -1,8 +1,3 @@
-AdaptivePELE==1.7.1
-frag_pele==3.0.0
-lib_prep==1.1.2
-PPPele==1.0.7
-PlopRotTemp==1.0.1
 PyYAML
 fpdf
 scikit-learn>0.20
@@ -15,6 +10,10 @@ pandas==1.2.3
 pytest
 cython
 numpy
-peleffy==1.3.0
+peleffy==1.3.2
 hdbscan==0.8.27
+AdaptivePELE==1.7.1
+frag_pele==3.0.0
+PPPele==1.0.7
+PlopRotTemp==1.0.1
 seaborn
