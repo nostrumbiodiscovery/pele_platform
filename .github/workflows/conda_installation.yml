@@ -26,7 +26,7 @@ jobs:
         conda install numpy cython
     - name: Install via Conda
       run: |
-        conda install -c conda-forge -c nostrumbiodiscovery -c anaconda pele_platform --yes
+        conda install -c nostrumbiodiscovery -c martimunicoy -c conda-forge pele_platform --yes
     - name: Test with pytest
       run: |
         mkdir test_conda
