@@ -2,14 +2,10 @@ from dataclasses import dataclass
 from pele_platform.Errors.custom_errors import (
     LigandNameNotSupported,
     MultipleSimulationTypes,
-    IncompatiblePELEVersion,
 )
 from pele_platform.features.adaptive import SOFTWARE_CONSTANTS
-from pele_platform.Utilities.Helpers import helpers
 from difflib import SequenceMatcher
-import itertools
 import os
-from packaging import version
 import yaml
 import warnings
 
@@ -48,7 +44,6 @@ class YamlParser(object):
         self._check_residue()
         self._check_multiple_simulations()
         self._parse()
-        self._check_pele_version()
         self._get_value_from_env()
 
     def _parse_yaml(self) -> dict:
@@ -106,37 +101,6 @@ class YamlParser(object):
                 f"You cannot select multiple simulation types in input.yaml, please select one of "
                 f"{', '.join(specified_simulations)}."
             )
-
-    def _check_pele_version(self):
-        """
-        Checks if selected package is compatible with installed PELE version.
-
-        Raises
-        -------
-        IncompatiblePELEVersion when the package is not supported.
-        """
-        compatibility = {
-            "1.7.1": ["minimum_steps"],
-            "1.7.0": ["ligand_conformations", "covalent_residue"],
-        }
-
-        current_version = helpers.get_pele_version()
-
-        for pele_version in sorted(compatibility, reverse=True):
-            if current_version < version.parse(pele_version):
-                unsupported_packages = [
-                    compatibility[key]
-                    for key in compatibility
-                    if version.parse(key) > current_version
-                ]
-
-                unsupported_packages = list(itertools.chain(*unsupported_packages))  # reduce the list
-
-                for package in unsupported_packages:
-                    if getattr(self, package, None):
-                        raise IncompatiblePELEVersion(
-                            f"Warning: {package} not supported in version PELE {current_version}."
-                        )
 
     def _recommend(self, key):
         most_similar_flag = None
