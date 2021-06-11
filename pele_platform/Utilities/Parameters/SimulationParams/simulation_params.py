@@ -2,8 +2,6 @@ import random
 import os
 import glob
 
-from prody.ensemble import conformation
-
 import pele_platform.constants.constants as cs
 from pele_platform.Errors import custom_errors
 from pele_platform.Utilities.Parameters.SimulationParams.MSMParams import msm_params
@@ -167,7 +165,7 @@ class SimulationParams(
         self.minimum_steps = cs.MINIMUMSTEPS if args.minimum_steps else ""
         self.conformation_perturbation = (
             ""
-            if args.conformation_perturbation is False
+            if not args.ligand_conformations
             else self.simulation_params.get("conformation_perturbation", cs.CONFORMATION_PERTURBATION)
         )
 

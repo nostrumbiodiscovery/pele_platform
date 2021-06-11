@@ -1,5 +1,8 @@
 from dataclasses import dataclass
-from pele_platform.Errors.custom_errors import LigandNameNotSupported, MultipleSimulationTypes
+from pele_platform.Errors.custom_errors import (
+    LigandNameNotSupported,
+    MultipleSimulationTypes,
+)
 from pele_platform.features.adaptive import SOFTWARE_CONSTANTS
 from difflib import SequenceMatcher
 import os
@@ -14,10 +17,10 @@ def _yaml_error_wrapper(error):
     """
     custom_errors = {
         "expected '<document start>', but found '<block mapping start>'": "Please ensure every key in input.yaml is "
-                                                                          "followed by a colon and "
-                                                                          "a space. There seem to be some issues on line {}, character {}.",
+        "followed by a colon and "
+        "a space. There seem to be some issues on line {}, character {}.",
         "found character '\\t' that cannot start any token": "Please remove any trailing tabs from input.yaml, there "
-                                                             "seem to be one on line {}, character {}.",
+        "seem to be one on line {}, character {}.",
     }
 
     custom = custom_errors.get(str(error.problem).strip(), None)
@@ -53,15 +56,27 @@ class YamlParser(object):
         return data
 
     def _get_value_from_env(self):
+        """
+        Gets value of SRUN from environment, so that users do not have to change their YAML files.
+        """
         self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
 
     def _check(self) -> None:
-        # Check if valids in yaml file are valids
+        """
+        Checks if flags in YAML file are valid.
+        """
         for key in self.data.keys():
             if key not in self.valid_flags.values():
                 raise KeyError(self._recommend(key))
 
     def _check_residue(self) -> None:
+        """
+        Makes sure the residue name is not UNK (which is not supported by PELE).
+
+        Raises
+        -------
+        LigandNameNotSupported when resname == "UNK".
+        """
         if "resname" in self.data.keys():
             if self.data["resname"] == "UNK":
                 raise LigandNameNotSupported(
@@ -70,20 +85,27 @@ class YamlParser(object):
 
     def _check_multiple_simulations(self):
         """
-        Raises an error, if the user specified more than one simulation type in YAML.
+        Checks if the user specified more than one simulation type in YAML.
+
+        Raises
+        -------
+        MultipleSimulationTypes if more than one simulation type set in YAML.
         """
         available_simulations = SOFTWARE_CONSTANTS.get("simulation_params", {})
-        specified_simulations = [key for key in self.data.keys() if key in available_simulations.keys()]
+        specified_simulations = [
+            key for key in self.data.keys() if key in available_simulations.keys()
+        ]
 
         if len(specified_simulations) > 1:
             raise MultipleSimulationTypes(
                 f"You cannot select multiple simulation types in input.yaml, please select one of "
-                f"{', '.join(specified_simulations)}.")
+                f"{', '.join(specified_simulations)}."
+            )
 
     def _recommend(self, key):
         most_similar_flag = None
         for valid_key in self.valid_flags.values():
-            flag = Most_Similar_Flag(valid_key)
+            flag = MostSimilarFlag(valid_key)
             flag.calculate_distance(key)
             if not most_similar_flag:
                 most_similar_flag = flag
@@ -117,7 +139,9 @@ class YamlParser(object):
         self.sidechain_resolution = data.get(valid_flags["sidechain_resolution"], None)
         self.steric_trials = data.get(valid_flags["steric_trials"], None)
         self.overlap_factor = data.get(valid_flags["overlap_factor"], None)
-        self.overlap_factor_conformation = data.get(valid_flags["overlap_factor_conformation"], None)
+        self.overlap_factor_conformation = data.get(
+            valid_flags["overlap_factor_conformation"], None
+        )
         self.steering = data.get(valid_flags["steering"], None)
         self.solvent = data.get(valid_flags["solvent"], None)
         self.usesrun = data.get(valid_flags["usesrun"], None)
@@ -225,7 +249,9 @@ class YamlParser(object):
         self.remove_constraints = data.get(valid_flags["remove_constraints"], None)
         self.pca_traj = data.get(valid_flags["pca_traj"], None)
         self.perturbation = data.get(valid_flags["perturbation"], None)
-        self.conformation_perturbation = data.get(valid_flags["conformation_perturbation"], None)
+        self.conformation_perturbation = data.get(
+            valid_flags["conformation_perturbation"], None
+        )
         self.binding_energy = data.get(valid_flags["binding_energy"], None)
         self.parameters = data.get(valid_flags["parameters"], None)
         self.analyse = data.get(valid_flags["analyse"], None)
@@ -251,7 +277,9 @@ class YamlParser(object):
         self.water_empty_selector = data.get(valid_flags["water_empty_selector"], False)
         self.polarize_metals = data.get(valid_flags["polarize_metals"], False)
         self.polarization_factor = data.get(valid_flags["polarization_factor"], 2)
-        self.interaction_restrictions = data.get(valid_flags["interaction_restrictions"], None)
+        self.interaction_restrictions = data.get(
+            valid_flags["interaction_restrictions"], None
+        )
         self.inter_step_logger = data.get(valid_flags["inter_step_logger"], None)
         self.singularity_exec = data.get(valid_flags["singularity_exec"], None)
         self.minimum_steps = data.get(valid_flags["minimum_steps"], None)
@@ -283,7 +311,9 @@ class YamlParser(object):
         self.frag_core_atom = data.get(valid_flags["frag_core_atom"], None)
         self.analysis_to_point = data.get(valid_flags["analysis_to_point"], None)
         self.fragment_atom = data.get(valid_flags["fragment_atom"], None)
-        self.frag_restart_libraries = data.get(valid_flags["frag_restart_libraries"], False)
+        self.frag_restart_libraries = data.get(
+            valid_flags["frag_restart_libraries"], False
+        )
 
         # PPI
         self.n_components = data.get(valid_flags["n_components"], None)
@@ -312,7 +342,9 @@ class YamlParser(object):
         self.final_site = data.get(valid_flags["final_site"], None)
 
         # Mutagenesis
-        self.saturated_mutagenesis = data.get(valid_flags["saturated_mutagenesis"], None)
+        self.saturated_mutagenesis = data.get(
+            valid_flags["saturated_mutagenesis"], None
+        )
         self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
 
         # Analysis
@@ -323,14 +355,26 @@ class YamlParser(object):
         self.max_top_clusters = data.get(valid_flags["max_top_clusters"], None)
         self.min_population = data.get(valid_flags["min_population"], None)
         self.max_top_poses = data.get(valid_flags["max_top_poses"], None)
-        self.top_clusters_criterion = data.get(valid_flags["top_clusters_criterion"], None)
-        self.cluster_representatives_criterion = data.get(valid_flags["cluster_representatives_criterion"], None)
-        self.plot_filtering_threshold = data.get(valid_flags["plot_filtering_threshold"], None)
-        self.clustering_filtering_threshold = data.get(valid_flags["clustering_filtering_threshold"], None)
+        self.top_clusters_criterion = data.get(
+            valid_flags["top_clusters_criterion"], None
+        )
+        self.cluster_representatives_criterion = data.get(
+            valid_flags["cluster_representatives_criterion"], None
+        )
+        self.plot_filtering_threshold = data.get(
+            valid_flags["plot_filtering_threshold"], None
+        )
+        self.clustering_filtering_threshold = data.get(
+            valid_flags["clustering_filtering_threshold"], None
+        )
 
         # peleffy parametrization
-        self.charge_parametrization_method = data.get(valid_flags["charge_parametrization_method"], None)
-        self.exclude_terminal_rotamers = data.get(valid_flags["exclude_terminal_rotamers"], None)
+        self.charge_parametrization_method = data.get(
+            valid_flags["charge_parametrization_method"], None
+        )
+        self.exclude_terminal_rotamers = data.get(
+            valid_flags["exclude_terminal_rotamers"], None
+        )
         self.skip_ligand_prep = data.get(valid_flags["skip_ligand_prep"], None)
         self.solvent_template = data.get(valid_flags["solvent_template"], None)
         self.use_peleffy = data.get(valid_flags["use_peleffy"], None)
@@ -346,7 +390,9 @@ class YamlParser(object):
         self.refinement_angle = data.get(valid_flags["refinement_angle"], None)
         self.nonbonding_radius = data.get(valid_flags["nonbonding_radius"], None)
         self.perturbation_trials = data.get(valid_flags["perturbation_trials"], None)
-        self.covalent_docking_refinement = data.get(valid_flags["covalent_docking_refinement"], None)
+        self.covalent_docking_refinement = data.get(
+            valid_flags["covalent_docking_refinement"], None
+        )
 
         if self.test:
             warnings.warn(
@@ -367,7 +413,7 @@ class YamlParser(object):
 
 
 @dataclass
-class Most_Similar_Flag:
+class MostSimilarFlag:
     name: str
 
     def calculate_distance(self, key):
