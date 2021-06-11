@@ -523,31 +523,23 @@ def get_residue_name(pdb_file, chain, residue_number):
         raise ResidueNotFound(f"Could not find residue {residue_number} in chain {chain} in PDB file {pdb_file}.")
 
 
-def get_pele_version():
-    """
-    Gets PELE version based on what's found under PELE variable.
-
-    Returns
-    -------
-    current_version : packaging.version
-        Version of PELE.
-
-    Raises
-    -------
-    PELENotFound if PELE variable is not set.
-    """
-
-    pele_from_os = os.environ["PELE"]
-
-    if not pele_from_os:
-        raise PELENotFound(
-            "Path to PELE not found. Please export PELE=/path/to/pele."
-        )
-
-    pele_path = os.path.join(pele_from_os, "bin/Pele_mpi")
-    output = subprocess.check_output(f"{pele_path} --version", shell=True)
-    current_version = version.parse(
-        re.findall(r"Version\: (\d+\.\d+\.\d+)\.", str(output))[0]
-    )
-
-    return current_version
+# def get_pele_version():
+#     """
+#     Gets PELE version based on what's found under PELE variable.
+#
+#     Returns
+#     -------
+#     current_version : packaging.version
+#         Version of PELE.
+#
+#     Raises
+#     -------
+#     PELENotFound if PELE variable is not set.
+#     """
+#     pele_path = os.path.join(pele_from_os, "bin/Pele_mpi")
+#     output = subprocess.check_output(f"{pele_path} --version", shell=True)
+#     current_version = version.parse(
+#         re.findall(r"Version\: (\d+\.\d+\.\d+)\.", str(output))[0]
+#     )
+#
+#     return current_version

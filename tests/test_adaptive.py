@@ -271,10 +271,10 @@ def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     assert not errors
 
 
-@pytest.mark.skipif(
-    helpers.get_pele_version() < version.parse("1.7.1"),
-    reason="Requires PELE 1.7.1 or higher.",
-)
+# @pytest.mark.skipif(
+#     helpers.get_pele_version() < version.parse("1.7.1"),
+#     reason="Requires PELE 1.7.1 or higher.",
+# )
 def test_minimum_steps(ext_args=MINIMUM_STEPS_ARGS):
     """Integration Test for PELE minimum steps flag
 

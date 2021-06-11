@@ -22,7 +22,7 @@ class Checker:
             env_variable.is_valid()
         for executable in self._generate_executables():
             executable.is_in_path()
-        self._check_pele_version(args)
+        # self._check_pele_version(args) TODO: Figure out where to put it (and compatibility with singularity).
 
     def _generate_env_variables(self, args: yp.YamlParser) -> list:
         self.env_variables = [
@@ -83,7 +83,7 @@ class Checker:
             "1.7.0": ["ligand_conformations", "covalent_residue"],
         }
 
-        current_version = helpers.get_pele_version()
+        current_version = helpers.get_pele_version(args.pele_exec)
 
         for pele_version in sorted(compatibility, reverse=True):
             if current_version < version.parse(pele_version):
