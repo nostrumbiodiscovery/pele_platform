@@ -313,7 +313,7 @@ def find_nonstd_residue(pdb):
                     line[17:20]
                     for line in f
                     if line.startswith("ATOM")
-                    and line[17:20] not in gv.supported_aminoacids
+                    and line[17:20] not in gv.default_supported_aminoacids
                 ]
             )
         )

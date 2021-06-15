@@ -326,9 +326,7 @@ def test_gpcr(args=GPCR_ARGS):
     job = main.run_platform_from_yaml(args)
     errors = check_file(job.pele_dir, "pele.conf", GPCR_VALUES, errors)
     input_file = os.path.join(job.inputs_dir, "complex_processed.pdb")
-    if not os.path.exists(input_file):
-        errors.append("skip_ppp")
-    assert not errors
+    assert not os.path.exists(input_file)
 
 
 def check_file_regex(directory, file, patterns, errors):
