@@ -129,21 +129,25 @@ def run_adaptive(args):
                 parameters.residue,
                 output_folder=parameters.inputs_dir)
 
-            inputs = [os.path.join(parameters.inputs_dir, inp)
-                      for inp in inputs]
+            parameters.input = [os.path.join(parameters.inputs_dir, inp)
+                                for inp in inputs]
 
             parameters.adap_ex_input = ", ".join(
-                ['"' + input + '"' for input in inputs]
+                ['"' + input + '"' for input in parameters.input]
             ).strip('"')
             hp.silentremove(ligand_positions)
 
         # Prepare System
-        if parameters.no_ppp or parameters.input:  # No need to run system through PPP, if we already preprocessed parameters.input
+        if parameters.no_ppp or parameters.input:  # No need to run system through PPP, if we already preprocessed
+            # parameters.input
             missing_residues = []
             if parameters.input:
                 # If we have more than one input
                 for input in parameters.input:
-                    shutil.copy(input, parameters.inputs_dir)
+                    try:
+                        shutil.copy(input, parameters.inputs_dir)
+                    except shutil.SameFileError:  # systems that go through randomization are already moved
+                        pass
             else:
                 shutil.copy(parameters.system, parameters.inputs_dir)
         else:

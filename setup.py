@@ -44,7 +44,7 @@ setup(
         "hdbscan==0.8.27",
         "AdaptivePELE==1.7.1",
         "frag_pele==3.0.0",
-        "PPPele==1.0.7",
+        "PPPele==1.0.8",
         "PlopRotTemp==1.0.1",
         "seaborn"
     ],

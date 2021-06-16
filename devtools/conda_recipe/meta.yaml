@@ -40,7 +40,7 @@ requirements:
     - scikit-learn>0.20
     - rdkit
     - frag_pele==3.0.0
-    - pppele==1.0.7
+    - pppele==1.0.8
     - peleffy==1.3.2
     #- drug_learning not ready yet
     - hdbscan==0.8.27
