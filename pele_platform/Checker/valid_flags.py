@@ -1,5 +1,5 @@
 """
-Dictionary with valid flags for platform in input.yalm
+Dictionary with valid flags for platform in input.yaml
 """
 
 
@@ -88,6 +88,8 @@ VALID_FLAGS_PLATFORM = {
     "water_constr": "water_constr",
     "water_trials": "water_trials",
     "water_radius": "water_radius",
+    "conformation_freq": "conformation_freq",
+    "overlap_factor_conformation": "overlap_factor_conformation",
     "out_in": "out_in",
     "orthosteric_site": "orthosteric_site",
     "final_site": "final_site",
@@ -122,6 +124,7 @@ VALID_FLAGS_PLATFORM = {
     "remove_constraints": "remove_constraints",
     "pca_traj": "pca_traj",
     "perturbation": "perturbation",
+    "conformation_perturbation": "conformation_perturbation",
     "binding_energy": "binding_energy",
     "sasa": "sasa",
     "parameters": "parameters",
@@ -142,6 +145,7 @@ VALID_FLAGS_PLATFORM = {
     "schrodinger": "schrodinger",
     "no_check": "no_check",
     "frag_core": "frag_core",
+    "frag_core_atom": "frag_core_atom",
     "frag_input": "frag_input",
     "frag_ligands": "frag_ligands",
     "growing_steps": "growing_steps",
@@ -173,7 +177,6 @@ VALID_FLAGS_PLATFORM = {
     "polarization_factor": "polarization_factor",
     "constrain_core_spring": "constrain_core_spring",
     "frag_library": "frag_library",
-    "frag_core_atom": "frag_core_atom",
     "analysis_to_point": "analysis_to_point",
     "interaction_restrictions": "interaction_restrictions",
     "constraint_level": "constraint_level",
@@ -191,6 +194,7 @@ VALID_FLAGS_PLATFORM = {
     "singularity_exec": "singularity_exec",
     "top_clusters_criterion": "top_clusters_criterion",
     "cluster_representatives_criterion": "cluster_representatives_criterion",
+    "fragment_atom": "fragment_atom",
     "site_finder_local": "site_finder_local",
     "site_finder_global": "site_finder_global",
     "charge_parametrization_method": "charge_parametrization_method",
@@ -200,4 +204,14 @@ VALID_FLAGS_PLATFORM = {
     "use_peleffy": "use_peleffy",
     "mtor": "maxtorsion",  # plop
     "n": "n",  # plop
+    "covalent_residue": "covalent_residue",
+    "refinement_angle": "refinement_angle",
+    "nonbonding_radius": "nonbonding_radius",
+    "ligand_conformations": "ligand_conformations",
+    "plot_filtering_threshold": "plot_filtering_threshold",
+    "clustering_filtering_threshold": "clustering_filtering_threshold",
+    "frag_restart_libraries": "frag_restart_libraries",
+    "minimum_steps": "minimum_steps",
+    "covalent_docking_refinement": "covalent_docking_refinement",
+    "perturbation_trials": "perturbation_trials",
 }

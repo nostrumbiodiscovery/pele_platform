@@ -1,6 +1,8 @@
 import os
 import logging
 import numpy as np
+import re
+import subprocess
 import shutil
 import sys
 import warnings
@@ -9,6 +11,8 @@ from Bio.PDB import PDBParser
 import pele_platform.Errors.custom_errors as cs
 from multiprocessing import Pool
 from functools import partial
+from packaging import version
+from pele_platform.Errors.custom_errors import ResidueNotFound, PELENotFound
 
 
 __all__ = ["get_suffix", "backup_logger"]
@@ -37,14 +41,14 @@ def create_dir(base_dir, extension=None):
     if extension:
         path = os.path.join(base_dir, extension)
         if os.path.isdir(path):
-            warnings.warn("Directory {} already exists.".format(path),
-                          RuntimeWarning)
+            warnings.warn("Directory {} already exists.".format(path), RuntimeWarning)
         else:
             os.makedirs(path)
     else:
         if os.path.isdir(base_dir):
-            warnings.warn("Directory {} already exists.".format(base_dir),
-                          RuntimeWarning)
+            warnings.warn(
+                "Directory {} already exists.".format(base_dir), RuntimeWarning
+            )
         else:
             os.makedirs(base_dir)
 
@@ -87,10 +91,10 @@ def get_directory_new_index(pele_dir):
     folder_name = os.path.basename(pele_dir)
     split_name = folder_name.split("_")
 
-    if (len(split_name) < 2 or len(split_name) > 3
-            or split_name[1] != 'Pele'):
-        raise ValueError('Invalid PELE directory {}. '.format(folder_name)
-                         + 'Its format is unknown')
+    if len(split_name) < 2 or len(split_name) > 3 or split_name[1] != "Pele":
+        raise ValueError(
+            "Invalid PELE directory {}. ".format(folder_name) + "Its format is unknown"
+        )
 
     original_dir = split_name[0]
 
@@ -158,16 +162,18 @@ def get_latest_peledir(pele_dir):
         The newest PELE directory that has been found in the working
         directory according to the original name that is supplied
     """
+    new_index, old_index, original_dir = get_directory_new_index(pele_dir)
 
-    _, old_index, original_dir = get_directory_new_index(pele_dir)
-
+    # If the basic LIG_Pele already exists...
     if os.path.isdir(pele_dir):
-        latest_pele_dir = "{}_Pele_{}".format(original_dir, old_index)
+        # If the potential "next" pele directory doesn't exist, the current pele_dir is the latest.
+        latest_pele_dir = f"{original_dir}_Pele_{new_index}"
         if not os.path.isdir(latest_pele_dir):
             return pele_dir
         else:
+            # Otherwise enumerate another one
             latest_pele_dir = get_latest_peledir(latest_pele_dir)
-            return latest_pele_dir
+            return os.path.join(os.path.dirname(pele_dir), latest_pele_dir)
     else:
         return pele_dir
 
@@ -212,7 +218,7 @@ def retrieve_all_waters(pdb, exclude=False):
                 [
                     "{}:{}".format(line[21:22], line[22:26].strip())
                     for line in f
-                    if line and "HOH" in line
+                    if line and "HOH" in line and (line.startswith("ATOM") or line.startswith("HETATM"))
                 ]
             )
         )
@@ -307,7 +313,7 @@ def find_nonstd_residue(pdb):
                     line[17:20]
                     for line in f
                     if line.startswith("ATOM")
-                    and line[17:20] not in gv.supported_aminoacids
+                    and line[17:20] not in gv.default_supported_aminoacids
                 ]
             )
         )
@@ -411,7 +417,11 @@ def get_atom_indices(ids, pdb, pdb_atom_name=None):
     # Extract relevant lines from PDB file
     with open(pdb, "r") as file:
         lines = file.readlines()
-        lines = [line for line in lines if line.startswith("ATOM") or line.startswith("HETATM")]
+        lines = [
+            line
+            for line in lines
+            if line.startswith("ATOM") or line.startswith("HETATM")
+        ]
 
     atom_indices = list()
 
@@ -429,7 +439,9 @@ def get_atom_indices(ids, pdb, pdb_atom_name=None):
                         atom_indices.append(atom_id)
 
     # Explicitly convert to integers (mdtraj complains without dtype)
-    atom_indices = list(np.array([int(atom_idx) for atom_idx in atom_indices], dtype=int))
+    atom_indices = list(
+        np.array([int(atom_idx) for atom_idx in atom_indices], dtype=int)
+    )
     return atom_indices
 
 
@@ -453,7 +465,7 @@ def retrieve_atom_names(pdb_file, residues):
         lines = f.readlines()
 
     # Retrieve HETATM lines only
-    pdb_lines = [line for line in lines if line.startswith("HETATM")]
+    pdb_lines = [line for line in lines if line.startswith("HETATM") or line.startswith("ATOM")]
 
     for index, line in enumerate(pdb_lines):
 
@@ -461,16 +473,73 @@ def retrieve_atom_names(pdb_file, residues):
         found_residue_number = line[22:26].strip()
 
         # Check if atom names for this residue are supposed to be extracted (or where already)
-        if found_residue_name in residues and found_residue_name not in extracted_residues:
+        if (
+            found_residue_name in residues
+            and found_residue_name not in extracted_residues
+        ):
             atom_name = line[12:16]
             output[found_residue_name].append(atom_name)
 
         # Mark residue as extracted, if the next line has a different residue number
         try:
-            next_residue_number = pdb_lines[index+1][22:26].strip()
+            next_residue_number = pdb_lines[index + 1][22:26].strip()
             if next_residue_number != found_residue_number:
                 extracted_residues.append(found_residue_name)
         except IndexError:  # In case it's the end of PDB and index+1 doesn't exist
             continue
 
     return output
+
+
+def get_residue_name(pdb_file, chain, residue_number):
+    """
+    Retrieves residue name from a PDB file based on residue number and chain.
+
+    Parameters
+    ------------
+    pdb_file : str
+        Path to PDB file.
+    chain : str
+        Chain ID.
+    residue_number : str
+        Number of the residue to check.
+
+    Returns
+    ---------
+    resname : str
+        Three letter name of the residue in lowercase, e.g. "cys".
+    """
+    if isinstance(residue_number, int):
+        residue_number = str(residue_number)
+
+    with open(pdb_file, "r") as file:
+        lines = [line for line in file.readlines() if line.startswith("ATOM") or line.startswith("HETATM")]
+
+    for line in lines:
+        if line[21].strip() == chain and line[22:26].strip() == residue_number:
+            residue_name = line[17:20].strip().lower()
+            return residue_name
+    else:
+        raise ResidueNotFound(f"Could not find residue {residue_number} in chain {chain} in PDB file {pdb_file}.")
+
+
+# def get_pele_version():
+#     """
+#     Gets PELE version based on what's found under PELE variable.
+#
+#     Returns
+#     -------
+#     current_version : packaging.version
+#         Version of PELE.
+#
+#     Raises
+#     -------
+#     PELENotFound if PELE variable is not set.
+#     """
+#     pele_path = os.path.join(pele_from_os, "bin/Pele_mpi")
+#     output = subprocess.check_output(f"{pele_path} --version", shell=True)
+#     current_version = version.parse(
+#         re.findall(r"Version\: (\d+\.\d+\.\d+)\.", str(output))[0]
+#     )
+#
+#     return current_version

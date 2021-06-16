@@ -28,11 +28,6 @@ setup(
     },
     include_package_data=True,
     install_requires=[
-        "AdaptivePELE==1.7.1",
-        "frag_pele==2.2.1",
-        "lib_prep",
-        "PPPele==1.0.6",
-        "PlopRotTemp==1.0.1",
         "PyYAML",
         "fpdf",
         "scikit-learn>0.20",
@@ -45,9 +40,13 @@ setup(
         "pytest",
         "cython",
         "numpy",
-        "peleffy==1.3.0",
+        "peleffy==1.3.3",
         "hdbscan==0.8.27",
-        "seaborn",
+        "AdaptivePELE==1.7.1",
+        "frag_pele==3.0.0",
+        "PPPele==1.0.8",
+        "PlopRotTemp==1.0.1",
+        "seaborn"
     ],
     ext_modules=ext_modules,  # accepts a glob pattern
 )

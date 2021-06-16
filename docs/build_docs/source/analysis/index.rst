@@ -136,6 +136,10 @@ class Analysis
             List of IDs of water molecules to cluster. Each water ID is defined by
             a tuple that contains the PDB chain and the residue number, e.g.
             ``water_ids_to_track = [("A", 234), ("A", 235)]``
+        clustering_filtering_threshold : float (optional, default = 0.25)
+            Percentage of output structures to filter our before clustering.
+        plot_filtering_threshold : float (optional, default = 0.02)
+            Percentage of output structures to filter out before creating plots. Default = 0.02
 
 .. code-block:: python
 

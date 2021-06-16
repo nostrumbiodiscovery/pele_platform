@@ -19,11 +19,12 @@ import pele_platform.Utilities.Helpers.Metals.metal_constraints as mc
 import pele_platform.Utilities.Helpers.Metals.metal_polarisation as mp
 import pele_platform.Adaptive.metrics as mt
 import pele_platform.Utilities.Helpers.water as wt
-from pele_platform.Adaptive import Parametrizer
+from pele_platform.Adaptive import parametrizer
 import pele_platform.Adaptive.box as bx
 import pele_platform.Adaptive.pca as pca
 import pele_platform.Adaptive.plop_solvent as sv
 import pele_platform.Adaptive.plop_ligand_parametrization as lg
+from pele_platform.Utilities.Helpers import ligand_conformations
 
 
 def run_adaptive(args):
@@ -99,7 +100,7 @@ def run_adaptive(args):
             ).strip('"')
 
         # If randomization in necessary (PPI, site_finder, global exploration)...
-        elif args.full or args.randomize or args.ppi:
+        elif args.full or args.randomize or args.ppi or args.site_finder:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(
                 parameters.ligand_ref,
                 parameters.receptor,
@@ -128,21 +129,25 @@ def run_adaptive(args):
                 parameters.residue,
                 output_folder=parameters.inputs_dir)
 
-            inputs = [os.path.join(parameters.inputs_dir, inp)
-                      for inp in inputs]
+            parameters.input = [os.path.join(parameters.inputs_dir, inp)
+                                for inp in inputs]
 
             parameters.adap_ex_input = ", ".join(
-                ['"' + input + '"' for input in inputs]
+                ['"' + input + '"' for input in parameters.input]
             ).strip('"')
             hp.silentremove(ligand_positions)
 
         # Prepare System
-        if parameters.no_ppp or parameters.input:  # No need to run system through PPP, if we already preprocessed parameters.input
+        if parameters.no_ppp or parameters.input:  # No need to run system through PPP, if we already preprocessed
+            # parameters.input
             missing_residues = []
             if parameters.input:
                 # If we have more than one input
                 for input in parameters.input:
-                    shutil.copy(input, parameters.inputs_dir)
+                    try:
+                        shutil.copy(input, parameters.inputs_dir)
+                    except shutil.SameFileError:  # systems that go through randomization are already moved
+                        pass
             else:
                 shutil.copy(parameters.system, parameters.inputs_dir)
         else:
@@ -205,11 +210,11 @@ def run_adaptive(args):
         parameters.logger.info(f"Complex {parameters.system} prepared\n\n")
 
         # Ligand/metal and solvent parameters
-        if parameters.perturbation and parameters.use_peleffy:
-            parametrizer = Parametrizer.from_parameters(parameters)
-            parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
+        if (parameters.perturbation or parameters.sidechain_perturbation) and parameters.use_peleffy:
+            ligand_parametrizer = parametrizer.Parametrizer.from_parameters(parameters)
+            ligand_parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
 
-        elif parameters.perturbation and not parameters.use_peleffy:
+        elif (parameters.perturbation or parameters.sidechain_perturbation) and not parameters.use_peleffy:
             # Parametrize the ligand
             ligand_params = lg.LigandParametrization(parameters)
             ligand_params.generate()
@@ -221,6 +226,17 @@ def run_adaptive(args):
                     with hp.cd(parameters.pele_dir):
                         mr.create_template(parameters, res)
                     parameters.logger.info("Template {}z created\n\n".format(res))
+
+        # Covalent residue parametrization should not run in refinement simulation
+        if parameters.covalent_residue and os.path.basename(parameters.pele_dir) != "2_refinement":
+            parametrizer.parametrize_covalent_residue(parameters.pele_data, parameters.pele_dir, parameters.gridres,
+                                                      parameters.residue_type, parameters.residue,
+                                                      ppp_system=parameters.system)
+
+        if parameters.ligand_conformations:
+            ligand_conformations.LigandConformations(path=parameters.ligand_conformations, system=parameters.system,
+                                                     resname=parameters.residue, forcefield=parameters.forcefield,
+                                                     pele_dir=parameters.pele_dir).generate()
 
         # Create simulation box, if performing perturbation
         if parameters.perturbation:
@@ -307,6 +323,9 @@ def run_adaptive(args):
         parameters.native = (
             metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
         )
+
+        parameters.local_nonbonding_energy = metrics.local_nonbonding_energy_json(parameters.covalent_residue,
+                                                                                  parameters.nonbonding_radius)
 
         # metal polarisation
         if parameters.polarize_metals:

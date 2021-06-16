@@ -29,7 +29,7 @@ def test_ppi_skipref(yaml=yaml):
 yaml = os.path.join(test_path, "PPI/input.yaml")
 
 
-def test_ppi_default(energy_result=-2.18, yaml=yaml):
+def test_ppi_default(energy_result=-1.89, yaml=yaml):
 
     # Function to test
     job, job2 = main.run_platform_from_yaml(yaml)
@@ -74,23 +74,6 @@ def test_prepare_structure():
 
     for f in glob.glob("*_prep.pdb"):
         os.remove(f)
-
-
-yaml = os.path.join(test_path, "PPI/input_skipref.yaml")
-
-
-def test_ppi_skipref(energy_result=-2.18, yaml=yaml):
-
-    # Function to test
-    job, _ = main.run_platform_from_yaml(yaml)
-
-    # checkpoints
-    files_refinement = glob.glob(
-        os.path.join(job.pele_dir, "refinement_simulation/results/top_poses/*.pdb")
-    )
-
-    # test
-    assert not files_refinement
 
 
 yaml = os.path.join(test_path, "PPI/input_folder.yaml")

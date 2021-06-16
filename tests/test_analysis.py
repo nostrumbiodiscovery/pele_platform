@@ -2,6 +2,7 @@ import os
 import glob
 import pandas as pd
 import pytest
+import shutil
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
@@ -300,8 +301,9 @@ def test_extract_and_filter_coordinates(analysis, max_coordinates):
     coordinates, water_coordinates, dataframe = analysis._extract_coordinates(
         max_coordinates
     )
-    coordinates_filtered, _, _, _ = \
-        analysis._filter_coordinates(coordinates, None, dataframe, 0.5)
+    coordinates_filtered, _, _, _ = analysis._filter_coordinates(
+        coordinates, None, dataframe, 0.5
+    )
 
     assert len(coordinates) == 7
     assert coordinates.shape == (
@@ -351,7 +353,7 @@ def test_get_dataframe(analysis, filter, threshold, expected_length):
         Analysis object created in a fixture.
     """
 
-    df = analysis.get_dataframe(filter=filter, threshold=threshold)
+    df = analysis.get_dataframe(threshold=threshold)
     assert len(df) == expected_length
 
 
@@ -561,12 +563,36 @@ def test_empty_reports_handling():
     analysis.generate(path="empty_reports")
 
 
-@pytest.mark.parametrize("path", ["analysis/data/xtc", "analysis/data/empty_reports_output"])
-def test_residue_checker(path):
+@pytest.mark.parametrize(
+    ("path", "traj", "top"),
+    [
+        (
+            "analysis/data/xtc",
+            "trajectory.xtc",
+            "analysis/data/xtc/topologies/topology_0.pdb",
+        ),
+        ("analysis/data/empty_reports_output", "trajectory.pdb", None),
+    ],
+)
+def test_residue_checker(path, traj, top):
     """
     Check, if we catch an error when the resname passed to Analysis doesn't exist in the output trajectories.
+
+    Parameters
+    -----------
+    path : str
+        Path to the simulation output folder.
+    traj : str
+        Trajectory type (as the user would set in the YAML), e.g. "trajectory.xtc".
+    top : str
+        Path to topology file.
+
+    Raises
+    --------
+    ValueError if the residue name is not found in any of the trajectories.
     """
     simulation_output = os.path.join(test_path, path)
+    topology = os.path.join(test_path, top) if top else None
 
     with pytest.raises(ValueError):
         analysis = Analysis(
@@ -574,6 +600,8 @@ def test_residue_checker(path):
             chain="Z",
             resname="STR",
             skip_initial_structures=True,
+            traj=traj,
+            topology=topology,
         )
 
 
@@ -602,3 +630,48 @@ def analysis():
     """
     output = "../pele_platform/Examples/clustering"
     return get_analysis(output, None, None)
+
+
+@pytest.mark.parametrize(
+    ("yaml_file", "traj", "topology"),
+    [
+        ("input_sim.yaml", "pdb", None),
+        # ("input_sim_xtc.yaml", "xtc", "pregrow/initialization_grow.pdb") TODO: Uncomment when Frag runs with XTC properly
+    ],
+)
+def test_frag_API_analysis(yaml_file, traj, topology):
+    """
+    Runs frag simulation (both XTC and PDB) and checks, if it's possible to run Analysis via API.
+
+    Parameters
+    -----------
+    yaml_file : str
+        Base name of the input.yaml file in Examples/frag.
+    traj : str
+        Indicate if running "pdb" or "xtc".
+    topology : str
+        Path to the topology file, if running XTC simulation, otherwise None
+    """
+    # Run frag simulation
+    yaml_file = os.path.join(test_path, "frag", yaml_file)
+    job = main.run_platform_from_yaml(yaml_file)
+
+    # Run analysis
+    frag_folder = "1w7h_preparation_structure_2w_processed_frag_aminoC1N1"
+    output = os.path.join(frag_folder, "sampling_result")
+    analysis_output = f"analysis_{traj}"
+    traj = f"trajectory.{traj}"
+
+    if topology:
+        topology = os.path.join(frag_folder, topology)
+
+    analysis = Analysis(
+        simulation_output=output, resname="GRW", chain="L", traj=traj, topology=topology
+    )
+    analysis.generate(analysis_output)
+
+    # Check output
+    assert len(glob.glob(os.path.join(analysis_output, "plots", "*png"))) > 0
+    assert len(glob.glob(os.path.join(analysis_output, "clusters", "cluster*pdb"))) > 0
+
+    shutil.rmtree(frag_folder, ignore_errors=True)

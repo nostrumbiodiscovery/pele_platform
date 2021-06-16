@@ -1,11 +1,15 @@
 import os
 import math
 import glob
+import pytest
 import shutil
 import re
+import yaml
+from packaging import version
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
+from pele_platform.Utilities.Helpers import helpers
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -30,6 +34,7 @@ PCA2_ARGS = os.path.join(test_path, "pca/input_str.yaml")
 FLAGS_ARGS = os.path.join(test_path, "flags/input.yaml")
 RESCORING_ARGS = os.path.join(test_path, "rescoring/input.yaml")
 GPCR_ARGS = os.path.join(test_path, "gpcr/input.yaml")
+MINIMUM_STEPS_ARGS = os.path.join(test_path, "minimum_steps/input.yaml")
 
 ADAPTIVE_VALUES = [
     "water_processed.pdb",
@@ -109,35 +114,41 @@ GPCR_VALUES = [
 ]
 
 
-def test_restart_flag():
+@pytest.mark.parametrize("restart_type", ["restart", "adaptive_restart"])
+def test_restart_flag(restart_type):
     """
-    Checks if the platform can correctly restart a simulation from existing files (created in debug mode) without
-    overwriting configuration files.
+    Checks if the platform can correctly restart and adaptive_restart a simulation from existing files (created in
+    debug mode).
     """
-
-    # Retrieve restart simulation from Examples directory and copy to test folder
-    pele_dir = "STR_Pele"
-    new_pele_dir = os.path.join(os.getcwd(), pele_dir)
-    restart_dir = os.path.join(test_path, "restart", pele_dir)
+    # First, run the platform in debug mode
     restart_yaml = os.path.join(test_path, "restart", "restart.yaml")
+    job_parameters = main.run_platform_from_yaml(restart_yaml)
 
-    if os.path.exists(new_pele_dir):
-        shutil.rmtree(new_pele_dir, ignore_errors=True)
-    shutil.copytree(restart_dir, new_pele_dir)
-    shutil.copy(restart_yaml, os.getcwd())
+    # Edit the original YAML file
+    with open(restart_yaml, "r") as file:
+        new_parameters = yaml.safe_load(file)
 
-    # Run platform
-    job_params = main.run_platform_from_yaml("restart.yaml")
+    new_parameters[restart_type] = True
+    new_parameters["debug"] = False
+
+    updated_restart_yaml = "updated_restart.yaml"
+    with open(updated_restart_yaml, "w+") as new_file:
+        yaml.dump(new_parameters, new_file)
+
+    # Restart the simulation
+    job_parameters2 = main.run_platform_from_yaml(updated_restart_yaml)
 
     # Assert it reused existing directory and did not create a new one
-    assert os.path.basename(job_params.pele_dir) == os.path.basename(restart_dir)
+    assert job_parameters.pele_dir == job_parameters2.pele_dir
 
-    # Assert it did not overwrite pele.conf
-    expected_line = '{ "type": "constrainAtomToPosition", "springConstant": 666, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" },'
-    errors = check_file(job_params.pele_dir, "pele.conf", expected_line, [])
+    # Make sure pele.conf was not overwritten
+    errors = check_file(
+        job_parameters2.pele_dir, "pele.conf", 'overlapFactor": 0.5', []
+    )
     assert not errors
 
-    shutil.rmtree(new_pele_dir, ignore_errors=True)
+    # Check if it finished
+    assert os.path.exists(os.path.join(job_parameters2.pele_dir, "results"))
 
 
 def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
@@ -155,7 +166,7 @@ def test_n_water(ext_args=NWATER_ARGS):
     # Result has waters
     for result in results:
         with open(result, "r") as f:
-            if not "HOH" in "".join(f.readlines()):
+            if "HOH" not in "".join(f.readlines()):
                 error = True
     # Input has no water
     with open("../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb", "r") as f:
@@ -197,10 +208,6 @@ def test_water_lig(ext_args=WATERLIG_ARGS):
 
 
 def test_out_in(ext_args=OUT_IN_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_restart(ext_args=RESTART_ARGS):
     main.run_platform_from_yaml(ext_args)
 
 
@@ -264,6 +271,19 @@ def test_str_pca(ext_args=PCA2_ARGS, output="PCA_result"):
     assert not errors
 
 
+# @pytest.mark.skipif(
+#     helpers.get_pele_version() < version.parse("1.7.1"),
+#     reason="Requires PELE 1.7.1 or higher.",
+# )
+def test_minimum_steps(ext_args=MINIMUM_STEPS_ARGS):
+    """Integration Test for PELE minimum steps flag
+
+    Requirements:
+        PELE >= V1.7.1
+    """
+    main.run_platform_from_yaml(ext_args)
+
+
 def truncate(f, n):
     return math.floor(f * 10 ** n) / 10 ** n
 
@@ -306,9 +326,7 @@ def test_gpcr(args=GPCR_ARGS):
     job = main.run_platform_from_yaml(args)
     errors = check_file(job.pele_dir, "pele.conf", GPCR_VALUES, errors)
     input_file = os.path.join(job.inputs_dir, "complex_processed.pdb")
-    if not os.path.exists(input_file):
-        errors.append("skip_ppp")
-    assert not errors
+    assert not os.path.exists(input_file)
 
 
 def check_file_regex(directory, file, patterns, errors):

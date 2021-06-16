@@ -2,6 +2,7 @@ import os
 import glob
 import pytest
 import shutil
+import sys
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
@@ -18,6 +19,8 @@ FRAG_SDF_LIBRARIES = os.path.join(test_path, "frag/input_lib_sdf.yaml")
 FRAG_PDB_LIBRARIES = os.path.join(test_path, "frag/input_lib_pdb.yaml")
 FRAG_ANALYSIS_TO_POINT = os.path.join(test_path, "frag/input_point_analysis.yaml")
 FRAG_SYMMETRY = os.path.join(test_path, "frag/input_symmetry.yaml")
+FRAGMENT_ATOM = os.path.join(test_path, "frag/input_fragment_atom.yaml")
+FRAG_WATERS = os.path.join(test_path, "frag/input_frag_waters.yaml")
 
 EXPECTED_INPUT = os.path.join(
     test_path, "frag/asymmetric_hydrogens_detector/expected_input.conf"
@@ -43,6 +46,22 @@ point_analysis_lines = [
     "../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_mol1C3-H2C1-H1,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_1.1_BindingEnergy-23.4636.pdb,2.73029273852075,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_2.1_BindingEnergy-25.1634.pdb,-25.1634,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_1.1_BindingEnergy-23.4636.pdb,0.7087330424726306,2.730292738520753,-23.4636"
 ]
 
+water_lines = [
+     'HETATM 2538  OW  HOH B 162      51.000  92.000  14.000  1.00  0.00           O',
+     'HETATM 2539 1HW  HOH B 162      51.757  92.586  14.000  1.00  0.00           H',
+     'HETATM 2540 2HW  HOH B 162      50.243  92.586  14.000  1.00  0.00           H',
+     'HETATM 2541  OW  HOH B 163      71.000  60.000  20.000  1.00  0.00           O',
+     'HETATM 2542 1HW  HOH B 163      71.757  60.586  20.000  1.00  0.00           H',
+     'HETATM 2543 2HW  HOH B 163      70.243  60.586  20.000  1.00  0.00           H',
+     'HETATM 2544  OW  HOH B 164      81.000  89.000  87.000  1.00  0.00           O',
+     'HETATM 2545 1HW  HOH B 164      81.757  89.586  87.000  1.00  0.00           H',
+     'HETATM 2546 2HW  HOH B 164      80.243  89.586  87.000  1.00  0.00           H',
+     'HETATM 2547  OW  HOH B 165      21.000  91.000  48.000  1.00  0.00           O',
+     'HETATM 2548 1HW  HOH B 165      21.757  91.586  48.000  1.00  0.00           H',
+     'HETATM 2549 2HW  HOH B 165      20.243  91.586  48.000  1.00  0.00           H'
+
+]
+
 
 def test_frag_sim(
     capsys,
@@ -65,10 +84,10 @@ def test_frag_sim(
 
     job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
-    top_results = glob.glob(os.path.join(output, "top_result", "*pdb"))
+    top_results = glob.glob(os.path.join(job.working_dir[0], "top_result", "*.pdb"))
 
     assert "Skipped - FragPELE will not run." not in captured.out
-    assert os.path.exists(output)
+    assert os.path.exists(job.working_dir[0])
     assert len(top_results) == 3
 
 
@@ -121,13 +140,13 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     job = main.run_platform_from_yaml(ext_args)
     folder = output
     errors = td.check_file(
-        folder,
+        job.working_dir[0],
         "control_folder/0_pele_template.conf",
         td.PELE_VALUES + FRAG_FLAGS,
         errors,
     )
     errors = td.check_file(
-        folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
+        job.working_dir[0], "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
     )
     assert not errors
 
@@ -153,7 +172,7 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     ("yaml_file", "expected_lines"),
     [(FRAG_SDF_LIBRARIES, SDF_lines), (FRAG_PDB_LIBRARIES, PDB_lines)],
 )
-def test_libraries(yaml_file, expected_lines):
+def test_libraries(capsys, yaml_file, expected_lines):
     """
     Tests the growing of fragments from a custom-made SDF and PDB libraries.
 
@@ -164,12 +183,15 @@ def test_libraries(yaml_file, expected_lines):
     expected_lines : list[str]
         List of lines expected in input.conf.
     """
+    errors = []
     if os.path.exists("input.conf"):
         os.remove("input.conf")
-
-    job = main.run_platform_from_yaml(yaml_file)
-    errors = []
-    errors = td.check_file(os.getcwd(), "input.conf", expected_lines, errors)
+    try:
+        jon = main.run_platform_from_yaml(yaml_file)
+        captured = capsys.readouterr()
+        assert "Skipped - FragPELE will not run." not in captured.out
+    except Exception:
+        assert False
     assert not errors
 
 
@@ -206,3 +228,64 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
+
+
+def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
+    """
+    Tests the frag_core_atom flag.
+    
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file.
+    """
+    if os.path.exists("input.conf"):
+        os.remove("input.conf")
+    try:
+        job = main.run_platform_from_yaml(ext_args)
+        captured = capsys.readouterr()
+        assert "Skipped - FragPELE will not run." not in captured.out
+
+    except Exception:
+        assert False
+
+
+def test_frag_waters(ext_args=FRAG_WATERS):
+    """
+    Check if water molecules are added to the system.
+  
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file,
+    """
+    water_output = []
+    job = main.run_platform_from_yaml(ext_args)
+    for path in job.working_dir:
+        output = glob.glob(os.path.join(path, "*_top.pdb"))[0]
+        with open(output, "r") as file:
+            lines = file.readlines()
+            for line in lines:
+                if line[17:21].strip() == "HOH":
+                    water_output.append(line.strip())
+
+    assert water_lines == water_output
+
+@pytest.mark.parametrize(
+    ("ext_args"),
+    [(FRAG_CORE_ARGS), (FRAG_SDF_LIBRARIES)],
+)
+def test_ligand_clustering(ext_args):
+    """
+    Tests ligand clustering.
+
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file,
+    """
+    job = main.run_platform_from_yaml(ext_args)
+    for path in job.working_dir:
+        analysis_folder = os.path.join(path, "results")
+        if not os.path.isdir(analysis_folder):
+            assert False

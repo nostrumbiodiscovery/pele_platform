@@ -1,0 +1,10 @@
+name: peleplatform
+
+channels:
+  - nostrumbiodiscovery
+  - martimunicoy
+  - conda-forge
+
+dependencies:
+  - pele_platform
+

@@ -93,7 +93,9 @@ PELE++ parameters
 
 - **steps**: Pele steps in each iteration
 
-- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run. (Usefull to transport it to another machine)
+- **minimum_steps**: The explorers will continue running pele steps until all have reached the number of pele steps.
+
+- **debug**: Use this flag to only create the inputs of the simulation. No simulation is run.
 
 - **spawning**: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional
 
@@ -119,6 +121,7 @@ PELE++ parameters
 
     iterations: 30
     steps: 12
+    minimum_steps: true
     debug: true
     spawning: "epsilon"
     density: "exitContinuous"
@@ -287,6 +290,20 @@ Alternatively, as before, you can provide your own template and/or rotamer files
   rotamers:
     - "/home/simulation_files/MG.rot.assign"
     - "/home/simulation_files/LIG.rot.assign"
+
+
+Ligand conformations
+----------------------
+
+PELE provides the possibility to narrow down the range of available ligand conformations to increase the efficiency of
+sampling. It will automatically generate a library of conformations when supplied with a directory of ligand clusters
+originating from conformational search or `Bioactive Conformational Ensemble server <https://mmb.irbbarcelona.org/BCE/>`_.
+
+- **ligand_conformations**: Path to the directory contraining ligand clusters in PDB format.
+
+- **conformation_freq**: Frequency of conformation perturbation. Default = 4.
+
+- **overlap_factor_conformation**: van der Waals overlap factor in conformation perturbation. Default = 0.65
 
 
 Constraints
@@ -527,6 +544,10 @@ Run a post simulation analysis to extract plots, top poses and clusters.
         * "interaction_min" - interaction energy min
 
 - **max_top_poses**: Maximum number of top poses to be retrieved. Default = 100.
+
+- **clustering_filtering_threshold**: Percentage of output structures to filter our before clustering. Default = 0.25.
+
+- **plot_filtering_threshold**: Percentage of output structures to filter out before creating plots. Default = 0.02
 
 ..  code-block:: yaml
 

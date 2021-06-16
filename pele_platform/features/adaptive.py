@@ -214,6 +214,22 @@ SOFTWARE_CONSTANTS = {
             "overlap_factor": 0.65,
             "steric_trials": 200,
             "params": pcs.SITE_FINDER_LOCAL,
+        },
+        "covalent_docking": {
+            "anm_freq": 5,
+            "overlap_factor": 0.6,
+            "perturbation_trials": 100,
+            "pele_steps": 400,
+            "iterations": 1,
+            "params": "",
+        },
+        "covalent_docking_refinement": {
+            "perturbation_trials": 10,
+            "pele_steps": 100,
+            "refinement_distance": 10,
+            "iterations": 1,
+            "refinement_angle": 10,
+            "params": "",
         }
     },
 }
@@ -245,6 +261,10 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "site_finder_global"
     elif args.site_finder_local:
         type_simulation = "site_finder_local"
+    elif args.covalent_docking_refinement:
+        type_simulation = "covalent_docking_refinement"
+    elif args.covalent_residue:
+        type_simulation = "covalent_docking"
     else:
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"

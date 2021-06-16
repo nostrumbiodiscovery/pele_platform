@@ -40,6 +40,12 @@ v1.6.0 beta 5
 
 - Add user warnings to facilitate the system preparation
 
+- Introduced flexible filtering of output structures taken into account during analysis.
+
+- Support for conformation perturbation.
+
+- Support for the new PELE minimum steps.
+
 - Other minor improvements
 
 
