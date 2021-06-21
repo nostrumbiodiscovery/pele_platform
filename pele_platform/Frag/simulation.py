@@ -39,7 +39,6 @@ class FragRunner(object):
 
     def _launch(self):
         params = self.parameters
-
         with tempfile.TemporaryDirectory() as tmpdirname:
             if params.ligands:  # Full ligands as sdf
                 fragment_files = self._prepare_input_file(logger=params.logger)
@@ -55,7 +54,6 @@ class FragRunner(object):
                 fragment_files = None
                 assert params.input is not None, "You need to provide input.conf file or SD file with fully grown " \
                                                  "ligands. "
-
             if not params.only_analysis:
                 self._run()
 
@@ -267,11 +265,23 @@ class FragRunner(object):
             top_results = glob(sim_directory + "/top_result/*")
             for top_result in top_results:
                 binding_energies[top_result] = os.path.splitext(top_result)[0].split('y')[-1]
-        system_min_energy = min(binding_energies, key=binding_energies.get)
-        ligand_min_energy = system_min_energy.split("/")[:-2][0] + '/pregrow/growing_result_p.pdb'
-        ligand_min_energy_mol = Chem.rdmolfiles.MolFromPDBFile(ligand_min_energy, removeHs= False)
+        #system_min_energy = min(binding_energies, key=binding_energies.get)
+        system_min_energy = self.parameters.core
+        #ligand_min_energy = system_min_energy.split("/")[:-2][0] + '/pregrow/growing_result_p.pdb'
+        ligand_min_energy = self.parameters.ligands
+        ligand_min_energy_mol = Chem.rdmolfiles.MolFromPDBFile(ligand_min_energy, removeHs= True)
         Chem.rdmolops.AssignStereochemistryFrom3D(ligand_min_energy_mol)
-        filtering_results = fl.main(ligand_min_energy_mol, ligand_min_energy, self.parameters.database, self.parameters.filters)
+        top_molecules = fl.main(ligand_min_energy_mol, ligand_min_energy,
+                               self.parameters.database, self.parameters.filters)
+        print("You will perform a total of %s simulations" % len(top_molecules))
+        for molecule in top_molecules:
+            self.parameters.core = system_min_energy
+            self.parameters.core_process = system_min_energy
+            self.parameters.frag_library = os.path.join("./frag_library", molecule)
+            self.parameters.frag_core_atom = top_molecules[molecule][0]
+            self.parameters.fragment_atom = top_molecules[molecule][1]
+            self.parameters.ligands = None
+            self._launch()
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:

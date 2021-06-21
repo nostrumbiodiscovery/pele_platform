@@ -5,12 +5,24 @@ import time
 import pickle
 import sys
 import csv
+import networkx as nx
+import shutil
+import tempfile
+import pandas as pd
+from multiprocessing import Pool, Process, Manager
+import heapq
+
+
+import numpy as np
 
 from drug_learning.two_dimensions.Input import fingerprints as fp
+from pathlib import Path
+from rdkit.Chem import rdMolAlign
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import QED
 from rdkit.Chem import RDConfig
+from rdkit.Chem import AllChem
 from yaml import load, Loader
 from collections import ChainMap
 from multiprocessing import Pool
@@ -19,6 +31,8 @@ import openbabel
 from openbabel import pybel
 from rdkit import DataStructs
 from glob import glob
+from tqdm import tqdm
+from rdkit import DataStructs
 
 
 class Library:
@@ -30,16 +44,19 @@ class Library:
         self.errors = 0
         self.mol_num = 0
         self.filtered_final = []
-        #self.init_mol = Chem.MolFromPDBFile(ligand, removeHs=False)
         self.init_mol = ligand
         self.init_mol_path = ligand_path
-        self.database_files = glob(path + '/*.csv')[:20]
-        # self.sd_files=self._retrieve_files()
+        self.init_mol_hs = Chem.MolFromPDBFile(self.init_mol_path, removeHs=False)
+        self.database_files = glob(path + '/*.csv')
+        self.names = {}
+        self.coefficients = {}
+        self.mols_single_component = {}
+        self.substructure_results = {}
         if self.init_mol:
             mol = next(pybel.readfile("pdb", self.init_mol_path))
             finalSDF = pybel.Outputfile("sdf", "input_ligand.sdf", overwrite=True)
             finalSDF.write(mol)
-            self.init_mol.fingerprint = self.generate_fingerprint("input_ligand.sdf")
+            self.init_mol.fingerprint = Chem.RDKFingerprint(self.init_mol)
             mol_descriptors = {}
             frag = Fragment(self.init_mol)
             mol_descriptors['mw'] = [frag.mw - 50, frag.mw + 50]
@@ -56,73 +73,177 @@ class Library:
         self.sd_files = self._retrieve_files()
         self.main(self.sd_files)
 
-    def generate_fingerprint(self, input_sdf):
-        try:
-            mor = fp.MorganFP()
-            structures = mor.fit(input_sdf)
-            features = mor.transform()
-        except:
-            return 'None'
-        return features
-
-    def read_fingerprints(self):
-        dict = {}
-        for f in self.database_files:
-            with open(f) as csvfile:
-                reader = csv.reader(csvfile, delimiter='\n')
-                for row in reader:
-                    dict[row[0].split(',')[0]] = row[0].split(',')[1:]
-        return dict
-
-    def tanimoto_coefficient(self, input_ligand, database_molecule):
-        input_ligand = input_ligand[0].tolist()
-        N = len(input_ligand)
-        assert N == len(database_molecule)
-        v1v2, v1v1, v2v2 = 0., 0., 0.
-        for i in range(N):
-            v1v2 += input_ligand[i] * int(database_molecule[i])
-            v1v1 += input_ligand[i] * input_ligand[i]
-            v2v2 += int(database_molecule[i]) * int(database_molecule[i])
-        return v1v2 / (v1v1 + v2v2 - v1v2)
-
-
     def main(self, files_sdf):
-        self.fingerprints = self.read_fingerprints()
-        self.names = {}
-        self.coefficients = {}
+        print(files_sdf)
+        print(len(files_sdf))
+        counter = 0
+        heap = []
+
+        # Iterate on every sdf file of the database
         for file_sdf in files_sdf:
-            mols = Chem.SDMolSupplier(file_sdf, removeHs=False)
-            name = os.path.basename(file_sdf).rsplit(".")[0]
+            #             #self.molecule = mol
+            #             #self.fragments_dum = [Fragment(mol)]
+            #             #self.filters_f()
+            #             #self.save()
+            mols = Chem.SDMolSupplier(file_sdf, removeHs=True)
+            print("COMPUTING TANIMOTO COEFFICIENTS FOR FILE %s: %s" % (file_sdf, counter))
+            counter +=1
             for mol in mols:
                 if mol:
-                    self.names[mol.GetProp("_Name")] = mol
-                    self.coefficients[mol.GetProp("_Name")]= self.tanimoto_coefficient(self.init_mol.fingerprint, self.fingerprints[mol.GetProp("_Name")])
-                    print("Tanimoto coefficient: %s" % self.coefficients[mol.GetProp("_Name")])
+                    fp = Chem.RDKFingerprint(mol)
+                    coefficient = DataStructs.FingerprintSimilarity(self.init_mol.fingerprint, fp)
+                    if coefficient > 0.0:
+                        if len(heap) < 100:
+                            heapq.heappush(heap, (coefficient, mol.GetProp("_Name")))
+                            Chem.MolToPDBFile(mol, "%s.pdb" % (mol.GetProp("_Name")))
+                        else:
+                            if coefficient > heapq.nsmallest(1, heap)[0][0]:
+                                heapq.heappop(heap)
+                                heapq.heappush(heap, (coefficient, mol.GetProp("_Name")))
+                                try:
+                                    Chem.MolToPDBFile(mol, "%s.pdb" % (mol.GetProp("_Name")))
+                                except:
+                                    print("FAILED FOR MOL: %s" % (mol.GetProp("_Name")))
+                                    continue
 
-                #         if mol:
-        #             Chem.MolToPDBFile(mol, "molecule_database.pdb")
-        #             mol_to_sdf = next(pybel.readfile("pdb", "molecule_database.pdb"))
-        #             finalSDF = pybel.Outputfile("sdf", "database_molecule.sdf", overwrite=True)
-        #             finalSDF.write(mol_to_sdf)
-        #             mol.fingerprint = self.generate_fingerprint("database_molecule.sdf")
-        #             if mol.fingerprint == 'None':
-        #                 continue
-        #             mol.tanimoto = self.tanimoto_coefficient(mol.fingerprint, self.init_mol.fingerprint)
-        #             coefficients[mol] = mol.tanimoto
-        #             print( "Tanimoto coefficient: %s" % mol.tanimoto)
-        #             #self.molecule = mol
-        #             #self.fragments_dum = [Fragment(mol)]
-        #             #self.filters_f()
-        #             #self.save()
-            print("\ (•◡•) / File %s finished \ (•◡•) / " % name)
-            print(".。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。..。・゜・。.")
-        #top_similar = max(self.coefficients, key=self.coefficients.get)
-        top_similar = sorted(self.coefficients, key=self.coefficients.get, reverse=True)[:(int(len(self.coefficients)/4))]
-        print('top_similar:', top_similar)
-        for molecule in top_similar:
-            substructure_results = self.names[molecule].GetSubstructMatches(self.init_mol)
-            print('substructure_results:', substructure_results)
-        print(len(self.names))
+        # Only for top similar molecules, perform substructure search
+        self.top_molecules = self.get_top_molecule(heap, os.getcwd())
+        self.fragment_library = []
+
+        if os.path.exists("./frag_library"):
+            shutil.rmtree("./frag_library")
+        os.mkdir("./frag_library")
+        for ligand in self.top_molecules:
+            if os.path.exists(os.path.join("./frag_library", ligand)):
+                shutil.rmtree(os.path.join("./frag_library", ligand))
+            os.mkdir(os.path.join("./frag_library", ligand))
+            with Chem.SDWriter(os.path.join(os.path.join("frag_library/", ligand), ligand + ".sdf")) as w:
+                self.ligand_fragment = self.top_molecules[ligand][2]
+                self.fragment_atom = self.top_molecules[ligand][1]
+                self.frag_core_atom = self.top_molecules[ligand][0]
+                w.write(self.ligand_fragment)
+
+    def get_top_molecule(self, heap, tmpdirname):
+        print("Getting top molecules")
+        frag_core_atom_yaml = ""
+        fragment_atom_yaml = ""
+        output = {}
+        for group in heap:
+            try:
+                molecule = Chem.MolFromPDBFile(os.path.join(tmpdirname, group[1] + ".pdb"), removeHs=True)
+                if molecule:
+                    path = os.path.join(tmpdirname, group[1] + ".pdb")
+                    path_fragment = os.path.join(tmpdirname, group[1] + "_fragment.pdb")
+                    path_core = os.path.join(tmpdirname + "_core.pdb")
+
+                    mol = Chem.AddHs(molecule, addCoords=True)
+                    Chem.MolToPDBFile(mol, path)
+                    mol_with_hs = Chem.MolFromPDBFile(path, removeHs=False)
+
+                    mol_no_Hs = molecule
+                    mol_subs = molecule
+
+                    core_no_hs = self.init_mol
+
+                    self.substructure_results[group[1]] = mol_no_Hs.GetSubstructMatches(core_no_hs)
+                    # If there is a substructure match, convert to graph and count number of connected components
+                    if self.substructure_results[group[1]]:
+                        bonds_no_Hs = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_no_Hs.GetBonds()]
+                        bonds = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_with_hs.GetBonds()]
+
+                        G = self.generate_graph(bonds)
+
+                        h_len = []
+                        for k in self.substructure_results[group[1]]:
+                            H = self.generate_graph(bonds_no_Hs)
+                            h_len.append(self.number_connected_components(H, k))
+
+                        if 1 in h_len:
+                            mw = Chem.RWMol(mol_subs)
+                            mw2 = Chem.RWMol(mol_subs)
+
+                            atoms_core =[]
+                            atoms_fragment=[]
+                            for atom in mw.GetAtoms():
+                                if atom.GetIdx() not in self.substructure_results[group[1]][h_len.index(1)]:
+                                    atom.SetAtomicNum(0)
+                                    atoms_fragment.append(atom.GetIdx())
+
+                            for atom in mw2.GetAtoms():
+                                if atom.GetIdx() in self.substructure_results[group[1]][h_len.index(1)]:
+                                    atom.SetAtomicNum(0)
+                                    atoms_core.append(atom.GetIdx())
+
+                            mw = Chem.DeleteSubstructs(mw, Chem.MolFromSmarts('[#0]'))
+                            mw2 = Chem.DeleteSubstructs(mw2, Chem.MolFromSmarts('[#0]'))
+                            fragment_no_hs = mw2
+                            fragment_with_hs_nopdbinfo = Chem.AddHs(fragment_no_hs, addCoords=True)
+                            Chem.MolToPDBFile(fragment_with_hs_nopdbinfo, path_fragment)
+                            fragment_with_hs = Chem.MolFromPDBFile(path_fragment, removeHs=False)
+
+                            core_with_hs_nopdbinfo = Chem.AddHs(mw, addCoords=True)
+                            Chem.MolToPDBFile(core_with_hs_nopdbinfo, path_core)
+                            core_with_hs = Chem.MolFromPDBFile(path_core, removeHs=False)
+
+                            G = self.generate_graph(bonds)
+                            counter = 0
+                            for i, k in G.edges():
+                                if (i in atoms_core and k in atoms_fragment) or (i in atoms_fragment and k in atoms_core):
+                                    counter += 1
+                                    if (i in atoms_core and k in atoms_fragment):
+                                        core_atom_node = i
+                                        fragment_atom_node = k
+                                    else:
+                                        core_atom_node = k
+                                        fragment_atom_node = i
+
+                            _ = AllChem.GenerateDepictionMatching2DStructure(core_with_hs, self.init_mol_hs)
+                            for atom in core_with_hs.GetAtoms():
+                                if mol_with_hs.GetAtomWithIdx(core_atom_node).GetPDBResidueInfo().GetName().strip() == atom.GetPDBResidueInfo().GetName().strip():
+                                    coords_atom_mw = core_with_hs.GetConformers()[0].GetPositions()[atom.GetIdx()]
+
+                            for atom_init in self.init_mol_hs.GetAtoms():
+                                comparison = self.init_mol_hs.GetConformers()[0].GetPositions()[atom_init.GetIdx()][:2] == np.array(coords_atom_mw)[:2]
+                                if comparison.all():
+                                    frag_core_atom_yaml = "%s" % (atom_init.GetPDBResidueInfo().GetName().strip())
+
+                            for bond_frag in fragment_with_hs.GetBonds():
+                                if bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip() == mol_with_hs.GetAtomWithIdx(fragment_atom_node).GetPDBResidueInfo().GetName().strip() and "H" in bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip():
+                                    fragment_atom_yaml = "%s" % (bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip())
+
+                                elif bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip() == mol_with_hs.GetAtomWithIdx(fragment_atom_node).GetPDBResidueInfo().GetName().strip() and "H" in bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip():
+                                    fragment_atom_yaml = "%s" % (bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip())
+
+                            for bond in self.init_mol_hs.GetBonds():
+                                if (bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip() == frag_core_atom_yaml and "H" in bond.GetEndAtom().GetPDBResidueInfo().GetName().strip()):
+                                    frag_core_atom_yaml = "%s-%s" % (frag_core_atom_yaml, bond.GetEndAtom().GetPDBResidueInfo().GetName().strip())
+
+                                if (bond.GetEndAtom().GetPDBResidueInfo().GetName().strip() == frag_core_atom_yaml and "H" in bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip()):
+                                    frag_core_atom_yaml = "%s-%s" % (frag_core_atom_yaml, bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip())
+
+                            if counter <= 1:
+                                output[group[1]] = [frag_core_atom_yaml, fragment_atom_yaml, fragment_with_hs]
+            except:
+                print("FAILED FOR MOL: %s" % (group[1]))
+                continue
+
+        return output
+
+    def atoms_fragment(self, atoms_core, graph):
+        H = graph.copy()
+        H.remove_nodes_from(atoms_core)
+        return list(H.nodes())
+
+    def generate_graph(self, bonds):
+        G = nx.Graph()
+        for i in bonds:
+            G.add_edge(i[0], i[1])
+        return G
+
+    def number_connected_components(self, graph, substructure):
+        for j in substructure:
+            graph.remove_node(j)
+        return nx.number_connected_components(graph)
 
     def filters_f(self):
         self.filtered_fragments = self._apply_filters()
@@ -229,8 +350,5 @@ class Fragment():
 
 def main(ligand, ligand_path, path, filters):
     print("INITIALIZING FILTERING")
-    #mol = Chem.MolFromPDBFile(ligand, removeHs=False)
-    #Chem.MolToPDBFile(ligand, "original.pdb")
-
     lib = Library(path, ligand, ligand_path, filters)
-    return lib.filtered_final
+    return lib.top_molecules
