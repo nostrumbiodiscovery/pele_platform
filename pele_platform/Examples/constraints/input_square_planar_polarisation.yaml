@@ -1,0 +1,11 @@
+system: '../pele_platform/Examples/constraints/4qnr_prep.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+permissive_metal_constr: true
+polarize_metals: true
+polarization_factor: 10
+induced_fit_fast: true
+test: true
+traj: trajectory.xtc
+debug: true

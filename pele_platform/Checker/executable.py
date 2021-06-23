@@ -10,8 +10,6 @@ class Executable():
     executable: str
 
     def is_in_path(self) -> bool:
-
-        fpath, fname = os.path.split(self.executable)
         for path in os.environ["PATH"].split(os.pathsep):
             exe_file = os.path.join(path, self.executable)
             if self._is_exe(exe_file):

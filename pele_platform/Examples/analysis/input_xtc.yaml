@@ -1,0 +1,11 @@
+working_folder: '../pele_platform/Examples/analysis/data'
+system: 'your_system.pdb'
+chain: 'L'
+resname: 'L01'
+only_analysis: true
+output: 'xtc'
+mae: true
+traj: 'trajectory.xtc'
+test: true
+analysis_nclust: 3
+top_clusters_criterion: "interaction_25_percentile"

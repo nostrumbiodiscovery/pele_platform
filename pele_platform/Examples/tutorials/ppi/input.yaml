@@ -1,0 +1,13 @@
+system: '4yy6_prep.pdb'
+chain: 'Z'
+protein: 'A'
+ligand_pdb: "4yy6_ligand.pdb"
+resname: 'LIG'
+center_of_interface: "A:106:OH"
+seed: 12345
+ppi: true
+steps: 200
+cpus: 50
+atom_dist:
+- "A:106:OH"
+- "Z:1123:C13"

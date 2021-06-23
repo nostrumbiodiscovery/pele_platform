@@ -5,8 +5,6 @@
 # Atomic masses
 # list of atomic weights from http://en.wikipedia.org/wiki/List_of_elements
 
-import pele_platform.Utilities.Helpers.helpers as helpers
-
 ATOMIC_WEIGHTS = {'H': 1.008, 'HE': 4.002602, 'LI': 6.94, 'BE': 9.012182,
                   'B': 10.81, 'C': 12.011, 'N': 14.007, 'O': 15.999, 'F': 18.9984032,
                   'NE': 20.1797, 'NA': 22.98976928, 'MG': 24.305, 'AL': 26.9815386,

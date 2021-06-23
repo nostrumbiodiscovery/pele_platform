@@ -3,7 +3,7 @@ import pele_platform.constants.constants as cs
 class PCAParams(object):
 
 
-    def __init__(self, args):
+    def generate_pca_params(self, args):
         self.pca = cs.PCA.format(args.pca) if args.pca else ""
         self.pca_traj = args.pca_traj
         if self.pca or self.pca_traj:

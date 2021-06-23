@@ -1,0 +1,9 @@
+system: '../pele_platform/Examples/out_in/1_3ZON_complex.pdb'
+chain: 'Z'
+resname: 'IK1'
+seed: 12345
+rescoring: true
+debug: true
+overlap_factor_conformation: 0.66
+conformation_freq: 2
+ligand_conformations: '../pele_platform/Examples/ligand_conformations'

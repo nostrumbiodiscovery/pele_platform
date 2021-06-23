@@ -3,3 +3,5 @@ system: 'your_system.pdb'
 chain: 'Z'
 resname: 'STR'
 only_analysis: true
+test: true
+top_clusters_criterion: "interaction_25_percentile"

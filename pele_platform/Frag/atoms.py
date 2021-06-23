@@ -1,8 +1,4 @@
-
-
-
-
-class Atom():
+class Atom:
 
     def __init__(self, molecule, idx):
         self.molecule = molecule

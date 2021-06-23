@@ -106,8 +106,8 @@ def parseImpactTemplate(impactTemplate):
     
     try:
         fileout = open(impactTemplate)
-    except:
-        print('Impossible to open the file ....  ',impactTemplate)
+    except OSError:
+        env.logger.info('Impossible to open the file ....  ',impactTemplate)
         sys.exit()
     
     name = ''
@@ -165,8 +165,6 @@ def getOverlapscalefactorsFromAtomName(atomName,atomTypesOverlapscalefactors,ato
    
     shortName = getShortName(atomName)
 
- 
-    overlapFactor = '2.0'
     radii ='0.80'
     found = False
 
@@ -210,8 +208,6 @@ def assignOverlapFactor(name,atomTypeOverlapFactorTable,numberOfBonds,realName):
 def getShortName(name):
 #    shortName = ''.join(i for i in name if not i.isdigit()).upper()
 
-    tmp = ''
-
     size = len(name)
     start = 0
     end = 0
@@ -254,7 +250,7 @@ def generateSolventTemplate(residueName, atomNamesAndTypes,paramtersLst,atomType
             overlapFactor, radii, foundNoStd = getOverlapscalefactorsFromAtomName(ele[0],atomTypesOverlapFactors,atomTypesHCTradii,numberOfBonds[i])
             
             if not foundNoStd:
-                print('Parameter NOT found in the template database ....... '+ele[0]+'   '+ele[1]+'  using default parameters')
+                env.logger.info('Parameter NOT found in the template database ....... '+ele[0]+'   '+ele[1]+'  using default parameters')
 
             templateParameters.append(residueName+'Z   '+ele[0]+'   '+ele[1]+'    '+overlapFactor+'   '+radii+'\n') 
         

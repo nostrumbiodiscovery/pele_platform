@@ -8,3 +8,4 @@ atom_dist:
 - "A:221:CZ"
 - "Z:1328:H16"
 test: true
+debug: true

@@ -1,11 +1,10 @@
-from Bio.PDB import PDBParser, PDBIO, Selection, NeighborSearch, Vector
-import glob
-import numpy as np
 import os
-import pele_platform.constants.constants as cs
+import subprocess
+
+from pele_platform.constants import constants
 
 
-def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
+def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False, peleffy=False):
     
     to_remove = []
 
@@ -33,7 +32,7 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
     
     new_protein_file = os.path.basename(protein_file).replace(".pdb", "_prep.pdb")
     new_protein_file = os.path.abspath(new_protein_file)
-    
+
     # join protein and ligand PDBs into new file
     with open(new_protein_file, "w+") as file:
         for line in protein:
@@ -41,5 +40,11 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
         file.write("\n")
         for line in ligand:
             file.write(line)
- 
+
+    if peleffy:
+        # Run through Schrodinger again to add CONECT lines.
+        schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/prepwizard")
+        command_pdb = f"{schrodinger_path} -nohtreat -noepik -noprotassign -noimpref -noccd -NOJOBID {protein_file} {new_protein_file}"
+        subprocess.call(command_pdb.split(), shell=True)
+
     return new_protein_file

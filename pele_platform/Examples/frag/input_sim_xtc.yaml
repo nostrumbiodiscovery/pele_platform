@@ -1,0 +1,4 @@
+frag_core: "../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb"
+frag_input: "../pele_platform/Examples/frag/sequential.conf"
+test: true
+traj: "trajectory.xtc"

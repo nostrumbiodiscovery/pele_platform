@@ -1,0 +1,10 @@
+system: '../pele_platform/Examples/constraints/4zu9_prep.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+induced_fit_fast: true
+external_constraints:
+- "50-2.34-A:2002:MG-A:2005:S"
+test: true
+traj: trajectory.xtc
+debug: true

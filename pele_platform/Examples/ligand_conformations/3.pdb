@@ -1,0 +1,77 @@
+TITLE     1_3ZON_complex
+REMARK   4      COMPLIES WITH FORMAT V. 3.0, 1-DEC-2006
+REMARK 888
+REMARK 888 WRITTEN BY MAESTRO (A PRODUCT OF SCHRODINGER, LLC)
+HETATM    1  N1  IK1 Z   1      -5.277   0.343  -0.084  1.00 16.51           N  
+HETATM    2  N2  IK1 Z   1      -0.529  -1.557  -3.419  1.00 16.56           N  
+HETATM    3  O1  IK1 Z   1      -3.787   1.234   1.337  1.00 15.77           O  
+HETATM    4  O2  IK1 Z   1      -2.463  -2.134  -2.441  1.00 16.77           O  
+HETATM    5  C1  IK1 Z   1       4.393   0.342   1.004  1.00 20.44           C  
+HETATM    6  C2  IK1 Z   1       3.198   1.375   2.851  1.00 20.55           C  
+HETATM    7  C3  IK1 Z   1       3.167   0.044   0.380  1.00 19.70           C  
+HETATM    8  C4  IK1 Z   1       1.972   1.075   2.225  1.00 20.26           C  
+HETATM    9  C5  IK1 Z   1       0.457  -0.671  -0.817  1.00 17.69           C  
+HETATM   10  N3  IK1 Z   1      -3.131  -0.067  -0.441  1.00 17.29           N  
+HETATM   11  S1  IK1 Z   1      -0.849   0.663   0.940  1.00 18.42           S  
+HETATM   12  C6  IK1 Z   1      -4.032   0.552   0.344  1.00 16.94           C  
+HETATM   13  C7  IK1 Z   1      -1.376  -1.563  -2.386  1.00 17.59           C  
+HETATM   14  C8  IK1 Z   1       4.411   1.008   2.242  1.00 20.97           C  
+HETATM   15  C9  IK1 Z   1       1.935   0.404   0.978  1.00 19.55           C  
+HETATM   16  C10 IK1 Z   1       0.669   0.078   0.311  1.00 18.14           C  
+HETATM   17  C11 IK1 Z   1      -0.920  -0.778  -1.195  1.00 18.44           C  
+HETATM   18  C12 IK1 Z   1      -1.774  -0.119  -0.332  1.00 18.17           C  
+HETATM   19 H1_1 IK1 Z   1      -5.446  -0.223  -0.902  1.00  0.00           H  
+HETATM   20 H1_2 IK1 Z   1      -6.051   0.753   0.419  1.00  0.00           H  
+HETATM   21 H2_1 IK1 Z   1       0.347  -1.059  -3.350  1.00  0.00           H  
+HETATM   22 H2_2 IK1 Z   1      -0.770  -2.049  -4.268  1.00  0.00           H  
+HETATM   23  HC1 IK1 Z   1       5.322   0.057   0.532  1.00  0.00           H  
+HETATM   24  HC2 IK1 Z   1       3.206   1.887   3.802  1.00  0.00           H  
+HETATM   25  HC3 IK1 Z   1       3.188  -0.467  -0.570  1.00  0.00           H  
+HETATM   26  HC4 IK1 Z   1       1.063   1.370   2.726  1.00  0.00           H  
+HETATM   27  HC5 IK1 Z   1       1.239  -1.151  -1.386  1.00  0.00           H  
+HETATM   28  HN3 IK1 Z   1      -3.512  -0.582  -1.221  1.00  0.00           H  
+HETATM   29  HC8 IK1 Z   1       5.351   1.237   2.722  1.00  0.00           H  
+CONECT    1   12   19   20
+CONECT    2   13   21   22
+CONECT    3   12
+CONECT    3   12
+CONECT    4   13
+CONECT    4   13
+CONECT    5    7   14   23
+CONECT    5   14
+CONECT    6    8   14   24
+CONECT    6    8
+CONECT    7    5   15   25
+CONECT    7   15
+CONECT    8    6   15   26
+CONECT    8    6
+CONECT    9   16   17   27
+CONECT    9   16
+CONECT   10   12   18   28
+CONECT   11   16   18
+CONECT   12    1    3   10
+CONECT   12    3
+CONECT   13    2    4   17
+CONECT   13    4
+CONECT   14    5    6   29
+CONECT   14    5
+CONECT   15    7    8   16
+CONECT   15    7
+CONECT   16    9   11   15
+CONECT   16    9
+CONECT   17    9   13   18
+CONECT   17   18
+CONECT   18   10   11   17
+CONECT   18   17
+CONECT   19    1
+CONECT   20    1
+CONECT   21    2
+CONECT   22    2
+CONECT   23    5
+CONECT   24    6
+CONECT   25    7
+CONECT   26    8
+CONECT   27    9
+CONECT   28   10
+CONECT   29   14
+END   

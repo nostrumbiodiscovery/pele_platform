@@ -1,0 +1,9 @@
+frag_core: "../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb"
+resname: "3IP"
+frag_library: "../pele_platform/Examples/frag/pdb_test_lib"
+frag_core_atom: "C3-H2"
+working_folder: "../pele_platform/Examples/frag/analysis_data"
+only_analysis: true
+analysis_to_point: [16.85, 30.25, 27.36]
+test: true
+

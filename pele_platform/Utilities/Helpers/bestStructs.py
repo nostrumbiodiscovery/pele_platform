@@ -2,7 +2,6 @@
 
 import os
 import errno
-import argparse
 import pandas as pd
 import glob
 import re
@@ -36,11 +35,11 @@ TRAJ = "trajectory"
 ACCEPTED_STEPS = 'numberOfAcceptedPeleSteps'
 OUTPUT_FOLDER = 'BestStructs'
 DIR = os.path.abspath(os.getcwd())
-STEPS=3
+STEPS = 3
 HELP = "USE:\n\n- For xtc: python bestStructs.py 5 --top topology.pdb\n\n- For pdb:  python bestStructs.py 5"
 
 
-def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, criteria2=None, topology=None):
+def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, output=OUTPUT_FOLDER, numfolders=False, criteria2=None, topology=None, logger=None):
     """
 
       Description: Rank the traj found in the report files under path
@@ -62,9 +61,9 @@ def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, outp
 
      Output:
 
-        f_out: Name of the n outpu
+        f_out: Name of the n output
     """
-    #Get reports files
+    # Get reports files
     reports = glob.glob(os.path.join(path, "*/*report*"))
     reports = glob.glob(os.path.join(path, "*report*")) if not reports else reports
     reports = filter_non_numerical_folders(reports, numfolders)
@@ -73,19 +72,19 @@ def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, outp
     except IndexError:
         raise IndexError("Not report file found. Check you are in adaptive's or Pele root folder")
 
-    #Get metrics of reports
+    # Get metrics of reports
     if criteria.isdigit():
         steps, criteria = get_column_names(reports, STEPS, criteria)
     else:
         steps = get_column_names(reports, STEPS, criteria)
 
-    #Data Mining
+    # Data Mining
     if not criteria2:
         min_values = parse_values(reports, n_structs, criteria, sort_order, steps)
     else:
         min_values = parse_values(reports, n_structs, criteria, criteria2, sort_order, steps)
 
-    #Process data to be outputted
+    # Process data to be outputted
     values = min_values[criteria].tolist()
     paths = min_values[DIR].tolist()
     epochs = [os.path.basename(os.path.normpath(os.path.dirname(Path))) for Path in paths]
@@ -94,14 +93,14 @@ def main(criteria, path=DIR, n_structs=10, sort_order="min", out_freq=FREQ, outp
     files_out = ["epoch{}_trajectory_{}.{}_{}{}.pdb".format(epoch, report, int(step), criteria.replace(" ",""), value) \
        for epoch, step, report, value in zip(epochs, step_indexes, file_ids, values)]
 
-    #Read traj and output sanpshot  
+    # Read trajectory and output snapshot
     for f_id, f_out, step, path in zip(file_ids, files_out, step_indexes, paths):
         if not topology:
             extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_out)
         else:
             extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out)
     files_out = [os.path.join(output, f) for f in files_out]
-    #Return data
+    # Return data
     return files_out, epochs, file_ids, step_indexes, values
 
 
@@ -131,7 +130,7 @@ def extract_snapshot_from_pdb(path, f_id, output, topology, step, out_freq, f_ou
             raise AttributeError("Model not found. Check the -f option.")
         traj.append("ENDMDL\n")
         f.write("\n".join(traj))
-    print("Model {} selected".format(os.path.join(output, f_out)))
+
 
 def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_out):
     f_in = glob.glob(os.path.join(os.path.dirname(path), "*trajectory*_{}.xtc".format(f_id)))
@@ -141,8 +140,6 @@ def extract_snapshot_from_xtc(path, f_id, output, topology, step, out_freq, f_ou
         sys.exit("Trajectory {} not found. Be aware that PELE trajectories must contain the label \'trajectory\' in their file name to be detected".format("*trajectory*_{}".format(f_id)))
     splitTrajectory.main(output, [f_in[0], ], topology, [(step)/out_freq+1, ], template= f_out)
     print("Model {} selected".format(f_out))
-    
- 
 
 
 def parse_values(reports, n_structs, criteria, sort_order, steps):
@@ -184,7 +181,7 @@ def filter_non_numerical_folders(reports, numfolders):
     Filter non numerical folders among
     the folders to parse
     """
-    if(numfolders):
+    if numfolders:
         new_reports = [report for report in reports if(os.path.basename(os.path.dirname(report)).isdigit())]
         return new_reports
     else:

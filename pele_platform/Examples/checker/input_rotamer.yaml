@@ -1,0 +1,7 @@
+system: '../pele_platform/Examples/gpcr/complex.pdb'
+chain: 'L'
+resname: 'LIG'
+debug: true
+rotamers:
+  - "mgadeaz"
+use_peleffy: true  # plop
