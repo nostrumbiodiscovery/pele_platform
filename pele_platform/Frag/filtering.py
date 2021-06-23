@@ -74,37 +74,33 @@ class Library:
         self.main(self.sd_files)
 
     def main(self, files_sdf):
-        print(files_sdf)
-        print(len(files_sdf))
         counter = 0
         heap = []
-
         # Iterate on every sdf file of the database
         for file_sdf in files_sdf:
-            #             #self.molecule = mol
-            #             #self.fragments_dum = [Fragment(mol)]
-            #             #self.filters_f()
-            #             #self.save()
             mols = Chem.SDMolSupplier(file_sdf, removeHs=True)
             print("COMPUTING TANIMOTO COEFFICIENTS FOR FILE %s: %s" % (file_sdf, counter))
             counter +=1
             for mol in mols:
                 if mol:
-                    fp = Chem.RDKFingerprint(mol)
-                    coefficient = DataStructs.FingerprintSimilarity(self.init_mol.fingerprint, fp)
-                    if coefficient > 0.0:
-                        if len(heap) < 100:
-                            heapq.heappush(heap, (coefficient, mol.GetProp("_Name")))
-                            Chem.MolToPDBFile(mol, "%s.pdb" % (mol.GetProp("_Name")))
-                        else:
-                            if coefficient > heapq.nsmallest(1, heap)[0][0]:
-                                heapq.heappop(heap)
+                    self.molecule = mol
+                    self.fragments_dum = [Fragment(mol)]
+                    if self.filters_f():
+                        fp = Chem.RDKFingerprint(mol)
+                        coefficient = DataStructs.FingerprintSimilarity(self.init_mol.fingerprint, fp)
+                        if coefficient > 0.0:
+                            if len(heap) < 100:
                                 heapq.heappush(heap, (coefficient, mol.GetProp("_Name")))
-                                try:
-                                    Chem.MolToPDBFile(mol, "%s.pdb" % (mol.GetProp("_Name")))
-                                except:
-                                    print("FAILED FOR MOL: %s" % (mol.GetProp("_Name")))
-                                    continue
+                                Chem.MolToPDBFile(mol, "%s.pdb" % (mol.GetProp("_Name")))
+                            else:
+                                if coefficient > heapq.nsmallest(1, heap)[0][0]:
+                                    heapq.heappop(heap)
+                                    heapq.heappush(heap, (coefficient, mol.GetProp("_Name")))
+                                    try:
+                                        Chem.MolToPDBFile(mol, "%s.pdb" % (mol.GetProp("_Name")))
+                                    except:
+                                        print("FAILED FOR MOL: %s" % (mol.GetProp("_Name")))
+                                        continue
 
         # Only for top similar molecules, perform substructure search
         self.top_molecules = self.get_top_molecule(heap, os.getcwd())
@@ -273,8 +269,6 @@ class Library:
         return filters_dict
 
     def _apply_filters(self):
-        filtered = []
-
         for frag in self.fragments_dum:
             if frag.molecule_name:
                 filter_pass = []
@@ -314,8 +308,8 @@ class Library:
                     else:
                         filter_pass.append(False)
                 if all(filter_pass):
-                    filtered.append(frag.molecule)
-        return filtered
+                    return True
+        return False
 
 
 class Fragment():
