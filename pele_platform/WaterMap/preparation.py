@@ -2,10 +2,26 @@ import numpy as np
 import os
 from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection
 from pele_platform.Utilities.Helpers.randomize import calculate_com
-import pele_platform.Templates as templ
 
 
 def prepare_system(protein_file, user_center, user_radius):
+    """
+    Preprocesses the initial system by removing all existing water molecules and creating a water box of specific size,
+    as defined by the user.
+
+    Parameters
+    ----------
+    protein_file : str
+        Path to the PDB file (system in input.yaml).
+    user_center : List[float]
+        Coordinates of the user-defined box center.
+    user_radius : float
+        Box radius (i.e. half of the length of the cube).
+
+    Returns
+    -------
+        PDB file containing waters.
+    """
     user_center = list(user_center)
     pdb_no_waters = remove_water(protein_file)
     pdb_with_water = add_water_box(pdb_no_waters, user_center)
@@ -15,7 +31,18 @@ def prepare_system(protein_file, user_center, user_radius):
 
 
 def remove_water(protein_file):
+    """
+    Removes all water molecules from the PDB file.
 
+    Parameters
+    ----------
+    protein_file : str
+        Path to the original protein file.
+
+    Returns
+    -------
+        Path to the new file without waters.
+    """
     new_lines = []
     new_protein_file = os.path.basename(protein_file).replace(".pdb", "_prep.pdb")
     new_protein_file = os.path.abspath(new_protein_file)
@@ -28,7 +55,6 @@ def remove_water(protein_file):
                 new_lines.append(line)
 
     with open(new_protein_file, "w") as new_file:
-
         for line in new_lines:
             new_file.write(line)
 
@@ -36,6 +62,20 @@ def remove_water(protein_file):
 
 
 def add_water_box(protein_file, user_center):
+    """
+    Translates the middle of the water box to the center defined by the user.
+
+    Parameters
+    ----------
+    protein_file : str
+        Path to protein file
+    user_center : List[float]
+        Coordinates of the user-defined water box center.
+
+    Returns
+    -------
+        PDB file with water box.
+    """
 
     output_file = "translated_water.pdb"
     water_box_file = "../Templates/water_box.pdb"
@@ -64,7 +104,11 @@ def add_water_box(protein_file, user_center):
     with open(protein_file, "r") as protein_file:
         lines = protein_file.readlines()
         for line in lines:
-            if line.startswith("ATOM") or line.startswith("HETATM") or line.startswith("TER"):
+            if (
+                line.startswith("ATOM")
+                or line.startswith("HETATM")
+                or line.startswith("TER")
+            ):
                 to_save.append(line)
 
     with open(temp_output_file, "r") as water_file:
@@ -82,7 +126,21 @@ def add_water_box(protein_file, user_center):
 
 
 def remove_overlaps(protein_file, user_center, user_radius):
+    """
+    Removes overlap between added water molecules and the protein.
 
+    Parameters
+    ----------
+    protein_file : str
+        Path to protein file
+    user_center : List[float]
+        Coordinates of the water box center.
+    user_radius : float
+        Water box radius defined by the user.
+    Returns
+    -------
+        Fully preprocessed PDB file for the water map.
+    """
     equilibration_input = "equilibration_input.pdb"
 
     parser = PDBParser()
@@ -98,9 +156,14 @@ def remove_overlaps(protein_file, user_center, user_radius):
 
                 if atom.name == "OH2":
                     oxygen_coords = list(atom.get_vector())
-                    if np.linalg.norm(np.subtract(oxygen_coords, user_center)) > user_radius:
+                    if (
+                        np.linalg.norm(np.subtract(oxygen_coords, user_center))
+                        > user_radius
+                    ):
                         residues_to_remove.append(residue.get_id()[1])
-                    neighbours = NeighborSearch(protein_list).search(oxygen_coords, 1.0, "R")
+                    neighbours = NeighborSearch(protein_list).search(
+                        oxygen_coords, 1.0, "R"
+                    )
 
                     for contact in neighbours:
                         if contact.get_resname() != "TIP":
@@ -122,7 +185,3 @@ def remove_overlaps(protein_file, user_center, user_radius):
             file_out.write(line)
 
     return equilibration_input
-
-
-if __name__ == "__main__":
-    prepare_system("fake_input.pdb", [29.8419990540, 48.9189987183, 61.5859985352], 6.0)
