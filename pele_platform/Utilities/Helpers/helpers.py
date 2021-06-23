@@ -289,7 +289,7 @@ Should be 'chain:resnumber:atomname'"
         if residue.id[1] == res_number:
             for atom in residue.get_atoms():
                 if atom.name == atom_name:
-                    COI = np.array(list(atom.get_vector()))
+                    COI = list(atom.get_vector())
                     return COI
     raise cs.WrongAtomSpecified(
         f"Atom {original_residue} could not be found in structure"

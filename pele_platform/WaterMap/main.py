@@ -21,6 +21,7 @@ def run_watermap(parsed_yaml):
 
     # Remove all waters from the system
     user_radius = parsed_yaml.water_radius if parsed_yaml.water_radius else 6.0
+
     try:
         water_center = hp.get_coords_from_residue(
             parsed_yaml.system, parsed_yaml.water_center
@@ -30,6 +31,7 @@ def run_watermap(parsed_yaml):
     parsed_yaml.system = prep.prepare_system(
         parsed_yaml.system, water_center, user_radius
     )
+    parsed_yaml.water_center = water_center
 
     # Launch adaptive simulation
     simulation = sim.run_adaptive(parsed_yaml)
@@ -37,9 +39,10 @@ def run_watermap(parsed_yaml):
     # Get path to simulation output
     simulation_output = os.path.join(simulation.pele_dir, simulation.output)
 
+    return simulation
     # Analyse
-    analysis = an.main(
-        simulation.water_center, simulation.water_radius, simulation_output
-    )
-
-    return analysis
+    # analysis = an.main(
+    #     simulation.water_center, simulation.water_radius, simulation_output
+    # )
+    #
+    # return analysis
