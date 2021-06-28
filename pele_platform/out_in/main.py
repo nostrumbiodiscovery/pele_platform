@@ -59,3 +59,4 @@ class OutInLauncher:
             self.args.box_radius if self.args.box_radius else box_radius
         )
         self.args.randomize = True
+        self.args.atom_dist = [self.args.final_site, self.args.initial_site]  # this should become column 7 in report
