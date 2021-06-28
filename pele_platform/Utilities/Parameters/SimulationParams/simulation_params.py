@@ -111,11 +111,17 @@ class SimulationParams(
             if args.water_freq is not None
             else self.simulation_params.get("water_freq", 1)
         )
-        self.conformation_freq = (
+        conformation_freq = (
             args.conformation_freq
             if args.conformation_freq is not None
             else self.simulation_params.get("conformation_freq", 4)
         )
+
+        if args.ligand_conformations:
+            self.conformation_freq = cs.CONFORMATION_FREQUENCY.format(conformation_freq)
+        else:
+            self.conformation_freq = ""
+
         self.temperature = (
             args.temperature
             if args.temperature
