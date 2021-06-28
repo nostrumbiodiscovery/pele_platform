@@ -40,6 +40,7 @@ def run_adaptive(args):
     parameters = builder.build_adaptive_variables(args)
     parameters.create_files_and_folders()
     shutil.copy(args.yamlfile, parameters.pele_dir)
+    missing_residues = []
 
     if parameters.adaptive_restart and not parameters.only_analysis:
         with helpers.cd(parameters.pele_dir):
@@ -115,7 +116,6 @@ def run_adaptive(args):
 
             if parameters.no_ppp:
                 receptor = syst.system
-                missing_residues = []
             else:
                 receptor, missing_residues, _, _, _ = ppp.main(
                     syst.system,
@@ -151,7 +151,6 @@ def run_adaptive(args):
                     except shutil.SameFileError:  # systems that go through randomization are already moved
                         pass
             else:
-                missing_residues = []
                 shutil.copy(parameters.system, parameters.inputs_dir)
         else:
             parameters.nonstandard.extend(hp.find_nonstd_residue(syst.system))
