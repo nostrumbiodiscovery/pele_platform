@@ -26,7 +26,7 @@ class LigandConformations:
         self.forcefield = Parametrizer._retrieve_forcefield(forcefield)
         self.dir = pele_dir if pele_dir is not None else os.getcwd()
         self.output_file = os.path.join(
-            self.dir, "DataLocal", "conformations", f"{resname}.conformation"
+            self.dir, "DataLocal", "Conformations", f"{resname}.conformation"
         )
 
     def generate(self):
