@@ -33,6 +33,9 @@ def run_watermap(parsed_yaml):
     )
     parsed_yaml.water_center = water_center
 
+    if not parsed_yaml.folder:
+        parsed_yaml.folder = hp.get_next_peledir("Water_Pele")
+
     # Launch adaptive simulation
     simulation = sim.run_adaptive(parsed_yaml)
 
