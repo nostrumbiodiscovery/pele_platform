@@ -407,7 +407,8 @@ class Analysis(object):
 
         # Filter coordinates
         coordinates, water_coordinates, dataframe, energetic_threshold = \
-            self._filter_coordinates(coordinates, water_coordinates, dataframe, threshold=self.clustering_filtering_threshold)
+            self._filter_coordinates(coordinates, water_coordinates, dataframe,
+                                     threshold=self.clustering_filtering_threshold)
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
@@ -515,7 +516,6 @@ class Analysis(object):
         from pele_platform.analysis.clustering import (GaussianMixtureClustering,
                                                        HDBSCANClustering,
                                                        MeanShiftClustering)
-
 
         if clustering_type.lower() == "gaussianmixture":
             clustering = GaussianMixtureClustering(analysis_nclust)
@@ -1125,7 +1125,7 @@ class Analysis(object):
             dataframe.query('currentEnergy<={}'.format(energetic_threshold))
 
         return filtered_coordinates, filtered_water_coordinates, \
-            filtered_dataframe, energetic_threshold
+               filtered_dataframe, energetic_threshold
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """
@@ -1385,7 +1385,8 @@ class Analysis(object):
         file_name = os.path.join(path, "top_selections.csv")
         representatives_data.to_csv(file_name, index=False)
 
-    def _get_cluster_populations(self, water_clusters):
+    @staticmethod
+    def _get_cluster_populations(water_clusters):
         """
         It calculates the population of each cluster. This means the
         number of times a water molecule visited each cluster along
@@ -1411,7 +1412,8 @@ class Analysis(object):
                 populations[i] = 1
         return populations
 
-    def _write_centroids(self, populations, estimator, path):
+    @staticmethod
+    def _write_centroids(populations, estimator, path):
         """
         It writes the centroids as a PDB file.
 
