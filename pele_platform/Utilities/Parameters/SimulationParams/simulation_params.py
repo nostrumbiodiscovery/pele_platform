@@ -168,6 +168,7 @@ class SimulationParams(
             if not args.ligand_conformations
             else self.simulation_params.get("conformation_perturbation", cs.CONFORMATION_PERTURBATION)
         )
+        self.watermap = args.watermap if args.watermap is not None else False
 
     def anm_params(self, args):
         self.anm_displacement = (

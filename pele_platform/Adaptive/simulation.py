@@ -210,11 +210,12 @@ def run_adaptive(args):
         parameters.logger.info(f"Complex {parameters.system} prepared\n\n")
 
         # Ligand/metal and solvent parameters
-        if (parameters.perturbation or parameters.sidechain_perturbation) and parameters.use_peleffy:
+        # breakpoint()
+        if (parameters.perturbation or parameters.sidechain_perturbation or parameters.watermap) and parameters.use_peleffy:
             ligand_parametrizer = parametrizer.Parametrizer.from_parameters(parameters)
             ligand_parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
 
-        elif (parameters.perturbation or parameters.sidechain_perturbation) and not parameters.use_peleffy:
+        elif (parameters.perturbation or parameters.sidechain_perturbation or parameters.watermap) and not parameters.use_peleffy:
             # Parametrize the ligand
             ligand_params = lg.LigandParametrization(parameters)
             ligand_params.generate()
@@ -302,6 +303,7 @@ def run_adaptive(args):
         water_obj.run()
         parameters.parameters = water_obj.ligand_perturbation_params
         parameters.water_ids_to_track = water_obj.water_ids_to_track
+        parameters.water_center = water_obj.water_center.split(", ")
 
         # Check if atoms need mapping due to preprocessing
         args = AtomMapper(args, parameters, syst.system).run()

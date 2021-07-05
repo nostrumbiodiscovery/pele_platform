@@ -24,10 +24,11 @@ def prepare_system(protein_file, user_center, user_radius):
     """
     user_center = list(user_center)
     pdb_no_waters = remove_water(protein_file)
-    pdb_with_water = add_water_box(pdb_no_waters, user_center)
-    equilibration_input = remove_overlaps(pdb_with_water, user_center, user_radius)
+    # pdb_with_water = add_water_box(pdb_no_waters, user_center)
+    # equilibration_input = remove_overlaps(pdb_with_water, user_center, user_radius)
 
-    return equilibration_input
+    # return equilibration_input
+    return protein_file
 
 
 def remove_water(protein_file):

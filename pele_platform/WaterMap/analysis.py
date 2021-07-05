@@ -12,12 +12,12 @@ class Grid:
 
         Parameters
         ----------
-        box_center : List[float]
+        box_center : List[str]
             Box center defined by the user, otherwise ligand center of mass.
         box_radius : float
             Box radius defined by the user, otherwise maximum coordinates of the ligand.
         """
-        self.center = box_center
+        self.center = [float(number) for number in box_center]
         self.radius = box_radius
         self.side = int(box_radius) * 2
         self.n_voxels = int(self.side) ** 3
@@ -263,7 +263,6 @@ def extract_snapshots(simulation_output):
 
 
 def main(user_center, radius, output_simulation):
-
     grid = Grid(user_center, radius)
     grid.generate_voxels()
     snapshots = extract_snapshots(output_simulation)
@@ -271,5 +270,5 @@ def main(user_center, radius, output_simulation):
     for snapshot in snapshots:
         snapshot.generate_properties()
         snapshot.check_voxel(grid.voxels)
-        snapshot.voxel.add_snapshot(snapshot)
+        snapshot.voxel.add_snapshot(snapshot)  # Not sure if this makes sense
         grid.add_active_voxel(snapshot.voxel)
