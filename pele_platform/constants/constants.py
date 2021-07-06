@@ -494,3 +494,5 @@ in_pele_data = ["caz", "clz", "cuiz", "cuz", "hohz", "mgz", "mnz", "naz", "spcz"
 
 
 refinement_angle = '"refinementAngle": {},'
+
+CONFORMATION_FREQUENCY = '"conformationPerturbationFrequency": {},'

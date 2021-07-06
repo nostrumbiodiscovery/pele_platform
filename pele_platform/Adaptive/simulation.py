@@ -40,6 +40,7 @@ def run_adaptive(args):
     parameters = builder.build_adaptive_variables(args)
     parameters.create_files_and_folders()
     shutil.copy(args.yamlfile, parameters.pele_dir)
+    missing_residues = []
 
     if parameters.adaptive_restart and not parameters.only_analysis:
         with helpers.cd(parameters.pele_dir):
@@ -84,15 +85,15 @@ def run_adaptive(args):
                 if parameters.no_ppp:
                     input_proc = input_path
                 else:
-                    input_proc = os.path.basename(
-                        ppp.main(
+                    input_proc, missing_residues, _, _, _ = ppp.main(
                             input_path,
                             parameters.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
                             output_pdb=["", ],
                             charge_terminals=args.charge_ter,
                             no_gaps_ter=args.gaps_ter,
                             constrain_smiles=None,
-                            ligand_pdb=parameters.ligand_ref)[0])
+                            ligand_pdb=parameters.ligand_ref)
+                input_proc = os.path.basename(input_proc)
                 input_proc = os.path.join(parameters.inputs_dir, input_proc)
                 parameters.inputs_simulation.append(input_proc)
             parameters.adap_ex_input = ", ".join(
@@ -112,17 +113,19 @@ def run_adaptive(args):
             if not args.gpcr_orth and not args.out_in:
                 parameters.box_center = box_center
                 parameters.box_radius = box_radius
+
             if parameters.no_ppp:
                 receptor = syst.system
             else:
-                receptor = ppp.main(
+                receptor, missing_residues, _, _, _ = ppp.main(
                     syst.system,
                     parameters.inputs_dir,  # to ensure it goes to pele_dir/input, not pele_dir
                     output_pdb=["", ],
                     charge_terminals=args.charge_ter,
                     no_gaps_ter=args.gaps_ter,
                     constrain_smiles=None,
-                    ligand_pdb=parameters.ligand_ref)[0]
+                    ligand_pdb=parameters.ligand_ref)
+
             inputs = rd.join(
                 receptor,
                 ligand_positions,
@@ -140,7 +143,6 @@ def run_adaptive(args):
         # Prepare System
         if parameters.no_ppp or parameters.input:  # No need to run system through PPP, if we already preprocessed
             # parameters.input
-            missing_residues = []
             if parameters.input:
                 # If we have more than one input
                 for input in parameters.input:

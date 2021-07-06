@@ -11,7 +11,7 @@ about:
   summary: Automatic platform to spawn PELE, AdaptivePELE, MSM_PELE ad frag_PELE jobs
 
 source:
-  path: ../
+  path: ../../
 
 build:
   script: python -m pip install . --no-deps -vv
