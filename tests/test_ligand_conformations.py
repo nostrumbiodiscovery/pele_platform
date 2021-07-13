@@ -20,7 +20,7 @@ def test_class():
     """
     Tests class that generates conformation library using 3 ligand PDB files as input.
     """
-    expected_output = "DataLocal/conformations/IK1.conformation"
+    expected_output = "DataLocal/Conformations/IK1.conformation"
     system_file = os.path.join(cs.DIR, "Examples", "out_in", "1_3ZON_complex.pdb")
 
     generator = LigandConformations(
@@ -45,4 +45,4 @@ def test_production():
     errors = check_file(job.pele_dir, "pele.conf", expected_lines, [])
     assert not errors
 
-    assert os.path.exists(os.path.join(job.pele_dir, "DataLocal", "conformations", f"{job.residue}.conformation"))
+    assert os.path.exists(os.path.join(job.pele_dir, "DataLocal", "Conformations", f"{job.residue}.conformation"))
