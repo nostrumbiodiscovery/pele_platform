@@ -96,3 +96,7 @@ class IncompatiblePELEVersion(Exception):
 
 class PELENotFound(Exception):
     pass
+
+
+class IncorrectResidueNumbers(Exception):
+    pass
