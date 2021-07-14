@@ -16,7 +16,6 @@ from pele_platform.Utilities.Parameters.SimulationParams.site_finder import site
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 import pele_platform.Utilities.Helpers.helpers as hp
 
-
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
@@ -45,6 +44,7 @@ class SimulationParams(
         self.constraints_params(args)
         self.interaction_restrictions_params(args)
         self.covalent_docking_params(args)
+        self.check_flags(args)
 
         # Create all simulation types (could be more efficient --> chnage in future)
         super().generate_msm_params(args)
@@ -111,11 +111,17 @@ class SimulationParams(
             if args.water_freq is not None
             else self.simulation_params.get("water_freq", 1)
         )
-        self.conformation_freq = (
+        conformation_freq = (
             args.conformation_freq
             if args.conformation_freq is not None
             else self.simulation_params.get("conformation_freq", 4)
         )
+
+        if args.ligand_conformations:
+            self.conformation_freq = cs.CONFORMATION_FREQUENCY.format(conformation_freq)
+        else:
+            self.conformation_freq = ""
+
         self.temperature = (
             args.temperature
             if args.temperature
@@ -637,12 +643,14 @@ class SimulationParams(
         """
         self.covalent_residue = args.covalent_residue if args.covalent_residue else None
         self.nonbonding_radius = args.nonbonding_radius if args.nonbonding_radius is not None else 20.0
-        self.perturbation_trials = args.perturbation_trials if args.perturbation_trials is not None else self.simulation_params.get("perturbation_trials", 10)
+        self.perturbation_trials = args.perturbation_trials if args.perturbation_trials is not None else self.simulation_params.get(
+            "perturbation_trials", 10)
         self.max_trials_for_one = self.perturbation_trials * 2
 
         if self.covalent_residue:
             # Refinement distance should be empty for the general simulation (handled in CovalentDocking runner).
-            self.refinement_angle = args.refinement_angle if args.refinement_angle is not None else self.simulation_params.get("refinement_angle", 10)
+            self.refinement_angle = args.refinement_angle if args.refinement_angle is not None else self.simulation_params.get(
+                "refinement_angle", 10)
             self.refinement_angle = cs.refinement_angle.format(self.refinement_angle)
             self.sidechain_perturbation = cs.SIDECHAIN_PERTURBATION
             self.covalent_sasa = cs.SASA_COVALENT.format(self.covalent_residue)
@@ -651,3 +659,21 @@ class SimulationParams(
             self.sidechain_perturbation = ""
             self.covalent_sasa = ""
             self.refinement_angle = ""
+
+    @staticmethod
+    def check_flags(args):
+        """
+        Recognises any flags incompatible with each other.
+        """
+        if args.mae_lig and args.template:
+            mae_lig_residue = os.path.basename(os.path.splitext(args.mae_lig)[0]).upper()
+
+            if isinstance(args.template, str):
+                args.template = [args.template]
+
+            template_residues = [os.path.basename(os.path.splitext(file)[0]).upper().rstrip("Z")
+                                 for file in args.template]
+
+            if mae_lig_residue in template_residues:
+                raise custom_errors.IncompatibleYamlFlags(
+                    "Argument mae_lig cannot be used in conjunction with ligand template,")

@@ -549,6 +549,8 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **plot_filtering_threshold**: Percentage of output structures to filter out before creating plots. Default = 0.02
 
+- **min_population**: The minimum population that selected clusters must fulfil. It takes a value between 0 and 1. The default value of 0.01 implies that all selected clusters need to have a population above 1% of the total amount of sampled poses.
+
 ..  code-block:: yaml
 
     only_analysis: true

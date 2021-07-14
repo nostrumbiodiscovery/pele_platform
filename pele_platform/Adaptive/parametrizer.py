@@ -456,12 +456,13 @@ class Parametrizer:
             the ligand preparation process
         """
         from pele_platform.Utilities.Helpers import helpers
+        from pele_platform.Checker.pdb_checker import PDBChecker
         from peleffy.topology import RotamerLibrary, Topology
         from peleffy.utils import OutputPathHandler
         from peleffy.template import Impact
         from peleffy.forcefield.parameters import BaseParameterWrapper
 
-        pdb_file = self.check_protein_file(pdb_file)
+        pdb_file = PDBChecker(pdb_file).check()
 
         ligand_core_constraints = self._fix_atom_names(
             self.ligand_resname, self.ligand_core_constraints, pdb_file
@@ -697,63 +698,6 @@ class Parametrizer:
 
             return fixed_atoms
 
-    @staticmethod
-    def check_protein_file(pdb_file):
-        """
-        It checks for hydrogen atoms in the input PDB to ensure that
-        it has been protonated and complaints otherwise.
-
-        Parameters
-        ----------
-        pdb_file : str
-            Path to the PDB file from which all HET groups will be extracted
-            and parametrized
-
-        Raises
-        ------
-        ProtonationError if no hydrogen atoms are found in the input PDB.
-        """
-        hydrogen_lines = []
-
-        with open(pdb_file) as f:
-            lines = f.readlines()
-            atom_lines = [
-                line
-                for line in lines
-                if line.startswith("ATOM") or line.startswith("HETATM")
-            ]
-            connect_lines = [line for line in lines if line.startswith("CONECT")]
-
-            for line in atom_lines:
-                if line[12:16].strip().startswith("H"):
-                    hydrogen_lines.append(line)
-
-        if len(hydrogen_lines) < 1:
-            raise custom_errors.ProtonationError(
-                "We did not find any hydrogen "
-                "atoms in your system - looks "
-                "like you forgot to "
-                "protonate it."
-            )
-
-        if len(connect_lines) < 1:
-            warnings.warn(
-                f"CAREFUL: PDB file {pdb_file} is missing the CONECT lines at the end!"
-            )
-
-            # Import and export with Schrodinger to add CONECT lines without making any other changes
-            print("Adding CONECT lines with Schrodinger...")
-            schrodinger_path = os.path.join(
-                constants.SCHRODINGER, "utilities/prepwizard"
-            )
-            file_name, ext = os.path.splitext(pdb_file)
-            conect_pdb_file = f"{file_name}_conect{ext}"
-            command_pdb = f"{schrodinger_path} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID {pdb_file} {conect_pdb_file}"
-            subprocess.call(command_pdb.split())
-
-            return conect_pdb_file
-
-        return pdb_file
 
     def _handle_solvent_template(self, topologies):
         """
