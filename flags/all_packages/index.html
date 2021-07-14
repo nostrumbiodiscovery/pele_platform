@@ -696,6 +696,7 @@ constraints levels and those predefined in each package.</p>
 <li><p><strong>max_top_poses</strong>: Maximum number of top poses to be retrieved. Default = 100.</p></li>
 <li><p><strong>clustering_filtering_threshold</strong>: Percentage of output structures to filter our before clustering. Default = 0.25.</p></li>
 <li><p><strong>plot_filtering_threshold</strong>: Percentage of output structures to filter out before creating plots. Default = 0.02</p></li>
+<li><p><strong>min_population</strong>: The minimum population that selected clusters must fulfil. It takes a value between 0 and 1. The default value of 0.01 implies that all selected clusters need to have a population above 1% of the total amount of sampled poses.</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">be_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
