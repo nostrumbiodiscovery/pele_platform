@@ -100,3 +100,7 @@ class PELENotFound(Exception):
 
 class IncorrectResidueNumbers(Exception):
     pass
+
+
+class IncompatibleYamlFlags(Exception):
+    pass
