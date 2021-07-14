@@ -8,8 +8,10 @@ import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
 from pele_platform.enzyme_engineering.saturated_mutagenesis import SaturatedMutagenesis
 from pele_platform.covalent_docking.main import CovalentDocking
+from pele_platform.constants import constants
 import pele_platform.Utilities.Parameters.parameters as pv
 import argparse
+import pkg_resources
 
 
 @dataclass
@@ -29,6 +31,7 @@ class Launcher:
     def launch(self) -> pv.ParametersBuilder:
         # Launch package from input.yaml
         self._define_package_to_run()
+        print(constants.version_header.format(pkg_resources.get_distribution("pele_platform").version))
         job_variables = self.launch_package(self._args.package, no_check=self._args.no_check)
         return job_variables
 

@@ -496,3 +496,12 @@ in_pele_data = ["caz", "clz", "cuiz", "cuz", "hohz", "mgz", "mnz", "naz", "spcz"
 refinement_angle = '"refinementAngle": {},'
 
 CONFORMATION_FREQUENCY = '"conformationPerturbationFrequency": {},'
+
+version_header = """
+PELE Platform {}
+---------------------------
+Nostrum Biodiscovery SL
+www.nostrumbiodiscovery.com
+
+All rights reserved, 2021.
+"""
