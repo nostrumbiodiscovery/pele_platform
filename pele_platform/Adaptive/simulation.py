@@ -25,6 +25,7 @@ import pele_platform.Adaptive.pca as pca
 import pele_platform.Adaptive.plop_solvent as sv
 import pele_platform.Adaptive.plop_ligand_parametrization as lg
 from pele_platform.Utilities.Helpers import ligand_conformations
+from pele_platform.Checker import pdb_checker
 
 
 def run_adaptive(args):
@@ -51,6 +52,8 @@ def run_adaptive(args):
         parameters.logger.info(
             "System: {}; Platform Functionality: {}\n\n".format(
                 parameters.residue, parameters.software))
+
+        pdb_checker.PDBChecker(parameters.system).check_negative_residues()
 
         # Create inputs directory
         if not os.path.exists(parameters.inputs_dir):
