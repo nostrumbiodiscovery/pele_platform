@@ -121,7 +121,11 @@ class SystemBuilder(object):
         with open(self.receptor, "r") as pdb_file:
             residue = None
             ligand_text = []
-            for line in pdb_file:
+
+            # Filter out all description, CONECT and ANISOU lines
+            lines = [line for line in pdb_file.readlines() if line.startswith("ATOM") or line.startswith("HETATM")]
+
+            for line in lines:
                 if line[17:20].strip() == self.residue:
                     if residue is None:
                         residue = line[22:26]
