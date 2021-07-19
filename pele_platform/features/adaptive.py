@@ -40,6 +40,7 @@ SOFTWARE_CONSTANTS = {
             "overlap_factor": 0.65,
             "params": pcs.OUT_IN,
             "box_radius": 30,
+            "bias_column": 7,
         },
         "gpcr_orth": {
             "spawning_type": "epsilon",

@@ -1,0 +1,7 @@
+system: '../pele_platform/Examples/checker/complex2.pdb'
+chain: 'Z'
+resname: 'API'
+templates:
+  - '../apiz'
+  - '../xxxz'
+mae_lig: '../api.mae'

@@ -415,3 +415,14 @@ def test_latest_pele_dir(dir_index, pele_dir):
     # Clean up
     for i in range(dir_index + 1):
         shutil.rmtree(f"XXX_Pele_{i}")
+
+
+def test_flag_compatibility_checker():
+    """
+    Checks if the platform raises an error when incompatible flags are introduced.
+    """
+
+    yaml = os.path.join(test_path, "checker", "incompatible_flags.yaml")
+
+    with pytest.raises(ce.IncompatibleYamlFlags):
+        main.run_platform_from_yaml(yaml)
