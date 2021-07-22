@@ -1,14 +1,82 @@
 Versions
 ############
 
-Here we report the main changes for each version
+v1.6.0 beta 5
+==============
 
-v1.5.0 (19/06/2020)
+- Interaction restrictions
+
+- Integrate peleffy and support OpenFF force fields
+
+- New module and API for analysis
+
+- Integrate Mean Shift and HDBSCAN clustering algorithms
+
+- Add water sites analysis
+
+- Support for PELE installations on docker and singularity containers
+
+- Support for growing custom fragment libraries
+
+- Kernel density estimator plots
+
+- Constraints levels for alpha carbons
+
+- Changes to Monte Carlo default parameters for some packages
+
+- Allosteric package renamed to site finder
+
+- Minor changes to folder structure
+
+- Better handling of YAML errors
+
+- Optimisation of coordinates parser and bugfixes
+
+- Recover restart flag to allow the users to manually curate control files and use them in a new run
+
+- Support for the new equilibration mode flag of Adaptive
+
+- Fix problems with the box of the Out --> In package
+
+- Add user warnings to facilitate the system preparation
+
+- Introduced flexible filtering of output structures taken into account during analysis.
+
+- Support for conformation perturbation.
+
+- Support for the new PELE minimum steps.
+
+- Other minor improvements
+
+
+v1.5.1
+==========================
+
+- AquaPELE
+
+- High-throughput fragment screening
+
+- Improved out-in exploration
+
+- Support for non-standard residues
+
+- Automatic metal constraints
+
+- Metal polarisation
+
+- Tutorials
+
+- Outliers removed from plots
+
+- Improved documentation
+
+
+v1.5.0
 ==========================
 
 - PPI package
 
-- Allosteric package
+- Site finder (pocket exploration) package
 
 - GPCR orthosteric package
 
@@ -30,7 +98,8 @@ v1.5.0 (19/06/2020)
 
 - Coverage up to 94%
 
-v1.4.4 (5/05/2020)
+
+v1.4.4
 =====================
 
 - Include further testing of alignment and rdkit symmetry problem
@@ -39,12 +108,14 @@ v1.4.4 (5/05/2020)
 
 - Improve exceptions with custom errors
 
-v1.4.3 (27/04/2020)
+
+v1.4.3
 ======================
 
 - Fix rdkit substructure search symmetry problem by alignment
 
-v1.4.2 (23/04/2020)
+
+v1.4.2
 ====================
 
 - FragPELE better tested
@@ -57,12 +128,14 @@ v1.4.2 (23/04/2020)
 
 - Minor fixes
 
-v1.4.1 (23/04/2020)
+
+v1.4.1
 ======================
 
 - Wrongly updated
 
-v1.4.0 (30/03/2020)
+
+v1.4.0
 =======================
 
 - FragPELE supported (Beta-version)
@@ -82,7 +155,7 @@ v1.4.0 (30/03/2020)
 - Better coverage (77%)
 
 
-v1.3.4 (10/03/2020)
+v1.3.4
 =======================
 
 - Make mae flag convert clusters as well as top poses to mae
@@ -91,12 +164,14 @@ v1.3.4 (10/03/2020)
 
 - Allow user to specify the columns of the report via be_column, te_column and limit_column.
 
-v1.3.3 (01/03/2020)
+
+v1.3.3
 =======================
 
 - Include only analysis flag
 
-v1.3.2 (30/03/2020)
+
+v1.3.2
 =======================
 
 - Automatically score the simulation by making the average of the 25% best energy structures.
@@ -105,14 +180,16 @@ v1.3.2 (30/03/2020)
 
 - Support conda deployment for python 3.8
 
-v1.3.1 (29/03/2020)
+
+v1.3.1
 =======================
 
 - Fixed bug in xtc analysis
 
 - Renew environment on SCHRODINGER subprocess
 
-v1.3.0 (21/02/2020)
+
+v1.3.0 
 =======================
 
 - Set constraints by smiles
@@ -129,7 +206,8 @@ v1.3.0 (21/02/2020)
 
 - Fix minor bugs
 
-v1.2.3 (04/02/2020)
+
+v1.2.3
 =======================
 
 - Automatic PCA mode
@@ -138,7 +216,8 @@ v1.2.3 (04/02/2020)
 
 - Set PPP as external dependence
 
-v1.2.2 (23/12/2019)
+
+v1.2.2
 =======================
 
 - Fix global exploration bug when joining ligand & receptor
@@ -150,7 +229,7 @@ v1.2.2 (23/12/2019)
 - Some minor fixes
 
 
-v1.2.1 (05/12/2019)
+v1.2.1
 =======================
 
 - Add verboseMode
@@ -161,7 +240,8 @@ v1.2.1 (05/12/2019)
 
 - Minor fixes
 
-v1.2.0 (24/11/2019)
+
+v1.2.0
 =======================
 
 - Conda installation
@@ -170,7 +250,8 @@ v1.2.0 (24/11/2019)
 
 - Fix minor bugs
 
-v1.1.0 (19/10/2019)
+
+v1.1.0
 =======================
 
 - Automatic Platform to automatically launch PELE&adaptivePELE. It creates the forcefield parameters, the control files, the PELE input.pdb and finally launch the simulation.

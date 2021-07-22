@@ -5,6 +5,7 @@ from pele_platform.Errors import custom_errors as ce
 import shutil
 import glob
 import os
+import pytest
 from . import test_adaptive as tk
 
 
@@ -40,12 +41,10 @@ def test_water(yaml=yaml):
     water_output = []
 
     # Function to test
-    job, _, _ = main.run_platform(yaml)
+    job, _, _ = main.run_platform_from_yaml(yaml)
 
     # checkpoints
-    output = glob.glob(
-        os.path.join(job.pele_dir, "results/BestStructs/epoch0_trajectory_1.0*")
-    )[0]
+    output = glob.glob(os.path.join(job.pele_dir, "results/top_poses/0.1.0*"))[0]
 
     with open(output, "r") as file:
         lines = file.readlines()
@@ -69,7 +68,7 @@ WATER_PREVIOUS_ADAPTIVE = ['"type" : "null",']
 def test_water_with_previous_water(yaml=yaml_previous_water):
     # Function to test
     errors = []
-    job = main.run_platform(yaml)
+    job = main.run_platform_from_yaml(yaml)
     errors = tk.check_file(job.pele_dir, "pele.conf", WATER_PREVIOUS_PELE, errors)
     errors = tk.check_file(
         job.pele_dir, "adaptive.conf", WATER_PREVIOUS_ADAPTIVE, errors
@@ -207,4 +206,47 @@ def test_water_lig(ext_args=WATERLIG_ARGS):
     job = main.run_platform(ext_args)
     folder = job.pele_dir
     errors = tk.check_file(folder, "pele.conf", WATER_VALUES, errors)
+    # os.remove(input_file)
+    assert (
+        water_object.water_line
+        == '\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 6, "fixedCenter": [-87.5760388319, -7.1355193027, -64.8428620317], "type": "sphericalBox"}}]\n         }, \n'
+    )
     assert not errors
+
+
+def test_retrieve_indices_to_track():
+    """
+    Run the function to check, if it correctly parses retrieved waters to a format used by Analysis.
+    """
+    inp = ["A:202", "B:1000", "C:1"]
+    expected_out = [("A", 202), ("B", 1000), ("C", 1)]
+
+    output = wt.WaterIncluder.retrieve_indices_to_track(inp)
+    assert output == expected_out
+
+
+@pytest.mark.parametrize(
+    ("configuration_file", "expected_list"),
+    [
+        ("water_pele.conf", [("A", 202), ("A", 203), ("A", 204)]),
+        ("water2_pele.conf", [("W", 1), ("A", 2405), ("A", 2406)]),
+    ],
+)
+def test_water_ids_from_conf(configuration_file, expected_list):
+    """
+    Tests if we can correctly extract water indices from pele.conf.
+
+    Parameters
+    -----------
+    configuration_file : str
+        Path to configuration file (pele.conf).
+    expected_list : list[tuple]
+        List of tuples containing water molecule IDs.
+    """
+    from pele_platform.Utilities.Helpers.water import water_ids_from_conf
+
+    configuration_file = os.path.join(test_path, "water", configuration_file)
+    output = water_ids_from_conf(configuration_file)
+
+    for element in expected_list:
+        assert element in output

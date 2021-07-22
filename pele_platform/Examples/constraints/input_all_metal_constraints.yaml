@@ -7,3 +7,4 @@ test: true
 debug: true
 constrain_all_metals: true
 traj: trajectory.xtc
+debug: true

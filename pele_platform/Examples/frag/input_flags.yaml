@@ -11,7 +11,7 @@ iterations: 1
 steps: 1
 skip_preprocess: true
 gridres: 60
-maxtorsion: 2
+maxtorsion: 2  # plop
 templates:
   - "data/mgz"
   - "data/strz"
@@ -58,7 +58,6 @@ pele_exec: "done"
 pele_data: "done"
 pele_documents: "done"
 verbose: true
-water_freq: 3
 water_overlap: 3
 waters:
 - M:1

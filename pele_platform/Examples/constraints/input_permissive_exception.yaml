@@ -7,3 +7,4 @@ test: true
 debug: true
 permissive_metal_constr: true
 traj: trajectory.xtc
+debug: true

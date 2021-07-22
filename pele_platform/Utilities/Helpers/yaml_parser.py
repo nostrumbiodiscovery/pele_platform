@@ -1,9 +1,38 @@
 from dataclasses import dataclass
+from pele_platform.Errors.custom_errors import (
+    LigandNameNotSupported,
+    MultipleSimulationTypes,
+)
+from pele_platform.features.adaptive import SOFTWARE_CONSTANTS
 from difflib import SequenceMatcher
 from pele_platform.Errors import custom_errors
 from pele_platform.Models.utils import PydanticProxy
 from pele_platform.Models.yaml_parser_model import YamlParserModel
 import yaml
+
+
+
+def _yaml_error_wrapper(error):
+    """
+    Wraps YAML errors into a more human-friendly format, making customs suggestions about potential issues.
+    This should be expanded in the future when more issues get reported by the users.
+    """
+    custom_errors = {
+        "expected '<document start>', but found '<block mapping start>'": "Please ensure every key in input.yaml is "
+        "followed by a colon and "
+        "a space. There seem to be some issues on line {}, character {}.",
+        "found character '\\t' that cannot start any token": "Please remove any trailing tabs from input.yaml, there "
+        "seem to be one on line {}, character {}.",
+    }
+
+    custom = custom_errors.get(str(error.problem).strip(), None)
+
+    if custom:
+        line = error.problem_mark.line + 1
+        character = int(error.problem_mark.column) + 1
+        raise yaml.YAMLError(custom.format(line, character))
+    else:
+        raise error
 
 
 @dataclass
@@ -35,19 +64,62 @@ class YamlParser(PydanticProxy):
         with open(self.yamlfile, "r") as stream:
             try:
                 data = yaml.safe_load(stream)
-            except yaml.YAMLError as exc:
-                raise exc
+            except Exception as error:
+                _yaml_error_wrapper(error)
         return data
 
-    def _check(self, data) -> None:
-        # Check if valids in yaml file are valids
-        for key in data.keys():
-            if key not in self.valid_flags:
+    def _get_value_from_env(self):
+        """
+        Gets value of SRUN from environment, so that users do not have to change their YAML files.
+        """
+        self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
+
+    def _check(self) -> None:
+        """
+        Checks if flags in YAML file are valid.
+        """
+        for key in self.data.keys():
+            if key not in self.valid_flags.values():
                 raise KeyError(self._recommend(key))
+
+    def _check_residue(self) -> None:
+        """
+        Makes sure the residue name is not UNK (which is not supported by PELE).
+
+        Raises
+        -------
+        LigandNameNotSupported when resname == "UNK".
+        """
+        if "resname" in self.data.keys():
+            if self.data["resname"] == "UNK":
+                raise LigandNameNotSupported(
+                    "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
+                )
+
+    def _check_multiple_simulations(self):
+        """
+        Checks if the user specified more than one simulation type in YAML.
+
+        Raises
+        -------
+        MultipleSimulationTypes if more than one simulation type set in YAML.
+        """
+        available_simulations = SOFTWARE_CONSTANTS.get("simulation_params", {})
+        specified_simulations = [
+            key for key in self.data.keys() if key in available_simulations.keys()
+        ]
+
+        if len(specified_simulations) > 1:
+            raise MultipleSimulationTypes(
+                f"You cannot select multiple simulation types in input.yaml, please select one of "
+                f"{', '.join(specified_simulations)}."
+            )
 
     def _recommend(self, key):
         most_similar_flag = None
         for valid_key in self.valid_flags:
+            flag = MostSimilarFlag(valid_key)
+        for valid_key in self.valid_flags.values():
             flag = MostSimilarFlag(valid_key)
             flag.calculate_distance(key)
             if not most_similar_flag:
@@ -60,7 +132,6 @@ class YamlParser(PydanticProxy):
 
 @dataclass
 class MostSimilarFlag:
-
     name: str
 
     def calculate_distance(self, key):

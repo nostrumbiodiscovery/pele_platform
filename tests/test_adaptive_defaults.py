@@ -40,27 +40,37 @@ INDUCE_FIT_FAST_DEFAULTS_ADAPTIVE = [
     '"processors" : 60,',
 ]
 
-INDUCE_FIT_PELE = [pp.INDUCED_FIT, '"radius": 6,', '"numberOfStericTrials": 500']
+INDUCE_FIT_PELE = [
+    pp.INDUCED_FIT,
+    '"radius": 6,',
+    '"numberOfStericTrials": 500'
+    ]
 
-BIAS_DEFAULTS_ADAPTIVE = ['"type" : "epsilon"', '"epsilon": 1']
+BIAS_DEFAULTS_ADAPTIVE = [
+    '"type" : "epsilon"',
+    '"epsilon": 1'
+]
 
 GLOBAL_DEFAULTS_ADAPTIVE = [
     '"type" : "inverselyProportional"',
-    '"peleSteps" : 4,',
+    '"peleSteps" : 8,',
     '"iterations" : 100,',
     '"processors" : 250,',
-    "[2.5, 5, 7]",
-    "[1, 0.6, 0.0]",
+    '[2.0, 5, 7]',
+    '[1, 0.6, 0.0]'
 ]
 
-GLOBAL_DEFAULTS_PELE = ['"numberOfStericTrials": 200', pp.GLOBAL]
+GLOBAL_DEFAULTS_PELE = [
+    '"numberOfStericTrials": 200',
+    pp.GLOBAL
+]
 
 OUT_IN_DEFAULTS_ADAPTIVE = [
     '"type" : "inverselyProportional"',
     '"peleSteps" : 8,',
     '"iterations" : 100,',
-    "[2, 5, 7]",
-    "[1, 0.6, 0.0]",
+    '[2, 5, 7]',
+    '[1, 0.6, 0.0]',
 ]
 
 OUT_IN_DEFAULTS_PELE = [
@@ -86,6 +96,11 @@ REF_DEFAULTS_PELE = [
     '"displacementFactor" : 0.5',
     '"modesChangeFrequency" : 3,',
     pp.RESCORING,
+    pp.RESCORING,
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:251:_CA_" }',
+    '{ "type": "constrainAtomToPosition", "springConstant": 2.5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:9:_CA_" }',
+    '{ "type": "constrainAtomToPosition", "springConstant": 2.5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:17:_CA_" }',
 ]
 
 EXIT_DEFAULTS_ADAPTIVE = [
@@ -94,8 +109,8 @@ EXIT_DEFAULTS_ADAPTIVE = [
     '"epsilon": 0.75',
     '"iterations" : 1000',
     '"processors" : 25',
-    "[1, 2.5]",
-    "[1.1]",
+    '[1, 2.5]',
+    '[1.1]',
     '"peleSteps" : 2,',
     '"type": "exitContinuous"',
 ]
@@ -104,18 +119,24 @@ EXIT_SOFT_DEFAULTS_ADAPTIVE = [
     '"type" : "independentMetric"',
     '"iterations" : 1000',
     '"processors" : 25',
-    "[1, 2.5]",
-    "[1.1]",
+    '[1, 2.5]',
+    '[1.1]',
     '"peleSteps" : 2,',
     '"type": "exitContinuous"',
     '"condition": "max"',
 ]
 
-EXIT_DEFAULTS_PELE = ['"radius": 10', '"numberOfStericTrials": 500', pp.IN_OUT]
+
+EXIT_DEFAULTS_PELE = [
+    '"radius": 10',
+    '"numberOfStericTrials": 500',
+    pp.IN_OUT
+
+]
 
 WATER_PARAMS_DEFAULTS_PELE = [
     pp.WATER_PARAMS,
-    '"watersToPerturb": {"links": {"ids": ["M:1"] }}',
+    '"watersToPerturb": {"links": {"ids": ["M:1"] }}' 
 ]
 
 GPCR_DEFAULTS_PELE = [
@@ -136,10 +157,14 @@ GPCR_DEFAULTS_ADAPTIVE = [
 ]
 
 GPCR2_DEFAULTS_PELE = [
-    '"radius": 10,',
-    '"fixedCenter": [10, 10, 10]',
-    '"numberOfStericTrials": 100,',
-    pp.GPCR_ORTH,
+     '"radius": 10,',
+     '"fixedCenter": [10,10,10]',
+     '"numberOfStericTrials": 100,',
+     pp.GPCR_ORTH,
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:65:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:70:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:60:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:347:_CA_" }'
 ]
 
 
@@ -164,7 +189,7 @@ def test_all_defaults(yaml, expected_adaptive, expected_pele):
     Runs all simulation types in debug mode to ensure the correct default values are set in adaptive.conf and pele.conf.
     """
     errors = []
-    output = main.run_platform(yaml)
+    output = main.run_platform_from_yaml(yaml)
     folder = output[0].pele_dir if type(output) == list else output.pele_dir
     errors = tk.check_file(folder, "adaptive.conf", expected_adaptive, errors)
     errors = tk.check_file(folder, "pele.conf", expected_pele, errors)

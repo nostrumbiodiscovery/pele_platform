@@ -1,7 +1,11 @@
 import os
+import subprocess
+
+from pele_platform.constants import constants
 
 
-def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
+def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False, peleffy=False):
+    
     to_remove = []
 
     # remove additional protein chains and all water molecules
@@ -45,5 +49,11 @@ def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False):
         file.write("\n")
         for line in ligand:
             file.write(line)
+
+    if peleffy:
+        # Run through Schrodinger again to add CONECT lines.
+        schrodinger_path = os.path.join(constants.SCHRODINGER, "utilities/prepwizard")
+        command_pdb = f"{schrodinger_path} -nohtreat -noepik -noprotassign -noimpref -noccd -NOJOBID {protein_file} {new_protein_file}"
+        subprocess.call(command_pdb.split(), shell=True)
 
     return new_protein_file
