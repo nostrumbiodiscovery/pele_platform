@@ -14,7 +14,7 @@ a. Download structures 1FGK without ligand (*apo*) and 1AGW with the ligand (*ho
 
 b. Align the structures by going to ``Tasks -> Protein Structure Alignment`` and delete redundant side chains by going to the ``Structure Hierarchy -> File Name -> Protein`` and selecting unnecessary chains and deleting them until only chain A is left.
 
-.. image:: ../img/site_finder_1.2_2.png
+.. image:: ../img/site_finder_1.2_2.PNG
   :width: 400
   :align: center
 
