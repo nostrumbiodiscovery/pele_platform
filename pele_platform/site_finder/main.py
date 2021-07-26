@@ -87,8 +87,8 @@ class SiteFinderLauncher:
         # Analysis parameters for refinement input selection
         n_inputs = int(self.global_simulation.cpus / 6)
         clustering_method = "meanshift"
-        bandwidth = 10.0
-        min_population = 0.001
+        bandwidth = 20.0
+        min_population = 0.0005
         max_top_clusters = n_inputs if n_inputs > 1 else 1  # tests only have 5 CPUs
         top_clusters_criterion = "interaction_min"
         cluster_representatives_criterion = "interaction_min"
