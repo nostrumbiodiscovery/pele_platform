@@ -1,0 +1,330 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Site finder tutorial &mdash; pele platform 1.6.0b2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Understanding the output files" href="outputs.html" />
+    <link rel="prev" title="Fragment growing tutorial" href="frag_pele.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gpcr.html">GPCR tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frag_pele.html">Fragment growing tutorial</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Site finder tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#system-preparation">1. System Preparation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-input-file">2. PELE input file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-the-simulation">3. Running the simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis">4. Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html">Understanding the output files</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>Site finder tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/site_finder.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="site-finder-tutorial">
+<h1>Site finder tutorial<a class="headerlink" href="#site-finder-tutorial" title="Permalink to this headline">¶</a></h1>
+<p>The goal of the Site Finder package is to locate and predict the best binding site for a ligand. We will be comparing the results to the crystal structure by calculating the RMSD difference at every step, however, this is not required to run site finder in general.</p>
+<div class="section" id="system-preparation">
+<h2>1. System Preparation<a class="headerlink" href="#system-preparation" title="Permalink to this headline">¶</a></h2>
+<p>We will be using Schrödinger Maestro (release 2020-1) to preprocess a complex of interest from Protein Data Bank so that it can be used by PELE (Protein Energy Landscape Exploration).</p>
+<ol class="loweralpha simple">
+<li><p>Download structures 1FGK without ligand (<em>apo</em>) and 1AGW with the ligand (<em>holo</em>) by going to <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB</span></code> and inputting their respective codes.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/site_finder_1.1_2.png"><img alt="../_images/site_finder_1.1_2.png" class="align-center" src="../_images/site_finder_1.1_2.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="2">
+<li><p>Align the structures by going to <code class="docutils literal notranslate"><span class="pre">Tasks</span> <span class="pre">-&gt;</span> <span class="pre">Protein</span> <span class="pre">Structure</span> <span class="pre">Alignment</span></code> and delete redundant side chains by going to the <code class="docutils literal notranslate"><span class="pre">Structure</span> <span class="pre">Hierarchy</span> <span class="pre">-&gt;</span> <span class="pre">File</span> <span class="pre">Name</span> <span class="pre">-&gt;</span> <span class="pre">Protein</span></code> and selecting unnecessary chains and deleting them until only chain A is left.</p></li>
+</ol>
+<a class="reference internal image-reference" href="tutorials/../img/site_finder_1.2_2.png"><img alt="tutorials/../img/site_finder_1.2_2.png" class="align-center" src="tutorials/../img/site_finder_1.2_2.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="3">
+<li><p>For both holo and apo, locate which solvents and metals/ions are important to the function of the protein. These will be close to the ligand and fully inside the protein structure. Highlight all solvents with the solvent key and deselect the solvents of importance, and delete the others. Hand select metals/ions to delete.</p></li>
+</ol>
+<p><em>At this point your holo should look like this, here the protein ribbons, solvents and metal are highlighted. Apo should be the same without the ligand (shown here in pink).</em></p>
+<a class="reference internal image-reference" href="../_images/site_finder_1.3_2.png"><img alt="../_images/site_finder_1.3_2.png" class="align-center" src="../_images/site_finder_1.3_2.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="4">
+<li><p>For both <em>holo</em> and <em>apo</em>, select a molecule and go to <code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">-&gt;</span> <span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">Atom</span> <span class="pre">Properties</span></code> and set unique PDB atom names. On <em>holo</em>, select the ligand and change the residue name to <em>LIG</em>, chain name to <em>Z</em>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/site_finder_1.4.1.png"><img alt="../_images/site_finder_1.4.1.png" class="align-center" src="../_images/site_finder_1.4.1.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/site_finder_1.4.2.png"><img alt="../_images/site_finder_1.4.2.png" class="align-center" src="../_images/site_finder_1.4.2.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="5">
+<li><p>Preprocess both structures using the Protein Preparation Wizard. You may need to optimize H-bonds in the Refine tab. Follow the instructions until no more problems are reported.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/site_finder_1.5.1.png"><img alt="../_images/site_finder_1.5.1.png" class="align-center" src="../_images/site_finder_1.5.1.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/site_finder_1.5.2.png"><img alt="../_images/site_finder_1.5.2.png" class="align-center" src="../_images/site_finder_1.5.2.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="6">
+<li><p>Copy the ligand from <em>holo</em> and paste it into <em>apo</em>, and move it to the side of the structure. You may need to go to <code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">-&gt;</span> <span class="pre">Move</span></code> to move it out of the way.</p></li>
+</ol>
+<p><em>At this point your apo should look like this.</em></p>
+<a class="reference internal image-reference" href="../_images/site_finder_1.6_2.png"><img alt="../_images/site_finder_1.6_2.png" class="align-center" src="../_images/site_finder_1.6_2.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="7">
+<li><p>You can now export the files by going to <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Export</span> <span class="pre">Structures</span></code> and name them respectively <em>holo.pdb</em> and <em>apo.pdb</em> and they are ready to use.</p></li>
+</ol>
+</div>
+<div class="section" id="pele-input-file">
+<h2>2. PELE input file<a class="headerlink" href="#pele-input-file" title="Permalink to this headline">¶</a></h2>
+<p>Create an <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file in your working directory.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">apo.pdb</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Z</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">LIG</span>
+<span class="nt">site_finder</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">rmsd_pdb</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">holo.pdb</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-the-simulation">
+<h2>3. Running the simulation<a class="headerlink" href="#running-the-simulation" title="Permalink to this headline">¶</a></h2>
+<p>Create a <code class="docutils literal notranslate"><span class="pre">run.sl</span></code> file in your working directory. You can download ready slurm files for <code class="xref download docutils literal notranslate"><span class="pre">MareNostrum</span></code> and the <code class="xref download docutils literal notranslate"><span class="pre">NBD</span> <span class="pre">cluster</span></code>. If you are running the simulation on the NBD cluster, you have to include <code class="docutils literal notranslate"><span class="pre">usesrun:</span> <span class="pre">true</span></code> in your input.yaml!</p>
+<p>Once you have your <code class="docutils literal notranslate"><span class="pre">apo.pdb</span></code>, <code class="docutils literal notranslate"><span class="pre">holo.pdb</span></code>, <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>, and <code class="docutils literal notranslate"><span class="pre">run.sl</span></code> files in your working directory you are ready to launch your simulation with the command <code class="docutils literal notranslate"><span class="pre">sbatch</span> <span class="pre">run.sl</span></code>!</p>
+</div>
+<div class="section" id="analysis">
+<h2>4. Analysis<a class="headerlink" href="#analysis" title="Permalink to this headline">¶</a></h2>
+<p>Navigate to the results directory <code class="docutils literal notranslate"><span class="pre">LIG_Pele</span> <span class="pre">-&gt;</span> <span class="pre">2_refinement_simulation</span> <span class="pre">-&gt;</span> <span class="pre">results</span></code>, which contains several output folders: .</p>
+<ul class="simple">
+<li><p><em>Clusters</em> folder contains information about final ligand clustering: it shows how many clusters were obtained (0-8, labeled A-H), provides a CSV file with collective data as well as some plots.</p></li>
+<li><p>Binding energy plots show you what has the lowest binding energy; typically those with the lowest binding energy are the best fit (but not always). RMSD plots show the correlation between the ligand position found and the ligand position of the reference (native pose).</p></li>
+<li><p><em>Top_poses</em> shows the top 100 poses with the lowest binding energy. Poses are named with the distance at the beginning and binding energy at the end. Ideally, you want the binding energy to be low and the RMSD to be close to 1.</p></li>
+</ul>
+<p>A simulation is successful if one of the predicted positions matches the holo position. These can be shown by opening the cluster poses and displaying the ligands. Here we have compared clusters B (blue), E (purple), and G (green) to the original ligand (pink) in the protein. B shows the least accurate placement, and while E is closer, it is still incorrect. G is very similar and the best pose.</p>
+<a class="reference internal image-reference" href="../_images/site_finder_2.3.png"><img alt="../_images/site_finder_2.3.png" class="align-center" src="../_images/site_finder_2.3.png" style="width: 400px;" /></a>
+<p>An important place to look to display these characteristics is the <em>ligandRMSD_Binding_Energy</em> plot. You can see exactly how correlated each structure and cluster are and how likely they are to occur naturally. In this example it can be seen that clusters C, D, and G all have very similar low binding energies, but G has the lowest RMSD, and is therefore the best fit. This confirms what the visual representation above predicted.</p>
+<a class="reference internal image-reference" href="../_images/site_finder_2.2.png"><img alt="../_images/site_finder_2.2.png" class="align-center" src="../_images/site_finder_2.2.png" style="width: 400px;" /></a>
+<p>This is a closer look at the holo ligand and the ligand from G. Here you can see that the original ligand and predicted ligand take almost the exact same position. This is because they are both stabilized by the same Hydrogen bonds (shown in yellow).</p>
+<a class="reference internal image-reference" href="../_images/site_finder_2.4.png"><img alt="../_images/site_finder_2.4.png" class="align-center" src="../_images/site_finder_2.4.png" style="width: 400px;" /></a>
+<p>Two more important plots are <code class="docutils literal notranslate"><span class="pre">top_clusters_ligandRMSD_boxplot</span></code> and <code class="docutils literal notranslate"><span class="pre">top_clusters_Binding_Energy_boxplot</span></code> (shown respectively below). From the first plot, it can be seen that cluster G has the lowest RMSD, and is therefore the most correlated with the original holo ligand. This confirms what we have seen above. The second shows that C, D, and G forms have a similar binding energy level so they are almost equally likely to occur. This is important because it means that our predicted best fit is likely to occur naturally.</p>
+<a class="reference internal image-reference" href="../_images/site_finder_2.5.png"><img alt="../_images/site_finder_2.5.png" class="align-center" src="../_images/site_finder_2.5.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/site_finder_2.6.png"><img alt="../_images/site_finder_2.6.png" class="align-center" src="../_images/site_finder_2.6.png" style="width: 400px;" /></a>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="outputs.html" class="btn btn-neutral float-right" title="Understanding the output files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="frag_pele.html" class="btn btn-neutral float-left" title="Fragment growing tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
