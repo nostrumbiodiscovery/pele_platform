@@ -20,11 +20,11 @@ b. Align the structures by going to ``Tasks -> Protein Structure Alignment`` and
 
 c. For both holo and apo, locate which solvents and metals/ions are important to the function of the protein. These will be close to the ligand and fully inside the protein structure. Highlight all solvents with the solvent key and deselect the solvents of importance, and delete the others. Hand select metals/ions to delete.
 
-*At this point your holo should look like this, here the protein ribbons, solvents and metal are highlighted. Apo should be the same without the ligand (shown here in pink).*
-
-.. image:: ../img/site_finder_1.3_2.png
+.. figure:: ../img/site_finder_1.3_2.png
   :width: 400
   :align: center
+
+  At this point your holo should look like this, here the protein ribbons, solvents and metal are highlighted. Apo should be the same without the ligand (shown here in pink).
 
 d. For both *holo* and *apo*, select a molecule and go to ``Build -> Other edits -> Change Atom Properties`` and set unique PDB atom names. On *holo*, select the ligand and change the residue name to *LIG*, chain name to *Z*.
 
@@ -81,7 +81,7 @@ Once you have your ``apo.pdb``, ``holo.pdb``, ``input.yaml``, and ``run.sl`` fil
 
 
 4. Analysis
-++++++++
+++++++++++++++
 
 Navigate to the results directory ``LIG_Pele -> 2_refinement_simulation -> results``, which contains several output folders: .
 
@@ -99,7 +99,7 @@ A simulation is successful if one of the predicted positions matches the holo po
   :align: center
 
 
-An important place to look to display these characteristics is the *ligandRMSD_Binding_Energy* plot. You can see exactly how correlated each structure and cluster are and how likely they are to occur naturally. In this example it can be seen that clusters C, D, and G all have very similar low binding energies, but G has the lowest RMSD, and is therefore the best fit. This confirms what the visual representation above predicted.
+An important place to look to display these characteristics is the ``ligandRMSD_Binding_Energy`` plot. You can see exactly how correlated each structure and cluster are and how likely they are to occur naturally. In this example it can be seen that clusters C, D, and G all have very similar low binding energies, but G has the lowest RMSD, and is therefore the best fit. This confirms what the visual representation above predicted.
 
 .. image:: ../img/site_finder_2.2.png
   :width: 400
