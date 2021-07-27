@@ -24,7 +24,7 @@ c. For both holo and apo, locate which solvents and metals/ions are important to
   :width: 400
   :align: center
 
-  At this point your holo should look like this, here the protein ribbons, solvents and metal are highlighted. Apo should be the same without the ligand (shown here in pink).
+  At this point your holo should look like this; here the protein ribbons, solvents and metal are highlighted. Apo should be the same without the ligand (shown here in pink).
 
 d. For both *holo* and *apo*, select a molecule and go to ``Build -> Other edits -> Change Atom Properties`` and set unique PDB atom names. On *holo*, select the ligand and change the residue name to *LIG*, chain name to *Z*.
 
@@ -49,11 +49,11 @@ e. Preprocess both structures using the Protein Preparation Wizard. You may need
 
 f. Copy the ligand from *holo* and paste it into *apo*, and move it to the side of the structure. You may need to go to ``Build -> Move`` to move it out of the way.
 
-*At this point your apo should look like this.*
-
-.. image:: ../img/site_finder_1.6_2.png
+.. figure:: ../img/site_finder_1.6_2.png
   :width: 400
   :align: center
+
+  At this point your apo should look like this.
 
 g. You can now export the files by going to ``File -> Export Structures`` and name them respectively *holo.pdb* and *apo.pdb* and they are ready to use.
 
