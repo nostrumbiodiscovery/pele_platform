@@ -211,8 +211,10 @@
 <ol class="loweralpha simple" start="3">
 <li><p>For both holo and apo, locate which solvents and metals/ions are important to the function of the protein. These will be close to the ligand and fully inside the protein structure. Highlight all solvents with the solvent key and deselect the solvents of importance, and delete the others. Hand select metals/ions to delete.</p></li>
 </ol>
-<p><em>At this point your holo should look like this, here the protein ribbons, solvents and metal are highlighted. Apo should be the same without the ligand (shown here in pink).</em></p>
-<a class="reference internal image-reference" href="../_images/site_finder_1.3_2.png"><img alt="../_images/site_finder_1.3_2.png" class="align-center" src="../_images/site_finder_1.3_2.png" style="width: 400px;" /></a>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/site_finder_1.3_2.png"><img alt="../_images/site_finder_1.3_2.png" src="../_images/site_finder_1.3_2.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">At this point your holo should look like this, here the protein ribbons, solvents and metal are highlighted. Apo should be the same without the ligand (shown here in pink).</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
 <ol class="loweralpha simple" start="4">
 <li><p>For both <em>holo</em> and <em>apo</em>, select a molecule and go to <code class="docutils literal notranslate"><span class="pre">Build</span> <span class="pre">-&gt;</span> <span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">Atom</span> <span class="pre">Properties</span></code> and set unique PDB atom names. On <em>holo</em>, select the ligand and change the residue name to <em>LIG</em>, chain name to <em>Z</em>.</p></li>
 </ol>
@@ -260,7 +262,7 @@
 </ul>
 <p>A simulation is successful if one of the predicted positions matches the holo position. These can be shown by opening the cluster poses and displaying the ligands. Here we have compared clusters B (blue), E (purple), and G (green) to the original ligand (pink) in the protein. B shows the least accurate placement, and while E is closer, it is still incorrect. G is very similar and the best pose.</p>
 <a class="reference internal image-reference" href="../_images/site_finder_2.3.png"><img alt="../_images/site_finder_2.3.png" class="align-center" src="../_images/site_finder_2.3.png" style="width: 400px;" /></a>
-<p>An important place to look to display these characteristics is the <em>ligandRMSD_Binding_Energy</em> plot. You can see exactly how correlated each structure and cluster are and how likely they are to occur naturally. In this example it can be seen that clusters C, D, and G all have very similar low binding energies, but G has the lowest RMSD, and is therefore the best fit. This confirms what the visual representation above predicted.</p>
+<p>An important place to look to display these characteristics is the <code class="docutils literal notranslate"><span class="pre">ligandRMSD_Binding_Energy</span></code> plot. You can see exactly how correlated each structure and cluster are and how likely they are to occur naturally. In this example it can be seen that clusters C, D, and G all have very similar low binding energies, but G has the lowest RMSD, and is therefore the best fit. This confirms what the visual representation above predicted.</p>
 <a class="reference internal image-reference" href="../_images/site_finder_2.2.png"><img alt="../_images/site_finder_2.2.png" class="align-center" src="../_images/site_finder_2.2.png" style="width: 400px;" /></a>
 <p>This is a closer look at the holo ligand and the ligand from G. Here you can see that the original ligand and predicted ligand take almost the exact same position. This is because they are both stabilized by the same Hydrogen bonds (shown in yellow).</p>
 <a class="reference internal image-reference" href="../_images/site_finder_2.4.png"><img alt="../_images/site_finder_2.4.png" class="align-center" src="../_images/site_finder_2.4.png" style="width: 400px;" /></a>
