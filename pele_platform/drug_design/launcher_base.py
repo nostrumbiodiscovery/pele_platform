@@ -1,7 +1,8 @@
-from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
+from pele_platform.building_blocks.pipeline import Pipeline
 
 
 class LauncherBase:
+    # TODO: this would become Pipeline I guess? Confusing name
     steps = []
     refinement_steps = []
 
@@ -15,4 +16,3 @@ class LauncherBase:
 
         result = Pipeline(steps, self.env).run()
         return result
-

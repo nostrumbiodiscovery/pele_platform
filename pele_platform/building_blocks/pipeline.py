@@ -1,21 +1,38 @@
 from copy import deepcopy
-from dataclasses import dataclass
+from typing import List
 import pele_platform.Errors.custom_errors as ce
-from pele_platform.Utilities.BuildingBlocks.simulation import *
-from pele_platform.Utilities.BuildingBlocks.selection import *
-from pele_platform.Utilities.Parameters import pele_env as pv
+from pele_platform.building_blocks.selection import *
+from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 
 
-@dataclass
 class Pipeline:
-    iterable: list
-    env: pv.EnviroBuilder
+
+    def __init__(self, iterable: List[dict], env: ParametersBuilder):
+        """
+        Initializes Pipeline class.
+
+        Parameters
+        ----------
+        iterable : List[dict]
+            List of dictionaries containing workflow steps and their optional parameters.
+        env : ParametersBuilder
+            ParametersBuilder object.
+        """
+        self.iterable = iterable
+        self.env = env
 
     def run(self):
+        """
+        Run the whole Pipeline.
+
+        Returns
+        -------
+        A list of ParametersBuilder objects containing simulation parameters for each block.
+        """
         self.check_pipeline()
         self.check_debug()
-        output = self.launch_pipeline()
-        return output
+        return self.launch_pipeline()
+        # TODO: Separate out the checker
 
     def launch_pipeline(self):
         output = []
@@ -29,9 +46,12 @@ class Pipeline:
         return output
 
     def check_pipeline(self):
+        """
+        Checks the pipeline to ensure it's not empty and the simulation are selection blocks occur alternately.
+        """
 
         if len(self.iterable) == 0:
-            raise ce.PipelineError("Pipeline doesn't contain any BuildingBlocks.")
+            raise ce.PipelineError("Pipeline doesn't contain any building_blocks.")
 
         for element in self.iterable:
             if "type" not in element.keys():
@@ -45,7 +65,7 @@ class Pipeline:
                     raise ValueError(
                         "ScatterN requires optional parameter distance which can be either an integer or "
                         "a float. Please refer to the PELE Platform documentation for more details on "
-                        "BuildingBlocks."
+                        "building_blocks."
                     )
 
         class_names = [eval(element["type"]) for element in self.iterable]

@@ -1,9 +1,10 @@
 import inspect
 
 from pele_platform.Adaptive import simulation as si
-from pele_platform.DrugDesign.launcher_base import LauncherBase
+from pele_platform.drug_design.launcher_base import LauncherBase
 from pele_platform.Errors import custom_errors as ce
-from pele_platform.Utilities.BuildingBlocks import selection as selection, simulation as blocks
+from pele_platform.building_blocks import simulation as blocks
+from pele_platform.building_blocks import selection as selection
 from pele_platform.features import adaptive as ft
 
 
@@ -37,11 +38,11 @@ class WorkflowLauncher(LauncherBase):
             if not (i in available.keys() or inspect.isclass(i)):
                 raise ce.PipelineError(
                     "Block {} cannot be found. Please check spelling and refer to the PELE Platform documentation "
-                    "for an up-to-date list of available BuildingBlocks".format(i))
+                    "for an up-to-date list of available building_blocks".format(i))
         return iterable
 
 
-class AllostericLauncher(LauncherBase):
+class SiteFinderLauncher(LauncherBase):
     steps = [{'type': 'GlobalExploration'}]
     refinement_steps = [
         {'type': 'ScatterN', 'options': {"distance": 6.0}},

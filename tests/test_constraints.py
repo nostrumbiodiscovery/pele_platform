@@ -4,6 +4,7 @@ import yaml
 
 import pele_platform.constants.constants as constants
 import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
+import tests.utils
 from pele_platform import main
 from . import test_adaptive as ta
 
@@ -89,7 +90,7 @@ def test_ca_constraints_production(input_yaml):
     """
     errors = []
     job = main.run_platform_from_yaml(input_yaml)
-    errors = ta.check_file(
+    errors = tests.utils.check_file(
         job.pele_dir, "pele.conf", terminal_lines_file + default_interval_lines, errors
     )
     assert not errors
@@ -151,7 +152,7 @@ def test_ca_constraint_logic(yaml_file, expected):
     """
     errors = []
     job = main.run_platform_from_yaml(yaml_file)
-    errors = ta.check_file(job.pele_dir, "pele.conf", expected, errors)
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected, errors)
     os.remove(yaml_file)
     assert not errors
 

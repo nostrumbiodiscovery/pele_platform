@@ -43,7 +43,6 @@ class ParametersBuilder(object):
             The Parameters object containing the parameters for PELE
         """
         import os
-        from pele_platform.constants import constants
         from pele_platform.features import adaptive
         from pele_platform.Utilities.Helpers import helpers
 

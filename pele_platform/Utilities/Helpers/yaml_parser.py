@@ -11,7 +11,6 @@ from pele_platform.Models.yaml_parser_model import YamlParserModel
 import yaml
 
 
-
 def _yaml_error_wrapper(error):
     """
     Wraps YAML errors into a more human-friendly format, making customs suggestions about potential issues.
@@ -40,15 +39,18 @@ class YamlParser(PydanticProxy):
     yamlfile: str
     valid_flags: set = None
     model_class = YamlParserModel
+    data: dict = None
 
     def read(self) -> None:
-        data = self._parse_yaml()
-        self.initialize_model(data)
+        self.data = self._parse_yaml()
+        breakpoint()
+        self.initialize_model(self.data)
         self.valid_flags = set(
             field.alias if field.alias != field.name else field.name
             for field in self.model.__fields__.values()
         )
-        self._check(data)
+        self._check_valid_flags()
+        self._check_multiple_simulations()
 
     def initialize_model(self, data):
         if not isinstance(data, dict):
@@ -68,33 +70,13 @@ class YamlParser(PydanticProxy):
                 _yaml_error_wrapper(error)
         return data
 
-    def _get_value_from_env(self):
-        """
-        Gets value of SRUN from environment, so that users do not have to change their YAML files.
-        """
-        self.usesrun = bool(os.environ.get("SRUN", self.usesrun))
-
-    def _check(self) -> None:
+    def _check_valid_flags(self) -> None:
         """
         Checks if flags in YAML file are valid.
         """
         for key in self.data.keys():
-            if key not in self.valid_flags.values():
+            if key not in self.valid_flags:
                 raise KeyError(self._recommend(key))
-
-    def _check_residue(self) -> None:
-        """
-        Makes sure the residue name is not UNK (which is not supported by PELE).
-
-        Raises
-        -------
-        LigandNameNotSupported when resname == "UNK".
-        """
-        if "resname" in self.data.keys():
-            if self.data["resname"] == "UNK":
-                raise LigandNameNotSupported(
-                    "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
-                )
 
     def _check_multiple_simulations(self):
         """
@@ -118,8 +100,6 @@ class YamlParser(PydanticProxy):
     def _recommend(self, key):
         most_similar_flag = None
         for valid_key in self.valid_flags:
-            flag = MostSimilarFlag(valid_key)
-        for valid_key in self.valid_flags.values():
             flag = MostSimilarFlag(valid_key)
             flag.calculate_distance(key)
             if not most_similar_flag:

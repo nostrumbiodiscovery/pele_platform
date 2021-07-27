@@ -5,7 +5,7 @@ import pele_platform.Adaptive.interaction_restrictions as ir
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 import pele_platform.Checker.valid_flags as vf
 import pele_platform.main as main
-from .test_adaptive import check_file
+from .utils import check_file
 
 test_path = os.path.join(cs.DIR, "Examples")
 

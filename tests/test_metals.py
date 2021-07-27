@@ -1,3 +1,4 @@
+import tests.utils
 from . import test_adaptive as tk
 import pele_platform.main as main
 import pele_platform.Errors.custom_errors as ce
@@ -106,7 +107,7 @@ def test_metal_constraints(yaml, expected):
     errors = []
     output = main.run_platform_from_yaml(yaml)
     job = output[0]
-    errors = tk.check_file(job.pele_dir, "pele.conf", expected, errors)
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected, errors)
     assert not errors
 
 
@@ -116,7 +117,7 @@ def test_no_metal_constraints(ext_args=NO_METAL_CONSTR_ARGS):
     """
     errors = []
     job = main.run_platform_from_yaml(ext_args)
-    errors = tk.check_file_regex(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
+    errors = tests.utils.check_file_regex(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
     assert errors 
 
 
@@ -163,7 +164,7 @@ def test_polarisation(
 
     errors = []
     (job2,) = main.run_platform(ext_args_true)
-    errors = tk.check_file(
+    errors = tests.utils.check_file(
         job2.pele_dir,
         "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz",
         POLARISATION,

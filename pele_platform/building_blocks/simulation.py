@@ -6,9 +6,9 @@ import os
 import pele_platform.Adaptive.simulation as si
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.Utilities.Helpers.helpers import retrieve_box
-from pele_platform.Utilities.BuildingBlocks.preparation import prepare_structure
-from pele_platform.Utilities.BuildingBlocks import blocks
-import pele_platform.Utilities.Parameters.pele_env as pv
+from pele_platform.building_blocks import prepare_structure
+from pele_platform.building_blocks import blocks
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.features.adaptive as ft
 
 
@@ -21,7 +21,7 @@ class Simulation(blocks.Block):
     One class to rule them all, one class to find them, one class to bring them all and in PELE bind them.
     """
 
-    env: pv.EnviroBuilder
+    env: pv.Parameters
     options: dict
     folder_name: str
 

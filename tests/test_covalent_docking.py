@@ -2,9 +2,10 @@ import glob
 import os
 import pytest
 
+import tests.utils
 from pele_platform import main
 from pele_platform.constants import constants
-from . import test_adaptive as ta
+
 
 test_path = os.path.join(constants.DIR, "Examples", "covalent_docking")
 
@@ -52,8 +53,8 @@ def test_covalent_docking_production():
     yaml_file = os.path.join(test_path, "input2.yaml")
     job, job2 = main.run_platform_from_yaml(yaml_file)
 
-    errors = ta.check_file(job.pele_dir, "pele.conf", expected_params1, [])
-    errors = ta.check_file(
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected_params1, [])
+    errors = tests.utils.check_file(
         job2.pele_dir, "pele.conf", expected_params1 + expected_params2, errors
     )
     assert not errors
@@ -96,6 +97,6 @@ def test_covalent_docking_defaults(input_yaml, expected_pele, expected_adaptive)
     yaml_file = os.path.join(test_path, input_yaml)
     params, _ = main.run_platform_from_yaml(yaml_file)
 
-    errors = ta.check_file(params.pele_dir, "pele.conf", expected_pele, [])
-    errors = ta.check_file(params.pele_dir, "adaptive.conf", expected_adaptive, errors)
+    errors = tests.utils.check_file(params.pele_dir, "pele.conf", expected_pele, [])
+    errors = tests.utils.check_file(params.pele_dir, "adaptive.conf", expected_adaptive, errors)
     assert not errors

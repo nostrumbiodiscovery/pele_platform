@@ -6,6 +6,7 @@ import pele_platform.constants.constants as cs
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
+
 class SimulationParams(PydanticProxy):
     model_class = SimulationParamsModel
 

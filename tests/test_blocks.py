@@ -3,20 +3,20 @@ import os
 import pytest
 import shutil
 
+import tests.utils
 from pele_platform import main
 import pele_platform.Utilities.Parameters.pele_env as pv
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.constants import constants as cs
-import pele_platform.Utilities.BuildingBlocks.simulation as bb
-from pele_platform.Utilities.BuildingBlocks.pipeline import Pipeline
-from pele_platform.Utilities.BuildingBlocks.selection import (
+import pele_platform.building_blocks.simulation as bb
+from pele_platform.building_blocks.pipeline import Pipeline
+from pele_platform.building_blocks.selection import (
     ScatterN,
     LowestEnergy5,
     GMM,
     Clusters,
 )
 import pele_platform.Utilities.Helpers.yaml_parser as yp
-from . import test_adaptive as tk
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -159,7 +159,7 @@ def test_simulation_blocks(yaml, package, block, expected):
 
     directory = params.pele_dir
     errors = []
-    errors = tk.check_file(directory, "adaptive.conf", expected, errors)
+    errors = tests.utils.check_file(directory, "adaptive.conf", expected, errors)
     assert not errors
 
 

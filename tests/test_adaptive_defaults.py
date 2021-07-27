@@ -3,7 +3,7 @@ import pytest
 import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pp
 import pele_platform.main as main
-from . import test_adaptive as tk
+import tests.utils
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -191,6 +191,6 @@ def test_all_defaults(yaml, expected_adaptive, expected_pele):
     errors = []
     output = main.run_platform_from_yaml(yaml)
     folder = output[0].pele_dir if type(output) == list else output.pele_dir
-    errors = tk.check_file(folder, "adaptive.conf", expected_adaptive, errors)
-    errors = tk.check_file(folder, "pele.conf", expected_pele, errors)
+    errors = tests.utils.check_file(folder, "adaptive.conf", expected_adaptive, errors)
+    errors = tests.utils.check_file(folder, "pele.conf", expected_pele, errors)
     assert not errors

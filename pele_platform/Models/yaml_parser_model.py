@@ -137,14 +137,12 @@ class YamlParserModel(BaseModel):
         simulation_params_default="null",
         categories=["Simulation parameters"],
     )
-    cluster_values: List[
-        float
-    ] = Field(  # WTF - List[float] but then use validator to make it into a str(v), what about bool?
+    cluster_values: Union[List[float], str] = Field(  # WTF - List[float] but then use validator to make it into a str(v), what about bool?
         value_from_simulation_params=True,
         simulation_params_default="[1.75, 2.5, 4, 6]",
         categories=["Simulation parameters"],
     )
-    cluster_conditions: List[float] = Field(
+    cluster_conditions: Union[List[float], str] = Field(
         value_from_simulation_params=True,
         simulation_params_default="[1, 0.6, 0.4, 0.0]",
         categories=["Simulation parameters"],
@@ -190,7 +188,7 @@ class YamlParserModel(BaseModel):
     gridres: int = Field(
         default=10, categories=["Ligand preparation"]
     )  # alias="ligand_resolution"
-    core: int = Field(default=-1, categories=["Ligand preparation"])
+    core: Union[int, List[str]] = Field(default=-1, categories=["Ligand preparation"])
 
     ################################################################################################ start from here
 
@@ -436,9 +434,7 @@ class YamlParserModel(BaseModel):
     polarization_factor: float = Field(default=2.0, categories=["Metals"])
     workflow: List[Any] = Field(categories=["Custom workflows"])
     distance: float = Field(categories=["Custom workflows"])
-    permissive_metal_constr: bool = Field(
-        default_factory=list, categories=["Constraints"]
-    )
+    permissive_metal_constr: bool = Field(categories=["Constraints"])
     constrain_all_metals: bool = Field(default=False, categories=["Constraints"])
     no_metal_constraints: bool = Field(default=False, categories=["Constraints"])
     frag_run: bool = Field(default=True, categories=["FragPELE"])
@@ -459,32 +455,45 @@ class YamlParserModel(BaseModel):
     frag_output_folder: str = Field(default=False, categories=["FragPELE"])
     frag_cluster_folder: str = Field(default=False, categories=["FragPELE"])
     frag_library: str = Field(categories=["FragPELE"])
-    frag_core_atom: str = Field(categories=["FragPELE"])
+    frag_core_atom: Union[str, None] = Field(categories=["FragPELE"], default=None)
     analysis_to_point: Optional[List[float]] = Field(categories=["FragPELE"])
 
     n_components: int = Field(
         tests_value=3,
         value_from_simulation_params=True,
         simulation_params_default=10,
-        categories=["PPI", "Allosteric"],
+        categories=["PPI", "Site finder"],
         candidate_for_deprecation=True,
     )
     ppi: bool = Field(categories=["PPI"])
     center_of_interface: str = Field(categories=["PPI"])
     protein: str = Field(categories=["PPI"])
     ligand_pdb: str = Field(categories=["PPI"])
-    skip_refinement: bool = Field(default=False, categories=["PPI", "Allosteric"])
+    skip_refinement: bool = Field(default=False, categories=["PPI", "Site finder"])
     n_waters: int = Field(
         value_from_simulation_params=True,
         simulation_params_default=0,
         categories=["Water"],
     )
-    allosteric: bool = Field(categories=["Allosteric"])
+    site_finder: bool = Field(categories=["Site finder"])
     rna: bool = Field(categories=["RNA"])
     gpcr_orth: bool = Field(categories=["GPCR"])
     orthosteric_site: str = Field(categories=["GPCR"])
     initial_site: str = Field(categories=["GPCR", "Out in"])
     final_site: str = Field(categories=["GPCR"])
+
+    max_top_poses: int = Field(categories=["Analysis"])
+    top_clusters_criterion: str = Field(categories=["Analysis"])
+
+    interaction_restrictions: List[dict] = Field(categories=["Interaction restrictions"])
+
+    use_peleffy: bool = Field(categories=["Ligand preparation"])
+
+    charge_parametrization_method: str = Field(categories=["Ligand preparation"])
+
+    exclude_terminal_rotamers: bool = Field(default=True, categories=["Ligand preparation"])
+
+    singularity_exec: str = Field(categories=["General settings"])
 
     @validator("*", pre=True, always=True)
     def set_tests_values(cls, v, values, field):
@@ -539,7 +548,7 @@ class YamlParserModel(BaseModel):
         "center_of_interface",
         "atom_dist",
     )
-    def validate_atom_string(cls, *v):
+    def validate_atom_string(cls, v):
         """
         Checks if a list of strings fits a regex pattern describing an atom.
         """
@@ -547,15 +556,15 @@ class YamlParserModel(BaseModel):
 
         if v:
             for string in v:
-                if not re.match(pattern, string):
+                if not string.isdigit() and not re.match(pattern, string):
                     raise custom_errors.WrongAtomStringFormat(
                         "Atom string set in {} does not seem to have the right format. It should follow chain:residue "
-                        "number:atom name patter, e.g. 'A:105:CA'".format(string)
+                        "number:atom name pattern, e.g. 'A:105:CA'".format(string)
                     )
         return v
 
     @validator("frag_core_atom")
-    def validate_frag_core_atom(cls, *v):
+    def validate_frag_core_atom(cls, v):
         """
         Checks if a list of strings fits a regex pattern indicating the core atom,e.g. C3-H2.
         """
@@ -573,6 +582,14 @@ class YamlParserModel(BaseModel):
 
     @validator("sidechain_resolution", "gridres")
     def check_divisibility(cls, v):
-        if not 360 % v == 0:
+        if v and not 360 % v == 0:
             raise ValueError("The value should be easily multiplied to obtain 360, e.g. 30, 45 or 10 would be valid.")
         return v
+
+    @validator("top_clusters_criterion")
+    def check_selection_criterion(cls, v):
+        if v and v not in constants.metric_top_clusters_criterion.keys():
+            raise ValueError(
+                f"Selected criterion value {v} is invalid. Please choose one of: {constants.metric_top_clusters_criterion.keys()}")
+
+    # TODO: Add validator for what's inside interaction restrictions

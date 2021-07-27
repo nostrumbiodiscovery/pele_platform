@@ -1,3 +1,4 @@
+import tests.utils
 from pele_platform import main
 from pele_platform.constants import constants as cs
 from pele_platform.Utilities.Helpers import water as wt
@@ -6,12 +7,9 @@ import shutil
 import glob
 import os
 import pytest
-from . import test_adaptive as tk
 
 
 test_path = os.path.join(cs.DIR, "Examples")
-yaml = os.path.join(test_path, "water/input_induced.yaml")
-yaml_previous_water = os.path.join(test_path, "water/input_previous_water.yaml")
 
 WATERLIG_ARGS = os.path.join(test_path, "water/input_lig.yaml")
 ALL_WATER_ARGS = os.path.join(test_path, "water/input_all.yaml")
@@ -23,8 +21,23 @@ WATER_VALUES = [
     '"M:1"',
 ]
 
+PDB = os.path.join(test_path, "gpcr/complex.pdb")
+N_WATERS = 2
+API_WATERS = [
+    "HETATM 4695  OW  HOH A 402      51.000  92.000  14.000  1.00  0.00           O",
+    "HETATM 4698  OW  HOH A 403      71.000  60.000  20.000  1.00  0.00           O",
+]
 
-def test_water(yaml=yaml):
+
+WATER_PREVIOUS_PELE = [
+    '"waterSites": [{"watersToPerturb": {"links": {"ids": ["C:2091"] }}, "Box": {"radius": 6, "fixedCenter": [0.0000000000, 0.0000000000, 0.0000000000], "type": "sphericalBox"}}]',
+    "WaterPerturbation::parameters",
+    '"waterPerturbationFrequency": 1,',
+]
+WATER_PREVIOUS_ADAPTIVE = ['"type" : "null",']
+
+
+def test_water():
 
     water_lines = [
         "HETATM 1699  OW  HOH A 202      51.000  92.000  14.000  1.00  0.00           O",
@@ -41,6 +54,7 @@ def test_water(yaml=yaml):
     water_output = []
 
     # Function to test
+    yaml = os.path.join(test_path, "water/input_induced.yaml")
     job, _, _ = main.run_platform_from_yaml(yaml)
 
     # checkpoints
@@ -57,49 +71,28 @@ def test_water(yaml=yaml):
     assert water_lines == water_output
 
 
-WATER_PREVIOUS_PELE = [
-    '"waterSites": [{"watersToPerturb": {"links": {"ids": ["C:2091"] }}, "Box": {"radius": 6, "fixedCenter": [0.0000000000, 0.0000000000, 0.0000000000], "type": "sphericalBox"}}]',
-    "WaterPerturbation::parameters",
-    '"waterPerturbationFrequency": 1,',
-]
-WATER_PREVIOUS_ADAPTIVE = ['"type" : "null",']
-
-
-def test_water_with_previous_water(yaml=yaml_previous_water):
-    # Function to test
+def test_water_with_previous_water():
     errors = []
+    yaml = os.path.join(test_path, "water/input_previous_water.yaml")
     job = main.run_platform_from_yaml(yaml)
-    errors = tk.check_file(job.pele_dir, "pele.conf", WATER_PREVIOUS_PELE, errors)
-    errors = tk.check_file(
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", WATER_PREVIOUS_PELE, errors)
+    errors = tests.utils.check_file(
         job.pele_dir, "adaptive.conf", WATER_PREVIOUS_ADAPTIVE, errors
     )
     assert not errors
 
 
-pdb = os.path.join(test_path, "gpcr/complex.pdb")
-n_waters = 2
-API_WATERS = [
-    "HETATM 4695  OW  HOH A 402      51.000  92.000  14.000  1.00  0.00           O",
-    "HETATM 4698  OW  HOH A 403      71.000  60.000  20.000  1.00  0.00           O",
-]
-
-
-def test_error_water(pdb=pdb, n_waters=n_waters):
-    errors = []
+def test_error_water(pdb=PDB, n_waters=N_WATERS):
     shutil.copy(pdb, ".")
     input_file = os.path.basename(pdb)
     water_object = wt.WaterIncluder([input_file], n_waters, test=True)
-    try:
+    with pytest.raises(ce.NotCenterOfWaterBox):
         water_object.run()
-    except ce.NotCenterOfWaterBox:
-        assert True
-        return
-    assert False
 
 
 def test_include_water_no_ligand_API(
-    pdb=pdb,
-    n_waters=n_waters,
+    pdb=PDB,
+    n_waters=N_WATERS,
     water_center=[1, 2, 3],
     water_radius=18,
     water_trials=1,
@@ -124,7 +117,7 @@ def test_include_water_no_ligand_API(
         water_freq=water_freq,
     )
     water_object.run()
-    errors = tk.check_file(".", input_file, API_WATERS, errors)
+    errors = tests.utils.check_file(".", input_file, API_WATERS, errors)
     # os.remove(input_file)
     assert (
         water_object.water_line
@@ -140,8 +133,8 @@ API_WATERS2 = [
 
 
 def test_include_water_ligand_API(
-    pdb=pdb,
-    n_waters=n_waters,
+    pdb=PDB,
+    n_waters=N_WATERS,
     water_center=False,
     water_radius=False,
     water_trials=1,
@@ -168,8 +161,8 @@ def test_include_water_ligand_API(
         ligand_residue=ligand_residue,
     )
     water_object.run()
-    errors = tk.check_file(".", input_file, API_WATERS2, errors)
-    # os.remove(input_file)
+    errors = tests.utils.check_file(".", input_file, API_WATERS2, errors)
+
     assert (
         water_object.water_line
         == '\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 6, "fixedCenter": [-87.5760388319, -7.1355193027, -64.8428620317], "type": "sphericalBox"}}]\n         }, \n'
@@ -178,13 +171,13 @@ def test_include_water_ligand_API(
 
 
 def test_n_water(ext_args=NWATER_ARGS):
-    job, sel, job2 = main.run_platform(ext_args)
+    job, sel, job2 = main.run_platform_from_yaml(ext_args)
     results = glob.glob(os.path.join(job.pele_dir, "results/BestStructs/*.pdb"))
     error = False
     # Result has waters
     for result in results:
         with open(result, "r") as f:
-            if not "HOH" in "".join(f.readlines()):
+            if "HOH" not in "".join(f.readlines()):
                 error = True
     # Input has no water
     with open("../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb", "r") as f:
@@ -195,22 +188,17 @@ def test_n_water(ext_args=NWATER_ARGS):
 
 def test_all_waters(ext_args=ALL_WATER_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = job.pele_dir
-    errors = tk.check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
+    errors = tests.utils.check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
     assert not errors
 
 
 def test_water_lig(ext_args=WATERLIG_ARGS):
     errors = []
-    job = main.run_platform(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     folder = job.pele_dir
-    errors = tk.check_file(folder, "pele.conf", WATER_VALUES, errors)
-    # os.remove(input_file)
-    assert (
-        water_object.water_line
-        == '\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 6, "fixedCenter": [-87.5760388319, -7.1355193027, -64.8428620317], "type": "sphericalBox"}}]\n         }, \n'
-    )
+    errors = tests.utils.check_file(folder, "pele.conf", WATER_VALUES, errors)
     assert not errors
 
 

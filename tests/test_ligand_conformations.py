@@ -4,7 +4,7 @@ import shutil
 from pele_platform.Utilities.Helpers.ligand_conformations import LigandConformations
 from pele_platform.constants import constants as cs
 from pele_platform import main
-from .test_adaptive import check_file
+from .utils import check_file
 
 test_path = os.path.join(cs.DIR, "Examples", "ligand_conformations")
 

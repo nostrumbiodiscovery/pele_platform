@@ -1,6 +1,7 @@
 import os
 import pytest
 
+import tests.utils
 from pele_platform.constants import constants
 from pele_platform import main
 from . import test_adaptive as tk
@@ -24,7 +25,7 @@ def test_atom_string_mapping(yaml_file, expected):
     """
     errors = []
     job = main.run_platform_from_yaml(yaml_file)
-    errors = tk.check_file(job.pele_dir, "pele.conf", expected, errors)
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected, errors)
     assert not errors
 
 

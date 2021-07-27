@@ -2,7 +2,7 @@ import pandas as pd
 import glob
 import os
 import shutil
-from pele_platform.Utilities.BuildingBlocks.preparation import prepare_structure
+from pele_platform.building_blocks import prepare_structure
 from pele_platform.constants import constants as cs
 from pele_platform import main
 

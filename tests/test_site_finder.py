@@ -5,7 +5,7 @@ import pytest
 from pele_platform.constants import constants as cs
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform import main
-from .test_adaptive import check_file
+from .utils import check_file
 
 test_path = os.path.join(cs.DIR, "Examples")
 

@@ -1,18 +1,15 @@
 import os
 import pytest
-from subprocess import Popen, PIPE
-
 import shutil
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
 import pele_platform.Utilities.Helpers.protein_wizard as pp
 import pele_platform.Errors.custom_errors as ce
-from pele_platform.Utilities.Helpers.constraints import smiles_constraints as smi
+import tests.utils
 from pele_platform.Utilities.Helpers import helpers
+from pele_platform.Utilities.Helpers.constraints import smiles_constraints as smi
 
-from pele_platform.Utilities.Helpers import smiles_constraints as smi
-from . import test_adaptive as tk
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(
@@ -62,25 +59,13 @@ PPP_CONSTR = [
     '"constrainThisAtom": "B:247:_CA_" }',
 ]
 
-SMILES_CONSTR = [
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C7_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N1_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C1_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C2_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N2_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C3_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },',
-]
-
 
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
     job = main.run_platform_from_yaml(ext_args)
-    errors = tk.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
     assert not errors
+
 
 @pytest.mark.parametrize(
     ("yaml_file", "expected"),
@@ -94,10 +79,10 @@ def test_constraints(yaml_file, expected):
     """
     Runs platform in debug mode to check if all constraints were correctly set in pele.conf.
     """
-    output = main.run_platform(yaml_file)
+    output = main.run_platform_from_yaml(yaml_file)
     errors = []
     folder = output[0].pele_dir if type(output) == list else output.pele_dir
-    errors = tk.check_file(folder, "pele.conf", expected, errors)
+    errors = tests.utils.check_file(folder, "pele.conf", expected, errors)
     assert not errors
 
 
@@ -178,9 +163,6 @@ def test_yaml_errors(yaml_file, error):
     assert False
 
 
-def test_proteinwizard():
-    complex_correct = os.path.join(test_path, "preparation/6qmk_correct.pdb")
-    complex_repeated = os.path.join(test_path, "preparation/6qmk_repeated.pdb")
 @pytest.mark.parametrize(
     "complex",
     [
@@ -414,7 +396,7 @@ def test_constrain_smarts():
     yaml = os.path.join(test_path, "constraints/input_constrain_smarts.yaml")
     errors = []
     job = main.run_platform_from_yaml(yaml)
-    errors = tk.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", SMILES_CONSTR, errors)
     assert not errors
 
 
@@ -462,7 +444,7 @@ def test_skip_preprocess():
     complex_processed_processed.pdb) is present in the simulation directory.
     """
     yaml = os.path.join(test_path, "box/input_gpcr.yaml")
-    (job,) = main.run_platform(yaml)
+    (job,) = main.run_platform_from_yaml(yaml)
     input_file = os.path.join(job.pele_dir, "complex_processed.pdb")
     assert os.path.exists(input_file)
 

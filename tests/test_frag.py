@@ -6,6 +6,7 @@ import sys
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
+import tests.utils
 from tests import test_adaptive as td
 
 test_path = os.path.join(cs.DIR, "Examples")
@@ -139,13 +140,13 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
         shutil.rmtree(output, ignore_errors=True)
     job = main.run_platform_from_yaml(ext_args)
     folder = output
-    errors = td.check_file(
+    errors = tests.utils.check_file(
         job.working_dir[0],
         "control_folder/0_pele_template.conf",
         td.PELE_VALUES + FRAG_FLAGS,
         errors,
     )
-    errors = td.check_file(
+    errors = tests.utils.check_file(
         job.working_dir[0], "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
     )
     assert not errors
@@ -207,7 +208,7 @@ def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     """
     job = main.run_platform_from_yaml(ext_args)
     errors = []
-    errors = td.check_file(
+    errors = tests.utils.check_file(
         os.getcwd(), "point_analysis.csv", point_analysis_lines, errors, ",", 4
     )
     assert not errors
@@ -226,7 +227,7 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
         os.remove("input.conf")
     job = main.run_platform_from_yaml(ext_args)
     errors = []
-    errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
+    errors = tests.utils.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
 
 

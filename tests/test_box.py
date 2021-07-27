@@ -3,6 +3,7 @@ import pytest
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
+import tests.utils
 from . import test_adaptive as ta
 
 test_path = os.path.join(cs.DIR, "Examples")
@@ -49,5 +50,5 @@ def test_box_center_from_residue(yaml_file, expected_lines):
     """
     errors = []
     job = main.run_platform_from_yaml(yaml_file)
-    errors = ta.check_file(job.pele_dir, "pele.conf", expected_lines, errors)
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected_lines, errors)
     assert not errors

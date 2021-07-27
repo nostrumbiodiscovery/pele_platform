@@ -3,6 +3,8 @@
 This is the main module and it is designed to run the PELE platform from
 the command-line.
 """
+from pele_platform.Errors import custom_errors
+from pele_platform.Utilities.Helpers.launcher import Launcher
 
 __author__ = "Nostrum Biodiscovery"
 __email__ = "pelesupport@nostrumbiodiscovery.com"
@@ -27,8 +29,7 @@ def parse_args(args=[]):
     # Parser setup
     from argparse import ArgumentParser
 
-    parser = ArgumentParser(
-        description='Automatic platform to launch PELE simulations')
+    parser = ArgumentParser(description='Automatic platform to launch PELE simulations')
     parser.add_argument('input_file', type=str, help='Yaml input file')
 
     # Parse arguments
@@ -36,7 +37,6 @@ def parse_args(args=[]):
 
     # Extract yaml file (the only argument we need to retrieve)
     input_yaml = parsed_args.input_file
-
     return input_yaml
 
 
@@ -64,28 +64,19 @@ def run_platform_from_yaml(input_yaml):
     from pele_platform.Utilities.Helpers import yaml_parser
     from pele_platform.Checker import valid_flags
 
-    yaml_obj = yaml_parser.YamlParser(input_yaml,
-                                      valid_flags.VALID_FLAGS_PLATFORM)
+    yaml_obj = yaml_parser.YamlParser(input_yaml, valid_flags.VALID_FLAGS_PLATFORM)
 
     # Attempt to parse the yaml object
     try:
         yaml_obj.read()
     except AttributeError:
-        from pele_platform.Errors import custom_errors
-
         raise custom_errors.WrongYamlFile(
             "Input file: {}".format(input_yaml)
             + " does not look like a correct yaml file")
 
-    # Initialize job launcher
-    from pele_platform.Utilities.Helpers.launcher import Launcher
-
     launcher = Launcher(yaml_obj)
-
-    # Run launcher
     job_params = launcher.launch()
 
-    # Return job parameters
     return job_params
 
 

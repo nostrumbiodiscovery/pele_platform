@@ -7,11 +7,15 @@ import pandas as pd
 import re
 from sklearn.mixture import GaussianMixture
 
-from pele_platform.Analysis.plots import _extract_coords
-from pele_platform.Utilities.BuildingBlocks import blocks
+from pele_platform.building_blocks import blocks
 from pele_platform.Utilities.Helpers import helpers, bestStructs
-from pele_platform.Utilities.Parameters import pele_env as pv
+from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 
+
+class Selection(blocks.Block):
+
+    def run(self):
+        pass
 
 @dataclass
 class Selection(blocks.Block):
@@ -19,7 +23,7 @@ class Selection(blocks.Block):
     Base class to handle all input selection algorithms, copy files, set next_step, etc.
     """
 
-    simulation_params: pv.EnviroBuilder
+    simulation_params: ParametersBuilder
     options: dict
 
     def copy_files(self):
@@ -63,7 +67,7 @@ class Selection(blocks.Block):
             files_out, _, _, _, output_energy = bestStructs.main(
                 str(self.simulation_params.be_column),
                 n_structs=n_best_poses,
-                path=".",
+                path="",
                 topology=self.simulation_params.topology,
                 logger=self.simulation_params.logger,
             )
@@ -172,7 +176,7 @@ class LowestEnergy5(Selection):
     Use to select inputs for Rescoring after LocalExplorationExhaustive and LocalExplorationFast.
     """
 
-    simulation_params: pv.EnviroBuilder
+    simulation_params: ParametersBuilder
     options: dict
     folder_name: str
 
@@ -199,13 +203,13 @@ class GMM(Selection):
     Perform Gaussian Mixture (full covariance) clustering on best binding energy poses.
     """
 
-    simulation_params: pv.EnviroBuilder
+    simulation_params: ParametersBuilder
     options: dict
     folder_name: str
 
     def get_inputs(self):
-        files_out, output_energy = self.extract_poses(percentage=0.05, n_poses=1000)
-        self.inputs = self.gaussian_mixture(files_out, output_energy)
+        files_out, ou self.gaussian_mixture(files_out, tput_energy = self.extract_poses(percentage=0.05, n_poses=1000)
+        self.inputs =output_energy)
 
 
 @dataclass
@@ -215,7 +219,7 @@ class Clusters(Selection):
     than available CPUs, choose the ones with the lowest binding energy.
     """
 
-    simulation_params: pv.EnviroBuilder
+    simulation_params: ParametersBuilder
     options: dict
     folder_name: str
 
@@ -248,7 +252,7 @@ class ScatterN(Selection):
     Scan top 75% binding energies, pick n best ones as long as ligand COMs are >= 6 A away from each other.
     """
 
-    simulation_params: pv.EnviroBuilder
+    simulation_params: ParametersBuilder
     options: dict
     folder_name: str
     print("Scatter initialised.")

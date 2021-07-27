@@ -1,13 +1,11 @@
 import os
-import math
-import glob
 import pytest
 import shutil
-import re
 import yaml
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
+from tests.utils import check_file
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -15,15 +13,11 @@ test_path = os.path.join(cs.DIR, "Examples")
 OUT_IN_ARGS = os.path.join(test_path, "out_in/input.yaml")
 INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive.yaml")
 INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast.yaml")
-NWATER_ARGS = os.path.join(test_path, "water/input_nwaters.yaml")
 GLOBAL_ARGS = os.path.join(test_path, "global/input.yaml")
 INPUTS_GLOBAL_ARGS = os.path.join(test_path, "global/input_inputs.yaml")
 INPUTS_AST_ARGS = os.path.join(test_path, "global/input_inputs_asterisc.yaml")
 EXIT_ARGS = os.path.join(test_path, "exit/input.yaml")
 EXITSOFT_ARGS = os.path.join(test_path, "exit_soft/input.yaml")
-WATER_ARGS = os.path.join(test_path, "water/input_bs.yaml")
-ALL_WATER_ARGS = os.path.join(test_path, "water/input_all.yaml")
-WATERLIG_ARGS = os.path.join(test_path, "water/input_lig.yaml")
 RESTART_ARGS = os.path.join(test_path, "restart/input.yaml")
 MSM_ARGS = os.path.join(test_path, "Msm/input.yaml")
 MAE_ARGS = os.path.join(test_path, "induced_fit/input_mae.yaml")
@@ -54,6 +48,11 @@ ADAPTIVE_VALUES = [
     '"data": "done"',
     '"executable": "done"',
     '"documents": "done"',
+]
+
+GPCR_VALUES = [
+    '"radius": 19.970223159033843,',
+    '"fixedCenter": [-71.78435134887695,-13.431749963760375,-42.46209926605225]',
 ]
 
 PELE_VALUES = [
@@ -89,55 +88,16 @@ PELE_VALUES = [
     '"relaxationSpringConstant" : 3',
 ]
 
-
-PELE_VALUES = [
-    "rep",
-    "traj.xtc",
-    "OBC",
-    '"anmFrequency" : 3,',
-    '"sideChainPredictionFrequency" : 3,',
-    '"minimizationFrequency" : 3,',
-    '"temperature": 3000,',
-    '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:111:_CA_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" }',
-    '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:13:_CA_" }',
-    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
-    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
-    '"radius": 3000',
-    '"fixedCenter": [30,30,30]',
-    'tests/native.pdb"',
-    '"atoms": { "ids":["A:6:_CG_"]}',
-    '"atoms": { "ids":["A:6:_CD_"]}',
-    "simulationLogPath",
-    '"activateProximityDetection": false',
-    '"overlapFactor": 3',
-    '"steeringUpdateFrequency": 3',
-    '"verboseMode": true,',
-    '"displacementFactor" : 3',
-    '"modesChangeFrequency" : 3,',
-    '"directionGeneration" : "steered",',
-    '"modesMixingOption" : "DontMixModes",',
-    '"pickingCase" : "random"',
-    '"numberOfModes": 3',
-    '"preloadedModesIn" : "modes.nmd",',
-    '"relaxationSpringConstant" : 3',
-]
-
 PCA_VALUES = [
-                '"displacementFactor" : 2',
-                '"modesChangeFrequency" : 50,',
-                '"directionGeneration" : "oscillate",',
-                '"modesMixingOption" : "doNotMixModes",',
-                '"pickingCase" : "LOWEST_MODE"',
-                '"numberOfModes": 1',
-                '"relaxationSpringConstant" : 2'
-             ]  
-
-ALL_WATER_VALUES = [
-    "WaterPerturbation::parameters",
-    '"M:1"',
-    '"M:2"'
+    '"displacementFactor" : 2',
+    '"modesChangeFrequency" : 50,',
+    '"directionGeneration" : "oscillate",',
+    '"modesMixingOption" : "doNotMixModes",',
+    '"pickingCase" : "LOWEST_MODE"',
+    '"numberOfModes": 1',
+    '"relaxationSpringConstant" : 2',
 ]
+
 
 @pytest.mark.parametrize(
     "yaml",
@@ -155,18 +115,15 @@ ALL_WATER_VALUES = [
         INPUTS_AST_ARGS,
         GPCR_ARGS,
         PCA_ARGS,
+        PCA2_ARGS,
+        MINIMUM_STEPS_ARGS,
     ],
 )
 def test_production_run(yaml):
     """
     Full PELE run in test mode (cpus = 5) using various YAML inputs to cover multiple simulation types.
     """
-    main.run_platform(yaml)
-
-GPCR_VALUES = [
-    '"radius": 19.970223159033843,',
-    '"fixedCenter": [-71.78435134887695,-13.431749963760375,-42.46209926605225]',
-]
+    main.run_platform_from_yaml(yaml)
 
 
 @pytest.mark.parametrize("restart_type", ["restart", "adaptive_restart"])
@@ -206,78 +163,6 @@ def test_restart_flag(restart_type):
     assert os.path.exists(os.path.join(job_parameters2.pele_dir, "results"))
 
 
-def test_induced_exhaustive(ext_args=INDUCED_EX_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_induced_fast(ext_args=INDUCED_FAST_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_n_water(ext_args=NWATER_ARGS):
-    job = main.run_platform_from_yaml(ext_args)
-    results = glob.glob(os.path.join(job.pele_dir, "results/top_poses/*.pdb"))
-    error = False
-    # Result has waters
-    for result in results:
-        with open(result, "r") as f:
-            if "HOH" not in "".join(f.readlines()):
-                error = True
-    # Input has no water
-    with open("../pele_platform/Examples/Msm/PR_1A28_xray_-_minimized.pdb", "r") as f:
-        if "HOH" in "".join(f.readlines()):
-            error = True
-    assert not error
-
-
-def test_global(ext_args=GLOBAL_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_inputs_global(ext_args=INPUTS_GLOBAL_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_exit(ext_args=EXIT_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_softexit(ext_args=EXITSOFT_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_all_waters(ext_args=ALL_WATER_ARGS):
-    errors = []
-    job = main.run_platform_from_yaml(ext_args)
-    folder = job.pele_dir
-    errors = check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
-    assert not errors
-
-
-def test_water_lig(ext_args=WATERLIG_ARGS):
-    errors = []
-    job = main.run_platform_from_yaml(ext_args)
-    folder = job.pele_dir
-    errors = check_file(folder, "pele.conf", WATER_VALUES, errors)
-    assert not errors
-
-
-def test_out_in(ext_args=OUT_IN_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_rescoring(ext_args=RESCORING_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_mae(ext_args=MAE_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
-def test_asterisc_inputs(ext_args=INPUTS_AST_ARGS):
-    main.run_platform_from_yaml(ext_args)
-
-
 def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     errors = []
     if os.path.exists(output):
@@ -304,103 +189,3 @@ def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
         folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
     )
     assert not errors
-
-
-@pytest.mark.parametrize("yaml", [PCA_ARGS, PCA2_ARGS])
-def test_pca(yaml, output="PCA_result"):
-    """
-    Tests PCA runs in debug mode, both with an explicit list of PDB files for PCA and a wild card.
-    """
-    if os.path.exists(output):
-        shutil.rmtree(output, ignore_errors=True)
-
-    errors = []
-    (job,) = main.run_platform(yaml)
-    errors = check_file(job.pele_dir, "pele.conf", PCA_VALUES, errors)
-    assert not errors
-
-
-
-# @pytest.mark.skipif(
-#     helpers.get_pele_version() < version.parse("1.7.1"),
-#     reason="Requires PELE 1.7.1 or higher.",
-# )
-def test_minimum_steps(ext_args=MINIMUM_STEPS_ARGS):
-    """Integration Test for PELE minimum steps flag
-
-    Requirements:
-        PELE >= V1.7.1
-    """
-    main.run_platform_from_yaml(ext_args)
-
-
-def truncate(f, n):
-    return math.floor(f * 10 ** n) / 10 ** n
-
-
-def check_file(
-    folder, filename, values, errors, subdelimiter=None, truncate_digits_to=4
-):
-    filename = os.path.join(folder, filename)
-    print(values)
-    print("---------------------")
-    print("filename:", filename)
-    with open(filename, "r") as f:
-        lines = f.readlines()
-        print("lines:", lines)
-        if subdelimiter is None:
-            for value in values:
-                if value not in "".join(lines):
-                    errors.append(value)
-
-        elif isinstance(subdelimiter, str):
-            for value in values:
-                splitted_values = value.split(subdelimiter)
-            for splitted_value in splitted_values:
-                if splitted_value.replace(".", "").replace("-", "").isnumeric():
-                    if str(
-                        truncate(float(splitted_value), truncate_digits_to)
-                    ) not in "".join(lines):
-                        errors.append(value)
-                else:
-                    if splitted_value not in "".join(lines):
-                        errors.append(splitted_value)
-        else:
-            raise TypeError("Wrong subdelimiter type")
-
-    return errors
-
-
-def test_gpcr(args=GPCR_ARGS):
-    errors = []
-    job = main.run_platform_from_yaml(args)
-    errors = check_file(job.pele_dir, "pele.conf", GPCR_VALUES, errors)
-    input_file = os.path.join(job.inputs_dir, "complex_processed.pdb")
-    assert not os.path.exists(input_file)
-
-
-def check_file_regex(directory, file, patterns, errors):
-    """
-    Checks file for strings matching regex patterns.
-
-    Parameters
-    -----------
-    directory : str
-        Path to folder.
-    file : str
-        Name of the file to check.
-    patterns : List[str]
-        List of regex patterns to check.
-    errors : List[str]
-        List of existing errors (or empty list).
-    """
-    path = os.path.join(directory, file)
-
-    with open(path) as f:
-        content = f.read()
-
-    for pattern in patterns:
-        if not re.search(pattern, content):
-            errors.append(pattern)
-
-    return errors
