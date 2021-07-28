@@ -263,7 +263,7 @@ def test_out_in_flag(yaml=yaml):
         job = main.run_platform_from_yaml(yaml)
     except ce.OutInError as e:
         assert (
-            str(e).strip("'") == "flag final_site must be specified for out_in package"
+            str(e).strip("'") == "flag final_site must be specified for the out_in package."
         )
         return
     assert False
