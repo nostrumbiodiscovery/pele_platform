@@ -591,7 +591,7 @@ def parse_atom_dist(atom_dist, pdb):
     atom_tag : str
         Tag necessary for the metrics JSON - "links" when using residue string and "atoms" when setting residue string.
     """
-    if len(atom_dist.split(":")) == 2:  # When atom_dist is a residue string
+    if not str(atom_dist).isdigit() and len(atom_dist.split(":")) == 2:  # When atom_dist is a residue string
         atom = atom_dist
         atom_tag = "links"
     else:
