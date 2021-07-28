@@ -426,3 +426,20 @@ def test_flag_compatibility_checker():
 
     with pytest.raises(ce.IncompatibleYamlFlags):
         main.run_platform_from_yaml(yaml)
+
+
+def test_out_in_metrics():
+    """
+    Production run to test user-defined metrics in OutIn as well as setting the right atom distance for
+    the bias column.
+    """
+    expected_metrics = [
+        '"atoms": { "ids":["A:867:_CB_"]}',  # final site
+        '"links": { "ids":["Z:1"]}',  # ligand
+        '"atoms": { "ids":["A:583:_NH2"]}',  # atom_dist set with atom string
+        '"atoms": { "ids":["A:580:_HA_"]}'  # atom_dist set with atom number
+    ]
+    yaml_file = os.path.join(test_path, "out_in", "input_metrics.yaml")
+    job = main.run_platform_from_yaml(yaml_file)
+    errors = tk.check_file(job.pele_dir, "pele.conf", expected_metrics, [])
+    assert not errors

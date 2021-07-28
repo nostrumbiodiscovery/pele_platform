@@ -105,12 +105,12 @@ UNBINDING = """
 DISTANCE_ATOMS = """
                      {{
                      "type":"com_distance",
-                     "tag":"distance{2}",
+                     "tag":"distance{metric_name}",
                      "selection_group_1":{{
-                     "atoms": {{ "ids":["{0}"]}}
+                     "{atom1_tag}": {{ "ids":["{atom1}"]}}
                      }},
                      "selection_group_2":{{
-                     "atoms": {{ "ids":["{1}"]}}
+                     "{atom2_tag}": {{ "ids":["{atom2}"]}}
                      }}
                      }},
                      """

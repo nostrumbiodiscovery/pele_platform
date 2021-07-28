@@ -37,7 +37,7 @@ class OutInLauncher:
         COMPULSORY_FLAGS = ["final_site", "initial_site"]
         for flag in COMPULSORY_FLAGS:
             if getattr(self.args, flag) is None:
-                raise ce.OutInError(f"flag {flag} must be specified for out_in package")
+                raise ce.OutInError(f"flag {flag} must be specified for the out_in package.")
 
     def _set_parameters(self) -> None:
         """
@@ -59,4 +59,11 @@ class OutInLauncher:
             self.args.box_radius if self.args.box_radius else box_radius
         )
         self.args.randomize = True
-        self.args.atom_dist = [self.args.final_site, self.args.initial_site]  # this should become column 7 in report
+
+        ligand_resnum = hp.get_residue_number(self.args.system, self.args.chain, self.args.residue)
+        ligand_string = f"{self.args.chain}:{ligand_resnum}"
+
+        if self.args.atom_dist:
+            self.args.atom_dist = [self.args.final_site, ligand_string] + self.args.atom_dist
+        else:
+            self.args.atom_dist = [self.args.final_site, ligand_string]  # column 7 in the report
