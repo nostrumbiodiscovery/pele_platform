@@ -96,10 +96,12 @@ class WaterAnalysis:
             - TODO: Analyses energy and entropy of each water site.
         """
         helpers.check_make_folder(path)
+
         coordinates = self.extract_water_coordinates(
             skip_initial_structures=self.skip_initial_structures
         )
         clusters, water_sites = self.get_water_sites(coordinates, path)
+        print(f"Generated {len(clusters)} clusters.")
 
     def extract_water_coordinates(self, skip_initial_structures=True):
         """
@@ -124,6 +126,7 @@ class WaterAnalysis:
                 water_ids=self.water_ids,
                 skip_initial_structures=skip_initial_structures,
             )
+        print("Water coordinates extracted.")
         return coordinates
 
     @staticmethod

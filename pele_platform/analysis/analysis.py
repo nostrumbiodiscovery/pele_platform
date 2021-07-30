@@ -1436,7 +1436,7 @@ class Analysis(object):
             norm_populations[label] = population * normalization_factor
 
         # Write centroids to PDB
-        with open(path, 'w') as f:
+        with open(path, 'w+') as f:
             for label, centroid in enumerate(centroids):
                 f.write("ATOM    {:3d}  ".format(label) +
                         "CEN BOX A {:3d} ".format(label) +
