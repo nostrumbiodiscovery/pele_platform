@@ -16,22 +16,9 @@ class Analysis(object):
     _STEP_LABEL = "numberOfAcceptedPeleSteps"
 
     def __init__(
-        self,
-        simulation_output,
-        resname=None,
-        chain=None,
-        be_column=4,
-        limit_column=None,
-        traj="trajectory.pdb",
-        report=None,
-        skip_initial_structures=True,
-        kde=False,
-        kde_structs=1000,
-        topology=None,
-        cpus=1,
-        water_ids_to_track=[],
-        plot_filtering_threshold=0.02,
-        clustering_filtering_threshold=0.25,
+        self, simulation_output, resname=None, chain=None, be_column=4, limit_column=None, traj="trajectory.pdb",
+        report=None, skip_initial_structures=True, kde=False, kde_structs=1000, topology=None, cpus=1,
+        water_ids_to_track=[], plot_filtering_threshold=0.02, clustering_filtering_threshold=0.25, random_seed=42,
     ):
         """
         It initializes an Analysis instance which it depends on
@@ -79,6 +66,8 @@ class Analysis(object):
             User-defined setting to toggle trajectory filtering when generating plots.
         clustering_filtering_threshold : float
             User-defined setting to toggle trajectory filtering when generating clusters.
+        random_seed : int
+            Random seed to use in clustering. If it was not set in input.yaml, it will default to 42.
         """
         from pele_platform.analysis import DataHandler
 
@@ -99,6 +88,7 @@ class Analysis(object):
         self.water_ids = water_ids_to_track
         self.plot_filtering_threshold = plot_filtering_threshold
         self.clustering_filtering_threshold = clustering_filtering_threshold
+        self.random_seed = random_seed
 
         if self.residue:
             self._check_residue_exists()
@@ -159,6 +149,7 @@ class Analysis(object):
             water_ids_to_track=parameters.water_ids_to_track,
             plot_filtering_threshold=parameters.plot_filtering_threshold,
             clustering_filtering_threshold=parameters.clustering_filtering_threshold,
+            random_seed=parameters.seed,
         )
 
         return analysis
@@ -195,16 +186,9 @@ class Analysis(object):
         )
 
     def generate(
-        self,
-        path,
-        clustering_type="meanshift",
-        bandwidth=2.5,
-        analysis_nclust=10,
-        max_top_clusters=8,
-        top_clusters_criterion="interaction_25_percentile",
-        min_population=0.01,
-        max_top_poses=100,
-        representatives_criterion="interaction_5_percentile",
+        self, path, clustering_type="meanshift", bandwidth=2.5, analysis_nclust=10, max_top_clusters=8,
+        top_clusters_criterion="interaction_25_percentile", min_population=0.01, max_top_poses=100,
+        representatives_criterion="interaction_5_percentile", random_seed=42,
     ):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
@@ -243,6 +227,8 @@ class Analysis(object):
             "total_5_percentile", "total_mean", "total_min",
             "interaction_25_percentile", "interaction_5_percentile",
             "interaction_mean", "interaction_min"]
+        random_seed : int
+            Random seed to use in clustering. If it was not set in input.yaml, it will default to 42.
         """
         import os
 
@@ -374,15 +360,9 @@ class Analysis(object):
         return best_metrics
 
     def generate_clusters(
-        self,
-        path,
-        clustering_type,
-        bandwidth=2.5,
-        analysis_nclust=10,
-        max_top_clusters=8,
-        top_clusters_criterion="interaction_25_percentile",
-        min_population=0.01,
-        representatives_criterion="interaction_5_percentile",
+        self, path, clustering_type, bandwidth=2.5, analysis_nclust=10, max_top_clusters=8,
+        top_clusters_criterion="interaction_25_percentile", min_population=0.01,
+        representatives_criterion="interaction_5_percentile", random_seed=42,
     ):
         """
         It generates the structural clustering of ligand poses.
@@ -417,6 +397,8 @@ class Analysis(object):
             "total_5_percentile", "total_mean", "total_min",
             "interaction_25_percentile", "interaction_5_percentile",
             "interaction_mean", "interaction_min"]
+        random_seed : int
+            Random seed to use in clustering. If it was not set in input.yaml, it will default to 42.
         """
         import os
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
@@ -502,21 +484,16 @@ class Analysis(object):
             self._run_inner_clustering(
                 path=path,
                 selected_clusters=cluster_subset,
-                all_clusters=clusters,
                 coordinates=coordinates,
                 representatives_criterion=representatives_criterion,
                 dataframe=dataframe,
             )
+            criterion_message = "k-means clustering"
         else:
             self._save_cluster_representatives(
                 cluster_subset, dataframe, path, representatives_criterion
             )
-        try:
-            criterion_message = cluster_representatives_criterion[
-                representatives_criterion
-            ]
-        except KeyError:
-            criterion_message = "k-means clustering"
+            criterion_message = cluster_representatives_criterion[representatives_criterion]
 
         print(
             f"Retrieve top cluster representative structures based on "
@@ -1002,14 +979,9 @@ class Analysis(object):
                             raise ValueError
                     except ValueError:
                         raise ValueError(
-                            "Array of water coordinates have "
-                            + "invalid dimensions: "
-                            + "{}. ".format(coords.shape)
-                            + "Its shape must fulfill the "
-                            + "following dimensions: [N, 3], "
-                            + "where N is the total number "
-                            + "of water molecules that are "
-                            + "tracked in each snapshot"
+                            "Array of water coordinates have invalid dimensions: {}. ".format(coords.shape)
+                            + "Its shape must fulfill the following dimensions: [N, 3], where N is the total number "
+                            + "of water molecules that are tracked in each snapshot"
                         )
 
                     coords_to_cluster.extend(coords)
@@ -1702,13 +1674,7 @@ class Analysis(object):
             )
 
     def _run_inner_clustering(
-        self,
-        path,
-        selected_clusters,
-        all_clusters,
-        coordinates,
-        representatives_criterion,
-        dataframe,
+        self, path, selected_clusters, coordinates, representatives_criterion, dataframe,
     ):
         """
         Performs k-means clustering to provide the user with representatives of each selected cluster.
@@ -1742,8 +1708,6 @@ class Analysis(object):
         )
         from pele_platform.Utilities.Helpers import get_suffix
 
-        random_seed = 42 if not self.skip_initial_structures else None  # needed for reproducible tests
-
         data = dataframe
         inner_clusters_data = pd.DataFrame()
 
@@ -1758,13 +1722,10 @@ class Analysis(object):
 
         # Filter coordinates to include only the ones for selected clusters
         filtered_coordinates = defaultdict(list)
-        mask = [cluster in selected_clusters for cluster in all_clusters]
+        data["cluster"] = selected_clusters
 
-        data["selected"] = mask
-        data["cluster"] = all_clusters
-
-        for coord, cluster, included in zip(coordinates, all_clusters, mask):
-            if included:
+        for coord, cluster in zip(coordinates, selected_clusters):
+            if cluster > -1:
                 filtered_coordinates[cluster].append(coord)
 
         # Run K-means for poses in each selected cluster
@@ -1777,7 +1738,7 @@ class Analysis(object):
 
             try:
                 labels = KMeans(
-                    n_clusters=n_clusters, random_state=random_seed
+                    n_clusters=n_clusters, random_state=self.random_seed
                 ).fit_predict(cluster_coordinates)
             except ValueError:
                 print(f"Not enough samples to produce {n_clusters} clusters. Skipping.")
