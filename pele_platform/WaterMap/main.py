@@ -1,3 +1,4 @@
+import glob
 import os
 
 import pele_platform.Utilities.Helpers.helpers as hp
@@ -40,8 +41,25 @@ def run_watermap(parsed_yaml):
     simulation = sim.run_adaptive(parsed_yaml)
 
     # analyse the simulation
-    analysis_path = os.path.join(simulation.pele_dir, "results", "water_analysis")
+    results = os.path.join(simulation.pele_dir, "results")
+    results_folders = glob.glob(results.replace("results", "results*"))
+    breakpoint()
+    if len(results_folders) == 1:
+        water_analysis_folder = results_folders
+    else:
+        index = max(
+            [
+                int(os.path.basename(folder).split("_")[-1])
+                for folder in results_folders
+                if "_" in os.path.basename(folder)
+            ]
+        )
+        water_analysis_folder = os.path.join(
+            os.path.dirname(results),
+            os.path.basename(results) + "_" + str(index),
+        )
+
     analysis = WaterAnalysis.from_parameters(simulation)
-    analysis.analyse_waters(analysis_path)
+    analysis.analyse_waters(os.path.join(water_analysis_folder, "water_analysis"))
 
     return simulation
