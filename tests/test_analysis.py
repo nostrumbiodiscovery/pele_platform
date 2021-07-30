@@ -675,3 +675,24 @@ def test_frag_API_analysis(yaml_file, traj, topology):
     assert len(glob.glob(os.path.join(analysis_output, "clusters", "cluster*pdb"))) > 0
 
     shutil.rmtree(frag_folder, ignore_errors=True)
+
+
+@pytest.mark.parametrize(("multi", "expected"), [(1, 3), (2, 4)])
+def test_inner_clustering(analysis, multi, expected):
+    """
+    Checks if inner clustering is performed correctly.
+    """
+    working_folder = "inner_clustering"
+
+    analysis.generate_clusters(
+        working_folder,
+        "meanshift",
+        bandwidth=30,
+        representatives_criterion="multi {}".format(multi),
+    )
+
+    results = glob.glob(os.path.join(working_folder, "*pdb"))
+    results = [element for element in results if "water" not in element]
+
+    assert len(results) == expected
+    check_remove_folder(working_folder)

@@ -15,11 +15,24 @@ class Analysis(object):
     _REPORT = "report"
     _STEP_LABEL = "numberOfAcceptedPeleSteps"
 
-    def __init__(self, simulation_output, resname=None, chain=None,
-                 be_column=4, limit_column=None, traj="trajectory.pdb",
-                 report=None, skip_initial_structures=True, kde=False,
-                 kde_structs=1000, topology=None, cpus=1,
-                 water_ids_to_track=[], plot_filtering_threshold=0.02, clustering_filtering_threshold=0.25):
+    def __init__(
+        self,
+        simulation_output,
+        resname=None,
+        chain=None,
+        be_column=4,
+        limit_column=None,
+        traj="trajectory.pdb",
+        report=None,
+        skip_initial_structures=True,
+        kde=False,
+        kde_structs=1000,
+        topology=None,
+        cpus=1,
+        water_ids_to_track=[],
+        plot_filtering_threshold=0.02,
+        clustering_filtering_threshold=0.25,
+    ):
         """
         It initializes an Analysis instance which it depends on
         the general Parameters class of the PELE Platform.
@@ -95,7 +108,8 @@ class Analysis(object):
             report_name=self.report,
             trajectory_name=self.traj,
             be_column=self.be_column,
-            skip_initial_structures=self.skip_initial_structures)
+            skip_initial_structures=self.skip_initial_structures,
+        )
         self._dataframe = self._data_handler.get_reports_dataframe()
 
     @classmethod
@@ -118,8 +132,7 @@ class Analysis(object):
         import os
 
         # Set the simulation output path from parameters
-        simulation_output = os.path.join(parameters.pele_dir,
-                                         parameters.output)
+        simulation_output = os.path.join(parameters.pele_dir, parameters.output)
 
         # We do not need to specify resname and chain if we are not
         # perturbing any ligand
@@ -130,21 +143,23 @@ class Analysis(object):
             chain = parameters.chain
 
         # Initialize the Analysis class
-        analysis = Analysis(resname=resname,
-                            chain=chain,
-                            simulation_output=simulation_output,
-                            be_column=parameters.be_column,
-                            limit_column=parameters.limit_column,
-                            traj=parameters.traj_name,
-                            report=parameters.report_name,
-                            skip_initial_structures=not parameters.test,
-                            kde=parameters.kde,
-                            kde_structs=parameters.kde_structs,
-                            topology=parameters.topology,
-                            cpus=parameters.cpus,
-                            water_ids_to_track=parameters.water_ids_to_track,
-                            plot_filtering_threshold=parameters.plot_filtering_threshold,
-                            clustering_filtering_threshold=parameters.clustering_filtering_threshold)
+        analysis = Analysis(
+            resname=resname,
+            chain=chain,
+            simulation_output=simulation_output,
+            be_column=parameters.be_column,
+            limit_column=parameters.limit_column,
+            traj=parameters.traj_name,
+            report=parameters.report_name,
+            skip_initial_structures=not parameters.test,
+            kde=parameters.kde,
+            kde_structs=parameters.kde_structs,
+            topology=parameters.topology,
+            cpus=parameters.cpus,
+            water_ids_to_track=parameters.water_ids_to_track,
+            plot_filtering_threshold=parameters.plot_filtering_threshold,
+            clustering_filtering_threshold=parameters.clustering_filtering_threshold,
+        )
 
         return analysis
 
@@ -158,8 +173,7 @@ class Analysis(object):
         params : dict
             A dictionary of parameters
         """
-        params = {key: value for key, value in self.__dict__.items()
-                  if key[:1] != "_"}
+        params = {key: value for key, value in self.__dict__.items() if key[:1] != "_"}
         return params
 
     def get_dataframe(self, threshold=0.02):
@@ -176,14 +190,22 @@ class Analysis(object):
         dataframe : a pandas.DataFrame object
             The dataframe containing the information from PELE reports
         """
-        return self._data_handler.remove_outliers_from_dataframe(self._dataframe, threshold)
+        return self._data_handler.remove_outliers_from_dataframe(
+            self._dataframe, threshold
+        )
 
-    def generate(self, path, clustering_type='meanshift',
-                 bandwidth=2.5, analysis_nclust=10,
-                 max_top_clusters=8,
-                 top_clusters_criterion="interaction_25_percentile",
-                 min_population=0.01, max_top_poses=100,
-                 representatives_criterion="interaction_5_percentile"):
+    def generate(
+        self,
+        path,
+        clustering_type="meanshift",
+        bandwidth=2.5,
+        analysis_nclust=10,
+        max_top_clusters=8,
+        top_clusters_criterion="interaction_25_percentile",
+        min_population=0.01,
+        max_top_poses=100,
+        representatives_criterion="interaction_5_percentile",
+    ):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -223,6 +245,7 @@ class Analysis(object):
             "interaction_mean", "interaction_min"]
         """
         import os
+
         path = self._check_existing_directory(path)
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
@@ -247,12 +270,19 @@ class Analysis(object):
 
         best_metrics = self.generate_top_poses(top_poses_folder, max_top_poses)
 
-        self.generate_clusters(clusters_folder, clustering_type,
-                               bandwidth, analysis_nclust,
-                               max_top_clusters, top_clusters_criterion,
-                               min_population, representatives_criterion)
-        self.generate_report(plots_folder, top_poses_folder,
-                             clusters_folder, best_metrics, report_file)
+        self.generate_clusters(
+            clusters_folder,
+            clustering_type,
+            bandwidth,
+            analysis_nclust,
+            max_top_clusters,
+            top_clusters_criterion,
+            min_population,
+            representatives_criterion,
+        )
+        self.generate_report(
+            plots_folder, top_poses_folder, clusters_folder, best_metrics, report_file
+        )
 
     def generate_plots(self, path):
         """
@@ -301,17 +331,15 @@ class Analysis(object):
                 continue
 
             if i_energy is not None:
-                plotter.plot_two_metrics(t_energy, i_energy, metric,
-                                         output_folder=path)
-                plotter.plot_two_metrics(metric, i_energy,
-                                         output_folder=path)
+                plotter.plot_two_metrics(t_energy, i_energy, metric, output_folder=path)
+                plotter.plot_two_metrics(metric, i_energy, output_folder=path)
             else:
-                plotter.plot_two_metrics(metric, t_energy,
-                                         output_folder=path)
+                plotter.plot_two_metrics(metric, t_energy, output_folder=path)
 
             if self.kde:
-                plotter.plot_kde(metric, i_energy, output_folder=path,
-                                 kde_structs=self.kde_structs)
+                plotter.plot_kde(
+                    metric, i_energy, output_folder=path, kde_structs=self.kde_structs
+                )
 
     def generate_top_poses(self, path, n_poses):
         """
@@ -345,12 +373,17 @@ class Analysis(object):
 
         return best_metrics
 
-    def generate_clusters(self, path, clustering_type,
-                          bandwidth=2.5, analysis_nclust=10,
-                          max_top_clusters=8,
-                          top_clusters_criterion="interaction_25_percentile",
-                          min_population=0.01,
-                          representatives_criterion="interaction_5_percentile"):
+    def generate_clusters(
+        self,
+        path,
+        clustering_type,
+        bandwidth=2.5,
+        analysis_nclust=10,
+        max_top_clusters=8,
+        top_clusters_criterion="interaction_25_percentile",
+        min_population=0.01,
+        representatives_criterion="interaction_5_percentile",
+    ):
         """
         It generates the structural clustering of ligand poses.
 
@@ -387,76 +420,112 @@ class Analysis(object):
         """
         import os
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
-        from pele_platform.constants.constants import \
-            metric_top_clusters_criterion, cluster_representatives_criterion
+        from pele_platform.constants.constants import (
+            metric_top_clusters_criterion,
+            cluster_representatives_criterion,
+        )
 
         check_make_folder(path)
 
         # Get clustering object
-        clustering, max_coordinates = self._get_clustering(clustering_type,
-                                                           bandwidth,
-                                                           analysis_nclust)
+        clustering, max_coordinates = self._get_clustering(
+            clustering_type, bandwidth, analysis_nclust
+        )
 
         # Extract ligand and water coordinates
-        coordinates, water_coordinates, dataframe = \
-            self._extract_coordinates(max_coordinates)
+        coordinates, water_coordinates, dataframe = self._extract_coordinates(
+            max_coordinates
+        )
 
         # Skip clustering in case
         if coordinates is None or dataframe is None:
             return
 
         # Filter coordinates
-        coordinates, water_coordinates, dataframe, energetic_threshold = \
-            self._filter_coordinates(coordinates, water_coordinates, dataframe, threshold=self.clustering_filtering_threshold)
+        (
+            coordinates,
+            water_coordinates,
+            dataframe,
+            energetic_threshold,
+        ) = self._filter_coordinates(
+            coordinates,
+            water_coordinates,
+            dataframe,
+            threshold=self.clustering_filtering_threshold,
+        )
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
-        clusters, _ = clustering.get_clusters(coordinates, self._dataframe,
-                                              dataframe, os.path.dirname(path))
+        clusters, _ = clustering.get_clusters(
+            coordinates, self._dataframe, dataframe, os.path.dirname(path)
+        )
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
-        cluster_summary = self._analyze_clusters(clusters, dataframe,
-                                                 rmsd_per_cluster)
+        cluster_summary = self._analyze_clusters(clusters, dataframe, rmsd_per_cluster)
 
         if len(cluster_summary) == 0:
-            print(f"No clusters could be obtained, " +
-                  f"clustering analysis is skipped")
+            print(
+                f"No clusters could be obtained, " + f"clustering analysis is skipped"
+            )
 
             return
 
-        cluster_subset, cluster_summary = \
-            self._select_top_clusters(clusters, cluster_summary,
-                                      top_clusters_criterion,
-                                      max_clusters_to_select=max_top_clusters,
-                                      min_population_to_select=min_population)
+        cluster_subset, cluster_summary = self._select_top_clusters(
+            clusters,
+            cluster_summary,
+            top_clusters_criterion,
+            max_clusters_to_select=max_top_clusters,
+            min_population_to_select=min_population,
+        )
 
         # If water coordinates have been extracted, use them to locate
         # main water sites for each top cluster
         if water_coordinates is not None:
             self._get_water_sites(cluster_subset, water_coordinates, path)
 
-        print(f"Retrieve top clusters based on " +
-              f"{metric_top_clusters_criterion[top_clusters_criterion]}.")
+        print(
+            f"Retrieve top clusters based on "
+            + f"{metric_top_clusters_criterion[top_clusters_criterion]}."
+        )
 
         # Save cluster summary to file with information about selected labels
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
 
         # Plot cluster descriptors
-        self._plot_cluster_descriptors(cluster_subset, dataframe,
-                                       cluster_summary, path)
+        self._plot_cluster_descriptors(cluster_subset, dataframe, cluster_summary, path)
 
         # Plot clusters
         self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
 
-        # Save cluster representative structures
-        self._save_cluster_representatives(cluster_subset, dataframe, path,
-                                           representatives_criterion)
-        print(
-            f"Retrieve top cluster representative structures based on " +
-            f"{cluster_representatives_criterion[representatives_criterion]}.")
+        # Save cluster representative structures or run inner clustering
+        if "multi" in representatives_criterion.lower():
+            self._run_inner_clustering(
+                path=path,
+                selected_clusters=cluster_subset,
+                all_clusters=clusters,
+                coordinates=coordinates,
+                representatives_criterion=representatives_criterion,
+                dataframe=dataframe,
+            )
+        else:
+            self._save_cluster_representatives(
+                cluster_subset, dataframe, path, representatives_criterion
+            )
+        try:
+            criterion_message = cluster_representatives_criterion[
+                representatives_criterion
+            ]
+        except KeyError:
+            criterion_message = "k-means clustering"
 
-    def generate_report(self, plots_path, poses_path, clusters_path,
-                        best_metrics, filename):
+        print(
+            f"Retrieve top cluster representative structures based on "
+            + f"{criterion_message}."
+        )
+
+    def generate_report(
+        self, plots_path, poses_path, clusters_path, best_metrics, filename
+    ):
         """
         It generates the final simulation report as a PDF file.
 
@@ -482,8 +551,9 @@ class Analysis(object):
         poses = glob.glob(os.path.join(poses_path, "*"))
         clusters = glob.glob(os.path.join(clusters_path, "*.png"))
 
-        report = pdf_report.create_report(plots, clusters, poses,
-                                          best_metrics, filename)
+        report = pdf_report.create_report(
+            plots, clusters, poses, best_metrics, filename
+        )
 
         print("PDF summary report successfully written to: {}".format(report))
 
@@ -512,10 +582,11 @@ class Analysis(object):
             The maximum number of coordinates to extract from the
             residue
         """
-        from pele_platform.analysis.clustering import (GaussianMixtureClustering,
-                                                       HDBSCANClustering,
-                                                       MeanShiftClustering)
-
+        from pele_platform.analysis.clustering import (
+            GaussianMixtureClustering,
+            HDBSCANClustering,
+            MeanShiftClustering,
+        )
 
         if clustering_type.lower() == "gaussianmixture":
             clustering = GaussianMixtureClustering(analysis_nclust)
@@ -527,10 +598,12 @@ class Analysis(object):
             clustering = MeanShiftClustering(bandwidth)
             max_coordinates = 5
         else:
-            raise ValueError("Invalid clustering type: " +
-                             "'{}'. ".format(clustering_type) +
-                             "It should be one of ['GaussianMixture', " +
-                             "'HDBSCAN', 'MeanShift']")
+            raise ValueError(
+                "Invalid clustering type: "
+                + "'{}'. ".format(clustering_type)
+                + "It should be one of ['GaussianMixture', "
+                + "'HDBSCAN', 'MeanShift']"
+            )
 
         return clustering, max_coordinates
 
@@ -557,24 +630,36 @@ class Analysis(object):
         """
         print(f"Extract coordinates for clustering")
         if not self.topology:
-            coordinates, water_coords, dataframe = \
-                self._data_handler.extract_PDB_coords(
-                    self.residue, self.water_ids, remove_hydrogen=True,
-                    n_proc=self.cpus, max_coordinates=max_coordinates)
+            (
+                coordinates,
+                water_coords,
+                dataframe,
+            ) = self._data_handler.extract_PDB_coords(
+                self.residue,
+                self.water_ids,
+                remove_hydrogen=True,
+                n_proc=self.cpus,
+                max_coordinates=max_coordinates,
+            )
         else:
-            coordinates, water_coords, dataframe = \
-                self._data_handler.extract_XTC_coords(
-                    self.residue, self.topology, self.water_ids,
-                    remove_hydrogen=True, max_coordinates=max_coordinates)
+            (
+                coordinates,
+                water_coords,
+                dataframe,
+            ) = self._data_handler.extract_XTC_coords(
+                self.residue,
+                self.topology,
+                self.water_ids,
+                remove_hydrogen=True,
+                max_coordinates=max_coordinates,
+            )
 
         if coordinates is None or dataframe is None:
-            print(f"Coordinate extraction failed, " +
-                  f"clustering analysis is skipped")
+            print(f"Coordinate extraction failed, " + f"clustering analysis is skipped")
             return None, None, None
 
         if len(coordinates) < 2:
-            print(f"Not enough coordinates, " +
-                  f"clustering analysis is skipped")
+            print(f"Not enough coordinates, " + f"clustering analysis is skipped")
             return None, None, None
 
         return coordinates, water_coords, dataframe
@@ -602,57 +687,69 @@ class Analysis(object):
         from pele_platform.Utilities.Helpers import get_suffix
         from pele_platform.Utilities.Helpers.bestStructs import (
             extract_snapshot_from_pdb,
-            extract_snapshot_from_xtc)
+            extract_snapshot_from_xtc,
+        )
+
         values = dataframe[metric].tolist()
         paths = dataframe[self._TRAJECTORY_LABEL].tolist()
         epochs = dataframe[self._EPOCH_LABEL].tolist()
-        file_ids = [get_suffix(os.path.splitext(trajectory)[0])
-                    for trajectory in paths]
+        file_ids = [get_suffix(os.path.splitext(trajectory)[0]) for trajectory in paths]
         steps = list(map(int, dataframe[self._STEP_LABEL].tolist()))
 
         # To prevent hiding files in case epochs is a list of empty strings
         if all([len(epoch) == 0 for epoch in epochs]):
-            epochs = [0, ] * len(values)
+            epochs = [
+                0,
+            ] * len(values)
 
         # TODO which is the purpose of this hardcoded distance_key?
         distance_key = "distance0.5"
         if distance_key in dataframe.columns:
             dist_values = dataframe[distance_key].tolist()
             filename_template = "{}.{}.{}_BindEner{:.2f}_AtomDist{:.2f}.pdb"
-            file_names = \
-                [filename_template.format(epoch, report, step, value, dist)
-                 for epoch, step, report, value, dist
-                 in zip(epochs, steps, file_ids, values, dist_values)]
+            file_names = [
+                filename_template.format(epoch, report, step, value, dist)
+                for epoch, step, report, value, dist in zip(
+                    epochs, steps, file_ids, values, dist_values
+                )
+            ]
         else:
             filename_template = "{}.{}.{}_BindEner{:.2f}.pdb"
-            file_names = [filename_template.format(epoch, report, step, value)
-                          for epoch, step, report, value
-                          in zip(epochs, steps, file_ids, values)]
+            file_names = [
+                filename_template.format(epoch, report, step, value)
+                for epoch, step, report, value in zip(epochs, steps, file_ids, values)
+            ]
 
         # Read trajectory and output snapshot
         for f_id, f_out, step, path in zip(file_ids, file_names, steps, paths):
             if not self.topology:
                 try:
-                    extract_snapshot_from_pdb(path=path,
-                                              f_id=f_id,
-                                              output=output_path,
-                                              topology=self.topology,
-                                              step=step,
-                                              out_freq=1,
-                                              f_out=f_out)
+                    extract_snapshot_from_pdb(
+                        path=path,
+                        f_id=f_id,
+                        output=output_path,
+                        topology=self.topology,
+                        step=step,
+                        out_freq=1,
+                        f_out=f_out,
+                    )
                 except UnicodeDecodeError:
-                    raise Exception("XTC output being treated as PDB. " +
-                                    "Please specify XTC with the next " +
-                                    "flag. traj: 'trajectory_name.xtc' " +
-                                    "in the input.yaml")
+                    raise Exception(
+                        "XTC output being treated as PDB. "
+                        + "Please specify XTC with the next "
+                        + "flag. traj: 'trajectory_name.xtc' "
+                        + "in the input.yaml"
+                    )
             else:
-                extract_snapshot_from_xtc(path=path,
-                                          f_id=f_id,
-                                          output=output_path,
-                                          topology=self.topology,
-                                          step=step,
-                                          out_freq=1,
-                                          f_out=f_out)
+                extract_snapshot_from_xtc(
+                    path=path,
+                    f_id=f_id,
+                    output=output_path,
+                    topology=self.topology,
+                    step=step,
+                    out_freq=1,
+                    f_out=f_out,
+                )
 
         return values
 
@@ -688,12 +785,14 @@ class Analysis(object):
         for cluster in clusters:
             clusters_population[cluster] += 1
 
-        summary = pd.DataFrame([(cluster, population / len(clusters),
-                                 rmsd_per_cluster[cluster])
-                                for cluster, population
-                                in clusters_population.items()
-                                if not cluster < 0],
-                               columns=["Cluster", "Population", "MeanRMSD"])
+        summary = pd.DataFrame(
+            [
+                (cluster, population / len(clusters), rmsd_per_cluster[cluster])
+                for cluster, population in clusters_population.items()
+                if not cluster < 0
+            ],
+            columns=["Cluster", "Population", "MeanRMSD"],
+        )
 
         # Generate descriptors and boxplots for all reported metrics
         descriptors = defaultdict(dict)
@@ -702,10 +801,12 @@ class Analysis(object):
             values = list(dataframe[metric])
 
             if len(clusters) != len(values):
-                print("Warning: metric '{}' ".format(metric) +
-                      "array has a wrong size. It will be skipped " +
-                      "from the clustering analysis. Expected size: " +
-                      "{}".format(len(clusters)))
+                print(
+                    "Warning: metric '{}' ".format(metric)
+                    + "array has a wrong size. It will be skipped "
+                    + "from the clustering analysis. Expected size: "
+                    + "{}".format(len(clusters))
+                )
                 continue
 
             # Arrange metrics per cluster
@@ -717,35 +818,49 @@ class Analysis(object):
 
             # Calculate descriptors
             for cluster in values_per_cluster:
-                descriptors["{} min".format(metric)][cluster] = \
-                    np.min(values_per_cluster[cluster])
-                descriptors["{} 5-percentile".format(metric)][cluster] = \
-                    np.percentile(values_per_cluster[cluster], 5)
-                descriptors["{} 25-percentile".format(metric)][cluster] = \
-                    np.percentile(values_per_cluster[cluster], 25)
-                descriptors["{} mean".format(metric)][cluster] = \
-                    np.mean(values_per_cluster[cluster])
-                descriptors["{} 75-percentile".format(metric)][cluster] = \
-                    np.percentile(values_per_cluster[cluster], 75)
-                descriptors["{} 95-percentile".format(metric)][cluster] = \
-                    np.percentile(values_per_cluster[cluster], 95)
-                descriptors["{} max".format(metric)][cluster] = \
-                    np.max(values_per_cluster[cluster])
-                descriptors["{} standard deviation".format(metric)][cluster] = \
-                    np.std(values_per_cluster[cluster])
+                descriptors["{} min".format(metric)][cluster] = np.min(
+                    values_per_cluster[cluster]
+                )
+                descriptors["{} 5-percentile".format(metric)][cluster] = np.percentile(
+                    values_per_cluster[cluster], 5
+                )
+                descriptors["{} 25-percentile".format(metric)][cluster] = np.percentile(
+                    values_per_cluster[cluster], 25
+                )
+                descriptors["{} mean".format(metric)][cluster] = np.mean(
+                    values_per_cluster[cluster]
+                )
+                descriptors["{} 75-percentile".format(metric)][cluster] = np.percentile(
+                    values_per_cluster[cluster], 75
+                )
+                descriptors["{} 95-percentile".format(metric)][cluster] = np.percentile(
+                    values_per_cluster[cluster], 95
+                )
+                descriptors["{} max".format(metric)][cluster] = np.max(
+                    values_per_cluster[cluster]
+                )
+                descriptors["{} standard deviation".format(metric)][cluster] = np.std(
+                    values_per_cluster[cluster]
+                )
 
         # Add descriptors to summary dataframe
         for label, values_per_cluster in descriptors.items():
-            summary[label] = [values_per_cluster[cluster]
-                              for cluster in summary["Cluster"]
-                              if not cluster < 0]
+            summary[label] = [
+                values_per_cluster[cluster]
+                for cluster in summary["Cluster"]
+                if not cluster < 0
+            ]
 
         return summary
 
-    def _select_top_clusters(self, clusters, cluster_summary,
-                             top_clusters_criterion,
-                             max_clusters_to_select,
-                             min_population_to_select):
+    def _select_top_clusters(
+        self,
+        clusters,
+        cluster_summary,
+        top_clusters_criterion,
+        max_clusters_to_select,
+        min_population_to_select,
+    ):
         """
         It selects the top clusters based on a user-defined metric (or 5th percentile Binding Energy as a default).
 
@@ -778,48 +893,52 @@ class Analysis(object):
             cluster names of top clusters
         """
         from pele_platform.analysis.clustering import get_cluster_label
-        from pele_platform.constants.constants import \
-            metric_top_clusters_criterion
+        from pele_platform.constants.constants import metric_top_clusters_criterion
 
         # Get metric to be used in the top cluster selection
         if top_clusters_criterion.lower() in metric_top_clusters_criterion:
-            user_metric = \
-                metric_top_clusters_criterion[top_clusters_criterion.lower()]
+            user_metric = metric_top_clusters_criterion[top_clusters_criterion.lower()]
         else:
-            raise ValueError('Invalid top_clusters_criterion ' +
-                             '\'{}\''.format(top_clusters_criterion.lower()) +
-                             '. It must be one of ' +
-                             '{}'.format(metric_top_clusters_criterion.keys()))
+            raise ValueError(
+                "Invalid top_clusters_criterion "
+                + "'{}'".format(top_clusters_criterion.lower())
+                + ". It must be one of "
+                + "{}".format(metric_top_clusters_criterion.keys())
+            )
 
         # Check if the selected metric is available
         if user_metric in list(cluster_summary.columns):
             metric = user_metric
         else:
-            print('Warning: supplied metric for the top cluster selection ' +
-                  'is missing in the reports, '
-                  '\'{}\'. '.format(top_clusters_criterion) +
-                  'Cluster population will be used instead.')
+            print(
+                "Warning: supplied metric for the top cluster selection "
+                + "is missing in the reports, "
+                "'{}'. ".format(top_clusters_criterion)
+                + "Cluster population will be used instead."
+            )
             metric = "Population"
 
         # Filter cluster summary by Population
-        filtered_cluster_summary = \
-            cluster_summary[cluster_summary["Population"] >=
-                            min_population_to_select]
+        filtered_cluster_summary = cluster_summary[
+            cluster_summary["Population"] >= min_population_to_select
+        ]
 
         if len(filtered_cluster_summary) == 0:
-            print('Warning: no cluster fulfills the minimum population '
-                  'threshold. Consider increasing the cluster size or ' +
-                  'lowering the minimum population value.')
+            print(
+                "Warning: no cluster fulfills the minimum population "
+                "threshold. Consider increasing the cluster size or "
+                + "lowering the minimum population value."
+            )
 
         # Select top clusters based on the chosen metric
         if metric == "Population":
-            filtered_cluster_summary = \
-                filtered_cluster_summary.nlargest(max_clusters_to_select,
-                                                  metric)
+            filtered_cluster_summary = filtered_cluster_summary.nlargest(
+                max_clusters_to_select, metric
+            )
         else:
-            filtered_cluster_summary = \
-                filtered_cluster_summary.nsmallest(max_clusters_to_select,
-                                                   metric)
+            filtered_cluster_summary = filtered_cluster_summary.nsmallest(
+                max_clusters_to_select, metric
+            )
 
         top_clusters = list(filtered_cluster_summary["Cluster"])
 
@@ -837,7 +956,9 @@ class Analysis(object):
         cluster_summary["Selected labels"] = [
             get_cluster_label(cluster_reindex_map[cluster])
             if cluster in cluster_reindex_map
-            else "-" for cluster in cluster_summary["Cluster"]]
+            else "-"
+            for cluster in cluster_summary["Cluster"]
+        ]
 
         return cluster_subset, cluster_summary
 
@@ -880,48 +1001,54 @@ class Analysis(object):
                         if n_dimensions != 3:
                             raise ValueError
                     except ValueError:
-                        raise ValueError('Array of water coordinates have ' +
-                                         'invalid dimensions: ' +
-                                         '{}. '.format(coords.shape) +
-                                         'Its shape must fulfill the ' +
-                                         'following dimensions: [N, 3], ' +
-                                         'where N is the total number ' +
-                                         'of water molecules that are ' +
-                                         'tracked in each snapshot')
+                        raise ValueError(
+                            "Array of water coordinates have "
+                            + "invalid dimensions: "
+                            + "{}. ".format(coords.shape)
+                            + "Its shape must fulfill the "
+                            + "following dimensions: [N, 3], "
+                            + "where N is the total number "
+                            + "of water molecules that are "
+                            + "tracked in each snapshot"
+                        )
 
                     coords_to_cluster.extend(coords)
 
             coords_to_cluster = np.array(coords_to_cluster)
 
             clustering = MeanShiftClustering(1.5)  # Hardcoded bandwidth value for water
-            water_clusters, estimator = \
-                clustering.get_clusters(coords_to_cluster)
+            water_clusters, estimator = clustering.get_clusters(coords_to_cluster)
 
             populations = self._get_cluster_populations(water_clusters)
-            output_path = os.path.join(path,
-                                       'cluster_{}_watersites.pdb'.format(label))
+            output_path = os.path.join(path, "cluster_{}_watersites.pdb".format(label))
             self._write_centroids(populations, estimator, output_path)
 
             # Append data to dataframe
             centroids = estimator.cluster_centers_
 
             for cluster, centroid in enumerate(centroids):
-                watersites_data.append([label, cluster, *centroid,
-                                        populations[cluster]])
+                watersites_data.append(
+                    [label, cluster, *centroid, populations[cluster]]
+                )
 
         # Build dataframe
-        watersites_info = pd.DataFrame(watersites_data,
-                                       columns=['Ligand top cluster',
-                                                'Water cluster',
-                                                'x', 'y', 'z',
-                                                'Population'])
+        watersites_info = pd.DataFrame(
+            watersites_data,
+            columns=[
+                "Ligand top cluster",
+                "Water cluster",
+                "x",
+                "y",
+                "z",
+                "Population",
+            ],
+        )
 
         # Save csv file
         file_name = os.path.join(path, "watersites.csv")
         watersites_info.to_csv(file_name, index=False)
 
-    def _plot_cluster_descriptors(self, clusters, dataframe,
-                                  cluster_summary, path):
+    def _plot_cluster_descriptors(self, clusters, dataframe, cluster_summary, path):
         """
         It plots cluster descriptors.
 
@@ -946,15 +1073,16 @@ class Analysis(object):
         if not os.path.exists(path):
             os.mkdir(path)
 
-        sorted_summary = cluster_summary.sort_values(by=['Cluster'],
-                                                     inplace=False,
-                                                     ascending=True)
+        sorted_summary = cluster_summary.sort_values(
+            by=["Cluster"], inplace=False, ascending=True
+        )
 
         xticks = list()
         xticklabels = list()
-        for cluster_id, cluster_label in zip(sorted_summary['Cluster'],
-                                             sorted_summary['Selected labels']):
-            if cluster_label != '-':
+        for cluster_id, cluster_label in zip(
+            sorted_summary["Cluster"], sorted_summary["Selected labels"]
+        ):
+            if cluster_label != "-":
                 xticks.append(cluster_id)
                 xticklabels.append(cluster_label)
             elif cluster_id % 10 == 0:
@@ -968,11 +1096,12 @@ class Analysis(object):
 
         # Plot Mean RMSD per cluster
         fig, ax = plt.subplots()
-        ax.scatter(sorted_summary['Cluster'],
-                   sorted_summary['MeanRMSD'],
-                   s=[population * 300 for population
-                      in sorted_summary['Population']],
-                   label="Cluster population")
+        ax.scatter(
+            sorted_summary["Cluster"],
+            sorted_summary["MeanRMSD"],
+            s=[population * 300 for population in sorted_summary["Population"]],
+            label="Cluster population",
+        )
         ax.set_xlabel("Cluster label/id")
         ax.set_ylabel("Mean RMSD (Å)")
         ax.set_xticks(xticks)
@@ -987,10 +1116,12 @@ class Analysis(object):
             values = list(dataframe[metric])
 
             if len(clusters) != len(values):
-                print("Warning: metric '{}' ".format(metric) +
-                      "array has a wrong size. It will be skipped " +
-                      "from the clustering analysis. Expected size: " +
-                      "{}".format(len(clusters)))
+                print(
+                    "Warning: metric '{}' ".format(metric)
+                    + "array has a wrong size. It will be skipped "
+                    + "from the clustering analysis. Expected size: "
+                    + "{}".format(len(clusters))
+                )
                 continue
 
             # Arrange metrics per cluster
@@ -1004,25 +1135,34 @@ class Analysis(object):
             try:
                 fig, ax = plt.subplots()
 
-                ax.boxplot([values_per_cluster[cluster]
-                            for cluster in sorted(values_per_cluster.keys())])
-                ax.set_xticklabels([get_cluster_label(cluster)
-                                    for cluster
-                                    in sorted(values_per_cluster.keys())])
+                ax.boxplot(
+                    [
+                        values_per_cluster[cluster]
+                        for cluster in sorted(values_per_cluster.keys())
+                    ]
+                )
+                ax.set_xticklabels(
+                    [
+                        get_cluster_label(cluster)
+                        for cluster in sorted(values_per_cluster.keys())
+                    ]
+                )
 
                 ax.set_ylabel(metric)
                 ax.set_xlabel("Cluster label")
 
-                boxplot_filename = \
-                    os.path.join(path,
-                                 "top_clusters_{}_boxplot.png".format(metric))
-                boxplot_filename.replace(' ', '_')
+                boxplot_filename = os.path.join(
+                    path, "top_clusters_{}_boxplot.png".format(metric)
+                )
+                boxplot_filename.replace(" ", "_")
 
                 plt.savefig(boxplot_filename)
 
             except IndexError:
-                print("Samples too disperse to produce a cluster " +
-                      "for metric {}".format(metric))
+                print(
+                    "Samples too disperse to produce a cluster "
+                    + "for metric {}".format(metric)
+                )
 
     def _plot_clusters(self, clusters, dataframe, cluster_summary, path):
         """
@@ -1050,8 +1190,9 @@ class Analysis(object):
 
         if "Binding Energy" in metrics:
             energy = "Binding Energy"
-            plotter.plot_clusters("currentEnergy", energy,
-                                  output_folder=path, clusters=clusters)
+            plotter.plot_clusters(
+                "currentEnergy", energy, output_folder=path, clusters=clusters
+            )
         else:
             energy = "currentEnergy"
 
@@ -1064,11 +1205,11 @@ class Analysis(object):
 
         # Iterate over all the metrics found in the reports
         for metric in metrics[limit_column:]:
-            plotter.plot_clusters(metric, energy, output_folder=path,
-                                  clusters=clusters)
+            plotter.plot_clusters(metric, energy, output_folder=path, clusters=clusters)
 
-    def _filter_coordinates(self, coordinates, water_coordinates,
-                            dataframe, threshold=0.25):
+    def _filter_coordinates(
+        self, coordinates, water_coordinates, dataframe, threshold=0.25
+    ):
         """
         It filters the coordinates by total energy according to the
         threshold that is supplied. A threshold of 0.25 means that the
@@ -1099,7 +1240,7 @@ class Analysis(object):
         """
         import numpy as np
 
-        total_energies = list(dataframe['currentEnergy'])
+        total_energies = list(dataframe["currentEnergy"])
         energetic_threshold = np.quantile(total_energies, 1 - threshold)
 
         filtered_coordinates = []
@@ -1110,8 +1251,9 @@ class Analysis(object):
                     filtered_coordinates.append(coors_array)
         else:
             filtered_water_coordinates = []
-            for coors_array, total_energy, waters_array in \
-                    zip(coordinates, total_energies, water_coordinates):
+            for coors_array, total_energy, waters_array in zip(
+                coordinates, total_energies, water_coordinates
+            ):
                 if total_energy <= energetic_threshold:
                     filtered_coordinates.append(coors_array)
                     filtered_water_coordinates.append(waters_array)
@@ -1121,11 +1263,16 @@ class Analysis(object):
         if filtered_water_coordinates is not None:
             filtered_water_coordinates = np.array(filtered_water_coordinates)
 
-        filtered_dataframe = \
-            dataframe.query('currentEnergy<={}'.format(energetic_threshold))
+        filtered_dataframe = dataframe.query(
+            "currentEnergy<={}".format(energetic_threshold)
+        )
 
-        return filtered_coordinates, filtered_water_coordinates, \
-            filtered_dataframe, energetic_threshold
+        return (
+            filtered_coordinates,
+            filtered_water_coordinates,
+            filtered_dataframe,
+            energetic_threshold,
+        )
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """
@@ -1151,9 +1298,11 @@ class Analysis(object):
         coordinates = Clustering.fix_coordinates_shape(coordinates)
 
         if len(clusters) != len(coordinates):
-            print("Warning: coordinates array has a wrong size. " +
-                  "The RMSD analysis will be skipped. It will be " +
-                  "skipped. Expected size: {}".format(len(clusters)))
+            print(
+                "Warning: coordinates array has a wrong size. "
+                + "The RMSD analysis will be skipped. It will be "
+                + "skipped. Expected size: {}".format(len(clusters))
+            )
             return
 
         # Split conformations by cluster
@@ -1168,8 +1317,9 @@ class Analysis(object):
         # Calculate centroids of each cluster
         centroid_per_cluster = {}
         for cluster, conformations in conformations_per_cluster.items():
-            centroid_per_cluster[cluster] = \
-                np.mean(conformations, axis=0).reshape(-1, 3)
+            centroid_per_cluster[cluster] = np.mean(conformations, axis=0).reshape(
+                -1, 3
+            )
 
         # Calculate mean RMSD of each cluster with respect to their centroid
         rmsd_per_cluster = {}
@@ -1177,8 +1327,7 @@ class Analysis(object):
         for cluster, conformations in conformations_per_cluster.items():
             rmsds = []
             for conformation in conformations:
-                diff = \
-                    conformation.reshape(-1, 3) - centroid_per_cluster[cluster]
+                diff = conformation.reshape(-1, 3) - centroid_per_cluster[cluster]
                 norm_factor = len(centroid_per_cluster[cluster])
                 rmsds.append(np.sqrt((diff * diff).sum() / norm_factor))
 
@@ -1186,8 +1335,9 @@ class Analysis(object):
 
         return rmsd_per_cluster
 
-    def _save_cluster_representatives(self, clusters, dataframe, path,
-                                      representatives_criterion):
+    def _save_cluster_representatives(
+        self, clusters, dataframe, path, representatives_criterion
+    ):
         """
         It saves the resulting clusters to disk. The selection of the
         representative structures is based on the total energy. The
@@ -1217,22 +1367,23 @@ class Analysis(object):
         from pele_platform.Utilities.Helpers import get_suffix
         from pele_platform.Utilities.Helpers.bestStructs import (
             extract_snapshot_from_pdb,
-            extract_snapshot_from_xtc)
+            extract_snapshot_from_xtc,
+        )
         from pele_platform.analysis.clustering import get_cluster_label
-        from pele_platform.constants.constants import \
-            cluster_representatives_criterion
+        from pele_platform.constants.constants import cluster_representatives_criterion
 
         # Get metric to be used in the cluster representatives selection
         representatives_criterion = representatives_criterion.lower()
         if representatives_criterion not in cluster_representatives_criterion:
-            raise ValueError('Invalid cluster_representatives_criterion'
-                             '\'{}\''.format(representatives_criterion) +
-                             '. It must be one of ' +
-                             '{}'.format(
-                                 cluster_representatives_criterion.keys()))
+            raise ValueError(
+                "Invalid cluster_representatives_criterion"
+                "'{}'".format(representatives_criterion)
+                + ". It must be one of "
+                + "{}".format(cluster_representatives_criterion.keys())
+            )
 
-        if representatives_criterion.startswith('total'):
-            metric = 'currentEnergy'
+        if representatives_criterion.startswith("total"):
+            metric = "currentEnergy"
         else:
             metric = dataframe.columns[self.be_column - 1]
 
@@ -1246,15 +1397,13 @@ class Analysis(object):
             metrics_per_cluster[cluster].append(value)
 
         golden_values_per_cluster = {}
-        if '_25_percentile' in representatives_criterion:
+        if "_25_percentile" in representatives_criterion:
             for cluster, metrics_array in metrics_per_cluster.items():
-                golden_values_per_cluster[cluster] = \
-                    np.percentile(metrics_array, 25)
-        elif '_5_percentile' in representatives_criterion:
+                golden_values_per_cluster[cluster] = np.percentile(metrics_array, 25)
+        elif "_5_percentile" in representatives_criterion:
             for cluster, metrics_array in metrics_per_cluster.items():
-                golden_values_per_cluster[cluster] = \
-                    np.percentile(metrics_array, 5)
-        elif '_min' in representatives_criterion:
+                golden_values_per_cluster[cluster] = np.percentile(metrics_array, 5)
+        elif "_min" in representatives_criterion:
             for cluster, metrics_array in metrics_per_cluster.items():
                 golden_values_per_cluster[cluster] = np.min(metrics_array)
         else:
@@ -1265,14 +1414,14 @@ class Analysis(object):
         lowest_energetic_diff = {}
         trajectories = list(dataframe["trajectory"])
         steps = list(dataframe["numberOfAcceptedPeleSteps"])
-        for cluster, metric, trajectory, step in zip(clusters, metrics,
-                                                     trajectories, steps):
+        for cluster, metric, trajectory, step in zip(
+            clusters, metrics, trajectories, steps
+        ):
             # Skip outliers such as clusters with label -1
             if cluster < 0:
                 continue
 
-            energetic_diff = \
-                np.abs(golden_values_per_cluster[cluster] - metric)
+            energetic_diff = np.abs(golden_values_per_cluster[cluster] - metric)
             if cluster not in representative_structures:
                 representative_structures[cluster] = [trajectory, step]
                 lowest_energetic_diff[cluster] = energetic_diff
@@ -1292,12 +1441,15 @@ class Analysis(object):
                         topology=self.topology,
                         step=step,
                         out_freq=1,
-                        f_out="cluster_{}.pdb".format(label))
+                        f_out="cluster_{}.pdb".format(label),
+                    )
                 except UnicodeDecodeError:
-                    raise Exception("XTC output being treated as PDB. " +
-                                    "Please specify XTC with the next " +
-                                    "flag. traj: 'trajectory_name.xtc' " +
-                                    "in the input.yaml")
+                    raise Exception(
+                        "XTC output being treated as PDB. "
+                        + "Please specify XTC with the next "
+                        + "flag. traj: 'trajectory_name.xtc' "
+                        + "in the input.yaml"
+                    )
             else:
                 label = get_cluster_label(cluster)
                 extract_snapshot_from_xtc(
@@ -1307,7 +1459,8 @@ class Analysis(object):
                     topology=self.topology,
                     step=step,
                     out_freq=1,
-                    f_out="cluster_{}.pdb".format(label))
+                    f_out="cluster_{}.pdb".format(label),
+                )
 
         self._save_top_selections(representative_structures, path, dataframe)
 
@@ -1338,8 +1491,7 @@ class Analysis(object):
         trajectories = []
         steps = []
         labels = []
-        for cluster_id, (trajectory, step) \
-                in representative_structures.items():
+        for cluster_id, (trajectory, step) in representative_structures.items():
             cluster_ids.append(str(cluster_id))
             trajectories.append(trajectory)
             steps.append(step)
@@ -1348,7 +1500,7 @@ class Analysis(object):
             if epoch.isdigit():
                 epochs.append(epoch)
             else:
-                epochs.append('-')
+                epochs.append("-")
 
         # Gather metrics for each representative structure
         metrics = self._data_handler.get_metrics()
@@ -1358,26 +1510,31 @@ class Analysis(object):
             if skip:
                 metric_values = {}
                 break
-            for cluster_id, (trajectory, step) \
-                    in representative_structures.items():
-                filtered_df = dataframe[dataframe['trajectory'] == trajectory]
-                filtered_df = \
-                    filtered_df[filtered_df['numberOfAcceptedPeleSteps'] ==
-                                step]
+            for cluster_id, (trajectory, step) in representative_structures.items():
+                filtered_df = dataframe[dataframe["trajectory"] == trajectory]
+                filtered_df = filtered_df[
+                    filtered_df["numberOfAcceptedPeleSteps"] == step
+                ]
                 if len(filtered_df) != 1:
-                    print('Unable to find metric \'{}\' '.format(metric) +
-                          'for representative structure: ' +
-                          '{}, step {}'.format(trajectory, step))
+                    print(
+                        "Unable to find metric '{}' ".format(metric)
+                        + "for representative structure: "
+                        + "{}, step {}".format(trajectory, step)
+                    )
                     skip = True
                     break
                 metric_values[metric].append(float(filtered_df[metric]))
 
         # Build dataframe
-        representatives_data = pd.DataFrame({"Cluster": cluster_ids,
-                                             "Cluster label": labels,
-                                             "epoch": epochs,
-                                             "trajectory": trajectories,
-                                             "Step": steps})
+        representatives_data = pd.DataFrame(
+            {
+                "Cluster": cluster_ids,
+                "Cluster label": labels,
+                "epoch": epochs,
+                "trajectory": trajectories,
+                "Step": steps,
+            }
+        )
         for metric, values in metric_values.items():
             representatives_data[metric] = values
 
@@ -1434,12 +1591,14 @@ class Analysis(object):
             norm_populations[label] = population * normalization_factor
 
         # Write centroids to PDB
-        with open(path, 'w') as f:
+        with open(path, "w") as f:
             for label, centroid in enumerate(centroids):
-                f.write("ATOM    {:3d}  ".format(label) +
-                        "CEN BOX A {:3d} ".format(label) +
-                        "{:>11.3f}{:>8.3f}{:>8.3f}  ".format(*centroid) +
-                        "1.00{:>5.2f}\n".format(norm_populations[label]))
+                f.write(
+                    "ATOM    {:3d}  ".format(label)
+                    + "CEN BOX A {:3d} ".format(label)
+                    + "{:>11.3f}{:>8.3f}{:>8.3f}  ".format(*centroid)
+                    + "1.00{:>5.2f}\n".format(norm_populations[label])
+                )
 
     @staticmethod
     def _check_existing_directory(path):
@@ -1466,19 +1625,19 @@ class Analysis(object):
         # Otherwise, suggest new path
         dir_name = os.path.dirname(path)
         folder_name = os.path.basename(path)
-        chunks = folder_name.split('_')
+        chunks = folder_name.split("_")
         last_chunk = chunks[-1]
 
         # If last chunk is digit, enumerate starting from it
         if last_chunk.isdigit():
             new_id = int(last_chunk) + 1
-            folder_name = '_'.join(chunks[:-1])
+            folder_name = "_".join(chunks[:-1])
         else:
             new_id = 1
-            folder_name = '_'.join(chunks)
+            folder_name = "_".join(chunks)
 
         # Add new id to folder name
-        new_folder_name = folder_name + '_' + str(new_id)
+        new_folder_name = folder_name + "_" + str(new_id)
 
         # Concatenate old directory with new folder name
         new_path = os.path.join(dir_name, new_folder_name)
@@ -1486,7 +1645,7 @@ class Analysis(object):
         # Iterate until finding a non existing path
         while os.path.exists(new_path):
             new_id += 1
-            new_folder_name = folder_name + '_' + str(new_id)
+            new_folder_name = folder_name + "_" + str(new_id)
             new_path = os.path.join(dir_name, new_folder_name)
 
         return new_path
@@ -1506,7 +1665,7 @@ class Analysis(object):
         import os
 
         # Get list of epoch directories
-        epoch_dirs = glob.glob(os.path.join(self.output, '[0-9]*'))
+        epoch_dirs = glob.glob(os.path.join(self.output, "[0-9]*"))
 
         # Tweak to read a directory from standard PELE (not coming
         # from adaptive)
@@ -1516,19 +1675,17 @@ class Analysis(object):
             output_path = epoch_dirs[0]
 
         # Get trajectory name
-        trajectory_prefix = \
-            str(os.path.splitext(self.traj)[0])
-        trajectory_format = \
-            str(os.path.splitext(self.traj)[-1])
+        trajectory_prefix = str(os.path.splitext(self.traj)[0])
+        trajectory_format = str(os.path.splitext(self.traj)[-1])
 
         # Find trajectory
-        trajectory_path = glob.glob(os.path.join(output_path,
-                                                 trajectory_prefix + '_*'
-                                                 + trajectory_format))
+        trajectory_path = glob.glob(
+            os.path.join(output_path, trajectory_prefix + "_*" + trajectory_format)
+        )
         if len(trajectory_path) == 0:
-            trajectory_path = os.path.join(output_path,
-                                           trajectory_prefix
-                                           + trajectory_format)
+            trajectory_path = os.path.join(
+                output_path, trajectory_prefix + trajectory_format
+            )
         else:
             trajectory_path = trajectory_path[0]
 
@@ -1541,4 +1698,128 @@ class Analysis(object):
             raise ValueError(
                 f"Residue {self.residue} was not found in output "
                 f"trajectories. Make sure you are passing a correct "
-                f"'resname' argument to Analysis.")
+                f"'resname' argument to Analysis."
+            )
+
+    def _run_inner_clustering(
+        self,
+        path,
+        selected_clusters,
+        all_clusters,
+        coordinates,
+        representatives_criterion,
+        dataframe,
+    ):
+        """
+        Performs k-means clustering to provide the user with representatives of each selected cluster.
+
+        Parameters
+        ----------
+        selected_clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        path : str
+            The path where the clusters will be saved.
+        representatives_criterion : str
+            Criterion "multi n" where n is the number of expected clusters.
+        coordinates : np.array
+            Array with all coordinates used for initial clustering. These need to be filtered to only include the ones
+            belonging to selected clusters.
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of clusters
+        """
+        from collections import defaultdict
+        import numpy as np
+        import os
+        import pandas as pd
+        from sklearn.cluster import KMeans
+
+        from pele_platform.Errors.custom_errors import ClusteringError
+        from pele_platform.analysis.clustering import get_cluster_label
+        from pele_platform.Utilities.Helpers.bestStructs import (
+            extract_snapshot_from_pdb,
+            extract_snapshot_from_xtc,
+        )
+        from pele_platform.Utilities.Helpers import get_suffix
+
+        random_seed = 42 if not self.skip_initial_structures else None  # needed for reproducible tests
+
+        data = dataframe
+        inner_clusters_data = pd.DataFrame()
+
+        # Parse the number of inner clusters defined by the user
+        try:
+            n_clusters = int(representatives_criterion.lower().split()[-1])
+        except ValueError:
+            raise ClusteringError(
+                f"Incorrect format of {representatives_criterion}. It should be 'multi n' where n is "
+                f"the number of clusters required."
+            )
+
+        # Filter coordinates to include only the ones for selected clusters
+        filtered_coordinates = defaultdict(list)
+        mask = [cluster in selected_clusters for cluster in all_clusters]
+
+        data["selected"] = mask
+        data["cluster"] = all_clusters
+
+        for coord, cluster, included in zip(coordinates, all_clusters, mask):
+            if included:
+                filtered_coordinates[cluster].append(coord)
+
+        # Run K-means for poses in each selected cluster
+        for cluster in set(selected_clusters):
+            cluster_coordinates = np.array(filtered_coordinates[cluster])
+            models, atoms, dimensions = cluster_coordinates.shape
+            cluster_coordinates = cluster_coordinates.reshape(
+                models, atoms * dimensions
+            )
+
+            try:
+                labels = KMeans(
+                    n_clusters=n_clusters, random_state=random_seed
+                ).fit_predict(cluster_coordinates)
+            except ValueError:
+                print(f"Not enough samples to produce {n_clusters} clusters. Skipping.")
+                continue
+
+            cluster_data = data[data["cluster"] == cluster]
+            cluster_data["inner_cluster"] = labels
+
+            # Sort by binding energy and get as many as defined by the user (n_clusters)
+            cluster_data = cluster_data.sort_values("Binding Energy", ascending=True)
+            cluster_data = cluster_data[:n_clusters]
+            inner_clusters_data = pd.concat([inner_clusters_data, cluster_data])
+
+        # Extract snapshots and save to folder
+        for row in inner_clusters_data.itertuples():
+            label = get_cluster_label(row.cluster)
+            output = f"cluster_{label}_BindEner{row._5}.pdb"  # row._5 is binding energy (tuple doesn't like spaces)
+            if not self.topology:
+                try:
+                    extract_snapshot_from_pdb(
+                        path=row.trajectory,
+                        f_id=get_suffix(os.path.splitext(row.trajectory)[0]),
+                        output=path,
+                        topology=self.topology,
+                        step=row.Step,
+                        out_freq=1,
+                        f_out=output,
+                    )
+                except UnicodeDecodeError:
+                    raise Exception(
+                        "XTC output being treated as PDB. "
+                        + "Please specify XTC with the next "
+                        + "flag. traj: 'trajectory_name.xtc' "
+                        + "in the input.yaml"
+                    )
+            else:
+                extract_snapshot_from_xtc(
+                    path=row.trajectory,
+                    f_id=get_suffix(os.path.splitext(row.trajectory)[0]),
+                    output=path,
+                    topology=self.topology,
+                    step=row.Step,
+                    out_freq=1,
+                    f_out=output,
+                )
