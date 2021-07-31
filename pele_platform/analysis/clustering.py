@@ -308,7 +308,7 @@ class MeanShiftClustering(Clustering):
         return clusters, clustering_method
 
 
-def get_cluster_label(cluster_id):
+def get_cluster_label(cluster_id, uppercase=True):
     """
     It assigns a cluster label according to the cluster id that is
     supplied.
@@ -328,6 +328,8 @@ def get_cluster_label(cluster_id):
     ----------
     cluster_id : int
         The id of the cluster that will be used to generate the label
+    uppercase : str
+        Whether to retrieve an uppercase label or not. Default is True
 
     Returns
     -------
@@ -353,5 +355,8 @@ def get_cluster_label(cluster_id):
                 cluster_label = 'A' + cluster_label
 
         current_index -= 26
+
+    if not uppercase:
+        cluster_label = cluster_label.lower()
 
     return cluster_label
