@@ -473,8 +473,12 @@ class Analysis(object):
         self._plot_cluster_descriptors(cluster_subset, dataframe,
                                        cluster_summary, path)
 
+        # Plot cluster representatives
+        self._plot_cluster_representatives(cluster_subset, dataframe,
+                                           representative_structures, path)
+
         # Plot clusters
-        self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
+        self._plot_clusters(cluster_subset, dataframe, path)
 
         print(f"Generate cluster graphs and plot their descriptors")
 
@@ -1047,7 +1051,9 @@ class Analysis(object):
                 print("Samples too disperse to produce a cluster " +
                       "for metric {}".format(metric))
 
-    def _plot_clusters(self, clusters, dataframe, cluster_summary, path):
+    def _plot_cluster_representatives(self, clusters, dataframe,
+                                      representative_structures,
+                                      path):
         """
         It generates the plots for clusters.
 
@@ -1061,6 +1067,49 @@ class Analysis(object):
         cluster_summary : a pandas.dataframe object
             The dataframe containing summary of all clusters that were
             analyzed
+        representative_structures : dict[str, tuple[str, int]]
+            Dictionary containing the representative structures that
+            were selected. Cluster label is the key and value is a list
+            with [trajectory, step] of each cluster
+        path : str
+            The path where the output file will be saved at
+        """
+        from pele_platform.analysis import Plotter
+
+        metrics = self._data_handler.get_metrics()
+
+        # Initialize plotter
+        plotter = Plotter(dataframe)
+
+        if "Binding Energy" in metrics:
+            energy = "Binding Energy"
+        else:
+            energy = "currentEnergy"
+
+        # The minimum value for the limit column is 4, since previous
+        # columns in PELE report files does not contain any metric
+        if self.limit_column is not None and self.limit_column > 4:
+            limit_column = self.limit_column - 4
+        else:
+            limit_column = 0
+
+        # Iterate over all the metrics found in the reports
+        for metric in metrics[limit_column:]:
+            plotter.plot_clusters(
+                metric, energy, output_folder=path, clusters=clusters,
+                representative_structures=representative_structures)
+
+    def _plot_clusters(self, clusters, dataframe, path):
+        """
+        It generates the plots for clusters.
+
+        Parameters
+        ----------
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of clusters
         path : str
             The path where the output file will be saved at
         """

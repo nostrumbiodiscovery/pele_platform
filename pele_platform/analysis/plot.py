@@ -151,7 +151,7 @@ class Plotter(object):
         return output_name
 
     def plot_clusters(self, metric_to_x, metric_to_y, output_folder,
-                      clusters):
+                      clusters, representative_structures=None):
         """
         It creates a scatter plot with the two metrics that are supplied
         and displays the points belonging to each top cluster with a
@@ -169,6 +169,11 @@ class Plotter(object):
             The path where the plot will be saved
         clusters : a numpy.array object
             The array of cluster labels that were obtained
+        representative_structures : dict[str, tuple[str, int]]
+            Dictionary containing the representative structures that
+            were selected. Cluster label is the key and value is a list
+            with [trajectory, step] of each cluster. If supplied, points
+            belonging to representative structures will be represented
         """
         import copy
         from matplotlib.colors import LinearSegmentedColormap
@@ -227,23 +232,70 @@ class Plotter(object):
         all_xs = self._dataframe[metric_to_x]
         all_ys = self._dataframe[metric_to_y]
 
-        # Draw points
         colors_used = []
-        for current_cluster in cluster_labels:
-            xs = []
-            ys = []
-            for x, y, cluster in zip(all_xs, all_ys, clusters):
-                if cluster == current_cluster:
-                    xs.append(x)
-                    ys.append(y)
-            if current_cluster == -1:
-                zorder = 1
-            else:
-                zorder = 2
-            sc = ax.scatter(xs, ys, c=[current_cluster, ] * len(xs),
-                            cmap=cmap, norm=norm, alpha=0.7,
-                            zorder=zorder)
-            colors_used += sc.legend_elements()[0]
+        rep_struct_marker = []
+        if representative_structures is not None:
+            marker_cm = cm.get_cmap('binary')
+            marker_norm = colors.Normalize(vmin=0, vmax=1)
+            # Draw points with representative structures
+            trajectories = self._dataframe['trajectory']
+            steps = self._dataframe['numberOfAcceptedPeleSteps']
+
+            rep_trajs = [traj for (traj, step)
+                         in representative_structures.values()]
+            rep_steps = [step for (traj, step)
+                         in representative_structures.values()]
+
+            for current_cluster in cluster_labels:
+                xs = []
+                ys = []
+                for x, y, cluster, traj, step in zip(all_xs, all_ys,
+                                                     clusters,
+                                                     trajectories,
+                                                     steps):
+                    if cluster == current_cluster:
+                        traj_idxs = set([i for i, x in enumerate(rep_trajs)
+                                         if x == traj])
+                        step_idxs = set([i for i, x in enumerate(rep_steps)
+                                         if x == step])
+                        if len(traj_idxs.intersection(step_idxs)) == 1:
+                            sc = ax.scatter([x, ], [y, ], c=[1, ],
+                                            zorder=3, marker='x',
+                                            cmap=marker_cm,
+                                            norm=marker_norm)
+                            rep_struct_marker = sc.legend_elements()[0]
+                        else:
+                            xs.append(x)
+                            ys.append(y)
+
+                if current_cluster == -1:
+                    zorder = 1
+                else:
+                    zorder = 2
+
+                sc = ax.scatter(xs, ys, c=[current_cluster, ] * len(xs),
+                                cmap=cmap, norm=norm, alpha=0.7,
+                                zorder=zorder)
+                colors_used += sc.legend_elements()[0]
+
+        else:
+            # Draw points without representative structures
+            for current_cluster in cluster_labels:
+                xs = []
+                ys = []
+                for x, y, cluster in zip(all_xs, all_ys, clusters):
+                    if cluster == current_cluster:
+                        xs.append(x)
+                        ys.append(y)
+                if current_cluster == -1:
+                    zorder = 1
+                else:
+                    zorder = 2
+
+                sc = ax.scatter(xs, ys, c=[current_cluster, ] * len(xs),
+                                cmap=cmap, norm=norm, alpha=0.7,
+                                zorder=zorder)
+                colors_used += sc.legend_elements()[0]
 
         # Configure legend
         cluster_names = []
@@ -258,11 +310,20 @@ class Plotter(object):
             c = colors_used.pop(0)
             cluster_names.append(n)
             colors_used.append(c)
-        ax.legend(colors_used, cluster_names, title="Clusters",
-                  loc='center left', bbox_to_anchor=(1, 0.5))
+
+        if len(rep_struct_marker) == 1:
+            cluster_names.append("Representative\nstructure")
+
+        ax.legend(colors_used + rep_struct_marker, cluster_names,
+                  title="Clusters", loc='center left',
+                  bbox_to_anchor=(1, 0.5))
 
         # Set output name
-        output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
+        if representative_structures is not None:
+            output_name = "{}_{}_representatives_plot.png".format(metric_to_x,
+                                                                  metric_to_y)
+        else:
+            output_name = "{}_{}_plot.png".format(metric_to_x, metric_to_y)
         output_name = output_name.replace(" ", "_")
         output_name = os.path.join(output_folder, output_name)
 
