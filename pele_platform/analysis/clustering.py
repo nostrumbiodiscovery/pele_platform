@@ -192,12 +192,17 @@ class GaussianMixtureClustering(Clustering):
         """
         from sklearn.mixture import GaussianMixture
 
+        # Run clustering
         coordinates = Clustering.fix_coordinates_shape(coordinates)
         clustering_method = GaussianMixture(n_components=self._n_clusters, covariance_type="full")
         clusters = clustering_method.fit_predict(coordinates)
 
-        if len(coordinates_df) > 0 and csv_path:
-            self._save_cluster_info(original_df, coordinates_df, clusters, csv_path)
+        # Save cluster information (optional)
+        if (original_df is not None and coordinates_df is not None and
+                csv_path is not None):
+            if len(coordinates_df) > 0:
+                self._save_cluster_info(original_df, coordinates_df,
+                                        clusters, csv_path)
 
         return clusters, clustering_method
 
@@ -254,11 +259,19 @@ class HDBSCANClustering(Clustering):
             the supplied array
         """
         from hdbscan import HDBSCAN
+
+        # Run clustering
         coordinates = Clustering.fix_coordinates_shape(coordinates)
         clustering_method = HDBSCAN(cluster_selection_epsilon=self._bandwidth)
         clusters = clustering_method.fit_predict(coordinates)
-        self._save_cluster_info(original_df, coordinates_df,
-                                clusters, csv_path)
+
+        # Save cluster information (optional)
+        if (original_df is not None and coordinates_df is not None and
+                csv_path is not None):
+            if len(coordinates_df) > 0:
+                self._save_cluster_info(original_df, coordinates_df,
+                                        clusters, csv_path)
+
         return clusters, clustering_method
 
 
@@ -315,16 +328,19 @@ class MeanShiftClustering(Clustering):
         """
         from sklearn.cluster import MeanShift
 
+        # Run clustering
         coordinates = Clustering.fix_coordinates_shape(coordinates)
-
         clustering_method = MeanShift(bandwidth=self._bandwidth,
                                       cluster_all=True,
                                       max_iter=10000)
         clusters = clustering_method.fit_predict(coordinates)
 
-        if csv_path:
-            self._save_cluster_info(original_df, coordinates_df,
-                                    clusters, csv_path)
+        # Save cluster information (optional)
+        if (original_df is not None and coordinates_df is not None and
+                csv_path is not None):
+            if len(coordinates_df) > 0:
+                self._save_cluster_info(original_df, coordinates_df,
+                                        clusters, csv_path)
 
         return clusters, clustering_method
 
