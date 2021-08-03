@@ -17,8 +17,8 @@ class Clustering(ABC):
         super().__init__()
 
     @abstractmethod
-    def get_clusters(self, coordinates, original_df, coordinates_df=None,
-                     csv_path=None):
+    def get_clusters(self, coordinates, original_df=None,
+                     coordinates_df=None, csv_path=None):
         """
         It employs a clustering method to gather the supplied coordinates
         into clusters.
@@ -32,7 +32,9 @@ class Clustering(ABC):
             N is the total number of atoms belonging to the residue that
             is being analyzed
         original_df : pandas.DataFrame
-            Original dataframe from Analysis to be overwritten
+            Original dataframe from Analysis to be overwritten. Optional
+            parameter, if not supplied the dataframe will not be updated
+            with the information of clusters
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
             clustering. Optional parameter, if not supplied the CSV
@@ -155,8 +157,8 @@ class GaussianMixtureClustering(Clustering):
         super().__init__()
         self._n_clusters = n_clusters
 
-    def get_clusters(self, coordinates, original_df, coordinates_df=None,
-                     csv_path=None):
+    def get_clusters(self, coordinates, original_df=None,
+                     coordinates_df=None, csv_path=None):
         """
         It employs the Gaussian Mixture method to gather the supplied
         coordinates into clusters.
@@ -170,7 +172,9 @@ class GaussianMixtureClustering(Clustering):
             N is the total number of atoms belonging to the residue that
             is being analyzed
         original_df : pandas.DataFrame
-            Original dataframe from Analysis to be overwritten
+            Original dataframe from Analysis to be overwritten. Optional
+            parameter, if not supplied the dataframe will not be updated
+            with the information of clusters
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
             clustering. Optional parameter, if not supplied the CSV
@@ -216,8 +220,8 @@ class HDBSCANClustering(Clustering):
         super().__init__()
         self._bandwidth = bandwidth
 
-    def get_clusters(self, coordinates, original_df, coordinates_df=None,
-                     csv_path=None):
+    def get_clusters(self, coordinates, original_df=None,
+                     coordinates_df=None, csv_path=None):
         """
         It employs the HDBSCAN method to gather the supplied coordinates
         into clusters.
@@ -231,7 +235,9 @@ class HDBSCANClustering(Clustering):
             N is the total number of atoms belonging to the residue that
             is being analyzed
         original_df : pandas.DataFrame
-            Original dataframe from Analysis to be overwritten
+            Original dataframe from Analysis to be overwritten. Optional
+            parameter, if not supplied the dataframe will not be updated
+            with the information of clusters
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
             clustering. Optional parameter, if not supplied the CSV
@@ -274,8 +280,8 @@ class MeanShiftClustering(Clustering):
         super().__init__()
         self._bandwidth = bandwidth
 
-    def get_clusters(self, coordinates, original_df, coordinates_df=None,
-                     csv_path=None):
+    def get_clusters(self, coordinates, original_df=None,
+                     coordinates_df=None, csv_path=None):
         """
         It employs the Mean Shift method to gather the supplied coordinates
         into clusters.
@@ -289,7 +295,9 @@ class MeanShiftClustering(Clustering):
             N is the total number of atoms belonging to the residue that
             is being analyzed
         original_df : pandas.DataFrame
-            Original dataframe from Analysis to be overwritten
+            Original dataframe from Analysis to be overwritten. Optional
+            parameter, if not supplied the dataframe will not be updated
+            with the information of clusters
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
             clustering. Optional parameter, if not supplied the CSV

@@ -1497,8 +1497,7 @@ class Analysis(object):
             try:
                 clustering = GaussianMixtureClustering(n_clusters=n_clusters)
                 labels, estimator = \
-                    clustering.get_clusters(coordinates=cluster_coordinates,
-                                            original_df=data)
+                    clustering.get_clusters(coordinates=cluster_coordinates)
 
             except ValueError:
                 print(f"Not enough samples to produce {n_clusters} " +
