@@ -423,8 +423,10 @@ class Analysis(object):
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
-        clusters, _ = clustering.get_clusters(coordinates, self._dataframe,
-                                              dataframe, os.path.dirname(path))
+        clusters, _ = clustering.get_clusters(coordinates=cluster_coordinates,
+                                              original_df=self._dataframe,
+                                              coordinates_df=dataframe,
+                                              csv_path=os.path.dirname(path))
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
         cluster_summary = self._analyze_clusters(clusters, dataframe,
@@ -1493,8 +1495,9 @@ class Analysis(object):
 
             try:
                 clustering = GaussianMixtureClustering(n_clusters=n_clusters)
-                labels, estimator = clustering.get_clusters(coordinates=cluster_coordinates, original_df=data,
-                                                            coordinates_df=None, csv_path=None)
+                labels, estimator = \
+                    clustering.get_clusters(coordinates=cluster_coordinates,
+                                            original_df=data)
 
             except ValueError:
                 print(f"Not enough samples to produce {n_clusters} " +

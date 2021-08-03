@@ -17,8 +17,8 @@ class Clustering(ABC):
         super().__init__()
 
     @abstractmethod
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df, coordinates_df=None,
+                     csv_path=None):
         """
         It employs a clustering method to gather the supplied coordinates
         into clusters.
@@ -35,9 +35,13 @@ class Clustering(ABC):
             Original dataframe from Analysis to be overwritten
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
-            clustering
+            clustering. Optional parameter, if not supplied the CSV
+            containing the information of clusters will not be saved
         csv_path : str
-            Directory where the CSV will be saved
+            Directory where the CSV will be saved. Optional parameter,
+            if not supplied the CSV containing the information of clusters
+            will not be saved
+
         Returns
         -------
         clusters : numpy.array
@@ -151,8 +155,8 @@ class GaussianMixtureClustering(Clustering):
         super().__init__()
         self._n_clusters = n_clusters
 
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df, coordinates_df=None,
+                     csv_path=None):
         """
         It employs the Gaussian Mixture method to gather the supplied
         coordinates into clusters.
@@ -169,9 +173,12 @@ class GaussianMixtureClustering(Clustering):
             Original dataframe from Analysis to be overwritten
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
-            clustering
+            clustering. Optional parameter, if not supplied the CSV
+            containing the information of clusters will not be saved
         csv_path : str
-            Directory where the CSV will be saved
+            Directory where the CSV will be saved. Optional parameter,
+            if not supplied the CSV containing the information of clusters
+            will not be saved
 
         Returns
         -------
@@ -209,8 +216,8 @@ class HDBSCANClustering(Clustering):
         super().__init__()
         self._bandwidth = bandwidth
 
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df, coordinates_df=None,
+                     csv_path=None):
         """
         It employs the HDBSCAN method to gather the supplied coordinates
         into clusters.
@@ -227,9 +234,12 @@ class HDBSCANClustering(Clustering):
             Original dataframe from Analysis to be overwritten
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
-            clustering
+            clustering. Optional parameter, if not supplied the CSV
+            containing the information of clusters will not be saved
         csv_path : str
-            Directory where the CSV will be saved
+            Directory where the CSV will be saved. Optional parameter,
+            if not supplied the CSV containing the information of clusters
+            will not be saved
 
         Returns
         -------
@@ -264,7 +274,7 @@ class MeanShiftClustering(Clustering):
         super().__init__()
         self._bandwidth = bandwidth
 
-    def get_clusters(self, coordinates, original_df=None, coordinates_df=None,
+    def get_clusters(self, coordinates, original_df, coordinates_df=None,
                      csv_path=None):
         """
         It employs the Mean Shift method to gather the supplied coordinates
@@ -282,9 +292,12 @@ class MeanShiftClustering(Clustering):
             Original dataframe from Analysis to be overwritten
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
-            clustering
+            clustering. Optional parameter, if not supplied the CSV
+            containing the information of clusters will not be saved
         csv_path : str
-            Directory where the CSV will be saved
+            Directory where the CSV will be saved. Optional parameter,
+            if not supplied the CSV containing the information of clusters
+            will not be saved
 
         Returns
         -------
