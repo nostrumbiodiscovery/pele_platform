@@ -185,7 +185,7 @@ class GaussianMixtureClustering(Clustering):
         clustering_method = GaussianMixture(n_components=self._n_clusters, covariance_type="full")
         clusters = clustering_method.fit_predict(coordinates)
 
-        if coordinates_df and csv_path:
+        if len(coordinates_df) > 0 and csv_path:
             self._save_cluster_info(original_df, coordinates_df, clusters, csv_path)
 
         return clusters, clustering_method
