@@ -38,7 +38,7 @@ class FragMetrics(object):
             parameters.metrics = ""
 
         if args.native:
-            parameters.native = metric_builder.rsmd_to_json(args.native,
+            parameters.native = metric_builder.rmsd_to_json(args.native,
                                                             parameters.chain)
         else:
             parameters.native = ""

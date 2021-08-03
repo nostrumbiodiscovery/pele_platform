@@ -523,6 +523,34 @@ def get_residue_name(pdb_file, chain, residue_number):
         raise ResidueNotFound(f"Could not find residue {residue_number} in chain {chain} in PDB file {pdb_file}.")
 
 
+def get_residue_number(pdb_file, chain, residue_name):
+    """
+    Retrieves residue number from a PDB file based on chain ID and residue name.
+
+    Parameters
+    ----------
+    pdb_file : str
+        Path to PDB file.
+    chain : str
+        Chain ID of the residue.
+    residue_name : str
+        Residue name.
+
+    Returns
+    -------
+        A string with residue number.
+    """
+    with open(pdb_file, "r") as file:
+        pdb_lines = [line for line in file.readlines() if line.startswith("ATOM") or line.startswith("HETATM")]
+
+    for line in pdb_lines:
+        if line[21].strip() == chain and line[17:20].strip().lower() == residue_name.lower():
+            residue_number = line[22:26].strip()
+            return residue_number
+    else:
+        raise ResidueNotFound(f"Could not find residue {residue_name} in chain {chain} in PDB file {pdb_file}.")
+
+
 # def get_pele_version():
 #     """
 #     Gets PELE version based on what's found under PELE variable.
@@ -543,3 +571,31 @@ def get_residue_name(pdb_file, chain, residue_number):
 #     )
 #
 #     return current_version
+
+
+def parse_atom_dist(atom_dist, pdb):
+    """
+    Parses atom distances defined by the user and checks their type.
+
+    Parameters
+    ----------
+    atom_dist : str
+        A single item of args.atom_dist set by the user.
+    pdb : str
+        Path to the PDB file (args.system).
+
+    Returns
+    -------
+    atom : str
+        Atom string in a format of chain:resnum:atom_name or residue string in the format of chain:resnum.
+    atom_tag : str
+        Tag necessary for the metrics JSON - "links" when using residue string and "atoms" when setting residue string.
+    """
+    if not str(atom_dist).isdigit() and len(atom_dist.split(":")) == 2:  # When atom_dist is a residue string
+        atom = atom_dist
+        atom_tag = "links"
+    else:
+        # When atom_dist is an atom number or an atom string
+        atom = retrieve_atom_info(atom_dist, pdb)
+        atom_tag = "atoms"
+    return atom, atom_tag

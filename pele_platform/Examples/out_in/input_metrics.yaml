@@ -1,0 +1,10 @@
+system: '../pele_platform/Examples/out_in/1_3ZON_complex.pdb'
+chain: 'Z'
+resname: 'IK1'
+initial_site: "A:577:N"
+final_site: "A:867:CB"
+out_in: true
+test: true
+atom_dist:
+  - 55
+  - "A:583:NH2"
