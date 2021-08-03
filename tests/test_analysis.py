@@ -241,17 +241,16 @@ def test_api_analysis_generation(analysis):
     top_selections = os.path.join(working_folder, "clusters", "top_selections.csv")
     df = pd.read_csv(top_selections)
     assert all(
-        x in df.columns
-        for x in [
-            "Cluster",
-            "Cluster label",
-            "epoch",
-            "trajectory",
-            "Step",
-            "currentEnergy",
-            "Binding Energy",
-            "sasaLig",
-        ]
+        [x in df.columns
+         for x in [
+             "Cluster label",
+             "epoch",
+             "trajectory",
+             "Step",
+             "currentEnergy",
+             "Binding Energy",
+             "sasaLig",
+         ]]
     )
 
     # Check if data.csv exists and is not empty
@@ -441,9 +440,8 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
 
     df = pd.read_csv(csv)
     assert all(
-        x in df.columns
-        for x in [
-            "Cluster",
+        [x in df.columns
+         for x in [
             "Cluster label",
             "epoch",
             "trajectory",
@@ -451,7 +449,7 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
             "currentEnergy",
             "Binding Energy",
             "sasaLig",
-        ]
+         ]]
     )
     assert not df.isnull().values.any()
 
