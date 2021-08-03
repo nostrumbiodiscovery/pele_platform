@@ -543,7 +543,6 @@ class Analysis(object):
                                                        HDBSCANClustering,
                                                        MeanShiftClustering)
 
-
         if clustering_type.lower() == "gaussianmixture":
             clustering = GaussianMixtureClustering(analysis_nclust)
             max_coordinates = 10
@@ -1197,7 +1196,7 @@ class Analysis(object):
             dataframe.query('currentEnergy<={}'.format(energetic_threshold))
 
         return filtered_coordinates, filtered_water_coordinates, \
-            filtered_dataframe, energetic_threshold
+               filtered_dataframe, energetic_threshold
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """
@@ -1312,7 +1311,6 @@ class Analysis(object):
         # If multiple representative structures per cluster are requested,
         # the inner clustering algorithm will be used
         if "multi" in representatives_criterion:
-
             representative_structures = self._run_inner_clustering(
                 path=path,
                 selected_clusters=clusters,
@@ -1388,6 +1386,8 @@ class Analysis(object):
                 lowest_energetic_diff[cluster] = energetic_diff
 
         for cluster, [trajectory, step] in representative_structures.items():
+            label = get_cluster_label(int(cluster), uppercase=True)
+
             if not self.topology:
                 try:
                     extract_snapshot_from_pdb(
@@ -1450,13 +1450,13 @@ class Analysis(object):
         import numpy as np
         import os
         import pandas as pd
-        from sklearn.cluster import KMeans
 
         from pele_platform.Errors.custom_errors import ClusteringError
         from pele_platform.analysis.clustering import get_cluster_label
         from pele_platform.Utilities.Helpers.bestStructs \
             import extract_snapshot_from_pdb, extract_snapshot_from_xtc
         from pele_platform.Utilities.Helpers import get_suffix
+        from pele_platform.analysis.clustering import GaussianMixtureClustering
 
         # The dataframe where inner cluster information will be saved
         inner_clusters_data = pd.DataFrame()
@@ -1486,56 +1486,46 @@ class Analysis(object):
             if cluster > -1:
                 filtered_coordinates[cluster].append(coord)
 
-        # Run K-means for poses in each selected cluster
+        # Run Gaussian mixture for poses in each selected cluster
         for cluster in set(selected_clusters):
             if cluster < 0:
                 continue
-
             cluster_coordinates = np.array(filtered_coordinates[cluster])
-            models, atoms, dimensions = cluster_coordinates.shape
-            cluster_coordinates = \
-                cluster_coordinates.reshape(models, atoms * dimensions)
 
             try:
-                estimator = KMeans(n_clusters=n_clusters,
-                                   random_state=self.random_seed)
-                labels = estimator.fit_predict(cluster_coordinates)
+                clustering = GaussianMixtureClustering(n_clusters=n_clusters)
+                labels, estimator = clustering.get_clusters(coordinates=cluster_coordinates, original_df=data,
+                                                            coordinates_df=None, csv_path=None)
 
             except ValueError:
                 print(f"Not enough samples to produce {n_clusters} " +
                       f"clusters. Skipping cluster {cluster}.")
                 continue
 
-            cluster_data = \
-                data_copy[data_copy["cluster"] == cluster].copy(deep=True)
+            cluster_data = data_copy[data_copy["cluster"] == cluster].copy(deep=True)
             cluster_data["inner_cluster"] = labels
 
-            # Sort by binding energy and get as many as defined by
-            # the user (n_clusters)
-            cluster_data = cluster_data.sort_values("Binding Energy",
-                                                    ascending=True)
-            cluster_data = cluster_data[:n_clusters]
+            # Sort by binding energy and get the lowest energy representative for each inner cluster
+            cluster_data = cluster_data.sort_values("Binding Energy", ascending=True)
+            cluster_data = cluster_data.drop_duplicates("inner_cluster")
 
             # Assign inner cluster labels
             labels = list()
             for cluster_id in range(0, n_clusters):
-                inner_label = get_cluster_label(cluster_id,
-                                                uppercase=False)
+                inner_label = get_cluster_label(cluster_id, uppercase=False)
                 full_label = get_cluster_label(cluster) + '_' + inner_label
                 labels.append(full_label)
 
             cluster_data['label'] = labels
 
             # Concatenate inner cluster data
-            inner_clusters_data = pd.concat([inner_clusters_data,
-                                             cluster_data])
+            inner_clusters_data = pd.concat([inner_clusters_data, cluster_data])
 
             # Build up representative structures dictionary
             trajectories = cluster_data['trajectory']
             steps = cluster_data['numberOfAcceptedPeleSteps']
 
-            for trajectory, step, label in zip(trajectories,
-                                               steps, labels):
+            for trajectory, step, label in zip(trajectories, steps, labels):
                 representative_structures[label] = [trajectory, step]
 
         # Extract snapshots and save to folder

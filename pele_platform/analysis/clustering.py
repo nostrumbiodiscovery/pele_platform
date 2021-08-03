@@ -182,12 +182,12 @@ class GaussianMixtureClustering(Clustering):
         from sklearn.mixture import GaussianMixture
 
         coordinates = Clustering.fix_coordinates_shape(coordinates)
-
-        clustering_method = GaussianMixture(n_components=self._n_clusters,
-                                            covariance_type="full")
+        clustering_method = GaussianMixture(n_components=self._n_clusters, covariance_type="full")
         clusters = clustering_method.fit_predict(coordinates)
-        self._save_cluster_info(original_df, coordinates_df,
-                                clusters, csv_path)
+
+        if coordinates_df and csv_path:
+            self._save_cluster_info(original_df, coordinates_df, clusters, csv_path)
+
         return clusters, clustering_method
 
 
@@ -328,7 +328,7 @@ def get_cluster_label(cluster_id, uppercase=True):
     ----------
     cluster_id : int
         The id of the cluster that will be used to generate the label
-    uppercase : str
+    uppercase : bool
         Whether to retrieve an uppercase label or not. Default is True
 
     Returns

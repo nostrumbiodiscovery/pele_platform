@@ -677,7 +677,7 @@ def test_frag_API_analysis(yaml_file, traj, topology):
     shutil.rmtree(frag_folder, ignore_errors=True)
 
 
-@pytest.mark.parametrize(("multi", "expected"), [(1, 3), (2, 4)])
+@pytest.mark.parametrize(("multi", "expected"), [(1, 2), (2, 4)])
 def test_inner_clustering(analysis, multi, expected):
     """
     Checks if inner clustering is performed correctly.
