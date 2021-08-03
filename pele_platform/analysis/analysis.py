@@ -1386,7 +1386,6 @@ class Analysis(object):
                 lowest_energetic_diff[cluster] = energetic_diff
 
         for cluster, [trajectory, step] in representative_structures.items():
-            label = get_cluster_label(int(cluster), uppercase=True)
 
             if not self.topology:
                 try:
@@ -1397,7 +1396,7 @@ class Analysis(object):
                         topology=self.topology,
                         step=step,
                         out_freq=1,
-                        f_out="cluster_{}.pdb".format(label))
+                        f_out="cluster_{}.pdb".format(cluster))
                 except UnicodeDecodeError:
                     raise Exception("XTC output being treated as PDB. " +
                                     "Please specify XTC with the next " +
@@ -1411,7 +1410,7 @@ class Analysis(object):
                     topology=self.topology,
                     step=step,
                     out_freq=1,
-                    f_out="cluster_{}.pdb".format(label))
+                    f_out="cluster_{}.pdb".format(cluster))
 
         self._save_top_selections(representative_structures, path, dataframe)
 
