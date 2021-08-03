@@ -423,10 +423,13 @@ class Analysis(object):
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
-        clusters, _ = clustering.get_clusters(coordinates=cluster_coordinates,
+        clusters, _ = clustering.get_clusters(coordinates=coordinates,
                                               original_df=self._dataframe,
                                               coordinates_df=dataframe,
                                               csv_path=os.path.dirname(path))
+
+        coordinates=cluster_coordinates, original_df=self._dataframe,
+        coordinates_df=dataframe, csv_path=os.path.dirname(path))
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
         cluster_summary = self._analyze_clusters(clusters, dataframe,
