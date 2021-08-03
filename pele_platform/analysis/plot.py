@@ -268,6 +268,11 @@ class Plotter(object):
                             xs.append(x)
                             ys.append(y)
 
+                # In case there is only one point and it is the
+                # representative structure
+                if len(xs) == 0:
+                    continue
+
                 if current_cluster == -1:
                     zorder = 1
                 else:
