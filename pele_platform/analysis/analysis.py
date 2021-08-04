@@ -19,7 +19,9 @@ class Analysis(object):
                  be_column=4, limit_column=None, traj="trajectory.pdb",
                  report=None, skip_initial_structures=True, kde=False,
                  kde_structs=1000, topology=None, cpus=1,
-                 water_ids_to_track=[], plot_filtering_threshold=0.02, clustering_filtering_threshold=0.25):
+                 water_ids_to_track=[], plot_filtering_threshold=0.02,
+                 clustering_filtering_threshold=0.25,
+                 random_seed=None):
         """
         It initializes an Analysis instance which it depends on
         the general Parameters class of the PELE Platform.
@@ -59,13 +61,18 @@ class Analysis(object):
             corresponding to each water molecule to track. Default is []
         topology : str
             Path to the topology file, if using XTC trajectories. Default
-             is None
+            is None
         cpus : int
             Number of CPUs to use. Default is 1
         plot_filtering_threshold : float
-            User-defined setting to toggle trajectory filtering when generating plots.
+            User-defined setting to toggle trajectory filtering when
+            generating plots
         clustering_filtering_threshold : float
-            User-defined setting to toggle trajectory filtering when generating clusters.
+            User-defined setting to toggle trajectory filtering when
+            generating clusters
+        random_seed : int
+            Random seed to use in clustering. If it was not set in input.yaml.
+            The default does not set a specific seed
         """
         from pele_platform.analysis import DataHandler
 
@@ -86,6 +93,7 @@ class Analysis(object):
         self.water_ids = water_ids_to_track
         self.plot_filtering_threshold = plot_filtering_threshold
         self.clustering_filtering_threshold = clustering_filtering_threshold
+        self.random_seed = random_seed
 
         if self.residue:
             self._check_residue_exists()
@@ -144,7 +152,8 @@ class Analysis(object):
                             cpus=parameters.cpus,
                             water_ids_to_track=parameters.water_ids_to_track,
                             plot_filtering_threshold=parameters.plot_filtering_threshold,
-                            clustering_filtering_threshold=parameters.clustering_filtering_threshold)
+                            clustering_filtering_threshold=parameters.clustering_filtering_threshold,
+                            random_seed=parameters.seed)
 
         return analysis
 
@@ -223,6 +232,7 @@ class Analysis(object):
             "interaction_mean", "interaction_min"]
         """
         import os
+
         path = self._check_existing_directory(path)
         summary_file = os.path.join(path, "data.csv")
         plots_folder = os.path.join(path, "plots")
@@ -407,12 +417,17 @@ class Analysis(object):
 
         # Filter coordinates
         coordinates, water_coordinates, dataframe, energetic_threshold = \
-            self._filter_coordinates(coordinates, water_coordinates, dataframe, threshold=self.clustering_filtering_threshold)
+            self._filter_coordinates(
+                coordinates, water_coordinates, dataframe,
+                threshold=self.clustering_filtering_threshold)
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
-        clusters, _ = clustering.get_clusters(coordinates, self._dataframe,
-                                              dataframe, os.path.dirname(path))
+        clusters, _ = clustering.get_clusters(coordinates=coordinates,
+                                              original_df=self._dataframe,
+                                              coordinates_df=dataframe,
+                                              csv_path=os.path.dirname(path))
+
         rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
 
         cluster_summary = self._analyze_clusters(clusters, dataframe,
@@ -441,19 +456,34 @@ class Analysis(object):
         # Save cluster summary to file with information about selected labels
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
 
+        # Save cluster representative structures
+        if "multi" in representatives_criterion.lower():
+            print(f"Retrieve top cluster representative structures based " +
+                  f"on k-means clustering.")
+        else:
+            print(f"Retrieve top cluster representative structures based " +
+                  f"on {representatives_criterion}.")
+
+        representative_structures = \
+            self._save_cluster_representatives(cluster_subset, dataframe,
+                                               representatives_criterion,
+                                               coordinates, path)
+
+        # TODO use representative_structures dict to identify selected points
+        #      in the graph
+
         # Plot cluster descriptors
         self._plot_cluster_descriptors(cluster_subset, dataframe,
                                        cluster_summary, path)
 
-        # Plot clusters
-        self._plot_clusters(cluster_subset, dataframe, cluster_summary, path)
+        # Plot cluster representatives
+        self._plot_cluster_representatives(cluster_subset, dataframe,
+                                           representative_structures, path)
 
-        # Save cluster representative structures
-        self._save_cluster_representatives(cluster_subset, dataframe, path,
-                                           representatives_criterion)
-        print(
-            f"Retrieve top cluster representative structures based on " +
-            f"{cluster_representatives_criterion[representatives_criterion]}.")
+        # Plot clusters
+        self._plot_clusters(cluster_subset, dataframe, path)
+
+        print(f"Generate cluster graphs and plot their descriptors")
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):
@@ -515,7 +545,6 @@ class Analysis(object):
         from pele_platform.analysis.clustering import (GaussianMixtureClustering,
                                                        HDBSCANClustering,
                                                        MeanShiftClustering)
-
 
         if clustering_type.lower() == "gaussianmixture":
             clustering = GaussianMixtureClustering(analysis_nclust)
@@ -1024,7 +1053,9 @@ class Analysis(object):
                 print("Samples too disperse to produce a cluster " +
                       "for metric {}".format(metric))
 
-    def _plot_clusters(self, clusters, dataframe, cluster_summary, path):
+    def _plot_cluster_representatives(self, clusters, dataframe,
+                                      representative_structures,
+                                      path):
         """
         It generates the plots for clusters.
 
@@ -1038,6 +1069,49 @@ class Analysis(object):
         cluster_summary : a pandas.dataframe object
             The dataframe containing summary of all clusters that were
             analyzed
+        representative_structures : dict[str, tuple[str, int]]
+            Dictionary containing the representative structures that
+            were selected. Cluster label is the key and value is a list
+            with [trajectory, step] of each cluster
+        path : str
+            The path where the output file will be saved at
+        """
+        from pele_platform.analysis import Plotter
+
+        metrics = self._data_handler.get_metrics()
+
+        # Initialize plotter
+        plotter = Plotter(dataframe)
+
+        if "Binding Energy" in metrics:
+            energy = "Binding Energy"
+        else:
+            energy = "currentEnergy"
+
+        # The minimum value for the limit column is 4, since previous
+        # columns in PELE report files does not contain any metric
+        if self.limit_column is not None and self.limit_column > 4:
+            limit_column = self.limit_column - 4
+        else:
+            limit_column = 0
+
+        # Iterate over all the metrics found in the reports
+        for metric in metrics[limit_column:]:
+            plotter.plot_clusters(
+                metric, energy, output_folder=path, clusters=clusters,
+                representative_structures=representative_structures)
+
+    def _plot_clusters(self, clusters, dataframe, path):
+        """
+        It generates the plots for clusters.
+
+        Parameters
+        ----------
+        clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        dataframe : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of clusters
         path : str
             The path where the output file will be saved at
         """
@@ -1125,7 +1199,7 @@ class Analysis(object):
             dataframe.query('currentEnergy<={}'.format(energetic_threshold))
 
         return filtered_coordinates, filtered_water_coordinates, \
-            filtered_dataframe, energetic_threshold
+               filtered_dataframe, energetic_threshold
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """
@@ -1186,8 +1260,9 @@ class Analysis(object):
 
         return rmsd_per_cluster
 
-    def _save_cluster_representatives(self, clusters, dataframe, path,
-                                      representatives_criterion):
+    def _save_cluster_representatives(self, clusters, dataframe,
+                                      representatives_criterion,
+                                      coordinates, path):
         """
         It saves the resulting clusters to disk. The selection of the
         representative structures is based on the total energy. The
@@ -1201,14 +1276,25 @@ class Analysis(object):
         dataframe : a pandas.dataframe object
             The dataframe containing the PELE reports information that
             follows the same ordering as the array of clusters
-        path : str
-            The path where the clusters will be saved at
         representatives_criterion : str
             Criterion to select cluster representative structures.
             One of ["total_25_percentile", "total_5_percentile",
             "total_mean", "total_min", "interaction_25_percentile",
             "interaction_5_percentile", "interaction_mean",
             "interaction_min"]
+        coordinates : np.array
+            Array with all coordinates used for initial clustering.
+            These need to be filtered to only include the ones
+            belonging to selected clusters
+        path : str
+            The path where the clusters will be saved at
+
+        Returns
+        -------
+        representative_structures : dict[str, tuple[str, int]]
+            Dictionary containing the representative structures that
+            were selected. Cluster label is the key and value is a list
+            with [trajectory, step] of each cluster
         """
         import os
         from collections import defaultdict
@@ -1222,8 +1308,22 @@ class Analysis(object):
         from pele_platform.constants.constants import \
             cluster_representatives_criterion
 
-        # Get metric to be used in the cluster representatives selection
+        # Get criterion to extract representative structures
         representatives_criterion = representatives_criterion.lower()
+
+        # If multiple representative structures per cluster are requested,
+        # the inner clustering algorithm will be used
+        if "multi" in representatives_criterion:
+            representative_structures = self._run_inner_clustering(
+                path=path,
+                selected_clusters=clusters,
+                coordinates=coordinates,
+                representatives_criterion=representatives_criterion,
+                data=dataframe)
+
+            return representative_structures
+
+        # Otherwise, let's check if it is an expected criterion
         if representatives_criterion not in cluster_representatives_criterion:
             raise ValueError('Invalid cluster_representatives_criterion'
                              '\'{}\''.format(representatives_criterion) +
@@ -1243,6 +1343,10 @@ class Analysis(object):
             # Skip outliers such as clusters with label -1
             if cluster < 0:
                 continue
+
+            # Convert cluster ID into cluster label
+            cluster = get_cluster_label(cluster)
+
             metrics_per_cluster[cluster].append(value)
 
         golden_values_per_cluster = {}
@@ -1271,6 +1375,9 @@ class Analysis(object):
             if cluster < 0:
                 continue
 
+            # Convert cluster ID into cluster label
+            cluster = get_cluster_label(cluster)
+
             energetic_diff = \
                 np.abs(golden_values_per_cluster[cluster] - metric)
             if cluster not in representative_structures:
@@ -1282,9 +1389,9 @@ class Analysis(object):
                 lowest_energetic_diff[cluster] = energetic_diff
 
         for cluster, [trajectory, step] in representative_structures.items():
+
             if not self.topology:
                 try:
-                    label = get_cluster_label(cluster)
                     extract_snapshot_from_pdb(
                         path=trajectory,
                         f_id=get_suffix(os.path.splitext(trajectory)[0]),
@@ -1292,14 +1399,13 @@ class Analysis(object):
                         topology=self.topology,
                         step=step,
                         out_freq=1,
-                        f_out="cluster_{}.pdb".format(label))
+                        f_out="cluster_{}.pdb".format(cluster))
                 except UnicodeDecodeError:
                     raise Exception("XTC output being treated as PDB. " +
                                     "Please specify XTC with the next " +
                                     "flag. traj: 'trajectory_name.xtc' " +
                                     "in the input.yaml")
             else:
-                label = get_cluster_label(cluster)
                 extract_snapshot_from_xtc(
                     path=trajectory,
                     f_id=get_suffix(os.path.splitext(trajectory)[0]),
@@ -1307,9 +1413,154 @@ class Analysis(object):
                     topology=self.topology,
                     step=step,
                     out_freq=1,
-                    f_out="cluster_{}.pdb".format(label))
+                    f_out="cluster_{}.pdb".format(cluster))
 
         self._save_top_selections(representative_structures, path, dataframe)
+
+        return representative_structures
+
+    def _run_inner_clustering(self, path, selected_clusters, coordinates,
+                              representatives_criterion, data):
+        """
+        Performs k-means clustering to provide the user with representatives
+        of each selected cluster.
+
+        Parameters
+        ----------
+        selected_clusters : a numpy.array object
+            The array of cluster labels that were obtained
+        path : str
+            The path where the clusters will be saved
+        representatives_criterion : str
+            Criterion "multi n" where n is the number of expected clusters
+        coordinates : np.array
+            Array with all coordinates used for initial clustering.
+            These need to be filtered to only include the ones
+            belonging to selected clusters
+        data : a pandas.dataframe object
+            The dataframe containing the PELE reports information that
+            follows the same ordering as the array of clusters
+
+        Returns
+        -------
+        representative_structures : dict[str, tuple[str, int]]
+            Dictionary containing the representative structures that
+            were selected. Cluster label is the key and value is a list
+            with [trajectory, step] of each cluster
+        """
+        from collections import defaultdict
+        import numpy as np
+        import os
+        import pandas as pd
+
+        from pele_platform.Errors.custom_errors import ClusteringError
+        from pele_platform.analysis.clustering import get_cluster_label
+        from pele_platform.Utilities.Helpers.bestStructs \
+            import extract_snapshot_from_pdb, extract_snapshot_from_xtc
+        from pele_platform.Utilities.Helpers import get_suffix
+        from pele_platform.analysis.clustering import GaussianMixtureClustering
+
+        # The dataframe where inner cluster information will be saved
+        inner_clusters_data = pd.DataFrame()
+        # The dictionary where selected structure ids will be saved
+        representative_structures = {}
+        # Make a deep copy of data to not modify the original one
+        data_copy = data.copy(deep=True)
+
+        # Parse the number of inner clusters defined by the user
+        try:
+            n_clusters = representatives_criterion.lower()
+            n_clusters = n_clusters.replace('multi', '')
+            n_clusters = n_clusters.strip()
+            n_clusters = int(n_clusters)
+        except ValueError:
+            raise ClusteringError(f"Incorrect format of " +
+                                  f"{representatives_criterion}. " +
+                                  f"It should be 'multi N' where " +
+                                  f"N is the number of clusters " +
+                                  f"required.")
+
+        # Filter coordinates to include only the ones for selected clusters
+        filtered_coordinates = defaultdict(list)
+        data_copy["cluster"] = selected_clusters
+
+        for coord, cluster in zip(coordinates, selected_clusters):
+            if cluster > -1:
+                filtered_coordinates[cluster].append(coord)
+
+        # Run Gaussian mixture for poses in each selected cluster
+        for cluster in set(selected_clusters):
+            if cluster < 0:
+                continue
+            cluster_coordinates = np.array(filtered_coordinates[cluster])
+
+            try:
+                clustering = GaussianMixtureClustering(n_clusters=n_clusters)
+                labels, estimator = \
+                    clustering.get_clusters(coordinates=cluster_coordinates)
+
+            except ValueError:
+                print(f"Not enough samples to produce {n_clusters} " +
+                      f"clusters. Skipping cluster {cluster}.")
+                continue
+
+            cluster_data = data_copy[data_copy["cluster"] == cluster].copy(deep=True)
+            cluster_data["inner_cluster"] = labels
+
+            # Sort by binding energy and get the lowest energy representative for each inner cluster
+            cluster_data = cluster_data.sort_values("Binding Energy", ascending=True)
+            cluster_data = cluster_data.drop_duplicates("inner_cluster")
+
+            # Assign inner cluster labels
+            labels = list()
+            for cluster_id in range(0, n_clusters):
+                inner_label = get_cluster_label(cluster_id, uppercase=False)
+                full_label = get_cluster_label(cluster) + '_' + inner_label
+                labels.append(full_label)
+
+            cluster_data['label'] = labels
+
+            # Concatenate inner cluster data
+            inner_clusters_data = pd.concat([inner_clusters_data, cluster_data])
+
+            # Build up representative structures dictionary
+            trajectories = cluster_data['trajectory']
+            steps = cluster_data['numberOfAcceptedPeleSteps']
+
+            for trajectory, step, label in zip(trajectories, steps, labels):
+                representative_structures[label] = [trajectory, step]
+
+        # Extract snapshots and save to folder
+        for row in inner_clusters_data.itertuples():
+            output = f"cluster_{row.label}.pdb"
+            if not self.topology:
+                try:
+                    extract_snapshot_from_pdb(
+                        path=row.trajectory,
+                        f_id=get_suffix(os.path.splitext(row.trajectory)[0]),
+                        output=path,
+                        topology=self.topology,
+                        step=row.numberOfAcceptedPeleSteps,
+                        out_freq=1,
+                        f_out=output)
+                except UnicodeDecodeError:
+                    raise Exception("XTC output being treated as PDB. "
+                                    + "Please specify XTC with the next "
+                                    + "flag. traj: 'trajectory_name.xtc' "
+                                    + "in the input.yaml")
+            else:
+                extract_snapshot_from_xtc(
+                    path=row.trajectory,
+                    f_id=get_suffix(os.path.splitext(row.trajectory)[0]),
+                    output=path,
+                    topology=self.topology,
+                    step=row.numberOfAcceptedPeleSteps,
+                    out_freq=1,
+                    f_out=output)
+
+        self._save_top_selections(representative_structures, path, data)
+
+        return representative_structures
 
     def _save_top_selections(self, representative_structures, path, dataframe):
         """
@@ -1319,8 +1570,8 @@ class Analysis(object):
 
         Parameters
         ----------
-        representative_structures : dict[int, tuple[str, int]]
-            Dictionary where cluster ID is the key and value is a list
+        representative_structures : dict[str, tuple[str, int]]
+            Dictionary where cluster label is the key and value is a list
             with [trajectory, step] of each cluster
         path : str
             The path where the CSV file will be saved at
@@ -1333,17 +1584,15 @@ class Analysis(object):
         from pele_platform.analysis.clustering import get_cluster_label
 
         # Gather information about each representative structure
-        cluster_ids = []
         epochs = []
         trajectories = []
         steps = []
         labels = []
         for cluster_id, (trajectory, step) \
                 in representative_structures.items():
-            cluster_ids.append(str(cluster_id))
             trajectories.append(trajectory)
             steps.append(step)
-            labels.append(get_cluster_label(cluster_id))
+            labels.append(cluster_id)
             epoch = os.path.basename(os.path.dirname(trajectory))
             if epoch.isdigit():
                 epochs.append(epoch)
@@ -1373,8 +1622,7 @@ class Analysis(object):
                 metric_values[metric].append(float(filtered_df[metric]))
 
         # Build dataframe
-        representatives_data = pd.DataFrame({"Cluster": cluster_ids,
-                                             "Cluster label": labels,
+        representatives_data = pd.DataFrame({"Cluster label": labels,
                                              "epoch": epochs,
                                              "trajectory": trajectories,
                                              "Step": steps})
@@ -1486,7 +1734,7 @@ class Analysis(object):
         # Iterate until finding a non existing path
         while os.path.exists(new_path):
             new_id += 1
-            new_folder_name = folder_name + '_' + str(new_id)
+            new_folder_name = folder_name + "_" + str(new_id)
             new_path = os.path.join(dir_name, new_folder_name)
 
         return new_path
@@ -1516,10 +1764,8 @@ class Analysis(object):
             output_path = epoch_dirs[0]
 
         # Get trajectory name
-        trajectory_prefix = \
-            str(os.path.splitext(self.traj)[0])
-        trajectory_format = \
-            str(os.path.splitext(self.traj)[-1])
+        trajectory_prefix = str(os.path.splitext(self.traj)[0])
+        trajectory_format = str(os.path.splitext(self.traj)[-1])
 
         # Find trajectory
         trajectory_path = glob.glob(os.path.join(output_path,
@@ -1538,7 +1784,7 @@ class Analysis(object):
 
         # if empty array is returned, raise error
         if residue.size == 0:
-            raise ValueError(
-                f"Residue {self.residue} was not found in output "
-                f"trajectories. Make sure you are passing a correct "
-                f"'resname' argument to Analysis.")
+            raise ValueError(f"Residue {self.residue} was not found in " +
+                             f"output trajectories. Make sure you are " +
+                             f"passing a correct 'resname' argument to " +
+                             f"Analysis.")

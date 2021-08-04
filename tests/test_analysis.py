@@ -241,17 +241,16 @@ def test_api_analysis_generation(analysis):
     top_selections = os.path.join(working_folder, "clusters", "top_selections.csv")
     df = pd.read_csv(top_selections)
     assert all(
-        x in df.columns
-        for x in [
-            "Cluster",
-            "Cluster label",
-            "epoch",
-            "trajectory",
-            "Step",
-            "currentEnergy",
-            "Binding Energy",
-            "sasaLig",
-        ]
+        [x in df.columns
+         for x in [
+             "Cluster label",
+             "epoch",
+             "trajectory",
+             "Step",
+             "currentEnergy",
+             "Binding Energy",
+             "sasaLig",
+         ]]
     )
 
     # Check if data.csv exists and is not empty
@@ -441,9 +440,8 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
 
     df = pd.read_csv(csv)
     assert all(
-        x in df.columns
-        for x in [
-            "Cluster",
+        [x in df.columns
+         for x in [
             "Cluster label",
             "epoch",
             "trajectory",
@@ -451,7 +449,7 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
             "currentEnergy",
             "Binding Energy",
             "sasaLig",
-        ]
+         ]]
     )
     assert not df.isnull().values.any()
 
@@ -675,3 +673,24 @@ def test_frag_API_analysis(yaml_file, traj, topology):
     assert len(glob.glob(os.path.join(analysis_output, "clusters", "cluster*pdb"))) > 0
 
     shutil.rmtree(frag_folder, ignore_errors=True)
+
+
+@pytest.mark.parametrize(("multi", "expected"), [(1, 2), (2, 4)])
+def test_inner_clustering(analysis, multi, expected):
+    """
+    Checks if inner clustering is performed correctly.
+    """
+    working_folder = "inner_clustering"
+
+    analysis.generate_clusters(
+        working_folder,
+        "meanshift",
+        bandwidth=30,
+        representatives_criterion="multi {}".format(multi),
+    )
+
+    results = glob.glob(os.path.join(working_folder, "*pdb"))
+    results = [element for element in results if "water" not in element]
+
+    assert len(results) == expected
+    check_remove_folder(working_folder)
