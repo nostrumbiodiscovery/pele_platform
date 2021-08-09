@@ -9,13 +9,9 @@ import networkx as nx
 import shutil
 import tempfile
 import pandas as pd
-from multiprocessing import Pool, Process, Manager
 import heapq
-
-
 import numpy as np
 
-from drug_learning.two_dimensions.Input import fingerprints as fp
 from pathlib import Path
 from rdkit.Chem import rdMolAlign
 from rdkit import Chem
@@ -23,16 +19,18 @@ from rdkit.Chem import Descriptors
 from rdkit.Chem import QED
 from rdkit.Chem import RDConfig
 from rdkit.Chem import AllChem
+from rdkit.Chem import rdFMCS
+from rdkit.Chem import rdMolAlign, TemplateAlign
+from rdkit.Chem.Draw import IPythonConsole
+from rdkit.Chem import Draw
 from yaml import load, Loader
 from collections import ChainMap
-from multiprocessing import Pool
 from functools import partial
 import openbabel
 from openbabel import pybel
 from rdkit import DataStructs
 from glob import glob
 from tqdm import tqdm
-from rdkit import DataStructs
 
 
 class Library:
@@ -85,7 +83,10 @@ class Library:
                 if mol:
                     self.molecule = mol
                     self.fragments_dum = [Fragment(mol)]
-                    if self.filters_f():
+                    self.filters_f()
+                    if self.filters is None:
+                        self.filtered_fragments = True
+                    if self.filtered_fragments:
                         fp = Chem.RDKFingerprint(mol)
                         coefficient = DataStructs.FingerprintSimilarity(self.init_mol.fingerprint, fp)
                         if coefficient > 0.0:
@@ -125,103 +126,101 @@ class Library:
         fragment_atom_yaml = ""
         output = {}
         for group in heap:
-            try:
-                molecule = Chem.MolFromPDBFile(os.path.join(tmpdirname, group[1] + ".pdb"), removeHs=True)
-                if molecule:
-                    path = os.path.join(tmpdirname, group[1] + ".pdb")
-                    path_fragment = os.path.join(tmpdirname, group[1] + "_fragment.pdb")
-                    path_core = os.path.join(tmpdirname + "_core.pdb")
+            molecule = Chem.MolFromPDBFile(os.path.join(tmpdirname, group[1] + ".pdb"), removeHs=True)
+            if molecule:
+                path = os.path.join(tmpdirname, group[1] + ".pdb")
+                path_fragment = os.path.join(tmpdirname, group[1] + "_fragment.pdb")
+                path_core = os.path.join(tmpdirname + "_core.pdb")
 
-                    mol = Chem.AddHs(molecule, addCoords=True)
-                    Chem.MolToPDBFile(mol, path)
-                    mol_with_hs = Chem.MolFromPDBFile(path, removeHs=False)
+                mol = Chem.AddHs(molecule, addCoords=True)
+                Chem.MolToPDBFile(mol, path)
+                mol_with_hs = Chem.MolFromPDBFile(path, removeHs=False)
 
-                    mol_no_Hs = molecule
-                    mol_subs = molecule
+                mol_no_Hs = molecule
+                mol_subs = molecule
 
-                    core_no_hs = self.init_mol
+                core_no_hs = self.init_mol
 
-                    self.substructure_results[group[1]] = mol_no_Hs.GetSubstructMatches(core_no_hs)
-                    # If there is a substructure match, convert to graph and count number of connected components
-                    if self.substructure_results[group[1]]:
-                        bonds_no_Hs = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_no_Hs.GetBonds()]
-                        bonds = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_with_hs.GetBonds()]
+                self.substructure_results[group[1]] = mol_no_Hs.GetSubstructMatches(core_no_hs)
+                # If there is a substructure match, convert to graph and count number of connected components
+                if self.substructure_results[group[1]]:
+                    bonds_no_Hs = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_no_Hs.GetBonds()]
+                    bonds = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_with_hs.GetBonds()]
+
+                    G = self.generate_graph(bonds_no_Hs)
+
+                    h_len = []
+                    for k in self.substructure_results[group[1]]:
+                        H = self.generate_graph(bonds_no_Hs)
+                        h_len.append(self.number_connected_components(H, k))
+
+                    if 1 in h_len:
+
+                        # Find if more than one connected components
+                        mw = Chem.RWMol(mol_subs)
+                        mw2 = Chem.RWMol(mol_subs)
+
+                        atoms_core =[]
+                        atoms_fragment=[]
+                        for atom in mw.GetAtoms():
+                            if atom.GetIdx() not in self.substructure_results[group[1]][h_len.index(1)]:
+                                atom.SetAtomicNum(0)
+                                atoms_fragment.append(atom.GetIdx())
+
+                        for atom in mw2.GetAtoms():
+                            if atom.GetIdx() in self.substructure_results[group[1]][h_len.index(1)]:
+                                atom.SetAtomicNum(0)
+                                atoms_core.append(atom.GetIdx())
+
+                        mw = Chem.DeleteSubstructs(mw, Chem.MolFromSmarts('[#0]'))
+                        mw2 = Chem.DeleteSubstructs(mw2, Chem.MolFromSmarts('[#0]'))
+                        fragment_no_hs = mw2
+                        fragment_with_hs_nopdbinfo = Chem.AddHs(fragment_no_hs, addCoords=True)
+                        Chem.MolToPDBFile(fragment_with_hs_nopdbinfo, path_fragment)
+                        fragment_with_hs = Chem.MolFromPDBFile(path_fragment, removeHs=False)
+
+                        core_with_hs_nopdbinfo = Chem.AddHs(mw, addCoords=True)
+                        Chem.MolToPDBFile(core_with_hs_nopdbinfo, path_core)
+                        core_with_hs = Chem.MolFromPDBFile(path_core, removeHs=False)
 
                         G = self.generate_graph(bonds)
+                        counter = 0
+                        for i, k in G.edges():
+                            if (i in atoms_core and k in atoms_fragment) or (i in atoms_fragment and k in atoms_core):
+                                counter += 1
+                                if (i in atoms_core and k in atoms_fragment):
+                                    core_atom_node = i
+                                    fragment_atom_node = k
+                                else:
+                                    core_atom_node = k
+                                    fragment_atom_node = i
 
-                        h_len = []
-                        for k in self.substructure_results[group[1]]:
-                            H = self.generate_graph(bonds_no_Hs)
-                            h_len.append(self.number_connected_components(H, k))
+                        _ = AllChem.GenerateDepictionMatching2DStructure(core_with_hs, self.init_mol_hs)
+                        for atom in core_with_hs.GetAtoms():
+                            if mol_with_hs.GetAtomWithIdx(core_atom_node).GetPDBResidueInfo().GetName().strip() == atom.GetPDBResidueInfo().GetName().strip():
+                                coords_atom_mw = core_with_hs.GetConformers()[0].GetPositions()[atom.GetIdx()]
 
-                        if 1 in h_len:
-                            mw = Chem.RWMol(mol_subs)
-                            mw2 = Chem.RWMol(mol_subs)
+                        for atom_init in self.init_mol_hs.GetAtoms():
+                            comparison = self.init_mol_hs.GetConformers()[0].GetPositions()[atom_init.GetIdx()][:2] == np.array(coords_atom_mw)[:2]
+                            if comparison.all():
+                                frag_core_atom_yaml = "%s" % (atom_init.GetPDBResidueInfo().GetName().strip())
 
-                            atoms_core =[]
-                            atoms_fragment=[]
-                            for atom in mw.GetAtoms():
-                                if atom.GetIdx() not in self.substructure_results[group[1]][h_len.index(1)]:
-                                    atom.SetAtomicNum(0)
-                                    atoms_fragment.append(atom.GetIdx())
+                        for bond_frag in fragment_with_hs.GetBonds():
+                            if bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip() == mol_with_hs.GetAtomWithIdx(fragment_atom_node).GetPDBResidueInfo().GetName().strip() and "H" in bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip():
+                                fragment_atom_yaml = "%s" % (bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip())
 
-                            for atom in mw2.GetAtoms():
-                                if atom.GetIdx() in self.substructure_results[group[1]][h_len.index(1)]:
-                                    atom.SetAtomicNum(0)
-                                    atoms_core.append(atom.GetIdx())
+                            elif bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip() == mol_with_hs.GetAtomWithIdx(fragment_atom_node).GetPDBResidueInfo().GetName().strip() and "H" in bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip():
+                                fragment_atom_yaml = "%s" % (bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip())
 
-                            mw = Chem.DeleteSubstructs(mw, Chem.MolFromSmarts('[#0]'))
-                            mw2 = Chem.DeleteSubstructs(mw2, Chem.MolFromSmarts('[#0]'))
-                            fragment_no_hs = mw2
-                            fragment_with_hs_nopdbinfo = Chem.AddHs(fragment_no_hs, addCoords=True)
-                            Chem.MolToPDBFile(fragment_with_hs_nopdbinfo, path_fragment)
-                            fragment_with_hs = Chem.MolFromPDBFile(path_fragment, removeHs=False)
+                        for bond in self.init_mol_hs.GetBonds():
+                            if (bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip() == frag_core_atom_yaml and "H" in bond.GetEndAtom().GetPDBResidueInfo().GetName().strip()):
+                                frag_core_atom_yaml = "%s-%s" % (frag_core_atom_yaml, bond.GetEndAtom().GetPDBResidueInfo().GetName().strip())
 
-                            core_with_hs_nopdbinfo = Chem.AddHs(mw, addCoords=True)
-                            Chem.MolToPDBFile(core_with_hs_nopdbinfo, path_core)
-                            core_with_hs = Chem.MolFromPDBFile(path_core, removeHs=False)
+                            if (bond.GetEndAtom().GetPDBResidueInfo().GetName().strip() == frag_core_atom_yaml and "H" in bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip()):
+                                frag_core_atom_yaml = "%s-%s" % (frag_core_atom_yaml, bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip())
 
-                            G = self.generate_graph(bonds)
-                            counter = 0
-                            for i, k in G.edges():
-                                if (i in atoms_core and k in atoms_fragment) or (i in atoms_fragment and k in atoms_core):
-                                    counter += 1
-                                    if (i in atoms_core and k in atoms_fragment):
-                                        core_atom_node = i
-                                        fragment_atom_node = k
-                                    else:
-                                        core_atom_node = k
-                                        fragment_atom_node = i
-
-                            _ = AllChem.GenerateDepictionMatching2DStructure(core_with_hs, self.init_mol_hs)
-                            for atom in core_with_hs.GetAtoms():
-                                if mol_with_hs.GetAtomWithIdx(core_atom_node).GetPDBResidueInfo().GetName().strip() == atom.GetPDBResidueInfo().GetName().strip():
-                                    coords_atom_mw = core_with_hs.GetConformers()[0].GetPositions()[atom.GetIdx()]
-
-                            for atom_init in self.init_mol_hs.GetAtoms():
-                                comparison = self.init_mol_hs.GetConformers()[0].GetPositions()[atom_init.GetIdx()][:2] == np.array(coords_atom_mw)[:2]
-                                if comparison.all():
-                                    frag_core_atom_yaml = "%s" % (atom_init.GetPDBResidueInfo().GetName().strip())
-
-                            for bond_frag in fragment_with_hs.GetBonds():
-                                if bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip() == mol_with_hs.GetAtomWithIdx(fragment_atom_node).GetPDBResidueInfo().GetName().strip() and "H" in bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip():
-                                    fragment_atom_yaml = "%s" % (bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip())
-
-                                elif bond_frag.GetEndAtom().GetPDBResidueInfo().GetName().strip() == mol_with_hs.GetAtomWithIdx(fragment_atom_node).GetPDBResidueInfo().GetName().strip() and "H" in bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip():
-                                    fragment_atom_yaml = "%s" % (bond_frag.GetBeginAtom().GetPDBResidueInfo().GetName().strip())
-
-                            for bond in self.init_mol_hs.GetBonds():
-                                if (bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip() == frag_core_atom_yaml and "H" in bond.GetEndAtom().GetPDBResidueInfo().GetName().strip()):
-                                    frag_core_atom_yaml = "%s-%s" % (frag_core_atom_yaml, bond.GetEndAtom().GetPDBResidueInfo().GetName().strip())
-
-                                if (bond.GetEndAtom().GetPDBResidueInfo().GetName().strip() == frag_core_atom_yaml and "H" in bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip()):
-                                    frag_core_atom_yaml = "%s-%s" % (frag_core_atom_yaml, bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip())
-
-                            if counter <= 1:
-                                output[group[1]] = [frag_core_atom_yaml, fragment_atom_yaml, fragment_with_hs]
-            except:
-                print("FAILED FOR MOL: %s" % (group[1]))
-                continue
+                        if counter <= 1:
+                            output[group[1]] = [frag_core_atom_yaml, fragment_atom_yaml, fragment_with_hs]
 
         return output
 
@@ -269,6 +268,14 @@ class Library:
         return filters_dict
 
     def _apply_filters(self):
+        """
+        If a yaml file with specified filters is provided by the user,
+        assess if a molecule passes those filters.
+
+        Returns
+        -------
+        
+        """
         for frag in self.fragments_dum:
             if frag.molecule_name:
                 filter_pass = []
