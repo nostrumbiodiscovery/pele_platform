@@ -47,17 +47,21 @@ point_analysis_lines = [
 ]
 
 water_lines = [
-   "HETATM 2487  OW  HOH B 427      17.416  62.886  42.118  1.00 17.75           O",
-   "HETATM 2488 1HW  HOH B 427      18.054  63.519  42.753  1.00  0.00           H",
-   "HETATM 2489 2HW  HOH B 427      16.778  62.253  42.753  1.00  0.00           H",
-   "HETATM 2490  OW  HOH B 516      17.151  74.894  38.102  1.00 50.64           O",
-   "HETATM 2491 1HW  HOH B 516      17.789  75.526  38.738  1.00  0.00           H",
-   "HETATM 2492 2HW  HOH B 516      16.512  74.261  38.736  1.00  0.00           H",
-   "HETATM 2493  OW  HOH B 607      20.896  65.478  42.948  1.00 35.62           O",
-   "HETATM 2494 1HW  HOH B 607      21.533  66.111  43.583  1.00  0.00           H",
-   "HETATM 2495 2HW  HOH B 607      20.258  64.845  43.583  1.00  0.00           H",
+     'HETATM 2538  OW  HOH B 162      51.000  92.000  14.000  1.00  0.00           O',
+     'HETATM 2539 1HW  HOH B 162      51.757  92.586  14.000  1.00  0.00           H',
+     'HETATM 2540 2HW  HOH B 162      50.243  92.586  14.000  1.00  0.00           H',
+     'HETATM 2541  OW  HOH B 163      71.000  60.000  20.000  1.00  0.00           O',
+     'HETATM 2542 1HW  HOH B 163      71.757  60.586  20.000  1.00  0.00           H',
+     'HETATM 2543 2HW  HOH B 163      70.243  60.586  20.000  1.00  0.00           H',
+     'HETATM 2544  OW  HOH B 164      81.000  89.000  87.000  1.00  0.00           O',
+     'HETATM 2545 1HW  HOH B 164      81.757  89.586  87.000  1.00  0.00           H',
+     'HETATM 2546 2HW  HOH B 164      80.243  89.586  87.000  1.00  0.00           H',
+     'HETATM 2547  OW  HOH B 165      21.000  91.000  48.000  1.00  0.00           O',
+     'HETATM 2548 1HW  HOH B 165      21.757  91.586  48.000  1.00  0.00           H',
+     'HETATM 2549 2HW  HOH B 165      20.243  91.586  48.000  1.00  0.00           H'
+
 ]
-@pytest.mark.xfail
+
 def test_frag_sim(
     capsys,
     ext_args=FRAG_SIM_ARGS,
@@ -75,17 +79,16 @@ def test_frag_sim(
     """
 
     if os.path.exists(output):
-        shutil.rmtree(output)
+        shutil.rmtree(output,  ignore_errors=True)
 
     job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
-    top_results = glob.glob(os.path.join(output, "top_result", "*pdb"))
+    top_results = glob.glob(os.path.join(job.working_dir[0], "top_result", "*.pdb"))
 
     assert "Skipped - FragPELE will not run." not in captured.out
-    assert os.path.exists(output)
+    assert os.path.exists(job.working_dir[0])
     assert len(top_results) == 3
 
-@pytest.mark.xfail
 def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     """
     Tests FragPELE growing method using an SDF with full ligands. Checks if the output folder exists and the ligand
@@ -102,7 +105,7 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     output_paths = glob.glob(output)
     for path in output_paths:
         if os.path.exists(path):
-            shutil.rmtree(path)
+            shutil.rmtree(path, ignore_errors=True)
 
     job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
@@ -114,7 +117,6 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     assert os.path.exists(new_output_path)
     assert len(top_results) == 3
 
-@pytest.mark.xfail
 def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     """
     Checks input file flags.
@@ -135,17 +137,16 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     job = main.run_platform_from_yaml(ext_args)
     folder = output
     errors = td.check_file(
-        folder,
+        job.working_dir[0],
         "control_folder/0_pele_template.conf",
         td.PELE_VALUES + FRAG_FLAGS,
         errors,
     )
     errors = td.check_file(
-        folder, "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
+        job.working_dir[0], "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
     )
     assert not errors
 
-@pytest.mark.xfail
 def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     """
     Tests the SDF joiner.
@@ -167,7 +168,6 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     ("yaml_file", "expected_lines"),
     [(FRAG_SDF_LIBRARIES, SDF_lines), (FRAG_PDB_LIBRARIES, PDB_lines)],
 )
-@pytest.mark.xfail
 def test_libraries(capsys, yaml_file, expected_lines):
     """
     Tests the growing of fragments from a custom-made SDF and PDB libraries.
@@ -190,7 +190,6 @@ def test_libraries(capsys, yaml_file, expected_lines):
         assert False
     assert not errors
 
-@pytest.mark.xfail
 def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     """
     Tests the automated analysis to retrieve most promising fragments
@@ -208,7 +207,6 @@ def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     )
     assert not errors
 
-@pytest.mark.xfail
 def test_symmetry(ext_args=FRAG_SYMMETRY):
     """
     Tests the asymmetric hydrogen detector.
@@ -225,7 +223,6 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
 
-@pytest.mark.xfail
 def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
     """
     Tests the frag_core_atom flag.
@@ -244,11 +241,10 @@ def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
 
     except Exception:
         assert False
-@pytest.mark.xfail
-def test_frag_waters(ext_args=FRAG_WATERS,
-                     output="1dyi_waters_processed_*/"):
+
+def test_frag_waters(ext_args=FRAG_WATERS):
     """
-    Tests waters.
+    Check if water molecules are added to the system.
   
     Parameters
     ----------
@@ -257,14 +253,31 @@ def test_frag_waters(ext_args=FRAG_WATERS,
     """
     water_output = []
     job = main.run_platform_from_yaml(ext_args)
-    output = glob.glob(os.path.join(output, "*_top.pdb"))[0]
-    with open(output, "r") as file:
-        lines = file.readlines()
-
-        for line in lines:
-            if line[17:21].strip() == "HOH":
-                water_output.append(line.strip())
+    for path in job.working_dir:
+        output = glob.glob(os.path.join(path, "*_top.pdb"))[0]
+        with open(output, "r") as file:
+            lines = file.readlines()
+            for line in lines:
+                if line[17:21].strip() == "HOH":
+                    water_output.append(line.strip())
 
     assert water_lines == water_output
 
+@pytest.mark.parametrize(
+    ("ext_args"),
+    [(FRAG_CORE_ARGS), (FRAG_SDF_LIBRARIES)],
+)
+def test_ligand_clustering(ext_args):
+    """
+    Tests ligand clustering.
 
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file,
+    """
+    job = main.run_platform_from_yaml(ext_args)
+    for path in job.working_dir:
+        analysis_folder = os.path.join(path, "results")
+        if not os.path.isdir(analysis_folder):
+            assert False

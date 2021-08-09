@@ -13,7 +13,7 @@ class AtomMapper:
     Input
     args: pele_env.EnviroBuilder - initial arguments passed by the user, passed from Adaptive.simulation
     env: pele_env.EnviroBuilder - passed from Adaptive.simulation
-    original_system: str - complex PDB file before any preprocessing (syst.system)
+    ppp_system: str - complex PDB file before any preprocessing (syst.system)
     flags_to_check: List[str] - list of YAML flags to check, default constants.atom_string_flags
 
     Output
@@ -92,46 +92,65 @@ class AtomMapper:
         """
         Maps old atom string to a new atom string by comparing coordinates of the original and preprocessed PBD files.
 
-        Input
-        atom_string: str - atom string following the 'chain:residue number:atom name' format
-        original_input: str - PDB file before preprocessing
-        preprocessed_file: str - PDB file after preprocessing
+        Parameters
+        -----------
+        atom_string : str
+            Atom string following the 'chain:residue number:atom name' or residue string with 'chain:resnum' format
+        original_input : str
+            Path to PDB file before preprocessing (syst.system)
+        preprocessed_file : str
+            Path to PDB file after preprocessing (env.system)
         logger: Any
 
-        Output
+        Returns
+        --------
         before, after: (str, str) - tuple containing old and new (mapped) atom string
         """
 
         # read in the original and preprocessed PDB lines
         with open(original_input, "r") as initial:
-            initial_lines = initial.readlines()
+            initial_lines = [
+                line
+                for line in initial.readlines()
+                if line.startswith("HETATM") or line.startswith("ATOM")
+            ]
 
         with open(preprocessed_file, "r") as prep:
-            preprocessed_lines = prep.readlines()
+            preprocessed_lines = [line for line in prep.readlines() if line.startswith("HETATM") or line.startswith("ATOM")]
 
         # retrieve atom info from the original PDB
-        chain, resnum, atom_name = atom_string.split(":")
+        try:
+            chain, resnum, atom_name = atom_string.split(":")  # atom string
+        except ValueError:
+            chain, resnum = atom_string.split(":")  # residue string
+            atom_name = None
 
         # extract coordinates from the original PDB
+        initial_coords = None
         for initial_line in initial_lines:
             if (
-                (initial_line.startswith("HETATM") or initial_line.startswith("ATOM"))
-                and initial_line[21].strip() == chain
+                initial_line[21].strip() == chain
                 and initial_line[22:26].strip() == resnum
-                and initial_line[12:16].strip() == atom_name
+                and (atom_name is None or initial_line[12:16].strip() == atom_name)
             ):
                 initial_coords = get_coords_from_line(initial_line)
 
-                # extract coordinates from preprocessed file and compare to the original one
-                for p in preprocessed_lines:
-                    preprocessed_coords = get_coords_from_line(p)
+        # extract coordinates from preprocessed file and compare to the original one
+        for p in preprocessed_lines:
+            preprocessed_coords = get_coords_from_line(p)
 
-                    if preprocessed_coords == initial_coords:
-                        new_atom_name, new_resnum, _, new_chain = get_atom_from_line(p)
-                        before = "{}:{}:{}".format(chain, resnum, atom_name)
-                        after = "{}:{}:{}".format(new_chain, new_resnum, new_atom_name)
-                        logger.info("Atom {} mapped to {}.".format(before, after))
-                        return before, after
+            if initial_coords is not None and preprocessed_coords == initial_coords:
+                new_atom_name, new_resnum, _, new_chain = get_atom_from_line(p)
+
+                if atom_name is not None:
+                    before = "{}:{}:{}".format(chain, resnum, atom_name)
+                    after = "{}:{}:{}".format(new_chain, new_resnum, new_atom_name)
+                else:
+                    before = "{}:{}".format(chain, resnum)
+                    after = "{}:{}".format(new_chain, new_resnum)
+
+                logger.info("Atom {} mapped to {}.".format(before, after))
+                return before, after
 
 
 def get_atom_from_line(line: str) -> (str, str, str, str):

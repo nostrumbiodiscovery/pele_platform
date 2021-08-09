@@ -132,6 +132,14 @@ class Analysis
             Path to the topology file, if using XTC trajectories.
         cpus: int (optional, default = 1)
             Number of CPUs to use.
+        water_ids_to_track : List (optional, default = [])
+            List of IDs of water molecules to cluster. Each water ID is defined by
+            a tuple that contains the PDB chain and the residue number, e.g.
+            ``water_ids_to_track = [("A", 234), ("A", 235)]``
+        clustering_filtering_threshold : float (optional, default = 0.25)
+            Percentage of output structures to filter our before clustering.
+        plot_filtering_threshold : float (optional, default = 0.02)
+            Percentage of output structures to filter out before creating plots. Default = 0.02
 
 .. code-block:: python
 
@@ -162,22 +170,23 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
         top_clusters_criterion : str (optional, default = "interaction_25_percentile")
             Method for selecting the top clusters, you can use one of:
 
-                - "total_25_percentile" - total energy 25th percentile
-                - "total_5_percentile" - total energy 5th percentile
-                - "total_mean" - total energy mean
-                - "interaction_25_percentile" - interaction energy 25th percentile
-                - "interaction_5_percentile" - interaction energy 5th percentile
-                - "interaction_mean" - interaction energy mean
-                - "population" - cluster population
+                * "total_25_percentile" - total energy 25th percentile
+                * "total_5_percentile" - total energy 5th percentile
+                * "total_mean" - total energy mean
+                * "interaction_25_percentile" - interaction energy 25th percentile
+                * "interaction_5_percentile" - interaction energy 5th percentile
+                * "interaction_mean" - interaction energy mean
+                * "population" - cluster population
+
         cluster_representatives_criterion : str (optional, default = "interaction_5_percentile")
             Method for selecting representative structures for each cluster, you can choose one of:
 
-                - "total_25_percentile" - total energy 25th percentile
-                - "total_5_percentile" - total energy 5th percentile
-                - "total_mean" - total energy mean
-                - "interaction_25_percentile" - interaction energy 25th percentile
-                - "interaction_5_percentile" - interaction energy 5th percentile
-                - "interaction_mean" - interaction energy mean
+                * "total_25_percentile" - total energy 25th percentile
+                * "total_5_percentile" - total energy 5th percentile
+                * "total_mean" - total energy mean
+                * "interaction_25_percentile" - interaction energy 25th percentile
+                * "interaction_5_percentile" - interaction energy 5th percentile
+                * "interaction_mean" - interaction energy mean
 
 .. code-block:: python
 

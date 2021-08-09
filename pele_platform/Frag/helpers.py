@@ -28,6 +28,7 @@ def _search_core_fragment_linker(ligand,
              Index to extract core atoms from the substructure search.
 
     check_symmetry : bool
+                     Check the symmetry of the ligand.
 
     Returns
     -------
@@ -68,18 +69,6 @@ def _search_core_fragment_linker(ligand,
                 if neighbour.GetIdx() in core_atoms:
                     return core_atoms.index(neighbour.GetIdx()), core_atoms, atom.GetIdx()
 
-    # Sometimes substructure search messes up symmetry. Check that!
-    if check_symmetry:
-        core_atoms = ch.check_substructure_match(ligand, ligand_core, core_atoms)
-    for atom in ligand.GetAtoms():
-        if atom.GetIdx() in core_atoms or atom.GetAtomicNum() == 1:
-            continue
-        else:
-            atoms_bonded = atom.GetNeighbors()
-            for neighbour in atoms_bonded:
-                if neighbour.GetIdx() in core_atoms:
-                    return core_atoms.index(neighbour.GetIdx()), core_atoms, atom.GetIdx()
-
 
 def _build_fragment_from_complex(complex,
                                  residue,
@@ -106,10 +95,13 @@ def _build_fragment_from_complex(complex,
                   Common structure of each grown ligand.
 
     result : int
+             Index to extract core atoms from the substructure search.
 
     substructure : bool
+                   Delete core for full ligand with substructure.
 
     symmetry : bool
+               Check the symmetry of the ligand.
 
     Returns
     -------
@@ -132,6 +124,7 @@ def _build_fragment_from_complex(complex,
               Mapping of Idx for old atoms and full fragment atoms.
 
     correct : bool
+              Checks if the fragment is correct (fragment size, chirality, missing hydrogens)
 
     Raises
     ------
@@ -207,18 +200,24 @@ def _retrieve_fragment(fragment,
     Parameters
     ----------
     old_atoms : list
+                Idx for each atom of grown ligand without core.
 
     atom_core : pele_platform.Frag.atoms.Atom
+                Atom object of the hydrogen core atom attached to linking atom.
 
     hydrogen_core : pele_platform.Frag.atoms.Atom
+                    Hydrogen core attached to linking atom.
 
     atom_fragment : int
+                    Atom of the fragment attached to the core.
 
     mapping : dict
+              Mapping of Idx for old atoms and full fragment atoms.
 
     Returns
     -------
     fragment : pele_platform.Frag.fragments.Fragment
+               Fragment grown to the ligand during the simulation.
 
     Raises
     ------
@@ -262,24 +261,32 @@ def _check_fragment(fragment,
                     atom_fragment_mapped,
                     ligand_core):
     """
+    Checks if the fragment is correct. Adds missing hydrogens and checks the fragment size and chirality.
 
     Parameters
     ----------
     fragment : rdkit.Chem.rdchem.Mol
+               Fragment grown to the ligand during the simulation.
 
     ligand : rdkit.Chem.rdchem.Mol
+             Input ligand of the simulation.
 
     mapping : dict
+              Mapping of Idx for old atoms and full fragment atoms.
 
     atom_fragment : int
+                    Atom of the fragment attached to the core.
 
     atom_fragment_mapped : int
+                           Atom of the fragment attached to the core mapped.
 
     ligand_core : rdkit.Chem.rdchem.Mol
+                  Core of the growing result.
 
     Returns
     -------
     correct : bool
+              If true, the fragment is correct.
 
     """
 

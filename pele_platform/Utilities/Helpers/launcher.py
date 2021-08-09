@@ -7,8 +7,11 @@ import pele_platform.gpcr.main as gpcr
 import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
 from pele_platform.enzyme_engineering.saturated_mutagenesis import SaturatedMutagenesis
+from pele_platform.covalent_docking.main import CovalentDocking
+from pele_platform.constants import constants
 import pele_platform.Utilities.Parameters.parameters as pv
 import argparse
+import pkg_resources
 
 
 @dataclass
@@ -23,10 +26,12 @@ class Launcher:
     adaptive: str = "adaptive"
     saturated_mutagenesis: str = "saturated_mutagenesis"
     interaction_restrictions: str = "interaction_restrictions"
+    covalent_docking: str = "covalent_docking"
 
     def launch(self) -> pv.ParametersBuilder:
         # Launch package from input.yaml
         self._define_package_to_run()
+        print(constants.version_header.format(pkg_resources.get_distribution("pele_platform").version))
         job_variables = self.launch_package(self._args.package, no_check=self._args.no_check)
         return job_variables
 
@@ -39,13 +44,15 @@ class Launcher:
         elif package == self.gpcr_orth:
             job_variables = gpcr.GpcrLauncher(self._args).run_gpcr_simulation()
         elif package == self.out_in:
-            job_variables = outin.OutInLauncher(self._args).run_gpcr_simulation()
+            job_variables = outin.OutInLauncher(self._args).run_outin_simulation()
         elif package == self.site_finder:
             job_variables = al.SiteFinderLauncher(self._args).run_site_finder()
         elif package == self.ppi:
             job_variables = run_ppi(self._args)
         elif package == self.saturated_mutagenesis:
             job_variables = SaturatedMutagenesis(self._args).run()
+        elif package == self.covalent_docking:
+            job_variables = CovalentDocking(self._args).run()
         elif package == self.frag:
             # Set variables and input ready
             job_variables = fr.FragRunner(self._args).run_simulation()
@@ -67,5 +74,7 @@ class Launcher:
             self._args.package = self.saturated_mutagenesis
         elif self._args.interaction_restrictions:
             self._args.package = self.interaction_restrictions
+        elif self._args.covalent_residue:
+            self._args.package = self.covalent_docking
         else: 
             self._args.package = self.adaptive

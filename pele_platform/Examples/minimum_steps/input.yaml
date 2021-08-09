@@ -1,0 +1,8 @@
+system: '../pele_platform/Examples/minimum_steps/complex.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+cpus: 5
+minimum_steps: true
+skip_preprocess: true
+test: true

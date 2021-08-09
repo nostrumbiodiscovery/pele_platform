@@ -1,5 +1,5 @@
 """
-Dictionary with valid flags for platform in input.yalm
+Dictionary with valid flags for platform in input.yaml
 """
 
 
@@ -32,6 +32,7 @@ VALID_FLAGS_PLATFORM = {
     "cluster_conditions": "cluster_conditions",
     "simulation_type": "simulation_type",
     "equilibration": "equilibration",
+    "equilibration_mode": "equilibration_mode",
     "eq_steps": "equilibration_steps",
     "adaptive_restart": "adaptive_restart",
     "input": "global_inputs",
@@ -42,8 +43,6 @@ VALID_FLAGS_PLATFORM = {
     "bias_column": "bias_column",
     "gridres": "gridres",
     "core": "core",
-    "mtor": "maxtorsion",
-    "n": "n",
     "template": "templates",
     "ext_temp": "template",
     "rotamers": "rotamers",
@@ -89,6 +88,8 @@ VALID_FLAGS_PLATFORM = {
     "water_constr": "water_constr",
     "water_trials": "water_trials",
     "water_radius": "water_radius",
+    "conformation_freq": "conformation_freq",
+    "overlap_factor_conformation": "overlap_factor_conformation",
     "out_in": "out_in",
     "orthosteric_site": "orthosteric_site",
     "final_site": "final_site",
@@ -123,6 +124,7 @@ VALID_FLAGS_PLATFORM = {
     "remove_constraints": "remove_constraints",
     "pca_traj": "pca_traj",
     "perturbation": "perturbation",
+    "conformation_perturbation": "conformation_perturbation",
     "binding_energy": "binding_energy",
     "sasa": "sasa",
     "parameters": "parameters",
@@ -130,7 +132,6 @@ VALID_FLAGS_PLATFORM = {
     "selection_to_perturb": "selection_to_perturb",
     "mae": "mae",
     "constrain_core": "constrain_core",
-    "skip_ligand_prep": "skip_ligand_prep",
     "spawning_condition": "spawning_condition",
     "external_constraints": "external_constraints",
     "only_analysis": "only_analysis",
@@ -176,7 +177,6 @@ VALID_FLAGS_PLATFORM = {
     "polarization_factor": "polarization_factor",
     "constrain_core_spring": "constrain_core_spring",
     "frag_library": "frag_library",
-    "frag_core_atom": "frag_core_atom",
     "analysis_to_point": "analysis_to_point",
     "interaction_restrictions": "interaction_restrictions",
     "constraint_level": "constraint_level",
@@ -198,5 +198,24 @@ VALID_FLAGS_PLATFORM = {
     "filters": "filters",
     "database": "database",
     "f3_input": "f3_input",
-    "f3_ligand": "f3_ligand"
+    "f3_ligand": "f3_ligand",
+    "site_finder_local": "site_finder_local",
+    "site_finder_global": "site_finder_global",
+    "charge_parametrization_method": "charge_parametrization_method",
+    "exclude_terminal_rotamers": "exclude_terminal_rotamers",
+    "skip_ligand_prep": "skip_ligand_prep",
+    "solvent_template": "solvent_template",
+    "use_peleffy": "use_peleffy",
+    "mtor": "maxtorsion",  # plop
+    "n": "n",  # plop
+    "covalent_residue": "covalent_residue",
+    "refinement_angle": "refinement_angle",
+    "nonbonding_radius": "nonbonding_radius",
+    "ligand_conformations": "ligand_conformations",
+    "plot_filtering_threshold": "plot_filtering_threshold",
+    "clustering_filtering_threshold": "clustering_filtering_threshold",
+    "frag_restart_libraries": "frag_restart_libraries",
+    "minimum_steps": "minimum_steps",
+    "covalent_docking_refinement": "covalent_docking_refinement",
+    "perturbation_trials": "perturbation_trials",
 }

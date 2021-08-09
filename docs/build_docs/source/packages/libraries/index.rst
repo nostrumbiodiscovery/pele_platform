@@ -69,8 +69,8 @@ Prepare input.yaml file:
 Optional Parameters
 +++++++++++++++++++++++
 
-* **frag_restart**: To resume a fragment libraries simulation.
-* **fragment_atom**: To select an hydrogen of the fragment which we want to attach it to the **frag_core_atom**, instead of performing a simulation from every hydrogen on the fragment. 
+* **frag_restart_libraries**: To resume a fragment libraries simulation.
+* **fragment_atom**: Select a hydrogen of the fragment that we want to attach to the **frag_core_atom**, instead of performing a simulation from every hydrogen of the fragment. 
 
 Defining frag_core_atom
 ++++++++++++++++++++++++++++

@@ -4,3 +4,4 @@ chain: 'L'
 resname: 'ANL'
 cpus_per_mutation: 2
 test: true
+equilibration: true

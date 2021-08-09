@@ -7,6 +7,7 @@ poses: 3
 atom_dist:
 - 4555
 - 10
-debug: true
+test: true
+skip_refinement: true
+cpus: 5
 working_folder: "site_finder"
-

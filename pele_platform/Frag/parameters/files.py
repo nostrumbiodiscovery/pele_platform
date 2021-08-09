@@ -83,6 +83,14 @@ class FragInputFiles(object):
 
         parameters.core_format = parameters.core.rsplit(".")[-1]
 
+        from pathlib import Path
+        import shutil
+
+        new_file = os.path.join(os.getcwd(), Path(parameters.core_process).stem + "_frag.pdb")
+        shutil.copy(parameters.core, new_file)
+        parameters.core = new_file
+        parameters.core_process = os.path.basename(new_file)
+
     @staticmethod
     def frag_from_sdf_parameters(parameters, args):
         """
@@ -104,4 +112,5 @@ class FragInputFiles(object):
         parameters.database = args.database
         parameters.filters = args.filters
         parameters.f3_ligand = args.f3_ligand
+        parameters.frag_restart_libraries = args.frag_restart_libraries
 

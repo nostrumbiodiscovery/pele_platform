@@ -17,8 +17,8 @@ class Clustering(ABC):
         super().__init__()
 
     @abstractmethod
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df=None,
+                     coordinates_df=None, csv_path=None):
         """
         It employs a clustering method to gather the supplied coordinates
         into clusters.
@@ -32,12 +32,18 @@ class Clustering(ABC):
             N is the total number of atoms belonging to the residue that
             is being analyzed
         original_df : pandas.DataFrame
-            Original dataframe from Analysis to be overwritten
+            Original dataframe from Analysis to be overwritten. Optional
+            parameter, if not supplied the dataframe will not be updated
+            with the information of clusters
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
-            clustering
+            clustering. Optional parameter, if not supplied the CSV
+            containing the information of clusters will not be saved
         csv_path : str
-            Directory where the CSV will be saved
+            Directory where the CSV will be saved. Optional parameter,
+            if not supplied the CSV containing the information of clusters
+            will not be saved
+
         Returns
         -------
         clusters : numpy.array
@@ -66,13 +72,16 @@ class Clustering(ABC):
         -------
         reshaped_coordinates : numpy.array
             The reshaped array of coordinates that will be clustered. They
-            now have the following shape: [M, N, 3], where M is the
+            now have the following shape: [M, N * 3], where M is the
             total number of models that have been sampled with PELE and
             N is the total number of atoms belonging to the residue that
             is being analyzed
         """
         try:
-            n_models, n_atoms, n_dimensions = coordinates.shape
+            if len(coordinates.shape) == 2:
+                n_atoms, n_dimensions = coordinates.shape
+            else:
+                n_models, n_atoms, n_dimensions = coordinates.shape
             if n_dimensions != 3:
                 raise ValueError
         except ValueError:
@@ -84,6 +93,9 @@ class Clustering(ABC):
                              'sampled with PELE and N is the total ' +
                              'number of atoms belonging to the residue ' +
                              'that is being analyzed')
+
+        if len(coordinates.shape) == 2:
+            return coordinates
 
         reshaped_coordinates = coordinates.reshape(-1, n_atoms * n_dimensions)
         return reshaped_coordinates
@@ -145,8 +157,8 @@ class GaussianMixtureClustering(Clustering):
         super().__init__()
         self._n_clusters = n_clusters
 
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df=None,
+                     coordinates_df=None, csv_path=None):
         """
         It employs the Gaussian Mixture method to gather the supplied
         coordinates into clusters.
@@ -160,12 +172,17 @@ class GaussianMixtureClustering(Clustering):
             N is the total number of atoms belonging to the residue that
             is being analyzed
         original_df : pandas.DataFrame
-            Original dataframe from Analysis to be overwritten
+            Original dataframe from Analysis to be overwritten. Optional
+            parameter, if not supplied the dataframe will not be updated
+            with the information of clusters
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
-            clustering
+            clustering. Optional parameter, if not supplied the CSV
+            containing the information of clusters will not be saved
         csv_path : str
-            Directory where the CSV will be saved
+            Directory where the CSV will be saved. Optional parameter,
+            if not supplied the CSV containing the information of clusters
+            will not be saved
 
         Returns
         -------
@@ -175,14 +192,19 @@ class GaussianMixtureClustering(Clustering):
         """
         from sklearn.mixture import GaussianMixture
 
+        # Run clustering
         coordinates = Clustering.fix_coordinates_shape(coordinates)
-
-        clustering_method = GaussianMixture(n_components=self._n_clusters,
-                                            covariance_type="full")
+        clustering_method = GaussianMixture(n_components=self._n_clusters, covariance_type="full")
         clusters = clustering_method.fit_predict(coordinates)
-        self._save_cluster_info(original_df, coordinates_df,
-                                clusters, csv_path)
-        return clusters
+
+        # Save cluster information (optional)
+        if (original_df is not None and coordinates_df is not None and
+                csv_path is not None):
+            if len(coordinates_df) > 0:
+                self._save_cluster_info(original_df, coordinates_df,
+                                        clusters, csv_path)
+
+        return clusters, clustering_method
 
 
 class HDBSCANClustering(Clustering):
@@ -203,8 +225,8 @@ class HDBSCANClustering(Clustering):
         super().__init__()
         self._bandwidth = bandwidth
 
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df=None,
+                     coordinates_df=None, csv_path=None):
         """
         It employs the HDBSCAN method to gather the supplied coordinates
         into clusters.
@@ -218,12 +240,17 @@ class HDBSCANClustering(Clustering):
             N is the total number of atoms belonging to the residue that
             is being analyzed
         original_df : pandas.DataFrame
-            Original dataframe from Analysis to be overwritten
+            Original dataframe from Analysis to be overwritten. Optional
+            parameter, if not supplied the dataframe will not be updated
+            with the information of clusters
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
-            clustering
+            clustering. Optional parameter, if not supplied the CSV
+            containing the information of clusters will not be saved
         csv_path : str
-            Directory where the CSV will be saved
+            Directory where the CSV will be saved. Optional parameter,
+            if not supplied the CSV containing the information of clusters
+            will not be saved
 
         Returns
         -------
@@ -232,12 +259,20 @@ class HDBSCANClustering(Clustering):
             the supplied array
         """
         from hdbscan import HDBSCAN
+
+        # Run clustering
         coordinates = Clustering.fix_coordinates_shape(coordinates)
         clustering_method = HDBSCAN(cluster_selection_epsilon=self._bandwidth)
         clusters = clustering_method.fit_predict(coordinates)
-        self._save_cluster_info(original_df, coordinates_df,
-                                clusters, csv_path)
-        return clusters
+
+        # Save cluster information (optional)
+        if (original_df is not None and coordinates_df is not None and
+                csv_path is not None):
+            if len(coordinates_df) > 0:
+                self._save_cluster_info(original_df, coordinates_df,
+                                        clusters, csv_path)
+
+        return clusters, clustering_method
 
 
 class MeanShiftClustering(Clustering):
@@ -258,8 +293,8 @@ class MeanShiftClustering(Clustering):
         super().__init__()
         self._bandwidth = bandwidth
 
-    def get_clusters(self, coordinates, original_df, coordinates_df,
-                     csv_path):
+    def get_clusters(self, coordinates, original_df=None,
+                     coordinates_df=None, csv_path=None):
         """
         It employs the Mean Shift method to gather the supplied coordinates
         into clusters.
@@ -273,12 +308,17 @@ class MeanShiftClustering(Clustering):
             N is the total number of atoms belonging to the residue that
             is being analyzed
         original_df : pandas.DataFrame
-            Original dataframe from Analysis to be overwritten
+            Original dataframe from Analysis to be overwritten. Optional
+            parameter, if not supplied the dataframe will not be updated
+            with the information of clusters
         coordinates_df : pandas.DataFrame
             The filtered dataframe which was used to extract coordinates for
-            clustering
+            clustering. Optional parameter, if not supplied the CSV
+            containing the information of clusters will not be saved
         csv_path : str
-            Directory where the CSV will be saved
+            Directory where the CSV will be saved. Optional parameter,
+            if not supplied the CSV containing the information of clusters
+            will not be saved
 
         Returns
         -------
@@ -288,19 +328,24 @@ class MeanShiftClustering(Clustering):
         """
         from sklearn.cluster import MeanShift
 
+        # Run clustering
         coordinates = Clustering.fix_coordinates_shape(coordinates)
-
         clustering_method = MeanShift(bandwidth=self._bandwidth,
                                       cluster_all=True,
                                       max_iter=10000)
         clusters = clustering_method.fit_predict(coordinates)
-        self._save_cluster_info(original_df, coordinates_df,
-                                clusters, csv_path)
 
-        return clusters
+        # Save cluster information (optional)
+        if (original_df is not None and coordinates_df is not None and
+                csv_path is not None):
+            if len(coordinates_df) > 0:
+                self._save_cluster_info(original_df, coordinates_df,
+                                        clusters, csv_path)
+
+        return clusters, clustering_method
 
 
-def get_cluster_label(cluster_id):
+def get_cluster_label(cluster_id, uppercase=True):
     """
     It assigns a cluster label according to the cluster id that is
     supplied.
@@ -320,6 +365,8 @@ def get_cluster_label(cluster_id):
     ----------
     cluster_id : int
         The id of the cluster that will be used to generate the label
+    uppercase : bool
+        Whether to retrieve an uppercase label or not. Default is True
 
     Returns
     -------
@@ -345,5 +392,8 @@ def get_cluster_label(cluster_id):
                 cluster_label = 'A' + cluster_label
 
         current_index -= 26
+
+    if not uppercase:
+        cluster_label = cluster_label.lower()
 
     return cluster_label
