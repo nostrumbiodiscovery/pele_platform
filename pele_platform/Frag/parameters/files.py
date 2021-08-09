@@ -103,4 +103,5 @@ class FragInputFiles(object):
         parameters.frag_library = args.frag_library
         parameters.database = args.database
         parameters.filters = args.filters
+        parameters.f3_ligand = args.f3_ligand
 

@@ -196,6 +196,7 @@ VALID_FLAGS_PLATFORM = {
     "cluster_representatives_criterion": "cluster_representatives_criterion",
     "fragment_atom": "fragment_atom",
     "filters": "filters",
-    "database": "database"
-
+    "database": "database",
+    "f3_input": "f3_input",
+    "f3_ligand": "f3_ligand"
 }
