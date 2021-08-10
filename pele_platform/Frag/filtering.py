@@ -121,6 +121,22 @@ class Library:
                 w.write(self.ligand_fragment)
 
     def get_top_molecule(self, heap, tmpdirname):
+        """
+        For each molecules within the top 100 most similar molecules from analyzed database:
+            1. Assess if there is a substructure match between the initial seed compound and the external dataset molecule.
+            2. Compute number of R-groups bound to the core.
+            3. Extract PDB atom names from the linker atoms (the ones that form the bound between the core and the fragment).
+
+        Parameters
+        ----------
+        heap: Heap with most similar molecules to input ligand. Maximum length is 100.
+        tmpdirname: Temporal directory for temporal file storage.
+
+        Returns
+        -------
+        output: Dictionary with RDkit molecule objects as keys, and PDB atom names of linker atoms as values.
+
+        """
         print("Getting top molecules")
         frag_core_atom_yaml = ""
         fragment_atom_yaml = ""
@@ -147,16 +163,13 @@ class Library:
                     bonds_no_Hs = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_no_Hs.GetBonds()]
                     bonds = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_with_hs.GetBonds()]
 
-                    G = self.generate_graph(bonds_no_Hs)
-
+                    # Find number of connected components or each substructure match
                     h_len = []
                     for k in self.substructure_results[group[1]]:
                         H = self.generate_graph(bonds_no_Hs)
                         h_len.append(self.number_connected_components(H, k))
 
                     if 1 in h_len:
-
-                        # Find if more than one connected components
                         mw = Chem.RWMol(mol_subs)
                         mw2 = Chem.RWMol(mol_subs)
 
