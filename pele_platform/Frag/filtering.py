@@ -138,6 +138,8 @@ class Library:
 
         """
         print("Getting top molecules")
+        no_substructure=0
+        multiple_r_groups=0
         frag_core_atom_yaml = ""
         fragment_atom_yaml = ""
         output = {}
@@ -234,6 +236,12 @@ class Library:
 
                         if counter <= 1:
                             output[group[1]] = [frag_core_atom_yaml, fragment_atom_yaml, fragment_with_hs]
+                    else:
+                        multiple_r_groups += 1
+                else:
+                    no_substructure+=1
+        print("%s STRUCTURES DON'T HAVE THE INPUT LIGAND AS A SUBSTRUCTURE" % (no_substructure))
+        print("%s STRUCTURES HAVE MORE THAN ONE R-GROUP" % (multiple_r_groups))
 
         return output
 
@@ -243,6 +251,18 @@ class Library:
         return list(H.nodes())
 
     def generate_graph(self, bonds):
+        """
+        For a given list of bonds, represented as relationships between atom indices, generate a graph of a molecule.
+
+        Parameters
+        ----------
+        bonds: List of tuples. Each tuple consists of two atom indices.
+
+        Returns
+        -------
+        G: Graph of the molecule.
+
+        """
         G = nx.Graph()
         for i in bonds:
             G.add_edge(i[0], i[1])
@@ -287,7 +307,7 @@ class Library:
 
         Returns
         -------
-        
+        bool: True if molecule fits filters, False otherwise.
         """
         for frag in self.fragments_dum:
             if frag.molecule_name:
