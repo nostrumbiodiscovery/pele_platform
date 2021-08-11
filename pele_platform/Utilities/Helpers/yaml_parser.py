@@ -315,6 +315,7 @@ class YamlParser(object):
         self.database = data.get(valid_flags["database"], None)
         self.f3_input = data.get(valid_flags["f3_input"], None)
         self.f3_ligand = data.get(valid_flags["f3_ligand"], None)
+        self.only_filtering = data.get(valid_flags["only_filtering"], None)
         self.frag_restart_libraries = data.get(
             valid_flags["frag_restart_libraries"], False
         )

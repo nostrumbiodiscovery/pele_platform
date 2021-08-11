@@ -34,9 +34,10 @@ class FragRunner(object):
     def run_simulation(self):
         self._set_test_variables()
         self._prepare_control_file()
-        self._launch()
-        if not self.parameters.debug:
-            self._analysis()
+        if not self.parameters.only_filtering:
+            self._launch()
+            if not self.parameters.debug:
+                self._analysis()
         if self.parameters.database:
             self._filtering()
         return self.parameters
@@ -316,14 +317,15 @@ class FragRunner(object):
             )
 
     def _filtering(self):
-        from glob import glob
+        """
+        Runs Feed Forward Frag algorithm.
+        """
         from rdkit import Chem
-
-        sim_directories = glob(self.parameters.core_process.split(".pdb")[0] + '_*')
+        sim_directories = glob.glob(self.parameters.core_process.split(".pdb")[0] + '_*')
         binding_energies = {}
         if len(sim_directories) > 1:
             for sim_directory in sim_directories:
-                top_results = glob(sim_directory + "/top_result/*")
+                top_results = glob.glob(sim_directory + "/top_result/*")
                 for top_result in top_results:
                     binding_energies[top_result] = os.path.splitext(top_result)[0].split('y')[-1]
             system_min_energy = min(binding_energies, key=binding_energies.get)
@@ -353,6 +355,9 @@ class FragRunner(object):
                 os.remove(file)
 
     def _extract_working_directory(self):
+        """
+        Extracts current working directory with FragPELE simulation's output.
+        """
         params = self.parameters
         params.working_dir = []
         if os.path.isfile(params.core):
@@ -368,6 +373,9 @@ class FragRunner(object):
                 params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
 
     def _frag_restart(self):
+        """
+        To restart FragPELE fragment libraries simulation."
+        """
         self._extract_working_directory()
         with open(self.parameters.input, "r") as conf_file:
             final_bonds = []
