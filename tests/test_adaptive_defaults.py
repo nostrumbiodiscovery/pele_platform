@@ -42,7 +42,7 @@ INDUCE_FIT_FAST_DEFAULTS_ADAPTIVE = [
 
 INDUCE_FIT_PELE = [
     pp.INDUCED_FIT,
-    '"radius": 6,',
+    '"radius": 6.0,',
     '"numberOfStericTrials": 500'
     ]
 
@@ -88,7 +88,7 @@ REF_DEFAULTS_ADAPTIVE = [
 
 REF_DEFAULTS_PELE = [
     '"numberOfStericTrials": 500',
-    '"radius": 6,',
+    '"radius": 6.0,',
     '"anmFrequency" : 6,',
     '"sideChainPredictionFrequency" : 3,',
     '"minimizationFrequency" : 1,',
@@ -96,12 +96,12 @@ REF_DEFAULTS_PELE = [
     '"displacementFactor" : 0.5',
     '"modesChangeFrequency" : 3,',
     pp.RESCORING,
-    pp.RESCORING,
     '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_CA_" },',
     '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:251:_CA_" }',
     '{ "type": "constrainAtomToPosition", "springConstant": 2.5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:9:_CA_" }',
     '{ "type": "constrainAtomToPosition", "springConstant": 2.5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:17:_CA_" }',
 ]
+
 
 EXIT_DEFAULTS_ADAPTIVE = [
     '"type" : "epsilon"',
@@ -128,7 +128,7 @@ EXIT_SOFT_DEFAULTS_ADAPTIVE = [
 
 
 EXIT_DEFAULTS_PELE = [
-    '"radius": 10',
+    '"radius": 10.0',
     '"numberOfStericTrials": 500',
     pp.IN_OUT
 
@@ -157,8 +157,8 @@ GPCR_DEFAULTS_ADAPTIVE = [
 ]
 
 GPCR2_DEFAULTS_PELE = [
-     '"radius": 10,',
-     '"fixedCenter": [10,10,10]',
+     '"radius": 10.0,',
+     '"fixedCenter": [10.0, 10.0, 10.0]',
      '"numberOfStericTrials": 100,',
      pp.GPCR_ORTH,
     '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:65:_CA_" },',
@@ -190,7 +190,14 @@ def test_all_defaults(yaml, expected_adaptive, expected_pele):
     """
     errors = []
     output = main.run_platform_from_yaml(yaml)
-    folder = output[0].pele_dir if type(output) == list else output.pele_dir
+
+    if isinstance(output, tuple):  # rewrite this nonsense once we're done with refactoring
+        folder = output[1].pele_dir
+    elif isinstance(output, list):
+        folder = output[0].pele_dir
+    else:
+        folder = output[0][1].pele_dir
+
     errors = tests.utils.check_file(folder, "adaptive.conf", expected_adaptive, errors)
     errors = tests.utils.check_file(folder, "pele.conf", expected_pele, errors)
     assert not errors

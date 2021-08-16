@@ -188,7 +188,7 @@ class YamlParserModel(BaseModel):
     gridres: int = Field(
         default=10, categories=["Ligand preparation"]
     )  # alias="ligand_resolution"
-    core: Union[int, List[str]] = Field(default=-1, categories=["Ligand preparation"])
+    core: Union[int, List[str]] = Field(categories=["Ligand preparation"])
 
     ################################################################################################ start from here
 
@@ -198,12 +198,13 @@ class YamlParserModel(BaseModel):
         categories=["Ligand preparation"],
         description="Maximum number of flexible side chains in the ligand.",
     )
-    template: List[str] = Field(
-        alias="templates"
-    )  # WTF with templates - template - ext_temp???
-    ext_temp: List[str] = Field(
-        value_from="template", categories=["Ligand preparation"]
+
+    templates: List[str] = Field(
+        categories=["Ligand preparation"], description="List of template file containing ligand forcefield parameters."
     )
+
+    solvent_template: str = Field()
+
     rotamers: List[str] = Field(categories=["Ligand preparation"])
     ext_rotamers: List[str] = Field(value_from="rotamers")
     mae_lig: str = Field(
@@ -250,7 +251,7 @@ class YamlParserModel(BaseModel):
     )
     box_center: Union[List[float], str] = Field(categories=["Box settings"])
     box: Any = Field(categories=["Box settings"])
-    native: str = Field(alias="rmsd_pdb", default=False, categories=["Metrics"])
+    native: str = Field(alias="rmsd_pdb", default="", categories=["Metrics"])
     atom_dist: List[str] = Field(
         default_factory=list, categories=["Metrics"]
     )  # deprecate atom numbers
@@ -270,9 +271,7 @@ class YamlParserModel(BaseModel):
         alias="exit_clust", tests_value=2, candidate_for_deprecation=True
     )
 
-    restart: Union[bool, str] = Field(
-        value_from_simulation_params=True, simulation_params_default="all"
-    )
+    restart: bool = Field(categories=["General settings"])
     lagtime: Any = Field(candidate_for_deprecation=True, categories=["MSM"])  # WTF?
     msm_clust: Any = Field(candidate_for_deprecation=True, categories=["MSM"])
     rescoring: bool = Field(categories=["Rescoring"])
@@ -309,21 +308,21 @@ class YamlParserModel(BaseModel):
         categories=["Water"],
     )
     water_radius: float = Field(
-        default=6, categories=["Water"]
+        default=6.0, categories=["Water"]
     )  # WTF tests expects int but should be a float perhaps
     induced_fit_exhaustive: bool = Field(categories=["Induced fit"])
     induced_fit_fast: bool = Field(categories=["Induced fit"])
     frag: bool = Field(categories=["FragPELE"], candidate_for_deprecation=True)
-    ca_constr: int = Field(
+    ca_constr: float = Field(
         can_be_falsy=True,
         value_from_simulation_params=True,
-        simulation_params_default=5,
+        simulation_params_default=5.0,
         categories=["Constraints"],
     )
-    ca_interval: float = Field(
+    ca_interval: int = Field(
         can_be_falsy=True,
         value_from_simulation_params=True,
-        simulation_params_default=5,
+        simulation_params_default=10,
         categories=["Constraints"],
     )
     one_exit: Any = Field(candidate_for_deprecation=True)
@@ -482,8 +481,7 @@ class YamlParserModel(BaseModel):
     initial_site: str = Field(categories=["GPCR", "Out in"])
     final_site: str = Field(categories=["GPCR"])
 
-    max_top_poses: int = Field(categories=["Analysis"])
-    top_clusters_criterion: str = Field(categories=["Analysis"])
+    top_clusters_criterion: str = Field(categories=["Analysis"], default="interaction_25_percentile")
 
     interaction_restrictions: List[dict] = Field(categories=["Interaction restrictions"])
 
@@ -494,6 +492,48 @@ class YamlParserModel(BaseModel):
     exclude_terminal_rotamers: bool = Field(default=True, categories=["Ligand preparation"])
 
     singularity_exec: str = Field(categories=["General settings"])
+
+    terminal_constr: float = Field(can_be_falsy=True, value_from_simulation_params="terminal_constr", simulation_params_default=5.0)
+
+    covalent_residue: str = Field(categories=["Covalent docking"])
+
+    nonbonding_radius: float = Field(categories=["Covalent docking"])
+
+    perturbation_trials: int = Field(categories=["Covalent docking"])
+
+    refinement_angle: float = Field(categories=["Covalent docking"])
+
+    covalent_docking_refinement: bool = Field(categories=["Covalent docking"])
+
+    ligand_conformations: str = Field(categories=["Ligand conformations"])
+
+    conformation_freq: int = Field(categories=["Ligand conformations"], value_from_simulation_params=True, default=4)
+
+    overlap_factor_conformation: float = Field(categories=["Ligand conformations"])
+
+    inter_step_logger: bool = Field(categories=["General settings"])
+
+    minimum_steps: bool = Field()
+
+    site_finder_global: bool = Field()
+
+    site_finder_local: bool = Field()
+
+    # TODO: Add validators for all analysis flags
+    kde: bool = Field(categories=["Analysis"])
+    kde_structs: int = Field(categories=["Analysis"], default=1000)
+    plot_filtering_threshold: float = Field(categories=["Analysis"])
+    clustering_filtering_threshold: float = Field(categories=["Analysis"], default=0.25, can_be_falsy=True)
+    clustering_method: str = Field(categories=["Analysis"], value_from_simulation_params=True, simulation_params_default="meanshift")
+    cluster_representatives_criterion: str = Field(categories=["Analysis"], value_from_simulation_params=True, simulation_params_default="interaction_5_percentile")
+    bandwidth: float = Field(categories=["Analysis"], value_from_simulation_params=True, simulation_params_default=2.5)
+    max_top_clusters: int = Field(categories=["Analysis"], can_be_falsy=True, default=8)
+    min_population: float = Field(categories=["Analysis"], value_from_simulation_params=True, simulation_params_default=0.01)
+    max_top_poses: int = Field(categories=["Analysis"], can_be_falsy=True, default=100)
+    use_peleffy: bool = Field(categories=["Ligand preparation"], can_be_falsy=True, default=False)
+    saturated_mutagenesis: bool = Field(categories=["Saturated mutagenesis"])
+    cpus_per_mutation: int = Field(categories=["Saturated mutagenesis"], tests_value=2)  # TODO: needs validator
+    constraint_level: int = Field(categories=["Constraints"])
 
     @validator("*", pre=True, always=True)
     def set_tests_values(cls, v, values, field):
@@ -524,7 +564,7 @@ class YamlParserModel(BaseModel):
         return os.path.abspath(v) if v else None
 
     @validator("residue")
-    def validate_residue(cls, v):
+    def validate_residue_name(cls, v):
         """
         Checks the residue name for unsupported 'UNK' value.
         """
@@ -555,11 +595,29 @@ class YamlParserModel(BaseModel):
         pattern = r"([A-z]\:\d{1,4}\:[A-Z0-9]{1,4})"
 
         if v:
-            for string in v:
+            v_list = [v] if not isinstance(v, list) else v
+
+            for string in v_list:
                 if not string.isdigit() and not re.match(pattern, string):
                     raise custom_errors.WrongAtomStringFormat(
                         "Atom string set in {} does not seem to have the right format. It should follow chain:residue "
-                        "number:atom name pattern, e.g. 'A:105:CA'".format(string)
+                        "number:atom name pattern, e.g. 'A:105:CA'.".format(string)
+                    )
+        return v
+
+    @validator("covalent_residue")
+    def validated_residue_string(cls, v):
+        """
+        Checks if the residue string matches a regex patterns. Correct format example: "A:123".
+        """
+        pattern = r"(^[A-z]\:\d{1,4}$)"
+
+        if v:
+            for string in v:
+                if not string.isdigit() and not re.match(pattern, string):
+                    raise custom_errors.WrongAtomStringFormat(
+                        "Residue string set in {} does not seem to have the right format. "
+                        "It should follow chain:residue_number pattern, e.g. 'A:105'.".format(string)
                     )
         return v
 
@@ -574,7 +632,7 @@ class YamlParserModel(BaseModel):
             for string in v:
                 if not re.match(pattern, string):
                     raise custom_errors.WrongAtomStringFormat(
-                        "Atom string set in {} does not seem to have the right format. It should follow C atom name: H atom name format".format(
+                        "Atom string set in {} does not seem to have the right format. It should follow C atom name: H atom name format.".format(
                             string
                         )
                     )
@@ -591,5 +649,6 @@ class YamlParserModel(BaseModel):
         if v and v not in constants.metric_top_clusters_criterion.keys():
             raise ValueError(
                 f"Selected criterion value {v} is invalid. Please choose one of: {constants.metric_top_clusters_criterion.keys()}")
+        return v
 
     # TODO: Add validator for what's inside interaction restrictions

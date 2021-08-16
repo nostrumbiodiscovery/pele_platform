@@ -5,7 +5,6 @@ import PPP.main as ppp
 
 from pele_platform.Utilities.Helpers.map_atoms import AtomMapper
 from pele_platform.Utilities.Helpers import helpers
-from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 from pele_platform.Utilities.Helpers.constraints import (
     alpha_constraints,
     smiles_constraints,
@@ -28,20 +27,16 @@ from pele_platform.Utilities.Helpers import ligand_conformations
 from pele_platform.Checker import pdb_checker
 
 
-def run_adaptive(args):
+def run_adaptive(parameters):
     """
     Main function to prepare and launch the simulation.
 
-    1) Create EnviroBuilder - variables, folders, logger...
-    2) Prepare ligand and receptor
-    3) Launch simulation
-    4) Analyse simulation
+    1) Prepare ligand and receptor
+    2) Launch simulation
+    3) Analyse simulation
     """
-    builder = ParametersBuilder()
-    parameters = builder.build_adaptive_variables(args)
-    parameters.create_files_and_folders()
-    shutil.copy(args.yamlfile, parameters.pele_dir)
     missing_residues = []
+    args = parameters.args
 
     if parameters.adaptive_restart and not parameters.only_analysis:
         with helpers.cd(parameters.pele_dir):

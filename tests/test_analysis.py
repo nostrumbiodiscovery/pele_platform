@@ -6,7 +6,9 @@ import shutil
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
-from pele_platform.analysis import Analysis, DataHandler, Plotter
+from pele_platform.analysis.analysis import Analysis
+from pele_platform.analysis.data import DataHandler
+from pele_platform.analysis.plot import Plotter
 from pele_platform.Utilities.Helpers.helpers import check_remove_folder
 
 test_path = os.path.join(cs.DIR, "Examples")
@@ -165,7 +167,7 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
     yaml_file : str
         Path to input.yaml
     """
-    job_params = main.run_platform_from_yaml(yaml_file)
+    job_params = main.run_platform_from_yaml(yaml_file)[1]
 
     results_folder = os.path.join(job_params.pele_dir, "results")
     top_poses = glob.glob(os.path.join(results_folder, "top_poses/*pdb"))

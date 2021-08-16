@@ -5,7 +5,7 @@ that are required by the PELE Platform to run the different workflows.
 
 __all__ = ["ParametersBuilder", "Parameters"]
 
-
+import shutil
 from pele_platform.Utilities.Parameters.SimulationParams import \
     simulation_params
 from pele_platform.Utilities.Parameters.SimulationFolders import \
@@ -48,6 +48,7 @@ class ParametersBuilder(object):
 
         # Define main PELE directory
         main_dir = os.path.abspath("{}_Pele".format(args.residue))
+        self.yamlfile = args.yamlfile
 
         # Set the PELE directory
         # In case that folder is not set by the user, we will try to suggest
@@ -68,8 +69,7 @@ class ParametersBuilder(object):
             pele_dir = os.path.abspath(args.folder)
 
         # Retrieve the specific args for adaptive
-        specific_args = adaptive.retrieve_software_settings(args,
-                                                            pele_dir)
+        specific_args = adaptive.retrieve_software_settings(args, pele_dir)
 
         # Add pele_dir
         specific_args['pele_dir'] = pele_dir
@@ -220,12 +220,8 @@ class Parameters(simulation_params.SimulationParams,
             Whether to initialize the simulation paths or not. Default
             is True
         """
-        # CA interval is first initialized to None
-        self.ca_interval = None
-
-        # If specific_args is not defined, assign and empty dictionary
-        if specific_args is None:
-            specific_args = dict()
+        self.args = args
+        self.specific_args = specific_args if specific_args is not None else {}
 
         # Set specific parameters, they need to be set before initializing
         # the rest
@@ -247,6 +243,7 @@ class Parameters(simulation_params.SimulationParams,
             self.create_folders()
             self.create_files()
         self.create_logger()
+        shutil.copy(self.args.yamlfile, self.pele_dir)
 
     def create_folders(self):
         """

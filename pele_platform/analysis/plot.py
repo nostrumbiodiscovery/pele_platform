@@ -5,7 +5,7 @@ coming from PELE reports.
 import os
 
 from pele_platform.Utilities.Helpers.helpers import check_make_folder
-from pele_platform.analysis import DataHandler
+from pele_platform.analysis.data import DataHandler
 from pele_platform.constants import constants
 
 
@@ -211,7 +211,7 @@ class Plotter(object):
         # Extract the list of cluster labels
         cluster_labels = sorted(list(set(clusters)))
 
-        # Configurate colormap
+        # Configure colormap
         if len(cluster_labels) > 18:
             cmap = copy.copy(cm.get_cmap("jet"))
         elif 9 < len(cluster_labels) <= 18:

@@ -5,16 +5,18 @@ import yaml
 import pele_platform.constants.constants as constants
 import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 import tests.utils
-from pele_platform import main
-from . import test_adaptive as ta
+from pele_platform import main, main as main
+from pele_platform.Utilities.Helpers.constraints import smiles_constraints as smi
+from tests.test_others import EXTERNAL_CONSTR_ARGS, EXT_CONSTR, PPP_CONSTR_ARGS, PPP_CONSTR, ARGS_SMARTS_CONSTR, \
+    test_path
 
 test_path = os.path.join(constants.DIR, "Examples")
 
 terminal_lines_raw = [
-    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_CA_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:322:_CA_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "B:1:_CA_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "B:171:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:322:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "B:1:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "B:171:_CA_" },',
 ]
 
 terminal_lines_file = [
@@ -46,10 +48,10 @@ custom_lines = [
 ]
 
 custom_ter_lines = [
-    '{ "type": "constrainAtomToPosition", "springConstant": 77, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_CA_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 77, "equilibriumDistance": 0.0, "constrainThisAtom": "A:322:_CA_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 77, "equilibriumDistance": 0.0, "constrainThisAtom": "B:1:_CA_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 77, "equilibriumDistance": 0.0, "constrainThisAtom": "B:171:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 77.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 77.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:322:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 77.0, "equilibriumDistance": 0.0, "constrainThisAtom": "B:1:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 77.0, "equilibriumDistance": 0.0, "constrainThisAtom": "B:171:_CA_" },',
 ]
 
 set1_lines = [
@@ -91,7 +93,7 @@ def test_ca_constraints_production(input_yaml):
     errors = []
     job = main.run_platform_from_yaml(input_yaml)
     errors = tests.utils.check_file(
-        job.pele_dir, "pele.conf", terminal_lines_file + default_interval_lines, errors
+        job[0].pele_dir, "pele.conf", terminal_lines_file + default_interval_lines, errors
     )
     assert not errors
 
@@ -182,3 +184,96 @@ def yaml_file(request):
         yaml.dump(args, f)
 
     return file_name
+
+
+def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
+    errors = []
+    job = main.run_platform_from_yaml(ext_args)
+    errors = tests.utils.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
+    assert not errors
+
+
+SMILES_CONSTR = [
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C7_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N1_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C1_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C2_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_N2_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C3_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C4_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C5_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_C6_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 33.5, "equilibriumDistance": 0.0, "constrainThisAtom": "Z:305:_O1_" },',
+]
+
+
+@pytest.mark.parametrize(
+    ("yaml_file", "expected"),
+    [
+        (EXTERNAL_CONSTR_ARGS, EXT_CONSTR),
+        (PPP_CONSTR_ARGS, PPP_CONSTR),
+        (ARGS_SMARTS_CONSTR, SMILES_CONSTR),
+    ],
+)
+def test_constraints(yaml_file, expected):
+    """
+    Runs platform in debug mode to check if all constraints were correctly set in pele.conf.
+    """
+    output = main.run_platform_from_yaml(yaml_file)
+    errors = []
+    folder = output[0].pele_dir if type(output) == list else output.pele_dir
+    errors = tests.utils.check_file(folder, "pele.conf", expected, errors)
+    assert not errors
+
+
+@pytest.mark.parametrize(
+    "mol_string",
+    ["CN1CC[NH+](CC1)CCO", "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"],
+)
+def test_smiles_constraints_class(mol_string):
+    """
+    Checks if SmilesConstraints class works correctly, i.e.: converts SMILES to SMARTS, extracts ligand from the PDB,
+    matches the right substructure and sets correct constraints.
+    """
+    obj = smi.SmilesConstraints(
+        "../pele_platform/Examples/constraints/4qnr_prep.pdb",
+        "CN1CC[NH+](CC1)CCO",
+        "LIG",
+        "Z",
+        33.5,
+    )
+    smarts_from_smiles = obj.convert_to_smarts(mol_string)
+
+
+def test_constrain_smarts():
+    yaml = os.path.join(test_path, "constraints/input_constrain_smarts.yaml")
+    errors = []
+    job = main.run_platform_from_yaml(yaml)
+    errors = tests.utils.check_file(job[0].pele_dir, "pele.conf", SMILES_CONSTR, errors)
+    assert not errors
+
+
+def test_SmilesConstraints_class():
+    obj = smi.SmilesConstraints(
+        "../pele_platform/Examples/constraints/4qnr_prep.pdb",
+        "CN1CC[NH+](CC1)CCO",
+        "LIG",
+        "Z",
+        33.5,
+    )
+    smarts_from_smiles = obj.convert_to_smarts("CN1CC[NH+](CC1)CCO")
+    smarts_from_smarts = obj.convert_to_smarts(
+        "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+    )
+    ligand = obj.extract_ligand(obj.input_pdb, obj.resname)
+    matches = obj.get_matches(smarts_from_smiles, ligand)
+    constraints = obj.build_constraints(matches, ligand, obj.spring_constant, obj.chain)
+
+    assert (
+        smarts_from_smiles == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+    )
+    assert (
+        smarts_from_smiles == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+    )
+    assert matches == ((9, 0, 1, 2, 3, 4, 5, 6, 7, 8),)
+    assert constraints == SMILES_CONSTR

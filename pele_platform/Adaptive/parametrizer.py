@@ -131,7 +131,7 @@ class Parametrizer:
             charge_parametrization_method=parameters.charge_parametrization_method,
             gridres=parameters.gridres,
             solvent=parameters.solvent,
-            external_templates=parameters.external_template,
+            external_templates=parameters.external_templates,
             external_rotamers=parameters.external_rotamers,
             as_datalocal=as_datalocal,
             pele_dir=parameters.pele_dir,

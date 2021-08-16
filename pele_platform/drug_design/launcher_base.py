@@ -6,13 +6,13 @@ class LauncherBase:
     steps = []
     refinement_steps = []
 
-    def __init__(self, env):
-        self.env = env
+    def __init__(self, builder):
+        self.builder = builder
 
     def run(self):
         steps = list(self.steps)  # Copy to prevent adding refinement steps more than once
-        if not self.env.initial_args.skip_refinement:
+        if not self.builder.initial_args.skip_refinement:
             steps += self.refinement_steps
 
-        result = Pipeline(steps, self.env).run()
+        result = Pipeline(steps, self.builder).run()
         return result

@@ -5,7 +5,7 @@ import shutil
 
 import tests.utils
 from pele_platform import main
-import pele_platform.Utilities.Parameters.pele_env as pv
+import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.constants import constants as cs
 import pele_platform.building_blocks.simulation as bb

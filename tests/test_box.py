@@ -4,7 +4,6 @@ import pytest
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
 import tests.utils
-from . import test_adaptive as ta
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -17,8 +16,8 @@ BOX_RES = [
 ]
 
 OUT_IN_BOX = [
-    '"fixedCenter": [100,100,100]',
-    '"radius": 100,'
+    '"fixedCenter": [100.0, 100.0, 100.0]',
+    '"radius": 100.0,'
 ]
 
 GPCR_VALUES = [
@@ -50,5 +49,5 @@ def test_box_center_from_residue(yaml_file, expected_lines):
     """
     errors = []
     job = main.run_platform_from_yaml(yaml_file)
-    errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected_lines, errors)
+    errors = tests.utils.check_file(job[0].pele_dir, "pele.conf", expected_lines, errors)
     assert not errors

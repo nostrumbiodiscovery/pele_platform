@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This is the main module and it is designed to run the PELE platform from
-the command-line.
+This is the main module designed to run the PELE platform from command line.
 """
 from pele_platform.Errors import custom_errors
 from pele_platform.Utilities.Helpers.launcher import Launcher
@@ -11,33 +10,31 @@ __email__ = "pelesupport@nostrumbiodiscovery.com"
 __license__ = "Apache-2.0"
 
 
-def parse_args(args=[]):
+def parse_args(args=None):
     """
     Command line parser.
 
     Parameters
     ----------
-    args : list[str]
+    args : List[str]
         The list of strings to parse. Default is an empty list. If empty,
         input arguments are retrieved from the command-line
 
     Returns
     -------
     input_yaml : str
-        The path pointing to the input yaml file
+        The path pointing to the input yaml file.
     """
-    # Parser setup
+    if args is None:  # to avoid mutable default argument
+        args = []
+
     from argparse import ArgumentParser
 
-    parser = ArgumentParser(description='Automatic platform to launch PELE simulations')
-    parser.add_argument('input_file', type=str, help='Yaml input file')
+    parser = ArgumentParser(description='Automatic platform to launch PELE simulations.')
+    parser.add_argument('input_file', type=str, help='YAML input file.')
 
-    # Parse arguments
     parsed_args = parser.parse_args(args) if args else parser.parse_args()
-
-    # Extract yaml file (the only argument we need to retrieve)
-    input_yaml = parsed_args.input_file
-    return input_yaml
+    return parsed_args.input_file
 
 
 def run_platform_from_yaml(input_yaml):
@@ -75,21 +72,19 @@ def run_platform_from_yaml(input_yaml):
             + " does not look like a correct yaml file")
 
     launcher = Launcher(yaml_obj)
-    job_params = launcher.launch()
+    job_parameters = launcher.launch()
 
-    return job_params
+    return job_parameters
 
 
 # Main workflow to be executed
 if __name__ == "__main__":
     # Avoid backend issues in matplotlib
     import matplotlib
-
     matplotlib.use("Agg")
 
     # Avoid Python2
     from .Checker.python_version import check_python_version
-
     check_python_version()
 
     # Parse yaml file from command-line arguments

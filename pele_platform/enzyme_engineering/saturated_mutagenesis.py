@@ -19,34 +19,19 @@ def set_starting_point(logged_subsets):
     return next_index
 
 
-@dataclass
 class SaturatedMutagenesis:
     """
     Interface to run saturated mutagenesis simulation from another repository.
-
-    Parameters
-    ----------
-    env : pele_env.EnviroBuilder)
-        Arguments provided by the user in input.yaml.
-    already_computed : List[str]
-        Initially empty list of already computed systems.
-    all jobs: List[EnviroBuilder]
-        Initially empty list of all completed jobs.
-    original_dir : str
-        Directory from which the job is launched.
-    start : int
-        Index to enumerate subset folders, if restarting adaptive,
-        otherwise default = 1
-    subset_folder : str
-    See Also folder name, default = "Subset_"
     """
-
-    env: parameters.ParametersBuilder
-    already_computed: List = field(default_factory=list)
-    all_jobs: List = field(default_factory=list)
-    original_dir: str = os.path.abspath(os.getcwd())
-    start: int = 1
-    subset_folder: str = "Subset_"
+    def __init__(self, builder, start=1, subset_folder="Subset_"):
+        self.builder = builder
+        self.already_computed = list()
+        self.all_jobs = list()
+        self.original_dir = os.path.abspath(os.getcwd())
+        self.subset_folder = subset_folder
+        self.start = start
+        self.env = None
+        self.all_mutations = list()
 
     def run(self):
         """
@@ -58,6 +43,8 @@ class SaturatedMutagenesis:
             A list of job parameters (EnviroBuilder objects) for each
             simulation subset
         """
+        self.builder.build_adaptive_variables(self.builder.initial_args)
+        self.env = self.builder.parameters
         self.set_package_params()
         self.check_cpus()
         self.set_working_folder()

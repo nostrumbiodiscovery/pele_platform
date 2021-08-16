@@ -41,7 +41,7 @@ class LigandParametrization:
 
     def copy_ligand_forcefield_file(self) -> None:
         # copy user's ligz template files
-        for template_file in self.env.external_template:
+        for template_file in self.env.external_templates:
             if not os.path.exists(template_file):
                 raise ce.TemplateFileNotFound(f"File {template_file} not found")
             cmd_to_move_template = "cp {} {}".format(

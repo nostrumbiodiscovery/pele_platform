@@ -13,7 +13,7 @@ import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
 import pele_platform.constants.constants as cs
 import frag_pele.main as frag
-from pele_platform.analysis import Analysis
+from pele_platform.analysis.analysis import Analysis
 from pele_platform.Utilities.Helpers import water
 
 

@@ -12,17 +12,18 @@ class AdaptiveLauncher(LauncherBase):
 
     def run(self):
         self.set_simulation_type()
-        self.env.build_adaptive_variables(self.env.initial_args)
+        self.builder.build_adaptive_variables(self.builder.initial_args)
+        self.env = self.builder.parameters
         self.env.create_files_and_folders()
         self.env = si.run_adaptive(self.env)
-        return self.env
+        return self.builder, self.env
 
     def set_simulation_type(self):
         # NEEDS IMPROVEMENT. Ensuring it doesn't crash in features.adaptive
         # with something like ('EnviroBuilder' object has no attribute 'full'), do you have a better idea?
-        for arg in dir(self.env.initial_args):
+        for arg in dir(self.builder.initial_args):
             if arg in ft.all_simulations:
-                setattr(self.env, arg, getattr(self.env.initial_args, arg))
+                setattr(self.builder, arg, getattr(self.builder.initial_args, arg))
 
 
 class WorkflowLauncher(LauncherBase):

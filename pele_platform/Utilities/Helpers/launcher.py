@@ -1,12 +1,13 @@
-import argparse
 from dataclasses import dataclass
 import pkg_resources
 
 import pele_platform.drug_design.package_launchers
+import pele_platform.enzyme_engineering.saturated_mutagenesis
 import pele_platform.Checker.main as checker
 from pele_platform.Frag.simulation import FragRunner
 from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 from pele_platform.constants import constants
+from pele_platform.Utilities.Helpers import yaml_parser
 
 
 PACKAGES = dict(
@@ -19,13 +20,14 @@ PACKAGES = dict(
     induced_fit_exhaustive=pele_platform.drug_design.package_launchers.InducedFitExhaustiveLauncher,
     induced_fit_fast=pele_platform.drug_design.package_launchers.InducedFitFastLauncher,
     workflow=pele_platform.drug_design.package_launchers.WorkflowLauncher,
+    saturated_mutagenesis=pele_platform.enzyme_engineering.saturated_mutagenesis.SaturatedMutagenesis,
 )
 
 
 @dataclass
 class Launcher:
 
-    _args: argparse.ArgumentParser
+    _args: yaml_parser.YamlParser
     parameters: ParametersBuilder = None
 
     def launch(self):
@@ -51,7 +53,7 @@ class Launcher:
 
         Returns
         -------
-        Parameters object(s) containing simulation parameters for each block.
+            Parameters object(s) containing simulation parameters for each block.
         """
         if not self._args.no_check:
             checker.check_executable_and_env_variables(self._args)

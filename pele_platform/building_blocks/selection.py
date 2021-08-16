@@ -9,22 +9,25 @@ from sklearn.mixture import GaussianMixture
 
 from pele_platform.building_blocks import blocks
 from pele_platform.Utilities.Helpers import helpers, bestStructs
-from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
+import pele_platform.Utilities.Parameters.parameters as pv
 
 
-class Selection(blocks.Block):
-
-    def run(self):
-        pass
-
-@dataclass
 class Selection(blocks.Block):
     """
     Base class to handle all input selection algorithms, copy files, set next_step, etc.
     """
 
-    simulation_params: ParametersBuilder
-    options: dict
+    def __init__(
+            self,
+            parameters_builder: pv.ParametersBuilder,
+            options: dict,
+            folder_name: str,
+            env: pv.Parameters,
+    ):
+        self.options = options
+        self.folder_name = folder_name
+        self.builder = parameters_builder
+        self.simulation_params = env
 
     def copy_files(self):
         """
@@ -73,7 +76,9 @@ class Selection(blocks.Block):
             )
 
         files_out = [
-            os.path.join(self.simulation_params.pele_dir, self.simulation_params.output, f)
+            os.path.join(
+                self.simulation_params.pele_dir, self.simulation_params.output, f
+            )
             for f in files_out
         ]
         return files_out, output_energy
@@ -166,7 +171,7 @@ class Selection(blocks.Block):
         self.get_inputs()
         self.copy_files()
         self.set_next_step()
-        return self.simulation_params
+        return self.builder, self.simulation_params
 
 
 @dataclass
@@ -175,10 +180,9 @@ class LowestEnergy5(Selection):
     Choose 5% lowest binding energy poses as input for the next simulation.
     Use to select inputs for Rescoring after LocalExplorationExhaustive and LocalExplorationFast.
     """
-
-    simulation_params: ParametersBuilder
-    options: dict
-    folder_name: str
+    def __init__(self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.inputs = None
 
     def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.05)
@@ -202,14 +206,12 @@ class GMM(Selection):
     """
     Perform Gaussian Mixture (full covariance) clustering on best binding energy poses.
     """
-
-    simulation_params: ParametersBuilder
-    options: dict
-    folder_name: str
+    def __init__(self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.inputs = None
 
     def get_inputs(self):
-        files_out, ou self.gaussian_mixture(files_out, tput_energy = self.extract_poses(percentage=0.05, n_poses=1000)
-        self.inputs =output_energy)
+        pass
 
 
 @dataclass
@@ -218,10 +220,9 @@ class Clusters(Selection):
     Select cluster representatives from 'results' folder as input for the next simulation. If there are more inputs
     than available CPUs, choose the ones with the lowest binding energy.
     """
-
-    simulation_params: ParametersBuilder
-    options: dict
-    folder_name: str
+    def __init__(self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.inputs = None
 
     def get_inputs(self):
         clusters_dir = os.path.join(
@@ -251,11 +252,9 @@ class ScatterN(Selection):
     Choose input for refinement simulation after the first stage of Allosteric, GPCR and out_in simulations.
     Scan top 75% binding energies, pick n best ones as long as ligand COMs are >= 6 A away from each other.
     """
-
-    simulation_params: ParametersBuilder
-    options: dict
-    folder_name: str
-    print("Scatter initialised.")
+    def __init__(self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.inputs = None
 
     def get_inputs(self):
         files_out, output_energy = self.extract_poses(percentage=0.75)
@@ -273,7 +272,9 @@ class ScatterN(Selection):
             list(zip(files_out, output_energy, coords)),
             columns=["File", "Binding energy", "1st atom coordinates"],
         )
-        dataframe['Binding energy'] = dataframe['Binding energy'].map(lambda x: float(x))
+        dataframe["Binding energy"] = dataframe["Binding energy"].map(
+            lambda x: float(x)
+        )
         dataframe = dataframe.sort_values(["Binding energy"], ascending=True)
         dataframe.to_csv("scatter6_data.csv")
         self.inputs = self._check_ligand_distances(dataframe, distance)
@@ -284,7 +285,9 @@ class ScatterN(Selection):
 
         for file, coord in zip(dataframe["File"], dataframe["1st atom coordinates"]):
 
-            if len(inputs) == self.n_inputs:  # get out of the loop, if we have enough inputs already
+            if (
+                len(inputs) == self.n_inputs
+            ):  # get out of the loop, if we have enough inputs already
                 break
 
             if not input_coords:  # first loop
@@ -295,8 +298,13 @@ class ScatterN(Selection):
                 distances = []
                 for ic in input_coords:
                     distances.append(
-                        abs(np.linalg.norm(np.array(coord) - np.array(ic))))
-                print("file: {}, 1st atom coord {}, n of distances {}".format(file, coord, len(distances)))
+                        abs(np.linalg.norm(np.array(coord) - np.array(ic)))
+                    )
+                print(
+                    "file: {}, 1st atom coord {}, n of distances {}".format(
+                        file, coord, len(distances)
+                    )
+                )
 
                 distances_bool = [d > distance for d in distances]
                 if all(distances_bool):

@@ -8,3 +8,4 @@ orthosteric_site: "A:114:CG"
 initial_site: "A:310:CD"
 skip_preprocess: true
 debug: true
+use_peleffy: true

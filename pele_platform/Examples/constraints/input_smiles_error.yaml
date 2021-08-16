@@ -5,3 +5,4 @@ induced_fit_fast: True
 test: True
 constrain_core_spring: 20
 constrain_core: "c1ccccc1"
+use_peleffy: true

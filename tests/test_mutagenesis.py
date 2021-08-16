@@ -5,7 +5,7 @@ import shutil
 
 from pele_platform.constants import constants
 from pele_platform import main
-from tests import test_adaptive_defaults
+from tests import test_adaptive_defaults, utils
 
 test_path = os.path.join(constants.DIR, "Examples/enzyme_engineering")
 
@@ -29,7 +29,7 @@ def test_mutagenesis_production():
         output_files = glob.glob(os.path.join(job.pele_dir, job.output, "*/traj*.pdb"))
         assert output_files
 
-        # Check if all files from iterations folder were postprocessed and moved to their respective mutation folders
+        # Check if all files from iterations folder were post-processed and moved to their respective mutation folders
         assert not glob.glob(os.path.join(job.pele_dir, job.output, "0/traj*pdb"))
 
         # Assert the equilibration files remained in their folders
@@ -39,7 +39,7 @@ def test_mutagenesis_production():
 
         # Check if the default induced fit exhaustive lines are present in pele configuration file
         induced_fit_lines = test_adaptive_defaults.INDUCE_FIT_PELE
-        errors = test_adaptive_defaults.check_file(
+        errors = utils.check_file(
             job.pele_dir, "pele.conf", induced_fit_lines, []
         )
         assert not errors

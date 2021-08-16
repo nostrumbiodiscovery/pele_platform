@@ -18,9 +18,9 @@ class SimulationParamsModel(YamlParserModel):
     logfile: str = Field(value_from="log", always=True)
     water: str = Field(default="")
     ligand: Any = Field(default=cs.LIGAND)
-    external_template: Any = Field(
-        value_from="template",
-        value_from_simulation_params="template",
+    external_templates: Any = Field(
+        value_from="templates",
+        value_from_simulation_params="templates",
         simulation_params_default=[],
     )
     external_rotamers: Any = Field(
@@ -43,17 +43,26 @@ class SimulationParamsModel(YamlParserModel):
     pdb: bool = Field()
     constraints: Any = Field()
     water_energy: Any = Field()
-
+    sidechain_perturbation: str = Field()
+    interaction_restrictions: str = Field()  # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
+    met_interaction_restrictions: str = Field(default="")  # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
+    covalent_sasa: str = Field()
+    max_trials_for_one: Any = Field()
+    conformation_perturbation: str = Field()
+    equilibration_mode: str = Field()
 
     @validator("*", pre=True, always=True)
     def set_value_from_sp(cls, v, field):
 
         extra = field.field_info.extra
         can_be_falsy = extra.get("can_be_falsy")
+
         if (can_be_falsy and v is None) or (not can_be_falsy and not v):
             value_from_simulation_params = extra.get("value_from_simulation_params")
-            if value_from_simulation_params == True:
+
+            if value_from_simulation_params == True:  # TODO: IS?
                 value_from_simulation_params = field.name
+
             if value_from_simulation_params:
                 value = cls.simulation_params.get(
                     value_from_simulation_params, extra.get("simulation_params_default")
@@ -65,7 +74,7 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("adaptive", always=True)
     def set_adaptive(cls, v, values):
-        if values.get("package") in ["allosteric", "adaptive", "PPI"]:
+        if values.get("package") in ["site_finder", "adaptive", "PPI"]:
             return True
 
     @validator("frag_pele", always=True)
@@ -116,6 +125,18 @@ class SimulationParamsModel(YamlParserModel):
             return ""
         return cls.simulation_params.get("perturbation", cs.PERTURBATION)
 
+    @validator("inter_step_logger", always=True)
+    def set_interstep_logger(cls, v):
+        if v is True:
+            return cs.INTERSTEPLOGGER
+        return ""
+
+    @validator("minimum_steps", always=True)
+    def set_minimum_steps(cls, v):
+        if v is True:
+            return cs.MINIMUMSTEPS
+        return ""
+
     @validator("proximityDetection", always=True)
     def set_proximityDetection(cls, v):
         if v is False:
@@ -134,6 +155,28 @@ class SimulationParamsModel(YamlParserModel):
         if not values.get("perturbation"):
             return ""
         return v
+
+    @validator(
+        "sidechain_perturbation",
+        "covalent_sasa",
+        always=True,
+    )
+    def only_with_sidechain_perturbation(cls, v, values):
+        if not values.get("covalent_residue"):
+            return ""
+        return v
+
+    @validator("conformation_perturbation", always=True)
+    def set_conformation_perturbation(cls, v, values):
+        if values.get("ligand_conformations"):
+            return cs.CONFORMATION_PERTURBATION
+        return ""
+
+    @validator("conformation_freq", always=True)
+    def only_with_conformation_perturbation(cls, v, values):
+        if values.get("ligand_conformations"):
+            return cs.CONFORMATION_FREQUENCY.format(v)
+        return ""
 
     @validator("spython", always=True)
     def check_spython_path(cls, v):
@@ -186,6 +229,13 @@ class SimulationParamsModel(YamlParserModel):
         if v:
             return cs.PCA.format(v)
         return ""
+
+    @validator("interaction_restrictions", always=True)
+    def parse_interaction_restrictions(cls, v):
+        if not v:
+            return ""
+        else:
+            pass  # TODO: We need to parse this whole thing.
 
     @validator("box_center", always=True)
     def calculate_box_center(cls, v, values):

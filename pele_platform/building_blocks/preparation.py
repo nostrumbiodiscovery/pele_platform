@@ -4,8 +4,10 @@ import subprocess
 from pele_platform.constants import constants
 
 
-def prepare_structure(protein_file, ligand_pdb, chain, remove_water=False, peleffy=False):
-    
+def prepare_structure(
+    protein_file, ligand_pdb, chain, remove_water=False, peleffy=False
+):
+
     to_remove = []
 
     # remove additional protein chains and all water molecules

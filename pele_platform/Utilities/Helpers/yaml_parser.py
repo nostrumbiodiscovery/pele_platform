@@ -43,13 +43,12 @@ class YamlParser(PydanticProxy):
 
     def read(self) -> None:
         self.data = self._parse_yaml()
-        breakpoint()
         self.initialize_model(self.data)
         self.valid_flags = set(
             field.alias if field.alias != field.name else field.name
             for field in self.model.__fields__.values()
         )
-        self._check_valid_flags()
+        self._check(self.data)
         self._check_multiple_simulations()
 
     def initialize_model(self, data):
@@ -70,14 +69,6 @@ class YamlParser(PydanticProxy):
                 _yaml_error_wrapper(error)
         return data
 
-    def _check_valid_flags(self) -> None:
-        """
-        Checks if flags in YAML file are valid.
-        """
-        for key in self.data.keys():
-            if key not in self.valid_flags:
-                raise KeyError(self._recommend(key))
-
     def _check_multiple_simulations(self):
         """
         Checks if the user specified more than one simulation type in YAML.
@@ -96,6 +87,12 @@ class YamlParser(PydanticProxy):
                 f"You cannot select multiple simulation types in input.yaml, please select one of "
                 f"{', '.join(specified_simulations)}."
             )
+
+    def _check(self, data) -> None:
+        # Check if valids in yaml file are valids
+        for key in data.keys():
+            if key not in self.valid_flags:
+                raise KeyError(self._recommend(key))
 
     def _recommend(self, key):
         most_similar_flag = None

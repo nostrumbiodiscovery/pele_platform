@@ -1,39 +1,46 @@
 from abc import abstractmethod
-from dataclasses import dataclass
 import glob
 import os
 
 import pele_platform.Adaptive.simulation as si
 import pele_platform.Errors.custom_errors as ce
 from pele_platform.Utilities.Helpers.helpers import retrieve_box
-from pele_platform.building_blocks import prepare_structure
+from pele_platform.building_blocks.preparation import prepare_structure
 from pele_platform.building_blocks import blocks
 import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.features.adaptive as ft
 
 
-@dataclass
 class Simulation(blocks.Block):
     """
     Base Simulation class to run all simulation types.
-    Both input and output should always be EnviroBuilder.
 
     One class to rule them all, one class to find them, one class to bring them all and in PELE bind them.
     """
 
-    env: pv.Parameters
-    options: dict
-    folder_name: str
+    def __init__(
+        self,
+        parameters_builder: pv.ParametersBuilder,
+        options: dict,
+        folder_name: str,
+        env: pv.Parameters,
+    ) -> None:
+        self.options = options
+        self.folder_name = folder_name
+        self.builder = parameters_builder
+        self.env = env
+        self.original_dir = os.path.abspath(os.getcwd())
 
-    def run(self):
+    def run(self) -> (pv.ParametersBuilder, pv.Parameters):
         self.simulation_setup()
         self.env = si.run_adaptive(self.env)
-        return self.env
+        return self.builder, self.env
 
     def simulation_setup(self):
+        self.builder.build_adaptive_variables(self.builder.initial_args)
+        self.env = self.builder.parameters
         self.set_params(simulation_type=self.keyword)
         self.set_working_folder()
-        self.env.build_adaptive_variables(self.env.initial_args)
         self.set_package_params()
         self.set_user_params()
         self.create_folders()
@@ -79,7 +86,6 @@ class Simulation(blocks.Block):
         Check if user specified a custom folder name for this simulation block. If not, use the automatically
         generated one.
         """
-        self.original_dir = os.path.abspath(os.getcwd())
         if self.options:
             user_folder = self.options.get("working_folder", None)
             self.env.folder_name = user_folder if user_folder else self.folder_name
@@ -87,7 +93,7 @@ class Simulation(blocks.Block):
             self.env.folder_name = self.folder_name
 
         if hasattr(self.env, "pele_dir"):
-            self.env.initial_args.folder = os.path.join(
+            self.builder.initial_args.folder = os.path.join(
                 os.path.dirname(self.env.pele_dir), self.env.folder_name
             )
 
@@ -99,15 +105,16 @@ class Simulation(blocks.Block):
         In the PPI and Allosteric packages, water perturbation is only executed in the refinement simulation. We
         temporarily hide n_waters parameter to avoid adding water molecules to the global/interface exploration.
         """
-        if getattr(self.env.initial_args, "n_waters", None):
-            if (self.keyword == "full" and self.env.package == "allosteric") or (
-                self.keyword == "inducef_fit_exhaustive" and self.env.package == "ppi"
+        if getattr(self.builder.initial_args, "n_waters", None):
+            if (self.keyword == "full" and self.builder.package == "allosteric") or (
+                self.keyword == "induced_fit_exhaustive"
+                and self.builder.package == "ppi"
             ):
                 self.hide_water()
             elif (
                 self.keyword == "induced_fit_exhaustive"
-                and self.env.package == "allosteric"
-            ) or (self.keyword == "rescoring" and self.env.package == "ppi"):
+                and self.builder.package == "allosteric"
+            ) or (self.keyword == "rescoring" and self.builder.package == "ppi"):
                 self.add_water()
 
     def hide_water(self):
@@ -128,25 +135,34 @@ class Simulation(blocks.Block):
         self.env.waters = "all_waters"
 
 
-@dataclass
 class GlobalExploration(Simulation):
-    keyword: str = "full"
+    def __init__(
+        self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters
+    ):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.keyword = "full"
 
     def set_package_params(self):
         pass
 
 
-@dataclass
 class LocalExplorationFast(Simulation):
-    keyword: str = "induced_fit_fast"
+    def __init__(
+        self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters
+    ):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.keyword = "induced_fit_fast"
 
     def set_package_params(self):
         pass
 
 
-@dataclass
 class LocalExplorationExhaustive(Simulation):
-    keyword: str = "induced_fit_exhaustive"
+    def __init__(
+        self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters
+    ):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.keyword = "induced_fit_exhaustive"
 
     def set_package_params(self):
         if self.env.package == "ppi":
@@ -159,9 +175,12 @@ class LocalExplorationExhaustive(Simulation):
             )
 
 
-@dataclass
 class Rescoring(Simulation):
-    keyword: str = "rescoring"
+    def __init__(
+        self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters
+    ):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.keyword = "rescoring"
 
     def set_package_params(self):
         if self.env.package == "ppi":
@@ -180,13 +199,16 @@ class Rescoring(Simulation):
             self.env.n_waters = self.env._n_waters
 
 
-@dataclass
 class GPCR(Simulation):
-    keyword: str = "gpcr_orth"
+    def __init__(
+        self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters
+    ):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.keyword = "gpcr_orth"
 
     def set_package_params(self):
-        self.env.orthosteric_site = self.env.initial_args.orthosteric_site
-        self.env.initial_site = self.env.initial_args.initial_site
+        self.env.orthosteric_site = self.builder.initial_args.orthosteric_site
+        self.env.initial_site = self.builder.initial_args.initial_site
         self.env.center_of_interface = self.env.initial_site
         box_center, box_radius = retrieve_box(
             self.env.system,
@@ -195,21 +217,24 @@ class GPCR(Simulation):
             weights=[0.35, 0.65],
         )
         self.env.box_center = (
-            self.env.initial_args.box_center
-            if self.env.initial_args.box_center
+            self.builder.initial_args.box_center
+            if self.builder.initial_args.box_center
             else box_center
         )
         self.env.box_radius = (
-            self.env.initial_args.box_radius
-            if self.env.initial_args.box_radius
+            self.builder.initial_args.box_radius
+            if self.builder.initial_args.box_radius
             else box_radius
         )
         self.env.randomize = True
 
 
-@dataclass
 class OutIn(Simulation):
-    keyword: str = "out_in"
+    def __init__(
+        self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters
+    ):
+        super().__init__(parameters_builder, options, folder_name, env)
+        self.keyword = "out_in"
 
     def set_package_params(self):
         self._check_mandatory_fields()
@@ -218,29 +243,29 @@ class OutIn(Simulation):
     def _check_mandatory_fields(self):
         compulsory_flags = ["final_site", "initial_site"]
         for flag in compulsory_flags:
-            if getattr(self.env.initial_args, flag) is None:
+            if getattr(self.builder.initial_args, flag) is None:
                 raise ce.OutInError(
                     f"Flag {flag} must be specified for out_in package."
                 )
 
     def set_outin_params(self):
-        self.env.final_site = self.env.initial_args.final_site
-        self.env.initial_site = self.env.initial_args.initial_site
+        self.env.final_site = self.builder.initial_args.final_site
+        self.env.initial_site = self.builder.initial_args.initial_site
         self.env.center_of_interface = self.env.initial_site
         box_center, box_radius = retrieve_box(
-            self.env.initial_args.system,
+            self.builder.initial_args.system,
             self.env.initial_site,
             self.env.final_site,
             weights=[0.35, 0.65],
         )
         self.env.box_center = (
-            self.env.initial_args.box_center
-            if self.env.initial_args.box_center
+            self.builder.initial_args.box_center
+            if self.builder.initial_args.box_center
             else box_center
         )
         self.env.box_radius = (
-            self.env.initial_args.box_radius
-            if self.env.initial_args.box_radius
+            self.builder.initial_args.box_radius
+            if self.builder.initial_args.box_radius
             else box_radius
         )
         self.env.randomize = True
