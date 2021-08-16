@@ -30,18 +30,11 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
         my_env["SCHRODINGER"] = cs.SCHRODINGER
 
         ligand = ligand if ligand else env.lig
-        env.logger.info(
-            "{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(
-                SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir
-            )
-        )
+        command = ("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir))
+        env.logger.info(command)
+
         try:
-            subprocess.check_output(
-                "{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(
-                    SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir
-                ).split(),
-                env=my_env,
-            )
+            subprocess.check_output(command.split(), env=my_env)
         except subprocess.CalledProcessError:
             raise ce.LigandPreparationError(
                 "\n\nLigand preparation failed.\n\
@@ -52,6 +45,13 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
     \t - export SCHROD_LICENSE_FILE=/path/to/folder/with/static/license\n\
     \t - export LM_LICENSE_FILE=/path/to/folder/with/server/license/"
             )
+
+        # We cannot prevent PlopRotTemp from creating rotamers files, so we remove them afterwards for
+        # all ligands that are not perturbed, so that PELE doesn't crash.
+        ligand_resname = os.path.splitext(ligand)[0]
+        if ligand_resname != env.residue:
+            rot_filename = f"{ligand_resname.upper()}.rot.assign"
+            os.remove(os.path.join(rotamerdir, rot_filename))
 
 
 def retrieve_options(env):
