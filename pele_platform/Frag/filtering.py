@@ -13,22 +13,15 @@ import heapq
 import numpy as np
 
 from pathlib import Path
-from rdkit.Chem import rdMolAlign
-from rdkit import Chem
-from rdkit.Chem import Descriptors
-from rdkit.Chem import QED
-from rdkit.Chem import RDConfig
-from rdkit.Chem import AllChem
-from rdkit.Chem import rdFMCS
-from rdkit.Chem import rdMolAlign, TemplateAlign
-from rdkit.Chem.Draw import IPythonConsole
+from rdkit import Chem, DataStructs
+from rdkit.Chem import Descriptors, QED, RDConfig, AllChem, rdFMCS, rdMolAlign, TemplateAlign
 from rdkit.Chem import Draw
+from rdkit.Chem.Draw import IPythonConsole
 from yaml import load, Loader
 from collections import ChainMap
 from functools import partial
 import openbabel
 from openbabel import pybel
-from rdkit import DataStructs
 from glob import glob
 from tqdm import tqdm
 
@@ -66,7 +59,8 @@ class Library:
             mol_descriptors['arom'] = [frag.arom]
             self.parsed_filters = mol_descriptors
         else:
-            self._load_filters()
+            if self.filters:
+                self._load_filters()
 
         self.sd_files = self._retrieve_files()
         self.main(self.sd_files)
@@ -83,9 +77,10 @@ class Library:
                 if mol:
                     self.molecule = mol
                     self.fragments_dum = [Fragment(mol)]
-                    self.filters_f()
                     if self.filters is None:
                         self.filtered_fragments = True
+                    else:
+                        self.filters_f()
                     if self.filtered_fragments:
                         fp = Chem.RDKFingerprint(mol)
                         coefficient = DataStructs.FingerprintSimilarity(self.init_mol.fingerprint, fp)
@@ -111,14 +106,15 @@ class Library:
             shutil.rmtree("./frag_library")
         os.mkdir("./frag_library")
         for ligand in self.top_molecules:
-            if os.path.exists(os.path.join("./frag_library", ligand)):
-                shutil.rmtree(os.path.join("./frag_library", ligand))
-            os.mkdir(os.path.join("./frag_library", ligand))
-            with Chem.SDWriter(os.path.join(os.path.join("frag_library/", ligand), ligand + ".sdf")) as w:
-                self.ligand_fragment = self.top_molecules[ligand][2]
-                self.fragment_atom = self.top_molecules[ligand][1]
-                self.frag_core_atom = self.top_molecules[ligand][0]
-                w.write(self.ligand_fragment)
+            for i in range(len(self.top_molecules[ligand])):
+                if os.path.exists(os.path.join("./frag_library", ligand + "_" + str(i))):
+                    shutil.rmtree(os.path.join("./frag_library", ligand + "_" + str(i)))
+                os.mkdir(os.path.join("./frag_library", ligand + "_" + str(i)))
+                with Chem.SDWriter(os.path.join(os.path.join("frag_library/", ligand + "_" + str(i)), ligand + '_' + str(i) + ".sdf")) as w:
+                    self.ligand_fragment = self.top_molecules[ligand][i][2]
+                    self.fragment_atom = self.top_molecules[ligand][i][1]
+                    self.frag_core_atom = self.top_molecules[ligand][i][0]
+                    w.write(self.ligand_fragment)
 
     def get_top_molecule(self, heap, tmpdirname):
         """
@@ -166,26 +162,24 @@ class Library:
                     bonds = [(m.GetBeginAtomIdx(), m.GetEndAtomIdx()) for m in mol_with_hs.GetBonds()]
 
                     # Find number of connected components or each substructure match
-                    h_len = []
-                    for k in self.substructure_results[group[1]]:
-                        H = self.generate_graph(bonds_no_Hs)
-                        h_len.append(self.number_connected_components(H, k))
-
-                    if 1 in h_len:
+                    H = self.generate_graph(bonds_no_Hs)
+                    self.number_connected_components(H, self.substructure_results[group[1]][0])
+                    connected_components = nx.connected_components(H)
+                    for fragment_at_idx in connected_components:
                         mw = Chem.RWMol(mol_subs)
                         mw2 = Chem.RWMol(mol_subs)
 
                         atoms_core =[]
-                        atoms_fragment=[]
-                        for atom in mw.GetAtoms():
-                            if atom.GetIdx() not in self.substructure_results[group[1]][h_len.index(1)]:
-                                atom.SetAtomicNum(0)
-                                atoms_fragment.append(atom.GetIdx())
+                        atoms_fragment = list(fragment_at_idx)
+
+                        for idx in atoms_fragment:
+                            mw.GetAtomWithIdx(idx).SetAtomicNum(0)
 
                         for atom in mw2.GetAtoms():
-                            if atom.GetIdx() in self.substructure_results[group[1]][h_len.index(1)]:
+                            if atom.GetIdx() not in list(fragment_at_idx):
                                 atom.SetAtomicNum(0)
                                 atoms_core.append(atom.GetIdx())
+
 
                         mw = Chem.DeleteSubstructs(mw, Chem.MolFromSmarts('[#0]'))
                         mw2 = Chem.DeleteSubstructs(mw2, Chem.MolFromSmarts('[#0]'))
@@ -210,13 +204,15 @@ class Library:
                                     core_atom_node = k
                                     fragment_atom_node = i
 
-                        _ = AllChem.GenerateDepictionMatching2DStructure(core_with_hs, self.init_mol_hs)
-                        for atom in core_with_hs.GetAtoms():
-                            if mol_with_hs.GetAtomWithIdx(core_atom_node).GetPDBResidueInfo().GetName().strip() == atom.GetPDBResidueInfo().GetName().strip():
-                                coords_atom_mw = core_with_hs.GetConformers()[0].GetPositions()[atom.GetIdx()]
+                        #_ = AllChem.GenerateDepictionMatching2DStructure(core_with_hs, self.init_mol_hs)
+                        _ = AllChem.GenerateDepictionMatching2DStructure(mol_no_Hs, self.init_mol)
 
-                        for atom_init in self.init_mol_hs.GetAtoms():
-                            comparison = self.init_mol_hs.GetConformers()[0].GetPositions()[atom_init.GetIdx()][:2] == np.array(coords_atom_mw)[:2]
+                        for atom in mol_no_Hs.GetAtoms():
+                            if mol_with_hs.GetAtomWithIdx(core_atom_node).GetPDBResidueInfo().GetName().strip() == atom.GetPDBResidueInfo().GetName().strip():
+                                coords_atom_mw = mol_no_Hs.GetConformers()[0].GetPositions()[atom.GetIdx()]
+
+                        for atom_init in self.init_mol.GetAtoms():
+                            comparison = self.init_mol.GetConformers()[0].GetPositions()[atom_init.GetIdx()][:2] == np.array(coords_atom_mw)[:2]
                             if comparison.all():
                                 frag_core_atom_yaml = "%s" % (atom_init.GetPDBResidueInfo().GetName().strip())
 
@@ -235,13 +231,21 @@ class Library:
                                 frag_core_atom_yaml = "%s-%s" % (frag_core_atom_yaml, bond.GetBeginAtom().GetPDBResidueInfo().GetName().strip())
 
                         if counter <= 1:
-                            output[group[1]] = [frag_core_atom_yaml, fragment_atom_yaml, fragment_with_hs]
-                    else:
-                        multiple_r_groups += 1
+                            if group[1] in output:
+                                output[group[1]].append([])
+                                output[group[1]][-1].append(frag_core_atom_yaml)
+                                output[group[1]][-1].append(fragment_atom_yaml)
+                                output[group[1]][-1].append(fragment_with_hs)
+                            else:
+                                output[group[1]] = []
+                                output[group[1]].append([])
+                                output[group[1]][0].append(frag_core_atom_yaml)
+                                output[group[1]][0].append(fragment_atom_yaml)
+                                output[group[1]][0].append(fragment_with_hs)
+
                 else:
                     no_substructure+=1
         print("%s STRUCTURES DON'T HAVE THE INPUT LIGAND AS A SUBSTRUCTURE" % (no_substructure))
-        print("%s STRUCTURES HAVE MORE THAN ONE R-GROUP" % (multiple_r_groups))
 
         return output
 

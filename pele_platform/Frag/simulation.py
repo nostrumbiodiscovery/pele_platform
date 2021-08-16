@@ -319,35 +319,54 @@ class FragRunner(object):
     def _filtering(self):
         """
         Runs Feed Forward Frag algorithm.
+        The F3 algorithm can run in two ways:
+            1. Performing a fragment growing simulation before running F3 algorithm.
+            2. Running F3 algorithm directly on a protein-ligand system.
+        Here we extract the initial system and the ligand to then start the filtering
+        process where we obtain a list with the filtering results.
+        For each molecule retrieved from the filtering process, the algorithm performs
+        a growing simulation.
+        If the molecule has more than one R-group bound to the core (our intitial seed
+        compound), several fragment growing simulations are performed in order to grow
+        all the R-groups. To do so, it is needed to change the directory of the PDB with
+        the system as more R-groups are being bound to the core.
         """
         from rdkit import Chem
-        sim_directories = glob.glob(self.parameters.core_process.split(".pdb")[0] + '_*')
+        top_results = []
         binding_energies = {}
-        if len(sim_directories) > 1:
-            for sim_directory in sim_directories:
-                top_results = glob.glob(sim_directory + "/top_result/*")
-                for top_result in top_results:
-                    binding_energies[top_result] = os.path.splitext(top_result)[0].split('y')[-1]
-            system_min_energy = min(binding_energies, key=binding_energies.get)
-            ligand_min_energy = system_min_energy.split("/")[:-2][0] + '/pregrow/growing_result_p.pdb'
-        else:
-            system_min_energy = self.parameters.core
-            ligand_min_energy = self.parameters.f3_ligand
-        ligand_min_energy_mol = Chem.rdmolfiles.MolFromPDBFile(ligand_min_energy, removeHs= True)
-        Chem.rdmolops.AssignStereochemistryFrom3D(ligand_min_energy_mol)
-        top_molecules = fl.main(ligand_min_energy_mol, ligand_min_energy,
+        initial_system_min_energy = self.parameters.core
+        initial_ligand_min_energy = self.parameters.f3_ligand
+        self.parameters.input = "input.conf"
+        initial_ligand_min_energy_mol = Chem.rdmolfiles.MolFromPDBFile(initial_ligand_min_energy, removeHs= True)
+        Chem.rdmolops.AssignStereochemistryFrom3D(initial_ligand_min_energy_mol)
+        top_molecules = fl.main(initial_ligand_min_energy_mol, initial_ligand_min_energy,
                                self.parameters.database, self.parameters.filters)
-
         print("You will perform a total of %s simulations" % len(top_molecules))
-        print("System min energy:", system_min_energy)
-        print("ligand min energy:", ligand_min_energy)
+        print("System min energy:", initial_system_min_energy)
+        print("ligand min energy:", initial_ligand_min_energy)
         for molecule in top_molecules:
-            self.parameters.core = system_min_energy
-            self.parameters.core_process = system_min_energy
-            self.parameters.frag_library = os.path.join("./frag_library", molecule)
-            self.parameters.frag_core_atom = top_molecules[molecule][0]
-            self.parameters.fragment_atom = top_molecules[molecule][1]
-            self._launch()
+            for fragment in range(len(top_molecules[molecule])):
+                if fragment > 0:
+                    self._extract_working_directory()
+                    for dir in self.parameters.working_dir:
+                        for result in glob.glob(dir + "/top_result/*"):
+                            top_results.append(result)
+                    for top_result in top_results:
+                        binding_energies[top_result] = os.path.splitext(top_result)[0].split('y')[-1]
+                    system_min_energy = min(binding_energies, key=binding_energies.get)
+                    ligand_min_energy = system_min_energy.split("/")[:-2][-1] + '/pregrow/growing_result_p.pdb'
+                    ligand_min_energy_mol = Chem.rdmolfiles.MolFromPDBFile(ligand_min_energy, removeHs=True)
+                    Chem.rdmolops.AssignStereochemistryFrom3D(ligand_min_energy_mol)
+                    self.parameters.core = system_min_energy
+                    self.parameters.core_process = system_min_energy
+                else:
+                    self.parameters.core = initial_system_min_energy
+                    self.parameters.core_process = initial_system_min_energy
+
+                self.parameters.frag_library = os.path.join("./frag_library", molecule + "_" + str(fragment))
+                self.parameters.frag_core_atom = top_molecules[molecule][fragment][0]
+                self.parameters.fragment_atom = top_molecules[molecule][fragment][1]
+                self._launch()
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
