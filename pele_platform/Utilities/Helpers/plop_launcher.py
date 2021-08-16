@@ -49,7 +49,7 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
         # We cannot prevent PlopRotTemp from creating rotamers files, so we remove them afterwards for
         # all ligands that are not perturbed, so that PELE doesn't crash.
         ligand_resname = os.path.splitext(ligand)[0]
-        if ligand_resname != env.residue:
+        if ligand_resname != env.residue and not env.mae_lig:
             rot_filename = f"{ligand_resname.upper()}.rot.assign"
             os.remove(os.path.join(rotamerdir, rot_filename))
 
