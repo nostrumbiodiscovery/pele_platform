@@ -30,7 +30,8 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
         my_env["SCHRODINGER"] = cs.SCHRODINGER
 
         ligand = ligand if ligand else env.lig
-        command = ("{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir))
+        command = ("{} {} {} {} ".format(SPYTHON, file_path, options, ligand) +
+                   "--outputname {} --templatedir {} --rotamerdir {}".format(resname, templatedir, rotamerdir))
         env.logger.info(command)
 
         try:
