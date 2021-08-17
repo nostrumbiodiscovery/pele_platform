@@ -107,6 +107,8 @@ class Plotter(object):
             backup_logger(self._logger,
                           "Plotted {} vs {}".format(metric_to_x,
                                                     metric_to_y))
+
+        plt.close("all")
         return output_name
 
     def plot_kde(self, metric_to_x, metric_to_y, output_folder, kde_structs):
@@ -338,6 +340,7 @@ class Plotter(object):
 
         backup_logger(self._logger,
                       "Plotted {} vs {}".format(metric_to_x, metric_to_y))
+        plt.close("all")
 
     def _get_column_names(self, metric_to_x, metric_to_y, metric_to_z=None):
         """
