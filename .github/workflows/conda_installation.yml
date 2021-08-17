@@ -1,4 +1,6 @@
 name: Conda Installation
+# TODO: this should not run on every single push but
+# every time we deploy to Conda
 on: [push]
 
 jobs:
