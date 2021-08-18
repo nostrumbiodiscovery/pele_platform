@@ -17,8 +17,7 @@ GLOBAL_ARGS = os.path.join(test_path, "global/input.yaml")
 INPUTS_GLOBAL_ARGS = os.path.join(test_path, "global/input_inputs.yaml")
 INPUTS_AST_ARGS = os.path.join(test_path, "global/input_inputs_asterisc.yaml")
 EXIT_ARGS = os.path.join(test_path, "exit/input.yaml")
-EXITSOFT_ARGS = os.path.join(test_path, "exit_soft/input.yaml")
-RESTART_ARGS = os.path.join(test_path, "restart/input.yaml")
+EXIT_SOFT_ARGS = os.path.join(test_path, "exit_soft/input.yaml")
 MSM_ARGS = os.path.join(test_path, "Msm/input.yaml")
 MAE_ARGS = os.path.join(test_path, "induced_fit/input_mae.yaml")
 PCA_ARGS = os.path.join(test_path, "pca/input.yaml")
@@ -100,16 +99,15 @@ PCA_VALUES = [
 
 
 @pytest.mark.parametrize(
-    "yaml",
+    "yaml_file",
     [
         INDUCED_EX_ARGS,
         INDUCED_FAST_ARGS,
         GLOBAL_ARGS,
         INPUTS_GLOBAL_ARGS,
         EXIT_ARGS,
-        EXITSOFT_ARGS,
+        EXIT_SOFT_ARGS,
         OUT_IN_ARGS,
-        RESTART_ARGS,
         RESCORING_ARGS,
         MAE_ARGS,
         INPUTS_AST_ARGS,
@@ -119,11 +117,11 @@ PCA_VALUES = [
         MINIMUM_STEPS_ARGS,
     ],
 )
-def test_production_run(yaml):
+def test_production_run(yaml_file):
     """
     Full PELE run in test mode (cpus = 5) using various YAML inputs to cover multiple simulation types.
     """
-    main.run_platform_from_yaml(yaml)
+    main.run_platform_from_yaml(yaml_file)
 
 
 @pytest.mark.parametrize("restart_type", ["restart", "adaptive_restart"])

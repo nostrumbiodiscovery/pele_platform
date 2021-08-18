@@ -1,6 +1,6 @@
 import os
 import glob
-from typing import Any
+from typing import Any, List
 import pele_platform.constants.constants as cs
 from pydantic import validator
 import pele_platform.Utilities.Helpers.helpers as hp
@@ -50,6 +50,8 @@ class SimulationParamsModel(YamlParserModel):
     max_trials_for_one: Any = Field()
     conformation_perturbation: str = Field()
     equilibration_mode: str = Field()
+    water_ids_to_track: List[str] = Field()
+    inputs_dir: str = Field()
 
     @validator("*", pre=True, always=True)
     def set_value_from_sp(cls, v, field):
@@ -120,8 +122,8 @@ class SimulationParamsModel(YamlParserModel):
         return v
 
     @validator("perturbation", always=True)
-    def set_perturbation(cls, v):
-        if v is False:
+    def set_perturbation(cls, v, values):
+        if v is False or values.get("pca_traj"):
             return ""
         return cls.simulation_params.get("perturbation", cs.PERTURBATION)
 

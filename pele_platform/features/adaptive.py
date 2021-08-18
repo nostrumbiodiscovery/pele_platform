@@ -1,5 +1,3 @@
-import os
-import pele_platform.constants.constants as cs
 import pele_platform.constants.pele_params as pcs
 
 from copy import deepcopy
@@ -9,27 +7,7 @@ Description of the file: This file specifies what files to use
 for each job.
 
 """
-
-all_simulations = ["full", "induced_fit_exhaustive", "induced_fit_fast", "rescoring", "in_out", "in_out_soft", "out_in", "gpcr_orth"]
-
-
 SOFTWARE_CONSTANTS = {
-    "adap_ex_output": None,
-    "ad_ex_temp": os.path.join("{}", "adaptive.conf"),
-    "pele_exit_temp": os.path.join("{}", "pele.conf"),
-    "folders": [
-        "",
-        "DataLocal/Templates/OPLS2005/HeteroAtoms/",
-        "DataLocal/Templates/AMBER99sb/HeteroAtoms/",
-        "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
-        "DataLocal/LigandRotamerLibs",
-        "DataLocal/OBC",
-    ],
-    "file_names": ["adaptive.conf", "pele.conf"],
-    "files": [
-        os.path.join(cs.DIR, "Templates/template_adaptive.conf"),
-        os.path.join(cs.DIR, "Templates/pele_template.conf"),
-    ],
     "simulation_params": {
         "out_in": {
             "spawning_type": "inverselyProportional",
@@ -238,9 +216,26 @@ SOFTWARE_CONSTANTS = {
     },
 }
 
+all_simulations = [
+    "full",
+    "induced_fit_exhaustive",
+    "induced_fit_fast",
+    "rescoring",
+    "in_out",
+    "in_out_soft",
+    "out_in",
+    "gpcr_orth",
+    "global",
+    "anm",
+    "interaction_restrictions",
+    "site_finder_global",
+    "site_finder_local",
+    "covalent_docking",
+    "covalent_docking_refinement",
+]
 
-def retrieve_software_settings(args, pele_dir):
 
+def retrieve_software_settings(args):
     software_settings = deepcopy(SOFTWARE_CONSTANTS)
 
     if args.full:
@@ -273,7 +268,5 @@ def retrieve_software_settings(args, pele_dir):
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"
 
-    software_settings["ad_ex_temp"] = software_settings["ad_ex_temp"].format(pele_dir)
-    software_settings["pele_exit_temp"] = software_settings["pele_exit_temp"].format(pele_dir)
     software_settings["simulation_params"] = software_settings["simulation_params"].get(type_simulation)
     return software_settings

@@ -60,8 +60,8 @@ def retrieve_options(env):
     """
 
     options = []
-    if env.core != -1:
-        options.extend(["--core {}".format(env.core)])
+    if not env.core:
+        options.extend(["--core -1"])
     if env.mtor != 4:
         options.extend(["--mtor {}".format(env.mtor)])
     if env.n != 1000:

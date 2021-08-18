@@ -46,34 +46,34 @@ class WorkflowLauncher(LauncherBase):
 class SiteFinderLauncher(LauncherBase):
     steps = [{'type': 'GlobalExploration'}]
     refinement_steps = [
-        {'type': 'ScatterN', 'options': {"distance": 6.0}},
+        {'type': 'Clusters'},
         {'type': 'LocalExplorationExhaustive'},
-        {'type': 'ScatterN', 'options': {"distance": 3.0}},
+        {'type': 'Clusters'},
         {'type': 'Rescoring'}]
 
 
 class GPCRLauncher(LauncherBase):
     steps = [
         {'type': 'GPCR'},
-        {'type': 'ScatterN', 'options': {"distance": 6.0}},
+        {'type': 'Clusters'},
         {'type': 'Rescoring'}]
 
 
 class InducedFitFastLauncher(LauncherBase):
     steps = [{'type': 'LocalExplorationFast'},
-             {'type': 'LowestEnergy5'},
+             {'type': 'LowestEnergy'},
              {'type': 'Rescoring'}]
 
 
 class InducedFitExhaustiveLauncher(LauncherBase):
     steps = [{'type': 'LocalExplorationExhaustive'},
-             {'type': 'LowestEnergy5'},
+             {'type': 'LowestEnergy'},
              {'type': 'Rescoring'}]
 
 
 class OutInLauncher(LauncherBase):
     steps = [{'type': 'OutIn'},
-             {'type': 'ScatterN', 'options': {'distance': 6.0}},
+             {'type': 'Clusters'},
              {'type': 'Rescoring'}]
 
 

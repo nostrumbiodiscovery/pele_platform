@@ -542,7 +542,7 @@ def test_water_clustering_production():
     Tests water clustering running from YAML.
     """
     yaml = os.path.join(test_path, "clustering_xtc", "water_clustering.yaml")
-    parameters = main.run_platform_from_yaml(yaml)
+    builder, parameters = main.run_platform_from_yaml(yaml)
 
     # Checking if water indices to track are correctly parsed
     assert parameters.water_ids_to_track == [("A", 2334), ("A", 2451)]
@@ -597,7 +597,7 @@ def test_residue_checker(path, traj, top):
     topology = os.path.join(test_path, top) if top else None
 
     with pytest.raises(ValueError):
-        analysis = Analysis(
+        Analysis(
             simulation_output=simulation_output,
             chain="Z",
             resname="STR",

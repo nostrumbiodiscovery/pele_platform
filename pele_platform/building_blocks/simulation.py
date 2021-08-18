@@ -17,19 +17,28 @@ class Simulation(blocks.Block):
 
     One class to rule them all, one class to find them, one class to bring them all and in PELE bind them.
     """
-
     def __init__(
         self,
         parameters_builder: pv.ParametersBuilder,
         options: dict,
         folder_name: str,
-        env: pv.Parameters,
+        env: pv.Parameters = None,
     ) -> None:
+        """
+        Initialize Simulation class.
+
+        Parameters
+        ----------
+        parameters_builder : ParametersBuilder
+        options : dict
+        folder_name : str
+        env : Parameters
+        """
         self.options = options
         self.folder_name = folder_name
         self.builder = parameters_builder
-        self.env = env
         self.original_dir = os.path.abspath(os.getcwd())
+        self.env = env if env else self.builder.build_adaptive_variables(self.builder.initial_args)
 
     def run(self) -> (pv.ParametersBuilder, pv.Parameters):
         self.simulation_setup()
@@ -37,10 +46,8 @@ class Simulation(blocks.Block):
         return self.builder, self.env
 
     def simulation_setup(self):
-        self.builder.build_adaptive_variables(self.builder.initial_args)
-        self.env = self.builder.parameters
-        self.set_params(simulation_type=self.keyword)
         self.set_working_folder()
+        self.set_params(simulation_type=self.keyword)
         self.set_package_params()
         self.set_user_params()
         self.create_folders()
@@ -70,7 +77,7 @@ class Simulation(blocks.Block):
         we have induced_fit_fast: true and rescoring: true, because some random parameters were carried over.
         """
         for sim in ft.all_simulations:  # make sure everything else is False
-            setattr(self.env, sim, False)
+            setattr(self.env, sim, "")
         setattr(self.env, simulation_type, True)  # set the simulation you need
 
     def set_user_params(self):
@@ -92,10 +99,12 @@ class Simulation(blocks.Block):
         else:
             self.env.folder_name = self.folder_name
 
-        if hasattr(self.env, "pele_dir"):
-            self.builder.initial_args.folder = os.path.join(
-                os.path.dirname(self.env.pele_dir), self.env.folder_name
-            )
+        if self.env.pele_dir == self.builder.pele_dir:
+            self.env.pele_dir = os.path.join(self.builder.pele_dir, self.env.folder_name)
+        else:
+            self.env.pele_dir = os.path.join(os.path.dirname(self.env.pele_dir), self.env.folder_name)
+
+        self.env.inputs_dir = os.path.join(self.env.pele_dir, "input")
 
     def create_folders(self):
         self.env.create_files_and_folders()

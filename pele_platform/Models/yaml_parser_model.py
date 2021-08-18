@@ -188,7 +188,7 @@ class YamlParserModel(BaseModel):
     gridres: int = Field(
         default=10, categories=["Ligand preparation"]
     )  # alias="ligand_resolution"
-    core: Union[int, List[str]] = Field(categories=["Ligand preparation"])
+    core: Union[int, List[str]] = Field(categories=["Ligand preparation"], default=-1)
 
     ################################################################################################ start from here
 
@@ -368,7 +368,7 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default=False,
     )
-    pca_traj: List[str] = Field()
+    pca_traj: Union[List[str], str] = Field()
     perturbation: str = Field(categories=["Advanced"])
     sasa: str = Field(
         value_from_simulation_params=True,

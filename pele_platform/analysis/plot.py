@@ -93,6 +93,7 @@ class Plotter(object):
             ax.set_xlabel(metric_to_x)
             ax.set_ylabel(metric_to_y)
             plt.savefig(output_name)
+
             backup_logger(self._logger,
                           "Plotted {} vs {} vs {}".format(metric_to_x,
                                                           metric_to_y,
@@ -107,6 +108,7 @@ class Plotter(object):
             backup_logger(self._logger,
                           "Plotted {} vs {}".format(metric_to_x,
                                                     metric_to_y))
+
         return output_name
 
     def plot_kde(self, metric_to_x, metric_to_y, output_folder, kde_structs):

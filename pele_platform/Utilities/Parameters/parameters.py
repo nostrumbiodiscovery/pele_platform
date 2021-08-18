@@ -6,10 +6,8 @@ that are required by the PELE Platform to run the different workflows.
 __all__ = ["ParametersBuilder", "Parameters"]
 
 import shutil
-from pele_platform.Utilities.Parameters.SimulationParams import \
-    simulation_params
-from pele_platform.Utilities.Parameters.SimulationFolders import \
-    simulation_folders
+from pele_platform.Utilities.Parameters.SimulationParams import simulation_params
+from pele_platform.Utilities.Parameters.SimulationFolders import simulation_folders
 
 
 class ParametersBuilder(object):
@@ -54,6 +52,7 @@ class ParametersBuilder(object):
         # In case that folder is not set by the user, we will try to suggest
         # the best candidate considering whether we want to restart a previous
         # simulation or we want to run a new one from scratch.
+
         if not args.folder:
             # If the simulation is being restarted (after debug), adaptive_restarted (from last epoch)
             # or if we're running only_analysis we need to retrieve the LAST pele_dir. Otherwise create a new one
@@ -68,11 +67,13 @@ class ParametersBuilder(object):
         else:
             pele_dir = os.path.abspath(args.folder)
 
+        print("AAAAAAAAAA ParametersBuilder pele_dir", pele_dir)
+
         # Retrieve the specific args for adaptive
-        specific_args = adaptive.retrieve_software_settings(args, pele_dir)
+        specific_args = adaptive.retrieve_software_settings(args)
 
         # Add pele_dir
-        specific_args['pele_dir'] = pele_dir
+        specific_args['pele_dir'] = self.pele_dir = pele_dir if not hasattr(self, "pele_dir") else self.pele_dir
 
         # Initialize Parameters object
         self._parameters = Parameters(args, specific_args)
@@ -111,8 +112,7 @@ class ParametersBuilder(object):
         specific_args = frag.retrieve_software_settings(args)
 
         # Initialize Parameters object
-        self._parameters = Parameters(args, specific_args,
-                                      initialize_simulation_paths=False)
+        self._parameters = Parameters(args, specific_args, initialize_simulation_paths=False)
         self._initialized = True
 
         # Initialize water parameters for FragPELE
@@ -216,9 +216,6 @@ class Parameters(simulation_params.SimulationParams,
         initialize_simulation_params : bool
             Whether to initialize the simulation parameters or not. Default
             is True
-        initialize_simulation_paths : bool
-            Whether to initialize the simulation paths or not. Default
-            is True
         """
         self.args = args
         self.specific_args = specific_args if specific_args is not None else {}
@@ -231,17 +228,18 @@ class Parameters(simulation_params.SimulationParams,
         # Initialize the parameters from parent classes
         if initialize_simulation_params:
             simulation_params.SimulationParams.__init__(self, args)
-        if initialize_simulation_paths:
-            simulation_folders.SimulationPaths.__init__(self, args)
 
         # We need to set the specific arguments again
         for key, value in specific_args.items():
             setattr(self, key, value)
 
     def create_files_and_folders(self):
+        simulation_folders.SimulationPaths.__init__(self)
+
         if not self.adaptive_restart and not self.only_analysis and not self.restart:
             self.create_folders()
             self.create_files()
+
         self.create_logger()
         shutil.copy(self.args.yamlfile, self.pele_dir)
 
@@ -250,7 +248,7 @@ class Parameters(simulation_params.SimulationParams,
             Create pele folders
         """
         from pele_platform.Utilities.Helpers import helpers
-
+        print("AAAAAAAAAAAAAA self.pele_dir in create_folders", self.pele_dir)
         for folder in self.folders:
             helpers.create_dir(self.pele_dir, folder)
 
@@ -290,51 +288,3 @@ class Parameters(simulation_params.SimulationParams,
             file_handler = logging.FileHandler(log_name, mode='a')
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
-
-    def to_json(self, indent=None):
-        """
-        Return a JSON serialized representation.
-        Specification: https://www.json.org/
-
-    .. todo ::
-       * Consider moving this method to a general abstract class to
-         serialize classes.
-
-        Parameters
-        ----------
-        indent : int, optional, default=None
-            If not None, will pretty-print with specified number of spaces
-            for indentation
-
-        Returns
-        -------
-        serialized : str
-            A JSON serialized representation of the object
-        """
-        import json
-
-        d = self.to_dict()
-
-        return json.dumps(d, indent=indent)
-
-    def to_dict(self):
-        """
-        Return a dictionary representation of the Parameters object.
-
-        Returns
-        -------
-        parameters_dict : an OrderedDict object
-            The dictionary representation of the current Parameters object.
-        """
-        from collections import OrderedDict
-
-        parameters_dict = OrderedDict()
-
-        for attribute, value in self.__dict__.items():
-            # Skip special and private attributes
-            if attribute.startswith('__') and attribute.endswith('__'):
-                continue
-
-            parameters_dict[attribute] = value
-
-        return parameters_dict

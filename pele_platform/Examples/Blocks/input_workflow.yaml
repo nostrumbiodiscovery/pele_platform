@@ -4,6 +4,6 @@ resname: 'API'
 seed: 12345
 workflow:
   - type: 'LocalExplorationExhaustive'
-  - type: 'LowestEnergy5'
+  - type: 'LowestEnergy'
   - type: 'Rescoring'
 test: true

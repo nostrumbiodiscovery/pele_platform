@@ -43,6 +43,7 @@ class Pipeline:
             simulation = eval(simulation_name)
             options = step.get("options", {})
             folder = "{}_{}".format(self.iterable.index(step) + 1, simulation_name)
+            print("AAAAAAAAAAAAAAAA folder in Pipeline", folder)
             self.builder, self.env = simulation(self.builder, options, folder, self.env).run()
             output.append(deepcopy(self.env))
         return output

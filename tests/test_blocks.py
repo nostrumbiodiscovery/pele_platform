@@ -12,7 +12,7 @@ import pele_platform.building_blocks.simulation as bb
 from pele_platform.building_blocks.pipeline import Pipeline
 from pele_platform.building_blocks.selection import (
     ScatterN,
-    LowestEnergy5,
+    LowestEnergy,
     GMM,
     Clusters,
 )
@@ -103,13 +103,9 @@ def test_pipeline_checker(iterable):
     2. Pipeline containing two Simulation blocks in a row, without Selection in between.
     3. Empty pipeline.
     """
-    try:
-        env = pv.EnviroBuilder()
-        simulation_params = Pipeline(iterable, env).run()
-    except ce.PipelineError:
-        assert True
-        return
-    assert False
+    with pytest.raises(ce.PipelineError):
+        env = pv.ParametersBuilder()
+        Pipeline(iterable, env).run()
 
 
 @pytest.mark.parametrize(
@@ -149,12 +145,12 @@ def test_simulation_blocks(yaml, package, block, expected):
     yaml.read()
 
     # create pele environment
-    pele_env = pv.EnviroBuilder()
+    pele_env = pv.ParametersBuilder()
     pele_env.initial_args = yaml
     pele_env.initial_args.package = pele_env.package = package
 
     # run Building Block
-    simulation_block = block(pele_env, {}, "test_folder")
+    simulation_block = block(pele_env, {}, "test_folder", pele_env.parameters)
     params = simulation_block.run()
 
     directory = params.pele_dir
@@ -169,7 +165,8 @@ def mock_simulation_env():
     Fixture to fake an EnviroBuilder object to allow testing of the Selection blocks, since they require basic
     attributes such as resname or iterations, which would normally be passed from the previous block in the pipeline.
     """
-    env = pv.EnviroBuilder()
+    builder = pv.ParametersBuilder()
+    env = builder.parameters
     env.pele_dir = os.path.join(test_path, "Blocks/mock_simulation")
     env.output = "output"
     env.iterations = 2
@@ -183,14 +180,14 @@ def mock_simulation_env():
     selection_path = os.path.join(os.path.dirname(env.pele_dir), "test_Selection")
     if os.path.exists(selection_path):
         shutil.rmtree(selection_path)
-    return env
+    return builder, env
 
 
 @pytest.mark.parametrize(
     ("selection_block", "options", "expected"),
     [
         (ScatterN, {"distance": 6.0}, Scatter6_inputs),
-        (LowestEnergy5, None, LowestEnergy5_inputs),
+        (LowestEnergy, None, LowestEnergy5_inputs),
         (GMM, None, GMM_inputs),
         (Clusters, None, Clusters_inputs),
     ],
@@ -200,12 +197,13 @@ def test_selection_blocks(mock_simulation_env, selection_block, options, expecte
     Launches all selection blocks using a fake simulation folder and EnviroBuilder, then checks if the right input
     files were selected in each case.
     """
-    selection = selection_block(mock_simulation_env, options, "test_folder")
-    selection.run()
+    builder, env = mock_simulation_env
+    selection = selection_block(builder, options, "test_folder", env).run()
 
     for i in selection.inputs:
         correct = [elem for elem in expected if elem in i]
         assert correct
+
     assert len(selection.inputs) == len(expected)
 
 
@@ -215,7 +213,7 @@ def test_workflow():
     output.
     """
     yaml = os.path.join(test_path, "Blocks/input_workflow.yaml")
-    output = main.run_platform(yaml)
+    output = main.run_platform_from_yaml(yaml)
     rescoring_params = output[-1]
     rescoring_output = os.path.join(
         rescoring_params.pele_dir, rescoring_params.output, "*/trajectory*.pdb"
@@ -232,12 +230,8 @@ def test_workflow_checker():
     mistakes.
     """
     yaml = os.path.join(test_path, "Blocks/input_wrong_workflow.yaml")
-    try:
-        output = main.run_platform(yaml)
-    except ce.PipelineError:
-        assert True
-        return
-    assert False
+    with pytest.raises(ce.PipelineError):
+        main.run_platform_from_yaml(yaml)
 
 
 def test_optional_params():
@@ -246,7 +240,7 @@ def test_optional_params():
     blocks have expected EnviroBuilder attributes.
     """
     yaml = os.path.join(test_path, "Blocks/input_opt_params.yaml")
-    induced, scatter, rescoring = main.run_platform(yaml)
+    induced, scatter, rescoring = main.run_platform_from_yaml(yaml)
 
     folders = [
         os.path.join(os.path.dirname(induced.pele_dir), "Custom_Folder_Name"),
@@ -259,5 +253,5 @@ def test_optional_params():
     assert scatter.folder_name == "ThisIsSelection"
     assert rescoring.box_radius == 5.0
 
-    for f in folders:
-        assert os.path.exists(f)
+    for folder in folders:
+        assert os.path.exists(folder)

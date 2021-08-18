@@ -343,7 +343,9 @@ def run_adaptive(parameters):
 
         # Fill in simulation templates
         adaptive = ad.SimulationBuilder(
-            parameters.ad_ex_temp, parameters.pele_exit_temp, parameters.topology
+            parameters.ad_ex_temp,
+            parameters.pele_exit_temp,
+            parameters.topology
         )
         adaptive.generate_inputs(parameters, water_obj)
 
