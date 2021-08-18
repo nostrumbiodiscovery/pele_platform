@@ -1048,11 +1048,11 @@ class Analysis(object):
                 boxplot_filename.replace(' ', '_')
 
                 plt.savefig(boxplot_filename)
+                plt.close('all')
 
             except IndexError:
                 print("Samples too disperse to produce a cluster " +
                       "for metric {}".format(metric))
-        plt.close("all")
 
     def _plot_cluster_representatives(self, clusters, dataframe,
                                       representative_structures,
