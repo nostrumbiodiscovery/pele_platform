@@ -10,6 +10,7 @@ We assume you have already installed the software and have access to Schrödinge
     - `Glide docking pose refinement in hemagglutinin binding site <induced_fit.html>`_
     - `GPCR simulation of BU72 agonist of the μ-opioid receptor <gpcr.html>`_
     - `Performing a fragment growing simulation in p38 kinase <frag_pele.html>`_
+    - `Pocket exploration and comparison to the native pose by calculating RMSD <site_finder.html>`_
 
 For further information about the obtained outputs files, refer to `this page <outputs.html>`_.
 
@@ -27,6 +28,10 @@ For further information about the obtained outputs files, refer to `this page <o
 
 .. toctree::
    frag_pele.rst
+   :hidden:
+
+.. toctree::
+   site_finder.rst
    :hidden:
 
 .. toctree::

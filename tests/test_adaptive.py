@@ -5,11 +5,9 @@ import pytest
 import shutil
 import re
 import yaml
-from packaging import version
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
-from pele_platform.Utilities.Helpers import helpers
 
 test_path = os.path.join(cs.DIR, "Examples")
 
