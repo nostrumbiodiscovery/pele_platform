@@ -506,7 +506,7 @@ All rights reserved, 2021.
 
 plotter_version_header = """
 PELE Platform Plotter {}
-----------------------------------
+-------------------------
 Nostrum Biodiscovery SL
 All rights reserved, 2021.
 """
