@@ -15,8 +15,13 @@ import os
 
 
 # Constants
-PLOT_TYPE_CHOICES = ('scatter', 'interactive')
+PLOT_TYPE_CHOICES = ('scatter', 'interactive', 'density')
 DEFAULT_PLOT_TYPE = 'scatter'
+COLORS = {'blue': ('lightskyblue', 'royalblue'),
+          'red': ('#f5bcbc', 'firebrick'),
+          'green': ('palegreen', 'seagreen'),
+          'purple': ('#d9c6ec', '#8000ff'),
+          'orange': ('#facc9e', '#ff6600')}
 
 
 # Classes
@@ -43,7 +48,7 @@ class PlotData(object):
         self.y_data = y_data
         self.z_data = z_data
 
-    def get_xs_from_pele_data(self, pele_data):
+    def get_xs_from_pele_data(self, pele_data, sanitize=True):
         """
         It returns the X values to plot from a DataFrame containing
         PELE data.
@@ -53,13 +58,26 @@ class PlotData(object):
         pele_data : a Pandas.DataFrame object
             The DataFrame containing the PELE simulation data from
             where the values will be extracted
+        sanitize : bool
+            Whether to sanitize data or not. Default is 'True'
+
+        Returns
+        -------
+        xs : a Pandas.DataFrame object
+            The DataFrame containing the values to plot on the X axis
         """
         if self.x_data.category == 'report_column':
-            return pele_data.iloc[:, self.x_data.column - 1]
+            xs = pele_data.iloc[:, self.x_data.column - 1]
+
+            if sanitize:
+                import pandas as pd
+                pd.to_numeric(xs, errors='coerce').fillna(-1)
+
+            return xs
         else:
             raise NotImplementedError()
 
-    def get_ys_from_pele_data(self, pele_data):
+    def get_ys_from_pele_data(self, pele_data, sanitize=True):
         """
         It returns the Y values to plot from a DataFrame containing
         PELE data.
@@ -69,13 +87,26 @@ class PlotData(object):
         pele_data : a Pandas.DataFrame object
             The DataFrame containing the PELE simulation data from
             where the values will be extracted
+        sanitize : bool
+            Whether to sanitize data or not. Default is 'True'
+
+        Returns
+        -------
+        ys : a Pandas.DataFrame object
+            The DataFrame containing the values to plot on the Y axis
         """
         if self.y_data.category == 'report_column':
-            return pele_data.iloc[:, self.y_data.column - 1]
+            ys = pele_data.iloc[:, self.y_data.column - 1]
+
+            if sanitize:
+                import pandas as pd
+                pd.to_numeric(ys, errors='coerce').fillna(-1)
+
+            return ys
         else:
             raise NotImplementedError()
 
-    def get_zs_from_pele_data(self, pele_data):
+    def get_zs_from_pele_data(self, pele_data, sanitize=True):
         """
         It returns the Z values to plot from a DataFrame containing
         PELE data.
@@ -85,14 +116,94 @@ class PlotData(object):
         pele_data : a Pandas.DataFrame object
             The DataFrame containing the PELE simulation data from
             where the values will be extracted
+        sanitize : bool
+            Whether to sanitize data or not. Default is 'True'
+
+        Returns
+        -------
+        zs : a Pandas.DataFrame object
+            The DataFrame containing the values to plot on the Z axis
         """
         if isinstance(self.z_data, EmptyAxisData):
             return None
 
         if self.z_data.category == 'report_column':
-            return pele_data.iloc[:, self.z_data.column - 1]
+            zs = pele_data.iloc[:, self.z_data.column - 1]
+
+            if sanitize:
+                import pandas as pd
+                zs = pd.to_numeric(zs, errors='coerce').fillna(-1)
+
+            return zs
         else:
             raise NotImplementedError()
+
+    def is_plottable(self):
+        """
+        It notifies if the current plot data contains enough data to
+        generate a plot.
+
+        Returns
+        -------
+        answer : bool
+            Whether this PlotData object can be visualized in a plot
+            or not
+        """
+        answer = (not isinstance(self.x_data, EmptyAxisData) and
+                  not isinstance(self.y_data, EmptyAxisData))
+
+        return answer
+
+
+class PlotAppearance(object):
+    """
+    It handles the appearance settings of the plot.
+    """
+
+    def __init__(self, colormap_name, plot_color, background_color,
+                 display_edges=None, n_levels=5, vertical_lines=[],
+                 horizontal_lines=[], lines_color='red'):
+        """
+        It initializes a PlotAppearance object.
+
+        Parameters
+        ----------
+        colormap_name : str
+            The name of the colormap to represent the values
+            of the Z axis
+        plot_color : str
+            The color for the plot. One of ['blue', 'red', 'green',
+            'purple', 'orange']
+        background_color : str
+            The background color for the plot. Default is 'None'
+        display_edges : bool
+            Whether to display level edges or not in a density plot.
+            Default is False
+        n_levels : int
+            Number of levels to display in a density plot. Default is 5
+        vertical_lines : list[float]
+            A list of all the intercepts for vertical lines. Default is
+            an empty list
+        horizontal_lines : list[float]
+            A list of all the intercepts for horizontal lines. Default
+            is an empty list
+        lines_color : str
+           The color name for lines. Default is 'red'
+        """
+        self.colormap_name = colormap_name
+        self.plot_color = plot_color
+        self.background_color = background_color
+        self.display_edges = display_edges
+        self.n_levels = n_levels
+        self.lines_color = lines_color
+
+        self.lines = []
+        for vertical_line in vertical_lines:
+            line = Line(vertical_line, vertical=True)
+            self.lines.append(line)
+        for horizontal_line in horizontal_lines:
+            line = Line(horizontal_line, vertical=False)
+            self.lines.append(line)
 
 
 class AxisData(object):
@@ -182,6 +293,28 @@ class UnlabelledAxisData(AxisData):
                          lowest=lowest, highest=highest)
 
 
+class Line(object):
+    """
+    It represents a line to be added in the plot.
+    """
+
+    def __init__(self, intercept, vertical=True):
+        """
+        It initializes a Line object.
+
+        Parameters
+        ----------
+        intercept : float
+           The value where the line intercepts the axis
+        vertical : bool
+           Whether it is a vertical or an horizontal line. Default is
+           'True'
+        """
+
+        self.intercept = intercept
+        self.vertical = vertical
+
+
 # Methods
 def parse_args():
     """
@@ -218,6 +351,38 @@ def parse_args():
         dimension, if only the column number of the metric to plot is
         supplied, or two dimensions if both column number and axis
         label are supplied
+    xlowest : float
+        Lowest value to plot on the X axis
+    xhighest : float
+        Highest value to plot on the X axis
+    ylowest : float
+        Lowest value to plot on the Y axis
+    yhighest : float
+        Highest value to plot on the Y axis
+    zlowest : float
+        Lowest value to plot on the Z axis
+    zhighest : float
+        Highest value to plot on the Z axis
+    colormap : str
+        The name of the colormap to represent the values
+        of the Z axis
+    color : str
+        The color for the plot. One of ['blue', 'red', 'green',
+        'purple', 'orange']
+    with_edges : bool
+        Display edges of levels in the density plot
+    n_levels : int
+        Number of levels to display in the density plot when
+        edges are shown
+    background_color : str
+        The background color for the plot. It must be a CSS4 compatible
+        color name
+    vertical_lines : list[float]
+        A list of all the intercepts for vertical lines
+    horizontal_lines : list[float]
+        A list of all the intercepts for horizontal lines
+    lines_color : str
+        The color name for lines
     """
     # Parser setup
     from argparse import ArgumentParser
@@ -271,6 +436,27 @@ def parse_args():
                         help='Lowest value to plot on the Z axis')
     parser.add_argument('--zhighest', type=float, default=None,
                         help='Highest value to plot on the Z axis')
+    parser.add_argument('--colormap', type=str, default='gnuplot',
+                        help='The colormap to employ to represent ' +
+                        'the values of the Z axis')
+    parser.add_argument('--color', type=str,
+                        choices=COLORS, default='blue',
+                        help='Plot color. One of ' + str(COLORS))
+    parser.add_argument('--with_edges', type=bool, default=False,
+                        help='Display edges of levels in the density plot')
+    parser.add_argument('--n_levels', type=int, default=5,
+                        help='Number of levels to display in the density' +
+                        'plot when edges are shown')
+    parser.add_argument('--background_color', type=str, default='white',
+                        help='Background color for the plot.')
+    parser.add_argument('--vertical_line', action='append', type=float,
+                        help='It adds a vertical line to the intercept ' +
+                        'that is supplied.', nargs=1)
+    parser.add_argument('--horizontal_line', action='append', type=float,
+                        help='It adds an horizontal line to the intercept ' +
+                        'that is supplied.', nargs=1)
+    parser.add_argument('--lines_color', type=str, default='red',
+                        help='Color for lines.')
 
     # Parse arguments
     parsed_args = parser.parse_args()
@@ -291,6 +477,18 @@ def parse_args():
     yhighest = parsed_args.yhighest
     zlowest = parsed_args.zlowest
     zhighest = parsed_args.zhighest
+    colormap = parsed_args.colormap
+    color = parsed_args.color
+    with_edges = parsed_args.with_edges
+    n_levels = parsed_args.n_levels
+    background_color = parsed_args.background_color
+    vertical_lines = parsed_args.vertical_line
+    if vertical_lines is None:
+        vertical_lines = list()
+    horizontal_lines = parsed_args.horizontal_line
+    if horizontal_lines is None:
+        horizontal_lines = list()
+    lines_color = parsed_args.lines_color
 
     # Check parameters
     if csv_file is not None:
@@ -306,14 +504,32 @@ def parse_args():
         if not os.path.isdir(output_folder):
             raise ValueError('Wrong PELE output folder at:', output_folder)
 
+    from matplotlib import colors as mcolors
+    if (background_color is not None and
+            background_color not in mcolors.CSS4_COLORS):
+        raise ValueError(f'Wrong background color: {background_color}, ' +
+                         'it must be a CSS4-compatible color name.')
+
+    if (lines_color is not None and
+            lines_color not in mcolors.CSS4_COLORS):
+        raise ValueError(f'Wrong background color: {lines_color}, ' +
+                         'it must be a CSS4-compatible color name.')
+
     return csv_file, results_folder, output_folder, \
         report_name, trajectory_name, plot_type, xdata, ydata, zdata, \
-        xlowest, xhighest, ylowest, yhighest, zlowest, zhighest
+        xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
+        colormap, color, with_edges, n_levels, background_color, \
+        vertical_lines, horizontal_lines, lines_color
 
 
 def print_parameters(csv_file, results_folder, output_folder,
                      report_name, trajectory_name,
-                     plot_type, xdata, ydata, zdata):
+                     plot_type, xdata, ydata, zdata,
+                     xlowest, xhighest, ylowest, yhighest,
+                     zlowest, zhighest, colormap, color,
+                     with_edges, n_levels, background_color,
+                     vertical_lines, horizontal_lines,
+                     lines_color):
     """
     It prints the parameters supplied by the user.
 
@@ -348,21 +564,360 @@ def print_parameters(csv_file, results_folder, output_folder,
         dimension, if only the column number of the metric to plot is
         supplied, or two dimensions if both column number and axis
         label are supplied
+    xlowest : float
+        Lowest value to plot on the X axis
+    xhighest : float
+        Highest value to plot on the X axis
+    ylowest : float
+        Lowest value to plot on the Y axis
+    yhighest : float
+        Highest value to plot on the Y axis
+    zlowest : float
+        Lowest value to plot on the Z axis
+    zhighest : float
+        Highest value to plot on the Z axis
+    colormap : str
+        The name of the colormap to represent the values
+        of the Z axis
+    color : str
+        The color for the plot. One of ['blue', 'red', 'green',
+        'purple', 'orange']
+    with_edges : bool
+        Display edges of levels in the density plot
+    n_levels : int
+        Number of levels to display in the density plot when
+        edges are shown
+    background_color : str
+        The background color for the plot. It must be a CSS4 compatible
+        color name
+    vertical_lines : list[float]
+        A list of all the intercepts for vertical lines
+    horizontal_lines : list[float]
+        A list of all the intercepts for horizontal lines
+    lines_color : str
+        The color name for lines
     """
 
-    print('Input parameters:')
-    print(' - csv_file:', csv_file)
-    print(' - results_folder:', results_folder)
-    print(' - output_folder:', output_folder)
-    print(' - report_name:', report_name)
-    print(' - trajectory_name:', trajectory_name)
-    print(' - plot_type:', plot_type)
-    print(' - xdata:', xdata)
-    print(' - ydata:', ydata)
-    print(' - zdata:', zdata)
+    max_len = max([len(str(item)) if item is not None else 1
+                   for item in [csv_file, results_folder,
+                                output_folder, report_name,
+                                trajectory_name, plot_type,
+                                xdata, ydata, zdata,
+                                xlowest, xhighest,
+                                ylowest, yhighest,
+                                zlowest, zhighest,
+                                colormap, color, with_edges,
+                                n_levels, background_color,
+                                vertical_lines, horizontal_lines,
+                                lines_color]])
+
+    print('-> Input parameters:')
+    print(' - csv_file:         ',
+          ' ' * (max_len - (len(str(csv_file))
+                            if csv_file is not None else 1)),
+          '-' if csv_file is None else csv_file)
+    print(' - results_folder:   ',
+          ' ' * (max_len - (len(str(results_folder))
+                            if results_folder is not None else 1)),
+          '-' if results_folder is None else results_folder)
+    print(' - output_folder:    ',
+          ' ' * (max_len - (len(str(output_folder))
+                            if output_folder is not None else 1)),
+          '-' if output_folder is None else output_folder)
+    print(' - report_name:      ',
+          ' ' * (max_len - (len(str(report_name))
+                            if report_name is not None else 1)),
+          '-' if report_name is None else report_name)
+    print(' - trajectory_name:  ',
+          ' ' * (max_len - (len(str(trajectory_name))
+                            if trajectory_name is not None else 1)),
+          '-' if trajectory_name is None else trajectory_name)
+    print(' - plot_type:        ',
+          ' ' * (max_len - (len(str(plot_type))
+                            if plot_type is not None else 1)),
+          '-' if plot_type is None else plot_type)
+    print(' - xdata:            ',
+          ' ' * (max_len - (len(str(xdata))
+                            if xdata is not None else 1)),
+          '-' if xdata is None else xdata)
+    print(' - ydata:            ',
+          ' ' * (max_len - (len(str(ydata))
+                            if ydata is not None else 1)),
+          '-' if ydata is None else ydata)
+    print(' - zdata:            ',
+          ' ' * (max_len - (len(str(zdata))
+                            if zdata is not None else 1)),
+          '-' if zdata is None else zdata)
+    print(' - xlowest:          ',
+          ' ' * (max_len - (len(str(xlowest))
+                            if xlowest is not None else 1)),
+          '-' if xlowest is None else xlowest)
+    print(' - xhighest:         ',
+          ' ' * (max_len - (len(str(xhighest))
+                            if xhighest is not None else 1)),
+          '-' if xhighest is None else xhighest)
+    print(' - ylowest:          ',
+          ' ' * (max_len - (len(str(ylowest))
+                            if ylowest is not None else 1)),
+          '-' if ylowest is None else ylowest)
+    print(' - yhighest:         ',
+          ' ' * (max_len - (len(str(yhighest))
+                            if yhighest is not None else 1)),
+          '-' if yhighest is None else yhighest)
+    print(' - zlowest:          ',
+          ' ' * (max_len - (len(str(zlowest))
+                            if zlowest is not None else 1)),
+          '-' if zlowest is None else zlowest)
+    print(' - zhighest:         ',
+          ' ' * (max_len - (len(str(zhighest))
+                            if zhighest is not None else 1)),
+          '-' if zhighest is None else zhighest)
+    print(' - colormap:         ',
+          ' ' * (max_len - (len(str(colormap))
+                            if colormap is not None else 1)),
+          '-' if colormap is None else colormap)
+    print(' - color:            ',
+          ' ' * (max_len - (len(str(color))
+                            if color is not None else 1)),
+          '-' if color is None else color)
+    print(' - with_edges:       ',
+          ' ' * (max_len - (len(str(with_edges))
+                            if with_edges is not None else 1)),
+          '-' if with_edges is None else with_edges)
+    print(' - n_levels:         ',
+          ' ' * (max_len - (len(str(n_levels))
+                            if n_levels is not None else 1)),
+          '-' if n_levels is None else n_levels)
+    print(' - background_color: ',
+          ' ' * (max_len - (len(str(background_color))
+                            if background_color is not None else 1)),
+          '-' if background_color is None else background_color)
+    print(' - vertical_lines:   ',
+          ' ' * (max_len - (len(str(vertical_lines))
+                            if vertical_lines is not None else 1)),
+          '-' if vertical_lines is None else vertical_lines)
+    print(' - horizontal_lines: ',
+          ' ' * (max_len - (len(str(horizontal_lines))
+                            if horizontal_lines is not None else 1)),
+          '-' if horizontal_lines is None else horizontal_lines)
+    print(' - lines_color:      ',
+          ' ' * (max_len - (len(str(lines_color))
+                            if lines_color is not None else 1)),
+          '-' if lines_color is None else lines_color)
+    print()
 
 
-def parse_axis_data(axis_data, lowest, highest):
+def request_axis_data(axis_name, default_answer, pele_data, optional=False):
+    """
+    It asks the user for the axis data.
+
+    Parameters
+    ----------
+    axis_name : str
+        The name of the axis whose data is requested
+    default_answer : str
+        The default answer to use. One of ['y', 'n']
+    pele_data : a Pandas.DataFrame object
+        The DataFrame that contains the PELE simulation data
+    optional : bool
+        Whether the user will be forced to supply axis data or they
+        will be able to skip the request. Default is 'False'
+
+    Returns
+    -------
+    axis_data : an AxisData object
+        The AxisData object that contains the resulting axis data
+    """
+    assert default_answer.lower() in ['y', 'n'], \
+        'Wrong default answer supplied'
+
+    if optional:
+        optional_str = ' (optional)'
+
+        if default_answer == 'y':
+            default_opt = '[y]/n'
+        else:
+            default_opt = 'y/[n]'
+
+    else:
+        optional_str = ''
+        default_opt = ''
+
+    print(f'-> No data to plot on axis {axis_name} was supplied' +
+          f'{optional_str}.')
+
+    if optional:
+        answer = input(f'  Would you like to supply it now ' +
+                       f'({default_opt})? ')
+
+        if answer == '':
+            answer = default_answer
+
+        if answer.lower() == 'n':
+            print()
+            return EmptyAxisData()
+
+        if answer.lower() not in ['y', 'n']:
+            print(f' Unexpected answer.')
+            print()
+            return request_axis_data(axis_name, default_answer,
+                                     pele_data)
+
+    report_columns = list(pele_data.columns)
+    max_len = max([len(metric) for metric in report_columns])
+    char_counter = 2
+    final_break = False
+    print(f' - Available metrics:')
+    for idx, metric in enumerate(report_columns, start=1):
+        if not final_break:
+            print('  ', end='')
+        to_print = '{:2d}. {}{}'.format(idx,
+                                        metric,
+                                        ' ' * (max_len - len(metric) + 1))
+        if char_counter + len(to_print) > 80:
+            print(to_print)
+            char_counter = 2
+            final_break = False
+        else:
+            print(to_print, end='')
+            char_counter += len(to_print)
+            final_break = True
+
+    if final_break:
+        print()
+
+    column = input(f' - Metric column index: ')
+
+    if not column.isdigit() or not float(column).is_integer():
+        print(f' Unexpected answer: column index must be an integer.')
+        print()
+        return request_axis_data(axis_name, default_answer,
+                                 pele_data)
+
+    column = int(column)
+
+    if column < 1 or column > len(report_columns):
+        print(f' Unexpected answer: column index must be inside ' +
+              'range: [1, {}].'.format(len(report_columns)))
+        print()
+        return request_axis_data(axis_name, default_answer,
+                                 pele_data)
+
+    label = input(f' - Axis label [optional]: ')
+    if label == '':
+        label = report_columns[column - 1]
+
+    label = add_units(label)
+
+    print()
+    return AxisData(label, column)
+
+
+def add_units(metric_name):
+    """
+    Given a metric name, it adds the units according to its input.
+
+    Parameters
+    ----------
+    metric_name : str
+        The name of the metric where the units will be added
+
+    Returns
+    -------
+    label : str
+        The new label of the metric containing the units that
+        were inferred from its original content
+    """
+
+    # Add units to label
+    if "energy" in metric_name.lower():
+        label = metric_name + " ($kcal/mol$)"
+    elif "energies" in metric_name.lower():
+        label = metric_name + " ($kcal/mol$)"
+    elif "distance" in metric_name.lower():
+        label = metric_name + " ($\AA$)"
+    elif "rmsd" in metric_name.lower():
+        label = metric_name + " ($\AA$)"
+    else:
+        label = metric_name
+
+    return label
+
+
+def get_colormap(colormap_name):
+    """
+    Given a colormap name, it returns the corresponding colormap object.
+
+    Parameters
+    ----------
+    colormap_name : str
+        The name of the colormap
+
+    Returns
+    -------
+    cmap : a Matplotlib.cm.Colormap object
+        The requested colormap object
+    """
+    from matplotlib import pyplot
+    from matplotlib.colors import ListedColormap
+    import numpy as np
+
+    if colormap_name.lower() == 'plasma':
+        cmap = pyplot.cm.plasma
+    elif colormap_name.lower() == 'magma':
+        cmap = pyplot.cm.magma
+    elif colormap_name.lower() == 'turbo':
+        cmap = pyplot.cm.turbo
+    elif colormap_name.lower() == 'jet':
+        cmap = pyplot.cm.jet
+    elif colormap_name.lower() == 'gnuplot':
+        cmap = pyplot.cm.gnuplot
+    elif colormap_name.lower() == 'gnuplot2':
+        cmap = pyplot.cm.gnuplot2
+    elif colormap_name.lower() == 'nipy_spectral':
+        cmap = pyplot.cm.nipy_spectral
+    elif colormap_name.lower() == 'spectral':
+        cmap = pyplot.cm.Spectral
+    elif colormap_name.lower() == 'cividis':
+        cmap = pyplot.cm.cividis
+    elif colormap_name.lower() == 'inferno':
+        cmap = pyplot.cm.inferno
+    elif colormap_name.lower() == 'autumn':
+        cmap = pyplot.cm.autumn
+    elif colormap_name.lower() == 'winter':
+        cmap = pyplot.cm.winter
+    elif colormap_name.lower() == 'spring':
+        cmap = pyplot.cm.spring
+    elif colormap_name.lower() == 'summer':
+        cmap = pyplot.cm.summer
+    elif colormap_name.lower() == 'wistia':
+        cmap = pyplot.cm.Wistia
+    elif colormap_name.lower() == 'copper':
+        cmap = pyplot.cm.copper
+    elif colormap_name.lower() == 'blues':
+        cmap = pyplot.cm.Blues
+    elif colormap_name.lower() == 'reducedblues':
+        blues = pyplot.cm.get_cmap('Blues', 512)
+        cmap = ListedColormap(blues(np.linspace(0.95, 0.4, 256)))
+    elif colormap_name.lower() == 'reducedgreens':
+        greens = pyplot.cm.get_cmap('Greens', 512)
+        cmap = ListedColormap(greens(np.linspace(0.95, 0.4, 256)))
+    elif colormap_name.lower() == 'reducedreds':
+        reds = pyplot.cm.get_cmap('Reds', 512)
+        cmap = ListedColormap(reds(np.linspace(0.95, 0.4, 256)))
+    elif colormap_name.lower() == 'reducedpurples':
+        purples = pyplot.cm.get_cmap('Purples', 512)
+        cmap = ListedColormap(purples(np.linspace(0.95, 0.4, 256)))
+    elif colormap_name.lower() == 'reducedoranges':
+        oranges = pyplot.cm.get_cmap('Oranges', 512)
+        cmap = ListedColormap(oranges(np.linspace(0.95, 0.4, 256)))
+    else:
+        raise NameError('Unknown colormap name: \'{}\''.format(colormap_name))
+
+    return cmap
+
+
+def parse_axis_data(axis_data, lowest, highest, pele_data):
     """
     It sets the columns and label of the data that wants to be plotted.
 
@@ -374,6 +929,8 @@ def parse_axis_data(axis_data, lowest, highest):
         Lowest value to plot on this axis
     highest : float
         Highest value to plot on this axis
+    pele_data : a Pandas.DataFrame object
+        The DataFrame that contains the PELE simulation data
 
     RETURNS
     -------
@@ -395,31 +952,21 @@ def parse_axis_data(axis_data, lowest, highest):
             return EmptyAxisData()
 
         if len(axis_data) == 1:
-            return UnlabelledAxisData(column, lowest=lowest,
-                                      highest=highest)
+            report_columns = list(pele_data.columns)
+            metric_name = report_columns[column - 1]
 
         else:
             metric_name = axis_data[1]
 
-            # Add units to label
-            if "energy" in metric_name.lower():
-                label = metric_name + " ($kcal/mol$)"
-            elif "energies" in metric_name.lower():
-                label = metric_name + " ($kcal/mol$)"
-            elif "distance" in metric_name.lower():
-                label = metric_name + " ($\AA$)"
-            elif "rmsd" in metric_name.lower():
-                label = metric_name + " ($\AA$)"
-            else:
-                label = metric_name
+        label = add_units(metric_name)
 
-            return AxisData(label=label, column=column,
-                            lowest=lowest, highest=highest)
+        return AxisData(label=label, column=column,
+                        lowest=lowest, highest=highest)
 
 
-def interactive_plot(pele_data, plot_data):
+def interactive_plot(pele_data, plot_data, plot_appearance):
     """
-    It launches an interactive plot.
+    It generates an interactive plot.
 
     Parameters
     ----------
@@ -428,6 +975,8 @@ def interactive_plot(pele_data, plot_data):
     plot_data : a PlotData object
         The PlotData containing the information to plot in each
         axes
+    plot_appearance : a PlotAppearance object
+        The appearance settings for the plot
     """
     from matplotlib import pyplot
 
@@ -446,19 +995,22 @@ def interactive_plot(pele_data, plot_data):
         else:
             z_min = plot_data.z_data.lowest
 
-        cmap = pyplot.cm.plasma
+        cmap = get_colormap(plot_appearance.colormap_name)
         norm = pyplot.Normalize(z_min, z_max)
+        color = None
     else:
         cmap = None
         norm = None
+        color = COLORS[plot_appearance.plot_color][1]
 
     fig, ax = pyplot.subplots()
 
     scatter = pyplot.scatter(x_values, y_values, c=z_values, cmap=cmap,
-                             norm=norm)
+                             norm=norm, color=color)
 
+    # Axes settings
     ax.margins(0.05)
-    ax.set_facecolor('lightgray')
+    ax.set_facecolor(plot_appearance.background_color)
     pyplot.ylabel(plot_data.y_data.label)
     pyplot.xlabel(plot_data.x_data.label)
     pyplot.xlim([plot_data.x_data.lowest, plot_data.x_data.highest])
@@ -469,6 +1021,15 @@ def interactive_plot(pele_data, plot_data):
                              bbox=dict(boxstyle="round", fc="w"),
                              arrowprops=dict(arrowstyle="->"))
     annotation.set_visible(False)
+
+    # Add lines
+    for line in plot_appearance.lines:
+        if line.vertical:
+            ax.axvline(line.intercept, color=plot_appearance.lines_color,
+                       linestyle=':', linewidth=2)
+        else:
+            ax.axhline(line.intercept, color=plot_appearance.lines_color,
+                       linestyle=':', linewidth=2)
 
     # Activate the colorbar only if the Z axis contains data to plot
     if not isinstance(plot_data.z_data, EmptyAxisData):
@@ -516,9 +1077,9 @@ def interactive_plot(pele_data, plot_data):
     pyplot.show()
 
 
-def scatter_plot(pele_data, plot_data):
+def scatter_plot(pele_data, plot_data, plot_appearance):
     """
-    It launches an scatter plot.
+    It generates an scatter plot.
 
     Parameters
     ----------
@@ -527,6 +1088,8 @@ def scatter_plot(pele_data, plot_data):
     plot_data : a PlotData object
         The PlotData containing the information to plot in each
         axes
+    plot_appearance : a PlotAppearance object
+        The appearance settings for the plot
     """
     from matplotlib import pyplot
 
@@ -534,23 +1097,118 @@ def scatter_plot(pele_data, plot_data):
     y_values = plot_data.get_ys_from_pele_data(pele_data)
     z_values = plot_data.get_zs_from_pele_data(pele_data)
 
+    if z_values is not None:
+        if plot_data.z_data.highest is None:
+            z_max = max(z_values)
+        else:
+            z_max = plot_data.z_data.highest
+
+        if plot_data.z_data.lowest is None:
+            z_min = min(z_values)
+        else:
+            z_min = plot_data.z_data.lowest
+
+        cmap = get_colormap(plot_appearance.colormap_name)
+        norm = pyplot.Normalize(z_min, z_max)
+        color = None
+    else:
+        cmap = None
+        norm = None
+        color = COLORS[plot_appearance.plot_color][1]
+
     fig, ax = pyplot.subplots()
 
-    if z_values is None:
-        ax.scatter(x_values, y_values, s=20)
+    scatter = ax.scatter(x_values, y_values, c=z_values, s=20,
+                         cmap=cmap, norm=norm, color=color)
 
-    else:
-        scatter = ax.scatter(x_values, y_values, c=z_values, s=20)
+    if z_values is not None:
         cbar = pyplot.colorbar(scatter)
         cbar.ax.set_ylabel(plot_data.z_data.label)
 
+    # Axes settings
     ax.margins(0.05)
-    ax.set_facecolor('lightgray')
+    ax.set_facecolor(plot_appearance.background_color)
     pyplot.ylabel(plot_data.y_data.label)
     pyplot.xlabel(plot_data.x_data.label)
     pyplot.xlim([plot_data.x_data.lowest, plot_data.x_data.highest])
     pyplot.ylim([plot_data.y_data.lowest, plot_data.y_data.highest])
 
+    # Add lines
+    for line in plot_appearance.lines:
+        if line.vertical:
+            ax.axvline(line.intercept, color=plot_appearance.lines_color,
+                       linestyle=':', linewidth=2)
+        else:
+            ax.axhline(line.intercept, color=plot_appearance.lines_color,
+                       linestyle=':', linewidth=2)
+
+    pyplot.show()
+
+
+def density_plot(pele_data, plot_data, plot_appearance):
+    """
+    It generates a density plot.
+
+    Parameters
+    ----------
+    pele_data : a Pandas.DataFrame object
+        The DataFrame that contains the PELE simulation data
+    plot_data : a PlotData object
+        The PlotData containing the information to plot in each
+        axes
+    plot_appearance : a PlotAppearance object
+        The appearance settings for the plot
+    """
+    from matplotlib import pyplot
+    import seaborn as sns
+
+    sns.set_style("ticks")
+
+    x_values = plot_data.get_xs_from_pele_data(pele_data).to_numpy()
+    y_values = plot_data.get_ys_from_pele_data(pele_data).to_numpy()
+
+    color1, color2 = COLORS[plot_appearance.plot_color]
+
+    cmap = sns.dark_palette(color2, reverse=True, as_cmap=True)
+
+    ax = sns.JointGrid(x=x_values, y=y_values)
+
+    if plot_appearance.display_edges is False:
+        markers_alpha = 0.7
+    else:
+        markers_alpha = 0.4
+        ax.plot_joint(sns.kdeplot, cmap=cmap, shade=False,
+                      n_levels=plot_appearance.n_levels)
+
+    ax.plot_joint(sns.scatterplot, color=color1, edgecolor=color2,
+                  marker='o', alpha=markers_alpha, s=20)
+
+    sns.kdeplot(x=x_values, ax=ax.ax_marg_x, color=color1, shade=True,
+                alpha=0.5, edgecolor=color2)
+
+    sns.kdeplot(y=y_values, ax=ax.ax_marg_y, color=color1, shade=True,
+                alpha=0.5, edgecolor=color2)
+
+    # Axes settings
+    ax.ax_joint.set_xlabel(plot_data.x_data.label, fontweight='bold')
+    ax.ax_joint.set_ylabel(plot_data.y_data.label, fontweight='bold')
+    ax.ax_marg_x.set_xlim(plot_data.x_data.lowest,
+                          plot_data.x_data.highest)
+    ax.ax_marg_y.set_ylim(plot_data.y_data.lowest,
+                          plot_data.y_data.highest)
+
+    # Add lines
+    for line in plot_appearance.lines:
+        if line.vertical:
+            ax.ax_joint.axvline(line.intercept,
+                                color=plot_appearance.lines_color,
+                                linestyle=':', linewidth=2)
+        else:
+            ax.ax_joint.axhline(line.intercept,
+                                color=plot_appearance.lines_color,
+                                linestyle=':', linewidth=2)
+
+    pyplot.tight_layout()
     pyplot.show()
 
 
@@ -566,9 +1224,10 @@ if __name__ == "__main__":
 
     # Parse command-line arguments
     csv_file, results_folder, output_folder, report_name, \
-        trajectory_name, plot_type, xdata, ydata, zdata,\
-        xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, = \
-        parse_args()
+        trajectory_name, plot_type, xdata, ydata, zdata, \
+        xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
+        colormap, color,  with_edges, n_levels, background_color, \
+        vertical_lines, horizontal_lines, lines_color = parse_args()
 
     # Print header
     from pele_platform.constants import constants
@@ -576,7 +1235,11 @@ if __name__ == "__main__":
 
     print_parameters(csv_file, results_folder, output_folder,
                      report_name, trajectory_name, plot_type,
-                     xdata, ydata, zdata)
+                     xdata, ydata, zdata, xlowest, xhighest,
+                     ylowest, yhighest, zlowest, zhighest,
+                     colormap, color, with_edges, n_levels,
+                     background_color, vertical_lines,
+                     horizontal_lines, lines_color)
 
     if csv_file is not None:
         pele_data = pd.read_csv(csv_file)
@@ -596,20 +1259,46 @@ if __name__ == "__main__":
     else:
         raise Exception('Data is missing, check your arguments.')  # This message should never be prompted
 
-    x_data = parse_axis_data(xdata, xlowest, xhighest)
-    y_data = parse_axis_data(ydata, ylowest, yhighest)
-    z_data = parse_axis_data(zdata, zlowest, zhighest)
+    x_data = parse_axis_data(xdata, xlowest, xhighest, pele_data)
+    y_data = parse_axis_data(ydata, ylowest, yhighest, pele_data)
+    z_data = parse_axis_data(zdata, zlowest, zhighest, pele_data)
 
+    # Ask axis data to the user if it is missing
+    requested = False
+    if isinstance(x_data, EmptyAxisData):
+        x_data = request_axis_data('X', 'y', pele_data)
+        requested = True
+    if isinstance(y_data, EmptyAxisData):
+        y_data = request_axis_data('Y', 'y', pele_data)
+        requested = True
+    if (isinstance(z_data, EmptyAxisData) and requested and
+            plot_type.lower() != 'density'):
+        z_data = request_axis_data('Z', 'n', pele_data, optional=True)
+
+    # Initialize plot data
     plot_data = PlotData(x_data, y_data, z_data)
 
+    # Initialize plot appearance class
+    plot_appearance = PlotAppearance(colormap_name=colormap,
+                                     plot_color=color,
+                                     background_color=background_color,
+                                     display_edges=with_edges,
+                                     n_levels=n_levels,
+                                     vertical_lines=vertical_lines,
+                                     horizontal_lines=horizontal_lines,
+                                     lines_color=lines_color)
+
+    # See if plot data can be plotted
+    if not plot_data.is_plottable():
+        raise ValueError('Aborted: not enough data to generate the plot.')
+
+    # Generate the right plot type
     if plot_type is None:
         plot_type = DEFAULT_PLOT_TYPE
 
     if plot_type.lower() == 'interactive':
-        interactive_plot(pele_data, plot_data)
+        interactive_plot(pele_data, plot_data, plot_appearance)
     elif plot_type.lower() == 'scatter':
-        scatter_plot(pele_data, plot_data)
-
-
-
-
+        scatter_plot(pele_data, plot_data, plot_appearance)
+    elif plot_type.lower() == 'density':
+        density_plot(pele_data, plot_data, plot_appearance)
