@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-This is the main module and it is designed to run the PELE platform from
-the command-line.
+This is the plotter module of the platform that can take regular PELE
+outputs and display them on a variety of graphs.
 """
 
 __author__ = "Nostrum Biodiscovery"
