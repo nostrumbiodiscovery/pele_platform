@@ -485,7 +485,7 @@ def parse_args():
                         'Only required when extracting data from ' +
                         'PELE\'s output folder')
     parser.add_argument('-t', '--plot_type', type=str,
-                        choices=PLOT_TYPE_CHOICES, default=None,
+                        choices=PLOT_TYPE_CHOICES, default=DEFAULT_PLOT_TYPE,
                         help='Plot type. One of ' + str(PLOT_TYPE_CHOICES))
     parser.add_argument("-x", "--xaxis", metavar=('INT', 'STR'),
                         type=str, nargs='*',
@@ -520,7 +520,8 @@ def parse_args():
     parser.add_argument('--color', type=str,
                         choices=COLORS, default='blue',
                         help='Plot color. One of ' + str(COLORS))
-    parser.add_argument('--with_edges', type=bool, default=False,
+    parser.add_argument('--with_edges', dest='with_edges',
+                        action='store_true',
                         help='Display edges of levels in the density plot')
     parser.add_argument('--n_levels', type=int, default=5,
                         help='Number of levels to display in the density' +
@@ -535,6 +536,9 @@ def parse_args():
                         help='It adds an horizontal line to the intercept ' +
                         'that is supplied.', nargs='*',
                         metavar=('INT', 'STR'))
+
+    # Set defaults
+    parser.set_defaults(with_edges=False)
 
     # Parse arguments
     parsed_args = parser.parse_args()
@@ -1301,6 +1305,7 @@ if __name__ == "__main__":
     from pele_platform.constants import constants
     print(constants.plotter_version_header.format(__version__))
 
+    # Print parameters
     print_parameters(csv_file, results_folder, output_folder,
                      report_name, trajectory_name, plot_type,
                      xdata, ydata, zdata, xlowest, xhighest,
@@ -1309,6 +1314,7 @@ if __name__ == "__main__":
                      background_color, vertical_lines,
                      horizontal_lines)
 
+    # Get PELE data
     if csv_file is not None:
         pele_data = pd.read_csv(csv_file)
 
@@ -1327,6 +1333,7 @@ if __name__ == "__main__":
     else:
         raise Exception('Data is missing, check your arguments.')  # This message should never be prompted
 
+    # Parse PELE data
     x_data = parse_axis_data(xdata, xlowest, xhighest, pele_data)
     y_data = parse_axis_data(ydata, ylowest, yhighest, pele_data)
     z_data = parse_axis_data(zdata, zlowest, zhighest, pele_data)
@@ -1359,9 +1366,6 @@ if __name__ == "__main__":
         raise ValueError('Aborted: not enough data to generate the plot.')
 
     # Generate the right plot type
-    if plot_type is None:
-        plot_type = DEFAULT_PLOT_TYPE
-
     if plot_type.lower() == 'interactive':
         interactive_plot(pele_data, plot_data, plot_appearance)
     elif plot_type.lower() == 'scatter':
