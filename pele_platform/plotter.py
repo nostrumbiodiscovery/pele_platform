@@ -161,8 +161,7 @@ class PlotAppearance(object):
     """
 
     def __init__(self, colormap_name, plot_color, background_color,
-                 display_edges=None, n_levels=5, vertical_lines=[],
-                 horizontal_lines=[], lines_color='red'):
+                 display_edges=None, n_levels=5, lines=[]):
         """
         It initializes a PlotAppearance object.
 
@@ -181,29 +180,15 @@ class PlotAppearance(object):
             Default is False
         n_levels : int
             Number of levels to display in a density plot. Default is 5
-        vertical_lines : list[float]
-            A list of all the intercepts for vertical lines. Default is
-            an empty list
-        horizontal_lines : list[float]
-            A list of all the intercepts for horizontal lines. Default
-            is an empty list
-        lines_color : str
-           The color name for lines. Default is 'red'
+        lines : list[Line]
+            A list of Line objects. Default is an empty list
         """
         self.colormap_name = colormap_name
         self.plot_color = plot_color
         self.background_color = background_color
         self.display_edges = display_edges
         self.n_levels = n_levels
-        self.lines_color = lines_color
-
-        self.lines = []
-        for vertical_line in vertical_lines:
-            line = Line(vertical_line, vertical=True)
-            self.lines.append(line)
-        for horizontal_line in horizontal_lines:
-            line = Line(horizontal_line, vertical=False)
-            self.lines.append(line)
+        self.lines = lines
 
 
 class AxisData(object):
@@ -298,7 +283,7 @@ class Line(object):
     It represents a line to be added in the plot.
     """
 
-    def __init__(self, intercept, vertical=True):
+    def __init__(self, intercept, color=None, vertical=True):
         """
         It initializes a Line object.
 
@@ -306,16 +291,111 @@ class Line(object):
         ----------
         intercept : float
            The value where the line intercepts the axis
+        color : str
+            The color name for this line. It must be a CSS4 compatible
+            color name. Default is None, which will set color red
         vertical : bool
            Whether it is a vertical or an horizontal line. Default is
            'True'
         """
 
         self.intercept = intercept
+        if color is None:
+            self.color = 'red'
+        else:
+            self.color = color
         self.vertical = vertical
+
+    def __str__(self):
+        """
+        It returns the string representation of this Line instance.
+
+        Returns
+        -------
+        str_representation : str
+            The string representation of this Line instance
+        """
+        str_representation = f"{self.intercept} {self.color}"
+
+        return str_representation
+
+    def __repr__(self):
+        """
+        It returns the representation of this Line instance.
+
+        Returns
+        -------
+        repr : str
+            The representation of this Line instance
+        """
+        repr = str(self)
+
+        return repr
+
 
 
 # Methods
+def parse_line_data(line_data, vertical):
+    """
+    It parses the supplied line data and initializes the corresponding
+    Line objects.
+
+    Parameters
+    ----------
+    line_data : list[tuple[str, str]] or list[tuple[str]]
+        It is a list of 1 or 2 dimensional tuples containing the
+        intersection of each line and, if it is also supplied, its
+        color. First tuple element is the intersection, the second
+        element is not mandatory and specifies the custom color
+        for that line
+    vertical : bool
+        Whether line data belongs to vertical or horizontal lines
+
+    Returns
+    -------
+    lines : list[Line]
+        It is a list of the resulting Line objects
+    """
+    class LineParserException(BaseException):
+        """It sets a line parser exception."""
+        pass
+
+    lines = list()
+
+    for one_line_data in line_data:
+        try:
+            if not isinstance(one_line_data, (list, tuple)):
+                raise LineParserException()
+
+            intercept = float(one_line_data[0])
+
+            if len(one_line_data) == 1:
+                color = None
+
+            elif len(one_line_data) == 2:
+                color = str(one_line_data[1])
+
+                from matplotlib import colors as mcolors
+                if color not in mcolors.CSS4_COLORS:
+                    raise ValueError('wrong color: ' +
+                                     f'{lines_color}, it must be a ' +
+                                     'CSS4-compatible color name.')
+
+            else:
+                raise LineParserException('wrong format, line input can ' +
+                                          'only contain either 1 or 2 fields')
+
+            line = Line(intercept=intercept, color=color,
+                        vertical=vertical)
+            lines.append(line)
+
+        except (LineParserException, ValueError) as error:
+            print(f"Warning: line data not recognized: {one_line_data},",
+                  str(error))
+
+    return lines
+
+
 def parse_args():
     """
     Command line parser.
@@ -377,12 +457,10 @@ def parse_args():
     background_color : str
         The background color for the plot. It must be a CSS4 compatible
         color name
-    vertical_lines : list[float]
-        A list of all the intercepts for vertical lines
-    horizontal_lines : list[float]
-        A list of all the intercepts for horizontal lines
-    lines_color : str
-        The color name for lines
+    vertical_lines : list[Line]
+        A list of all vertical Line objects
+    horizontal_lines : list[Line]
+        A list of all horizontal Line objects
     """
     # Parser setup
     from argparse import ArgumentParser
@@ -449,14 +527,14 @@ def parse_args():
                         'plot when edges are shown')
     parser.add_argument('--background_color', type=str, default='white',
                         help='Background color for the plot.')
-    parser.add_argument('--vertical_line', action='append', type=float,
+    parser.add_argument('--vertical_line', action='append', type=str,
                         help='It adds a vertical line to the intercept ' +
-                        'that is supplied.', nargs=1)
-    parser.add_argument('--horizontal_line', action='append', type=float,
+                        'that is supplied.', nargs='*',
+                        metavar=('INT', 'STR'))
+    parser.add_argument('--horizontal_line', action='append', type=str,
                         help='It adds an horizontal line to the intercept ' +
-                        'that is supplied.', nargs=1)
-    parser.add_argument('--lines_color', type=str, default='red',
-                        help='Color for lines.')
+                        'that is supplied.', nargs='*',
+                        metavar=('INT', 'STR'))
 
     # Parse arguments
     parsed_args = parser.parse_args()
@@ -485,10 +563,13 @@ def parse_args():
     vertical_lines = parsed_args.vertical_line
     if vertical_lines is None:
         vertical_lines = list()
+    else:
+        vertical_lines = parse_line_data(vertical_lines, vertical=True)
     horizontal_lines = parsed_args.horizontal_line
     if horizontal_lines is None:
         horizontal_lines = list()
-    lines_color = parsed_args.lines_color
+    else:
+        horizontal_lines = parse_line_data(horizontal_lines, vertical=False)
 
     # Check parameters
     if csv_file is not None:
@@ -510,16 +591,11 @@ def parse_args():
         raise ValueError(f'Wrong background color: {background_color}, ' +
                          'it must be a CSS4-compatible color name.')
 
-    if (lines_color is not None and
-            lines_color not in mcolors.CSS4_COLORS):
-        raise ValueError(f'Wrong background color: {lines_color}, ' +
-                         'it must be a CSS4-compatible color name.')
-
     return csv_file, results_folder, output_folder, \
         report_name, trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
         colormap, color, with_edges, n_levels, background_color, \
-        vertical_lines, horizontal_lines, lines_color
+        vertical_lines, horizontal_lines
 
 
 def print_parameters(csv_file, results_folder, output_folder,
@@ -528,8 +604,7 @@ def print_parameters(csv_file, results_folder, output_folder,
                      xlowest, xhighest, ylowest, yhighest,
                      zlowest, zhighest, colormap, color,
                      with_edges, n_levels, background_color,
-                     vertical_lines, horizontal_lines,
-                     lines_color):
+                     vertical_lines, horizontal_lines):
     """
     It prints the parameters supplied by the user.
 
@@ -590,12 +665,10 @@ def print_parameters(csv_file, results_folder, output_folder,
     background_color : str
         The background color for the plot. It must be a CSS4 compatible
         color name
-    vertical_lines : list[float]
-        A list of all the intercepts for vertical lines
-    horizontal_lines : list[float]
-        A list of all the intercepts for horizontal lines
-    lines_color : str
-        The color name for lines
+    vertical_lines : list[Line]
+        A list of all vertical Line objects
+    horizontal_lines : list[Line]
+        A list of all horizontal Line objects
     """
 
     max_len = max([len(str(item)) if item is not None else 1
@@ -608,8 +681,7 @@ def print_parameters(csv_file, results_folder, output_folder,
                                 zlowest, zhighest,
                                 colormap, color, with_edges,
                                 n_levels, background_color,
-                                vertical_lines, horizontal_lines,
-                                lines_color]])
+                                vertical_lines, horizontal_lines]])
 
     print('-> Input parameters:')
     print(' - csv_file:         ',
@@ -700,10 +772,6 @@ def print_parameters(csv_file, results_folder, output_folder,
           ' ' * (max_len - (len(str(horizontal_lines))
                             if horizontal_lines is not None else 1)),
           '-' if horizontal_lines is None else horizontal_lines)
-    print(' - lines_color:      ',
-          ' ' * (max_len - (len(str(lines_color))
-                            if lines_color is not None else 1)),
-          '-' if lines_color is None else lines_color)
     print()
 
 
@@ -1025,10 +1093,10 @@ def interactive_plot(pele_data, plot_data, plot_appearance):
     # Add lines
     for line in plot_appearance.lines:
         if line.vertical:
-            ax.axvline(line.intercept, color=plot_appearance.lines_color,
+            ax.axvline(line.intercept, color=line.color,
                        linestyle=':', linewidth=2)
         else:
-            ax.axhline(line.intercept, color=plot_appearance.lines_color,
+            ax.axhline(line.intercept, color=line.color,
                        linestyle=':', linewidth=2)
 
     # Activate the colorbar only if the Z axis contains data to plot
@@ -1136,10 +1204,10 @@ def scatter_plot(pele_data, plot_data, plot_appearance):
     # Add lines
     for line in plot_appearance.lines:
         if line.vertical:
-            ax.axvline(line.intercept, color=plot_appearance.lines_color,
+            ax.axvline(line.intercept, color=line.color,
                        linestyle=':', linewidth=2)
         else:
-            ax.axhline(line.intercept, color=plot_appearance.lines_color,
+            ax.axhline(line.intercept, color=line.color,
                        linestyle=':', linewidth=2)
 
     pyplot.show()
@@ -1201,11 +1269,11 @@ def density_plot(pele_data, plot_data, plot_appearance):
     for line in plot_appearance.lines:
         if line.vertical:
             ax.ax_joint.axvline(line.intercept,
-                                color=plot_appearance.lines_color,
+                                color=line.color,
                                 linestyle=':', linewidth=2)
         else:
             ax.ax_joint.axhline(line.intercept,
-                                color=plot_appearance.lines_color,
+                                color=line.color,
                                 linestyle=':', linewidth=2)
 
     pyplot.tight_layout()
@@ -1227,7 +1295,7 @@ if __name__ == "__main__":
         trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
         colormap, color,  with_edges, n_levels, background_color, \
-        vertical_lines, horizontal_lines, lines_color = parse_args()
+        vertical_lines, horizontal_lines = parse_args()
 
     # Print header
     from pele_platform.constants import constants
@@ -1239,7 +1307,7 @@ if __name__ == "__main__":
                      ylowest, yhighest, zlowest, zhighest,
                      colormap, color, with_edges, n_levels,
                      background_color, vertical_lines,
-                     horizontal_lines, lines_color)
+                     horizontal_lines)
 
     if csv_file is not None:
         pele_data = pd.read_csv(csv_file)
@@ -1284,9 +1352,7 @@ if __name__ == "__main__":
                                      background_color=background_color,
                                      display_edges=with_edges,
                                      n_levels=n_levels,
-                                     vertical_lines=vertical_lines,
-                                     horizontal_lines=horizontal_lines,
-                                     lines_color=lines_color)
+                                     lines=vertical_lines + horizontal_lines)
 
     # See if plot data can be plotted
     if not plot_data.is_plottable():
