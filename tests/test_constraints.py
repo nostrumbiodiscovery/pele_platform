@@ -5,10 +5,9 @@ import yaml
 import pele_platform.constants.constants as constants
 import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_constraints
 import tests.utils
-from pele_platform import main, main as main
+from pele_platform import main
 from pele_platform.Utilities.Helpers.constraints import smiles_constraints as smi
-from tests.test_others import EXTERNAL_CONSTR_ARGS, EXT_CONSTR, PPP_CONSTR_ARGS, PPP_CONSTR, ARGS_SMARTS_CONSTR, \
-    test_path
+from tests.test_others import EXTERNAL_CONSTR_ARGS, EXT_CONSTR, PPP_CONSTR_ARGS, PPP_CONSTR, ARGS_SMARTS_CONSTR
 
 test_path = os.path.join(constants.DIR, "Examples")
 
@@ -88,7 +87,7 @@ def test_ca_constraints_production(input_yaml):
     Tests backbone and terminal alpha_constraints in debug mode, both with and without PPP preprocessing.
     Requires a specific PDB file with two chains, so do not ever change the system here.
 
-    This test is redundant but let's keep it for as long as we do not depracte CA constraints in PPP completely.
+    This test is redundant but let's keep it for as long as we do not deprecate CA constraints in PPP completely.
     """
     errors = []
     job = main.run_platform_from_yaml(input_yaml)
@@ -107,8 +106,8 @@ def test_ca_constraints_production(input_yaml):
         "expected_ter_lines",
     ),
     [
-        (7, 0.7, 5, interval7_lines, terminal_lines_raw),
-        (15, 0.7, 77, custom_lines, custom_ter_lines),
+        (7, 0.7, 5.0, interval7_lines, terminal_lines_raw),
+        (15, 0.7, 77.0, custom_lines, custom_ter_lines),
     ],
 )
 def test_alpha_constraints(
@@ -154,7 +153,8 @@ def test_ca_constraint_logic(yaml_file, expected):
     """
     errors = []
     job = main.run_platform_from_yaml(yaml_file)
-    errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected, errors)
+    errors = tests.utils.check_file(job[0].pele_dir, "pele.conf", expected, errors)
+
     os.remove(yaml_file)
     assert not errors
 
@@ -189,7 +189,7 @@ def yaml_file(request):
 def test_external_constraints(ext_args=EXTERNAL_CONSTR_ARGS):
     errors = []
     job = main.run_platform_from_yaml(ext_args)
-    errors = tests.utils.check_file(job.pele_dir, "pele.conf", EXT_CONSTR, errors)
+    errors = tests.utils.check_file(job[0].pele_dir, "pele.conf", EXT_CONSTR, errors)
     assert not errors
 
 
@@ -208,18 +208,17 @@ SMILES_CONSTR = [
 
 
 @pytest.mark.parametrize(
-    ("yaml_file", "expected"),
+    ("yaml_input", "expected"),
     [
         (EXTERNAL_CONSTR_ARGS, EXT_CONSTR),
-        (PPP_CONSTR_ARGS, PPP_CONSTR),
         (ARGS_SMARTS_CONSTR, SMILES_CONSTR),
     ],
 )
-def test_constraints(yaml_file, expected):
+def test_constraints(yaml_input, expected):
     """
     Runs platform in debug mode to check if all constraints were correctly set in pele.conf.
     """
-    output = main.run_platform_from_yaml(yaml_file)
+    output = main.run_platform_from_yaml(yaml_input)
     errors = []
     folder = output[0].pele_dir if type(output) == list else output.pele_dir
     errors = tests.utils.check_file(folder, "pele.conf", expected, errors)

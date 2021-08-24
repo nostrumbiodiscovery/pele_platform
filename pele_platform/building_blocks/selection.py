@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import glob
 import numpy as np
 import os
+import pandas as pd
 import shutil
 
 from pele_platform.building_blocks import blocks
@@ -16,17 +17,19 @@ class Selection(blocks.Block):
     """
 
     def __init__(
-            self,
-            parameters_builder: pv.ParametersBuilder,
-            options: dict,
-            folder_name: str,
-            env: pv.Parameters,
+        self,
+        parameters_builder: pv.ParametersBuilder,
+        options: dict,
+        folder_name: str,
+        env: pv.Parameters,
     ):
         self.options = options
         self.folder_name = folder_name
         self.builder = parameters_builder
         self.simulation_params = env
-        self.directory = os.path.join(os.path.dirname(self.simulation_params.pele_dir), self.folder_name)
+        self.directory = os.path.join(
+            os.path.dirname(self.simulation_params.pele_dir), self.folder_name
+        )
         print("AAAAAAAAAAAAAAA self.directory in Selection init", self.directory)
         self.n_inputs = self.simulation_params.cpus - 1
         self.inputs = None
@@ -99,13 +102,23 @@ class LowestEnergy(Selection):
     Use to select inputs for Rescoring after LocalExplorationExhaustive and LocalExplorationFast.
     """
 
-    def __init__(self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters):
+    def __init__(
+        self,
+        parameters_builder: pv.ParametersBuilder,
+        options: dict,
+        folder_name: str,
+        env: pv.Parameters,
+    ):
         super().__init__(parameters_builder, options, folder_name, env)
 
     def get_inputs(self):
-        self.analysis.generate_top_poses(os.path.join(self.simulation_params.pele_dir, self.folder_name),
-                                         n_poses=self.n_inputs)
-        self.inputs = glob.glob(os.path.join(self.simulation_params.folder_name, "cluster*.pdb"))
+        self.analysis.generate_top_poses(
+            os.path.join(self.simulation_params.pele_dir, self.folder_name),
+            n_poses=self.n_inputs,
+        )
+        self.inputs = glob.glob(
+            os.path.join(self.simulation_params.folder_name, "cluster*.pdb")
+        )
 
 
 @dataclass
@@ -114,12 +127,24 @@ class GMM(Selection):
     Perform Gaussian Mixture (full covariance) clustering on best binding energy poses.
     """
 
-    def __init__(self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters):
+    def __init__(
+        self,
+        parameters_builder: pv.ParametersBuilder,
+        options: dict,
+        folder_name: str,
+        env: pv.Parameters,
+    ):
         super().__init__(parameters_builder, options, folder_name, env)
 
     def get_inputs(self):
-        self.analysis.generate_clusters(self.simulation_params.folder_name, analysis_nclust=self.n_inputs,
-                                        clustering_type="gmm")
+        self.analysis.generate_clusters(
+            self.simulation_params.folder_name,
+            analysis_nclust=self.n_inputs,
+            clustering_type="GaussianMixture",
+        )
+        self.inputs = glob.glob(
+            os.path.join(self.simulation_params.folder_name, "cluster*.pdb")
+        )
 
 
 @dataclass
@@ -129,14 +154,35 @@ class Clusters(Selection):
     than available CPUs, choose the ones with the lowest binding energy.
     """
 
-    def __init__(self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters):
+    def __init__(
+        self,
+        parameters_builder: pv.ParametersBuilder,
+        options: dict,
+        folder_name: str,
+        env: pv.Parameters,
+    ):
         super().__init__(parameters_builder, options, folder_name, env)
         self.inputs = None
 
     def get_inputs(self):
-        clusters_dir = os.path.join(self.simulation_params.pele_dir, "results/clusters/cluster*.pdb")
+        clusters_dir = os.path.join(
+            self.simulation_params.pele_dir, "results/clusters/cluster*.pdb"
+        )
         clusters_files = glob.glob(clusters_dir)
-        self.inputs = clusters_files
+
+        if len(clusters_dir) > self.n_inputs:
+            df = pd.read_csv(
+                os.path.join(os.path.dirname(clusters_dir), "top_selections.csv")
+            )
+            df = df.nsmallest(n=self.n_inputs, columns="Binding Energy")
+            files_to_select = [
+                os.path.join(os.path.dirname(clusters_dir), f"cluster_{label}.pdb")
+                for label in df["Cluster label"]
+            ]
+
+            self.inputs = files_to_select
+        else:
+            self.inputs = clusters_files
 
 
 @dataclass
@@ -146,7 +192,13 @@ class ScatterN(Selection):
     Scan top 75% binding energies, pick n best ones as long as ligand COMs are >= 6 A away from each other.
     """
 
-    def __init__(self, parameters_builder: pv.ParametersBuilder, options: dict, folder_name: str, env: pv.Parameters):
+    def __init__(
+        self,
+        parameters_builder: pv.ParametersBuilder,
+        options: dict,
+        folder_name: str,
+        env: pv.Parameters,
+    ):
         super().__init__(parameters_builder, options, folder_name, env)
         self.inputs = None
 
@@ -160,7 +212,7 @@ class ScatterN(Selection):
         for file, coord in zip(dataframe["File"], dataframe["1st atom coordinates"]):
 
             if (
-                    len(inputs) == self.n_inputs
+                len(inputs) == self.n_inputs
             ):  # get out of the loop, if we have enough inputs already
                 break
 

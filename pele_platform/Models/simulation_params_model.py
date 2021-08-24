@@ -44,17 +44,24 @@ class SimulationParamsModel(YamlParserModel):
     constraints: Any = Field()
     water_energy: Any = Field()
     sidechain_perturbation: str = Field()
-    interaction_restrictions: str = Field()  # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
-    met_interaction_restrictions: str = Field(default="")  # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
+    interaction_restrictions: List[
+        dict
+    ] = (
+        Field()
+    )  # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
+    met_interaction_restrictions: str = Field(
+        default=""
+    )  # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
     covalent_sasa: str = Field()
     max_trials_for_one: Any = Field()
     conformation_perturbation: str = Field()
     equilibration_mode: str = Field()
-    water_ids_to_track: List[str] = Field()
+    water_ids_to_track: List[str] = Field(default=list())
     inputs_dir: str = Field()
+    residue_type: str = Field()
 
     @validator("*", pre=True, always=True)
-    def set_value_from_sp(cls, v, field):
+    def set_value_from_simulation_parameters(cls, v, field):
 
         extra = field.field_info.extra
         can_be_falsy = extra.get("can_be_falsy")
@@ -76,7 +83,7 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("adaptive", always=True)
     def set_adaptive(cls, v, values):
-        if values.get("package") in ["site_finder", "adaptive", "PPI"]:
+        if values.get("package") in ["site_finder", "adaptive", "PPI", "gpcr_orth"]:
             return True
 
     @validator("frag_pele", always=True)
@@ -118,7 +125,7 @@ class SimulationParamsModel(YamlParserModel):
     @validator("system", "residue", "chain", always=True)
     def validate_adaptive_required_fields(cls, v, values, field):
         if values.get("adaptive") and not v:
-            raise AssertionError(f"User must define {field.name} to use adaptive.")
+            raise AssertionError(f"User must define {field.name} to use AdaptivePELE.")
         return v
 
     @validator("perturbation", always=True)
@@ -255,3 +262,10 @@ class SimulationParamsModel(YamlParserModel):
     @validator("verbose", "equilibration", always=True)
     def format_verbose(cls, v, field):
         return "true" if v else cls.simulation_params.get(field.name, "false")
+
+    @validator("core", always=True)
+    def set_core_constraints(cls, v, values):
+        if v:
+            return v
+        else:
+            return [] if values.get("use_peleffy") else -1

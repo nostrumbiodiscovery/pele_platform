@@ -1,8 +1,7 @@
-import pandas as pd
 import glob
 import os
 import shutil
-from pele_platform.building_blocks import prepare_structure
+from pele_platform.building_blocks.preparation import prepare_structure
 from pele_platform.constants import constants as cs
 from pele_platform import main
 
@@ -15,12 +14,10 @@ def test_ppi_skipref():
     block (folder 3_Rescoring should not exist).
     """
     yaml = os.path.join(test_path, "PPI/input_skipref.yaml")
-    (job,) = main.run_platform(yaml)
-    files_refinement = glob.glob(
-        os.path.join(job.pele_dir, "3_Rescoring/results/BestStructs/epoch*")
-    )
+    (job,) = main.run_platform_from_yaml(yaml)
 
-    assert not files_refinement
+    refinement_input = os.path.join(os.path.dirname(job.pele_dir), "2_GMM")
+    assert not os.path.exists(refinement_input)
 
 
 def test_ppi():
@@ -31,20 +28,14 @@ def test_ppi():
     yaml = os.path.join(test_path, "PPI/input.yaml")
     energy_result = -1.89
 
-    job, sel, job2 = main.run_platform(yaml)
+    job, sel, job2 = main.run_platform_from_yaml(yaml)
 
-    output_csv = pd.read_csv(os.path.join(job.pele_dir, "output/clustering_output.csv"))
-    best_energy = round(output_csv["binding_energy"].min(), 2)
-    nfiles = len(
-        glob.glob(os.path.join(os.path.dirname(job.pele_dir), "2_Selection/*.pdb"))
-    )
-    nfiles_refinement = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/top_poses/epoch*"))
-    )
+    files_refinement_input = glob.glob(os.path.join(os.path.dirname(job.pele_dir), "2_GMM/*.pdb"))
+    files_refinement_results = glob.glob(os.path.join(job2.pele_dir, "results/top_poses/*pdb"))
 
-    assert nfiles > 0
-    assert best_energy == energy_result
-    assert nfiles_refinement
+    assert len(files_refinement_input) > 0
+    assert any([str(energy_result) in file for file in files_refinement_results])
+    assert files_refinement_results
 
 
 def test_prepare_structure():
@@ -83,6 +74,7 @@ def test_working_folder():
     """
     yaml = os.path.join(test_path, "PPI/input_folder.yaml")
     output = "ppi_folder"
+
     if os.path.exists(output):
         shutil.rmtree(output)
     (job,) = main.run_platform_from_yaml(yaml)

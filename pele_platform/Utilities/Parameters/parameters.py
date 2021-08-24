@@ -22,6 +22,7 @@ class ParametersBuilder(object):
         """
         self._parameters = None
         self._initialized = False
+        self.initial_args = None
 
     def build_adaptive_variables(self, args):
         """
@@ -235,7 +236,6 @@ class Parameters(simulation_params.SimulationParams,
 
     def create_files_and_folders(self):
         simulation_folders.SimulationPaths.__init__(self)
-
         if not self.adaptive_restart and not self.only_analysis and not self.restart:
             self.create_folders()
             self.create_files()

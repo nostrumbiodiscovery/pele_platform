@@ -3,3 +3,5 @@ frag_ligands: "../pele_platform/Examples/frag/ligands.sdf"
 resname: "3IP"
 test: true
 singularity_exec: "/path/to/singularity_container.sif"
+no_check: true
+debug: true

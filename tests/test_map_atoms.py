@@ -4,7 +4,6 @@ import pytest
 import tests.utils
 from pele_platform.constants import constants
 from pele_platform import main
-from . import test_adaptive as tk
 from pele_platform.Utilities.Helpers import map_atoms
 
 test_path = os.path.join(constants.DIR, "Examples")
@@ -24,7 +23,7 @@ def test_atom_string_mapping(yaml_file, expected):
     pele.conf JSON."
     """
     errors = []
-    job = main.run_platform_from_yaml(yaml_file)
+    job, = main.run_platform_from_yaml(yaml_file)
     errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected, errors)
     assert not errors
 

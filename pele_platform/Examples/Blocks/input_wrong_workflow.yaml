@@ -1,4 +1,4 @@
-system: '../pele_platform/Examples/Allosteric/complex.pdb'
+system: '../pele_platform/Examples/site_finder/complex.pdb'
 chain: 'Z'
 resname: 'API'
 seed: 12345
@@ -7,4 +7,3 @@ workflow:
   - type: 'RandomNonsense'
   - type: 'Rescoring'
 test: true
-

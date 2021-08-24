@@ -30,14 +30,14 @@ MINIMUM_STEPS_ARGS = os.path.join(test_path, "minimum_steps/input.yaml")
 ADAPTIVE_VALUES = [
     "water_processed.pdb",
     "SB4",
-    '"outputPath": "output_sim"',
+    '"outputPath": "/home/agruzka/pele_platform/tests/NOR_solvent_OBC/output_sim",',
     '"processors" : 3',
     '"peleSteps" : 1,',
     '"iterations" : 1,',
     '"runEquilibration" : true,',
     '"equilibrationLength" : 11,',
     '"seed": 3000',
-    '"values" : [1, 2, 3],',
+    '"values" : [1.0, 2.0, 3.0],',
     '"conditions": [0.1, 0.2, 0.3]',
     '"epsilon": 0.3',
     '"metricColumnInReport" : 3,',
@@ -62,13 +62,13 @@ PELE_VALUES = [
     '"sideChainPredictionFrequency" : 3,',
     '"minimizationFrequency" : 3,',
     '"temperature": 3000,',
-    '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:111:_CA_" },',
-    '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" }',
-    '{ "type": "constrainAtomToPosition", "springConstant": 3, "equilibriumDistance": 0.0, "constrainThisAtom": "A:13:_CA_" }',
+    '{ "type": "constrainAtomToPosition", "springConstant": 3.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:111:_CA_" },',
+    '{ "type": "constrainAtomToPosition", "springConstant": 3.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:11:_CA_" }',
+    '{ "type": "constrainAtomToPosition", "springConstant": 3.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:13:_CA_" }',
     '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:353:_CA_" }',
     '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:5:_CA_" }',
     '"radius": 3000',
-    '"fixedCenter": [30,30,30]',
+    '"fixedCenter": [30.0,30.0,30.0]',
     'tests/native.pdb"',
     '"atoms": { "ids":["A:6:_CG_"]}',
     '"atoms": { "ids":["A:6:_CD_"]}',
@@ -132,7 +132,7 @@ def test_restart_flag(restart_type):
     """
     # First, run the platform in debug mode
     restart_yaml = os.path.join(test_path, "restart", "restart.yaml")
-    job_parameters = main.run_platform_from_yaml(restart_yaml)
+    job_parameters, = main.run_platform_from_yaml(restart_yaml)
 
     # Edit the original YAML file
     with open(restart_yaml, "r") as file:
@@ -147,6 +147,7 @@ def test_restart_flag(restart_type):
 
     # Restart the simulation
     job_parameters2 = main.run_platform_from_yaml(updated_restart_yaml)
+    print(job_parameters2)
 
     # Assert it reused existing directory and did not create a new one
     assert job_parameters.pele_dir == job_parameters2.pele_dir
@@ -165,8 +166,8 @@ def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     errors = []
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
-    job = main.run_platform_from_yaml(ext_args)
-    folder = job.folder
+    builder, env = main.run_platform_from_yaml(ext_args)
+    folder = env.folder
     if not os.path.exists(
         os.path.join(folder, "DataLocal/LigandRotamerLibs/STR.rot.assign")
     ) or not os.path.exists(
@@ -179,7 +180,7 @@ def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
         os.path.join(folder, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz")
     ):
         errors.append("External templates flag not working")
-    if os.path.exists(os.path.join(folder, job.output)):
+    if os.path.exists(os.path.join(folder, env.output)):
         errors.append("Debug flag not working")
     errors = check_file(folder, "adaptive.conf", ADAPTIVE_VALUES, errors)
     errors = check_file(folder, "pele.conf", PELE_VALUES, errors)

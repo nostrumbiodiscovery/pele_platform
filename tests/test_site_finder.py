@@ -1,6 +1,7 @@
 import glob
 import os
 import pytest
+import shutil
 
 from pele_platform.constants import constants as cs
 from pele_platform.Utilities.Helpers import helpers
@@ -41,43 +42,38 @@ def test_site_finder_skipref():
     Tests skip_refinement flag, so that site_finder runs global exploration only.
     """
     yaml_file = os.path.join(test_path, "site_finder/input_skipref.yaml")
-    job, job2 = main.run_platform_from_yaml(yaml_file)
+    job, = main.run_platform_from_yaml(yaml_file)
     refinement_simulation = os.path.join(
-        os.path.dirname(job.pele_dir), "2_refinement_simulation"
+        os.path.dirname(job.pele_dir), "Clusters"
     )
-
     assert not os.path.exists(refinement_simulation)
-    assert not job2
 
 
 @pytest.mark.parametrize("yaml", ["site_finder/input_global.yaml", "site_finder/input_global_xtc.yaml"])
-def test_site_finder_pdb(yaml):
+def test_site_finder_production(yaml):
     """
     Test site finder production on both XTC and PDB trajectories.
     """
     yaml_file = os.path.join(test_path, yaml)
-    job, job2 = main.run_platform_from_yaml(yaml_file)
+    job = main.run_platform_from_yaml(yaml_file)
 
-    # checkpoints
-    randomization_output = glob.glob(os.path.join(job.inputs_dir, "input*pdb"))
+    randomization_output = glob.glob(os.path.join(job[0].inputs_dir, "input*pdb"))
 
     refinement_input = glob.glob(
-        os.path.join(os.path.dirname(job.pele_dir), "refinement_input/cluster_A.pdb")
+        os.path.join(os.path.dirname(job[0].pele_dir), "2_Clusters/cluster_A.pdb")
     )
 
-    nfiles_refinement_output = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/top_poses/*.pdb"))
-    )
+    files_refinement_output = glob.glob(os.path.join(job[2].pele_dir, "results/top_poses/*.pdb"))
 
     best_energy_input = os.path.join(
-        os.path.dirname(job.pele_dir),
-        "refinement_input",
+        os.path.dirname(job[0].pele_dir),
+        "2_Clusters",
         "cluster_A.pdb"
     )
 
-    assert len(randomization_output) == job.poses
+    assert len(randomization_output) == job[0].poses
     assert best_energy_input in refinement_input
-    assert nfiles_refinement_output > 0
+    assert files_refinement_output
 
 
 def test_working_folder(output="site_finder"):
@@ -86,27 +82,28 @@ def test_working_folder(output="site_finder"):
     """
     yaml_file = os.path.join(test_path, "site_finder/input_folder.yaml")
     helpers.check_remove_folder(output)
-    job, _ = main.run_platform_from_yaml(yaml_file)
+    job, = main.run_platform_from_yaml(yaml_file)
     assert os.path.exists(job.folder)
 
 
-@pytest.mark.skip(reason="Implemented in pele_platform 2.0.")
 def test_site_finder_restart():
     """
     Tests if site finder can pick up adaptive_restart flag and sort out directories correctly.
     """
+    expected_path = "site_finder"
+    helpers.check_remove_folder(expected_path)
+    shutil.copytree(os.path.join(test_path, "site_finder", "site_finder"), expected_path)
+
     yaml_file = os.path.join(test_path, "site_finder/input_restart.yaml")
-    job, job2 = main.run_platform_from_yaml(yaml_file)
+    job = main.run_platform_from_yaml(yaml_file)
 
-    nfiles_refinement_input = len(
-        glob.glob(os.path.join(os.path.dirname(job.pele_dir), "refinement_input/*.pdb"))
-    )
-    nfiles_refinement_output = len(
-        glob.glob(os.path.join(job2.pele_dir, "results/top_poses/*.pdb"))
-    )
+    files_refinement_input = glob.glob(os.path.join(os.path.dirname(job[0].pele_dir), "2_Clusters/*.pdb"))
+    files_refinement_output = glob.glob(os.path.join(job[2].pele_dir, "results/top_poses/*.pdb"))
 
-    assert nfiles_refinement_input
-    assert nfiles_refinement_output
+    assert files_refinement_input
+    assert files_refinement_output
+
+    helpers.check_remove_folder(expected_path)
 
 
 @pytest.mark.parametrize(("yaml_file", "adaptive_lines"),
@@ -121,6 +118,6 @@ def test_defaults(yaml_file, adaptive_lines):
     yaml_file = os.path.join(test_path, "site_finder", yaml_file)
     params = main.run_platform_from_yaml(yaml_file)
 
-    errors = check_file(params.pele_dir, "pele.conf", PELE, errors=[])
-    errors = check_file(params.pele_dir, "adaptive.conf", adaptive_lines, errors)
+    errors = check_file(params[1].pele_dir, "pele.conf", PELE, errors=[])
+    errors = check_file(params[1].pele_dir, "adaptive.conf", adaptive_lines, errors)
     assert not errors

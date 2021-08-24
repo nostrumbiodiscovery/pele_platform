@@ -30,7 +30,7 @@ API_WATERS = [
 
 
 WATER_PREVIOUS_PELE = [
-    '"waterSites": [{"watersToPerturb": {"links": {"ids": ["C:2091"] }}, "Box": {"radius": 6, "fixedCenter": [0.0000000000, 0.0000000000, 0.0000000000], "type": "sphericalBox"}}]',
+    '"waterSites": [{"watersToPerturb": {"links": {"ids": ["C:2091"] }}, "Box": {"radius": 6.0, "fixedCenter": [0.0000000000, 0.0000000000, 0.0000000000], "type": "sphericalBox"}}]',
     "WaterPerturbation::parameters",
     '"waterPerturbationFrequency": 1,',
 ]
@@ -74,7 +74,7 @@ def test_water():
 def test_water_with_previous_water():
     errors = []
     yaml = os.path.join(test_path, "water/input_previous_water.yaml")
-    job = main.run_platform_from_yaml(yaml)
+    builder, job = main.run_platform_from_yaml(yaml)
     errors = tests.utils.check_file(job.pele_dir, "pele.conf", WATER_PREVIOUS_PELE, errors)
     errors = tests.utils.check_file(
         job.pele_dir, "adaptive.conf", WATER_PREVIOUS_ADAPTIVE, errors
@@ -188,7 +188,7 @@ def test_n_water(ext_args=NWATER_ARGS):
 
 def test_all_waters(ext_args=ALL_WATER_ARGS):
     errors = []
-    job = main.run_platform_from_yaml(ext_args)
+    builder, job = main.run_platform_from_yaml(ext_args)
     folder = job.pele_dir
     errors = tests.utils.check_file(folder, "pele.conf", ALL_WATER_VALUES, errors)
     assert not errors
@@ -196,7 +196,7 @@ def test_all_waters(ext_args=ALL_WATER_ARGS):
 
 def test_water_lig(ext_args=WATERLIG_ARGS):
     errors = []
-    job = main.run_platform_from_yaml(ext_args)
+    builder, job = main.run_platform_from_yaml(ext_args)
     folder = job.pele_dir
     errors = tests.utils.check_file(folder, "pele.conf", WATER_VALUES, errors)
     assert not errors

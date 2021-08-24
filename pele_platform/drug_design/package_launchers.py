@@ -15,6 +15,7 @@ class AdaptiveLauncher(LauncherBase):
         self.builder.build_adaptive_variables(self.builder.initial_args)
         self.env = self.builder.parameters
         self.env.create_files_and_folders()
+
         self.env = si.run_adaptive(self.env)
         return self.builder, self.env
 
@@ -30,9 +31,11 @@ class WorkflowLauncher(LauncherBase):
 
     @property
     def steps(self):
+
         available = {**dict((name, func) for name, func in inspect.getmembers(selection)),
                      **dict((name, func) for name, func in inspect.getmembers(blocks))}
-        iterable = self.env.initial_args.workflow
+
+        iterable = self.builder.initial_args.workflow
         simulation_blocks = [i.get('type', None) for i in iterable]
 
         for i in simulation_blocks:

@@ -37,7 +37,7 @@ OutIn_lines = [
 GlobalExploration_lines = [
     '"type" : "inverselyProportional"',
     '"iterations" : 100',
-    '"peleSteps" : 4',
+    '"peleSteps" : 8',
     '"conditions": [1, 0.6, 0.0]',
 ]
 
@@ -45,14 +45,14 @@ InducedFitExhaustive_lines = [
     '"type" : "independent"',
     '"iterations" : 1',
     '"peleSteps" : 1000',
-    '"conditions": [1, 0.6, 0.4, 0.0]',
+    '"conditions": [1, 0.6, 0.0]',
 ]
 
 InducedFitFast_lines = [
     '"type" : "inverselyProportional"',
     '"iterations" : 30',
     '"peleSteps" : 12',
-    '"conditions": [1, 0.6, 0.4, 0.0]',
+    '"conditions": [1, 0.6, 0.0]',
 ]
 
 Rescoring_lines = [
@@ -63,28 +63,28 @@ Rescoring_lines = [
 ]
 
 Scatter6_inputs = [
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb"
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch0_trajectory_1.1_BindEner-107.584.pdb"
 ]
 
 LowestEnergy5_inputs = [
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_2.1_BindingEnergy-102.463.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.2_BindingEnergy-99.0239.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_2.4_BindingEnergy-97.3843.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch0_trajectory_1.1_BindEner-107.584.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch0_trajectory_2.1_BindEner-102.463.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch0_trajectory_1.2_BindEner-99.0239.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch0_trajectory_2.4_BindEner-97.3843.pdb",
 ]
 
 GMM_inputs = [
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_2.1_BindingEnergy-64.1978.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_1.1_BindingEnergy-107.584.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch1_trajectory_1.5_BindingEnergy-62.9806.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/BestStructs/epoch0_trajectory_3.4_BindingEnergy-43.7304.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch1_trajectory_2.1_BindEner-64.1978.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch0_trajectory_1.1_BindEner-107.584.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch1_trajectory_1.5_BindEner-62.9806.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/top_poses/epoch0_trajectory_3.4_BindEner-43.7304.pdb",
 ]
 
 Clusters_inputs = [
-    "pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster8_epoch0_trajectory_1.1_BindingEnergy-107.584.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster6_epoch0_trajectory_1.3_BindingEnergy-96.088.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster1_epoch0_trajectory_3.1_BindingEnergy-76.1823.pdb",
-    "pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster4_epoch1_trajectory_1.1_BindingEnergy-65.8932.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster8_epoch0_trajectory_1.1_BindEner-107.584.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster6_epoch0_trajectory_1.3_BindEner-96.088.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster1_epoch0_trajectory_3.1_BindEner-76.1823.pdb",
+    "pele_platform/Examples/Blocks/mock_simulation/results/clusters/cluster4_epoch1_trajectory_1.1_BindEner-65.8932.pdb",
 ]
 
 
@@ -151,7 +151,7 @@ def test_simulation_blocks(yaml, package, block, expected):
 
     # run Building Block
     simulation_block = block(pele_env, {}, "test_folder", pele_env.parameters)
-    params = simulation_block.run()
+    builder, params = simulation_block.run()
 
     directory = params.pele_dir
     errors = []

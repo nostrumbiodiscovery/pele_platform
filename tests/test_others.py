@@ -14,7 +14,6 @@ EXTERNAL_CONSTR_ARGS = os.path.join(
     test_path, "constraints/input_external_constraints.yaml"
 )
 
-PPP_CONSTR_ARGS = os.path.join(test_path, "constraints/input_ppp.yaml")
 ARGS_SMARTS_CONSTR = os.path.join(test_path, "constraints/input_constrain_smarts.yaml")
 LIG_PREP_ARGS = os.path.join(test_path, "preparation/input_space.yaml")
 ENV_ARGS = os.path.join(test_path, "checker/input_env.yaml")
@@ -60,14 +59,14 @@ PPP_CONSTR = [
             ce.WrongAtomSpecified,
             "Atom A:114:CM could not be found in structure",
         ),
-        (INPUT_TEMPLATE, ce.TemplateFileNotFound, "Could not locate mgadeaz file. Please double-check the path."),
+        (INPUT_TEMPLATE, ce.TemplateFileNotFound, "File mgadeaz not found"),  # PLOP
         (WRONG_YAML, ce.WrongYamlFile, None),
         (
             UNK_LIGAND,
             ce.LigandNameNotSupported,
             "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'.",
         ),
-        (ROTAMER, ce.RotamersFileNotFound, "Could not locate mgadeaz file. Please double-check the path."),
+        (ROTAMER, ce.RotamersFileNotFound, "File mgadeaz not found"),  # PLOP
         (
             OUT_IN,
             ce.OutInError,

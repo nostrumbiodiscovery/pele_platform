@@ -2,10 +2,9 @@ import os
 import pytest
 import pele_platform.constants.constants as cs
 import pele_platform.Utilities.Helpers.yaml_parser as yp
-import pele_platform.Checker.valid_flags as vf
+from pele_platform import main
 from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 from pele_platform.Utilities.Helpers.launcher import Launcher
-import pele_platform.Checker.main as ck
 import pele_platform.Errors.custom_errors as ce
 
 test_path = os.path.join(cs.DIR, "Examples")
@@ -17,7 +16,7 @@ ADAPTIVE_PELE_EXEC = "Pele_mpi"
 ADAPTIVE_MPI_PARAMS = '"/path/to/singularity_container.sif",'
 FRAG_PELE_EXEC = "/path/to/singularity_container.sif Pele_mpi"
 
-testdata = [
+test_data = [
     (ARGS_1, True, ADAPTIVE_PELE_EXEC, ADAPTIVE_MPI_PARAMS),
     (ARGS_2, False, FRAG_PELE_EXEC, None),
 ]
@@ -35,11 +34,12 @@ def test_singularity_exec(ext_args=ARGS_1):
     ----------
     boolean : result of the test.
     """
-    # Prepare params
-    params = _read_args(ext_args)
+    yaml_obj = yp.YamlParser(ext_args)
+    yaml_obj.read()
+    launcher = Launcher(yaml_obj)
 
     with pytest.raises(ce.ExecutableNotInPath):
-        ck.check_executable_and_env_variables(params)
+        launcher.launch()
 
 
 @pytest.mark.parametrize("ext_args, check_mpi, expected1, expected2", testdata)

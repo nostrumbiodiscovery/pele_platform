@@ -1,11 +1,11 @@
-import tests.utils
-from . import test_adaptive as tk
-import pele_platform.main as main
-import pele_platform.Errors.custom_errors as ce
-import pele_platform.constants.constants as cs
 import glob
 import os
 import pytest
+
+import tests.utils
+import pele_platform.main as main
+import pele_platform.Errors.custom_errors as ce
+import pele_platform.constants.constants as cs
 
 
 test_path = os.path.join(cs.DIR, "Examples")
@@ -107,7 +107,7 @@ def test_metal_constraints(yaml, expected):
     errors = []
     output = main.run_platform_from_yaml(yaml)
     job = output[0]
-    errors = tests.utils.check_file(job.pele_dir, "pele.conf", expected, errors)
+    errors = tests.utils.check_file_regex(job.pele_dir, "pele.conf", expected, errors)
     assert not errors
 
 
@@ -116,7 +116,7 @@ def test_no_metal_constraints(ext_args=NO_METAL_CONSTR_ARGS):
     Ensures no metal constraints are set if the input.yaml contains no_metal_constraints flag.
     """
     errors = []
-    job = main.run_platform_from_yaml(ext_args)
+    job, = main.run_platform_from_yaml(ext_args)
     errors = tests.utils.check_file_regex(job.pele_dir, "pele.conf", METAL_CONSTR, errors)
     assert errors 
 
@@ -125,12 +125,9 @@ def test_all_metal_constraints(ext_args_permissive=PERMISSIVE_EXCEPTION):
     """
     Asserts that the platform raises an error when no geometry around the metal is found.
     """
-    try:
-        output = main.run_platform_from_yaml(ext_args_permissive)
-    except ce.NoGeometryAroundMetal:
-        assert ce.NoGeometryAroundMetal
-        return
-    assert False
+    with pytest.raises(ce.NoGeometryAroundMetal):
+        main.run_platform_from_yaml(ext_args_permissive)
+
 
 def test_ignore_external(ext_args=IGNORE_ARGS):
     """
@@ -156,14 +153,14 @@ def test_polarisation(
     1. Tests to check that no metal template is added to DataLocal when no metal polarization is required.
     2. Ensures polarize_metals flag works and adds a template with new metal charges to DataLocal.
     """
-    (job,) = main.run_platform(ext_args_false)
+    (job,) = main.run_platform_from_yaml(ext_args_false)
     mg_template_file_false = glob.glob(
         os.path.join(job.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz")
     )
     assert not mg_template_file_false
 
     errors = []
-    (job2,) = main.run_platform(ext_args_true)
+    (job2,) = main.run_platform_from_yaml(ext_args_true)
     errors = tests.utils.check_file(
         job2.pele_dir,
         "DataLocal/Templates/OPLS2005/HeteroAtoms/mgz",

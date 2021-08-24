@@ -137,7 +137,9 @@ class YamlParserModel(BaseModel):
         simulation_params_default="null",
         categories=["Simulation parameters"],
     )
-    cluster_values: Union[List[float], str] = Field(  # WTF - List[float] but then use validator to make it into a str(v), what about bool?
+    cluster_values: Union[
+        List[float], str
+    ] = Field(  # WTF - List[float] but then use validator to make it into a str(v), what about bool?
         value_from_simulation_params=True,
         simulation_params_default="[1.75, 2.5, 4, 6]",
         categories=["Simulation parameters"],
@@ -188,7 +190,7 @@ class YamlParserModel(BaseModel):
     gridres: int = Field(
         default=10, categories=["Ligand preparation"]
     )  # alias="ligand_resolution"
-    core: Union[int, List[str]] = Field(categories=["Ligand preparation"], default=-1)
+    core: Union[int, List[str]] = Field(categories=["Ligand preparation"])
 
     ################################################################################################ start from here
 
@@ -200,7 +202,8 @@ class YamlParserModel(BaseModel):
     )
 
     templates: List[str] = Field(
-        categories=["Ligand preparation"], description="List of template file containing ligand forcefield parameters."
+        categories=["Ligand preparation"],
+        description="List of template file containing ligand forcefield parameters.",
     )
 
     solvent_template: str = Field()
@@ -309,18 +312,16 @@ class YamlParserModel(BaseModel):
     )
     water_radius: float = Field(
         default=6.0, categories=["Water"]
-    )  # WTF tests expects int but should be a float perhaps
+    )
     induced_fit_exhaustive: bool = Field(categories=["Induced fit"])
     induced_fit_fast: bool = Field(categories=["Induced fit"])
     frag: bool = Field(categories=["FragPELE"], candidate_for_deprecation=True)
     ca_constr: float = Field(
-        can_be_falsy=True,
         value_from_simulation_params=True,
-        simulation_params_default=5.0,
+        simulation_params_default=0.5,
         categories=["Constraints"],
     )
     ca_interval: int = Field(
-        can_be_falsy=True,
         value_from_simulation_params=True,
         simulation_params_default=10,
         categories=["Constraints"],
@@ -369,7 +370,7 @@ class YamlParserModel(BaseModel):
         simulation_params_default=False,
     )
     pca_traj: Union[List[str], str] = Field()
-    perturbation: str = Field(categories=["Advanced"])
+    perturbation: bool = Field(categories=["Advanced"])
     sasa: str = Field(
         value_from_simulation_params=True,
         simulation_params_default=constants.SASA,
@@ -481,19 +482,24 @@ class YamlParserModel(BaseModel):
     initial_site: str = Field(categories=["GPCR", "Out in"])
     final_site: str = Field(categories=["GPCR"])
 
-    top_clusters_criterion: str = Field(categories=["Analysis"], default="interaction_25_percentile")
-
-    interaction_restrictions: List[dict] = Field(categories=["Interaction restrictions"])
-
-    use_peleffy: bool = Field(categories=["Ligand preparation"])
+    top_clusters_criterion: str = Field(
+        categories=["Analysis"], default="interaction_25_percentile"
+    )
+    interaction_restrictions: List[dict] = Field(
+        categories=["Interaction restrictions"]
+    )
 
     charge_parametrization_method: str = Field(categories=["Ligand preparation"])
 
-    exclude_terminal_rotamers: bool = Field(default=True, categories=["Ligand preparation"])
+    exclude_terminal_rotamers: bool = Field(
+        default=True, categories=["Ligand preparation"]
+    )
 
     singularity_exec: str = Field(categories=["General settings"])
 
-    terminal_constr: float = Field(can_be_falsy=True, value_from_simulation_params="terminal_constr", simulation_params_default=5.0)
+    terminal_constr: float = Field(
+        value_from_simulation_params="terminal_constr", simulation_params_default=5.0
+    )
 
     covalent_residue: str = Field(categories=["Covalent docking"])
 
@@ -507,7 +513,11 @@ class YamlParserModel(BaseModel):
 
     ligand_conformations: str = Field(categories=["Ligand conformations"])
 
-    conformation_freq: int = Field(categories=["Ligand conformations"], value_from_simulation_params=True, default=4)
+    conformation_freq: int = Field(
+        categories=["Ligand conformations"],
+        value_from_simulation_params=True,
+        default=4,
+    )
 
     overlap_factor_conformation: float = Field(categories=["Ligand conformations"])
 
@@ -523,16 +533,38 @@ class YamlParserModel(BaseModel):
     kde: bool = Field(categories=["Analysis"])
     kde_structs: int = Field(categories=["Analysis"], default=1000)
     plot_filtering_threshold: float = Field(categories=["Analysis"])
-    clustering_filtering_threshold: float = Field(categories=["Analysis"], default=0.25, can_be_falsy=True)
-    clustering_method: str = Field(categories=["Analysis"], value_from_simulation_params=True, simulation_params_default="meanshift")
-    cluster_representatives_criterion: str = Field(categories=["Analysis"], value_from_simulation_params=True, simulation_params_default="interaction_5_percentile")
-    bandwidth: float = Field(categories=["Analysis"], value_from_simulation_params=True, simulation_params_default=2.5)
+    clustering_filtering_threshold: float = Field(
+        categories=["Analysis"], default=0.25, can_be_falsy=True
+    )
+    clustering_method: str = Field(
+        categories=["Analysis"],
+        value_from_simulation_params=True,
+        simulation_params_default="meanshift",
+    )
+    cluster_representatives_criterion: str = Field(
+        categories=["Analysis"],
+        value_from_simulation_params=True,
+        simulation_params_default="interaction_5_percentile",
+    )
+    bandwidth: float = Field(
+        categories=["Analysis"],
+        value_from_simulation_params=True,
+        simulation_params_default=2.5,
+    )
     max_top_clusters: int = Field(categories=["Analysis"], can_be_falsy=True, default=8)
-    min_population: float = Field(categories=["Analysis"], value_from_simulation_params=True, simulation_params_default=0.01)
+    min_population: float = Field(
+        categories=["Analysis"],
+        value_from_simulation_params=True,
+        simulation_params_default=0.01,
+    )
     max_top_poses: int = Field(categories=["Analysis"], can_be_falsy=True, default=100)
-    use_peleffy: bool = Field(categories=["Ligand preparation"], can_be_falsy=True, default=False)
+    use_peleffy: bool = Field(
+        categories=["Ligand preparation"], can_be_falsy=True, default=False
+    )
     saturated_mutagenesis: bool = Field(categories=["Saturated mutagenesis"])
-    cpus_per_mutation: int = Field(categories=["Saturated mutagenesis"], tests_value=2)  # TODO: needs validator
+    cpus_per_mutation: int = Field(
+        categories=["Saturated mutagenesis"], tests_value=2
+    )  # TODO: needs validator
     constraint_level: int = Field(categories=["Constraints"])
 
     @validator("*", pre=True, always=True)
@@ -613,12 +645,13 @@ class YamlParserModel(BaseModel):
         pattern = r"(^[A-z]\:\d{1,4}$)"
 
         if v:
-            for string in v:
-                if not string.isdigit() and not re.match(pattern, string):
-                    raise custom_errors.WrongAtomStringFormat(
-                        "Residue string set in {} does not seem to have the right format. "
-                        "It should follow chain:residue_number pattern, e.g. 'A:105'.".format(string)
+            if not v.isdigit() and not re.match(pattern, v):
+                raise custom_errors.WrongAtomStringFormat(
+                    "Residue string set in {} does not seem to have the right format. "
+                    "It should follow chain:residue_number pattern, e.g. 'A:105'.".format(
+                        v
                     )
+                )
         return v
 
     @validator("frag_core_atom")
@@ -641,14 +674,30 @@ class YamlParserModel(BaseModel):
     @validator("sidechain_resolution", "gridres")
     def check_divisibility(cls, v):
         if v and not 360 % v == 0:
-            raise ValueError("The value should be easily multiplied to obtain 360, e.g. 30, 45 or 10 would be valid.")
+            raise ValueError(
+                "The value should be easily multiplied to obtain 360, e.g. 30, 45 or 10 would be valid."
+            )
         return v
 
     @validator("top_clusters_criterion")
     def check_selection_criterion(cls, v):
         if v and v not in constants.metric_top_clusters_criterion.keys():
             raise ValueError(
-                f"Selected criterion value {v} is invalid. Please choose one of: {constants.metric_top_clusters_criterion.keys()}")
+                f"Selected criterion value {v} is invalid. Please choose one of: {constants.metric_top_clusters_criterion.keys()}"
+            )
         return v
 
     # TODO: Add validator for what's inside interaction restrictions
+
+    @validator("constraint_level")
+    def parse_constraint_level(cls, v, values):
+        if v:
+            if v not in (0, 1, 2, 4):
+                raise ValueError("Invalid constraint level, should be 0, 1, 2 or 3.")
+        return v
+
+    @validator("terminal_constr", "ca_constr")
+    def assert_positive_integer(cls, v):
+        if v and v < 0:
+            raise ValueError(f"Flag {v} should have a positive value.")
+        return v

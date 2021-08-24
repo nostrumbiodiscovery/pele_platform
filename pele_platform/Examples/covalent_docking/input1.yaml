@@ -3,4 +3,3 @@ resname: "LIG"
 chain: "A"
 covalent_residue: "A:186"  # chain and residue number
 test: true
-use_peleffy: true  # PlopRotTemp is failing on SAM residue

@@ -4,9 +4,9 @@ import pele_platform.constants.constants as cs
 
 class SimulationPaths:
     def __init__(self):
-        self.pele_dir = self.pele_dir
+
         self.inputs_dir = os.path.join(self.pele_dir, "input")
-        self.output = os.path.join(self.pele_dir, "output")
+        self.output = os.path.join(self.pele_dir, self.output)
 
         if self.no_ppp:
             self.system_fix = os.path.join(

@@ -23,6 +23,7 @@ class Simulation(blocks.Block):
         options: dict,
         folder_name: str,
         env: pv.Parameters = None,
+        keyword: str = None,
     ) -> None:
         """
         Initialize Simulation class.
@@ -39,6 +40,7 @@ class Simulation(blocks.Block):
         self.builder = parameters_builder
         self.original_dir = os.path.abspath(os.getcwd())
         self.env = env if env else self.builder.build_adaptive_variables(self.builder.initial_args)
+        self.keyword = keyword
 
     def run(self) -> (pv.ParametersBuilder, pv.Parameters):
         self.simulation_setup()
@@ -50,10 +52,10 @@ class Simulation(blocks.Block):
         self.set_params(simulation_type=self.keyword)
         self.set_package_params()
         self.set_user_params()
+        self.restart_checker()
         self.create_folders()
         if hasattr(self.env, "next_step"):
             self.env.input = glob.glob(self.env.next_step)
-        self.restart_checker()
         self.water_handler()
 
     @abstractmethod
@@ -66,9 +68,7 @@ class Simulation(blocks.Block):
         input.yaml.
         """
         output_dir = os.path.join(self.env.pele_dir, self.env.output)
-        if self.env.adaptive_restart and os.path.exists(output_dir):
-            self.env.adaptive_restart = True
-        else:
+        if self.env.adaptive_restart and not os.path.exists(output_dir):
             self.env.adaptive_restart = False
 
     def set_params(self, simulation_type):
@@ -122,7 +122,7 @@ class Simulation(blocks.Block):
                 self.hide_water()
             elif (
                 self.keyword == "induced_fit_exhaustive"
-                and self.builder.package == "allosteric"
+                and self.builder.package == "site_finder"
             ) or (self.keyword == "rescoring" and self.builder.package == "ppi"):
                 self.add_water()
 

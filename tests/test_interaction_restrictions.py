@@ -66,7 +66,7 @@ def test_interaction_restrictions(ext_args=ARGS_1):
     boolean : result of the test.
     """
     errors = []
-    job = main.run_platform_from_yaml(ext_args)
+    builder, job = main.run_platform_from_yaml(ext_args)
     errors = check_file(
         job.pele_dir,
         "pele.conf",
