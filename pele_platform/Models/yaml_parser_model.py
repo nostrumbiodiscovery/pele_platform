@@ -24,9 +24,9 @@ class YamlParserModel(BaseModel):
     input: Optional[Any] = Field(
         alias="global_inputs", categories=["General settings"]
     )  # check what this is
-    system: str = Field(default="", categories=["General settings"])
-    residue: str = Field(alias="resname", categories=["General settings"])
-    chain: str = Field(categories=["General settings"])
+    system: Optional[str] = Field(default="", categories=["General settings"])
+    residue: str = Field(alias="resname", categories=["General settings"], default="")
+    chain: str = Field(categories=["General settings"], default="")
     hbond: Any = Field(
         default=[None, None], candidate_for_deprecation=True
     )  # Kill it with fire!
@@ -457,6 +457,8 @@ class YamlParserModel(BaseModel):
     frag_library: str = Field(categories=["FragPELE"])
     frag_core_atom: Union[str, None] = Field(categories=["FragPELE"], default=None)
     analysis_to_point: Optional[List[float]] = Field(categories=["FragPELE"])
+    fragment_atom: str = Field(categories=["FragPELE"])
+    frag_restart_libraries: bool = Field(categories=["FragPELE"])
 
     n_components: int = Field(
         tests_value=3,

@@ -9,7 +9,7 @@ import pele_platform.main as main
 from pele_platform.analysis.analysis import Analysis
 from pele_platform.analysis.data import DataHandler
 from pele_platform.analysis.plot import Plotter
-from pele_platform.Utilities.Helpers.helpers import check_remove_folder
+from pele_platform.Utilities.Helpers import helpers
 
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
@@ -47,7 +47,7 @@ def test_plotter(x, y, z):
         Metric to z
     """
     output_folder = "tmp/plots"
-    check_remove_folder(output_folder)
+    helpers.check_remove_folder(output_folder)
 
     data_handler = DataHandler(
         sim_path=simulation_path,
@@ -65,26 +65,26 @@ def test_plotter(x, y, z):
 
 
 @pytest.mark.parametrize(
-    ("n_poses", "expected_energies"),
+    ("n_poses", "expected_pose_energies"),
     [
         (0, []),
         (1, [0.879]),
         (4, [0.879, 2.203, 3.563, 6.624]),
     ],
 )
-def test_generate_top_poses(analysis, n_poses, expected_energies):
+def test_generate_top_poses(analysis, n_poses, expected_pose_energies):
     """
     Checks if data_handler extracts the correct number of top poses and associated metrics.
     """
     output_folder = "tmp/top_poses"
-    check_remove_folder(output_folder)
+    helpers.check_remove_folder(output_folder)
 
     top_poses = analysis.generate_top_poses(output_folder, n_poses)
     top_poses_rounded = [round(pose, 3) for pose in top_poses]
 
     # Check if correct energy values were extracted
     assert len(top_poses) == n_poses
-    for energy in expected_energies:
+    for energy in expected_pose_energies:
         assert energy in top_poses_rounded
 
     # Check if correct number of files was saved
@@ -151,7 +151,7 @@ def test_analysis_flags(yaml_file, n_expected_outputs, expected_files):
     all_top_poses = glob.glob(top_poses_folder)
     assert len(all_top_poses) == 0
 
-    check_remove_folder(output_folder)
+    helpers.check_remove_folder(output_folder)
 
 
 @pytest.mark.parametrize(
@@ -167,7 +167,7 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
     yaml_file : str
         Path to input.yaml
     """
-    job_params = main.run_platform_from_yaml(yaml_file)[1]
+    job_params, = main.run_platform_from_yaml(yaml_file)
 
     results_folder = os.path.join(job_params.pele_dir, "results")
     top_poses = glob.glob(os.path.join(results_folder, "top_poses/*pdb"))
@@ -177,7 +177,7 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
     assert len(clusters) == expected_clusters
 
     # Clean up
-    check_remove_folder(results_folder)
+    helpers.check_remove_folder(results_folder)
 
 
 @pytest.mark.parametrize(
@@ -212,7 +212,7 @@ def test_generate_clusters(analysis, method, bandwidth, n_clusters):
     results = [element for element in results if "water" not in element]
 
     assert len(results) == n_clusters
-    check_remove_folder(working_folder)
+    helpers.check_remove_folder(working_folder)
 
 
 def test_api_analysis_generation(analysis):
@@ -220,7 +220,7 @@ def test_api_analysis_generation(analysis):
     Runs full analysis workflow (with GMM clustering).
     """
     working_folder = "full_analysis"
-    check_remove_folder(working_folder)
+    helpers.check_remove_folder(working_folder)
     n_clusts = 3
     analysis.generate(working_folder, "gaussianmixture", analysis_nclust=n_clusts)
 
@@ -269,7 +269,7 @@ def test_api_analysis_generation(analysis):
             "Cluster\n"
         )
 
-    check_remove_folder(working_folder)
+    helpers.check_remove_folder(working_folder)
 
 
 def test_check_existing_directory(generate_folders):
@@ -285,7 +285,7 @@ def test_check_existing_directory(generate_folders):
     assert new_path == "results_3"
 
     folders = glob.glob("results*")
-    check_remove_folder(*folders)
+    helpers.check_remove_folder(*folders)
 
 
 @pytest.mark.parametrize("max_coordinates", [1, 3])
@@ -303,9 +303,7 @@ def test_extract_and_filter_coordinates(analysis, max_coordinates):
     coordinates, water_coordinates, dataframe = analysis._extract_coordinates(
         max_coordinates
     )
-    coordinates_filtered, _, _, _ = analysis._filter_coordinates(
-        coordinates, None, dataframe, 0.5
-    )
+    coordinates_filtered = analysis._filter_coordinates(coordinates, None, dataframe, 0.5)[0]
 
     assert len(coordinates) == 7
     assert coordinates.shape == (
@@ -330,7 +328,7 @@ def test_extract_poses(analysis):
     """
 
     output = "extracted_poses"
-    check_remove_folder(output)
+    helpers.check_remove_folder(output)
 
     values = analysis._extract_poses(analysis._dataframe, "currentEnergy", output)
     poses = glob.glob(os.path.join(output, "*pdb"))
@@ -338,13 +336,13 @@ def test_extract_poses(analysis):
     assert values.sort() == expected_energies.sort()
     assert len(poses) == 7
 
-    check_remove_folder(output)
+    helpers.check_remove_folder(output)
 
 
 @pytest.mark.parametrize(
-    ("filter", "threshold", "expected_length"), [(True, 0.5, 1), (False, None, 7)]
+    ("filtering", "threshold", "expected_length"), [(True, 0.5, 1), (False, None, 7)]
 )
-def test_get_dataframe(analysis, filter, threshold, expected_length):
+def test_get_dataframe(analysis, filtering, threshold, expected_length):
     """
     Tests dataframe filtering based on highest energy. Filtering happens twice, for binding energy and total energy,
     therefore a threshold of 50% will only return one pose out of 7.
@@ -404,7 +402,7 @@ def test_top_clusters_criterion_flag(analysis, cluster_selection, expected_value
         .tolist()
     )
     assert top_value == expected_value
-    check_remove_folder(output_folder)
+    helpers.check_remove_folder(output_folder)
 
 
 @pytest.mark.parametrize(
@@ -427,7 +425,7 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
         cluster_representatives_criterion flag defined by the user.
     expected : str
         Expected value in the dataframe.
-    TODO: Manually check expected values and then add them to the test to make sure we're getting the right stuff!
+    # TODO: Manually check expected values and then add them to the test to make sure we're getting the right stuff!
     """
 
     output_folder = "cluster_rep_selection"
@@ -457,7 +455,7 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
     )
     assert not df.isnull().values.any()
 
-    check_remove_folder(output_folder)
+    helpers.check_remove_folder(output_folder)
 
 
 def test_coordinates_extraction_from_trajectory():
@@ -486,7 +484,7 @@ def test_coordinates_extraction_from_trajectory():
     assert water.shape == (2, 2, 3)
 
 
-def get_analysis(output, topology, traj):
+def get_analysis(output, topology=None, traj=None):
     """
     Calls analysis fixture with the right arguments depending on the trajectory type.
 
@@ -494,9 +492,9 @@ def get_analysis(output, topology, traj):
     -----------
     output : str
         Path to simulation 'output' folder.
-    topology : str
+    topology : Optional[str]
         Path to the topology file.
-    traj : str
+    traj : Optional[str]
         Trajectory type: xtc or pdb.
     """
     traj = traj if traj else "pdb"
@@ -534,7 +532,7 @@ def test_water_clustering(path, topology):
     obj.generate_clusters(path=analysis_output, clustering_type="meanshift")
     # TODO: Write a proper test for water clustering output once it's implemented.
 
-    check_remove_folder(analysis_output)
+    helpers.check_remove_folder(analysis_output)
 
 
 def test_water_clustering_production():
@@ -542,7 +540,7 @@ def test_water_clustering_production():
     Tests water clustering running from YAML.
     """
     yaml = os.path.join(test_path, "clustering_xtc", "water_clustering.yaml")
-    builder, parameters = main.run_platform_from_yaml(yaml)
+    parameters, = main.run_platform_from_yaml(yaml)
 
     # Checking if water indices to track are correctly parsed
     assert parameters.water_ids_to_track == [("A", 2334), ("A", 2451)]
@@ -638,7 +636,8 @@ def analysis():
     ("yaml_file", "traj", "topology"),
     [
         ("input_sim.yaml", "pdb", None),
-        # ("input_sim_xtc.yaml", "xtc", "pregrow/initialization_grow.pdb") TODO: Uncomment when Frag runs with XTC properly
+        # ("input_sim_xtc.yaml", "xtc", "pregrow/initialization_grow.pdb")
+        # TODO: Uncomment when Frag runs with XTC properly
     ],
 )
 def test_frag_API_analysis(yaml_file, traj, topology):
@@ -649,14 +648,14 @@ def test_frag_API_analysis(yaml_file, traj, topology):
     -----------
     yaml_file : str
         Base name of the input.yaml file in Examples/frag.
-    traj : str
+    traj : Union[str, None]
         Indicate if running "pdb" or "xtc".
-    topology : str
+    topology : Union[str, None]
         Path to the topology file, if running XTC simulation, otherwise None
     """
     # Run frag simulation
     yaml_file = os.path.join(test_path, "frag", yaml_file)
-    job = main.run_platform_from_yaml(yaml_file)
+    main.run_platform_from_yaml(yaml_file)
 
     # Run analysis
     frag_folder = "1w7h_preparation_structure_2w_processed_frag_aminoC1N1"

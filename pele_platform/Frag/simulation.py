@@ -19,17 +19,23 @@ from pele_platform.Utilities.Helpers import water
 
 class FragRunner(object):
     def __init__(self, args):
-        from pele_platform.Utilities.Parameters import ParametersBuilder
+        """
+        Initializes FragRunner class.
 
-        builder = ParametersBuilder()
-        parameters = builder.build_frag_variables(args)
-        self._parameters = parameters
+        Parameters
+        ----------
+        args : ParametersBuilder
+            ParametersBuilder generated in Launcher.
+        """
+        self.builder = args
+        self.builder.build_frag_variables(self.builder.initial_args)
+        self._parameters = self.builder.parameters
 
     @property
     def parameters(self):
         return self._parameters
 
-    def run_simulation(self):
+    def run(self):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()

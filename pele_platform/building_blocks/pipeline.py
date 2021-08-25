@@ -1,7 +1,6 @@
 from copy import deepcopy
 from typing import List
 
-import pele_platform.Errors.custom_errors as ce
 from pele_platform.building_blocks.selection import *
 from pele_platform.building_blocks.simulation import *
 from pele_platform.Utilities.Parameters.parameters import ParametersBuilder

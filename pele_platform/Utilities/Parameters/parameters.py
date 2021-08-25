@@ -282,9 +282,11 @@ class Parameters(simulation_params.SimulationParams,
         self.logger.setLevel(logging.INFO)
         self.logger.propagate = False
         formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
-        if not self.adaptive_restart:
-            file_handler = logging.FileHandler(log_name, mode='w')
+
+        if self.restart:
+            file_handler = logging.FileHandler(log_name, mode='w+')
         else:
             file_handler = logging.FileHandler(log_name, mode='a')
+
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)

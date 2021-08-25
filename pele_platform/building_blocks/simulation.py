@@ -45,6 +45,7 @@ class Simulation(blocks.Block):
     def run(self) -> (pv.ParametersBuilder, pv.Parameters):
         self.simulation_setup()
         self.env = si.run_adaptive(self.env)
+        self.post_simulation_cleanup()
         return self.builder, self.env
 
     def simulation_setup(self):
@@ -58,18 +59,33 @@ class Simulation(blocks.Block):
             self.env.input = glob.glob(self.env.next_step)
         self.water_handler()
 
+    def post_simulation_cleanup(self):
+        """
+        Sets both types of restart to false, so that the platform does not look for logger file while executing the
+        next building block.
+        Returns
+        """
+        self.env.restart = False
+        self.env.adaptive_restart = False
+
     @abstractmethod
     def set_package_params(self):
         pass
 
     def restart_checker(self):
         """
-        Check if we should run restart based on the presence of the output folder and 'adaptive_restart' flag in
-        input.yaml.
+        Check what kind of restart should be executed.
+        If the output folder exists and the user wants to restart adaptive -> adaptive_restart.
+        If the output folder does not exists and the user wants to restart adaptive -> restart.
+
+        Adaptive restart implies picking up the simulation at the last iteration, whereas restart runs PELE from scratch
+        but without overwriting adaptive.conf and pele.conf files.
         """
         output_dir = os.path.join(self.env.pele_dir, self.env.output)
+
         if self.env.adaptive_restart and not os.path.exists(output_dir):
             self.env.adaptive_restart = False
+            self.env.restart = True
 
     def set_params(self, simulation_type):
         """

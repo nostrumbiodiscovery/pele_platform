@@ -1079,7 +1079,7 @@ class Analysis(object):
         ----------
         coordinates : numpy.array
             The array of coordinates to filter
-        water_coordinates : numpy.array
+        water_coordinates : Optional[numpy.array]
             The array of water coordinates to filter. It has the same size
             (and order) of the coordinates array
         dataframe : a pandas.dataframe object
@@ -1125,8 +1125,7 @@ class Analysis(object):
         filtered_dataframe = \
             dataframe.query('currentEnergy<={}'.format(energetic_threshold))
 
-        return filtered_coordinates, filtered_water_coordinates, \
-            filtered_dataframe, energetic_threshold
+        return filtered_coordinates, filtered_water_coordinates, filtered_dataframe, energetic_threshold
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """

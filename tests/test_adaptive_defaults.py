@@ -190,13 +190,7 @@ def test_all_defaults(yaml, expected_adaptive, expected_pele):
     """
     errors = []
     output = main.run_platform_from_yaml(yaml)
-
-    if isinstance(output, tuple):  # rewrite this nonsense once we're done with refactoring
-        folder = output[1].pele_dir
-    elif isinstance(output, list):
-        folder = output[0].pele_dir
-    else:
-        folder = output[0][1].pele_dir
+    folder = output[0].pele_dir
 
     errors = tests.utils.check_file(folder, "adaptive.conf", expected_adaptive, errors)
     errors = tests.utils.check_file(folder, "pele.conf", expected_pele, errors)

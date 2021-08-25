@@ -15,7 +15,7 @@ INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive.yaml")
 INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast.yaml")
 GLOBAL_ARGS = os.path.join(test_path, "global/input.yaml")
 INPUTS_GLOBAL_ARGS = os.path.join(test_path, "global/input_inputs.yaml")
-INPUTS_AST_ARGS = os.path.join(test_path, "global/input_inputs_asterisc.yaml")
+INPUTS_AST_ARGS = os.path.join(test_path, "global/input_inputs_asterisk.yaml")
 EXIT_ARGS = os.path.join(test_path, "exit/input.yaml")
 EXIT_SOFT_ARGS = os.path.join(test_path, "exit_soft/input.yaml")
 MSM_ARGS = os.path.join(test_path, "Msm/input.yaml")
@@ -146,8 +146,7 @@ def test_restart_flag(restart_type):
         yaml.dump(new_parameters, new_file)
 
     # Restart the simulation
-    job_parameters2 = main.run_platform_from_yaml(updated_restart_yaml)
-    print(job_parameters2)
+    job_parameters2, _, _ = main.run_platform_from_yaml(updated_restart_yaml)
 
     # Assert it reused existing directory and did not create a new one
     assert job_parameters.pele_dir == job_parameters2.pele_dir
@@ -166,7 +165,7 @@ def test_flags(ext_args=FLAGS_ARGS, output="NOR_solvent_OBC"):
     errors = []
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
-    builder, env = main.run_platform_from_yaml(ext_args)
+    env, = main.run_platform_from_yaml(ext_args)
     folder = env.folder
     if not os.path.exists(
         os.path.join(folder, "DataLocal/LigandRotamerLibs/STR.rot.assign")

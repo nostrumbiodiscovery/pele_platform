@@ -15,9 +15,8 @@ class AdaptiveLauncher(LauncherBase):
         self.builder.build_adaptive_variables(self.builder.initial_args)
         self.env = self.builder.parameters
         self.env.create_files_and_folders()
-
         self.env = si.run_adaptive(self.env)
-        return self.builder, self.env
+        return [self.env]
 
     def set_simulation_type(self):
         # NEEDS IMPROVEMENT. Ensuring it doesn't crash in features.adaptive

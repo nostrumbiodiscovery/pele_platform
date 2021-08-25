@@ -59,9 +59,8 @@ def run_platform_from_yaml(input_yaml):
     """
     # Generate the yaml object from the input yaml
     from pele_platform.Utilities.Helpers import yaml_parser
-    from pele_platform.Checker import valid_flags
 
-    yaml_obj = yaml_parser.YamlParser(input_yaml, valid_flags.VALID_FLAGS_PLATFORM)
+    yaml_obj = yaml_parser.YamlParser(input_yaml)
 
     # Attempt to parse the yaml object
     try:
