@@ -366,12 +366,17 @@ class FragRunner(object):
                 self.parameters.frag_library = os.path.join("./frag_library", molecule + "_" + str(fragment))
                 self.parameters.frag_core_atom = top_molecules[molecule][fragment][0]
                 self.parameters.fragment_atom = top_molecules[molecule][fragment][1]
+                self._prepare_input_file_filtering()
                 self._launch()
 
     def _clean_up(self, fragment_files):
         for file in fragment_files:
             if os.path.isfile(file):
                 os.remove(file)
+
+    def _prepare_input_file_filtering(self):
+        with open("input.conf", "w+") as conf_file:
+            conf_file.write(self.parameters.core + " " + self.parameters.frag_core_atom + " " + self.parameters.fragment_atom + "\n")
 
     def _extract_working_directory(self):
         """
