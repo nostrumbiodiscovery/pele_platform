@@ -984,7 +984,7 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
     """
     from frag_pele.Covalent import correct_template_of_backbone_res
     from frag_pele.Helpers import create_templates
-    breakpoint()
+
     template_name = ligand_name.lower()
     ligand_name = ligand_name.upper()
     extracted_ligand = os.path.join(folder, f"{ligand_name}.mae")

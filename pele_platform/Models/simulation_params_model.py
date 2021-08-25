@@ -12,7 +12,7 @@ LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 class SimulationParamsModel(YamlParserModel):
     frag_pele: Any = Field()
-    complexes: Any = Field()
+    complexes: str = Field()
     frag_pele_steps: Any = Field()
     output_path: Any = Field()
     logfile: str = Field(value_from="log", always=True)
@@ -88,7 +88,7 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("frag_pele", always=True)
     def set_frag_pele(cls, v, values):
-        if values.get("package") == "frag":
+        if values.get("package") == "frag_core":
             return True
 
     @validator("complexes", always=True)
@@ -98,6 +98,11 @@ class SimulationParamsModel(YamlParserModel):
     @validator("frag_pele_steps", always=True)
     def set_frag_pele_steps(cls, v, values):
         return "$STEPS" if values.get("frag_pele") else "$PELE_STEPS"
+
+    # @validator("chain")
+    # def set_frag_chain(cls, v, values):
+    #     if values.get("frag_pele"):
+    #         return values.get("frag_core")
 
     @validator("output_path", always=True)
     def set_output_path(cls, v, values):

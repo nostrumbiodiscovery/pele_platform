@@ -26,7 +26,7 @@ class YamlParserModel(BaseModel):
     )  # check what this is
     system: Optional[str] = Field(default="", categories=["General settings"])
     residue: str = Field(alias="resname", categories=["General settings"], default="")
-    chain: str = Field(categories=["General settings"], default="")
+    chain: Optional[str] = Field(categories=["General settings"])
     hbond: Any = Field(
         default=[None, None], candidate_for_deprecation=True
     )  # Kill it with fire!
