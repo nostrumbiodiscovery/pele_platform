@@ -40,7 +40,8 @@ def test_production():
     Tests the full flow in debug mode and checks for expected values in pele.conf as well as generated libraries.
     """
     yaml = os.path.join(test_path, "input.yaml")
-    builder, job = main.run_platform_from_yaml(yaml)
+    job = main.run_platform_from_yaml(yaml)
+    job = job[0]
 
     errors = check_file(job.pele_dir, "pele.conf", expected_lines, [])
     assert not errors

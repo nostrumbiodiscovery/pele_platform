@@ -7,7 +7,7 @@ import pele_platform.Utilities.Helpers.constraints.alpha_constraints as alpha_co
 import tests.utils
 from pele_platform import main
 from pele_platform.Utilities.Helpers.constraints import smiles_constraints as smi
-from tests.test_others import EXTERNAL_CONSTR_ARGS, EXT_CONSTR, PPP_CONSTR_ARGS, PPP_CONSTR, ARGS_SMARTS_CONSTR
+from tests.test_others import EXTERNAL_CONSTR_ARGS, EXT_CONSTR, ARGS_SMARTS_CONSTR
 
 test_path = os.path.join(constants.DIR, "Examples")
 

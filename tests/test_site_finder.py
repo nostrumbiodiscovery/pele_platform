@@ -84,6 +84,7 @@ def test_working_folder(output="site_finder"):
     helpers.check_remove_folder(output)
     job, = main.run_platform_from_yaml(yaml_file)
     assert os.path.exists(job.folder)
+    helpers.check_remove_folder(output)
 
 
 def test_site_finder_restart():
@@ -116,8 +117,8 @@ def test_defaults(yaml_file, adaptive_lines):
     Tests default adaptive and pele parameters for both global and local site finder exploration.
     """
     yaml_file = os.path.join(test_path, "site_finder", yaml_file)
-    params = main.run_platform_from_yaml(yaml_file)
+    params, = main.run_platform_from_yaml(yaml_file)
 
-    errors = check_file(params[1].pele_dir, "pele.conf", PELE, errors=[])
-    errors = check_file(params[1].pele_dir, "adaptive.conf", adaptive_lines, errors)
+    errors = check_file(params.pele_dir, "pele.conf", PELE, errors=[])
+    errors = check_file(params.pele_dir, "adaptive.conf", adaptive_lines, errors)
     assert not errors

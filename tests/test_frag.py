@@ -2,7 +2,6 @@ import os
 import glob
 import pytest
 import shutil
-import sys
 
 import pele_platform.constants.constants as cs
 import pele_platform.main as main
@@ -110,7 +109,7 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
         if os.path.exists(path):
             shutil.rmtree(path, ignore_errors=True)
 
-    job = main.run_platform_from_yaml(ext_args)
+    main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
 
     new_output_path = glob.glob(output)[0]
@@ -139,7 +138,7 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
     job = main.run_platform_from_yaml(ext_args)
-    folder = output
+
     errors = tests.utils.check_file(
         job.working_dir[0],
         "control_folder/0_pele_template.conf",
@@ -163,10 +162,7 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     """
     files = glob.glob(ext_args)
     for file in files:
-        try:
-            job = main.run_platform_from_yaml(file)
-        except Exception:
-            assert False
+        main.run_platform_from_yaml(file)
 
 
 @pytest.mark.parametrize(
@@ -187,12 +183,11 @@ def test_libraries(capsys, yaml_file, expected_lines):
     errors = []
     if os.path.exists("input.conf"):
         os.remove("input.conf")
-    try:
-        jon = main.run_platform_from_yaml(yaml_file)
-        captured = capsys.readouterr()
-        assert "Skipped - FragPELE will not run." not in captured.out
-    except Exception:
-        assert False
+
+    main.run_platform_from_yaml(yaml_file)
+    captured = capsys.readouterr()
+
+    assert "Skipped - FragPELE will not run." not in captured.out
     assert not errors
 
 
@@ -206,10 +201,10 @@ def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     ext_args : str
         Path to PELE input file.
     """
-    job = main.run_platform_from_yaml(ext_args)
-    errors = []
+    main.run_platform_from_yaml(ext_args)
+
     errors = tests.utils.check_file(
-        os.getcwd(), "point_analysis.csv", point_analysis_lines, errors, ",", 4
+        os.getcwd(), "point_analysis.csv", point_analysis_lines, [], ",", 4
     )
     assert not errors
 
@@ -225,9 +220,10 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     """
     if os.path.exists("input.conf"):
         os.remove("input.conf")
-    job = main.run_platform_from_yaml(ext_args)
-    errors = []
-    errors = tests.utils.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
+
+    main.run_platform_from_yaml(ext_args)
+
+    errors = tests.utils.check_file(os.getcwd(), "input.conf", PDB_lines, [])
     assert not errors
 
 
@@ -242,13 +238,10 @@ def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
     """
     if os.path.exists("input.conf"):
         os.remove("input.conf")
-    try:
-        job = main.run_platform_from_yaml(ext_args)
-        captured = capsys.readouterr()
-        assert "Skipped - FragPELE will not run." not in captured.out
 
-    except Exception:
-        assert False
+    main.run_platform_from_yaml(ext_args)
+    captured = capsys.readouterr()
+    assert "Skipped - FragPELE will not run." not in captured.out
 
 
 def test_frag_waters(ext_args=FRAG_WATERS):
@@ -264,17 +257,18 @@ def test_frag_waters(ext_args=FRAG_WATERS):
     job = main.run_platform_from_yaml(ext_args)
     for path in job.working_dir:
         output = glob.glob(os.path.join(path, "*_top.pdb"))[0]
+
         with open(output, "r") as file:
-            lines = file.readlines()
-            for line in lines:
+            for line in file.readlines():
                 if line[17:21].strip() == "HOH":
                     water_output.append(line.strip())
 
     assert water_lines == water_output
 
+
 @pytest.mark.parametrize(
-    ("ext_args"),
-    [(FRAG_CORE_ARGS), (FRAG_SDF_LIBRARIES)],
+    "ext_args",
+    [FRAG_CORE_ARGS, FRAG_SDF_LIBRARIES],
 )
 def test_ligand_clustering(ext_args):
     """
@@ -286,7 +280,7 @@ def test_ligand_clustering(ext_args):
         Path to PELE input file,
     """
     job = main.run_platform_from_yaml(ext_args)
+
     for path in job.working_dir:
         analysis_folder = os.path.join(path, "results")
-        if not os.path.isdir(analysis_folder):
-            assert False
+        assert os.path.isdir(analysis_folder)
