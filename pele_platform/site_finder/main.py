@@ -33,8 +33,10 @@ class SiteFinderLauncher:
         self.global_simulation = self._launch_global()
 
         if not self.args.skip_refinement and not self.args.debug:
-            self._generate_clusters()
-            self._retrieve_external_templates()
+            if not self.args.only_analysis:
+                # No need to generate refinement inputs and retrieve templates, if running analysis only
+                self._generate_clusters()
+                self._retrieve_external_templates()
             self._set_params_refinement()
             self.refinement_simulation = self._launch_refinement()
         else:
