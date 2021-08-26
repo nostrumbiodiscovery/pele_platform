@@ -1,7 +1,6 @@
 import glob
 import os
 import pytest
-import shutil
 
 import tests.utils
 from pele_platform import main
@@ -162,27 +161,29 @@ def test_simulation_blocks(yaml, package, block, expected):
 @pytest.fixture
 def mock_simulation_env():
     """
-    Fixture to fake an EnviroBuilder object to allow testing of the Selection blocks, since they require basic
-    attributes such as resname or iterations, which would normally be passed from the previous block in the pipeline.
+    Fixture to fake an Parameters and ParametersBuilder objects to allow testing of the Selection blocks, since they
+    require basic attributes such as resname or iterations, which would normally be passed from the previous block in
+    the pipeline.
     """
-    user_dict = {"pele_dir": os.path.join(test_path, "Blocks/mock_simulation"),
+    user_dict = {"working_folder": os.path.join(test_path, "Blocks/mock_simulation"),
                  "output": "output",
                  "iterations": 2,
                  "pele_steps": 12,
                  "cpus": 5,
                  "be_column": 5,
-                 "residue": "LIG",
-                 "topology": None,
-                 "logger": None,
+                 "resname": "LIG",
                  }
-    #
-    # selection_path = os.path.join(os.path.dirname(env.pele_dir), "test_Selection")
-    # if os.path.exists(selection_path):
-    #     shutil.rmtree(selection_path)
-    # return builder, env
+
+    parser = yp.YamlParser.from_dict(user_dict)
+    parser.read()
+    builder = pv.ParametersBuilder()
+    builder.build_adaptive_variables(parser)
+    env = builder.parameters
+    env.create_files_and_folders()
+
+    return builder, env
 
 
-@pytest.mark.xfail("Fixture not yet implemented")
 @pytest.mark.parametrize(
     ("selection_block", "options", "expected"),
     [
@@ -198,7 +199,7 @@ def test_selection_blocks(mock_simulation_env, selection_block, options, expecte
     files were selected in each case.
     """
     builder, env = mock_simulation_env
-    selection = selection_block(builder, options, "test_folder", env).run()
+    selection = selection_block(parameters_builder=builder, options=options, folder_name="test_folder", env=env).run()
 
     for i in selection.inputs:
         correct = [elem for elem in expected if elem in i]

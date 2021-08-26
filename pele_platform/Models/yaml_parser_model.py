@@ -659,18 +659,15 @@ class YamlParserModel(BaseModel):
     @validator("frag_core_atom")
     def validate_frag_core_atom(cls, v):
         """
-        Checks if a list of strings fits a regex pattern indicating the core atom,e.g. C3-H2.
+        Checks if the string fits a regex pattern indicating the core atom,e.g. C3-H2.
         """
         pattern = r"([A-Z]{1,2}\d{1,2}\-H[A-Z]?\d{1,2})"
 
         if v:
-            for string in v:
-                if not re.match(pattern, string):
-                    raise custom_errors.WrongAtomStringFormat(
-                        "Atom string set in {} does not seem to have the right format. It should follow C atom name: H atom name format.".format(
-                            string
-                        )
-                    )
+            if not re.match(pattern, v):
+                raise custom_errors.WrongAtomStringFormat(
+                    f"Atom string set in {v} does not seem to have the right format. It should follow C atom name: H "
+                    "atom name format.")
         return v
 
     @validator("sidechain_resolution", "gridres")
@@ -694,8 +691,8 @@ class YamlParserModel(BaseModel):
     @validator("constraint_level")
     def parse_constraint_level(cls, v, values):
         if v:
-            if v not in (0, 1, 2, 4):
-                raise ValueError("Invalid constraint level, should be 0, 1, 2 or 3.")
+            if v not in (0, 1, 2, 3):
+                raise ValueError(f"Invalid constraint level {v}, should be 0, 1, 2 or 3.")
         return v
 
     @validator("terminal_constr", "ca_constr")

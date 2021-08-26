@@ -1,0 +1,9 @@
+Cluster,Cluster label,epoch,trajectory,Step,currentEnergy,Binding Energy,sasaLig
+0,A,1,output/1/trajectory_4.pdb,2,-10769.4,-66.1503,0.0
+5,F,1,output/1/trajectory_2.pdb,1,-10725.9,-64.1978,0.0
+1,B,1,output/1/trajectory_2.pdb,4,-10767.8,-61.3131,0.0
+4,E,1,output/1/trajectory_2.pdb,3,-10733.4,-57.7015,0.000290744
+7,H,1,output/1/trajectory_1.pdb,2,-10728.2,-49.1679,0.000248547
+3,D,1,output/1/trajectory_1.pdb,3,-10742.0,-62.7177,0.0
+2,C,1,output/1/trajectory_1.pdb,4,-10752.2,-62.3474,0.0
+6,G,1,output/1/trajectory_1.pdb,5,-10760.9,-62.9806,0.0

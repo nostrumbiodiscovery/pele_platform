@@ -47,7 +47,7 @@ class ParametersBuilder(object):
 
         # Define main PELE directory
         main_dir = os.path.abspath("{}_Pele".format(args.residue))
-        self.yamlfile = args.yamlfile
+        self.yamlfile = args.yaml_file
 
         # Set the PELE directory
         # In case that folder is not set by the user, we will try to suggest
@@ -241,7 +241,7 @@ class Parameters(simulation_params.SimulationParams,
             self.create_files()
 
         self.create_logger()
-        shutil.copy(self.args.yamlfile, self.pele_dir)
+        shutil.copy(self.args.yaml_file, self.pele_dir)
 
     def create_folders(self):
         """

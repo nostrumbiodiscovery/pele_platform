@@ -131,6 +131,8 @@ Resname / Residue
 :Parser key: residue
 :Type: ``str``
 
+:Default: ``''``
+
 
 
 
@@ -139,7 +141,7 @@ Resname / Residue
 Processors:
  * ``str_validator`` from `Pydantic`
 
- * ``validate_residue`` from `YamlParserModel`
+ * ``validate_residue_name`` from `YamlParserModel`
 
  * ``validate_adaptive_required_fields`` from `SimulationParamsModel`
 
@@ -304,6 +306,83 @@ Processors:
 
 
 
+Restart
+########################################################################
+
+
+
+
+
+
+:YAML key: restart
+
+
+:Parser key: restart
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Singularity Exec
+########################################################################
+
+
+
+
+
+
+:YAML key: singularity_exec
+
+
+:Parser key: singularity_exec
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Inter Step Logger
+########################################################################
+
+
+
+
+
+
+:YAML key: inter_step_logger
+
+
+:Parser key: inter_step_logger
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+ * ``set_interstep_logger`` from `SimulationParamsModel`
+
+
+
+
 
 *******************************************************
 Other
@@ -413,7 +492,7 @@ Processors:
 
 
 
-Templates / Template
+Templates
 ########################################################################
 
 
@@ -424,12 +503,39 @@ Templates / Template
 :YAML key: templates
 
 
-:Parser key: template
+:Parser key: templates
+:Type: ``Any``
+
+:Default: ``'/home/agruzka/pele_platform/pele_platform/PeleTemplates'``
+
+
+
+
+
+
+
+
+Solvent Template
+########################################################################
+
+
+
+
+
+
+:YAML key: solvent_template
+
+
+:Parser key: solvent_template
 :Type: ``str``
 
 
 
 
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
 
 
 
@@ -455,68 +561,6 @@ Ext Rotamers
 
 
 
-TERs / Gaps Ter
-########################################################################
-
-
-
-
-
-
-:YAML key: TERs
-
-
-:Parser key: gaps_ter
-:Type: ``bool``
-
-
-
-
-If value is ``None``,
-it will fall back to ``gaps_ter`` software setting.
-If there is no software setting,
-it will default to ``False``.
-
-
-
-
-Processors:
- * ``bool_validator`` from `Pydantic`
-
-
-
-
-Charge Ters / Charge Ter
-########################################################################
-
-
-
-
-
-
-:YAML key: charge_ters
-
-
-:Parser key: charge_ter
-:Type: ``bool``
-
-
-
-
-If value is ``None``,
-it will fall back to ``charge_ter`` software setting.
-If there is no software setting,
-it will default to ``False``.
-
-
-
-
-Processors:
- * ``bool_validator`` from `Pydantic`
-
-
-
-
 Mpi Params
 ########################################################################
 
@@ -529,7 +573,7 @@ Mpi Params
 
 
 :Parser key: mpi_params
-:Type: ``Any``
+:Type: ``str``
 
 
 
@@ -537,34 +581,9 @@ Mpi Params
 
 
 Processors:
+ * ``str_validator`` from `Pydantic`
+
  * ``format_mpi_params`` from `SimulationParamsModel`
-
-
-
-
-Nonstandard
-########################################################################
-
-
-
-
-
-
-:YAML key: nonstandard
-
-
-:Parser key: nonstandard
-:Type: ``str``
-
-
-
-
-If value is  falsy,
-it will fall back to ``nonstandard`` software setting.
-If there is no software setting,
-it will default to ``[]``.
-
-
 
 
 
@@ -646,75 +665,6 @@ Processors:
 
 
 
-Precision Glide
-########################################################################
-
-
-
-
-.. warning::
-    This is a candidate for deprecation.
-
-
-
-:YAML key: precision_glide
-
-
-:Parser key: precision_glide
-:Type: ``Any``
-
-
-
-
-
-
-
-
-Msm
-########################################################################
-
-
-
-
-
-
-:YAML key: msm
-
-
-:Parser key: msm
-:Type: ``Any``
-
-
-
-
-
-
-
-
-Precision
-########################################################################
-
-
-
-
-.. warning::
-    This is a candidate for deprecation.
-
-
-
-:YAML key: precision
-
-
-:Parser key: precision
-:Type: ``Any``
-
-
-
-
-
-
-
-
 Exit Clust / Clust
 ########################################################################
 
@@ -730,249 +680,10 @@ Exit Clust / Clust
 
 
 :Parser key: clust
-:Type: ``Any``
+:Type: ``int``
 
 
 :Tests value: ``2``
-
-
-
-
-
-
-
-Restart
-########################################################################
-
-
-
-
-
-
-:YAML key: restart
-
-
-:Parser key: restart
-:Type: ``Any``
-
-
-
-
-If value is  falsy,
-it will fall back to ``restart`` software setting.
-If there is no software setting,
-it will default to ``'all'``.
-
-
-
-
-
-
-Lagtime
-########################################################################
-
-
-
-
-.. warning::
-    This is a candidate for deprecation.
-
-
-
-:YAML key: lagtime
-
-
-:Parser key: lagtime
-:Type: ``Any``
-
-
-
-
-
-
-
-
-Msm Clust
-########################################################################
-
-
-
-
-
-
-:YAML key: msm_clust
-
-
-:Parser key: msm_clust
-:Type: ``Any``
-
-
-
-
-
-
-
-
-Rescoring
-########################################################################
-
-
-
-
-
-
-:YAML key: rescoring
-
-
-:Parser key: rescoring
-:Type: ``bool``
-
-
-
-
-
-
-Processors:
- * ``bool_validator`` from `Pydantic`
-
-
-
-
-In Out
-########################################################################
-
-
-
-
-
-
-:YAML key: in_out
-
-
-:Parser key: in_out
-:Type: ``bool``
-
-
-
-
-
-
-Processors:
- * ``bool_validator`` from `Pydantic`
-
-
-
-
-In Out Soft
-########################################################################
-
-
-
-
-
-
-:YAML key: in_out_soft
-
-
-:Parser key: in_out_soft
-:Type: ``bool``
-
-
-
-
-
-
-Processors:
- * ``bool_validator`` from `Pydantic`
-
-
-
-
-Exit
-########################################################################
-
-
-
-
-
-
-:YAML key: exit
-
-
-:Parser key: exit
-:Type: ``Any``
-
-
-
-
-
-
-
-
-Exit Value
-########################################################################
-
-
-
-
-
-
-:YAML key: exit_value
-
-
-:Parser key: exit_value
-:Type: ``float``
-
-
-
-
-
-
-Processors:
- * ``float_validator`` from `Pydantic`
-
-
-
-
-Exit Condition
-########################################################################
-
-
-
-
-
-
-:YAML key: exit_condition
-
-
-:Parser key: exit_condition
-:Type: ``str``
-
-
-
-
-
-
-Processors:
- * ``str_validator`` from `Pydantic`
-
-
-
-
-Exit Trajnum
-########################################################################
-
-
-
-
-
-
-:YAML key: exit_trajnum
-
-
-:Parser key: exit_trajnum
-:Type: ``int``
-
 
 
 
@@ -990,6 +701,9 @@ One Exit
 
 
 
+.. warning::
+    This is a candidate for deprecation.
+
 
 
 :YAML key: one_exit
@@ -1005,32 +719,14 @@ One Exit
 
 
 
-Box Type
-########################################################################
-
-
-
-
-
-
-:YAML key: box_type
-
-
-:Parser key: box_type
-:Type: ``Any``
-
-
-
-
-
-
-
-
 Box Metric
 ########################################################################
 
 
 
+
+.. warning::
+    This is a candidate for deprecation.
 
 
 
@@ -1053,6 +749,9 @@ Time
 
 
 
+.. warning::
+    This is a candidate for deprecation.
+
 
 
 :YAML key: time
@@ -1074,6 +773,9 @@ Nosasa
 
 
 
+.. warning::
+    This is a candidate for deprecation.
+
 
 
 :YAML key: nosasa
@@ -1094,6 +796,9 @@ Perc Sasa
 
 
 
+
+.. warning::
+    This is a candidate for deprecation.
 
 
 
@@ -1126,6 +831,8 @@ Seed
 
 :Default: ``generate_random_seed()``
 
+
+:Tests value: ``12345``
 
 
 
@@ -1170,6 +877,9 @@ Log
 
 
 
+.. warning::
+    This is a candidate for deprecation.
+
 
 
 :YAML key: log
@@ -1190,6 +900,9 @@ Nonrenum
 
 
 
+
+.. warning::
+    This is a candidate for deprecation.
 
 
 
@@ -1220,7 +933,7 @@ Pele Exec
 :Parser key: pele_exec
 :Type: ``str``
 
-:Default: ``'bin/Pele_mpi'``
+:Default: ``'/scratch/PELE/V1.7.1/bin/Pele_mpi'``
 
 
 
@@ -1247,7 +960,7 @@ Pele Data
 :Parser key: pele_data
 :Type: ``str``
 
-:Default: ``'Data'``
+:Default: ``'/scratch/PELE/V1.7.1/Data'``
 
 
 
@@ -1274,7 +987,7 @@ Pele Documents
 :Parser key: pele_documents
 :Type: ``str``
 
-:Default: ``'Documents'``
+:Default: ``'/scratch/PELE/V1.7.1/Documents'``
 
 
 
@@ -1283,31 +996,6 @@ Pele Documents
 
 Processors:
  * ``str_validator`` from `Pydantic`
-
-
-
-
-Pca
-########################################################################
-
-
-
-
-
-
-:YAML key: pca
-
-
-:Parser key: pca
-:Type: ``Any``
-
-
-
-
-
-
-Processors:
- * ``format_pca`` from `SimulationParamsModel`
 
 
 
@@ -1448,7 +1136,7 @@ Anm Modes Change
 
 
 :Parser key: anm_modes_change
-:Type: ``Any``
+:Type: ``int``
 
 
 
@@ -1459,6 +1147,10 @@ If there is no software setting,
 it will default to ``4``.
 
 
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
 
 
 
@@ -1568,135 +1260,11 @@ Pca Traj
 
 
 :Parser key: pca_traj
-:Type: ``str``
+:Type: ``Union[List[str], str]``
 
 
 
 
-
-
-
-
-Perturbation
-########################################################################
-
-
-
-
-
-
-:YAML key: perturbation
-
-
-:Parser key: perturbation
-:Type: ``Any``
-
-
-
-
-
-
-Processors:
- * ``set_perturbation`` from `SimulationParamsModel`
-
-
-
-
-Sasa
-########################################################################
-
-
-
-
-
-
-:YAML key: sasa
-
-
-:Parser key: sasa
-:Type: ``str``
-
-
-
-
-If value is  falsy,
-it will fall back to ``sasa`` software setting.
-If there is no software setting,
-it will default to ``'\n                        { "type": "sasa",\n\n                           "tag": "sasaLig",\n\n                           "selection": { "chains": { "names": ["$CHAIN"] } }\n\n                        },\n'``.
-
-
-
-
-Processors:
- * ``str_validator`` from `Pydantic`
-
- * ``only_with_perturbation`` from `SimulationParamsModel`
-
-
-
-
-Binding Energy
-########################################################################
-
-
-
-
-
-
-:YAML key: binding_energy
-
-
-:Parser key: binding_energy
-:Type: ``str``
-
-
-
-
-If value is  falsy,
-it will fall back to ``binding_energy`` software setting.
-If there is no software setting,
-it will default to ``'\n                        { "type": "bindingEnergy",\n\n                           "boundPartSelection": { "chains": { "names": ["$CHAIN"] } }\n\n                        },\n'``.
-
-
-
-
-Processors:
- * ``str_validator`` from `Pydantic`
-
- * ``only_with_perturbation`` from `SimulationParamsModel`
-
-
-
-
-Parameters
-########################################################################
-
-
-
-
-
-
-:YAML key: parameters
-
-
-:Parser key: parameters
-:Type: ``str``
-
-
-
-
-If value is  falsy,
-it will fall back to ``params`` software setting.
-If there is no software setting,
-it will default to ``True``.
-
-
-
-
-Processors:
- * ``str_validator`` from `Pydantic`
-
- * ``only_with_perturbation`` from `SimulationParamsModel`
 
 
 
@@ -1713,7 +1281,7 @@ Analyse
 
 
 :Parser key: analyse
-:Type: ``Any``
+:Type: ``bool``
 
 :Default: ``True``
 
@@ -1722,37 +1290,8 @@ Analyse
 
 
 
-
-
-Selection To Perturb
-########################################################################
-
-
-
-
-
-
-:YAML key: selection_to_perturb
-
-
-:Parser key: selection_to_perturb
-:Type: ``str``
-
-
-
-
-If value is  falsy,
-it will fall back to ``selection_to_perturb`` software setting.
-If there is no software setting,
-it will default to ``'"selectionToPerturb" : { "chains" : { "names" : [ "$CHAIN" ] } },'``.
-
-
-
-
 Processors:
- * ``str_validator`` from `Pydantic`
-
- * ``only_with_perturbation`` from `SimulationParamsModel`
+ * ``bool_validator`` from `Pydantic`
 
 
 
@@ -1769,7 +1308,7 @@ Mae
 
 
 :Parser key: mae
-:Type: ``Any``
+:Type: ``bool``
 
 :Default: ``False``
 
@@ -1778,29 +1317,8 @@ Mae
 
 
 
-
-
-Constrain Core
-########################################################################
-
-
-
-
-
-
-:YAML key: constrain_core
-
-
-:Parser key: constrain_core
-:Type: ``Any``
-
-
-
-
-If value is  falsy,
-it will fall back to ``constrain_core`` software setting.
-
-
+Processors:
+ * ``bool_validator`` from `Pydantic`
 
 
 
@@ -1808,7 +1326,7 @@ it will fall back to ``constrain_core`` software setting.
 Spawning Condition
 ########################################################################
 
-
+For min or maximising epsilon
 
 
 
@@ -1817,7 +1335,7 @@ Spawning Condition
 
 
 :Parser key: spawning_condition
-:Type: ``Any``
+:Type: ``str``
 
 
 
@@ -1829,6 +1347,8 @@ it will fall back to ``spawning_condition`` software setting.
 
 
 Processors:
+ * ``str_validator`` from `Pydantic`
+
  * ``format_spawning_condition`` from `SimulationParamsModel`
 
 
@@ -1969,33 +1489,6 @@ Processors:
 
 
 
-COMligandConstraint / Com
-########################################################################
-
-
-
-
-
-
-:YAML key: COMligandConstraint
-
-
-:Parser key: com
-:Type: ``Any``
-
-
-
-
-If value is  falsy,
-it will fall back to ``COMligandConstraint`` software setting.
-If there is no software setting,
-it will default to ``0``.
-
-
-
-
-
-
 Pele License
 ########################################################################
 
@@ -2010,7 +1503,7 @@ Pele License
 :Parser key: pele_license
 :Type: ``str``
 
-:Default: ``'licenses'``
+:Default: ``'/scratch/PELE/V1.7.1/licenses'``
 
 
 
@@ -2035,11 +1528,15 @@ License
 
 
 :Parser key: license
-:Type: ``Any``
+:Type: ``str``
 
 
 
 
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
 
 
 
@@ -2096,6 +1593,141 @@ Processors:
 
 
 
+Interaction Restrictions
+########################################################################
+
+
+
+
+
+
+:YAML key: interaction_restrictions
+
+
+:Parser key: interaction_restrictions
+:Type: ``dict``
+
+
+
+
+
+
+Processors:
+ * ``parse_interaction_restrictions`` from `SimulationParamsModel`
+
+
+
+
+Terminal Constr
+########################################################################
+
+
+
+
+
+
+:YAML key: terminal_constr
+
+
+:Parser key: terminal_constr
+:Type: ``float``
+
+
+
+
+If value is  falsy,
+it will fall back to ``terminal_constr`` software setting.
+If there is no software setting,
+it will default to ``5.0``.
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+ * ``assert_positive_integer`` from `YamlParserModel`
+
+
+
+
+Minimum Steps
+########################################################################
+
+
+
+
+
+
+:YAML key: minimum_steps
+
+
+:Parser key: minimum_steps
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+ * ``set_minimum_steps`` from `SimulationParamsModel`
+
+
+
+
+Site Finder Global
+########################################################################
+
+
+
+
+
+
+:YAML key: site_finder_global
+
+
+:Parser key: site_finder_global
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Site Finder Local
+########################################################################
+
+
+
+
+
+
+:YAML key: site_finder_local
+
+
+:Parser key: site_finder_local
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
 Frag Pele
 ########################################################################
 
@@ -2129,7 +1761,7 @@ Complexes
 :YAML key: None, value calculated in simulation params
 
 :Parser key: complexes
-:Type: ``Any``
+:Type: ``str``
 
 
 
@@ -2137,6 +1769,8 @@ Complexes
 
 
 Processors:
+ * ``str_validator`` from `Pydantic`
+
  * ``set_complexes`` from `SimulationParamsModel`
 
 
@@ -2263,7 +1897,7 @@ Processors:
 
 
 
-External Template
+External Templates
 ########################################################################
 
 
@@ -2272,14 +1906,14 @@ External Template
 
 :YAML key: None, value calculated in simulation params
 
-:Parser key: external_template
+:Parser key: external_templates
 :Type: ``Any``
 
 
 
 
 If value is  falsy,
-it will fall back to ``template`` software setting.
+it will fall back to ``templates`` software setting.
 If there is no software setting,
 it will default to ``[]``.
 
@@ -2325,7 +1959,7 @@ Spython
 :Parser key: spython
 :Type: ``Any``
 
-:Default: ``'utilities/python'``
+:Default: ``'/opt/schrodinger2020-1/utilities/python'``
 
 
 
@@ -2443,27 +2077,6 @@ Processors:
 
 
 
-Templates
-########################################################################
-
-
-
-
-
-:YAML key: None, value calculated in simulation params
-
-:Parser key: templates
-:Type: ``Any``
-
-:Default: ``'/Users/agruszka/Projects/pele_platform/pele_platform/PeleTemplates'``
-
-
-
-
-
-
-
-
 Xtc
 ########################################################################
 
@@ -2523,6 +2136,215 @@ Water Energy
 
 
 
+
+
+
+
+Sidechain Perturbation
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: sidechain_perturbation
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``only_with_sidechain_perturbation`` from `SimulationParamsModel`
+
+
+
+
+Met Interaction Restrictions
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: met_interaction_restrictions
+:Type: ``str``
+
+:Default: ``''``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Covalent Sasa
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: covalent_sasa
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``only_with_sidechain_perturbation`` from `SimulationParamsModel`
+
+
+
+
+Max Trials For One
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: max_trials_for_one
+:Type: ``Any``
+
+
+
+
+
+
+
+
+Conformation Perturbation
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: conformation_perturbation
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``set_conformation_perturbation`` from `SimulationParamsModel`
+
+
+
+
+Equilibration Mode
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: equilibration_mode
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Water Ids To Track
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: water_ids_to_track
+:Type: ``str``
+
+:Default: ``[]``
+
+
+
+
+
+
+
+
+Inputs Dir
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: inputs_dir
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Residue Type
+########################################################################
+
+
+
+
+
+:YAML key: None, value calculated in simulation params
+
+:Parser key: residue_type
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
 
 
 
@@ -2756,6 +2578,8 @@ it will default to ``30``.
 
 Processors:
  * ``int_validator`` from `Pydantic`
+
+ * ``check_divisibility`` from `YamlParserModel`
 
 
 
@@ -3085,7 +2909,7 @@ Cluster Values
 
 
 :Parser key: cluster_values
-:Type: ``float``
+:Type: ``Union[List[float], str]``
 
 
 
@@ -3112,7 +2936,7 @@ Cluster Conditions
 
 
 :Parser key: cluster_conditions
-:Type: ``float``
+:Type: ``Union[List[float], str]``
 
 
 
@@ -3512,6 +3336,8 @@ Gridres
 Processors:
  * ``int_validator`` from `Pydantic`
 
+ * ``check_divisibility`` from `YamlParserModel`
+
 
 
 
@@ -3527,9 +3353,7 @@ Core
 
 
 :Parser key: core
-:Type: ``int``
-
-:Default: ``-1``
+:Type: ``Union[int, List[str]]``
 
 
 
@@ -3537,7 +3361,7 @@ Core
 
 
 Processors:
- * ``int_validator`` from `Pydantic`
+ * ``set_core_constraints`` from `SimulationParamsModel`
 
 
 
@@ -3572,7 +3396,7 @@ Processors:
 N
 ########################################################################
 
-Maximum number of flexible sidechains in the ligand.
+Maximum number of flexible side chains in the ligand.
 
 
 
@@ -3592,27 +3416,6 @@ Maximum number of flexible sidechains in the ligand.
 
 Processors:
  * ``int_validator`` from `Pydantic`
-
-
-
-
-Ext Temp
-########################################################################
-
-
-
-
-
-
-:YAML key: None, value from `template` parser
-
-
-:Parser key: ext_temp
-:Type: ``str``
-
-
-
-
 
 
 
@@ -3696,6 +3499,85 @@ it will default to ``[]``.
 
 
 
+Charge Parametrization Method
+########################################################################
+
+
+
+
+
+
+:YAML key: charge_parametrization_method
+
+
+:Parser key: charge_parametrization_method
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Exclude Terminal Rotamers
+########################################################################
+
+
+
+
+
+
+:YAML key: exclude_terminal_rotamers
+
+
+:Parser key: exclude_terminal_rotamers
+:Type: ``bool``
+
+:Default: ``True``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Use Peleffy
+########################################################################
+
+
+
+
+
+
+:YAML key: use_peleffy
+
+
+:Parser key: use_peleffy
+:Type: ``bool``
+
+:Default: ``False``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
 
 *******************************************************
 Protein preparation
@@ -3707,6 +3589,9 @@ Skip Preprocess / No Ppp
 
 
 
+
+.. warning::
+    This is a candidate for deprecation.
 
 
 
@@ -3760,6 +3645,95 @@ it will default to ``False``.
 
 Processors:
  * ``bool_validator`` from `Pydantic`
+
+
+
+
+TERs / Gaps Ter
+########################################################################
+
+
+
+
+
+
+:YAML key: TERs
+
+
+:Parser key: gaps_ter
+:Type: ``bool``
+
+
+
+
+If value is ``None``,
+it will fall back to ``gaps_ter`` software setting.
+If there is no software setting,
+it will default to ``False``.
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Charge Ters / Charge Ter
+########################################################################
+
+
+
+
+
+
+:YAML key: charge_ters
+
+
+:Parser key: charge_ter
+:Type: ``bool``
+
+
+
+
+If value is ``None``,
+it will fall back to ``charge_ter`` software setting.
+If there is no software setting,
+it will default to ``False``.
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Nonstandard
+########################################################################
+
+
+
+
+
+
+:YAML key: nonstandard
+
+
+:Parser key: nonstandard
+:Type: ``str``
+
+
+
+
+If value is  falsy,
+it will fall back to ``nonstandard`` software setting.
+If there is no software setting,
+it will default to ``[]``.
+
+
 
 
 
@@ -3845,6 +3819,31 @@ Box
 
 
 
+Box Type
+########################################################################
+
+
+
+
+
+
+:YAML key: box_type
+
+
+:Parser key: box_type
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
 
 *******************************************************
 Metrics
@@ -3865,7 +3864,7 @@ Rmsd Pdb / Native
 :Parser key: native
 :Type: ``str``
 
-:Default: ``False``
+:Default: ``''``
 
 
 
@@ -3890,13 +3889,17 @@ Atom Dist
 
 
 :Parser key: atom_dist
-:Type: ``Union[List[str], List[int]]``
+:Type: ``str``
 
 :Default: ``list()``
 
 
 
 
+
+
+Processors:
+ * ``validate_atom_string`` from `YamlParserModel`
 
 
 
@@ -3959,6 +3962,275 @@ Global / Full
 
 Processors:
  * ``bool_validator`` from `Pydantic`
+
+
+
+
+
+*******************************************************
+MSM
+*******************************************************
+
+
+Msm
+########################################################################
+
+
+
+
+.. warning::
+    This is a candidate for deprecation.
+
+
+
+:YAML key: msm
+
+
+:Parser key: msm
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Lagtime
+########################################################################
+
+
+
+
+.. warning::
+    This is a candidate for deprecation.
+
+
+
+:YAML key: lagtime
+
+
+:Parser key: lagtime
+:Type: ``Any``
+
+
+
+
+
+
+
+
+Msm Clust
+########################################################################
+
+
+
+
+.. warning::
+    This is a candidate for deprecation.
+
+
+
+:YAML key: msm_clust
+
+
+:Parser key: msm_clust
+:Type: ``Any``
+
+
+
+
+
+
+
+
+
+*******************************************************
+Rescoring
+*******************************************************
+
+
+Rescoring
+########################################################################
+
+
+
+
+
+
+:YAML key: rescoring
+
+
+:Parser key: rescoring
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+
+*******************************************************
+In Out
+*******************************************************
+
+
+In Out
+########################################################################
+
+
+
+
+
+
+:YAML key: in_out
+
+
+:Parser key: in_out
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+In Out Soft
+########################################################################
+
+
+
+
+
+
+:YAML key: in_out_soft
+
+
+:Parser key: in_out_soft
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Exit
+########################################################################
+
+
+
+
+
+
+:YAML key: exit
+
+
+:Parser key: exit
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Exit Value
+########################################################################
+
+
+
+
+
+
+:YAML key: exit_value
+
+
+:Parser key: exit_value
+:Type: ``float``
+
+
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+
+
+
+Exit Condition
+########################################################################
+
+
+
+
+
+
+:YAML key: exit_condition
+
+
+:Parser key: exit_condition
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Exit Trajnum
+########################################################################
+
+
+
+
+
+
+:YAML key: exit_trajnum
+
+
+:Parser key: exit_trajnum
+:Type: ``int``
+
+
+
+
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
 
 
 
@@ -4029,7 +4301,7 @@ Water Temp
 
 
 :Parser key: water_temp
-:Type: ``Any``
+:Type: ``float``
 
 
 
@@ -4040,6 +4312,10 @@ If there is no software setting,
 it will default to ``5000``.
 
 
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
 
 
 
@@ -4087,7 +4363,7 @@ Water Constr
 
 
 :Parser key: water_constr
-:Type: ``Any``
+:Type: ``float``
 
 
 
@@ -4098,6 +4374,10 @@ If there is no software setting,
 it will default to ``0``.
 
 
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
 
 
 
@@ -4114,7 +4394,7 @@ Water Trials
 
 
 :Parser key: water_trials
-:Type: ``Any``
+:Type: ``int``
 
 
 
@@ -4125,6 +4405,10 @@ If there is no software setting,
 it will default to ``10000``.
 
 
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
 
 
 
@@ -4141,9 +4425,9 @@ Water Radius
 
 
 :Parser key: water_radius
-:Type: ``int``
+:Type: ``float``
 
-:Default: ``6``
+:Default: ``6.0``
 
 
 
@@ -4151,7 +4435,7 @@ Water Radius
 
 
 Processors:
- * ``int_validator`` from `Pydantic`
+ * ``float_validator`` from `Pydantic`
 
 
 
@@ -4168,13 +4452,17 @@ Water Empty Selector
 
 
 :Parser key: water_empty_selector
-:Type: ``Any``
+:Type: ``bool``
 
 :Default: ``False``
 
 
 
 
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
 
 
 
@@ -4278,17 +4566,55 @@ Frag
 
 
 
+.. warning::
+    This is a candidate for deprecation.
+
 
 
 :YAML key: frag
 
 
 :Parser key: frag
-:Type: ``Any``
+:Type: ``bool``
 
 
 
 
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+COMligandConstraint / Com
+########################################################################
+
+
+
+
+
+
+:YAML key: COMligandConstraint
+
+
+:Parser key: com
+:Type: ``float``
+
+
+
+
+If value is  falsy,
+it will fall back to ``COMligandConstraint`` software setting.
+If there is no software setting,
+it will default to ``0``.
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
 
 
 
@@ -4386,8 +4712,6 @@ Frag Input
 :Parser key: frag_input
 :Type: ``str``
 
-:Default: ``False``
-
 
 
 
@@ -4413,8 +4737,6 @@ Frag Ligands
 :Parser key: frag_ligands
 :Type: ``Any``
 
-:Default: ``False``
-
 
 
 
@@ -4436,7 +4758,7 @@ Growing Steps
 :Parser key: growing_steps
 :Type: ``int``
 
-:Default: ``False``
+:Default: ``6``
 
 
 
@@ -4463,7 +4785,7 @@ Steps In Gs / Frag Steps
 :Parser key: frag_steps
 :Type: ``int``
 
-:Default: ``False``
+:Default: ``3``
 
 
 
@@ -4490,7 +4812,7 @@ Sampling Steps / Frag Eq Steps
 :Parser key: frag_eq_steps
 :Type: ``int``
 
-:Default: ``False``
+:Default: ``20``
 
 
 
@@ -4516,6 +4838,8 @@ Protocol
 
 :Parser key: protocol
 :Type: ``str``
+
+:Default: ``''``
 
 
 
@@ -4596,7 +4920,7 @@ Chain Core
 :Parser key: chain_core
 :Type: ``str``
 
-:Default: ``False``
+:Default: ``'L'``
 
 
 
@@ -4621,9 +4945,9 @@ Frag Restart
 
 
 :Parser key: frag_restart
-:Type: ``bool``
+:Type: ``str``
 
-:Default: ``False``
+:Default: ``''``
 
 
 
@@ -4631,7 +4955,7 @@ Frag Restart
 
 
 Processors:
- * ``bool_validator`` from `Pydantic`
+ * ``str_validator`` from `Pydantic`
 
 
 
@@ -4650,7 +4974,7 @@ Frag Criteria
 :Parser key: frag_criteria
 :Type: ``str``
 
-:Default: ``False``
+:Default: ``'Binding Energy'``
 
 
 
@@ -4677,7 +5001,7 @@ Frag Output Folder
 :Parser key: frag_output_folder
 :Type: ``str``
 
-:Default: ``False``
+:Default: ``'growing_steps'``
 
 
 
@@ -4704,7 +5028,7 @@ Frag Cluster Folder
 :Parser key: frag_cluster_folder
 :Type: ``str``
 
-:Default: ``False``
+:Default: ``'clustering_PDBs'``
 
 
 
@@ -4764,6 +5088,8 @@ Frag Core Atom
 Processors:
  * ``str_validator`` from `Pydantic`
 
+ * ``validate_frag_core_atom`` from `YamlParserModel`
+
 
 
 
@@ -4788,6 +5114,56 @@ Analysis To Point
 
 
 
+Fragment Atom
+########################################################################
+
+
+
+
+
+
+:YAML key: fragment_atom
+
+
+:Parser key: fragment_atom
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Frag Restart Libraries
+########################################################################
+
+
+
+
+
+
+:YAML key: frag_restart_libraries
+
+
+:Parser key: frag_restart_libraries
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
 
 *******************************************************
 Constraints
@@ -4806,21 +5182,23 @@ Ca Constr
 
 
 :Parser key: ca_constr
-:Type: ``int``
+:Type: ``float``
 
 
 
 
-If value is ``None``,
+If value is  falsy,
 it will fall back to ``ca_constr`` software setting.
 If there is no software setting,
-it will default to ``5``.
+it will default to ``0.5``.
 
 
 
 
 Processors:
- * ``int_validator`` from `Pydantic`
+ * ``float_validator`` from `Pydantic`
+
+ * ``assert_positive_integer`` from `YamlParserModel`
 
 
 
@@ -4837,21 +5215,50 @@ Ca Interval
 
 
 :Parser key: ca_interval
-:Type: ``float``
+:Type: ``int``
 
 
 
 
-If value is ``None``,
+If value is  falsy,
 it will fall back to ``ca_interval`` software setting.
 If there is no software setting,
-it will default to ``5``.
+it will default to ``10``.
 
 
 
 
 Processors:
- * ``float_validator`` from `Pydantic`
+ * ``int_validator`` from `Pydantic`
+
+
+
+
+Constrain Core
+########################################################################
+
+String of SMILES or SMARTS to constrain.
+
+
+
+
+:YAML key: constrain_core
+
+
+:Parser key: constrain_core
+:Type: ``str``
+
+
+
+
+If value is  falsy,
+it will fall back to ``constrain_core`` software setting.
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
 
 
 
@@ -4868,7 +5275,7 @@ Constrain Core Spring
 
 
 :Parser key: constrain_core_spring
-:Type: ``int``
+:Type: ``float``
 
 :Default: ``50.0``
 
@@ -4878,7 +5285,7 @@ Constrain Core Spring
 
 
 Processors:
- * ``int_validator`` from `Pydantic`
+ * ``float_validator`` from `Pydantic`
 
 
 
@@ -4918,13 +5325,15 @@ Permissive Metal Constr
 
 
 :Parser key: permissive_metal_constr
-:Type: ``Any``
-
-:Default: ``list()``
+:Type: ``bool``
 
 
 
 
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
 
 
 
@@ -4941,13 +5350,17 @@ Constrain All Metals
 
 
 :Parser key: constrain_all_metals
-:Type: ``Any``
+:Type: ``bool``
 
 :Default: ``False``
 
 
 
 
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
 
 
 
@@ -4964,13 +5377,242 @@ No Metal Constraints
 
 
 :Parser key: no_metal_constraints
-:Type: ``Any``
+:Type: ``bool``
 
 :Default: ``False``
 
 
 
 
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Constraint Level
+########################################################################
+
+
+
+
+
+
+:YAML key: constraint_level
+
+
+:Parser key: constraint_level
+:Type: ``int``
+
+
+
+
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
+
+ * ``parse_constraint_level`` from `YamlParserModel`
+
+
+
+
+
+*******************************************************
+PCA
+*******************************************************
+
+
+Pca
+########################################################################
+
+Path to PCA file
+
+
+
+
+:YAML key: pca
+
+
+:Parser key: pca
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``format_pca`` from `SimulationParamsModel`
+
+
+
+
+
+*******************************************************
+Advanced
+*******************************************************
+
+
+Perturbation
+########################################################################
+
+
+
+
+
+
+:YAML key: perturbation
+
+
+:Parser key: perturbation
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+ * ``set_perturbation`` from `SimulationParamsModel`
+
+
+
+
+Sasa
+########################################################################
+
+
+
+
+
+
+:YAML key: sasa
+
+
+:Parser key: sasa
+:Type: ``str``
+
+
+
+
+If value is  falsy,
+it will fall back to ``sasa`` software setting.
+If there is no software setting,
+it will default to ``'\n                        { "type": "sasa",\n\n                           "tag": "sasaLig",\n\n                           "selection": { "chains": { "names": ["$CHAIN"] } }\n\n                        },\n'``.
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``only_with_perturbation`` from `SimulationParamsModel`
+
+
+
+
+Binding Energy
+########################################################################
+
+
+
+
+
+
+:YAML key: binding_energy
+
+
+:Parser key: binding_energy
+:Type: ``str``
+
+
+
+
+If value is  falsy,
+it will fall back to ``binding_energy`` software setting.
+If there is no software setting,
+it will default to ``'\n                        { "type": "bindingEnergy",\n\n                           "boundPartSelection": { "chains": { "names": ["$CHAIN"] } }\n\n                        },\n'``.
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``only_with_perturbation`` from `SimulationParamsModel`
+
+
+
+
+Parameters
+########################################################################
+
+
+
+
+
+
+:YAML key: parameters
+
+
+:Parser key: parameters
+:Type: ``str``
+
+
+
+
+If value is  falsy,
+it will fall back to ``params`` software setting.
+If there is no software setting,
+it will default to ``True``.
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``only_with_perturbation`` from `SimulationParamsModel`
+
+
+
+
+Selection To Perturb
+########################################################################
+
+
+
+
+
+
+:YAML key: selection_to_perturb
+
+
+:Parser key: selection_to_perturb
+:Type: ``str``
+
+
+
+
+If value is  falsy,
+it will fall back to ``selection_to_perturb`` software setting.
+If there is no software setting,
+it will default to ``'"selectionToPerturb" : { "chains" : { "names" : [ "$CHAIN" ] } },'``.
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``only_with_perturbation`` from `SimulationParamsModel`
 
 
 
@@ -5004,6 +5646,317 @@ Only Analysis
 
 Processors:
  * ``bool_validator`` from `Pydantic`
+
+
+
+
+Top Clusters Criterion
+########################################################################
+
+
+
+
+
+
+:YAML key: top_clusters_criterion
+
+
+:Parser key: top_clusters_criterion
+:Type: ``str``
+
+:Default: ``'interaction_25_percentile'``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``check_selection_criterion`` from `YamlParserModel`
+
+
+
+
+Kde
+########################################################################
+
+
+
+
+
+
+:YAML key: kde
+
+
+:Parser key: kde
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Kde Structs
+########################################################################
+
+
+
+
+
+
+:YAML key: kde_structs
+
+
+:Parser key: kde_structs
+:Type: ``int``
+
+:Default: ``1000``
+
+
+
+
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
+
+
+
+
+Plot Filtering Threshold
+########################################################################
+
+
+
+
+
+
+:YAML key: plot_filtering_threshold
+
+
+:Parser key: plot_filtering_threshold
+:Type: ``float``
+
+
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+
+
+
+Clustering Filtering Threshold
+########################################################################
+
+
+
+
+
+
+:YAML key: clustering_filtering_threshold
+
+
+:Parser key: clustering_filtering_threshold
+:Type: ``float``
+
+:Default: ``0.25``
+
+
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+
+
+
+Clustering Method
+########################################################################
+
+
+
+
+
+
+:YAML key: clustering_method
+
+
+:Parser key: clustering_method
+:Type: ``str``
+
+
+
+
+If value is  falsy,
+it will fall back to ``clustering_method`` software setting.
+If there is no software setting,
+it will default to ``'meanshift'``.
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Cluster Representatives Criterion
+########################################################################
+
+
+
+
+
+
+:YAML key: cluster_representatives_criterion
+
+
+:Parser key: cluster_representatives_criterion
+:Type: ``str``
+
+
+
+
+If value is  falsy,
+it will fall back to ``cluster_representatives_criterion`` software setting.
+If there is no software setting,
+it will default to ``'interaction_5_percentile'``.
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Bandwidth
+########################################################################
+
+
+
+
+
+
+:YAML key: bandwidth
+
+
+:Parser key: bandwidth
+:Type: ``float``
+
+
+
+
+If value is  falsy,
+it will fall back to ``bandwidth`` software setting.
+If there is no software setting,
+it will default to ``2.5``.
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+
+
+
+Max Top Clusters
+########################################################################
+
+
+
+
+
+
+:YAML key: max_top_clusters
+
+
+:Parser key: max_top_clusters
+:Type: ``int``
+
+:Default: ``8``
+
+
+
+
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
+
+
+
+
+Min Population
+########################################################################
+
+
+
+
+
+
+:YAML key: min_population
+
+
+:Parser key: min_population
+:Type: ``float``
+
+
+
+
+If value is  falsy,
+it will fall back to ``min_population`` software setting.
+If there is no software setting,
+it will default to ``0.01``.
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+
+
+
+Max Top Poses
+########################################################################
+
+
+
+
+
+
+:YAML key: max_top_poses
+
+
+:Parser key: max_top_poses
+:Type: ``int``
+
+:Default: ``100``
+
+
+
+
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
 
 
 
@@ -5131,6 +6084,9 @@ N Components
 
 
 
+
+.. warning::
+    This is a candidate for deprecation.
 
 
 
@@ -5290,7 +6246,7 @@ Processors:
 
 
 *******************************************************
-
+Site finder
 *******************************************************
 
 
@@ -5299,6 +6255,9 @@ N Components
 
 
 
+
+.. warning::
+    This is a candidate for deprecation.
 
 
 
@@ -5354,7 +6313,7 @@ Processors:
 
 
 
-Allosteric
+Site Finder
 ########################################################################
 
 
@@ -5362,10 +6321,10 @@ Allosteric
 
 
 
-:YAML key: allosteric
+:YAML key: site_finder
 
 
-:Parser key: allosteric
+:Parser key: site_finder
 :Type: ``bool``
 
 
@@ -5518,6 +6477,286 @@ Processors:
  * ``str_validator`` from `Pydantic`
 
  * ``validate_atom_string`` from `YamlParserModel`
+
+
+
+
+
+*******************************************************
+Covalent docking
+*******************************************************
+
+
+Covalent Residue
+########################################################################
+
+
+
+
+
+
+:YAML key: covalent_residue
+
+
+:Parser key: covalent_residue
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+ * ``validated_residue_string`` from `YamlParserModel`
+
+
+
+
+Nonbonding Radius
+########################################################################
+
+
+
+
+
+
+:YAML key: nonbonding_radius
+
+
+:Parser key: nonbonding_radius
+:Type: ``float``
+
+
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+
+
+
+Perturbation Trials
+########################################################################
+
+
+
+
+
+
+:YAML key: perturbation_trials
+
+
+:Parser key: perturbation_trials
+:Type: ``int``
+
+
+
+
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
+
+
+
+
+Refinement Angle
+########################################################################
+
+
+
+
+
+
+:YAML key: refinement_angle
+
+
+:Parser key: refinement_angle
+:Type: ``float``
+
+
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+
+
+
+Covalent Docking Refinement
+########################################################################
+
+
+
+
+
+
+:YAML key: covalent_docking_refinement
+
+
+:Parser key: covalent_docking_refinement
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+
+*******************************************************
+Ligand conformations
+*******************************************************
+
+
+Ligand Conformations
+########################################################################
+
+
+
+
+
+
+:YAML key: ligand_conformations
+
+
+:Parser key: ligand_conformations
+:Type: ``str``
+
+
+
+
+
+
+Processors:
+ * ``str_validator`` from `Pydantic`
+
+
+
+
+Conformation Freq
+########################################################################
+
+
+
+
+
+
+:YAML key: conformation_freq
+
+
+:Parser key: conformation_freq
+:Type: ``int``
+
+:Default: ``4``
+
+
+
+
+If value is  falsy,
+it will fall back to ``conformation_freq`` software setting.
+
+
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
+
+ * ``only_with_conformation_perturbation`` from `SimulationParamsModel`
+
+
+
+
+Overlap Factor Conformation
+########################################################################
+
+
+
+
+
+
+:YAML key: overlap_factor_conformation
+
+
+:Parser key: overlap_factor_conformation
+:Type: ``float``
+
+
+
+
+
+
+Processors:
+ * ``float_validator`` from `Pydantic`
+
+
+
+
+
+*******************************************************
+Saturated mutagenesis
+*******************************************************
+
+
+Saturated Mutagenesis
+########################################################################
+
+
+
+
+
+
+:YAML key: saturated_mutagenesis
+
+
+:Parser key: saturated_mutagenesis
+:Type: ``bool``
+
+
+
+
+
+
+Processors:
+ * ``bool_validator`` from `Pydantic`
+
+
+
+
+Cpus Per Mutation
+########################################################################
+
+
+
+
+
+
+:YAML key: cpus_per_mutation
+
+
+:Parser key: cpus_per_mutation
+:Type: ``int``
+
+
+:Tests value: ``2``
+
+
+
+
+
+Processors:
+ * ``int_validator`` from `Pydantic`
 
 
 
