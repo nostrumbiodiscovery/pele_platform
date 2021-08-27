@@ -16,6 +16,7 @@ RESTRICTIONS_CONFIG = {
     "angle": {"template": cs.ANGLE_ATOMS_TAG, "description": "angle", "num_elems": 3},
 }
 
+
 class InteractionRestrictionsBuilder:
     """
     Base class to generate interaction restrictions

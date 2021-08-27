@@ -3,7 +3,6 @@ import pytest
 import pele_platform.constants.constants as cs
 import pele_platform.Adaptive.interaction_restrictions as ir
 import pele_platform.Utilities.Helpers.yaml_parser as yp
-import pele_platform.Checker.valid_flags as vf
 import pele_platform.main as main
 from .utils import check_file
 
@@ -65,8 +64,7 @@ def test_interaction_restrictions(ext_args=ARGS_1):
     ----------
     boolean : result of the test.
     """
-    errors = []
-    builder, job = main.run_platform_from_yaml(ext_args)
+    job, = main.run_platform_from_yaml(ext_args)
     errors = check_file(
         job.pele_dir,
         "pele.conf",
@@ -74,7 +72,7 @@ def test_interaction_restrictions(ext_args=ARGS_1):
         + METRIC_DISTANCE_PELE
         + METRIC_ANGLE_PELE
         + PARAMETERS_CHANGE_PELE,
-        errors,
+        [],
     )
     assert not errors
 
@@ -88,7 +86,7 @@ def test_metrics_and_conditions_to_json():
     boolean : result of the test.
     """
     # Parse yaml file
-    yaml_obj = yp.YamlParser(ARGS_1, vf.VALID_FLAGS_PLATFORM)
+    yaml_obj = yp.YamlParser(ARGS_1)
     yaml_obj.read()
     # Build interaction restrictions
     interaction_restrictions = ir.InteractionRestrictionsBuilder()
@@ -133,8 +131,9 @@ def test_check_SyntaxError_exception(file):
     file : Path of the input.yaml file.
     """
     # Parse yaml file
-    yaml_obj = yp.YamlParser(file, vf.VALID_FLAGS_PLATFORM)
+    yaml_obj = yp.YamlParser(file)
     yaml_obj.read()
+
     # Build interaction restrictions
     interaction_restrictions = ir.InteractionRestrictionsBuilder()
     with pytest.raises(SyntaxError):

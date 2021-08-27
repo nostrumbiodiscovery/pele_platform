@@ -2,10 +2,11 @@ import os
 import glob
 from typing import Any, List
 import pele_platform.constants.constants as cs
-from pydantic import validator
+from pydantic import validator, root_validator
 import pele_platform.Utilities.Helpers.helpers as hp
 from pele_platform.Models.utils import Field
 from pele_platform.Models.yaml_parser_model import YamlParserModel
+from pele_platform.Adaptive.interaction_restrictions import InteractionRestrictionsBuilder
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
@@ -44,14 +45,10 @@ class SimulationParamsModel(YamlParserModel):
     constraints: Any = Field()
     water_energy: Any = Field()
     sidechain_perturbation: str = Field()
-    interaction_restrictions: List[
-        dict
-    ] = (
-        Field()
-    )  # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
-    met_interaction_restrictions: str = Field(
-        default=""
-    )  # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
+
+    met_interaction_restrictions: str = Field()
+    # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
+
     covalent_sasa: str = Field()
     max_trials_for_one: Any = Field()
     conformation_perturbation: str = Field()
@@ -245,12 +242,20 @@ class SimulationParamsModel(YamlParserModel):
             return cs.PCA.format(v)
         return ""
 
-    @validator("interaction_restrictions", always=True)
-    def parse_interaction_restrictions(cls, v):
-        if not v:
-            return ""
+    @root_validator
+    def parse_interaction_restrictions(cls, values):
+
+        if not values.get("interaction_restrictions"):
+            values["met_interaction_restrictions"] = ""
+
         else:
-            pass  # TODO: We need to parse this whole thing.
+            ir_parser = InteractionRestrictionsBuilder()
+            ir_parser.parse_interaction_restrictions(values.get("system"), values.get("interaction_restrictions"))
+            values["parameters"] = ir_parser.fill_template(values.get("parameters"))
+            values["met_interaction_restrictions"] = ir_parser.metrics_to_json()
+            values["interaction_restrictions"] = ir_parser.conditions_to_json()
+
+        return values
 
     @validator("box_center", always=True)
     def calculate_box_center(cls, v, values):

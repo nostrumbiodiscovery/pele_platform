@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import pele_platform.Errors.custom_errors as ce
 
 metric_template = """
                      {                                                                                                                                                                  
@@ -14,11 +13,12 @@ metric_template = """
                      },
 """
 
+
 @dataclass
 class InteractionConstraints:
 
     input_pdb: str
-    constrain_interaction: list[str]
+    constrain_interaction: list
 
     def run(self):
         self._parse_constraints()
@@ -28,7 +28,7 @@ class InteractionConstraints:
         self.constraints = []
 
         for c in self.constrain_interaction:
-            atom1, atom2 = c.split("-").strip()
+            atom1, atom2 = [element.strip() for element in c.split("-")]
             self.constraints.append(SingleConstraint(atom1, atom2))
 
     def _create_tags(self):
@@ -43,4 +43,3 @@ class SingleConstraint:
 
     def _build_tag(self):
         pass
-
