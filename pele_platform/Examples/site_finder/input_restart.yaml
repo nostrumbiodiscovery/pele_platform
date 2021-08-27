@@ -9,4 +9,4 @@ atom_dist:
 - 10
 test: true
 adaptive_restart: true
-working_folder: "site_finder"
+working_folder: "site_finder_adaptive_restart"

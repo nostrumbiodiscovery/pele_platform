@@ -89,9 +89,10 @@ def test_working_folder(output="site_finder"):
 
 def test_site_finder_restart():
     """
-    Tests if site finder can pick up adaptive_restart flag and sort out directories correctly.
+    Tests if site finder can pick up adaptive_restart flag and sort out directories correctly when it's not a real
+    adaptive restart (output folder does not exist yet).
     """
-    expected_path = "site_finder"
+    expected_path = "site_finder_adaptive_restart"
     helpers.check_remove_folder(expected_path)
     shutil.copytree(os.path.join(test_path, "site_finder", "site_finder"), expected_path)
 

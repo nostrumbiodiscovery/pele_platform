@@ -85,7 +85,6 @@ class Simulation(blocks.Block):
 
         if self.env.adaptive_restart and not os.path.exists(output_dir):
             self.env.adaptive_restart = False
-            self.env.restart = True
 
     def set_params(self, simulation_type):
         """
