@@ -7,9 +7,8 @@ workflow:
     options:
       box_radius: 10.0
       working_folder: "Custom_Folder_Name"
-  - type: 'ScatterN'
+  - type: 'GMM'
     options:
-      distance: 3.0
       working_folder: "ThisIsSelection"
   - type: 'Rescoring'
     options:

@@ -4,7 +4,6 @@ import pele_platform.constants.constants as cs
 
 class SimulationPaths:
     def __init__(self):
-        breakpoint()
         self.inputs_dir = os.path.join(self.pele_dir, "input")
         self.output = os.path.join(self.pele_dir, self.output)
 

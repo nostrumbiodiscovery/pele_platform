@@ -26,25 +26,21 @@ class Selection(blocks.Block):
         self.options = options
         self.folder_name = folder_name
         self.builder = parameters_builder
-        self.simulation_params = env
-        self.directory = os.path.join(
-            os.path.dirname(self.simulation_params.pele_dir), self.folder_name
-        )
-        print("AAAAAAAAAAAAAAA self.directory in Selection init", self.directory)
-        self.n_inputs = self.simulation_params.cpus - 1
+        self.env = env
+        self.n_inputs = self.env.cpus - 1
         self.inputs = None
-        self.analysis = Analysis.from_parameters(self.simulation_params)
+        self.analysis = Analysis.from_parameters(self.env)
 
     def copy_files(self):
         """
         Copies files selected as self.inputs into a Selection directory.
         """
-        if not os.path.isdir(self.directory):
-            os.makedirs(self.directory, exist_ok=True)
+        if not os.path.isdir(self.env.pele_dir):
+            os.makedirs(self.env.pele_dir, exist_ok=True)
 
         for i in self.inputs:
             try:
-                shutil.copy(i, self.directory)
+                shutil.copy(i, self.env.pele_dir)
             except shutil.SameFileError:
                 pass
 
@@ -52,20 +48,38 @@ class Selection(blocks.Block):
         """
         Sets self.next step so that the inputs can be used by the next Simulation block.
         """
-        self.simulation_params.next_step = os.path.join(self.directory, "*.pdb")
+        self.env.next_step = os.path.join(self.env.pele_dir, "*.pdb")
 
     def rename_folder(self):
-        user_folder = self.options.get("working_folder", None) if self.options else None
-
-        if not user_folder:
-            index, name = self.folder_name.split("_")
-            self.folder_name = "{}_Selection".format(index)
+        """
+        Check if user specified a custom folder name for this simulation block. If not, use the automatically
+        generated one.
+        """
+        if self.options:
+            user_folder = self.options.get("working_folder", None)
+            self.env.folder_name = user_folder if user_folder else self.folder_name
         else:
-            self.folder_name = user_folder
+            self.env.folder_name = self.folder_name
 
-        self.simulation_params.folder_name = (
-            self.folder_name
-        )  # to make it consistent with simulation BBs
+        if self.env.pele_dir == self.builder.pele_dir:
+            self.env.pele_dir = os.path.join(self.builder.pele_dir, self.env.folder_name)
+        else:
+            self.env.pele_dir = os.path.join(os.path.dirname(self.env.pele_dir), self.env.folder_name)
+
+        self.env.inputs_dir = os.path.join(self.env.pele_dir, "input")
+
+    # def rename_folder(self):
+    #     user_folder = self.options.get("working_folder", None) if self.options else None
+    #
+    #     if not user_folder:
+    #         index, name = self.folder_name.split("_")
+    #         self.folder_name = "{}_Selection".format(index)
+    #     else:
+    #         self.folder_name = user_folder
+    #
+    #     self.env.folder_name = (
+    #         self.folder_name
+    #     )  # to make it consistent with simulation BBs
 
     def set_optional_params(self):
         """
@@ -73,7 +87,7 @@ class Selection(blocks.Block):
         """
         if self.options:
             for key, value in self.options.items():
-                setattr(self.simulation_params, key, value)
+                setattr(self.env, key, value)
 
     @abstractmethod
     def get_inputs(self):
@@ -88,11 +102,11 @@ class Selection(blocks.Block):
         Runs the whole Selection block.
         """
         self.set_optional_params()
-        self.rename_folder()
         self.get_inputs()
+        self.rename_folder()
         self.copy_files()
         self.set_next_step()
-        return self.builder, self.simulation_params
+        return self.builder, self.env
 
 
 @dataclass
@@ -112,13 +126,10 @@ class LowestEnergy(Selection):
         super().__init__(parameters_builder, options, folder_name, env)
 
     def get_inputs(self):
-        self.analysis.generate_top_poses(
-            os.path.join(self.simulation_params.pele_dir, self.folder_name),
-            n_poses=self.n_inputs,
-        )
-        self.inputs = glob.glob(
-            os.path.join(self.simulation_params.folder_name, "cluster*.pdb")
-        )
+        top_poses_folder = os.path.join(self.env.pele_dir, "temp")
+
+        self.analysis.generate_top_poses(top_poses_folder, n_poses=self.n_inputs)
+        self.inputs = glob.glob(os.path.join(top_poses_folder, "*.pdb"))
 
 
 @dataclass
@@ -137,13 +148,15 @@ class GMM(Selection):
         super().__init__(parameters_builder, options, folder_name, env)
 
     def get_inputs(self):
+        temp_dir = "temp"
+
         self.analysis.generate_clusters(
-            self.simulation_params.folder_name,
+            temp_dir,
             analysis_nclust=self.n_inputs,
             clustering_type="GaussianMixture",
         )
         self.inputs = glob.glob(
-            os.path.join(self.simulation_params.folder_name, "cluster*.pdb")
+            os.path.join(temp_dir, "cluster*.pdb")
         )
 
 
@@ -165,12 +178,11 @@ class Clusters(Selection):
         self.inputs = None
 
     def get_inputs(self):
-        clusters_dir = os.path.join(
-            self.simulation_params.pele_dir, "results/clusters/cluster*.pdb"
-        )
+
+        clusters_dir = os.path.join(self.env.pele_dir, "results/clusters/cluster*.pdb")
         clusters_files = glob.glob(clusters_dir)
 
-        if len(clusters_dir) > self.n_inputs:
+        if len(clusters_files) > self.n_inputs:
             df = pd.read_csv(
                 os.path.join(os.path.dirname(clusters_dir), "top_selections.csv")
             )

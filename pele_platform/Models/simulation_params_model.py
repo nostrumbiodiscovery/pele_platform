@@ -59,6 +59,7 @@ class SimulationParamsModel(YamlParserModel):
     water_ids_to_track: List[str] = Field(default=list())
     inputs_dir: str = Field()
     residue_type: str = Field()
+    inputs: List[str] = Field()
 
     @validator("*", pre=True, always=True)
     def set_value_from_simulation_parameters(cls, v, field):
