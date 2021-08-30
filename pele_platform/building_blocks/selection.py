@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from dataclasses import dataclass
+
 import glob
 import numpy as np
 import os
@@ -15,18 +15,8 @@ class Selection(blocks.Block):
     """
     Base class to handle all input selection algorithms, copy files, set next_step, etc.
     """
-
-    def __init__(
-        self,
-        parameters_builder: pv.ParametersBuilder,
-        options: dict,
-        folder_name: str,
-        env: pv.Parameters,
-    ):
-        self.options = options
-        self.folder_name = folder_name
-        self.builder = parameters_builder
-        self.env = env
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.n_inputs = self.env.cpus - 1
         self.inputs = None
         self.analysis = Analysis.from_parameters(self.env)
@@ -50,37 +40,6 @@ class Selection(blocks.Block):
         """
         self.env.next_step = os.path.join(self.env.pele_dir, "*.pdb")
 
-    def rename_folder(self):
-        """
-        Check if user specified a custom folder name for this simulation block. If not, use the automatically
-        generated one.
-        """
-        if self.options:
-            user_folder = self.options.get("working_folder", None)
-            self.env.folder_name = user_folder if user_folder else self.folder_name
-        else:
-            self.env.folder_name = self.folder_name
-
-        if self.env.pele_dir == self.builder.pele_dir:
-            self.env.pele_dir = os.path.join(self.builder.pele_dir, self.env.folder_name)
-        else:
-            self.env.pele_dir = os.path.join(os.path.dirname(self.env.pele_dir), self.env.folder_name)
-
-        self.env.inputs_dir = os.path.join(self.env.pele_dir, "input")
-
-    # def rename_folder(self):
-    #     user_folder = self.options.get("working_folder", None) if self.options else None
-    #
-    #     if not user_folder:
-    #         index, name = self.folder_name.split("_")
-    #         self.folder_name = "{}_Selection".format(index)
-    #     else:
-    #         self.folder_name = user_folder
-    #
-    #     self.env.folder_name = (
-    #         self.folder_name
-    #     )  # to make it consistent with simulation BBs
-
     def set_optional_params(self):
         """
         Sets optional params provided by the user in nested yaml (when using 'workflow' flag).
@@ -103,13 +62,12 @@ class Selection(blocks.Block):
         """
         self.set_optional_params()
         self.get_inputs()
-        self.rename_folder()
+        self.set_working_folder()
         self.copy_files()
         self.set_next_step()
         return self.builder, self.env
 
 
-@dataclass
 class LowestEnergy(Selection):
     """
     Choose lowest binding energy poses as input for the next simulation.
@@ -132,7 +90,6 @@ class LowestEnergy(Selection):
         self.inputs = glob.glob(os.path.join(top_poses_folder, "*.pdb"))
 
 
-@dataclass
 class GMM(Selection):
     """
     Perform Gaussian Mixture (full covariance) clustering on best binding energy poses.
@@ -160,7 +117,6 @@ class GMM(Selection):
         )
 
 
-@dataclass
 class Clusters(Selection):
     """
     Select cluster representatives from 'results' folder as input for the next simulation. If there are more inputs
@@ -197,7 +153,6 @@ class Clusters(Selection):
             self.inputs = clusters_files
 
 
-@dataclass
 class ScatterN(Selection):
     """
     Choose input for refinement simulation after the first stage of Allosteric, GPCR and out_in simulations.
@@ -250,3 +205,43 @@ class ScatterN(Selection):
                     input_coords.append(coord)
 
         return inputs
+
+
+class LowestLocalNonbondingEnergy(Selection):
+
+    def __init__(
+        self,
+        parameters_builder: pv.ParametersBuilder,
+        options: dict,
+        folder_name: str,
+        env: pv.Parameters,
+    ):
+        super().__init__(parameters_builder, options, folder_name, env)
+
+    def get_inputs(self):
+        """
+        Extracts 1000 lowest binding energy structures and clusters them based on heavy atom ligand coordinates using
+        Gaussian Mixture Model. A lowest energy representative from each cluster is selected as input for the refinement
+        simulation.
+        """
+        n_inputs = int(self.env.cpus / 6)
+        max_top_clusters = n_inputs if n_inputs > 1 else 1  # tests only have 5 CPUs
+
+        output_path = os.path.join(self.env.pele_dir, self.env.output)
+
+        analysis_object = Analysis(
+            simulation_output=output_path,
+            resname=self.env.residue,
+            chain=self.env.chain,
+            traj=self.env.traj_name,
+            topology=self.env.topology,
+            cpus=1,
+            skip_initial_structures=False,
+        )
+
+        analysis_object.generate_clusters(
+            "temp",
+            clustering_type="meanshift",
+            representatives_criterion="local_nonbonding_energy",
+            max_top_clusters=max_top_clusters,
+        )

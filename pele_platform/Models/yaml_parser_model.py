@@ -507,9 +507,9 @@ class YamlParserModel(BaseModel):
 
     nonbonding_radius: float = Field(categories=["Covalent docking"])
 
-    perturbation_trials: int = Field(categories=["Covalent docking"])
+    perturbation_trials: int = Field(categories=["Covalent docking"], value_from_simulation_params=True, simulation_params_default=10)
 
-    refinement_angle: float = Field(categories=["Covalent docking"])
+    refinement_angle: float = Field(categories=["Covalent docking"], value_from_simulation_params=True, simulation_params_default=10)
 
     covalent_docking_refinement: bool = Field(categories=["Covalent docking"])
 

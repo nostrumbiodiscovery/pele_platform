@@ -206,6 +206,7 @@ SOFTWARE_CONSTANTS = {
             "params": "",
         },
         "covalent_docking_refinement": {
+            "perturbation": False,
             "perturbation_trials": 10,
             "pele_steps": 100,
             "refinement_distance": 10,

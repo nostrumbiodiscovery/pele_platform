@@ -84,3 +84,10 @@ class PPILauncher(LauncherBase):
     refinement_steps = [
         {'type': 'GMM'},
         {'type': 'Rescoring'}]
+
+
+class CovalentDocking(LauncherBase):
+    steps = [{'type': 'CovalentDockingExploration'}]
+    refinement_steps = [
+        {'type': 'LowestLocalNonbondingEnergy'},
+        {'type': 'CovalentDockingRefinement'}]

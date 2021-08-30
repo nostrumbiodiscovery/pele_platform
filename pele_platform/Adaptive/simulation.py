@@ -50,10 +50,6 @@ def run_adaptive(parameters):
 
         pdb_checker.PDBChecker(parameters.system).check_negative_residues()
 
-        # Create inputs directory
-        if not os.path.exists(parameters.inputs_dir):
-            os.mkdir(parameters.inputs_dir)
-
         if parameters.perturbation:
             syst = sp.SystemBuilder.build_system(
                 parameters.system,
@@ -133,13 +129,11 @@ def run_adaptive(parameters):
             parameters.input = [os.path.join(parameters.inputs_dir, inp)
                                 for inp in inputs]
 
-            parameters.adap_ex_input = ", ".join(
-                ['"' + input + '"' for input in parameters.input]
-            ).strip('"')
             hp.silentremove(ligand_positions)
 
         # Prepare System
-        if parameters.no_ppp or parameters.input:  # No need to run system through PPP, if we already preprocessed
+        if parameters.no_ppp or parameters.input or parameters.covalent_residue:
+            # No need to run system through PPP, if we already preprocessed
             # parameters.input
             if parameters.input:
                 # If we have more than one input
@@ -149,7 +143,10 @@ def run_adaptive(parameters):
                     except shutil.SameFileError:  # systems that go through randomization are already moved
                         pass
             else:
-                shutil.copy(parameters.system, parameters.inputs_dir)
+                try:
+                    shutil.copy(parameters.system, parameters.inputs_dir)
+                except shutil.SameFileError:
+                    pass
         else:
             parameters.nonstandard.extend(hp.find_nonstd_residue(syst.system))
             parameters.system, missing_residues, _, _, _ = ppp.main(
@@ -175,9 +172,10 @@ def run_adaptive(parameters):
         if not args.no_metal_constraints:
             metal_constraints, parameters.external_constraints = mc.main(
                 args.external_constraints,
-                os.path.join(
-                    parameters.inputs_dir,
-                    parameters.adap_ex_input.split(",")[0].strip().strip('"')),
+                parameters.system,
+                # os.path.join(
+                #     parameters.inputs_dir,
+                #     parameters.adap_ex_input.split(",")[0].strip().strip('"')),
                 syst.system,
                 permissive=parameters.permissive_metal_constr,
                 all_metals=args.constrain_all_metals,
@@ -227,12 +225,6 @@ def run_adaptive(parameters):
                         mr.create_template(parameters, res)
                     parameters.logger.info("Template {}z created\n\n".format(res))
 
-        # Covalent residue parametrization should not run in refinement simulation
-        if parameters.covalent_residue and os.path.basename(parameters.pele_dir) != "2_refinement":
-            parametrizer.parametrize_covalent_residue(parameters.pele_data, parameters.pele_dir, parameters.gridres,
-                                                      parameters.residue_type, parameters.residue,
-                                                      ppp_system=parameters.system)
-
         if parameters.ligand_conformations:
             ligand_conformations.LigandConformations(path=parameters.ligand_conformations, system=parameters.system,
                                                      resname=parameters.residue, forcefield=parameters.forcefield,
@@ -280,12 +272,8 @@ def run_adaptive(parameters):
                                       + parameters.constraints[1:])
 
         # Waters
-        input_waters = [input.strip().strip('"')
-                        for input in parameters.adap_ex_input.split(",")]
-        input_waters = [os.path.join(parameters.inputs_dir, inp)
-                        for inp in input_waters]
         water_obj = wt.WaterIncluder(
-            input_waters,
+            parameters.input if parameters.input else [parameters.system],
             parameters.n_waters,
             user_waters=parameters.waters,
             ligand_perturbation_params=parameters.parameters,
@@ -336,10 +324,7 @@ def run_adaptive(parameters):
                 parameters.system,
             )
 
-        # Point adaptive.conf to input dir
-        parameters.adap_ex_input = os.path.join(
-            parameters.inputs_dir, parameters.adap_ex_input
-        )
+        parameters.adap_ex_input = parameters.input if parameters.input else parameters.system
 
         # Fill in simulation templates
         adaptive = ad.SimulationBuilder(

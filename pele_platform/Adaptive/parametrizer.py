@@ -987,7 +987,7 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
 
     template_name = ligand_name.lower()
     ligand_name = ligand_name.upper()
-    extracted_ligand = os.path.join(folder, f"{ligand_name}.mae")
+    extracted_ligand = os.path.join(folder, f"{ligand_name}.pdb")
 
     # Create template for ligand + side chain
     create_templates.get_datalocal(
@@ -1001,9 +1001,9 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
 
     # Copy amino acid from PELE Data
     generated_templates_path = os.path.join(
-        folder, "DataLocal/Templates/OPLS2005/Protein/templates_generated/{}"
+        folder, "DataLocal", "Templates", "OPLS2005", "Protein", "templates_generated", "{}"
     )
-    aminoacid_path = os.path.join(pele_data, "Templates/OPLS2005/Protein", residue_type)
+    aminoacid_path = os.path.join(pele_data, "Templates", "OPLS2005", "Protein", residue_type)
     shutil.copy(aminoacid_path, generated_templates_path.format(residue_type))
 
     # Join with the backbone
@@ -1018,7 +1018,7 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
     # Copy everything from "templates_generated"
     created_templates = glob.glob(generated_templates_path.format("*"))
     final_templates_destination = os.path.join(
-        folder, "DataLocal/Templates/OPLS2005/Protein"
+        folder, "DataLocal", "Templates", "OPLS2005", "Protein"
     )
     for template in created_templates:
         shutil.copy(template, final_templates_destination)

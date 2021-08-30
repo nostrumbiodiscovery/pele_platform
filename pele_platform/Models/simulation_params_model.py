@@ -44,19 +44,20 @@ class SimulationParamsModel(YamlParserModel):
     pdb: bool = Field()
     constraints: Any = Field()
     water_energy: Any = Field()
-    sidechain_perturbation: str = Field()
+    sidechain_perturbation: str = Field(default=cs.SIDECHAIN_PERTURBATION)
 
     met_interaction_restrictions: str = Field()
     # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
 
     covalent_sasa: str = Field()
-    max_trials_for_one: Any = Field()
+    max_trials_for_one: int = Field()
     conformation_perturbation: str = Field()
     equilibration_mode: str = Field()
     water_ids_to_track: List[str] = Field(default=list())
     inputs_dir: str = Field()
     residue_type: str = Field()
     inputs: List[str] = Field()
+    ligand_ref: str = Field()
 
     @validator("*", pre=True, always=True)
     def set_value_from_simulation_parameters(cls, v, field):
@@ -280,3 +281,15 @@ class SimulationParamsModel(YamlParserModel):
             return v
         else:
             return [] if values.get("use_peleffy") else -1
+
+    @root_validator
+    def parse_covalent_docking_parameters(cls, values):
+        if values.get("covalent_residue"):
+            values["refinement_angle"] = cs.refinement_angle.format(values.get("refinement_angle"))
+            values["covalent_sasa"] = cs.SASA_COVALENT.format(values.get("covalent_residue"))
+            values["max_trials_for_one"] = values.get("perturbation_trials") * 2
+        else:
+            values["refinement_angle"] = ""
+            values["covalent_sasa"] = ""
+
+        return values

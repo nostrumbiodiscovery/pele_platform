@@ -23,6 +23,7 @@ class ParametersBuilder(object):
         self._parameters = None
         self._initialized = False
         self.initial_args = None
+        self.package = None
 
     def build_adaptive_variables(self, args):
         """

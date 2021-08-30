@@ -54,6 +54,7 @@ class SimulationPaths:
             "DataLocal/Templates/AMBER99sbBSC0/HeteroAtoms/",
             "DataLocal/LigandRotamerLibs",
             "DataLocal/OBC",
+            self.inputs_dir
         ]
         self.file_names = [
             "adaptive.conf",

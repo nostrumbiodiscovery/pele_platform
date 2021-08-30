@@ -20,7 +20,7 @@ PACKAGES = dict(
     induced_fit_exhaustive=pele_platform.drug_design.package_launchers.InducedFitExhaustiveLauncher,
     induced_fit_fast=pele_platform.drug_design.package_launchers.InducedFitFastLauncher,
     workflow=pele_platform.drug_design.package_launchers.WorkflowLauncher,
-    saturated_mutagenesis=pele_platform.enzyme_engineering.saturated_mutagenesis.SaturatedMutagenesis,
+    covalent_residue=pele_platform.drug_design.package_launchers.CovalentDocking,
 )
 
 
