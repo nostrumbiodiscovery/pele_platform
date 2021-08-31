@@ -2,11 +2,10 @@ import os
 import glob
 from typing import Any, List
 import pele_platform.constants.constants as cs
-from pydantic import validator, root_validator
+from pydantic import validator
 import pele_platform.Utilities.Helpers.helpers as hp
 from pele_platform.Models.utils import Field
 from pele_platform.Models.yaml_parser_model import YamlParserModel
-from pele_platform.Adaptive.interaction_restrictions import InteractionRestrictionsBuilder
 
 LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
@@ -44,11 +43,9 @@ class SimulationParamsModel(YamlParserModel):
     pdb: bool = Field()
     constraints: Any = Field()
     water_energy: Any = Field()
-    sidechain_perturbation: str = Field(default=cs.SIDECHAIN_PERTURBATION)
+    sidechain_perturbation: bool = Field(default=False)
 
     met_interaction_restrictions: str = Field()
-    # TODO: Temporary solution, we need to parse all interaction_restrictions_params!
-
     covalent_sasa: str = Field()
     max_trials_for_one: int = Field()
     conformation_perturbation: str = Field()
@@ -169,16 +166,6 @@ class SimulationParamsModel(YamlParserModel):
             return ""
         return v
 
-    @validator(
-        "sidechain_perturbation",
-        "covalent_sasa",
-        always=True,
-    )
-    def only_with_sidechain_perturbation(cls, v, values):
-        if not values.get("covalent_residue"):
-            return ""
-        return v
-
     @validator("conformation_perturbation", always=True)
     def set_conformation_perturbation(cls, v, values):
         if values.get("ligand_conformations"):
@@ -237,27 +224,6 @@ class SimulationParamsModel(YamlParserModel):
     def check_extensions(cls, v, field, values):
         return values.get("traj_name").endswith(f".{field.name}")
 
-    @validator("pca", always=True)
-    def format_pca(cls, v):
-        if v:
-            return cs.PCA.format(v)
-        return ""
-
-    @root_validator
-    def parse_interaction_restrictions(cls, values):
-
-        if not values.get("interaction_restrictions"):
-            values["met_interaction_restrictions"] = ""
-
-        else:
-            ir_parser = InteractionRestrictionsBuilder()
-            ir_parser.parse_interaction_restrictions(values.get("system"), values.get("interaction_restrictions"))
-            values["parameters"] = ir_parser.fill_template(values.get("parameters"))
-            values["met_interaction_restrictions"] = ir_parser.metrics_to_json()
-            values["interaction_restrictions"] = ir_parser.conditions_to_json()
-
-        return values
-
     @validator("box_center", always=True)
     def calculate_box_center(cls, v, values):
         if v:
@@ -281,15 +247,3 @@ class SimulationParamsModel(YamlParserModel):
             return v
         else:
             return [] if values.get("use_peleffy") else -1
-
-    @root_validator
-    def parse_covalent_docking_parameters(cls, values):
-        if values.get("covalent_residue"):
-            values["refinement_angle"] = cs.refinement_angle.format(values.get("refinement_angle"))
-            values["covalent_sasa"] = cs.SASA_COVALENT.format(values.get("covalent_residue"))
-            values["max_trials_for_one"] = values.get("perturbation_trials") * 2
-        else:
-            values["refinement_angle"] = ""
-            values["covalent_sasa"] = ""
-
-        return values

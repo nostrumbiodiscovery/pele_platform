@@ -4,13 +4,12 @@ import pytest
 
 import tests.utils
 from pele_platform import main
+from pele_platform.constants import constants
 import pele_platform.Utilities.Parameters.parameters as pv
-import pele_platform.Errors.custom_errors as ce
-from pele_platform.constants import constants as cs
+from pele_platform.Errors import custom_errors
 import pele_platform.building_blocks.simulation as bb
 from pele_platform.building_blocks.pipeline import Pipeline
 from pele_platform.building_blocks.selection import (
-    ScatterN,
     LowestEnergy,
     GMM,
     Clusters,
@@ -18,7 +17,8 @@ from pele_platform.building_blocks.selection import (
 from pele_platform.Utilities.Helpers import helpers
 import pele_platform.Utilities.Helpers.yaml_parser as yp
 
-test_path = os.path.join(cs.DIR, "Examples")
+
+test_path = os.path.join(constants.DIR, "Examples")
 
 GPCR_lines = [
     '"type" : "epsilon"',
@@ -62,6 +62,16 @@ Rescoring_lines = [
     '"conditions": [1, 0.6, 0.4, 0.0]',
 ]
 
+CovalentDockingExploration_lines = [
+    '"iterations" : 1,',
+    '"peleSteps" : 400,',
+]
+
+CovalentDockingRefinement_lines = [
+    '"iterations" : 1,',
+    '"peleSteps" : 100',
+]
+
 
 @pytest.mark.parametrize(
     "iterable",
@@ -78,7 +88,7 @@ def test_pipeline_checker(iterable):
     2. Pipeline containing two Simulation blocks in a row, without Selection in between.
     3. Empty pipeline.
     """
-    with pytest.raises(ce.PipelineError):
+    with pytest.raises(custom_errors.PipelineError):
         env = pv.ParametersBuilder()
         Pipeline(iterable, env).run()
 
@@ -107,6 +117,18 @@ def test_pipeline_checker(iterable):
             InducedFitFast_lines,
         ),
         ("rescoring/input_defaults.yaml", "rescoring", bb.Rescoring, Rescoring_lines),
+        (
+            "covalent_docking/input_defaults.yaml",
+            "covalent_docking",
+            bb.CovalentDockingExploration,
+            CovalentDockingExploration_lines,
+        ),
+        (
+            "covalent_docking/input_defaults_refinement.yaml",
+            "covalent_docking_refinement",
+            bb.CovalentDockingRefinement,
+            CovalentDockingRefinement_lines,
+        ),
     ],
 )
 def test_simulation_blocks(yaml, package, block, expected):
@@ -162,10 +184,10 @@ def mock_simulation_env():
 @pytest.mark.parametrize(
     ("selection_block", "options", "expected"),
     [
-        # (ScatterN, {"distance": 6.0}, 9),  # TODO: ScatterN needs to be implemented from scratch due to changes in Analysis
-        (LowestEnergy, None, 4),
-        (GMM, None, 4),
-        (Clusters, None, 4),
+        # (ScatterN, {"distance": 6.0}, 9),  # TODO: ScatterN to be implemented from scratch due to changes in Analysis
+        (LowestEnergy, {}, 4),
+        (GMM, {}, 4),
+        (Clusters, {}, 4),
     ],
 )
 def test_selection_blocks(mock_simulation_env, selection_block, options, expected):
@@ -175,11 +197,18 @@ def test_selection_blocks(mock_simulation_env, selection_block, options, expecte
     """
     builder, env = mock_simulation_env
     test_folder_name = f"test_folder"
-    _, selection = selection_block(parameters_builder=builder, options=options, folder_name=test_folder_name, env=env).run()
+    _, selection = selection_block(
+        parameters_builder=builder,
+        options=options,
+        folder_name=test_folder_name,
+        env=env,
+    ).run()
 
     selected_inputs = glob.glob(selection.next_step)
     assert len(selected_inputs) == expected
-    helpers.check_remove_folder(os.path.join(os.path.dirname(selection.pele_dir), test_folder_name))
+    helpers.check_remove_folder(
+        os.path.join(os.path.dirname(selection.pele_dir), test_folder_name)
+    )
 
 
 def test_workflow():
@@ -205,7 +234,7 @@ def test_workflow_checker():
     mistakes.
     """
     yaml = os.path.join(test_path, "Blocks/input_wrong_workflow.yaml")
-    with pytest.raises(ce.PipelineError):
+    with pytest.raises(custom_errors.PipelineError):
         main.run_platform_from_yaml(yaml)
 
 

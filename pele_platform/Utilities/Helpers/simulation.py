@@ -1,9 +1,13 @@
 from dataclasses import dataclass
+from copy import deepcopy
 import os
 import AdaptivePELE.adaptiveSampling as ad
 from pele_platform.Utilities.Helpers import helpers, template_builder
 import pele_platform.Utilities.Parameters.parameters as pv
 import pele_platform.Utilities.Helpers.water as wt
+from pele_platform.Utilities.Parameters.parameters import Parameters
+from pele_platform.constants import constants
+from pele_platform.Adaptive.interaction_restrictions import InteractionRestrictionsBuilder
 
 
 @dataclass
@@ -25,17 +29,64 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         water_obj : a WaterIncluder object
             The parameters for aquaPELE, if applicable
         """
-        # Fill in simulation template with
-        # simulation parameters specified in
+        # Convert raw parameters to JSON strings
+        formatted_params = self.format_parameters(parameters)
 
         # Fill two times because we have flags inside flags
-        self.fill_pele_template(parameters, water_obj)
-        self.fill_pele_template(parameters, water_obj)
-        self.fill_adaptive_template(parameters)
-        self.fill_adaptive_template(parameters)
+        self.fill_pele_template(formatted_params, water_obj)
+        self.fill_pele_template(formatted_params, water_obj)
+        self.fill_adaptive_template(formatted_params)
+        self.fill_adaptive_template(formatted_params)
+
+    @staticmethod
+    def format_parameters(user_parameters):
+        """
+        Injects user-defined parameters into strings compatible with PELE configuration files.
+
+        Parameters
+        ----------
+        user_parameters : Parameters
+
+        Returns
+        --------
+        Deepcopy of parameters with correct JSON string formatting.
+        """
+        parameters = deepcopy(user_parameters)
+
+        if parameters.covalent_residue:
+            parameters.covalent_sasa = constants.SASA_COVALENT.format(parameters.covalent_residue)
+            parameters.max_trials_for_one = parameters.perturbation_trials * 2
+            parameters.sidechain_perturbation = constants.SIDECHAIN_PERTURBATION
+
+            if parameters.refinement_angle and parameters.covalent_docking_refinement:
+                parameters.refinement_angle = constants.refinement_angle.format(parameters.refinement_angle)
+            else:
+                parameters.refinement_angle = ""
+
+        else:
+            parameters.refinement_angle = ""
+            parameters.covalent_sasa = ""
+            parameters.sidechain_perturbation = ""
+
+        if not parameters.interaction_restrictions:
+            parameters.met_interaction_restrictions = ""
+            parameters.interaction_restrictions = ""
+        else:
+            ir_parser = InteractionRestrictionsBuilder()
+            ir_parser.parse_interaction_restrictions(parameters.system, parameters.interaction_restrictions)
+            parameters.parameters = ir_parser.fill_template(parameters.parameters)
+            parameters.met_interaction_restrictions = ir_parser.metrics_to_json()
+            parameters.interaction_restrictions = ir_parser.conditions_to_json()
+
+        if parameters.pca:
+            parameters.pca = constants.PCA.format(parameters.pca)
+        else:
+            parameters.pca = ""
+
+        return parameters
 
     def fill_pele_template(
-        self, env: pv.ParametersBuilder, water_obj: wt.WaterIncluder
+        self, env: Parameters, water_obj: wt.WaterIncluder
     ) -> None:
         # Translate OpenFF force field names into the format expected by PELE
         if "openff" in env.forcefield.lower():
@@ -81,7 +132,6 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             "ANM_FREQ": env.anm_freq,
             "BOX": env.box,
             "PROXIMITY": env.proximityDetection,
-            "WATER_FREQ": env.water_freq,
             "VERBOSE": env.verbose,
             "ANM_DISPLACEMENT": env.anm_displacement,
             "ANM_MODES_CHANGE": env.anm_modes_change,
@@ -112,38 +162,38 @@ class SimulationBuilder(template_builder.TemplateBuilder):
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
 
-    def fill_adaptive_template(self, env: pv.ParametersBuilder) -> None:
+    def fill_adaptive_template(self, parameters: pv.Parameters) -> None:
         # Fill in adaptive template
         self.adaptive_keywords = {
-            "RESTART": env.adaptive_restart,
-            "OUTPUT": env.output,
-            "INPUT": env.adap_ex_input,
-            "CPUS": env.cpus,
+            "RESTART": parameters.adaptive_restart,
+            "OUTPUT": parameters.output,
+            "INPUT": parameters.adap_ex_input,
+            "CPUS": parameters.cpus,
             "PELE_CFILE": os.path.basename(self.pele_file),
-            "LIG_RES": env.residue,
-            "SEED": env.seed,
-            "EQ_STEPS": env.equil_steps,
-            "EQUILIBRATION": env.equilibration,
-            "EQUILIBRATION_MODE": env.equilibration_mode,
-            "EPSILON": env.epsilon,
-            "BIAS_COLUMN": env.bias_column,
-            "ITERATIONS": env.iterations,
-            "PELE_STEPS": env.pele_steps,
-            "REPORT_NAME": env.report_name,
-            "SPAWNING_TYPE": env.spawning,
-            "DENSITY": env.density,
-            "SIMULATION_TYPE": env.simulation_type,
-            "CLUSTER_VALUES": env.cluster_values,
-            "CLUSTER_CONDITION": env.cluster_conditions,
-            "UNBINDING": env.unbinding_block,
-            "USESRUN": env.usesrun,
-            "LIGAND": env.ligand,
-            "PELE_BIN": env.pele_exec,
-            "PELE_DATA": env.pele_data,
-            "PELE_DOCUMENTS": env.pele_documents,
-            "CONDITION": env.spawning_condition,
-            "MPI_PARAMS": env.mpi_params,
-            "CLUST_TYPE": env.clust_type,
+            "LIG_RES": parameters.residue,
+            "SEED": parameters.seed,
+            "EQ_STEPS": parameters.equil_steps,
+            "EQUILIBRATION": parameters.equilibration,
+            "EQUILIBRATION_MODE": parameters.equilibration_mode,
+            "EPSILON": parameters.epsilon,
+            "BIAS_COLUMN": parameters.bias_column,
+            "ITERATIONS": parameters.iterations,
+            "PELE_STEPS": parameters.pele_steps,
+            "REPORT_NAME": parameters.report_name,
+            "SPAWNING_TYPE": parameters.spawning,
+            "DENSITY": parameters.density,
+            "SIMULATION_TYPE": parameters.simulation_type,
+            "CLUSTER_VALUES": parameters.cluster_values,
+            "CLUSTER_CONDITION": parameters.cluster_conditions,
+            "UNBINDING": parameters.unbinding_block,
+            "USESRUN": parameters.usesrun,
+            "LIGAND": parameters.ligand,
+            "PELE_BIN": parameters.pele_exec,
+            "PELE_DATA": parameters.pele_data,
+            "PELE_DOCUMENTS": parameters.pele_documents,
+            "CONDITION": parameters.spawning_condition,
+            "MPI_PARAMS": parameters.mpi_params,
+            "CLUST_TYPE": parameters.clust_type,
         }
         super(SimulationBuilder, self).__init__(
             self.adaptive_file, self.adaptive_keywords

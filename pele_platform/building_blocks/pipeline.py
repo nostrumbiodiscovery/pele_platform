@@ -53,11 +53,11 @@ class Pipeline:
         """
 
         if len(self.iterable) == 0:
-            raise ce.PipelineError("Pipeline doesn't contain any building_blocks.")
+            raise custom_errors.PipelineError("Pipeline doesn't contain any building_blocks.")
 
         for element in self.iterable:
             if "type" not in element.keys():
-                raise ce.PipelineError(
+                raise custom_errors.PipelineError(
                     "It seems that you forgot to specify simulation type in one of the workflow "
                     "steps, for example - type: 'LocalExplorationExhaustive'"
                 )
@@ -74,7 +74,7 @@ class Pipeline:
         block_types = [block.__bases__[-1].__name__ for block in class_names]
 
         if not block_types[0] == "Simulation" or not block_types[-1] == "Simulation":
-            raise ce.PipelineError(
+            raise custom_errors.PipelineError(
                 "Workflow should begin and end with a Simulation block, e.g. GlobalExploration."
             )
 
@@ -82,7 +82,7 @@ class Pipeline:
             if (index % 2 == 0 and block != "Simulation") or (
                 index % 2 == 1 and block != "Selection"
             ):
-                raise ce.PipelineError(
+                raise custom_errors.PipelineError(
                     "There is something wrong with your Workflow.\n1. It should begin and end with a Simulation "
                     "block, e.g. GlobalExploration.\n2. Simulation blocks should be separated by Selection blocks."
                 )

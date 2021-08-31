@@ -209,24 +209,12 @@ class ScatterN(Selection):
 
 class LowestLocalNonbondingEnergy(Selection):
 
-    def __init__(
-        self,
-        parameters_builder: pv.ParametersBuilder,
-        options: dict,
-        folder_name: str,
-        env: pv.Parameters,
-    ):
-        super().__init__(parameters_builder, options, folder_name, env)
-
     def get_inputs(self):
         """
-        Extracts 1000 lowest binding energy structures and clusters them based on heavy atom ligand coordinates using
-        Gaussian Mixture Model. A lowest energy representative from each cluster is selected as input for the refinement
-        simulation.
         """
         n_inputs = int(self.env.cpus / 6)
         max_top_clusters = n_inputs if n_inputs > 1 else 1  # tests only have 5 CPUs
-
+        temp_dir = "temp"
         output_path = os.path.join(self.env.pele_dir, self.env.output)
 
         analysis_object = Analysis(
@@ -240,8 +228,10 @@ class LowestLocalNonbondingEnergy(Selection):
         )
 
         analysis_object.generate_clusters(
-            "temp",
+            temp_dir,
             clustering_type="meanshift",
             representatives_criterion="local_nonbonding_energy",
             max_top_clusters=max_top_clusters,
         )
+
+        self.inputs = glob.glob(os.path.join(os.path.abspath(temp_dir), "cluster*.pdb"))

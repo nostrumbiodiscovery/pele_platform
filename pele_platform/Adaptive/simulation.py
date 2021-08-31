@@ -69,30 +69,26 @@ def run_adaptive(parameters):
 
         # If user overrides 'system' with 'input'
         if parameters.input:
-            parameters.inputs_simulation = []
+            inputs_simulation = []
 
-            for input in parameters.input:
-                input_path = os.path.join(
-                    parameters.inputs_dir, os.path.basename(input))
-                shutil.copy(input, input_path)
+            for input_file in parameters.input:
+                input_path = os.path.join(parameters.inputs_dir, os.path.basename(input_file))
+                shutil.copy(input_file, input_path)
 
-                if parameters.no_ppp:
-                    input_proc = input_path
-                else:
-                    input_proc, missing_residues, _, _, _ = ppp.main(
-                            input_path,
-                            parameters.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
-                            output_pdb=["", ],
-                            charge_terminals=args.charge_ter,
-                            no_gaps_ter=args.gaps_ter,
-                            constrain_smiles=None,
-                            ligand_pdb=parameters.ligand_ref)
-                input_proc = os.path.basename(input_proc)
-                input_proc = os.path.join(parameters.inputs_dir, input_proc)
-                parameters.inputs_simulation.append(input_proc)
-            parameters.adap_ex_input = ", ".join(
-                ['"' + input + '"' for input in parameters.inputs_simulation]
-            ).strip('"')
+                if not parameters.no_ppp:
+                    input_path, missing_residues, _, _, _ = ppp.main(
+                        input_path,
+                        parameters.inputs_dir,
+                        output_pdb=["", ],
+                        charge_terminals=args.charge_ter,
+                        no_gaps_ter=args.gaps_ter,
+                        constrain_smiles=None,
+                        ligand_pdb=parameters.ligand_ref)
+
+                input_path = os.path.join(parameters.inputs_dir, os.path.basename(input_path))
+                inputs_simulation.append(input_path)
+
+            parameters.input = inputs_simulation
 
         # If randomization in necessary (PPI, site_finder, global exploration)...
         elif args.full or args.randomize or args.ppi or args.site_finder:
@@ -137,9 +133,9 @@ def run_adaptive(parameters):
             # parameters.input
             if parameters.input:
                 # If we have more than one input
-                for input in parameters.input:
+                for input_file in parameters.input:
                     try:
-                        shutil.copy(input, parameters.inputs_dir)
+                        shutil.copy(input_file, parameters.inputs_dir)
                     except shutil.SameFileError:  # systems that go through randomization are already moved
                         pass
             else:
@@ -187,9 +183,7 @@ def run_adaptive(parameters):
 
             metal_constraints_json = hp.retrieve_constraints_for_pele(
                 metal_constraints,
-                os.path.join(
-                    parameters.inputs_dir,
-                    parameters.adap_ex_input.split(",")[0].strip().strip('"')))
+                parameters.system)
 
             parameters.external_constraints.extend(metal_constraints_json)
 
@@ -300,8 +294,7 @@ def run_adaptive(parameters):
         parameters.metrics = (
             metrics.distance_to_atom_json(
                 os.path.join(
-                    parameters.inputs_dir,
-                    parameters.adap_ex_input.split(",")[0].strip().strip('"'),
+                    parameters.input[0] if parameters.input else parameters.system
                 ),
                 args.atom_dist,
             )
@@ -324,7 +317,8 @@ def run_adaptive(parameters):
                 parameters.system,
             )
 
-        parameters.adap_ex_input = parameters.input if parameters.input else parameters.system
+        parameters.adap_ex_input = ", ".join(
+            [f'"{input_file}"' for input_file in parameters.input]).strip('"') if parameters.input else parameters.system
 
         # Fill in simulation templates
         adaptive = ad.SimulationBuilder(

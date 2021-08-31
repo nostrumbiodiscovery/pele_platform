@@ -72,7 +72,7 @@ class ParametersBuilder(object):
         print("AAAAAAAAAA ParametersBuilder pele_dir", pele_dir)
 
         # Retrieve the specific args for adaptive
-        specific_args = adaptive.retrieve_software_settings(args)
+        specific_args, simulation = adaptive.retrieve_software_settings(args)
 
         # Add pele_dir
         specific_args['pele_dir'] = self.pele_dir = pele_dir if not hasattr(self, "pele_dir") else self.pele_dir
@@ -83,6 +83,7 @@ class ParametersBuilder(object):
 
         # Set software
         self.parameters.software = "Adaptive"
+        self.parameters.simulation = simulation
 
         return self.parameters
 
@@ -291,3 +292,23 @@ class Parameters(simulation_params.SimulationParams,
 
         file_handler.setFormatter(formatter)
         self.logger.addHandler(file_handler)
+
+    def to_dict(self):
+        """
+        Dumps all parameters to a dictionary.
+
+        Returns
+        -------
+            YamlParser parameters as dict.
+        """
+        return self.model.dict()
+
+    def to_json(self):
+        """
+        Dumps all parameters to JSON.
+
+        Returns
+        -------
+            YamlParser parameters in JSON format.
+        """
+        return self.model.json()

@@ -80,8 +80,9 @@ class FragRunner(object):
         shutil.copy(params.control_file, tmp_control_file)
         adaptive = ad.SimulationBuilder("", tmp_control_file, params)
         # Fill to time because we have flags inside flags
-        adaptive.fill_pele_template(params, params.water_object)
-        adaptive.fill_pele_template(params, params.water_object)
+        formatted_params = adaptive.format_parameters(params)
+        adaptive.fill_pele_template(formatted_params, params.water_object)
+        adaptive.fill_pele_template(formatted_params, params.water_object)
         self.parameters.control_file = tmp_control_file
 
         return self.parameters.control_file

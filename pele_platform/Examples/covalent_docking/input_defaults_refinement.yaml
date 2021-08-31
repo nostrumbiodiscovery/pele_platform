@@ -4,3 +4,4 @@ chain: "B"
 covalent_residue: "B:82"  # chain and residue number
 debug: true
 covalent_docking_refinement: true
+use_peleffy: true

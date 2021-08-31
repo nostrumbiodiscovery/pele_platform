@@ -41,11 +41,11 @@ class Simulation(blocks.Block):
     def post_simulation_cleanup(self):
         """
         Sets both types of restart to false, so that the platform does not look for logger file while executing the
-        next building block.
-        Returns
+        next building block. Disables PDB preprocessing, since it would have been done at the first step.
         """
         self.env.restart = False
         self.env.adaptive_restart = False
+        self.env.no_ppp = True
 
     @abstractmethod
     def set_package_params(self):
@@ -247,7 +247,7 @@ class CovalentDockingExploration(Simulation):
         self.correct_system()
         self.set_general_perturbation_params()
         self.env.system = self.run_ppp()
-        parametrizer.parametrize_covalent_residue(self.env.pele_data, self.env.inputs_dir, self.env.gridres,
+        parametrizer.parametrize_covalent_residue(self.env.pele_data, self.env.pele_dir, self.env.gridres,
                                                   self.env.residue_type, self.env.residue,
                                                   ppp_system=self.env.system)
 
@@ -256,9 +256,6 @@ class CovalentDockingExploration(Simulation):
         Sets parameters for the initial side chain perturbation, making sure we set the correct working folder and
         ignore refinement distance for now.
         """
-        self.env._refinement_angle = self.env.refinement_angle
-        self.env.refinement_angle = ""
-
         if isinstance(self.env.skip_ligand_prep, list):
             self.env.skip_ligand_prep.append(self.env.residue)
         else:
@@ -346,17 +343,31 @@ class CovalentDockingExploration(Simulation):
             new_ligand.write(original_conects)
 
     def run_ppp(self):
+        """
+        Retrieves non-standard residue (in this case the covalent ligand) and runs PPP.
+        Returns
+        -------
+            PDB file with preprocessed system.
+        """
         import PPP.main as ppp
+
+        self.env.nonstandard.extend(helpers.find_nonstd_residue(self.env.system))
 
         if self.env.no_ppp:
             return self.env.system
         else:
-            breakpoint()
-            return ppp.main(self.env.system,
-                            self.env.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
-                            charge_terminals=self.env.charge_ter,
-                            no_gaps_ter=self.env.gaps_ter,
-                            ligand_pdb=self.env.ligand_ref)[0]
+            return ppp.main(
+                self.env.system,
+                self.env.inputs_dir,
+                output_pdb=["", ],
+                charge_terminals=self.env.charge_ter,
+                no_gaps_ter=self.env.gaps_ter,
+                mid_chain_nonstd_residue=self.env.nonstandard,
+                skip=self.env.skip_prep,
+                back_constr=self.env.ca_constr,
+                constrain_smiles=None,
+                ligand_pdb=self.env.ligand_ref,
+                ca_interval=self.env.ca_interval)[0]
 
 
 class CovalentDockingRefinement(Simulation):
@@ -367,7 +378,6 @@ class CovalentDockingRefinement(Simulation):
         """
         Sets parameters for the refinement side chain perturbation, including the refinement distance (default = 10 A).
         """
-        self.env.refinement_angle = self.env._refinement_angle
         self.env.no_ppp = True
         self.env.covalent_docking_refinement = True
         self.recover_templates_from_global()

@@ -198,6 +198,7 @@ SOFTWARE_CONSTANTS = {
             "params": pcs.SITE_FINDER_LOCAL,
         },
         "covalent_docking": {
+            "perturbation": "",
             "anm_freq": 5,
             "overlap_factor": 0.6,
             "perturbation_trials": 100,
@@ -206,7 +207,7 @@ SOFTWARE_CONSTANTS = {
             "params": "",
         },
         "covalent_docking_refinement": {
-            "perturbation": False,
+            "perturbation": "",
             "perturbation_trials": 10,
             "pele_steps": 100,
             "refinement_distance": 10,
@@ -270,4 +271,4 @@ def retrieve_software_settings(args):
         type_simulation = "induced_fit_fast"
 
     software_settings["simulation_params"] = software_settings["simulation_params"].get(type_simulation)
-    return software_settings
+    return software_settings, type_simulation

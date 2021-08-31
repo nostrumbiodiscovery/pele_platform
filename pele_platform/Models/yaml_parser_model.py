@@ -34,7 +34,7 @@ class YamlParserModel(BaseModel):
 
     pele: Any = Field(candidate_for_deprecation=True)
     forcefield: str = Field(
-        default="OPLS2005",
+
         value_from_simulation_params=True,
         simulation_params_default="OPLS2005",  # Redundant, default was already in yaml parser
         categories=["Simulation parameters"],
@@ -190,6 +190,9 @@ class YamlParserModel(BaseModel):
     gridres: int = Field(
         default=10, categories=["Ligand preparation"]
     )  # alias="ligand_resolution"
+    use_peleffy: bool = Field(
+        categories=["Ligand preparation"], can_be_falsy=True, default=False
+    )
     core: Union[int, List[str]] = Field(categories=["Ligand preparation"])
 
     ################################################################################################ start from here
@@ -505,11 +508,14 @@ class YamlParserModel(BaseModel):
 
     covalent_residue: str = Field(categories=["Covalent docking"])
 
-    nonbonding_radius: float = Field(categories=["Covalent docking"])
+    nonbonding_radius: float = Field(categories=["Covalent docking"], value_from_simulation_params=True,
+                                     simulation_params_default=20.0)
 
-    perturbation_trials: int = Field(categories=["Covalent docking"], value_from_simulation_params=True, simulation_params_default=10)
+    perturbation_trials: int = Field(categories=["Covalent docking"], value_from_simulation_params=True,
+                                     simulation_params_default=10)
 
-    refinement_angle: float = Field(categories=["Covalent docking"], value_from_simulation_params=True, simulation_params_default=10)
+    refinement_angle: float = Field(categories=["Covalent docking"], value_from_simulation_params=True,
+                                    simulation_params_default=10.0)
 
     covalent_docking_refinement: bool = Field(categories=["Covalent docking"])
 
@@ -560,9 +566,7 @@ class YamlParserModel(BaseModel):
         simulation_params_default=0.01,
     )
     max_top_poses: int = Field(categories=["Analysis"], can_be_falsy=True, default=100)
-    use_peleffy: bool = Field(
-        categories=["Ligand preparation"], can_be_falsy=True, default=False
-    )
+
     saturated_mutagenesis: bool = Field(categories=["Saturated mutagenesis"])
     cpus_per_mutation: int = Field(
         categories=["Saturated mutagenesis"], tests_value=2

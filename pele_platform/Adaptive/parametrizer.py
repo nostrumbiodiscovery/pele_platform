@@ -987,7 +987,7 @@ def parametrize_covalent_residue(pele_data, folder, gridres, residue_type, ligan
 
     template_name = ligand_name.lower()
     ligand_name = ligand_name.upper()
-    extracted_ligand = os.path.join(folder, f"{ligand_name}.pdb")
+    extracted_ligand = os.path.join(folder, "input", f"{ligand_name}.pdb")
 
     # Create template for ligand + side chain
     create_templates.get_datalocal(
