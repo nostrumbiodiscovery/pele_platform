@@ -6,6 +6,7 @@ import os
 
 SCHRODINGER = os.environ.get("SCHRODINGER", "")
 PELE = os.environ.get("PELE", "")
+
 SINGULARITY_EXEC = os.environ.get("SINGULARITY_EXEC", "")
 PELE_EXEC = os.environ.get("PELE_EXEC", "")
 PELE_DATA = os.environ.get("PELE_DATA", "")

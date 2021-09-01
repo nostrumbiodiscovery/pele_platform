@@ -84,8 +84,10 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("frag_pele", always=True)
     def set_frag_pele(cls, v, values):
-        if values.get("package") == "frag_core":
+        if values.get("frag_core"):
             return True
+        else:
+            return False
 
     @validator("complexes", always=True)
     def set_complexes(cls, v, values):
@@ -134,6 +136,14 @@ class SimulationParamsModel(YamlParserModel):
         if v is False or values.get("pca_traj"):
             return ""
         return cls.simulation_params.get("perturbation", cs.PERTURBATION)
+
+    @validator("sidechain_perturbation", always=True)
+    def set_sidechain_perturbation(cls, v, values):
+
+        if v or values.get("covalent_residue"):
+            return True
+        else:
+            return False
 
     @validator("inter_step_logger", always=True)
     def set_interstep_logger(cls, v):
@@ -196,12 +206,6 @@ class SimulationParamsModel(YamlParserModel):
             return f'"condition": "{v}",'
         return ""
 
-    @validator("mpi_params", always=True)
-    def format_mpi_params(cls, v):
-        if v:
-            return f'"mpiParameters": "{v}",'
-        return ""
-
     @validator("allow_empty_selectors", always=True)
     def format_allow_empty_selectors(cls, v):
         if v:
@@ -215,10 +219,6 @@ class SimulationParamsModel(YamlParserModel):
         if values.get("spawning") == "independent":
             return 1
         return 30
-
-    @validator("usesrun", always=True)
-    def set_usesrun(cls, v):
-        return "true" if v else "false"
 
     @validator("xtc", "pdb", always=True)
     def check_extensions(cls, v, field, values):
@@ -247,3 +247,89 @@ class SimulationParamsModel(YamlParserModel):
             return v
         else:
             return [] if values.get("use_peleffy") else -1
+
+    @validator("pele_exec", always=True)
+    def parse_pele_exec(cls, v):
+        """
+        Sets path to PELE executable following the priority:
+            1. Value from YAML file.
+            2. Environment variable (PELE_EXEC)
+            3. Path_to_PELE + bin/Pele_mpi
+        """
+        if v:
+            return v
+        else:
+            pele_exec = os.environ.get("PELE_EXEC", "")
+
+            default_pele_exec = (
+                pele_exec
+                if pele_exec
+                else os.path.join(cs.PELE, "bin/Pele_mpi")
+            )
+        return default_pele_exec
+
+    @validator("pele_data", always=True)
+    def parse_pele_data(cls, v):
+        """
+        Sets path to PELE Data following the priority:
+            1. Value from YAML file.
+            2. Environment variable (PELE_DATA)
+            3. Path_to_PELE + bin/Pele_mpi
+        """
+        if v:
+            return v
+        else:
+            pele_data = os.environ.get("PELE_DATA", "")
+            default_pele_Data = (
+                pele_data
+                if pele_data
+                else os.path.join(cs.PELE, "Data")
+            )
+            return default_pele_Data
+
+    @validator("pele_documents", always=True)
+    def parse_pele_documents(cls, v):
+        """
+        Sets path to PELE Documents following the priority:
+            1. Value from YAML file.
+            2. Environment variable (PELE_DOCUMENTS)
+            3. Path_to_PELE + bin/Pele_mpi
+        """
+        if v:
+            return v
+        else:
+            pele_documents = os.environ.get("PELE_DOCUMENTS", "")
+            default_pele_documents = (
+                pele_documents
+                if pele_documents
+                else os.path.join(cs.PELE, "Documents")
+            )
+            return default_pele_documents
+
+    @validator("license", always=True)
+    def parse_pele_license(cls, v):
+        """
+        Sets path to PELE License following the priority:
+            1. Value from YAML file.
+            2. Environment variable (PELE_LICENSE)
+            3. Path_to_PELE + bin/Pele_mpi
+        """
+        if v:
+            return v
+        else:
+            pele_license = os.environ.get("PELE_LICENSE", "")
+            default_pele_license = (
+                pele_license
+                if pele_license
+                else os.path.join(cs.PELE, "licenses")
+            )
+            return default_pele_license
+
+    @validator("singularity_exec", always=True)
+    def parse_singularity_executable(cls, v):
+        """
+        Sets path to Singularity executable following the priority:
+            1. Value from YAML file.
+            2. Environment variable (SINGULARITY_EXEC)
+        """
+        return v if v else os.environ.get("SINGULARITY_EXEC", "")

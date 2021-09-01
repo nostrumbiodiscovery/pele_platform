@@ -25,7 +25,7 @@ class YamlParserModel(BaseModel):
         alias="global_inputs", categories=["General settings"]
     )  # check what this is
     system: Optional[str] = Field(default="", categories=["General settings"])
-    residue: str = Field(alias="resname", categories=["General settings"], default="")
+    residue: str = Field(alias="resname", categories=["General settings"])
     chain: Optional[str] = Field(categories=["General settings"])
     hbond: Any = Field(
         default=[None, None], candidate_for_deprecation=True
@@ -245,7 +245,7 @@ class YamlParserModel(BaseModel):
         simulation_params_default=False,
         categories=["Protein preparation"],
     )
-    mpi_params: str = Field()  # cp desc from Adaptive docs mpiParameters
+    mpi_params: str = Field(categories=["General settings"])
     nonstandard: List[str] = Field(
         value_from_simulation_params=True,
         simulation_params_default=[],
@@ -262,7 +262,7 @@ class YamlParserModel(BaseModel):
         default_factory=list, categories=["Metrics"]
     )  # deprecate atom numbers
     debug: bool = Field(default=False, categories=["General settings"])
-    folder: str = Field(alias="working_folder", categories=["General settings"])
+    folder: str = Field(alias="working_folder", )
     output: str = Field(default="output", categories=["General settings"])
     randomize: bool = Field(
         value_from_simulation_params=True,
@@ -339,8 +339,8 @@ class YamlParserModel(BaseModel):
     pdb: str = Field(categories=["RNA"])
     log: Any = Field(candidate_for_deprecation=True)
     nonrenum: Any = Field(candidate_for_deprecation=True)
-    pele_exec: str = Field(default=os.path.join(constants.PELE, "bin/Pele_mpi"))
-    pele_data: str = Field(default=os.path.join(constants.PELE, "Data"))
+    pele_exec: str = Field()
+    pele_data: str = Field()
     pele_documents: str = Field(default=os.path.join(constants.PELE, "Documents"))
     pca: str = Field(description="Path to PCA file", categories=["PCA"])
     anm_direction: str = Field(

@@ -124,6 +124,7 @@ def run_adaptive(parameters):
 
             parameters.input = [os.path.join(parameters.inputs_dir, inp)
                                 for inp in inputs]
+            parameters.system = parameters.input[0]
 
             hp.silentremove(ligand_positions)
 
@@ -168,10 +169,7 @@ def run_adaptive(parameters):
         if not args.no_metal_constraints:
             metal_constraints, parameters.external_constraints = mc.main(
                 args.external_constraints,
-                parameters.system,
-                # os.path.join(
-                #     parameters.inputs_dir,
-                #     parameters.adap_ex_input.split(",")[0].strip().strip('"')),
+                parameters.input[0] if parameters.input else parameters.system,
                 syst.system,
                 permissive=parameters.permissive_metal_constr,
                 all_metals=args.constrain_all_metals,
@@ -251,9 +249,7 @@ def run_adaptive(parameters):
 
         # Core constraints based on SMILES string
         if parameters.constrain_core:
-            smiles_input_pdb = os.path.join(
-                parameters.inputs_dir, parameters.adap_ex_input.split(",")[0]
-            )
+            smiles_input_pdb = parameters.input[0] if parameters.input else parameters.system
             smiles = smiles_constraints.SmilesConstraints(
                 smiles_input_pdb,
                 parameters.constrain_core,
@@ -285,7 +281,6 @@ def run_adaptive(parameters):
         parameters.parameters = water_obj.ligand_perturbation_params
         parameters.water_ids_to_track = water_obj.water_ids_to_track
 
-        # Check if atoms need mapping due to preprocessing
         args = AtomMapper(args, parameters, syst.system).run()
 
         # Metrics builder - builds JSON strings for PELE to be able to

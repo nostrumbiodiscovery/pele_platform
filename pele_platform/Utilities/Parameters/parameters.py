@@ -312,3 +312,11 @@ class Parameters(simulation_params.SimulationParams,
             YamlParser parameters in JSON format.
         """
         return self.model.json()
+
+    @classmethod
+    def from_dict(self, user_dict, specific_args=None, initialize_simulation_params=True,
+                  initialize_simulation_paths=True):
+
+        sim_params = simulation_params.SimulationParams(**user_dict)
+        sim_paths = simulation_folders.SimulationPaths()
+        return Parameters()

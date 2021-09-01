@@ -125,6 +125,7 @@ class Analysis(object):
         # perturbing any ligand
         resname = None
         chain = None
+
         if parameters.perturbation or parameters.sidechain_perturbation:
             resname = parameters.residue
             chain = parameters.chain
@@ -556,7 +557,7 @@ class Analysis(object):
             follows the same ordering as the array of coordinates
         """
         print(f"Extract coordinates for clustering")
-        breakpoint()
+
         if not self.topology:
             coordinates, water_coords, dataframe = \
                 self._data_handler.extract_PDB_coords(

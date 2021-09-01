@@ -83,6 +83,20 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         else:
             parameters.pca = ""
 
+        if parameters.singularity_exec:
+            parameters.mpi_params = parameters.singularity_exec
+            if parameters.frag_pele:
+                parameters.pele_exec = parameters.mpi_params + " Pele_mpi"
+            else:
+                parameters.pele_exec = "Pele_mpi"
+
+        mpi_params_name = "srunParameters" if parameters.usesrun else "mpiParameters"
+        parameters.mpi_params = (
+            f'"{mpi_params_name}": "{parameters.mpi_params}",' if parameters.mpi_params else ""
+        )
+
+        parameters.usesrun = str(parameters.usesrun).lower()
+
         return parameters
 
     def fill_pele_template(
