@@ -462,7 +462,7 @@ MINIMUMSTEPS = '''"activateMinimumSteps": true,'''
 # ANALYSIS
 # ---------
 # Top cluster selection - mapping between table metrics and YAML arguments
-metric_top_clusters_criterion = {
+top_clusters_criterion = {
     "total_25_percentile": "currentEnergy 25-percentile",
     "total_5_percentile": "currentEnergy 5-percentile",
     "total_mean": "currentEnergy mean",
@@ -487,6 +487,8 @@ cluster_representatives_criterion = {
     "interaction_min": "Binding Energy min",
     "local_nonbonding_energy": "LocalNonBondingEnergy",
 }
+
+clustering_method = ["gaussianmixture", "meanshift", "hdbscan"]
 
 # LIGAND PARAMETERIZATION
 # ------------------------

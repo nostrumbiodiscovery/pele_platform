@@ -388,8 +388,7 @@ class Analysis(object):
         """
         import os
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
-        from pele_platform.constants.constants import \
-            metric_top_clusters_criterion, cluster_representatives_criterion
+        from pele_platform.constants.constants import top_clusters_criterion, cluster_representatives_criterion
 
         check_make_folder(path)
 
@@ -437,7 +436,7 @@ class Analysis(object):
             self._get_water_sites(cluster_subset, water_coordinates, path)
 
         print(f"Retrieve top clusters based on " +
-              f"{metric_top_clusters_criterion[top_clusters_criterion]}.")
+              f"{top_clusters_criterion[top_clusters_criterion]}.")
 
         # Save cluster summary to file with information about selected labels
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
@@ -780,18 +779,17 @@ class Analysis(object):
             cluster names of top clusters
         """
         from pele_platform.analysis.clustering import get_cluster_label
-        from pele_platform.constants.constants import \
-            metric_top_clusters_criterion
+        from pele_platform.constants.constants import top_clusters_criterion
 
         # Get metric to be used in the top cluster selection
-        if top_clusters_criterion.lower() in metric_top_clusters_criterion:
+        if top_clusters_criterion.lower() in top_clusters_criterion:
             user_metric = \
-                metric_top_clusters_criterion[top_clusters_criterion.lower()]
+                top_clusters_criterion[top_clusters_criterion.lower()]
         else:
             raise ValueError('Invalid top_clusters_criterion ' +
                              '\'{}\''.format(top_clusters_criterion.lower()) +
                              '. It must be one of ' +
-                             '{}'.format(metric_top_clusters_criterion.keys()))
+                             '{}'.format(top_clusters_criterion.keys()))
 
         # Check if the selected metric is available
         if user_metric in list(cluster_summary.columns):

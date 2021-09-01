@@ -8,7 +8,6 @@ from pele_platform.constants import constants
 def test_yaml_parser():
 
     yaml_file = os.path.join(constants.DIR, "Examples", "global", "input.yaml")
-    breakpoint()
     parser_from_file = YamlParser.from_yaml(yaml_file)
     parser_from_file.read()
 
