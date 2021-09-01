@@ -193,8 +193,8 @@ SOFTWARE_CONSTANTS = {
         "site_finder_global": {
             "spawning_type": "inverselyProportional",
             "epsilon": 0.25,
-            "iterations": 80,
-            "pele_steps": 10,
+            "iterations": 50,
+            "pele_steps": 12,
             "cluster_values": "[2.5, 4, 6]",
             "cluster_conditions": "[1, 0.5, 0.0]",
             "sidechain_freq": 2,

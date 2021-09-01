@@ -22,8 +22,8 @@ LOCAL_ADAPTIVE = [
 GLOBAL_ADAPTIVE = [
     '"epsilon": 0.25,',
     '"type" : "inverselyProportional",',
-    '"iterations" : 80,',
-    '"peleSteps" : 10,',
+    '"iterations" : 50,',
+    '"peleSteps" : 12,',
     '"values" : [2.5, 4, 6],',
     '"conditions": [1, 0.5, 0.0]',
 ]
