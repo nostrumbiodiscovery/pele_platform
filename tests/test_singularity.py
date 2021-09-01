@@ -67,7 +67,7 @@ def test_singularity_params(ext_args, check_mpi, expected1, expected2):
     assert simulation_params.pele_exec == expected1
 
     if check_mpi:
-        mpi_params_name = "srunParameters" if simulation_params.usesrun else "mpiParameters"
+        mpi_params_name = "srunParameters" if user_parameters.usesrun else "mpiParameters"
         mpi_expected_params = f'"{mpi_params_name}": {expected2}'
         assert simulation_params.mpi_params == mpi_expected_params
 
