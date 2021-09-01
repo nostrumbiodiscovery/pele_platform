@@ -11,14 +11,12 @@ from tests import test_adaptive as td
 test_path = os.path.join(cs.DIR, "Examples")
 
 FRAG_ARGS = os.path.join(test_path, "frag/input.yaml")
-FRAG_SIM_ARGS = os.path.join(test_path, "frag/input_sim.yaml")
 FRAG_CORE_ARGS = os.path.join(test_path, "frag/input_core.yaml")
 FLAGS_ARGS = os.path.join(test_path, "frag/input_flags.yaml")
 FRAG_JOINER_ARGS = os.path.join(test_path, "frag/sdf_joiner/*.yml")
 FRAG_SDF_LIBRARIES = os.path.join(test_path, "frag/input_lib_sdf.yaml")
 FRAG_PDB_LIBRARIES = os.path.join(test_path, "frag/input_lib_pdb.yaml")
 FRAG_ANALYSIS_TO_POINT = os.path.join(test_path, "frag/input_point_analysis.yaml")
-FRAG_SYMMETRY = os.path.join(test_path, "frag/input_symmetry.yaml")
 FRAGMENT_ATOM = os.path.join(test_path, "frag/input_fragment_atom.yaml")
 FRAG_WATERS = os.path.join(test_path, "frag/input_frag_waters.yaml")
 
@@ -63,34 +61,6 @@ water_lines = [
 ]
 
 
-def test_frag_sim(
-    capsys,
-    ext_args=FRAG_SIM_ARGS,
-    output="1w7h_preparation_structure_2w_processed_aminoC1N1",
-):
-    """
-    Runs FragPELE test simulation. Checks if the output folder exists and the ligand was not skipped.
-
-    Parameters
-    ----------
-    ext_args : str
-        Path to PELE input file.
-    output : str
-        Output folder name.
-    """
-
-    if os.path.exists(output):
-        shutil.rmtree(output,  ignore_errors=True)
-
-    job = main.run_platform_from_yaml(ext_args)
-    captured = capsys.readouterr()
-    top_results = glob.glob(os.path.join(job.working_dir[0], "top_result", "*.pdb"))
-
-    assert "Skipped - FragPELE will not run." not in captured.out
-    assert os.path.exists(job.working_dir[0])
-    assert len(top_results) == 3
-
-
 def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     """
     Tests FragPELE growing method using an SDF with full ligands. Checks if the output folder exists and the ligand
@@ -120,7 +90,7 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     assert len(top_results) == 2
 
 
-def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
+def test_flags(capsys, ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     """
     Checks input file flags.
 
@@ -138,6 +108,7 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     if os.path.exists(output):
         shutil.rmtree(output, ignore_errors=True)
     job = main.run_platform_from_yaml(ext_args)
+    captured = capsys.readouterr()
 
     errors = tests.utils.check_file(
         job.working_dir[0],
@@ -148,7 +119,11 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     errors = tests.utils.check_file(
         job.working_dir[0], "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
     )
+
+
     assert not errors
+    assert "Skipped - FragPELE will not run." not in captured.out
+
 
 
 def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
@@ -172,6 +147,7 @@ def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
 def test_libraries(capsys, yaml_file, expected_lines):
     """
     Tests the growing of fragments from a custom-made SDF and PDB libraries.
+    Tests the asymmetric hydrogen detector.
 
     Parameters
     ----------
@@ -184,8 +160,12 @@ def test_libraries(capsys, yaml_file, expected_lines):
     if os.path.exists("input.conf"):
         os.remove("input.conf")
 
-    main.run_platform_from_yaml(yaml_file)
+    job = main.run_platform_from_yaml(yaml_file)
     captured = capsys.readouterr()
+
+    for path in job.working_dir:
+        analysis_folder = os.path.join(path, "results")
+        assert os.path.isdir(analysis_folder)
 
     assert "Skipped - FragPELE will not run." not in captured.out
     assert not errors
@@ -195,6 +175,7 @@ def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     """
     Tests the automated analysis to retrieve most promising fragments
     from a custom-made library based on their proximity to a certain point.
+    Tests ligand clustering.
 
     Parameters
     ----------
@@ -206,24 +187,7 @@ def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     errors = tests.utils.check_file(
         os.getcwd(), "point_analysis.csv", point_analysis_lines, [], ",", 4
     )
-    assert not errors
 
-
-def test_symmetry(ext_args=FRAG_SYMMETRY):
-    """
-    Tests the asymmetric hydrogen detector.
-
-    Parameters
-    ----------
-    ext_args : str
-        Path to PELE input file.
-    """
-    if os.path.exists("input.conf"):
-        os.remove("input.conf")
-
-    main.run_platform_from_yaml(ext_args)
-
-    errors = tests.utils.check_file(os.getcwd(), "input.conf", PDB_lines, [])
     assert not errors
 
 
@@ -264,23 +228,3 @@ def test_frag_waters(ext_args=FRAG_WATERS):
                     water_output.append(line.strip())
 
     assert water_lines == water_output
-
-
-@pytest.mark.parametrize(
-    "ext_args",
-    [FRAG_CORE_ARGS, FRAG_SDF_LIBRARIES],
-)
-def test_ligand_clustering(ext_args):
-    """
-    Tests ligand clustering.
-
-    Parameters
-    ----------
-    ext_args : str
-        Path to PELE input file,
-    """
-    job = main.run_platform_from_yaml(ext_args)
-
-    for path in job.working_dir:
-        analysis_folder = os.path.join(path, "results")
-        assert os.path.isdir(analysis_folder)
