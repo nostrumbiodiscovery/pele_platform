@@ -23,7 +23,7 @@ class YamlParserModel(BaseModel):
         categories=["General settings"],
         description="Paths to the input files in PDB format (as an alternative to 'system' flag).",
     )
-    system: str = Field(
+    system: Optional[str] = Field(
         default="",
         categories=["General settings"],
         description="Path to the input system in PBD format.",
@@ -504,6 +504,7 @@ class YamlParserModel(BaseModel):
     analysis_to_point: Optional[List[float]] = Field(categories=["FragPELE"])
     fragment_atom: str = Field(default=None, categories=["FragPELE"])
     frag_restart_libraries: bool = Field(default=None, categories=["FragPELE"])
+    proximityDetection: bool = Field()
 
     ppi: bool = Field(categories=["PPI"])
     center_of_interface: str = Field(categories=["PPI"])
@@ -767,7 +768,7 @@ class YamlParserModel(BaseModel):
         Checks if analysis flags are set to one of the available values.
         """
         if v:
-            available_values = eval(f"constants.{field.name}")
+            available_values = eval(f"constants.{field.name}_values")
 
             if isinstance(available_values, dict):
                 available_values = available_values.keys()

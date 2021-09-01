@@ -45,7 +45,6 @@ class SimulationParamsModel(YamlParserModel):
     residue_type: str = Field()
     inputs: List[str] = Field()
     ligand_ref: str = Field()
-    proximityDetection: bool = Field()
 
     @validator("*", pre=True, always=True)
     def set_value_from_simulation_parameters(cls, v, field):
