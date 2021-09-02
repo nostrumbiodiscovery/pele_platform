@@ -18,16 +18,6 @@ class SimulationParamsModel(YamlParserModel):
     logfile: str = Field(value_from="log", always=True)
     water: str = Field(default="")
     ligand: Any = Field(default=cs.LIGAND)
-    external_templates: Any = Field(
-        value_from="templates",
-        value_from_simulation_params="templates",
-        simulation_params_default=[],
-    )
-    external_rotamers: Any = Field(
-        value_from="rotamers",
-        value_from_simulation_params="rotamers",
-        simulation_params_default=[],
-    )
     spython: Any = Field(default=os.path.join(cs.SCHRODINGER, "utilities/python"))
     lig: Any = Field(value_from="mae_lig")
     sasa_max: Any = Field()

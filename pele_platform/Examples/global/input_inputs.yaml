@@ -4,11 +4,9 @@ resname: 'IK1'
 restart: false
 seed: 12345
 global: true
-global_inputs:
+input:
 - "../pele_platform/Examples/analysis/data/inputs/input1.pdb"
 - "../pele_platform/Examples/analysis/data/inputs/input2.pdb"
 - "../pele_platform/Examples/analysis/data/inputs/input3.pdb"
 poses: 4
 test: true
-
-

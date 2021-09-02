@@ -141,7 +141,7 @@ class LocalExplorationExhaustive(Simulation):
     keyword = "induced_fit_exhaustive"
 
     def set_package_params(self):
-        if self.env.package == "ppi":
+        if self.builder.package == "ppi":
             self.env.water_arg = None
             self.env.system = prepare_structure(
                 self.env.system,
@@ -156,7 +156,7 @@ class Rescoring(Simulation):
     keyword = "rescoring"
 
     def set_package_params(self):
-        if self.env.package == "ppi":
+        if self.builder.package == "ppi":
             self.set_ppi_params()
 
     def set_ppi_params(self):

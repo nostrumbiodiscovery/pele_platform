@@ -202,7 +202,7 @@ def test_generate_clusters(analysis, method, bandwidth, n_clusters):
     n_clusters : int
         Number of clusters for the Gaussian mixture model.
     """
-    working_folder = "clustering_method"
+    working_folder = "clustering_method_values"
 
     analysis.generate_clusters(
         working_folder, method, bandwidth=bandwidth, analysis_nclust=n_clusters
@@ -397,7 +397,7 @@ def test_top_clusters_criterion_flag(analysis, cluster_selection, expected_value
     df = pd.read_csv(csv)
     clusterA_index = df.index[df["Selected labels"] == "A"]
     (top_value,) = (
-        df[cs.metric_top_clusters_criterion[cluster_selection]]
+        df[cs.top_clusters_criterion_values[cluster_selection]]
         .iloc[clusterA_index]
         .tolist()
     )
@@ -422,7 +422,7 @@ def test_cluster_representatives_criterion_flag(analysis, criterion, expected):
     analysis : Analysis object
         Created by a fixture.
     criterion : str
-        cluster_representatives_criterion flag defined by the user.
+        cluster_representatives_criterion_values flag defined by the user.
     expected : str
         Expected value in the dataframe.
     # TODO: Manually check expected values and then add them to the test to make sure we're getting the right stuff!

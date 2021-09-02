@@ -67,7 +67,6 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     ext_args : str
         Path to PELE input file.
     """
-
     output = "1w7h_preparation_structure_2w_processed_*ligand_01*"
 
     output_paths = glob.glob(output)
@@ -120,10 +119,8 @@ def test_flags(capsys, ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1")
         job.working_dir[0], "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
     )
 
-
     assert not errors
     assert "Skipped - FragPELE will not run." not in captured.out
-
 
 
 def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):

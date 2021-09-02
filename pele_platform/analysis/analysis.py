@@ -388,8 +388,8 @@ class Analysis(object):
         """
         import os
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
-        from pele_platform.constants.constants import \
-            metric_top_clusters_criterion, cluster_representatives_criterion
+        from pele_platform.constants.constants import top_clusters_criterion_values, \
+            cluster_representatives_criterion_values
 
         check_make_folder(path)
 
@@ -408,7 +408,8 @@ class Analysis(object):
 
         # Filter coordinates
         coordinates, water_coordinates, dataframe, energetic_threshold = \
-            self._filter_coordinates(coordinates, water_coordinates, dataframe, threshold=self.clustering_filtering_threshold)
+            self._filter_coordinates(coordinates, water_coordinates, dataframe,
+                                     threshold=self.clustering_filtering_threshold)
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
@@ -437,7 +438,7 @@ class Analysis(object):
             self._get_water_sites(cluster_subset, water_coordinates, path)
 
         print(f"Retrieve top clusters based on " +
-              f"{metric_top_clusters_criterion[top_clusters_criterion]}.")
+              f"{top_clusters_criterion_values[top_clusters_criterion]}.")
 
         # Save cluster summary to file with information about selected labels
         cluster_summary.to_csv(os.path.join(path, "info.csv"), index=False)
@@ -454,7 +455,7 @@ class Analysis(object):
                                            representatives_criterion)
         print(
             f"Retrieve top cluster representative structures based on " +
-            f"{cluster_representatives_criterion[representatives_criterion]}.")
+            f"{cluster_representatives_criterion_values[representatives_criterion]}.")
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):
@@ -516,7 +517,6 @@ class Analysis(object):
         from pele_platform.analysis.clustering import (GaussianMixtureClustering,
                                                        HDBSCANClustering,
                                                        MeanShiftClustering)
-
 
         if clustering_type.lower() == "gaussianmixture":
             clustering = GaussianMixtureClustering(analysis_nclust)
@@ -780,18 +780,17 @@ class Analysis(object):
             cluster names of top clusters
         """
         from pele_platform.analysis.clustering import get_cluster_label
-        from pele_platform.constants.constants import \
-            metric_top_clusters_criterion
+        from pele_platform.constants.constants import top_clusters_criterion_values
 
         # Get metric to be used in the top cluster selection
-        if top_clusters_criterion.lower() in metric_top_clusters_criterion:
+        if top_clusters_criterion.lower() in top_clusters_criterion_values:
             user_metric = \
-                metric_top_clusters_criterion[top_clusters_criterion.lower()]
+                top_clusters_criterion_values[top_clusters_criterion.lower()]
         else:
             raise ValueError('Invalid top_clusters_criterion ' +
                              '\'{}\''.format(top_clusters_criterion.lower()) +
                              '. It must be one of ' +
-                             '{}'.format(metric_top_clusters_criterion.keys()))
+                             '{}'.format(top_clusters_criterion_values.keys()))
 
         # Check if the selected metric is available
         if user_metric in list(cluster_summary.columns):
@@ -1222,16 +1221,16 @@ class Analysis(object):
             extract_snapshot_from_xtc)
         from pele_platform.analysis.clustering import get_cluster_label
         from pele_platform.constants.constants import \
-            cluster_representatives_criterion
+            cluster_representatives_criterion_values
 
         # Get metric to be used in the cluster representatives selection
         representatives_criterion = representatives_criterion.lower()
-        if representatives_criterion not in cluster_representatives_criterion:
+        if representatives_criterion not in cluster_representatives_criterion_values:
             raise ValueError('Invalid cluster_representatives_criterion'
                              '\'{}\''.format(representatives_criterion) +
                              '. It must be one of ' +
                              '{}'.format(
-                                 cluster_representatives_criterion.keys()))
+                                 cluster_representatives_criterion_values.keys()))
 
         if representatives_criterion.startswith('total'):
             metric = 'currentEnergy'

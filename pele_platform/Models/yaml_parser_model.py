@@ -17,35 +17,64 @@ class YamlParserModel(BaseModel):
     class Config:
         allow_population_by_field_name = True
         extra = "allow"
-        # validate_all TODO: consider validating all defaults as well
 
-    package: str = Field(categories=["General settings"])
-    adaptive: str = Field(categories=["General settings"])
-    input: Optional[Any] = Field(
-        alias="global_inputs", categories=["General settings"]
-    )  # check what this is
-    system: Optional[str] = Field(default="", categories=["General settings"])
-    residue: str = Field(alias="resname", categories=["General settings"])
-    chain: Optional[str] = Field(categories=["General settings"])
-    hbond: Any = Field(
-        default=[None, None], candidate_for_deprecation=True
-    )  # Kill it with fire!
-    test: bool = Field(categories=["General settings"])
-
-    pele: Any = Field(candidate_for_deprecation=True)
-    forcefield: str = Field(
-
-        value_from_simulation_params=True,
-        simulation_params_default="OPLS2005",  # Redundant, default was already in yaml parser
-        categories=["Simulation parameters"],
+    adaptive: bool = Field(description="Run AdaptivePELE using custom parameters.")
+    input: List[str] = Field(
+        categories=["General settings"],
+        description="Paths to the input files in PDB format (as an alternative to 'system' flag).",
     )
-    verbose: bool = Field(categories=["General settings"])
+    system: Optional[str] = Field(
+        default="",
+        categories=["General settings"],
+        description="Path to the input system in PBD format.",
+    )
+    residue: str = Field(
+        alias="resname",
+        categories=["General settings"],
+        description="Residue name of the ligand to be perturbed.",
+    )
+    chain: str = Field(
+        categories=["General settings"],
+        description="Chain ID of the ligand to be perturbed.",
+    )
+    test: bool = Field(
+        categories=["General settings"],
+        description="Activates test mode to check if the simulation runs as expected. Control files "
+        "from the test should never be used for production simulations - temperature, ANM "
+        "and minimization parameters are set to unreasonable values to make it run faster.",
+    )
+
+    external_templates: Union[str, List[str]] = Field(
+        value_from="templates",
+        value_from_simulation_params="templates",
+        simulation_params_default=[],
+        categories=["Ligand parametrization"],
+        description="Paths to custom template files for hetero molecules.",
+    )
+    external_rotamers: Any = Field(
+        value_from="rotamers",
+        value_from_simulation_params="rotamers",
+        simulation_params_default=[],
+        categories=["Ligand parametrization"],
+        description="Paths to custom rotamer files for hetero molecules.",
+    )
+
+    forcefield: str = Field(
+        value_from_simulation_params=True,
+        simulation_params_default="OPLS2005",
+        categories=["Ligand parametrization"],
+        description="Forcefield used to parametrize all hetero molecules.",
+    )
+    verbose: bool = Field(
+        categories=["General settings"], description="Activates verbose mode in PELE."
+    )
     anm_freq: int = Field(
         tests_value=0,
         can_be_falsy=True,
         value_from_simulation_params=True,
         simulation_params_default=4,
         categories=["Simulation parameters"],
+        description="Frequency at which ANM is performed.",
     )
     sidechain_freq: int = Field(
         tests_value=0,
@@ -53,6 +82,7 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default=2,
         categories=["Simulation parameters"],
+        description="Frequency at which side chain sampling is performed.",
     )
     min_freq: int = Field(
         tests_value=0,
@@ -60,43 +90,46 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default=1,
         categories=["Simulation parameters"],
+        description="Frequency at which minimization is performed.",
     )
     water_freq: int = Field(
         can_be_falsy=True,
         value_from_simulation_params=True,
         simulation_params_default=1,
         categories=["Simulation parameters"],
+        description="Frequency at which water perturbation is performed.",
     )
     temperature: int = Field(  # check if PELE takes float
         tests_value=10000,
         value_from_simulation_params="temperature",
         simulation_params_default=1500,
         categories=["Simulation parameters"],
+        description="Temperature of the simulation.",
     )
-    temp: int = Field(
-        value_from="temperature", candidate_for_deprecation=True
-    )  # probably get rid of it
     sidechain_resolution: int = Field(
         alias="sidechain_res",
         value_from_simulation_params=True,
         simulation_params_default=30,
         categories=["Simulation parameters"],
+        description="Resolution of side chain sampling (degrees).",
     )
     steric_trials: int = Field(
         value_from_simulation_params=True,
         simulation_params_default=250,
         categories=["Simulation parameters"],
+        description="Number of tries to get a non-clashing conformation for each step.",
     )
     overlap_factor: float = Field(  # validator between 0 and 1
         value_from_simulation_params=True,
         simulation_params_default=0.65,
         categories=["Simulation parameters"],
+        description="Van der Waals overlap factor. Lowering its value will result in higher steric overlap being accepted.",
     )
     steering: int = Field(  # WTF type? not sure what that is, int based on test inputs
         value_from_simulation_params=True,
         simulation_params_default=0,
         categories=["Simulation parameters"],
-        description="Number of translations in the same direction.",  # check PELE++ docs
+        description="Frequency at which steering vector is updated (if using steering).",
     )
     solvent: str = Field(
         value_from_simulation_params=True,
@@ -218,7 +251,7 @@ class YamlParserModel(BaseModel):
         categories=["Ligand preparation"],
         description="Maestro file to extract quantum charges.",
     )
-    no_ppp: bool = Field(  # WTF skip_preprocess, no_ppp, skip_prep
+    no_ppp: bool = Field(
         alias="skip_preprocess",
         value_from_simulation_params=True,
         simulation_params_default=False,
@@ -229,7 +262,7 @@ class YamlParserModel(BaseModel):
         alias="skip_preprocess",
         value_from_simulation_params=True,
         simulation_params_default=False,
-        categories=["Protein preparation"],
+        categories=["Ligand preparation"],
     )
     gaps_ter: bool = Field(
         alias="TERs",
@@ -252,17 +285,26 @@ class YamlParserModel(BaseModel):
         categories=["Protein preparation"],
     )
     prepwizard: bool = Field()
-    box_radius: float = Field(  # should be a float but tests fail --> FLOAT YES
+    box_radius: float = Field(
         value_from_simulation_params=True, categories=["Box settings"]
     )
-    box_center: Union[List[float], str] = Field(categories=["Box settings"])
+    box_center: Union[List[float], str] = Field(
+        categories=["Box settings"],
+        description="Center of the simulation box. It can be set using x, y, z coordinates or by specifying a center atom following the format: 'chain ID:residue number:atom name'.",
+    )
     box: Any = Field(categories=["Box settings"])
-    native: str = Field(alias="rmsd_pdb", default="", categories=["Metrics"])
+    native: str = Field(alias="rmsd_pdb", categories=["Metrics"])
     atom_dist: List[str] = Field(
         default_factory=list, categories=["Metrics"]
     )  # deprecate atom numbers
-    debug: bool = Field(default=False, categories=["General settings"])
-    folder: str = Field(alias="working_folder", )
+    debug: bool = Field(
+        default=False,
+        categories=["General settings"],
+        description="Debug mode generates all input files but does not launch the simulation.",
+    )
+    folder: str = Field(
+        alias="working_folder",
+    )
     output: str = Field(default="output", categories=["General settings"])
     randomize: bool = Field(
         value_from_simulation_params=True,
@@ -270,7 +312,7 @@ class YamlParserModel(BaseModel):
         categories=["Global Exploration", "Simulation parameters"],
     )
     full: bool = Field(alias="global", categories=["Global Exploration"])
-    proximityDetection: bool = Field()  # description from PELE++
+    # description from PELE++
     poses: int = Field()
     msm: bool = Field(candidate_for_deprecation=True, categories=["MSM"])
     clust: int = Field(
@@ -313,9 +355,7 @@ class YamlParserModel(BaseModel):
         simulation_params_default=10000,
         categories=["Water"],
     )
-    water_radius: float = Field(
-        default=6.0, categories=["Water"]
-    )
+    water_radius: float = Field(default=6.0, categories=["Water"])
     induced_fit_exhaustive: bool = Field(categories=["Induced fit"])
     induced_fit_fast: bool = Field(categories=["Induced fit"])
     frag: bool = Field(categories=["FragPELE"], candidate_for_deprecation=True)
@@ -415,7 +455,7 @@ class YamlParserModel(BaseModel):
     overwrite: bool = Field(alias="overwrite_analysis", default=True)
     analysis_nclust: int = Field(default=10)
     te_column: int = Field(default=4)
-    be_column: int = Field(default=5)
+    be_column: int = Field(default=5, categories=["Analysis"])
     limit_column: int = Field(default=6)
     com: float = Field(
         alias="COMligandConstraint",
@@ -423,9 +463,12 @@ class YamlParserModel(BaseModel):
         simulation_params_default=0,
         categories=["FragPELE"],
     )
-    pele_license: str = Field(default=os.path.join(constants.PELE, "licenses"))
-    license: str = Field(value_from="pele_license")
-    schrodinger: str = Field()
+    pele_license: str = Field(
+        default=os.path.join(constants.PELE, "licenses"),
+        categories=["General settings"],
+    )
+    license: str = Field(value_from="pele_license", categories=["General settings"])
+    schrodinger: str = Field(categories=["General settings"])
     no_check: bool = Field(default=False)
     cleanup: bool = Field(
         default=False,
@@ -436,7 +479,6 @@ class YamlParserModel(BaseModel):
     polarize_metals: bool = Field(default=False, categories=["Metals"])
     polarization_factor: float = Field(default=2.0, categories=["Metals"])
     workflow: List[Any] = Field(categories=["Custom workflows"])
-    distance: float = Field(categories=["Custom workflows"])
     permissive_metal_constr: bool = Field(categories=["Constraints"])
     constrain_all_metals: bool = Field(default=False, categories=["Constraints"])
     no_metal_constraints: bool = Field(default=False, categories=["Constraints"])
@@ -462,14 +504,8 @@ class YamlParserModel(BaseModel):
     analysis_to_point: Optional[List[float]] = Field(categories=["FragPELE"])
     fragment_atom: str = Field(default=None, categories=["FragPELE"])
     frag_restart_libraries: bool = Field(default=None, categories=["FragPELE"])
+    proximityDetection: bool = Field()
 
-    n_components: int = Field(
-        tests_value=3,
-        value_from_simulation_params=True,
-        simulation_params_default=10,
-        categories=["PPI", "Site finder"],
-        candidate_for_deprecation=True,
-    )
     ppi: bool = Field(categories=["PPI"])
     center_of_interface: str = Field(categories=["PPI"])
     protein: str = Field(categories=["PPI"])
@@ -508,14 +544,23 @@ class YamlParserModel(BaseModel):
 
     covalent_residue: str = Field(categories=["Covalent docking"])
 
-    nonbonding_radius: float = Field(categories=["Covalent docking"], value_from_simulation_params=True,
-                                     simulation_params_default=20.0)
+    nonbonding_radius: float = Field(
+        categories=["Covalent docking"],
+        value_from_simulation_params=True,
+        simulation_params_default=20.0,
+    )
 
-    perturbation_trials: int = Field(categories=["Covalent docking"], value_from_simulation_params=True,
-                                     simulation_params_default=10)
+    perturbation_trials: int = Field(
+        categories=["Covalent docking"],
+        value_from_simulation_params=True,
+        simulation_params_default=10,
+    )
 
-    refinement_angle: float = Field(categories=["Covalent docking"], value_from_simulation_params=True,
-                                    simulation_params_default=10.0)
+    refinement_angle: float = Field(
+        categories=["Covalent docking"],
+        value_from_simulation_params=True,
+        simulation_params_default=10.0,
+    )
 
     covalent_docking_refinement: bool = Field(categories=["Covalent docking"])
 
@@ -531,13 +576,12 @@ class YamlParserModel(BaseModel):
 
     inter_step_logger: bool = Field(categories=["General settings"])
 
-    minimum_steps: bool = Field()
+    minimum_steps: bool = Field(categories=["General settings"])
 
-    site_finder_global: bool = Field()
+    site_finder_global: bool = Field(categories=["Site finder"])
 
-    site_finder_local: bool = Field()
+    site_finder_local: bool = Field(categories=["Site finder"])
 
-    # TODO: Add validators for all analysis flags
     kde: bool = Field(categories=["Analysis"])
     kde_structs: int = Field(categories=["Analysis"], default=1000)
     plot_filtering_threshold: float = Field(categories=["Analysis"])
@@ -568,12 +612,10 @@ class YamlParserModel(BaseModel):
     max_top_poses: int = Field(categories=["Analysis"], can_be_falsy=True, default=100)
 
     saturated_mutagenesis: bool = Field(categories=["Saturated mutagenesis"])
-    cpus_per_mutation: int = Field(
-        categories=["Saturated mutagenesis"], tests_value=2
-    )  # TODO: needs validator
+    cpus_per_mutation: int = Field(categories=["Saturated mutagenesis"], tests_value=2)
     constraint_level: int = Field(categories=["Constraints"])
 
-    @validator("*", pre=True, always=True)
+    @validator("*", pre=True, always=True, allow_reuse=True)
     def set_tests_values(cls, v, values, field):
         """
         Adjusts values of parameters when running tests.
@@ -584,7 +626,7 @@ class YamlParserModel(BaseModel):
                 return test_value
         return v
 
-    @validator("*", pre=True, always=True)
+    @validator("*", pre=True, always=True, allow_reuse=True)
     def set_value_from(cls, v, values, field):
         """
         Gets value from an a duplicated parameter, e.g. steps and pele_steps.
@@ -594,14 +636,14 @@ class YamlParserModel(BaseModel):
             return values.get(value_from)
         return v
 
-    @validator("system", "mae_lig")
+    @validator("system", "mae_lig", allow_reuse=True)
     def construct_path(cls, v):
         """
         Gets absolute path to the file.
         """
-        return os.path.abspath(v) if v else None
+        return str(os.path.abspath(v)) if v else None
 
-    @validator("residue")
+    @validator("residue", allow_reuse=True)
     def validate_residue_name(cls, v):
         """
         Checks the residue name for unsupported 'UNK' value.
@@ -612,7 +654,7 @@ class YamlParserModel(BaseModel):
             )
         return v
 
-    @validator("usesrun", always=True)
+    @validator("usesrun", always=True, allow_reuse=True)
     def set_usesrun(cls, v):
         """
         Gets SRUN from the environment.
@@ -625,6 +667,7 @@ class YamlParserModel(BaseModel):
         "final_site",
         "center_of_interface",
         "atom_dist",
+        allow_reuse=True,
     )
     def validate_atom_string(cls, v):
         """
@@ -643,7 +686,7 @@ class YamlParserModel(BaseModel):
                     )
         return v
 
-    @validator("covalent_residue")
+    @validator("covalent_residue", allow_reuse=True)
     def validated_residue_string(cls, v):
         """
         Checks if the residue string matches a regex patterns. Correct format example: "A:123".
@@ -660,7 +703,7 @@ class YamlParserModel(BaseModel):
                 )
         return v
 
-    @validator("frag_core_atom")
+    @validator("frag_core_atom", allow_reuse=True)
     def validate_frag_core_atom(cls, v):
         """
         Checks if the string fits a regex pattern indicating the core atom,e.g. C3-H2.
@@ -671,10 +714,11 @@ class YamlParserModel(BaseModel):
             if not re.match(pattern, v):
                 raise custom_errors.WrongAtomStringFormat(
                     f"Atom string set in {v} does not seem to have the right format. It should follow C atom name: H "
-                    "atom name format.")
+                    "atom name format."
+                )
         return v
 
-    @validator("sidechain_resolution", "gridres")
+    @validator("sidechain_resolution", "gridres", allow_reuse=True)
     def check_divisibility(cls, v):
         if v and not 360 % v == 0:
             raise ValueError(
@@ -682,25 +726,55 @@ class YamlParserModel(BaseModel):
             )
         return v
 
-    @validator("top_clusters_criterion")
-    def check_selection_criterion(cls, v):
-        if v and v not in constants.metric_top_clusters_criterion.keys():
+    # TODO: Add validator for what's inside interaction restrictions
+
+    @validator("constraint_level", allow_reuse=True)
+    def parse_constraint_level(cls, v):
+        if v:
+            if v not in (0, 1, 2, 3):
+                raise ValueError(
+                    f"Invalid constraint level {v}, should be 0, 1, 2 or 3."
+                )
+        return v
+
+    @validator("terminal_constr", "ca_constr", allow_reuse=True)
+    def assert_positive_number(cls, v):
+        if v and v < 0:
+            raise ValueError(f"Value {v} should be positive.")
+        return v
+
+    @validator("epsilon", allow_reuse=True)
+    def assert_value_0_1(cls, v):
+        if v and not 0 <= v <= 1:
+            raise ValueError(f"Value {v} should be between 0 and 1.")
+        return v
+
+    @validator("cpus_per_mutation", allow_reuse=True)
+    def check_cpus(cls, v, values):
+        if v and v >= values.get("cpus"):
             raise ValueError(
-                f"Selected criterion value {v} is invalid. Please choose one of: {constants.metric_top_clusters_criterion.keys()}"
+                f"The number of cpus_per_mutation cannot be higher than total cpus - 1."
             )
         return v
 
-    # TODO: Add validator for what's inside interaction restrictions
-
-    @validator("constraint_level")
-    def parse_constraint_level(cls, v, values):
+    @validator(
+        "cluster_representatives_criterion",
+        "top_clusters_criterion",
+        "clustering_method",
+        allow_reuse=True,
+    )
+    def check_cluster_representatives_criterion(cls, v, field):
+        """
+        Checks if analysis flags are set to one of the available values.
+        """
         if v:
-            if v not in (0, 1, 2, 3):
-                raise ValueError(f"Invalid constraint level {v}, should be 0, 1, 2 or 3.")
-        return v
+            available_values = eval(f"constants.{field.name}_values")
 
-    @validator("terminal_constr", "ca_constr")
-    def assert_positive_integer(cls, v):
-        if v and v < 0:
-            raise ValueError(f"Flag {v} should have a positive value.")
+            if isinstance(available_values, dict):
+                available_values = available_values.keys()
+
+            if v.lower() not in available_values:
+                raise ValueError(
+                    f"Value of {field.name} should be one of: {available_values}"
+                )
         return v
