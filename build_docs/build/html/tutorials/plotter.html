@@ -116,11 +116,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#customization">Customization</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#colour-scheme">Colour scheme</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#custom-lines">Custom lines</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#axis-labels">Axis labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#axis-labels-and-title">Axis labels and title</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#values-range">Values range</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#saving-to-file">Saving to file</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
@@ -318,12 +319,13 @@ The tool will show you all available options and walk you through the setup.</p>
 </div></blockquote>
 <p>Where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the point of intercept on the axis and <code class="docutils literal notranslate"><span class="pre">color</span></code> corresponds to the desired colour of the line.</p>
 </div>
-<div class="section" id="axis-labels">
-<h3>Axis labels<a class="headerlink" href="#axis-labels" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="axis-labels-and-title">
+<h3>Axis labels and title<a class="headerlink" href="#axis-labels-and-title" title="Permalink to this headline">¶</a></h3>
 <p>Override the default <strong>axis labels</strong> by passing a string after the metric column number, e.g.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7&quot; RMSD of the ligand&quot; -y 5 ...</span>
 </pre></div>
 </div>
+<p>To add a <strong>custom title</strong> to your figure, all you have to do is use <code class="docutils literal notranslate"><span class="pre">--title</span></code> argument and supply a string with your desired text.</p>
 </div>
 <div class="section" id="values-range">
 <h3>Values range<a class="headerlink" href="#values-range" title="Permalink to this headline">¶</a></h3>
@@ -346,34 +348,39 @@ The tool will show you all available options and walk you through the setup.</p>
 </div>
 <div class="section" id="other">
 <h3>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h3>
-<p>Finally, you can further customize the <strong>density plot</strong> by using:</p>
+<p>You can further customize the <strong>density plot</strong> by using:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--with_edges</span></code> argument to visualise the distribution on the plot area</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--n_levels</span></code> to adjust the number of levels shown on the plot area.</p></li>
 </ul>
 </div></blockquote>
+<p>Finally, the Nostrum Biodiscovery <strong>logo</strong> can be hidden by using <code class="docutils literal notranslate"><span class="pre">--hide_logo</span></code> argument.</p>
 </div>
+</div>
+<div class="section" id="saving-to-file">
+<h2>Saving to file<a class="headerlink" href="#saving-to-file" title="Permalink to this headline">¶</a></h2>
+<p>If you want to save plot <strong>to file</strong> instead of displaying it, use <code class="docutils literal notranslate"><span class="pre">--save_to</span></code> argument and supply a path to file (this option does not apply to interactive plots).</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p><strong>Example 1.</strong> Density plot of ligand RMSD versus binding energy</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density -x 7 -y 5</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density -x 7 -y 5 --hide_logo</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plotter_example1.png"><img alt="../_images/plotter_example1.png" class="align-center" src="../_images/plotter_example1.png" style="width: 400px;" /></a>
 <p><strong>Example 2.</strong> Scatter plot with custom colour scheme and lines</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7 -y 5 -z 6 --colormap reducedgreens --vertical_line 5.0 yellow --horizontal_line -35.5 red</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7 -y 5 -z 6 --colormap reducedgreens --vertical_line 5.0 yellow --horizontal_line -35.5 red --hide_logo</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plotter_example2.png"><img alt="../_images/plotter_example2.png" class="align-center" src="../_images/plotter_example2.png" style="width: 400px;" /></a>
 <p><strong>Example 3.</strong> Interactive plot with custom axis labels, ranges and colour scheme</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t interactive --xhighest 15 -x 7 &quot;Ligand RMSD&quot; -y 5 &quot;Interaction energy&quot; -z 6 &quot;Solvent accessible surface area&quot; --colormap wistia --background_color black</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t interactive --xhighest 15 -x 7 &quot;Ligand RMSD&quot; -y 5 &quot;Interaction energy&quot; -z 6 &quot;Solvent accessible surface area&quot; --colormap wistia --background_color black --hide_logo</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plotter_example3.png"><img alt="../_images/plotter_example3.png" class="align-center" src="../_images/plotter_example3.png" style="width: 400px;" /></a>
 <p><strong>Example 4.</strong> Density plot of ligand RMSD versus binding energy with orange data points as well as visualised edges (10 levels)</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density --with_edges --n_levels 10 --color orange</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density --with_edges --n_levels 10 --color orange --hide_logo --title &quot;Density plot with edges&quot; -x 7 -y 5 -z 6</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="../_images/plotter_example4.png"><img alt="../_images/plotter_example4.png" class="align-center" src="../_images/plotter_example4.png" style="width: 400px;" /></a>
