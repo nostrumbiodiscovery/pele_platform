@@ -1,0 +1,440 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Creating custom plots with PELE Plotter &mdash; pele platform 1.6.0b2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Common errors" href="../errors/index.html" />
+    <link rel="prev" title="Understanding the output files" href="outputs.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gpcr.html">GPCR tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frag_pele.html">Fragment growing tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="site_finder.html">Site finder tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html">Understanding the output files</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Creating custom plots with PELE Plotter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#simple-plots">Simple plots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#customization">Customization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#colour-scheme">Colour scheme</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#custom-lines">Custom lines</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#axis-labels">Axis labels</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#values-range">Values range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#other">Other</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>Creating custom plots with PELE Plotter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/plotter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="creating-custom-plots-with-pele-plotter">
+<h1>Creating custom plots with PELE Plotter<a class="headerlink" href="#creating-custom-plots-with-pele-plotter" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Before attempting this tutorial you should install PELE Platform (version 1.6 or higher) and activate the Python environment you normally use
+to run it. You can run the following command to check if everything is working correctly - it should print a list
+of all available arguments.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -h</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="simple-plots">
+<h2>Simple plots<a class="headerlink" href="#simple-plots" title="Permalink to this headline">¶</a></h2>
+<p><strong>1. Select data source</strong></p>
+<p>The data can come from multiple sources, so feel free to choose any of the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the <strong>CSV file</strong> generate during the simulation - it is located in <code class="docutils literal notranslate"><span class="pre">working_directory/results/data.csv</span></code></p></li>
+<li><p>path to the <strong>output</strong> folder</p></li>
+<li><p>path to the <strong>results</strong> folder.</p></li>
+</ul>
+</div></blockquote>
+<p>Mind that each data source requires a use of different command line argument:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ ...</span>
+<span class="go">python -m pele_platform.plotter -r /home/LIG_Pele/results/ ...</span>
+<span class="go">python -m pele_platform.plotter -c /home/LIG_Pele/results/data.csv ...</span>
+</pre></div>
+</div>
+<p><strong>2. Select plot type</strong></p>
+<p>The new Plotter offers three different plot types, each able to visualise up to three data columns:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>standard <strong>scatter</strong> plot</p></li>
+<li><p><strong>density</strong> plot, similar to scatter, but including kernel density estimation on the axes</p></li>
+<li><p><strong>interactive</strong> which allows you to hover over data points to determine which trajectory they originate from.</p></li>
+</ul>
+</div></blockquote>
+<p>You should set the plot type using <code class="docutils literal notranslate"><span class="pre">-t</span></code> argument, however, if you do not, it will default to the standard scatter plot.</p>
+<p><strong>3. Choose metrics to plot</strong></p>
+<p>You can plot any of the metrics appearing in your report files by pointing the Plotter to the right <strong>column number</strong>. As a minimum,
+you will have to provide metrics for x- and y-axis, however, you can also set z-axis, which will colour the data points
+according to that metric (this does not apply to the density plot).</p>
+<p>If you are unsure which numbers correspond to each metric, you can simply set data source and plot type and hit “enter”.
+The tool will show you all available options and walk you through the setup.</p>
+</div>
+<div class="section" id="customization">
+<h2>Customization<a class="headerlink" href="#customization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="colour-scheme">
+<h3>Colour scheme<a class="headerlink" href="#colour-scheme" title="Permalink to this headline">¶</a></h3>
+<p>Once you get the basics done, you can customize the colour scheme of your plot using the following arguments:</p>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">--color</span></code> to change the colour of the data points, you can select on of the built-in options:</p>
+<blockquote>
+<div><table class="hlist"><tr><td><ul class="simple">
+<li><p>blue</p></li>
+<li><p>red</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>green</p></li>
+<li><p>purple</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>orange</p></li>
+</ul>
+</td></tr></table>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--colormap</span></code> to select the colour scheme for representing values on the Z-axis, choose one of:</p>
+<blockquote>
+<div><table class="hlist"><tr><td><ul class="simple">
+<li><p>plasma</p></li>
+<li><p>magma</p></li>
+<li><p>turbo</p></li>
+<li><p>jet</p></li>
+<li><p>gnuplot</p></li>
+<li><p>gnuplot2</p></li>
+<li><p>nipy_spectral</p></li>
+<li><p>spectral</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>cividis</p></li>
+<li><p>inferno</p></li>
+<li><p>autumn</p></li>
+<li><p>winter</p></li>
+<li><p>spring</p></li>
+<li><p>summer</p></li>
+<li><p>wistia</p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p>copper</p></li>
+<li><p>blues</p></li>
+<li><p>reducedblues</p></li>
+<li><p>reducedgreens</p></li>
+<li><p>reducedreds</p></li>
+<li><p>reducedpurples</p></li>
+<li><p>reducedoranges</p></li>
+</ul>
+</td></tr></table>
+</div></blockquote>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--background_color</span></code> to customize the background of your figure.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="custom-lines">
+<h3>Custom lines<a class="headerlink" href="#custom-lines" title="Permalink to this headline">¶</a></h3>
+<p>Draw custom <strong>vertical and horizontal lines</strong> to highlight relevant thresholds on your plot, using the following arguments:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--vertical_line</span> <span class="pre">n</span> <span class="pre">color</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--horizontal_line</span> <span class="pre">n</span> <span class="pre">color</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the point of intercept on the axis and <code class="docutils literal notranslate"><span class="pre">color</span></code> corresponds to the desired colour of the line.</p>
+</div>
+<div class="section" id="axis-labels">
+<h3>Axis labels<a class="headerlink" href="#axis-labels" title="Permalink to this headline">¶</a></h3>
+<p>Override the default <strong>axis labels</strong> by passing a string after the metric column number, e.g.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7&quot; RMSD of the ligand&quot; -y 5 ...</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="values-range">
+<h3>Values range<a class="headerlink" href="#values-range" title="Permalink to this headline">¶</a></h3>
+<p>You can plot only the relevant data by setting limits to the scope of values plotted on each axis using the following flags:</p>
+<blockquote>
+<div><table class="hlist"><tr><td><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--xlowest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--xhighest</span></code></p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--ylowest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--yhighest</span></code></p></li>
+</ul>
+</td><td><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--zlowest</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--zhighest</span></code></p></li>
+</ul>
+</td></tr></table>
+</div></blockquote>
+</div>
+<div class="section" id="other">
+<h3>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h3>
+<p>Finally, you can further customize the <strong>density plot</strong> by using:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">--with_edges</span></code> argument to visualise the distribution on the plot area</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--n_levels</span></code> to adjust the number of levels shown on the plot area.</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p><strong>Example 1.</strong> Density plot of ligand RMSD versus binding energy</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density -x 7 -y 5</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/plotter_example1.png"><img alt="../_images/plotter_example1.png" class="align-center" src="../_images/plotter_example1.png" style="width: 400px;" /></a>
+<p><strong>Example 2.</strong> Scatter plot with custom colour scheme and lines</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7 -y 5 -z 6 --colormap reducedgreens --vertical_line 5.0 yellow --horizontal_line -35.5 red</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/plotter_example2.png"><img alt="../_images/plotter_example2.png" class="align-center" src="../_images/plotter_example2.png" style="width: 400px;" /></a>
+<p><strong>Example 3.</strong> Interactive plot with custom axis labels, ranges and colour scheme</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t interactive --xhighest 15 -x 7 &quot;Ligand RMSD&quot; -y 5 &quot;Interaction energy&quot; -z 6 &quot;Solvent accessible surface area&quot; --colormap wistia --background_color black</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/plotter_example3.png"><img alt="../_images/plotter_example3.png" class="align-center" src="../_images/plotter_example3.png" style="width: 400px;" /></a>
+<p><strong>Example 4.</strong> Density plot of ligand RMSD versus binding energy with orange data points as well as visualised edges (10 levels)</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density --with_edges --n_levels 10 --color orange</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/plotter_example4.png"><img alt="../_images/plotter_example4.png" class="align-center" src="../_images/plotter_example4.png" style="width: 400px;" /></a>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../errors/index.html" class="btn btn-neutral float-right" title="Common errors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="outputs.html" class="btn btn-neutral float-left" title="Understanding the output files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
