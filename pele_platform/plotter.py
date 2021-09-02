@@ -161,7 +161,8 @@ class PlotAppearance(object):
     """
 
     def __init__(self, colormap_name, plot_color, background_color,
-                 display_edges=None, n_levels=5, lines=[]):
+                 display_edges=None, n_levels=5, lines=[], title=None,
+                 hide_logo=False):
         """
         It initializes a PlotAppearance object.
 
@@ -182,6 +183,10 @@ class PlotAppearance(object):
             Number of levels to display in a density plot. Default is 5
         lines : list[Line]
             A list of Line objects. Default is an empty list
+        title : str
+            The title to print in the plot. Default is None
+        hide_logo : bool
+            Whether to hide NBD logo on the plot or not. Default is False
         """
         self.colormap_name = colormap_name
         self.plot_color = plot_color
@@ -189,6 +194,8 @@ class PlotAppearance(object):
         self.display_edges = display_edges
         self.n_levels = n_levels
         self.lines = lines
+        self.title = title
+        self.hide_logo = hide_logo
 
 
 class AxisData(object):
@@ -461,6 +468,12 @@ def parse_args():
         A list of all vertical Line objects
     horizontal_lines : list[Line]
         A list of all horizontal Line objects
+    title : str
+        The title to print in the plot
+    hide_logo : bool
+        Whether to hide NBD logo on the plot or not
+    save_to : str
+        If it is not None, the resulting plot will be saved to this path
     """
     # Parser setup
     from argparse import ArgumentParser
@@ -536,9 +549,17 @@ def parse_args():
                         help='It adds an horizontal line to the intercept ' +
                         'that is supplied.', nargs='*',
                         metavar=('INT', 'STR'))
-
+    parser.add_argument('--title', type=str, default=None,
+                        help='The title to print in the plot.')
+    parser.add_argument('--hide_logo', dest='hide_logo',
+                        action='store_true',
+                        help='It hides NBD logo')
+    parser.add_argument('-s', '--save_to', type=str,
+                       default=None, help='Instead of displaying the ' +
+                       'plot, it will save it to the supplied path.')
     # Set defaults
     parser.set_defaults(with_edges=False)
+    parser.set_defaults(hide_logo=False)
 
     # Parse arguments
     parsed_args = parser.parse_args()
@@ -565,6 +586,10 @@ def parse_args():
     n_levels = parsed_args.n_levels
     background_color = parsed_args.background_color
     vertical_lines = parsed_args.vertical_line
+    title = parsed_args.title
+    hide_logo = parsed_args.hide_logo
+    save_to = parsed_args.save_to
+
     if vertical_lines is None:
         vertical_lines = list()
     else:
@@ -595,11 +620,25 @@ def parse_args():
         raise ValueError(f'Wrong background color: {background_color}, ' +
                          'it must be a CSS4-compatible color name.')
 
+    if save_to is not None:
+        if os.path.isdir(save_to):
+            plot_name = f"pele_{plot_type.lower()}_plot.png"
+            save_to = os.path.join(save_to, plot_name)
+        else:
+            if (os.path.dirname(save_to) != '' and
+                    not os.path.isdir(os.path.dirname(save_to))):
+                raise ValueError(f'Plot cannot be saved at {save_to}. '
+                                 'Directory does not exist.')
+        if os.path.splitext(os.path.basename(save_to))[1] == '':
+            save_to = save_to + '.png'
+        if os.path.splitext(os.path.basename(save_to))[1] != '.png':
+            raise ValueError('Plot can only be saved with PNG format')
+
     return csv_file, results_folder, output_folder, \
         report_name, trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
         colormap, color, with_edges, n_levels, background_color, \
-        vertical_lines, horizontal_lines
+        vertical_lines, horizontal_lines, title, hide_logo, save_to
 
 
 def print_parameters(csv_file, results_folder, output_folder,
@@ -608,7 +647,8 @@ def print_parameters(csv_file, results_folder, output_folder,
                      xlowest, xhighest, ylowest, yhighest,
                      zlowest, zhighest, colormap, color,
                      with_edges, n_levels, background_color,
-                     vertical_lines, horizontal_lines):
+                     vertical_lines, horizontal_lines, title,
+                     hide_logo, save_to):
     """
     It prints the parameters supplied by the user.
 
@@ -673,6 +713,12 @@ def print_parameters(csv_file, results_folder, output_folder,
         A list of all vertical Line objects
     horizontal_lines : list[Line]
         A list of all horizontal Line objects
+    title : str
+        The title to print in the plot
+    hide_logo : bool
+        Whether to hide NBD logo on the plot or not
+    save_to : str
+        If it is not None, the resulting plot will be saved to this path
     """
 
     max_len = max([len(str(item)) if item is not None else 1
@@ -685,7 +731,8 @@ def print_parameters(csv_file, results_folder, output_folder,
                                 zlowest, zhighest,
                                 colormap, color, with_edges,
                                 n_levels, background_color,
-                                vertical_lines, horizontal_lines]])
+                                vertical_lines, horizontal_lines,
+                                title, hide_logo, save_to]])
 
     print('-> Input parameters:')
     print(' - csv_file:         ',
@@ -776,6 +823,18 @@ def print_parameters(csv_file, results_folder, output_folder,
           ' ' * (max_len - (len(str(horizontal_lines))
                             if horizontal_lines is not None else 1)),
           '-' if horizontal_lines is None else horizontal_lines)
+    print(' - title:            ',
+          ' ' * (max_len - (len(str(title))
+                            if title is not None else 1)),
+          '-' if title is None else title)
+    print(' - hide_logo:        ',
+          ' ' * (max_len - (len(str(hide_logo))
+                            if hide_logo is not None else 1)),
+          '-' if hide_logo is None else hide_logo)
+    print(' - save_to:          ',
+          ' ' * (max_len - (len(str(save_to))
+                            if save_to is not None else 1)),
+          '-' if save_to is None else save_to)
     print()
 
 
@@ -1036,7 +1095,7 @@ def parse_axis_data(axis_data, lowest, highest, pele_data):
                         lowest=lowest, highest=highest)
 
 
-def interactive_plot(pele_data, plot_data, plot_appearance):
+def interactive_plot(pele_data, plot_data, plot_appearance, save_to):
     """
     It generates an interactive plot.
 
@@ -1049,8 +1108,17 @@ def interactive_plot(pele_data, plot_data, plot_appearance):
         axes
     plot_appearance : a PlotAppearance object
         The appearance settings for the plot
+    save_to : str
+        If it is not None, the resulting plot will be saved to this path
     """
     from matplotlib import pyplot
+
+    # Check parameters
+    if save_to is not None:
+        raise ValueError('Interactive plots cannot be saved.')
+
+    # Set seaborn style
+    pyplot.style.use("seaborn-ticks")
 
     x_values = plot_data.get_xs_from_pele_data(pele_data)
     y_values = plot_data.get_ys_from_pele_data(pele_data)
@@ -1081,10 +1149,14 @@ def interactive_plot(pele_data, plot_data, plot_appearance):
                              norm=norm, color=color)
 
     # Axes settings
+    title = plot_appearance.title
+    if title is None:
+        title = "PELE Interactive Plot"
+    ax.set_title(title, fontweight='bold', pad=20)
     ax.margins(0.05)
     ax.set_facecolor(plot_appearance.background_color)
-    pyplot.ylabel(plot_data.y_data.label)
-    pyplot.xlabel(plot_data.x_data.label)
+    pyplot.ylabel(plot_data.y_data.label, fontweight='bold')
+    pyplot.xlabel(plot_data.x_data.label, fontweight='bold')
     pyplot.xlim([plot_data.x_data.lowest, plot_data.x_data.highest])
     pyplot.ylim([plot_data.y_data.lowest, plot_data.y_data.highest])
 
@@ -1106,7 +1178,23 @@ def interactive_plot(pele_data, plot_data, plot_appearance):
     # Activate the colorbar only if the Z axis contains data to plot
     if not isinstance(plot_data.z_data, EmptyAxisData):
         cbar = pyplot.colorbar(scatter, drawedges=False)
-        cbar.ax.set_ylabel(plot_data.z_data.label)
+        cbar.ax.set_ylabel(plot_data.z_data.label, fontweight='bold')
+
+    # Adjust layout
+    pyplot.tight_layout()
+
+    # Display NBD logo
+    if not plot_appearance.hide_logo:
+        import matplotlib.cbook as cbook
+        import matplotlib.image as image
+        from pele_platform.Utilities.Helpers import get_data_file_path
+
+        with cbook.get_sample_data(get_data_file_path('NBD.png')) as file:
+            im = image.imread(file)
+
+        newax = fig.add_axes([0.79, 0.80, 0.2, 0.2], anchor='NE', zorder=1)
+        newax.imshow(im)
+        newax.axis('off')
 
     def update_annot(idx):
         """Update the information box of the selected point"""
@@ -1146,10 +1234,11 @@ def interactive_plot(pele_data, plot_data, plot_appearance):
     # Respond to mouse motion
     fig.canvas.mpl_connect("motion_notify_event", hover)
 
+    # Plot it
     pyplot.show()
 
 
-def scatter_plot(pele_data, plot_data, plot_appearance):
+def scatter_plot(pele_data, plot_data, plot_appearance, save_to):
     """
     It generates an scatter plot.
 
@@ -1162,8 +1251,13 @@ def scatter_plot(pele_data, plot_data, plot_appearance):
         axes
     plot_appearance : a PlotAppearance object
         The appearance settings for the plot
+    save_to : str
+        If it is not None, the resulting plot will be saved to this path
     """
     from matplotlib import pyplot
+
+    # Set seaborn style
+    pyplot.style.use("seaborn-ticks")
 
     x_values = plot_data.get_xs_from_pele_data(pele_data)
     y_values = plot_data.get_ys_from_pele_data(pele_data)
@@ -1195,13 +1289,17 @@ def scatter_plot(pele_data, plot_data, plot_appearance):
 
     if z_values is not None:
         cbar = pyplot.colorbar(scatter)
-        cbar.ax.set_ylabel(plot_data.z_data.label)
+        cbar.ax.set_ylabel(plot_data.z_data.label, fontweight='bold')
 
     # Axes settings
+    title = plot_appearance.title
+    if title is None:
+        title = "PELE Scatter Plot"
+    ax.set_title(title, fontweight='bold', pad=20)
     ax.margins(0.05)
     ax.set_facecolor(plot_appearance.background_color)
-    pyplot.ylabel(plot_data.y_data.label)
-    pyplot.xlabel(plot_data.x_data.label)
+    pyplot.ylabel(plot_data.y_data.label, fontweight='bold')
+    pyplot.xlabel(plot_data.x_data.label, fontweight='bold')
     pyplot.xlim([plot_data.x_data.lowest, plot_data.x_data.highest])
     pyplot.ylim([plot_data.y_data.lowest, plot_data.y_data.highest])
 
@@ -1214,10 +1312,30 @@ def scatter_plot(pele_data, plot_data, plot_appearance):
             ax.axhline(line.intercept, color=line.color,
                        linestyle=':', linewidth=2)
 
-    pyplot.show()
+    # Adjust layout
+    pyplot.tight_layout()
+
+    # Display NBD logo
+    if not plot_appearance.hide_logo:
+        import matplotlib.cbook as cbook
+        import matplotlib.image as image
+        from pele_platform.Utilities.Helpers import get_data_file_path
+
+        with cbook.get_sample_data(get_data_file_path('NBD.png')) as file:
+            im = image.imread(file)
+
+        newax = fig.add_axes([0.79, 0.80, 0.2, 0.2], anchor='NE', zorder=1)
+        newax.imshow(im)
+        newax.axis('off')
+
+    # Plot it or save it
+    if save_to is None:
+        pyplot.show()
+    else:
+        pyplot.savefig(save_to, dpi=200)
 
 
-def density_plot(pele_data, plot_data, plot_appearance):
+def density_plot(pele_data, plot_data, plot_appearance, save_to):
     """
     It generates a density plot.
 
@@ -1230,6 +1348,8 @@ def density_plot(pele_data, plot_data, plot_appearance):
         axes
     plot_appearance : a PlotAppearance object
         The appearance settings for the plot
+    save_to : str
+        If it is not None, the resulting plot will be saved to this path
     """
     from matplotlib import pyplot
     import seaborn as sns
@@ -1262,6 +1382,10 @@ def density_plot(pele_data, plot_data, plot_appearance):
                 alpha=0.5, edgecolor=color2)
 
     # Axes settings
+    title = plot_appearance.title
+    if title is None:
+        title = "PELE Density Plot"
+    ax.fig.suptitle(title, fontweight='bold')
     ax.ax_joint.set_xlabel(plot_data.x_data.label, fontweight='bold')
     ax.ax_joint.set_ylabel(plot_data.y_data.label, fontweight='bold')
     ax.ax_marg_x.set_xlim(plot_data.x_data.lowest,
@@ -1280,8 +1404,27 @@ def density_plot(pele_data, plot_data, plot_appearance):
                                 color=line.color,
                                 linestyle=':', linewidth=2)
 
+    # Adjust layout
     pyplot.tight_layout()
-    pyplot.show()
+
+    # Display NBD logo
+    if not plot_appearance.hide_logo:
+        import matplotlib.cbook as cbook
+        import matplotlib.image as image
+        from pele_platform.Utilities.Helpers import get_data_file_path
+
+        with cbook.get_sample_data(get_data_file_path('NBD.png')) as file:
+            im = image.imread(file)
+
+        newax = ax.fig.add_axes([0.79, 0.80, 0.2, 0.2], anchor='NE', zorder=1)
+        newax.imshow(im)
+        newax.axis('off')
+
+    # Plot it or save it
+    if save_to is None:
+        pyplot.show()
+    else:
+        pyplot.savefig(save_to, dpi=200)
 
 
 # Main workflow to be executed
@@ -1299,7 +1442,8 @@ if __name__ == "__main__":
         trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
         colormap, color,  with_edges, n_levels, background_color, \
-        vertical_lines, horizontal_lines = parse_args()
+        vertical_lines, horizontal_lines, title, hide_logo, \
+        save_to = parse_args()
 
     # Print header
     from pele_platform.constants import constants
@@ -1312,7 +1456,7 @@ if __name__ == "__main__":
                      ylowest, yhighest, zlowest, zhighest,
                      colormap, color, with_edges, n_levels,
                      background_color, vertical_lines,
-                     horizontal_lines)
+                     horizontal_lines, title, hide_logo, save_to)
 
     # Get PELE data
     if csv_file is not None:
@@ -1359,16 +1503,23 @@ if __name__ == "__main__":
                                      background_color=background_color,
                                      display_edges=with_edges,
                                      n_levels=n_levels,
-                                     lines=vertical_lines + horizontal_lines)
+                                     lines=vertical_lines + horizontal_lines,
+                                     title=title,
+                                     hide_logo=hide_logo)
 
     # See if plot data can be plotted
     if not plot_data.is_plottable():
         raise ValueError('Aborted: not enough data to generate the plot.')
 
     # Generate the right plot type
+    if save_to is None:
+        print('-> Displaying plot. Close the windows to exit.')
+    else:
+        print(f'-> Saving plot to {save_to}')
+
     if plot_type.lower() == 'interactive':
-        interactive_plot(pele_data, plot_data, plot_appearance)
+        interactive_plot(pele_data, plot_data, plot_appearance, save_to)
     elif plot_type.lower() == 'scatter':
-        scatter_plot(pele_data, plot_data, plot_appearance)
+        scatter_plot(pele_data, plot_data, plot_appearance, save_to)
     elif plot_type.lower() == 'density':
-        density_plot(pele_data, plot_data, plot_appearance)
+        density_plot(pele_data, plot_data, plot_appearance, save_to)
