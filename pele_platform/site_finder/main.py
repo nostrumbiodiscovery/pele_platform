@@ -33,8 +33,10 @@ class SiteFinderLauncher:
         self.global_simulation = self._launch_global()
 
         if not self.args.skip_refinement and not self.args.debug:
-            self._generate_clusters()
-            self._retrieve_external_templates()
+            if not self.args.only_analysis:
+                # No need to generate refinement inputs and retrieve templates, if running analysis only
+                self._generate_clusters()
+                self._retrieve_external_templates()
             self._set_params_refinement()
             self.refinement_simulation = self._launch_refinement()
         else:
@@ -87,8 +89,8 @@ class SiteFinderLauncher:
         # Analysis parameters for refinement input selection
         n_inputs = int(self.global_simulation.cpus / 6)
         clustering_method = "meanshift"
-        bandwidth = 10.0
-        min_population = 0.001
+        bandwidth = 20.0
+        min_population = 0.0005
         max_top_clusters = n_inputs if n_inputs > 1 else 1  # tests only have 5 CPUs
         top_clusters_criterion = "interaction_min"
         cluster_representatives_criterion = "interaction_min"
