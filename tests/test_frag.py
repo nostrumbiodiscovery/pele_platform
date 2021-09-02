@@ -25,19 +25,15 @@ EXPECTED_INPUT = os.path.join(
 )
 
 PDB_lines = [
-    "../pele_platform/Examples/frag/pdb_test_lib/mol1.pdb C3-H2 C1-H1",
-    "../pele_platform/Examples/frag/pdb_test_lib/mol1.pdb C3-H2 C2-H4",
-    "../pele_platform/Examples/frag/pdb_test_lib/mol1.pdb C3-H2 N1-H6",
-    "../pele_platform/Examples/frag/pdb_test_lib/mol2.pdb C3-H2 C1-H1",
-    "../pele_platform/Examples/frag/pdb_test_lib/mol2.pdb C3-H2 N1-H4",
+    "mol1.pdb C3-H2 C1-H1",
+    "mol1.pdb C3-H2 C2-H4",
+    "mol1.pdb C3-H2 N1-H6"
 ]
 
 SDF_lines = [
-    "test_library-1.pdb C3-H2 C1-H1",
-    "test_library-1.pdb C3-H2 C2-H4",
-    "test_library-1.pdb C3-H2 N1-H6",
-    "test_library-2.pdb C3-H2 C1-H1",
-    "test_library-2.pdb C3-H2 N1-H4",
+    "test_library.pdb C3-H2 C1-H1",
+    "test_library.pdb C3-H2 C2-H4",
+    "test_library.pdb C3-H2 N1-H6"
 ]
 
 point_analysis_lines = [
@@ -79,11 +75,15 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
         if os.path.exists(path):
             shutil.rmtree(path, ignore_errors=True)
 
-    main.run_platform_from_yaml(ext_args)
+    job = main.run_platform_from_yaml(ext_args)
     captured = capsys.readouterr()
 
     new_output_path = glob.glob(output)[0]
     top_results = glob.glob(os.path.join(new_output_path, "top_result", "*pdb"))
+
+    for path in job.working_dir:
+        analysis_folder = os.path.join(path, "results")
+        assert os.path.isdir(analysis_folder)
 
     assert "Skipped - FragPELE will not run." not in captured.out
     assert os.path.exists(new_output_path)
@@ -156,20 +156,22 @@ def test_libraries(capsys, yaml_file, expected_lines):
     expected_lines : list[str]
         List of lines expected in input.conf.
     """
+
     errors = []
     if os.path.exists("input.conf"):
         os.remove("input.conf")
 
-    job = main.run_platform_from_yaml(yaml_file)
+    main.run_platform_from_yaml(yaml_file)
     captured = capsys.readouterr()
 
-    for path in job.working_dir:
-        analysis_folder = os.path.join(path, "results")
-        assert os.path.isdir(analysis_folder)
+    for line_conf, line_expected in zip(open("input.conf",'r').readlines(), expected_lines):
+        if line_conf.split('/')[-1].strip() == line_expected:
+            continue
+        else:
+            assert False
 
     assert "Skipped - FragPELE will not run." not in captured.out
     assert not errors
-
 
 def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     """
