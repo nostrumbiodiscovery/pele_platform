@@ -144,12 +144,21 @@ class Plotter(object):
         sorted_df = self._dataframe.sort_values(metric_to_y, ascending=True)
         top = sorted_df[0:structures_to_keep]
 
-        # Plot and save it
-        plot = sb.kdeplot(top[metric_to_x], top[metric_to_y],
-                          cmap="crest", fill=False,
-                          shade=True, cbar=True)
-        figure = plot.get_figure()
-        figure.savefig(output_name)
+        x_values = top[metric_to_x]
+        y_values = top[metric_to_y]
+
+        color1 = "lightskyblue"
+        color2 = "royalblue"
+
+        ax = sb.JointGrid(x=x_values, y=y_values)
+        ax.plot_joint(sb.scatterplot, color=color1, edgecolor=color2, marker='o', alpha=0.7, s=20)
+        sb.kdeplot(x=x_values, ax=ax.ax_marg_x, color=color1, shade=True, alpha=0.5, edgecolor=color2)
+        sb.kdeplot(y=y_values, ax=ax.ax_marg_y, color=color1, shade=True, alpha=0.5, edgecolor=color2)
+        ax.ax_joint.set_xlabel(metric_to_x, fontweight='bold')
+        ax.ax_joint.set_ylabel(metric_to_y, fontweight='bold')
+
+        ax.savefig(output_name)
+
         return output_name
 
     def plot_clusters(self, metric_to_x, metric_to_y, output_folder,
