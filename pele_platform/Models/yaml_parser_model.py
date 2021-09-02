@@ -45,14 +45,14 @@ class YamlParserModel(BaseModel):
     )
 
     external_templates: Union[str, List[str]] = Field(
-        value_from="templates",
+        alias="templates",
         value_from_simulation_params="templates",
         simulation_params_default=[],
         categories=["Ligand parametrization"],
         description="Paths to custom template files for hetero molecules.",
     )
     external_rotamers: Any = Field(
-        value_from="rotamers",
+        alias="rotamers",
         value_from_simulation_params="rotamers",
         simulation_params_default=[],
         categories=["Ligand parametrization"],

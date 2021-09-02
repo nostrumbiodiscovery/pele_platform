@@ -170,6 +170,7 @@ def test_libraries(capsys, yaml_file, expected_lines):
     assert "Skipped - FragPELE will not run." not in captured.out
     assert not errors
 
+
 def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     """
     Tests the automated analysis to retrieve most promising fragments
