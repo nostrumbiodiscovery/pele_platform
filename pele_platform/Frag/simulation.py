@@ -273,7 +273,6 @@ class FragRunner(object):
             self._extract_working_directory()
             for path in self.parameters.working_dir:
                 if not os.path.exists(path):
-                    self.parameters.working_dir=[self.parameters.folder]
                     if not os.path.exists(self.parameters.folder):
                         raise ce.MissingWorkingDir("Missing working_folder parameter. Please set the "
                                                    "path of the trajectories using the flag working_"
@@ -288,7 +287,6 @@ class FragRunner(object):
                 atom_coords=self.parameters.analysis_to_point,
                 pattern=os.path.basename(self.parameters.system),
             )
-
         for path in self.parameters.working_dir:
             simulation_output = os.path.join(path, 'sampling_result')
             analysis_folder = os.path.join(path, "results")
@@ -337,7 +335,11 @@ class FragRunner(object):
             for line in input_file.readlines():
                 ID = os.path.basename(line).replace(".pdb", "")
                 sentence = re.sub(r"\s+", "", ID, flags=re.UNICODE)
-                params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
+                if self.parameters.folder:
+                    params.working_dir.append(os.path.join(self.parameters.folder, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
+                else:
+                    params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
+
 
     def _frag_restart(self):
         self._extract_working_directory()
