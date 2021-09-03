@@ -29,6 +29,14 @@ class SimulationParamsModel(YamlParserModel):
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates")
         )
     )
+
+    exit: bool = Field(categories=["In Out"])
+    exit_value: float = Field(categories=["In Out"])
+    exit_condition: str = Field(categories=["In Out"])
+    exit_trajnum: int = Field(categories=["In Out"])
+
+    simulation_type: str = (Field(default="pele"))
+
     xtc: bool = Field()
     pdb: bool = Field()
     constraints: Any = Field()

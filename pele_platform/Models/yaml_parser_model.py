@@ -40,10 +40,9 @@ class YamlParserModel(BaseModel):
     test: bool = Field(
         categories=["General settings"],
         description="Activates test mode to check if the simulation runs as expected. Control files "
-        "from the test should never be used for production simulations - temperature, ANM "
-        "and minimization parameters are set to unreasonable values to make it run faster.",
+                    "from the test should never be used for production simulations - temperature, ANM "
+                    "and minimization parameters are set to unreasonable values to make it run faster.",
     )
-
     external_templates: Union[str, List[str]] = Field(
         alias="templates",
         value_from_simulation_params="templates",
@@ -58,7 +57,6 @@ class YamlParserModel(BaseModel):
         categories=["Ligand parametrization"],
         description="Paths to custom rotamer files for hetero molecules.",
     )
-
     forcefield: str = Field(
         value_from_simulation_params=True,
         simulation_params_default="OPLS2005",
@@ -170,96 +168,115 @@ class YamlParserModel(BaseModel):
         simulation_params_default="null",
         categories=["Simulation parameters"],
     )
-    cluster_values: Union[
-        List[float], str
-    ] = Field(  # WTF - List[float] but then use validator to make it into a str(v), what about bool?
+    cluster_values: List[float] = Field(
         value_from_simulation_params=True,
-        simulation_params_default="[1.75, 2.5, 4, 6]",
+        simulation_params_default=[1.75, 2.5, 4, 6],
         categories=["Simulation parameters"],
     )
-    cluster_conditions: Union[List[float], str] = Field(
+    cluster_conditions: List[float] = Field(
         value_from_simulation_params=True,
-        simulation_params_default="[1, 0.6, 0.4, 0.0]",
+        simulation_params_default=[1, 0.6, 0.4, 0.0],
         categories=["Simulation parameters"],
     )
-    simulation_type: str = (
-        Field(  # AdaptivePELE -> pele or md, deafult to pele (correct)
-            value_from_simulation_params=True,
-            simulation_params_default="pele",
-            categories=["Simulation parameters"],
-        )
+    equilibration: bool = Field(
+        categories=["Simulation parameters"],
+        default=False,
+        description="Whether to run equilibration or not.",
     )
-    equilibration: bool = Field(categories=["Simulation parameters"])
-    clust_type: str = Field(  # validate if the user chose one of the available options, check Adaptive docs
+    clust_type: str = Field(
         value_from_simulation_params=True,
         simulation_params_default="rmsd",
         categories=["Simulation parameters"],
     )
     eq_steps: int = Field(
-        alias="equilibration_steps", categories=["Simulation parameters"]
+        alias="equilibration_steps",
+        categories=["Simulation parameters"],
+        description="Number of equilibration steps to perform.",
     )
-    adaptive_restart: bool = Field()
+    adaptive_restart: bool = Field(
+        description="Restart adaptive simulation from the last epoch.",
+        categories=["General settings"],
+        default=False,
+    )
     report_name: str = Field(
         alias="report",
         default="report",
         categories=["Simulation parameters"],
         candidate_for_deprecation=True,
     )
-    traj_name: str = Field(  # for XTC (validator? os.path.splitext -- > XTC or PDB)
-        alias="traj", default="trajectory.pdb", categories=["Simulation parameters"]
+    traj_name: str = Field(
+        alias="traj",
+        default="trajectory.pdb",
+        categories=["Simulation parameters"],
+        description="Type of trajectory to save, choose 'trajectory.xtc' or 'trajectory.pdb' (defult).",
     )
-
     epsilon: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=0,
         categories=["Simulation parameters"],
+        description="The fraction of the processors that will be assigned according to the selected metric when using epsilon spawning.",
     )
-    out_in: bool = Field(categories=["Out in"])
+    out_in: bool = Field(categories=["Out in"], description="Launch OutIn package.")
     bias_column: int = Field(
         value_from_simulation_params=True,
         simulation_params_default=5,
         categories=["Simulation parameters"],
+        description="The number of the report column towards which the bias should be applied.",
     )
     gridres: int = Field(
-        default=10, categories=["Ligand preparation"]
-    )  # alias="ligand_resolution"
-    use_peleffy: bool = Field(
-        categories=["Ligand preparation"], can_be_falsy=True, default=False
+        default=10,
+        categories=["Ligand preparation"],
+        description="Resolution of rotamer sampling when parametrizing hetero molecules.",
     )
-    core: Union[int, List[str]] = Field(categories=["Ligand preparation"])
+    use_peleffy: bool = Field(
+        categories=["Ligand preparation"],
+        can_be_falsy=True,
+        default=False,
+        description="Use peleffy which supports OpenFF forcefield as well as OPLS2005.",
+    )
+    core: Union[int, List[str]] = Field(
+        categories=["Ligand preparation"],
+        description="List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure.",
+    )
 
     ################################################################################################ start from here
 
-    mtor: int = Field(alias="maxtorsion", default=4, categories=["Ligand preparation"])
+    mtor: int = Field(
+        alias="maxtorsion",
+        default=4,
+        categories=["Ligand preparation"],
+        description="Maximum number of rotamers for each flexible ligand branch.",
+    )
     n: int = Field(
         default=10000,
         categories=["Ligand preparation"],
         description="Maximum number of flexible side chains in the ligand.",
     )
 
-    templates: List[str] = Field(
+    templates: Union[str, List[str]] = Field(
         categories=["Ligand preparation"],
-        description="List of template file containing ligand forcefield parameters.",
+        description="List of template files containing forcefield parameters for hetero molecules.",
     )
 
     solvent_template: str = Field()
 
-    rotamers: List[str] = Field(categories=["Ligand preparation"])
-    ext_rotamers: List[str] = Field(value_from="rotamers")
-    mae_lig: str = Field(
-        value_from_simulation_params=True,
+    rotamers: List[str] = Field(
         categories=["Ligand preparation"],
-        description="Maestro file to extract quantum charges.",
+        description="List of rotamer files for hetero molecules.",
+    )
+
+    mae_lig: str = Field(
+        categories=["Ligand preparation"],
+        description="Maestro file containing quantum charges for the ligand preparation.",
     )
     no_ppp: bool = Field(
         alias="skip_preprocess",
         value_from_simulation_params=True,
         simulation_params_default=False,
         categories=["Protein preparation"],
-        candidate_for_deprecation=True,
+        description="Skip protein preprocessing.",
     )
     skip_prep: bool = Field(
-        alias="skip_preprocess",
         value_from_simulation_params=True,
         simulation_params_default=False,
         categories=["Ligand preparation"],
@@ -278,57 +295,53 @@ class YamlParserModel(BaseModel):
         simulation_params_default=False,
         categories=["Protein preparation"],
     )
-    mpi_params: str = Field(categories=["General settings"])
     nonstandard: List[str] = Field(
         value_from_simulation_params=True,
         simulation_params_default=[],
         categories=["Protein preparation"],
+        description="List of non-standard residue names to be omitted during protein preprocessing."
     )
     prepwizard: bool = Field()
     box_radius: float = Field(
-        value_from_simulation_params=True, categories=["Box settings"]
+        value_from_simulation_params=True, categories=["Box settings"], description="Radius of the simulation box."
     )
     box_center: Union[List[float], str] = Field(
         categories=["Box settings"],
         description="Center of the simulation box. It can be set using x, y, z coordinates or by specifying a center atom following the format: 'chain ID:residue number:atom name'.",
     )
-    box: Any = Field(categories=["Box settings"])
-    native: str = Field(alias="rmsd_pdb", categories=["Metrics"])
+    native: str = Field(alias="rmsd_pdb", categories=["Metrics"],
+                        description="Path to the PDB file with a reference structure. Mind that both proteins need to be prealigned as well as share the same chain ID and PDB atom names of the ligand.")
     atom_dist: List[str] = Field(
-        default_factory=list, categories=["Metrics"]
-    )  # deprecate atom numbers
+        default_factory=list, categories=["Metrics"], description="List of strings representing atoms, between which the distance will be calculated throughout the simulation."
+    )
     debug: bool = Field(
         default=False,
         categories=["General settings"],
-        description="Debug mode generates all input files but does not launch the simulation.",
+        description="Launch debug mode which generates all input files but does not start the simulation.",
     )
     folder: str = Field(
         alias="working_folder",
+        description="Custom name of the top level directory where the simulation will be saved."
     )
-    output: str = Field(default="output", categories=["General settings"])
+    output: str = Field(default="output", categories=["General settings"], description="Name of the raw output folder.")
     randomize: bool = Field(
         value_from_simulation_params=True,
         simulation_params_default=False,
         categories=["Global Exploration", "Simulation parameters"],
+        description="Whether to randomize the initial positions of the ligand around the protein (or center of interface)."
     )
-    full: bool = Field(alias="global", categories=["Global Exploration"])
-    # description from PELE++
-    poses: int = Field()
-    msm: bool = Field(candidate_for_deprecation=True, categories=["MSM"])
+    full: bool = Field(alias="global", categories=["Global Exploration"], description="Launch global exploration package.")
+
     clust: int = Field(
         alias="exit_clust", tests_value=2, candidate_for_deprecation=True
     )
 
     restart: bool = Field(categories=["General settings"])
-    lagtime: Any = Field(candidate_for_deprecation=True, categories=["MSM"])  # WTF?
-    msm_clust: Any = Field(candidate_for_deprecation=True, categories=["MSM"])
-    rescoring: bool = Field(categories=["Rescoring"])
+
+    rescoring: bool = Field(categories=["Rescoring"], description="Launch rescoring package.")
     in_out: bool = Field(categories=["In Out"])
     in_out_soft: bool = Field(categories=["In Out"])
-    exit: bool = Field(categories=["In Out"])
-    exit_value: float = Field(categories=["In Out"])
-    exit_condition: str = Field(categories=["In Out"])
-    exit_trajnum: int = Field(categories=["In Out"])
+
     waters: Union[str, List[str]] = Field(
         value_from_simulation_params=True,
         simulation_params_default=[],
@@ -507,17 +520,24 @@ class YamlParserModel(BaseModel):
     proximityDetection: bool = Field()
 
     ppi: bool = Field(categories=["PPI"])
-    center_of_interface: str = Field(categories=["PPI"])
+    center_of_interface: str = Field(
+        categories=["PPI"],
+        description="Atom string defining the center of interface in PPI simulation. Should "
+                    "follow the format: 'chain ID:residue number:atom name'.",
+    )
     protein: str = Field(categories=["PPI"])
-    ligand_pdb: str = Field(categories=["PPI"])
+    ligand_pdb: str = Field(
+        categories=["PPI"], description="Path to the ligand PDB file in PPI simulation."
+    )
     skip_refinement: bool = Field(default=False, categories=["PPI", "Site finder"])
     n_waters: int = Field(
         value_from_simulation_params=True,
         simulation_params_default=0,
         categories=["Water"],
     )
-    site_finder: bool = Field(categories=["Site finder"])
-    rna: bool = Field(categories=["RNA"])
+    site_finder: bool = Field(
+        categories=["Site finder"], description="Launch site finder package."
+    )
     gpcr_orth: bool = Field(categories=["GPCR"])
     orthosteric_site: str = Field(categories=["GPCR"])
     initial_site: str = Field(categories=["GPCR", "Out in"])
@@ -530,8 +550,10 @@ class YamlParserModel(BaseModel):
         categories=["Interaction restrictions"]
     )
 
-    charge_parametrization_method: str = Field(categories=["Ligand preparation"])
-
+    charge_parametrization_method: str = Field(
+        categories=["Ligand preparation"],
+        description="Ligand charge parametrization method when using peleffy. Choose one of: 'gasteiger', 'am1bcc', 'OPLS2005'.",
+    )
     exclude_terminal_rotamers: bool = Field(
         default=True, categories=["Ligand preparation"]
     )
@@ -560,9 +582,13 @@ class YamlParserModel(BaseModel):
         categories=["Covalent docking"],
         value_from_simulation_params=True,
         simulation_params_default=10.0,
+        description="Extend of side chain perturbation during covalent docking refinement.",
     )
 
-    covalent_docking_refinement: bool = Field(categories=["Covalent docking"])
+    covalent_docking_refinement: bool = Field(
+        categories=["Covalent docking"],
+        description="Launch covalent docking refinement.",
+    )
 
     ligand_conformations: str = Field(categories=["Ligand conformations"])
 
@@ -574,16 +600,32 @@ class YamlParserModel(BaseModel):
 
     overlap_factor_conformation: float = Field(categories=["Ligand conformations"])
 
-    inter_step_logger: bool = Field(categories=["General settings"])
+    inter_step_logger: bool = Field(
+        categories=["General settings"],
+        description="Activate interstep logger.",
+        default=False,
+    )
 
     minimum_steps: bool = Field(categories=["General settings"])
 
-    site_finder_global: bool = Field(categories=["Site finder"])
+    site_finder_global: bool = Field(
+        categories=["Site finder"], description="Launch site finder global exploration."
+    )
 
-    site_finder_local: bool = Field(categories=["Site finder"])
+    site_finder_local: bool = Field(
+        categories=["Site finder"], description="Launch site finder local exploration."
+    )
 
-    kde: bool = Field(categories=["Analysis"])
-    kde_structs: int = Field(categories=["Analysis"], default=1000)
+    kde: bool = Field(
+        categories=["Analysis"],
+        description="Generate kernel density estimate (KDE) plot when analysing the simulation.",
+        default=False,
+    )
+    kde_structs: int = Field(
+        categories=["Analysis"],
+        default=1000,
+        description="Number of structures to include on the KDE plot.",
+    )
     plot_filtering_threshold: float = Field(categories=["Analysis"])
     clustering_filtering_threshold: float = Field(
         categories=["Analysis"], default=0.25, can_be_falsy=True
@@ -597,23 +639,51 @@ class YamlParserModel(BaseModel):
         categories=["Analysis"],
         value_from_simulation_params=True,
         simulation_params_default="interaction_5_percentile",
+        description="Method for selecting representative structures for each cluster, "
+                    "you can choose one of: 'total_25_percentile', 'total_5_percentile', "
+                    "'total_mean', 'interaction_25_percentile', 'interaction_5_percentile' or 'interaction_mean'.",
     )
     bandwidth: float = Field(
         categories=["Analysis"],
         value_from_simulation_params=True,
         simulation_params_default=2.5,
+        description="Bandwidth for the mean shift and HDBSCAN clustering (also called epsilon).",
     )
-    max_top_clusters: int = Field(categories=["Analysis"], can_be_falsy=True, default=8)
+    max_top_clusters: int = Field(
+        categories=["Analysis"],
+        can_be_falsy=True,
+        default=8,
+        description="Maximum number of clusters to retrieve during simulation analysis.",
+    )
     min_population: float = Field(
         categories=["Analysis"],
         value_from_simulation_params=True,
         simulation_params_default=0.01,
+        can_be_falsy=True,
+        description="The minimum amount of structures in each cluster, takes a value between 0 and 1, "
+                    "where 0.01 refers to 1%.",
     )
-    max_top_poses: int = Field(categories=["Analysis"], can_be_falsy=True, default=100)
-
-    saturated_mutagenesis: bool = Field(categories=["Saturated mutagenesis"])
-    cpus_per_mutation: int = Field(categories=["Saturated mutagenesis"], tests_value=2)
-    constraint_level: int = Field(categories=["Constraints"])
+    max_top_poses: int = Field(
+        categories=["Analysis"],
+        can_be_falsy=True,
+        default=100,
+        description="The maximum number of top poses (structures with lowest binding energy) to be "
+                    "retrieved during simulation analysis.",
+    )
+    saturated_mutagenesis: bool = Field(
+        categories=["Saturated mutagenesis"],
+        description="Launch saturated mutagenesis package.",
+    )
+    cpus_per_mutation: int = Field(
+        categories=["Saturated mutagenesis"],
+        tests_value=2,
+        description="Number of CPUs to use for each mutation.",
+    )
+    constraint_level: int = Field(
+        categories=["Constraints"],
+        description="Select constraint level with predefined parameters parameter. Accepts value for 0 (no constraints) to 3.",
+        value_from_simulation_params=True,
+    )
 
     @validator("*", pre=True, always=True, allow_reuse=True)
     def set_tests_values(cls, v, values, field):
@@ -743,7 +813,7 @@ class YamlParserModel(BaseModel):
             raise ValueError(f"Value {v} should be positive.")
         return v
 
-    @validator("epsilon", allow_reuse=True)
+    @validator("epsilon", "min_population", allow_reuse=True)
     def assert_value_0_1(cls, v):
         if v and not 0 <= v <= 1:
             raise ValueError(f"Value {v} should be between 0 and 1.")
@@ -778,3 +848,8 @@ class YamlParserModel(BaseModel):
                     f"Value of {field.name} should be one of: {available_values}"
                 )
         return v
+
+    @validator("charge_parametrization_method")
+    def set_charge_parametrization_method(cls, v, values):
+        # TODO
+        pass
