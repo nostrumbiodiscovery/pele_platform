@@ -108,14 +108,16 @@ Draw custom **vertical and horizontal lines** to highlight relevant thresholds o
 
 Where ``n`` is the point of intercept on the axis and ``color`` corresponds to the desired colour of the line.
 
-Axis labels
-++++++++++++
+Axis labels and title
+++++++++++++++++++++++
 
 Override the default **axis labels** by passing a string after the metric column number, e.g.
 
 .. code-block:: console
 
     python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7" RMSD of the ligand" -y 5 ...
+
+To add a **custom title** to your figure, all you have to do is use ``--title`` argument and supply a string with your desired text.
 
 Values range
 +++++++++++++
@@ -135,10 +137,17 @@ You can plot only the relevant data by setting limits to the scope of values plo
 Other
 +++++++++
 
-Finally, you can further customize the **density plot** by using:
+You can further customize the **density plot** by using:
 
     - ``--with_edges`` argument to visualise the distribution on the plot area
     - ``--n_levels`` to adjust the number of levels shown on the plot area.
+
+Finally, the Nostrum Biodiscovery **logo** can be hidden by using ``--hide_logo`` argument.
+
+Saving to file
+-----------------
+
+If you want to save plot **to file** instead of displaying it, use ``--save_to`` argument and supply a path to file (this option does not apply to interactive plots).
 
 Examples
 ----------
@@ -147,7 +156,7 @@ Examples
 
 .. code-block:: console
 
-    python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density -x 7 -y 5
+    python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density -x 7 -y 5 --hide_logo
 
 .. image:: ../img/plotter_example1.png
   :width: 400
@@ -157,7 +166,7 @@ Examples
 
 .. code-block:: console
 
-    python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7 -y 5 -z 6 --colormap reducedgreens --vertical_line 5.0 yellow --horizontal_line -35.5 red
+    python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7 -y 5 -z 6 --colormap reducedgreens --vertical_line 5.0 yellow --horizontal_line -35.5 red --hide_logo
 
 .. image:: ../img/plotter_example2.png
   :width: 400
@@ -167,7 +176,7 @@ Examples
 
 .. code-block:: console
 
-    python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t interactive --xhighest 15 -x 7 "Ligand RMSD" -y 5 "Interaction energy" -z 6 "Solvent accessible surface area" --colormap wistia --background_color black
+    python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t interactive --xhighest 15 -x 7 "Ligand RMSD" -y 5 "Interaction energy" -z 6 "Solvent accessible surface area" --colormap wistia --background_color black --hide_logo
 
 .. image:: ../img/plotter_example3.png
   :width: 400
@@ -177,7 +186,7 @@ Examples
 
 .. code-block:: console
 
-    python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density --with_edges --n_levels 10 --color orange
+    python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t density --with_edges --n_levels 10 --color orange --hide_logo --title "Density plot with edges" -x 7 -y 5 -z 6
 
 .. image:: ../img/plotter_example4.png
   :width: 400
