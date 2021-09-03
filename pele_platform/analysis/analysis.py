@@ -1048,6 +1048,7 @@ class Analysis(object):
                 boxplot_filename.replace(' ', '_')
 
                 plt.savefig(boxplot_filename)
+                plt.close('all')
 
             except IndexError:
                 print("Samples too disperse to produce a cluster " +

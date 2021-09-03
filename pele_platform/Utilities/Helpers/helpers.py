@@ -13,9 +13,34 @@ from multiprocessing import Pool
 from functools import partial
 from packaging import version
 from pele_platform.Errors.custom_errors import ResidueNotFound, PELENotFound
+from pkg_resources import resource_filename
 
 
-__all__ = ["get_suffix", "backup_logger"]
+__all__ = ["get_data_file_path", "get_suffix", "backup_logger"]
+
+
+def get_data_file_path(relative_path):
+    """
+    It returns the path in the package's data location.
+    Parameters
+    ----------
+    relative_path : str
+        The relative path to the file that is required
+
+    Returns
+    -------
+    output_path : str
+        The path in the package's data location, if found
+    """
+    output_path = resource_filename('pele_platform', os.path.join(
+        'data', relative_path))
+
+    if not os.path.exists(output_path):
+        raise ValueError(
+            "Sorry! {} does not exist. ".format(output_path)
+            + "If you just added it, you'll have to re-install")
+
+    return output_path
 
 
 def silentremove(*args, **kwargs):
