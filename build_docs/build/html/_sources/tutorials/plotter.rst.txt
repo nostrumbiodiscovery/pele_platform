@@ -20,11 +20,11 @@ Simple plots
 
 The data can come from multiple sources, so feel free to choose any of the following:
 
-    - the **CSV file** generate during the simulation - it is located in ``working_directory/results/data.csv``
-    - path to the **output** folder
-    - path to the **results** folder.
+    - the **CSV file** generated during the simulation. It is located in ``working_directory/results/data.csv``.
+    - path to the **output** folder of PELE. Usually it is found in ``working_directory/output`` and it is the folder that contains the epochs with their report and trajectory files.
+    - path to the **results** folder where the CSV file is stored. It is located in ``working_directory/results``.
 
-Mind that each data source requires a use of different command line argument:
+Please, mind that each data source requires a use of different command line argument:
 
 .. code-block:: console
 
@@ -34,7 +34,7 @@ Mind that each data source requires a use of different command line argument:
 
 **2. Select plot type**
 
-The new Plotter offers three different plot types, each able to visualise up to three data columns:
+The new Plotter offers three different plot types, each able to visualise up to three data columns (except for the density plot, which can only display two columns):
 
     - standard **scatter** plot
     - **density** plot, similar to scatter, but including kernel density estimation on the axes
@@ -98,7 +98,8 @@ Once you get the basics done, you can customize the colour scheme of your plot u
             * reducedpurples
             * reducedoranges
 
-    - ``--background_color`` to customize the background of your figure.
+    - ``--background_color`` to customize the background of your figure. It must be a `CSS4 <https://www.w3.org/wiki/CSS/Properties/color/keywords>`_ compatible color name.
+
 
 Custom lines
 +++++++++++++
@@ -109,6 +110,8 @@ Draw custom **vertical and horizontal lines** to highlight relevant thresholds o
     - ``--horizontal_line n color``
 
 Where ``n`` is the point of intercept on the axis and ``color`` corresponds to the desired colour of the line.
+It must be a `CSS4 <https://www.w3.org/wiki/CSS/Properties/color/keywords>`_ compatible color name.
+
 
 Axis labels and title
 ++++++++++++++++++++++
@@ -119,7 +122,7 @@ Override the default **axis labels** by passing a string after the metric column
 
     python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7" RMSD of the ligand" -y 5 ...
 
-To add a **custom title** to your figure, all you have to do is use ``--title`` argument and supply a string with your desired text.
+Moreover, to add a **custom title** to your figure, all you have to do is use ``--title`` argument and supply a string with your desired text.
 
 Values range
 +++++++++++++

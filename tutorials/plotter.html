@@ -220,19 +220,19 @@ of all available arguments.</p>
 <p>The data can come from multiple sources, so feel free to choose any of the following:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>the <strong>CSV file</strong> generate during the simulation - it is located in <code class="docutils literal notranslate"><span class="pre">working_directory/results/data.csv</span></code></p></li>
-<li><p>path to the <strong>output</strong> folder</p></li>
-<li><p>path to the <strong>results</strong> folder.</p></li>
+<li><p>the <strong>CSV file</strong> generated during the simulation. It is located in <code class="docutils literal notranslate"><span class="pre">working_directory/results/data.csv</span></code>.</p></li>
+<li><p>path to the <strong>output</strong> folder of PELE. Usually it is found in <code class="docutils literal notranslate"><span class="pre">working_directory/output</span></code> and it is the folder that contains the epochs with their report and trajectory files.</p></li>
+<li><p>path to the <strong>results</strong> folder where the CSV file is stored. It is located in <code class="docutils literal notranslate"><span class="pre">working_directory/results</span></code>.</p></li>
 </ul>
 </div></blockquote>
-<p>Mind that each data source requires a use of different command line argument:</p>
+<p>Please, mind that each data source requires a use of different command line argument:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ ...</span>
 <span class="go">python -m pele_platform.plotter -r /home/LIG_Pele/results/ ...</span>
 <span class="go">python -m pele_platform.plotter -c /home/LIG_Pele/results/data.csv ...</span>
 </pre></div>
 </div>
 <p><strong>2. Select plot type</strong></p>
-<p>The new Plotter offers three different plot types, each able to visualise up to three data columns:</p>
+<p>The new Plotter offers three different plot types, each able to visualise up to three data columns (except for the density plot, which can only display two columns):</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>standard <strong>scatter</strong> plot</p></li>
@@ -304,7 +304,7 @@ The tool will show you all available options and walk you through the setup.</p>
 </td></tr></table>
 </div></blockquote>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">--background_color</span></code> to customize the background of your figure.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--background_color</span></code> to customize the background of your figure. It must be a <a class="reference external" href="https://www.w3.org/wiki/CSS/Properties/color/keywords">CSS4</a> compatible color name.</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -317,7 +317,8 @@ The tool will show you all available options and walk you through the setup.</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">--horizontal_line</span> <span class="pre">n</span> <span class="pre">color</span></code></p></li>
 </ul>
 </div></blockquote>
-<p>Where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the point of intercept on the axis and <code class="docutils literal notranslate"><span class="pre">color</span></code> corresponds to the desired colour of the line.</p>
+<p>Where <code class="docutils literal notranslate"><span class="pre">n</span></code> is the point of intercept on the axis and <code class="docutils literal notranslate"><span class="pre">color</span></code> corresponds to the desired colour of the line.
+It must be a <a class="reference external" href="https://www.w3.org/wiki/CSS/Properties/color/keywords">CSS4</a> compatible color name.</p>
 </div>
 <div class="section" id="axis-labels-and-title">
 <h3>Axis labels and title<a class="headerlink" href="#axis-labels-and-title" title="Permalink to this headline">¶</a></h3>
@@ -325,7 +326,7 @@ The tool will show you all available options and walk you through the setup.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.plotter -o /home/LIG_Pele/output/ -t scatter -x 7&quot; RMSD of the ligand&quot; -y 5 ...</span>
 </pre></div>
 </div>
-<p>To add a <strong>custom title</strong> to your figure, all you have to do is use <code class="docutils literal notranslate"><span class="pre">--title</span></code> argument and supply a string with your desired text.</p>
+<p>Moreover, to add a <strong>custom title</strong> to your figure, all you have to do is use <code class="docutils literal notranslate"><span class="pre">--title</span></code> argument and supply a string with your desired text.</p>
 </div>
 <div class="section" id="values-range">
 <h3>Values range<a class="headerlink" href="#values-range" title="Permalink to this headline">¶</a></h3>
