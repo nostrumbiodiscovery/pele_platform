@@ -42,7 +42,6 @@ class SimulationParamsModel(YamlParserModel):
     constraints: Any = Field()
     water_energy: Any = Field()
     sidechain_perturbation: bool = Field(default=False)
-
     met_interaction_restrictions: str = Field()
     covalent_sasa: str = Field()
     max_trials_for_one: int = Field()
@@ -53,6 +52,7 @@ class SimulationParamsModel(YamlParserModel):
     residue_type: str = Field()
     inputs: List[str] = Field()
     ligand_ref: str = Field()
+    mpi_params: str = Field()
 
     @validator("*", pre=True, always=True)
     def set_value_from_simulation_parameters(cls, v, field):
@@ -63,7 +63,7 @@ class SimulationParamsModel(YamlParserModel):
         if (can_be_falsy and v is None) or (not can_be_falsy and not v):
             value_from_simulation_params = extra.get("value_from_simulation_params")
 
-            if value_from_simulation_params == True:  # TODO: IS?
+            if value_from_simulation_params is True:  # TODO: IS?
                 value_from_simulation_params = field.name
 
             if value_from_simulation_params:
@@ -94,11 +94,6 @@ class SimulationParamsModel(YamlParserModel):
     @validator("frag_pele_steps", always=True)
     def set_frag_pele_steps(cls, v, values):
         return "$STEPS" if values.get("frag_pele") else "$PELE_STEPS"
-
-    # @validator("chain")
-    # def set_frag_chain(cls, v, values):
-    #     if values.get("frag_pele"):
-    #         return values.get("frag_core")
 
     @validator("output_path", always=True)
     def set_output_path(cls, v, values):

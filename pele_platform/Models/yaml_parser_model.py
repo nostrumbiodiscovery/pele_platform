@@ -40,11 +40,12 @@ class YamlParserModel(BaseModel):
     test: bool = Field(
         categories=["General settings"],
         description="Activates test mode to check if the simulation runs as expected. Control files "
-                    "from the test should never be used for production simulations - temperature, ANM "
-                    "and minimization parameters are set to unreasonable values to make it run faster.",
+        "from the test should never be used for production simulations - temperature, ANM "
+        "and minimization parameters are set to unreasonable values to make it run faster.",
     )
     external_templates: Union[str, List[str]] = Field(
         alias="templates",
+        default=list(),
         value_from_simulation_params="templates",
         simulation_params_default=[],
         categories=["Ligand parametrization"],
@@ -52,6 +53,7 @@ class YamlParserModel(BaseModel):
     )
     external_rotamers: Any = Field(
         alias="rotamers",
+        default=list(),
         value_from_simulation_params="rotamers",
         simulation_params_default=[],
         categories=["Ligand parametrization"],
@@ -299,20 +301,27 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default=[],
         categories=["Protein preparation"],
-        description="List of non-standard residue names to be omitted during protein preprocessing."
+        description="List of non-standard residue names to be omitted during protein preprocessing.",
     )
     prepwizard: bool = Field()
     box_radius: float = Field(
-        value_from_simulation_params=True, categories=["Box settings"], description="Radius of the simulation box."
+        value_from_simulation_params=True,
+        categories=["Box settings"],
+        description="Radius of the simulation box.",
     )
     box_center: Union[List[float], str] = Field(
         categories=["Box settings"],
         description="Center of the simulation box. It can be set using x, y, z coordinates or by specifying a center atom following the format: 'chain ID:residue number:atom name'.",
     )
-    native: str = Field(alias="rmsd_pdb", categories=["Metrics"],
-                        description="Path to the PDB file with a reference structure. Mind that both proteins need to be prealigned as well as share the same chain ID and PDB atom names of the ligand.")
+    native: str = Field(
+        alias="rmsd_pdb",
+        categories=["Metrics"],
+        description="Path to the PDB file with a reference structure. Mind that both proteins need to be prealigned as well as share the same chain ID and PDB atom names of the ligand.",
+    )
     atom_dist: List[str] = Field(
-        default_factory=list, categories=["Metrics"], description="List of strings representing atoms, between which the distance will be calculated throughout the simulation."
+        default_factory=list,
+        categories=["Metrics"],
+        description="List of strings representing atoms, between which the distance will be calculated throughout the simulation.",
     )
     debug: bool = Field(
         default=False,
@@ -321,16 +330,32 @@ class YamlParserModel(BaseModel):
     )
     folder: str = Field(
         alias="working_folder",
-        description="Custom name of the top level directory where the simulation will be saved."
+        description="Custom name of the top level directory where the simulation will be saved.",
     )
-    output: str = Field(default="output", categories=["General settings"], description="Name of the raw output folder.")
+    output: str = Field(
+        default="output",
+        categories=["General settings"],
+        description="Name of the raw output folder.",
+    )
     randomize: bool = Field(
         value_from_simulation_params=True,
         simulation_params_default=False,
         categories=["Global Exploration", "Simulation parameters"],
-        description="Whether to randomize the initial positions of the ligand around the protein (or center of interface)."
+        description="Whether to randomize the initial positions of the ligand around the protein (or center of interface).",
     )
-    full: bool = Field(alias="global", categories=["Global Exploration"], description="Launch global exploration package.")
+    exit: bool = Field(categories=["In Out"])
+    exit_value: float = Field(categories=["In Out"])
+    exit_condition: str = Field(categories=["In Out"])
+    exit_trajnum: int = Field(categories=["In Out"])
+
+    poses: int = Field(
+        description="Number of ligand poses to generate during randomization."
+    )
+    full: bool = Field(
+        alias="global",
+        categories=["Global Exploration"],
+        description="Launch global exploration package.",
+    )
 
     clust: int = Field(
         alias="exit_clust", tests_value=2, candidate_for_deprecation=True
@@ -338,7 +363,9 @@ class YamlParserModel(BaseModel):
 
     restart: bool = Field(categories=["General settings"])
 
-    rescoring: bool = Field(categories=["Rescoring"], description="Launch rescoring package.")
+    rescoring: bool = Field(
+        categories=["Rescoring"], description="Launch rescoring package."
+    )
     in_out: bool = Field(categories=["In Out"])
     in_out_soft: bool = Field(categories=["In Out"])
 
@@ -369,22 +396,28 @@ class YamlParserModel(BaseModel):
         categories=["Water"],
     )
     water_radius: float = Field(default=6.0, categories=["Water"])
-    induced_fit_exhaustive: bool = Field(categories=["Induced fit"])
-    induced_fit_fast: bool = Field(categories=["Induced fit"])
-    frag: bool = Field(categories=["FragPELE"], candidate_for_deprecation=True)
+    induced_fit_exhaustive: bool = Field(
+        categories=["Induced fit"], description="Launch Induced Fit Exhaustive package."
+    )
+    induced_fit_fast: bool = Field(
+        categories=["Induced fit"], description="Launch Induced Fit Fast package."
+    )
+
     ca_constr: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=0.5,
         categories=["Constraints"],
+        description="Spring constant for constraining alpha carbons in the backbone.",
     )
     ca_interval: int = Field(
         value_from_simulation_params=True,
         simulation_params_default=10,
         categories=["Constraints"],
+        description="Interval at which alpha carbons in the backbone will be constrained (every n atoms).",
     )
     one_exit: Any = Field(candidate_for_deprecation=True)
     box_type: str = Field(categories=["Box settings"])
-    box_metric: Any = Field(candidate_for_deprecation=True)
+
     time: Any = Field(candidate_for_deprecation=True)
     nosasa: Any = Field(candidate_for_deprecation=True)
     perc_sasa: Any = Field(candidate_for_deprecation=True)
@@ -523,7 +556,7 @@ class YamlParserModel(BaseModel):
     center_of_interface: str = Field(
         categories=["PPI"],
         description="Atom string defining the center of interface in PPI simulation. Should "
-                    "follow the format: 'chain ID:residue number:atom name'.",
+        "follow the format: 'chain ID:residue number:atom name'.",
     )
     protein: str = Field(categories=["PPI"])
     ligand_pdb: str = Field(
@@ -598,7 +631,10 @@ class YamlParserModel(BaseModel):
         default=4,
     )
 
-    overlap_factor_conformation: float = Field(categories=["Ligand conformations"])
+    overlap_factor_conformation: float = Field(
+        categories=["Ligand conformations"],
+        description="Van der Waals overlap factor in conformation perturbation.",
+    )
 
     inter_step_logger: bool = Field(
         categories=["General settings"],
@@ -606,7 +642,10 @@ class YamlParserModel(BaseModel):
         default=False,
     )
 
-    minimum_steps: bool = Field(categories=["General settings"])
+    minimum_steps: bool = Field(
+        categories=["General settings"],
+        description="Force explorers that completed their steps earlier to keep on running PELE steps until all explorers have finished.",
+    )
 
     site_finder_global: bool = Field(
         categories=["Site finder"], description="Launch site finder global exploration."
@@ -626,9 +665,15 @@ class YamlParserModel(BaseModel):
         default=1000,
         description="Number of structures to include on the KDE plot.",
     )
-    plot_filtering_threshold: float = Field(categories=["Analysis"])
+    plot_filtering_threshold: float = Field(
+        categories=["Analysis"],
+        description="Percentage of output structures to filter out before creating plots.",
+    )
     clustering_filtering_threshold: float = Field(
-        categories=["Analysis"], default=0.25, can_be_falsy=True
+        categories=["Analysis"],
+        default=0.25,
+        can_be_falsy=True,
+        description="Percentage of output structures to filter our before clustering",
     )
     clustering_method: str = Field(
         categories=["Analysis"],
@@ -640,8 +685,8 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default="interaction_5_percentile",
         description="Method for selecting representative structures for each cluster, "
-                    "you can choose one of: 'total_25_percentile', 'total_5_percentile', "
-                    "'total_mean', 'interaction_25_percentile', 'interaction_5_percentile' or 'interaction_mean'.",
+        "you can choose one of: 'total_25_percentile', 'total_5_percentile', "
+        "'total_mean', 'interaction_25_percentile', 'interaction_5_percentile' or 'interaction_mean'.",
     )
     bandwidth: float = Field(
         categories=["Analysis"],
@@ -661,14 +706,14 @@ class YamlParserModel(BaseModel):
         simulation_params_default=0.01,
         can_be_falsy=True,
         description="The minimum amount of structures in each cluster, takes a value between 0 and 1, "
-                    "where 0.01 refers to 1%.",
+        "where 0.01 refers to 1%.",
     )
     max_top_poses: int = Field(
         categories=["Analysis"],
         can_be_falsy=True,
         default=100,
         description="The maximum number of top poses (structures with lowest binding energy) to be "
-                    "retrieved during simulation analysis.",
+        "retrieved during simulation analysis.",
     )
     saturated_mutagenesis: bool = Field(
         categories=["Saturated mutagenesis"],
@@ -681,7 +726,8 @@ class YamlParserModel(BaseModel):
     )
     constraint_level: int = Field(
         categories=["Constraints"],
-        description="Select constraint level with predefined parameters parameter. Accepts value for 0 (no constraints) to 3.",
+        description="Select constraint level with predefined parameters parameter. Accepts value for 0 (no constraints) "
+                    "to 3.",
         value_from_simulation_params=True,
     )
 
@@ -813,7 +859,9 @@ class YamlParserModel(BaseModel):
             raise ValueError(f"Value {v} should be positive.")
         return v
 
-    @validator("epsilon", "min_population", allow_reuse=True)
+    @validator(
+        "epsilon", "min_population", "plot_filtering_threshold", allow_reuse=True
+    )
     def assert_value_0_1(cls, v):
         if v and not 0 <= v <= 1:
             raise ValueError(f"Value {v} should be between 0 and 1.")
