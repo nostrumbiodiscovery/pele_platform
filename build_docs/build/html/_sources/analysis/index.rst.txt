@@ -39,22 +39,7 @@ Additionally, the simulation will create a two CSV files with more detailed metr
 Plots
 ---------
 The software will automatically create scatter plots for all metrics, however, if you want to enhance your analysis, you
-can check out our interactive and KDE plots.
-
-Interactive plots
-+++++++++++++++++++
-You can also create your own interactive plots. Simply go to the ``output`` folder and run the following command:
-
-.. code-block:: console
-
- python -m pele_platform.analysis.interactive_plot 6 5
-
-The script requires two integer arguments indicating the numbers of report columns you would like to plot, in this
-case we used columns 5 and 6 corresponding to the binding energy and SASA of the ligand. You can click on data points to get the file names of the structures.
-
-.. image:: ../img/interactive_plot.png
-  :width: 400
-  :align: center
+can check out our PELE Plotter script. See :ref:`this tutorial<PlotterTutorial>` to get more information.
 
 For more advanced interactive plots, please refer to `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html>`_.
 
@@ -117,7 +102,7 @@ class Analysis
             Report column with energy metric.
         limit_column : int (optional, default = None)
             Integer specifying the first column from which the meaningful metrics start, e.g. SASA or RMSD.
-        traj : str (optional, default = "tarjectory.pdb")
+        traj : str (optional, default = "trajectory.pdb")
             Trajectory name defaults to "trajectory.pdb", but you should use "trajectory.xtc" if using XTC format.
         report : str (optional, default = "report")
             Report file name, if not using default.

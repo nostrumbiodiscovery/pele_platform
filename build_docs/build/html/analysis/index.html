@@ -107,7 +107,6 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#plots">Plots</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#interactive-plots">Interactive plots</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#kernel-density-estimate-plot">Kernel density estimate plot</a></li>
 </ul>
 </li>
@@ -236,18 +235,8 @@
 <div class="section" id="plots">
 <h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
 <p>The software will automatically create scatter plots for all metrics, however, if you want to enhance your analysis, you
-can check out our interactive and KDE plots.</p>
-<div class="section" id="interactive-plots">
-<h3>Interactive plots<a class="headerlink" href="#interactive-plots" title="Permalink to this headline">¶</a></h3>
-<p>You can also create your own interactive plots. Simply go to the <code class="docutils literal notranslate"><span class="pre">output</span></code> folder and run the following command:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.analysis.interactive_plot 6 5</span>
-</pre></div>
-</div>
-<p>The script requires two integer arguments indicating the numbers of report columns you would like to plot, in this
-case we used columns 5 and 6 corresponding to the binding energy and SASA of the ligand. You can click on data points to get the file names of the structures.</p>
-<a class="reference internal image-reference" href="../_images/interactive_plot.png"><img alt="../_images/interactive_plot.png" class="align-center" src="../_images/interactive_plot.png" style="width: 400px;" /></a>
+can check out our PELE Plotter script. See <a class="reference internal" href="../tutorials/plotter.html#plottertutorial"><span class="std std-ref">this tutorial</span></a> to get more information.</p>
 <p>For more advanced interactive plots, please refer to <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html">PELE++ documentation</a>.</p>
-</div>
 <div class="section" id="kernel-density-estimate-plot">
 <h3>Kernel density estimate plot<a class="headerlink" href="#kernel-density-estimate-plot" title="Permalink to this headline">¶</a></h3>
 <p>The KDE plots can aid the simulation analysis by visualising the distribution of ligand poses (similarly to a histogram)
@@ -291,7 +280,7 @@ you might want to include.</p>
 </dd>
 <dt>limit_column<span class="classifier">int (optional, default = None)</span></dt><dd><p>Integer specifying the first column from which the meaningful metrics start, e.g. SASA or RMSD.</p>
 </dd>
-<dt>traj<span class="classifier">str (optional, default = “tarjectory.pdb”)</span></dt><dd><p>Trajectory name defaults to “trajectory.pdb”, but you should use “trajectory.xtc” if using XTC format.</p>
+<dt>traj<span class="classifier">str (optional, default = “trajectory.pdb”)</span></dt><dd><p>Trajectory name defaults to “trajectory.pdb”, but you should use “trajectory.xtc” if using XTC format.</p>
 </dd>
 <dt>report<span class="classifier">str (optional, default = “report”)</span></dt><dd><p>Report file name, if not using default.</p>
 </dd>
