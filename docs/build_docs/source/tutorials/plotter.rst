@@ -1,3 +1,5 @@
+.. _PlotterTutorial:
+
 Creating custom plots with PELE Plotter
 =============================================
 
