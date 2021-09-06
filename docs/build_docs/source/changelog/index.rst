@@ -1,36 +1,42 @@
 Versions
 ############
 
-v1.6.0 beta 5
-==============
+PELE Platform 1.6
+=================
 
-- Interaction restrictions
+The new release of the PELE Platform contains many new features and stability changes. The most important ones are:
 
-- Integrate peleffy and support OpenFF force fields
+- **Fragment libraries**: provide us with a PDB or SD file containing your fragments library and we will enumerate all possible ligands, grow them inside your binding site and rank them from best to worst, always taking receptor flexibility into account.
 
-- New module and API for analysis
+- **Conformation perturbation**: if you provide PELE with a conformation library, it will perform an additional perturbation step focused on changing the conformation. Especially useful if you want to focus on bioactive conformers only or to apply specific sampling to tricky compounds like macrocycles or heterocyclic compounds.
 
-- Integrate Mean Shift and HDBSCAN clustering algorithms
+- **Brand new analysis**: we give users more flexibility and tools to simplify the analysis of PELE simulations. You can now choose your preferred clustering method, its parameters and criteria to extract most promising structures. We also improved the plots and added information about the water clusters resulting from aquaPELE simulations.
 
-- Add water sites analysis
+- **Covalent docking**: we have developed a covalent docking protocol to let you explore all those irreversibly binding ligands. All you have to do is provide the platform with a ligand covalently attached to the required protein residue and it will sample local conformations to optimize the interactions for you.
 
-- Support for PELE installations on docker and singularity containers
+- **New built-in Plotter**: a new plotter to quickly represent the results of your simulation using the command line. You can choose from a number of customizable scatter, density and interactive plots.
 
-- Support for growing custom fragment libraries
+- **Interaction restrictions**: with the new release, you will be able to restrict the interactions between the ligand and the protein by specifying a custom H-bond distance or angle range between selected atoms.
+
+- **Open Force Field integration**: from now on you can parametrize your ligands and cofactors using Open Force Field as well as the good old OPLS2005.
+
+- **Singularity**: from now on, we support launching PELE from Singularity containers to save some of the trouble with dependencies and compatibility.
+
+Other changes are:
 
 - Kernel density estimator plots
 
 - Constraints levels for alpha carbons
 
-- Changes to Monte Carlo default parameters for some packages
+- Changes to Monte Carlo parameters
 
-- Allosteric package renamed to site finder
+- Allosteric package renamed to site_finder
 
 - Minor changes to folder structure
 
-- Better handling of YAML errors
+- Interstep logger integration
 
-- Optimisation of coordinates parser and bugfixes
+- New optional flags to control top clusters and their representative structures selection
 
 - Recover restart flag to allow the users to manually curate control files and use them in a new run
 
@@ -40,13 +46,27 @@ v1.6.0 beta 5
 
 - Add user warnings to facilitate the system preparation
 
-- Introduced flexible filtering of output structures taken into account during analysis.
+- Add water sites analysis
 
-- Support for conformation perturbation.
+- New environment variables PELE_EXEC, PELE_DATA and PELE_DOCUMENTS
 
-- Support for the new PELE minimum steps.
+- Fix for the site_finder randomization
 
-- Other minor improvements
+- Support for a new PELE flag called minimum steps
+
+- Improvements in the docs
+
+- Version header
+
+- New checker for flag incompatibilities
+
+- New checker for input PDB files
+
+- Multi representative structures option
+
+- Frag-3.1.1 upgrade
+
+- Fix for atom_dist bug in biased simulations
 
 
 v1.5.1
