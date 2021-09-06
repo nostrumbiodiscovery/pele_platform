@@ -59,6 +59,9 @@ class SimulationParamsModel(YamlParserModel):
         simulation_params_default=constants.SELECTION_TO_PERTURB,
     )
 
+    unbinding_block: str = Field()
+    water_arg: str = Field()
+
     @validator("*", pre=True, always=True)
     def set_value_from_simulation_parameters(cls, v, field):
 
@@ -104,6 +107,20 @@ class SimulationParamsModel(YamlParserModel):
             values["output_path"] = "$OUTPUT_PATH"
 
         return values
+
+    @root_validator
+    def set_out_in_parameters(cls, values):
+
+        if values["exit"] or values["in_out"] or values["in_out_soft"]:
+            values["equilibration"] = False
+            values["unbinding_block"] = constants.UNBINDING.format(
+                values["bias_column"],
+                values["exit_value"],
+                values["exit_condition"],
+                values["exit_trajnum"],
+            )
+        else:
+            values["unbinding_block"] = ""
 
     @validator("input", always=True)
     def set_input_glob(cls, v, values):
@@ -249,8 +266,7 @@ class SimulationParamsModel(YamlParserModel):
     def set_core_constraints(cls, v, values):
         if v:
             return v
-        else:
-            return [] if values.get("use_peleffy") else -1
+        return [] if values.get("use_peleffy") else -1
 
     @validator("pele_exec", always=True)
     def parse_pele_exec(cls, v):
@@ -262,14 +278,13 @@ class SimulationParamsModel(YamlParserModel):
         """
         if v:
             return v
-        else:
-            pele_exec = os.environ.get("PELE_EXEC", "")
 
-            default_pele_exec = (
-                pele_exec
-                if pele_exec
-                else os.path.join(constants.PELE, "bin/Pele_mpi")
-            )
+        pele_exec = os.environ.get("PELE_EXEC", "")
+        default_pele_exec = (
+            pele_exec
+            if pele_exec
+            else os.path.join(constants.PELE, "bin/Pele_mpi")
+        )
         return default_pele_exec
 
     @validator("pele_data", always=True)
@@ -282,14 +297,14 @@ class SimulationParamsModel(YamlParserModel):
         """
         if v:
             return v
-        else:
-            pele_data = os.environ.get("PELE_DATA", "")
-            default_pele_Data = (
-                pele_data
-                if pele_data
-                else os.path.join(constants.PELE, "Data")
-            )
-            return default_pele_Data
+
+        pele_data = os.environ.get("PELE_DATA", "")
+        default_pele_Data = (
+            pele_data
+            if pele_data
+            else os.path.join(constants.PELE, "Data")
+        )
+        return default_pele_Data
 
     @validator("pele_documents", always=True)
     def parse_pele_documents(cls, v):
@@ -301,14 +316,14 @@ class SimulationParamsModel(YamlParserModel):
         """
         if v:
             return v
-        else:
-            pele_documents = os.environ.get("PELE_DOCUMENTS", "")
-            default_pele_documents = (
-                pele_documents
-                if pele_documents
-                else os.path.join(constants.PELE, "Documents")
-            )
-            return default_pele_documents
+
+        pele_documents = os.environ.get("PELE_DOCUMENTS", "")
+        default_pele_documents = (
+            pele_documents
+            if pele_documents
+            else os.path.join(constants.PELE, "Documents")
+        )
+        return default_pele_documents
 
     @validator("license", always=True)
     def parse_pele_license(cls, v):
@@ -320,14 +335,14 @@ class SimulationParamsModel(YamlParserModel):
         """
         if v:
             return v
-        else:
-            pele_license = os.environ.get("PELE_LICENSE", "")
-            default_pele_license = (
-                pele_license
-                if pele_license
-                else os.path.join(constants.PELE, "licenses")
-            )
-            return default_pele_license
+
+        pele_license = os.environ.get("PELE_LICENSE", "")
+        default_pele_license = (
+            pele_license
+            if pele_license
+            else os.path.join(constants.PELE, "licenses")
+        )
+        return default_pele_license
 
     @validator("singularity_exec", always=True)
     def parse_singularity_executable(cls, v):
@@ -337,3 +352,10 @@ class SimulationParamsModel(YamlParserModel):
             2. Environment variable (SINGULARITY_EXEC)
         """
         return v if v else os.environ.get("SINGULARITY_EXEC", "")
+
+    @validator("water_arg", always=True)
+    def parse_water_arg(cls, v, values):
+
+        if values["waters"] == "all_waters":
+            return hp.retrieve_all_waters(values["system"])
+        return values["waters"]

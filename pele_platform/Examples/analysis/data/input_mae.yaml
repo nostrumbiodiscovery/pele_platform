@@ -4,5 +4,4 @@ chain: 'L'
 resname: 'L01'
 only_analysis: true
 output: 'xtc'
-mae: true
 traj: 'trajectory.xtc'

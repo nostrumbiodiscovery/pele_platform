@@ -7,6 +7,7 @@ from pydantic import BaseModel, validator
 from pele_platform.Errors import custom_errors
 from pele_platform.Models.utils import Field
 from pele_platform.constants import constants
+from pele_platform.Utilities.Helpers import helpers
 
 
 def generate_random_seed():
@@ -131,7 +132,7 @@ class YamlParserModel(BaseModel):
         simulation_params_default=0.65,
         categories=["Simulation parameters"],
         description="Van der Waals overlap factor. Lowering its value will result in higher steric overlap being "
-                    "accepted.",
+        "accepted.",
     )
     steering: int = Field(
         value_from_simulation_params=True,
@@ -366,11 +367,25 @@ class YamlParserModel(BaseModel):
     )
     # TODO: Check out all exit keywords and what they do.
     exit: bool = Field(categories=["In Out"])
-    exit_value: float = Field(categories=["In Out"])
-    exit_condition: str = Field(categories=["In Out"])
-    exit_trajnum: int = Field(categories=["In Out"])
+    exit_value: float = Field(
+        value_from_simulation_params=True,
+        simulation_params_default=0.9,
+        categories=["In Out"],
+    )
+    exit_condition: str = Field(
+        categories=["In Out"],
+        value_from_simulation_params=True,
+        simulation_params_default=">",
+    )
+    exit_trajnum: int = Field(
+        categories=["In Out"],
+        value_from_simulation_params=True,
+        simulation_params_default=4,
+    )
     poses: int = Field(
-        description="Number of ligand poses to generate during randomization."
+        description="Number of ligand poses to generate during randomization.",
+        value_from_simulation_params=True,
+        simulation_params_default=cpus-1,
     )
     full: bool = Field(
         alias="global",
@@ -400,7 +415,7 @@ class YamlParserModel(BaseModel):
     water_center: Union[List[float], str] = Field(
         categories=["Water"],
         description="Center of the water box, can be defined as x, y, z coordinates or by selecting an atom as the "
-                    "center (format 'chain ID:residue number:atom name'.",
+        "center (format 'chain ID:residue number:atom name'.",
     )
     water_temp: float = Field(
         value_from_simulation_params=True,
@@ -419,7 +434,7 @@ class YamlParserModel(BaseModel):
         simulation_params_default=0,
         categories=["Water"],
         description="Spring constant of the center of mass constraint applied to the water molecules after "
-                    "perturbation.",
+        "perturbation.",
     )
     water_trials: int = Field(
         value_from_simulation_params=True,
@@ -503,6 +518,7 @@ class YamlParserModel(BaseModel):
         can_be_falsy=True,
         value_from_simulation_params=True,
         simulation_params_default=False,
+        categories=["ANM"],
     )
     pca_traj: Union[List[str], str] = Field(
         categories=["PCA"],
@@ -531,14 +547,39 @@ class YamlParserModel(BaseModel):
         categories=["Ligand preparation"],
     )
     spawning_condition: str = Field(
-        value_from_simulation_params=True, description="Set to 'min' or 'max' to either minimise ot maximise epsilon."
+        value_from_simulation_params=True,
+        description="Set to 'min' or 'max' to either minimise ot maximise epsilon.",
     )
-    external_constraints: List[str] = Field(default=[], categories=["Constraints"], description="List of user-defined positional or atom-atom constraints.")
-    only_analysis: bool = Field(default=False, categories=["Analysis"], description="Analyse simulation output without relaunching PELE.")
-    analysis_nclust: int = Field(default=10, categories=["Analysis"], description="Number of clusters to extract when using the Gaussian Mixture Model.")
-    te_column: int = Field(default=4, categories=["Analysis"], description="Number of report column containing total energy.")
-    be_column: int = Field(default=5, categories=["Analysis"], description="Number of report column containing binding energy.")
-    limit_column: int = Field(default=6, categories=["Analysis"], description="Number of report column where your the metrics start.")
+    external_constraints: List[str] = Field(
+        default=[],
+        categories=["Constraints"],
+        description="List of user-defined positional or atom-atom constraints.",
+    )
+    only_analysis: bool = Field(
+        default=False,
+        categories=["Analysis"],
+        description="Analyse simulation output without relaunching PELE.",
+    )
+    analysis_nclust: int = Field(
+        default=10,
+        categories=["Analysis"],
+        description="Number of clusters to extract when using the Gaussian Mixture Model.",
+    )
+    te_column: int = Field(
+        default=4,
+        categories=["Analysis"],
+        description="Number of report column containing total energy.",
+    )
+    be_column: int = Field(
+        default=5,
+        categories=["Analysis"],
+        description="Number of report column containing binding energy.",
+    )
+    limit_column: int = Field(
+        default=6,
+        categories=["Analysis"],
+        description="Number of report column where your the metrics start.",
+    )
     com: float = Field(
         alias="COMligandConstraint",
         value_from_simulation_params="COMligandConstraint",
@@ -751,7 +792,7 @@ class YamlParserModel(BaseModel):
     constraint_level: int = Field(
         categories=["Constraints"],
         description="Select constraint level with predefined parameters parameter. Accepts value from 0 (no "
-                    "constraints) to 3.",
+        "constraints) to 3.",
         value_from_simulation_params=True,
     )
 
@@ -923,3 +964,18 @@ class YamlParserModel(BaseModel):
     def set_charge_parametrization_method(cls, v, values):
         # TODO
         pass
+
+    @validator("external_constraints")
+    def parse_external_constraints(cls, v, values):
+
+        if v:
+            return helpers.retrieve_constraints_for_pele(v, values["system"])
+        else:
+            return []
+
+    @validator("eq_steps")
+    def calculate_equilibration_steps(cls, v, values):
+        if v:
+            return int(v/values["cpus"]) + 1
+
+        return cls.simulation_params.get("equilibration_steps", 1)

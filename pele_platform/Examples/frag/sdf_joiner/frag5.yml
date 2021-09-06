@@ -3,5 +3,4 @@ frag_ligands: "../pele_platform/Examples/frag/sdf_joiner/4RFM_series.sdf"
 resname: "DRG"
 cpus: 96
 chain_core: "L"
-mae: true
 debug: true
