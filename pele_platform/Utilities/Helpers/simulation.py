@@ -12,7 +12,6 @@ from pele_platform.Adaptive.interaction_restrictions import InteractionRestricti
 
 @dataclass
 class SimulationBuilder(template_builder.TemplateBuilder):
-
     adaptive_file: str
     pele_file: str
     topology: str
@@ -90,17 +89,28 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             else:
                 parameters.pele_exec = "Pele_mpi"
 
+        parameters.water = parameters.water if parameters.water else ""
+        parameters.allow_empty_selectors = '"allowEmptyWaterSelectors": true,' if parameters.allow_empty_selectors else ""
+
         mpi_params_name = "srunParameters" if parameters.usesrun else "mpiParameters"
         parameters.mpi_params = (
             f'"{mpi_params_name}": "{parameters.mpi_params}",' if parameters.mpi_params else ""
         )
 
         parameters.usesrun = str(parameters.usesrun).lower()
+        parameters.minimum_steps = constants.MINIMUMSTEPS if parameters.minimum_steps else ""
+        parameters.inter_step_logger = constants.INTERSTEPLOGGER if parameters.inter_step_logger else ""
+        parameters.conformation_perturbation = constants.CONFORMATION_PERTURBATION if parameters.ligand_conformations else ""
+        parameters.verbose = str(parameters.verbose).lower()
+        parameters.equilibration = str(parameters.equilibration).lower()
+
+        parameters.logfile = parameters.logfile if parameters.logfile else '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
+        parameters.spawning_condition = f'"condition": "{parameters.spawning_condition}",' if parameters.spawning_condition else ""
 
         return parameters
 
     def fill_pele_template(
-        self, env: Parameters, water_obj: wt.WaterIncluder
+            self, env: Parameters, water_obj: wt.WaterIncluder
     ) -> None:
         # Translate OpenFF force field names into the format expected by PELE
         if "openff" in env.forcefield.lower():

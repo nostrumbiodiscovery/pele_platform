@@ -13,6 +13,7 @@ def Field(
     tests_value=None,
     categories: List[str] = ["Other"],
     candidate_for_deprecation=False,
+    description="Missing description".upper(),
     **kwargs,
 ):
     """Extend signature for autocomplete."""

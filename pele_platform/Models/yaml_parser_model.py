@@ -18,7 +18,9 @@ class YamlParserModel(BaseModel):
         allow_population_by_field_name = True
         extra = "allow"
 
-    adaptive: bool = Field(description="Run AdaptivePELE using custom parameters.")
+    adaptive: bool = Field(
+        description="Run AdaptivePELE using custom parameters.", categories=["Advanced"]
+    )
     input: List[str] = Field(
         categories=["General settings"],
         description="Paths to the input files in PDB format (as an alternative to 'system' flag).",
@@ -42,6 +44,7 @@ class YamlParserModel(BaseModel):
         description="Activates test mode to check if the simulation runs as expected. Control files "
         "from the test should never be used for production simulations - temperature, ANM "
         "and minimization parameters are set to unreasonable values to make it run faster.",
+        can_be_falsy=True,
     )
     external_templates: Union[str, List[str]] = Field(
         alias="templates",
@@ -51,7 +54,7 @@ class YamlParserModel(BaseModel):
         categories=["Ligand parametrization"],
         description="Paths to custom template files for hetero molecules.",
     )
-    external_rotamers: Any = Field(
+    external_rotamers: List[str] = Field(
         alias="rotamers",
         default=list(),
         value_from_simulation_params="rotamers",
@@ -66,7 +69,11 @@ class YamlParserModel(BaseModel):
         description="Forcefield used to parametrize all hetero molecules.",
     )
     verbose: bool = Field(
-        categories=["General settings"], description="Activates verbose mode in PELE."
+        value_from_simulation_params=True,
+        can_be_falsy=True,
+        simulation_params_default=False,
+        categories=["General settings"],
+        description="Activates verbose mode in PELE.",
     )
     anm_freq: int = Field(
         tests_value=0,
@@ -123,9 +130,10 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default=0.65,
         categories=["Simulation parameters"],
-        description="Van der Waals overlap factor. Lowering its value will result in higher steric overlap being accepted.",
+        description="Van der Waals overlap factor. Lowering its value will result in higher steric overlap being "
+                    "accepted.",
     )
-    steering: int = Field(  # WTF type? not sure what that is, int based on test inputs
+    steering: int = Field(
         value_from_simulation_params=True,
         simulation_params_default=0,
         categories=["Simulation parameters"],
@@ -136,39 +144,45 @@ class YamlParserModel(BaseModel):
         simulation_params_default="VDGBNP",
         categories=["Simulation parameters"],
     )
-    usesrun: bool = Field(categories=["Miscellaneous"])
-    spawning: str = Field(  # validator for available options
+    usesrun: bool = Field(
+        categories=["General settings"],
+        description="Run PELE using SRUN instead of MPI.",
+        default=False,
+    )
+    spawning: str = Field(  # TODO: validator for available options
         value_from_simulation_params="spawning_type",
         simulation_params_default="independent",
         categories=["Simulation parameters"],
+        description="Spawning type decides how trajectories are distributed throughout available CPUs depending on the"
+        " features of the clusters.",
     )
-
     iterations: int = Field(
         tests_value=1,
         value_from_simulation_params=True,
         categories=["Simulation parameters"],
-    )
-    steps: int = Field(
-        tests_value=1,
-        categories=["Simulation parameters"],
-        candidate_for_deprecation=True,
+        description="Number of iterations to perform.",
     )
     pele_steps: int = Field(
-        value_from="steps",
+        alias="steps",
         value_from_simulation_params=True,
         simulation_params_default=8,
+        tests_value=1,
         categories=["Simulation parameters"],
+        description="Number of PELE steps in each iteration.",
     )
     cpus: int = Field(
         tests_value=5,
         value_from_simulation_params=True,
         simulation_params_default=60,
         categories=["Simulation parameters"],
+        description="Number of CPUs to use.",
     )
-    density: str = Field(  # validator to make sure user chooses from available options
+    density: str = Field(  # TODO: validator to make sure user chooses from available options
         value_from_simulation_params=True,
         simulation_params_default="null",
         categories=["Simulation parameters"],
+        description="Type of density calculator when running and adaptive simulation. Available options: 'constant' "
+        "(default), 'heaviside', 'continuous', 'exitContinuous'.",
     )
     cluster_values: List[float] = Field(
         value_from_simulation_params=True,
@@ -205,18 +219,20 @@ class YamlParserModel(BaseModel):
         default="report",
         categories=["Simulation parameters"],
         candidate_for_deprecation=True,
+        description="Assign custom names to report file.",
     )
     traj_name: str = Field(
         alias="traj",
         default="trajectory.pdb",
         categories=["Simulation parameters"],
-        description="Type of trajectory to save, choose 'trajectory.xtc' or 'trajectory.pdb' (defult).",
+        description="Type of trajectory to save, choose 'trajectory.xtc' or 'trajectory.pdb' (default).",
     )
     epsilon: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=0,
         categories=["Simulation parameters"],
-        description="The fraction of the processors that will be assigned according to the selected metric when using epsilon spawning.",
+        description="The fraction of the processors that will be assigned according to the selected metric when using "
+        "epsilon spawning.",
     )
     out_in: bool = Field(categories=["Out in"], description="Launch OutIn package.")
     bias_column: int = Field(
@@ -238,11 +254,9 @@ class YamlParserModel(BaseModel):
     )
     core: Union[int, List[str]] = Field(
         categories=["Ligand preparation"],
-        description="List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure.",
+        description="List of PDB atom names that will be included as part of the rigid core. In case it is not "
+        "specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure.",
     )
-
-    ################################################################################################ start from here
-
     mtor: int = Field(
         alias="maxtorsion",
         default=4,
@@ -254,19 +268,18 @@ class YamlParserModel(BaseModel):
         categories=["Ligand preparation"],
         description="Maximum number of flexible side chains in the ligand.",
     )
-
     templates: Union[str, List[str]] = Field(
         categories=["Ligand preparation"],
         description="List of template files containing forcefield parameters for hetero molecules.",
     )
-
-    solvent_template: str = Field()
-
+    solvent_template: str = Field(
+        categories=["Ligand preparation"],
+        description="Path to file with solvent template.",
+    )
     rotamers: List[str] = Field(
         categories=["Ligand preparation"],
         description="List of rotamer files for hetero molecules.",
     )
-
     mae_lig: str = Field(
         categories=["Ligand preparation"],
         description="Maestro file containing quantum charges for the ligand preparation.",
@@ -303,7 +316,11 @@ class YamlParserModel(BaseModel):
         categories=["Protein preparation"],
         description="List of non-standard residue names to be omitted during protein preprocessing.",
     )
-    prepwizard: bool = Field()
+    prepwizard: bool = Field(
+        default=False,
+        description="Whether to run Protein Preparation Wizard before launching the simulation.",
+        categories=["Protein preparation"],
+    )
     box_radius: float = Field(
         value_from_simulation_params=True,
         categories=["Box settings"],
@@ -311,17 +328,20 @@ class YamlParserModel(BaseModel):
     )
     box_center: Union[List[float], str] = Field(
         categories=["Box settings"],
-        description="Center of the simulation box. It can be set using x, y, z coordinates or by specifying a center atom following the format: 'chain ID:residue number:atom name'.",
+        description="Center of the simulation box. It can be set using x, y, z coordinates or by specifying a center "
+        "atom following the format: 'chain ID:residue number:atom name'.",
     )
     native: str = Field(
         alias="rmsd_pdb",
         categories=["Metrics"],
-        description="Path to the PDB file with a reference structure. Mind that both proteins need to be prealigned as well as share the same chain ID and PDB atom names of the ligand.",
+        description="Path to the PDB file with a reference structure. Mind that both proteins need to be prealigned as "
+        "well as share the same chain ID and PDB atom names of the ligand.",
     )
     atom_dist: List[str] = Field(
         default_factory=list,
         categories=["Metrics"],
-        description="List of strings representing atoms, between which the distance will be calculated throughout the simulation.",
+        description="List of strings representing atoms, between which the distance will be calculated throughout the "
+        "simulation.",
     )
     debug: bool = Field(
         default=False,
@@ -341,13 +361,14 @@ class YamlParserModel(BaseModel):
         value_from_simulation_params=True,
         simulation_params_default=False,
         categories=["Global Exploration", "Simulation parameters"],
-        description="Whether to randomize the initial positions of the ligand around the protein (or center of interface).",
+        description="Whether to randomize the initial positions of the ligand around the protein (or center of "
+        "interface).",
     )
+    # TODO: Check out all exit keywords and what they do.
     exit: bool = Field(categories=["In Out"])
     exit_value: float = Field(categories=["In Out"])
     exit_condition: str = Field(categories=["In Out"])
     exit_trajnum: int = Field(categories=["In Out"])
-
     poses: int = Field(
         description="Number of ligand poses to generate during randomization."
     )
@@ -356,53 +377,65 @@ class YamlParserModel(BaseModel):
         categories=["Global Exploration"],
         description="Launch global exploration package.",
     )
-
     clust: int = Field(
         alias="exit_clust", tests_value=2, candidate_for_deprecation=True
     )
-
-    restart: bool = Field(categories=["General settings"])
-
+    restart: bool = Field(
+        categories=["General settings"],
+        description="Restart the simulation from scratch (not from the last epoch), without "
+        "overwriting configuration files.",
+    )
     rescoring: bool = Field(
         categories=["Rescoring"], description="Launch rescoring package."
     )
     in_out: bool = Field(categories=["In Out"])
     in_out_soft: bool = Field(categories=["In Out"])
-
     waters: Union[str, List[str]] = Field(
         value_from_simulation_params=True,
         simulation_params_default=[],
         categories=["Water"],
+        description="List of water molecules to perturb which can be defined using residue identifiers (e.g. 'A:123') "
+        "or using keyword 'all' to select all of them.",
     )
-    water_center: Union[List[float], str] = Field(categories=["Water"])
+    water_center: Union[List[float], str] = Field(
+        categories=["Water"],
+        description="Center of the water box, can be defined as x, y, z coordinates or by selecting an atom as the "
+                    "center (format 'chain ID:residue number:atom name'.",
+    )
     water_temp: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=5000,
         categories=["Water"],
+        description="Temperature of water perturbation step.",
     )
     water_overlap: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=0.78,
         categories=["Water"],
+        description="Overlap factor for water perturbation step.",
     )
     water_constr: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=0,
         categories=["Water"],
+        description="Spring constant of the center of mass constraint applied to the water molecules after "
+                    "perturbation.",
     )
     water_trials: int = Field(
         value_from_simulation_params=True,
         simulation_params_default=10000,
         categories=["Water"],
+        description="Number of trials while performing water perturbation.",
     )
-    water_radius: float = Field(default=6.0, categories=["Water"])
+    water_radius: float = Field(
+        default=6.0, categories=["Water"], description="Radius of the water box."
+    )
     induced_fit_exhaustive: bool = Field(
         categories=["Induced fit"], description="Launch Induced Fit Exhaustive package."
     )
     induced_fit_fast: bool = Field(
         categories=["Induced fit"], description="Launch Induced Fit Fast package."
     )
-
     ca_constr: float = Field(
         value_from_simulation_params=True,
         simulation_params_default=0.5,
@@ -415,73 +448,77 @@ class YamlParserModel(BaseModel):
         categories=["Constraints"],
         description="Interval at which alpha carbons in the backbone will be constrained (every n atoms).",
     )
-    one_exit: Any = Field(candidate_for_deprecation=True)
-    box_type: str = Field(categories=["Box settings"])
-
-    time: Any = Field(candidate_for_deprecation=True)
-    nosasa: Any = Field(candidate_for_deprecation=True)
-    perc_sasa: Any = Field(candidate_for_deprecation=True)
-    seed: int = Field(default_factory=generate_random_seed, tests_value=12345)
-    pdb: str = Field(categories=["RNA"])
-    log: Any = Field(candidate_for_deprecation=True)
-    nonrenum: Any = Field(candidate_for_deprecation=True)
+    seed: int = Field(
+        default_factory=generate_random_seed,
+        tests_value=12345,
+        categories=["General settings"],
+    )
+    log: bool = Field(
+        default=False,
+        description="Retrieve PELE log files during simulation.",
+        categories=["General settings"],
+    )
     pele_exec: str = Field()
     pele_data: str = Field()
     pele_documents: str = Field(default=os.path.join(constants.PELE, "Documents"))
-    pca: str = Field(description="Path to PCA file", categories=["PCA"])
+    pca: str = Field(
+        description="Path to PCA file", categories=["PCA"]
+    )  # TODO: Difference between this and pca_traj?
     anm_direction: str = Field(
         value_from_simulation_params=True,
         simulation_params_default="random",
+        categories=["ANM"],
     )
     anm_mix_modes: str = Field(
         value_from_simulation_params=True,
         simulation_params_default="mixMainModeWithOthersModes",
+        categories=["ANM"],
     )
     anm_picking_mode: str = Field(
         value_from_simulation_params=True,
         simulation_params_default="RANDOM_MODE",
+        categories=["ANM"],
     )
     anm_displacement: float = Field(
-        value_from_simulation_params=True, simulation_params_default=0.75
+        value_from_simulation_params=True,
+        simulation_params_default=0.75,
+        categories=["ANM"],
     )
     anm_modes_change: int = Field(
-        value_from_simulation_params=True, simulation_params_default=4
+        value_from_simulation_params=True,
+        simulation_params_default=4,
+        categories=["ANM"],
     )
     anm_num_of_modes: int = Field(
-        value_from_simulation_params=True, simulation_params_default=6
+        value_from_simulation_params=True,
+        simulation_params_default=6,
+        categories=["ANM"],
     )
     anm_relaxation_constr: float = Field(
-        value_from_simulation_params=True, simulation_params_default=0.5
+        value_from_simulation_params=True,
+        simulation_params_default=0.5,
+        categories=["ANM"],
     )
     remove_constraints: bool = Field(
         can_be_falsy=True,
         value_from_simulation_params=True,
         simulation_params_default=False,
     )
-    pca_traj: Union[List[str], str] = Field()
-    perturbation: bool = Field(categories=["Advanced"])
-    sasa: str = Field(
-        value_from_simulation_params=True,
-        simulation_params_default=constants.SASA,
-        categories=["Advanced"],
+    pca_traj: Union[List[str], str] = Field(
+        categories=["PCA"],
+        description="List of protein PDB files to be used for " "PCA analysis.",
     )
+    perturbation: bool = Field(categories=["Advanced"])
     binding_energy: str = Field(
         value_from_simulation_params=True,
         simulation_params_default=constants.BE,
         categories=["Advanced"],
     )
-    parameters: str = Field(
-        value_from_simulation_params="params",
-        simulation_params_default=True,
-        categories=["Advanced"],
+    analyse: bool = Field(
+        default=True,
+        description="Whether to run analysis or not.",
+        categories=["Analysis"],
     )
-    analyse: bool = Field(default=True)
-    selection_to_perturb: str = Field(
-        value_from_simulation_params=True,
-        simulation_params_default=constants.SELECTION_TO_PERTURB,
-        categories=["Advanced"],
-    )
-    mae: bool = Field(default=False)
     constrain_core: str = Field(
         value_from_simulation_params=True,
         description="String of SMILES or SMARTS to constrain.",
@@ -494,15 +531,14 @@ class YamlParserModel(BaseModel):
         categories=["Ligand preparation"],
     )
     spawning_condition: str = Field(
-        value_from_simulation_params=True, description="For min or maximising epsilon"
+        value_from_simulation_params=True, description="Set to 'min' or 'max' to either minimise ot maximise epsilon."
     )
-    external_constraints: List[str] = Field(default=[], categories=["Constraints"])
-    only_analysis: bool = Field(default=False, categories=["Analysis"])
-    overwrite: bool = Field(alias="overwrite_analysis", default=True)
-    analysis_nclust: int = Field(default=10)
-    te_column: int = Field(default=4)
-    be_column: int = Field(default=5, categories=["Analysis"])
-    limit_column: int = Field(default=6)
+    external_constraints: List[str] = Field(default=[], categories=["Constraints"], description="List of user-defined positional or atom-atom constraints.")
+    only_analysis: bool = Field(default=False, categories=["Analysis"], description="Analyse simulation output without relaunching PELE.")
+    analysis_nclust: int = Field(default=10, categories=["Analysis"], description="Number of clusters to extract when using the Gaussian Mixture Model.")
+    te_column: int = Field(default=4, categories=["Analysis"], description="Number of report column containing total energy.")
+    be_column: int = Field(default=5, categories=["Analysis"], description="Number of report column containing binding energy.")
+    limit_column: int = Field(default=6, categories=["Analysis"], description="Number of report column where your the metrics start.")
     com: float = Field(
         alias="COMligandConstraint",
         value_from_simulation_params="COMligandConstraint",
@@ -514,7 +550,10 @@ class YamlParserModel(BaseModel):
         categories=["General settings"],
     )
     license: str = Field(value_from="pele_license", categories=["General settings"])
-    schrodinger: str = Field(categories=["General settings"])
+    schrodinger: str = Field(
+        categories=["General settings"],
+        description="Path to Schrodinger, e.g. '/home/software/schrodinger2021-3/'",
+    )
     no_check: bool = Field(default=False)
     cleanup: bool = Field(
         default=False,
@@ -531,7 +570,7 @@ class YamlParserModel(BaseModel):
     frag_run: bool = Field(default=True, categories=["FragPELE"])
     frag_core: str = Field(categories=["FragPELE"])
     frag_input: str = Field(default=None, categories=["FragPELE"])
-    frag_ligands: Any = Field(default=None, categories=["FragPELE"])
+    frag_ligands: str = Field(default=None, categories=["FragPELE"])
     growing_steps: int = Field(default=6, categories=["FragPELE"])
     frag_steps: int = Field(alias="steps_in_gs", default=3, categories=["FragPELE"])
     frag_eq_steps: int = Field(
@@ -551,7 +590,6 @@ class YamlParserModel(BaseModel):
     fragment_atom: str = Field(default=None, categories=["FragPELE"])
     frag_restart_libraries: bool = Field(default=None, categories=["FragPELE"])
     proximityDetection: bool = Field()
-
     ppi: bool = Field(categories=["PPI"])
     center_of_interface: str = Field(
         categories=["PPI"],
@@ -575,86 +613,72 @@ class YamlParserModel(BaseModel):
     orthosteric_site: str = Field(categories=["GPCR"])
     initial_site: str = Field(categories=["GPCR", "Out in"])
     final_site: str = Field(categories=["GPCR"])
-
     top_clusters_criterion: str = Field(
         categories=["Analysis"], default="interaction_25_percentile"
     )
     interaction_restrictions: List[dict] = Field(
         categories=["Interaction restrictions"]
     )
-
     charge_parametrization_method: str = Field(
         categories=["Ligand preparation"],
-        description="Ligand charge parametrization method when using peleffy. Choose one of: 'gasteiger', 'am1bcc', 'OPLS2005'.",
+        description="Ligand charge parametrization method when using peleffy. Choose one of: 'gasteiger', 'am1bcc', "
+        "'OPLS2005'.",
     )
     exclude_terminal_rotamers: bool = Field(
         default=True, categories=["Ligand preparation"]
     )
-
     singularity_exec: str = Field(categories=["General settings"])
-
     terminal_constr: float = Field(
         value_from_simulation_params="terminal_constr", simulation_params_default=5.0
     )
-
     covalent_residue: str = Field(categories=["Covalent docking"])
-
     nonbonding_radius: float = Field(
         categories=["Covalent docking"],
         value_from_simulation_params=True,
         simulation_params_default=20.0,
     )
-
     perturbation_trials: int = Field(
         categories=["Covalent docking"],
         value_from_simulation_params=True,
         simulation_params_default=10,
+        description="",
     )
-
     refinement_angle: float = Field(
         categories=["Covalent docking"],
         value_from_simulation_params=True,
         simulation_params_default=10.0,
         description="Extend of side chain perturbation during covalent docking refinement.",
     )
-
     covalent_docking_refinement: bool = Field(
         categories=["Covalent docking"],
         description="Launch covalent docking refinement.",
     )
-
     ligand_conformations: str = Field(categories=["Ligand conformations"])
-
     conformation_freq: int = Field(
         categories=["Ligand conformations"],
         value_from_simulation_params=True,
         default=4,
     )
-
     overlap_factor_conformation: float = Field(
         categories=["Ligand conformations"],
         description="Van der Waals overlap factor in conformation perturbation.",
     )
-
     inter_step_logger: bool = Field(
         categories=["General settings"],
         description="Activate interstep logger.",
         default=False,
     )
-
     minimum_steps: bool = Field(
         categories=["General settings"],
-        description="Force explorers that completed their steps earlier to keep on running PELE steps until all explorers have finished.",
+        description="Force explorers that completed their steps earlier to keep on running PELE steps until all "
+        "explorers have finished.",
     )
-
     site_finder_global: bool = Field(
         categories=["Site finder"], description="Launch site finder global exploration."
     )
-
     site_finder_local: bool = Field(
         categories=["Site finder"], description="Launch site finder local exploration."
     )
-
     kde: bool = Field(
         categories=["Analysis"],
         description="Generate kernel density estimate (KDE) plot when analysing the simulation.",
@@ -726,8 +750,8 @@ class YamlParserModel(BaseModel):
     )
     constraint_level: int = Field(
         categories=["Constraints"],
-        description="Select constraint level with predefined parameters parameter. Accepts value for 0 (no constraints) "
-                    "to 3.",
+        description="Select constraint level with predefined parameters parameter. Accepts value from 0 (no "
+                    "constraints) to 3.",
         value_from_simulation_params=True,
     )
 
@@ -841,8 +865,6 @@ class YamlParserModel(BaseModel):
                 "The value should be easily multiplied to obtain 360, e.g. 30, 45 or 10 would be valid."
             )
         return v
-
-    # TODO: Add validator for what's inside interaction restrictions
 
     @validator("constraint_level", allow_reuse=True)
     def parse_constraint_level(cls, v):

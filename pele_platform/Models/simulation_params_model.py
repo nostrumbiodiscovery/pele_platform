@@ -1,45 +1,37 @@
 import os
 import glob
 from typing import Any, List
-import pele_platform.constants.constants as cs
-from pydantic import validator
+from pydantic import validator, root_validator
+
+from pele_platform.constants import constants
 import pele_platform.Utilities.Helpers.helpers as hp
 from pele_platform.Models.utils import Field
 from pele_platform.Models.yaml_parser_model import YamlParserModel
-
-LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
+from pele_platform.features import adaptive as features
 
 
 class SimulationParamsModel(YamlParserModel):
-    frag_pele: Any = Field()
+    frag_pele: bool = Field()
     complexes: str = Field()
-    frag_pele_steps: Any = Field()
-    output_path: Any = Field()
-    logfile: str = Field(value_from="log", always=True)
-    water: str = Field(default="")
-    ligand: Any = Field(default=cs.LIGAND)
-    spython: Any = Field(default=os.path.join(cs.SCHRODINGER, "utilities/python"))
-    lig: Any = Field(value_from="mae_lig")
+    frag_pele_steps: int = Field()
+    output_path: str = Field()
+    water: str = Field()
+    ligand: str = Field(default=constants.LIGAND)
+    spython: str = Field(default=os.path.join(constants.SCHRODINGER, "utilities/python"))
+    lig: str = Field(value_from="mae_lig")
     sasa_max: Any = Field()
     sasa_min: Any = Field()
-    clusters: Any = Field(alias="clust", tests_value=2)
-    allow_empty_selectors: Any = Field(value_from="water_empty_selector")
+    clusters: int = Field(alias="clust", tests_value=2)
+    allow_empty_selectors: bool = Field(value_from="water_empty_selector")
     templates: Any = Field(
         default=os.path.abspath(
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates")
         )
     )
-
-    exit: bool = Field(categories=["In Out"])
-    exit_value: float = Field(categories=["In Out"])
-    exit_condition: str = Field(categories=["In Out"])
-    exit_trajnum: int = Field(categories=["In Out"])
-
     simulation_type: str = (Field(default="pele"))
-
     xtc: bool = Field()
     pdb: bool = Field()
-    constraints: Any = Field()
+    constraints: List[str] = Field()
     water_energy: Any = Field()
     sidechain_perturbation: bool = Field(default=False)
     met_interaction_restrictions: str = Field()
@@ -53,6 +45,19 @@ class SimulationParamsModel(YamlParserModel):
     inputs: List[str] = Field()
     ligand_ref: str = Field()
     mpi_params: str = Field()
+    logfile: str = Field()
+    sasa: str = Field(
+        value_from_simulation_params=True,
+        simulation_params_default=constants.SASA,
+    )
+    parameters: str = Field(
+        value_from_simulation_params="params",
+        simulation_params_default=True,
+    )
+    selection_to_perturb: str = Field(
+        value_from_simulation_params=True,
+        simulation_params_default=constants.SELECTION_TO_PERTURB,
+    )
 
     @validator("*", pre=True, always=True)
     def set_value_from_simulation_parameters(cls, v, field):
@@ -77,30 +82,45 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("adaptive", always=True)
     def set_adaptive(cls, v, values):
-        if values.get("package") in ["site_finder", "adaptive", "PPI", "gpcr_orth"]:
-            return True
-
-    @validator("frag_pele", always=True)
-    def set_frag_pele(cls, v, values):
-        if values.get("frag_core"):
+        if values.get("package") in features.all_simulations:
             return True
         else:
             return False
 
-    @validator("complexes", always=True)
-    def set_complexes(cls, v, values):
-        return "$PDB" if values.get("frag_pele") else "$COMPLEXES"
+    @root_validator
+    def set_frag_pele_parameters(cls, values):
+        """
+        Update all placeholders in the template in case we're running FragPELE instead of AdaptivePELE.
+        """
+        if values.get("frag_core"):
+            values["frag_pele"] = True
+            values["complexes"] = "$PDB"
+            values["frag_pele_steps"] = "$STEPS"
+            values["output_path"] = "$RESULTS_PATH"
+        else:
+            values["frag_pele"] = False
+            values["complexes"] = "$COMPLEXES"
+            values["frag_pele_steps"] = "$PELE_STEPS"
+            values["output_path"] = "$OUTPUT_PATH"
 
-    @validator("frag_pele_steps", always=True)
-    def set_frag_pele_steps(cls, v, values):
-        return "$STEPS" if values.get("frag_pele") else "$PELE_STEPS"
-
-    @validator("output_path", always=True)
-    def set_output_path(cls, v, values):
-        return "$RESULTS_PATH" if values.get("frag_pele") else "$OUTPUT_PATH"
+        return values
 
     @validator("input", always=True)
     def set_input_glob(cls, v, values):
+        """
+        Extract all input PDBs, if 'system' contains an asterisk.
+
+        Parameters
+        -----------
+        v : str
+            Value set for argument being checked.
+        values : dict
+            Dictionary of all parser parameters.
+
+        Returns
+        -------
+            List of paths to PELE inputs.
+        """
         system = values.get("system")
         if system and "*" in system:
             return glob.glob(system)
@@ -108,47 +128,60 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("system", always=True)
     def set_system_glob(cls, v):
+        """
+        Set a single PDB file as system, in case 'system' contains an asterisk.
+
+        Parameters
+        -----------
+        v : str
+            Value set for argument being checked.
+
+        Returns
+        -------
+            Path to the first PELE input.
+        """
         if v and "*" in v:
             return glob.glob(v)[0]
         return v
 
-    @validator("logfile", always=True)
-    def set_logfile(cls, v):
-        if v:
-            return LOGFILE
-        return ""
-
     @validator("system", "residue", "chain", always=True)
     def validate_adaptive_required_fields(cls, v, values, field):
+        """
+        Ensure that fields required for adaptive simulation were set.
+
+        Parameters
+        -----------
+        v : str
+            Value set for argument being checked.
+        values : dict
+            Dictionary of all parser parameters.
+        field : Field
+            Object describing parameters of the YAML argument.
+
+        Raises
+        -------
+            AssertionError if one of the parameters is missing.
+
+        Returns
+        --------
+            Value of the argument being checked, if it's correct.
+        """
         if values.get("adaptive") and not v:
             raise AssertionError(f"User must define {field.name} to use AdaptivePELE.")
         return v
 
     @validator("perturbation", always=True)
-    def set_perturbation(cls, v, values):
-        if v is False or values.get("pca_traj"):
+    def set_perturbation(cls, v):
+        if v is False:
             return ""
-        return cls.simulation_params.get("perturbation", cs.PERTURBATION)
+        return cls.simulation_params.get("perturbation", constants.PERTURBATION)
 
     @validator("sidechain_perturbation", always=True)
     def set_sidechain_perturbation(cls, v, values):
-
         if v or values.get("covalent_residue"):
             return True
         else:
             return False
-
-    @validator("inter_step_logger", always=True)
-    def set_interstep_logger(cls, v):
-        if v is True:
-            return cs.INTERSTEPLOGGER
-        return ""
-
-    @validator("minimum_steps", always=True)
-    def set_minimum_steps(cls, v):
-        if v is True:
-            return cs.MINIMUMSTEPS
-        return ""
 
     @validator("proximityDetection", always=True)
     def set_proximityDetection(cls, v):
@@ -169,22 +202,16 @@ class SimulationParamsModel(YamlParserModel):
             return ""
         return v
 
-    @validator("conformation_perturbation", always=True)
-    def set_conformation_perturbation(cls, v, values):
-        if values.get("ligand_conformations"):
-            return cs.CONFORMATION_PERTURBATION
-        return ""
-
     @validator("conformation_freq", always=True)
     def only_with_conformation_perturbation(cls, v, values):
         if values.get("ligand_conformations"):
-            return cs.CONFORMATION_FREQUENCY.format(v)
+            return constants.CONFORMATION_FREQUENCY.format(v)
         return ""
 
     @validator("spython", always=True)
     def check_spython_path(cls, v):
         if not os.path.exists(v):
-            return os.path.join(cs.SCHRODINGER, "run")
+            return os.path.join(constants.SCHRODINGER, "run")
         return v
 
     @validator("lig", always=True)
@@ -192,18 +219,6 @@ class SimulationParamsModel(YamlParserModel):
         if v:
             return v
         return "{}.mae".format(values.get("residue"))
-
-    @validator("spawning_condition", always=True)
-    def format_spawning_condition(cls, v):
-        if v:
-            return f'"condition": "{v}",'
-        return ""
-
-    @validator("allow_empty_selectors", always=True)
-    def format_allow_empty_selectors(cls, v):
-        if v:
-            '"allowEmptyWaterSelectors": true,'
-        return ""
 
     @validator("iterations", always=True)
     def set_iterations(cls, v, values):
@@ -230,10 +245,6 @@ class SimulationParamsModel(YamlParserModel):
                 return "[" + ",".join([str(coord) for coord in v]) + "]"
         return cls.simulation_params.get("box_center", None)
 
-    @validator("verbose", "equilibration", always=True)
-    def format_verbose(cls, v, field):
-        return "true" if v else cls.simulation_params.get(field.name, "false")
-
     @validator("core", always=True)
     def set_core_constraints(cls, v, values):
         if v:
@@ -257,7 +268,7 @@ class SimulationParamsModel(YamlParserModel):
             default_pele_exec = (
                 pele_exec
                 if pele_exec
-                else os.path.join(cs.PELE, "bin/Pele_mpi")
+                else os.path.join(constants.PELE, "bin/Pele_mpi")
             )
         return default_pele_exec
 
@@ -276,7 +287,7 @@ class SimulationParamsModel(YamlParserModel):
             default_pele_Data = (
                 pele_data
                 if pele_data
-                else os.path.join(cs.PELE, "Data")
+                else os.path.join(constants.PELE, "Data")
             )
             return default_pele_Data
 
@@ -295,7 +306,7 @@ class SimulationParamsModel(YamlParserModel):
             default_pele_documents = (
                 pele_documents
                 if pele_documents
-                else os.path.join(cs.PELE, "Documents")
+                else os.path.join(constants.PELE, "Documents")
             )
             return default_pele_documents
 
@@ -314,7 +325,7 @@ class SimulationParamsModel(YamlParserModel):
             default_pele_license = (
                 pele_license
                 if pele_license
-                else os.path.join(cs.PELE, "licenses")
+                else os.path.join(constants.PELE, "licenses")
             )
             return default_pele_license
 

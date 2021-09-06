@@ -56,8 +56,8 @@ GLOBAL_DEFAULTS_ADAPTIVE = [
     '"peleSteps" : 8,',
     '"iterations" : 100,',
     '"processors" : 250,',
-    '[2.0, 5, 7]',
-    '[1, 0.6, 0.0]'
+    '[2.0, 5.0, 7.0]',
+    '[1.0, 0.6, 0.0]'
 ]
 
 GLOBAL_DEFAULTS_PELE = [
@@ -69,8 +69,8 @@ OUT_IN_DEFAULTS_ADAPTIVE = [
     '"type" : "inverselyProportional"',
     '"peleSteps" : 8,',
     '"iterations" : 100,',
-    '[2, 5, 7]',
-    '[1, 0.6, 0.0]',
+    '[2.0, 5.0, 7.0]',
+    '[1.0, 0.6, 0.0]',
 ]
 
 OUT_IN_DEFAULTS_PELE = [
@@ -109,7 +109,7 @@ EXIT_DEFAULTS_ADAPTIVE = [
     '"epsilon": 0.75',
     '"iterations" : 1000',
     '"processors" : 25',
-    '[1, 2.5]',
+    '[1.0, 2.5]',
     '[1.1]',
     '"peleSteps" : 2,',
     '"type": "exitContinuous"',
@@ -119,7 +119,7 @@ EXIT_SOFT_DEFAULTS_ADAPTIVE = [
     '"type" : "independentMetric"',
     '"iterations" : 1000',
     '"processors" : 25',
-    '[1, 2.5]',
+    '[1.0, 2.5]',
     '[1.1]',
     '"peleSteps" : 2,',
     '"type": "exitContinuous"',
@@ -152,7 +152,7 @@ GPCR_DEFAULTS_ADAPTIVE = [
     '"epsilon": 0.25',
     '"iterations" : 50',
     '"peleSteps" : 8',
-    '"values" : [1.75, 2.5, 4],',
+    '"values" : [1.75, 2.5, 4.0],',
     '"conditions": [0.7, 0.4, 0.0]',
 ]
 
