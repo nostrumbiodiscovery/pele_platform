@@ -112,7 +112,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Versions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#v1-6-0-beta-5">v1.6.0 beta 5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pele-platform-1-6">PELE Platform 1.6</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-5-1">v1.5.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-5-0">v1.5.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-4-4">v1.4.4</a></li>
@@ -199,31 +199,43 @@
             
   <div class="section" id="versions">
 <h1>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="v1-6-0-beta-5">
-<h2>v1.6.0 beta 5<a class="headerlink" href="#v1-6-0-beta-5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pele-platform-1-6">
+<h2>PELE Platform 1.6<a class="headerlink" href="#pele-platform-1-6" title="Permalink to this headline">¶</a></h2>
+<p>The new release of the PELE Platform contains many new features and stability changes. The most important ones are:</p>
 <ul class="simple">
-<li><p>Interaction restrictions</p></li>
-<li><p>Integrate peleffy and support OpenFF force fields</p></li>
-<li><p>New module and API for analysis</p></li>
-<li><p>Integrate Mean Shift and HDBSCAN clustering algorithms</p></li>
-<li><p>Add water sites analysis</p></li>
-<li><p>Support for PELE installations on docker and singularity containers</p></li>
-<li><p>Support for growing custom fragment libraries</p></li>
+<li><p><strong>Fragment libraries</strong>: provide us with a PDB or SD file containing your fragments library and we will enumerate all possible ligands, grow them inside your binding site and rank them from best to worst, always taking receptor flexibility into account.</p></li>
+<li><p><strong>Conformation perturbation</strong>: if you provide PELE with a conformation library, it will perform an additional perturbation step focused on changing the conformation. Especially useful if you want to focus on bioactive conformers only or to apply specific sampling to tricky compounds like macrocycles or heterocyclic compounds.</p></li>
+<li><p><strong>Brand new analysis</strong>: we give users more flexibility and tools to simplify the analysis of PELE simulations. You can now choose your preferred clustering method, its parameters and criteria to extract most promising structures. We also improved the plots and added information about the water clusters resulting from aquaPELE simulations.</p></li>
+<li><p><strong>Covalent docking</strong>: we have developed a covalent docking protocol to let you explore all those irreversibly binding ligands. All you have to do is provide the platform with a ligand covalently attached to the required protein residue and it will sample local conformations to optimize the interactions for you.</p></li>
+<li><p><strong>New built-in Plotter</strong>: a new plotter to quickly represent the results of your simulation using the command line. You can choose from a number of customizable scatter, density and interactive plots.</p></li>
+<li><p><strong>Interaction restrictions</strong>: with the new release, you will be able to restrict the interactions between the ligand and the protein by specifying a custom H-bond distance or angle range between selected atoms.</p></li>
+<li><p><strong>Open Force Field integration</strong>: from now on you can parametrize your ligands and cofactors using Open Force Field as well as the good old OPLS2005.</p></li>
+<li><p><strong>Singularity</strong>: from now on, we support launching PELE from Singularity containers to save some of the trouble with dependencies and compatibility.</p></li>
+</ul>
+<p>Other changes are:</p>
+<ul class="simple">
 <li><p>Kernel density estimator plots</p></li>
 <li><p>Constraints levels for alpha carbons</p></li>
-<li><p>Changes to Monte Carlo default parameters for some packages</p></li>
-<li><p>Allosteric package renamed to site finder</p></li>
+<li><p>Changes to Monte Carlo parameters</p></li>
+<li><p>Allosteric package renamed to site_finder</p></li>
 <li><p>Minor changes to folder structure</p></li>
-<li><p>Better handling of YAML errors</p></li>
-<li><p>Optimisation of coordinates parser and bugfixes</p></li>
+<li><p>Interstep logger integration</p></li>
+<li><p>New optional flags to control top clusters and their representative structures selection</p></li>
 <li><p>Recover restart flag to allow the users to manually curate control files and use them in a new run</p></li>
 <li><p>Support for the new equilibration mode flag of Adaptive</p></li>
 <li><p>Fix problems with the box of the Out –&gt; In package</p></li>
 <li><p>Add user warnings to facilitate the system preparation</p></li>
-<li><p>Introduced flexible filtering of output structures taken into account during analysis.</p></li>
-<li><p>Support for conformation perturbation.</p></li>
-<li><p>Support for the new PELE minimum steps.</p></li>
-<li><p>Other minor improvements</p></li>
+<li><p>Add water sites analysis</p></li>
+<li><p>New environment variables PELE_EXEC, PELE_DATA and PELE_DOCUMENTS</p></li>
+<li><p>Fix for the site_finder randomization</p></li>
+<li><p>Support for a new PELE flag called minimum steps</p></li>
+<li><p>Improvements in the docs</p></li>
+<li><p>Version header</p></li>
+<li><p>New checker for flag incompatibilities</p></li>
+<li><p>New checker for input PDB files</p></li>
+<li><p>Multi representative structures option</p></li>
+<li><p>Frag-3.1.1 upgrade</p></li>
+<li><p>Fix for atom_dist bug in biased simulations</p></li>
 </ul>
 </div>
 <div class="section" id="v1-5-1">
