@@ -49,17 +49,13 @@ class YamlParserModel(BaseModel):
     )
     external_templates: Union[str, List[str]] = Field(
         alias="templates",
-        default=list(),
-        value_from_simulation_params="templates",
-        simulation_params_default=[],
+        default_factory=list,
         categories=["Ligand parametrization"],
         description="Paths to custom template files for hetero molecules.",
     )
-    external_rotamers: List[str] = Field(
+    external_rotamers: Union[str, List[str]] = Field(
         alias="rotamers",
-        default=list(),
-        value_from_simulation_params="rotamers",
-        simulation_params_default=[],
+        default_factory=list,
         categories=["Ligand parametrization"],
         description="Paths to custom rotamer files for hetero molecules.",
     )
@@ -205,7 +201,7 @@ class YamlParserModel(BaseModel):
         simulation_params_default="rmsd",
         categories=["Simulation parameters"],
     )
-    eq_steps: int = Field(
+    equil_steps: int = Field(
         alias="equilibration_steps",
         categories=["Simulation parameters"],
         description="Number of equilibration steps to perform.",
@@ -269,17 +265,9 @@ class YamlParserModel(BaseModel):
         categories=["Ligand preparation"],
         description="Maximum number of flexible side chains in the ligand.",
     )
-    templates: Union[str, List[str]] = Field(
-        categories=["Ligand preparation"],
-        description="List of template files containing forcefield parameters for hetero molecules.",
-    )
     solvent_template: str = Field(
         categories=["Ligand preparation"],
         description="Path to file with solvent template.",
-    )
-    rotamers: List[str] = Field(
-        categories=["Ligand preparation"],
-        description="List of rotamer files for hetero molecules.",
     )
     mae_lig: str = Field(
         categories=["Ligand preparation"],
@@ -385,7 +373,6 @@ class YamlParserModel(BaseModel):
     poses: int = Field(
         description="Number of ligand poses to generate during randomization.",
         value_from_simulation_params=True,
-        simulation_params_default=cpus-1,
     )
     full: bool = Field(
         alias="global",
@@ -617,11 +604,11 @@ class YamlParserModel(BaseModel):
     frag_eq_steps: int = Field(
         alias="sampling_steps", default=20, categories=["FragPELE"]
     )
-    protocol: str = Field(default="", categories=["FragPELE"])
-    frag_ai: bool = Field(default=False, categories=["FragPELE"])
-    frag_ai_iterations: int = Field(default=False, categories=["FragPELE"])
+    protocol: str = Field(categories=["FragPELE"])
+    frag_ai: bool = Field(categories=["FragPELE"])
+    frag_ai_iterations: int = Field(categories=["FragPELE"])
     chain_core: str = Field(default="L", categories=["FragPELE"])
-    frag_restart: str = Field(default="", categories=["FragPELE"])
+    frag_restart: str = Field(categories=["FragPELE"])
     frag_criteria: str = Field(default="Binding Energy", categories=["FragPELE"])
     frag_output_folder: str = Field(default="growing_steps", categories=["FragPELE"])
     frag_cluster_folder: str = Field(default="clustering_PDBs", categories=["FragPELE"])
@@ -795,6 +782,7 @@ class YamlParserModel(BaseModel):
         "constraints) to 3.",
         value_from_simulation_params=True,
     )
+    mae: bool = Field(categories=["Frag"], description="Save FragPELE output as MAE files.")
 
     @validator("*", pre=True, always=True, allow_reuse=True)
     def set_tests_values(cls, v, values, field):
@@ -967,15 +955,7 @@ class YamlParserModel(BaseModel):
 
     @validator("external_constraints")
     def parse_external_constraints(cls, v, values):
-
         if v:
             return helpers.retrieve_constraints_for_pele(v, values["system"])
         else:
             return []
-
-    @validator("eq_steps")
-    def calculate_equilibration_steps(cls, v, values):
-        if v:
-            return int(v/values["cpus"]) + 1
-
-        return cls.simulation_params.get("equilibration_steps", 1)

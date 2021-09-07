@@ -109,6 +109,7 @@ class FragRunner(object):
         if not params.frag_restart_libraries:
             self._extract_working_directory()
         try:
+            breakpoint()
             frag.main(
                 params.core_process,
                 params.input,

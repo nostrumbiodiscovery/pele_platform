@@ -31,35 +31,35 @@ OutIn_lines = [
     '"type" : "inverselyProportional"',
     '"iterations" : 100',
     '"peleSteps" : 8',
-    '"conditions": [1, 0.6, 0.0]',
+    '"conditions": [1.0, 0.6, 0.0]',
 ]
 
 GlobalExploration_lines = [
     '"type" : "inverselyProportional"',
     '"iterations" : 100',
     '"peleSteps" : 8',
-    '"conditions": [1, 0.6, 0.0]',
+    '"conditions": [1.0, 0.6, 0.0]',
 ]
 
 InducedFitExhaustive_lines = [
     '"type" : "independent"',
     '"iterations" : 1',
     '"peleSteps" : 1000',
-    '"conditions": [1, 0.6, 0.0]',
+    '"conditions": [1.0, 0.6, 0.0]',
 ]
 
 InducedFitFast_lines = [
     '"type" : "inverselyProportional"',
     '"iterations" : 30',
     '"peleSteps" : 12',
-    '"conditions": [1, 0.6, 0.0]',
+    '"conditions": [1.0, 0.6, 0.0]',
 ]
 
 Rescoring_lines = [
     '"type" : "independent"',
     '"iterations" : 20',
     '"peleSteps" : 12',
-    '"conditions": [1, 0.6, 0.4, 0.0]',
+    '"conditions": [1.0, 0.6, 0.4, 0.0]',
 ]
 
 CovalentDockingExploration_lines = [

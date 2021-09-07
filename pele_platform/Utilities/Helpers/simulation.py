@@ -106,6 +106,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
 
         parameters.logfile = parameters.logfile if parameters.logfile else '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
         parameters.spawning_condition = f'"condition": "{parameters.spawning_condition}",' if parameters.spawning_condition else ""
+        parameters.proximityDetection = str(parameters.proximityDetection).lower()
 
         return parameters
 

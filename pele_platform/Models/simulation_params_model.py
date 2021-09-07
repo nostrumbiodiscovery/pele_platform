@@ -17,7 +17,9 @@ class SimulationParamsModel(YamlParserModel):
     output_path: str = Field()
     water: str = Field()
     ligand: str = Field(default=constants.LIGAND)
-    spython: str = Field(default=os.path.join(constants.SCHRODINGER, "utilities/python"))
+    spython: str = Field(
+        default=os.path.join(constants.SCHRODINGER, "utilities/python")
+    )
     lig: str = Field(value_from="mae_lig")
     sasa_max: Any = Field()
     sasa_min: Any = Field()
@@ -28,7 +30,7 @@ class SimulationParamsModel(YamlParserModel):
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates")
         )
     )
-    simulation_type: str = (Field(default="pele"))
+    simulation_type: str = Field(default="pele")
     xtc: bool = Field()
     pdb: bool = Field()
     constraints: List[str] = Field()
@@ -58,7 +60,6 @@ class SimulationParamsModel(YamlParserModel):
         value_from_simulation_params=True,
         simulation_params_default=constants.SELECTION_TO_PERTURB,
     )
-
     unbinding_block: str = Field()
     water_arg: str = Field()
 
@@ -87,8 +88,7 @@ class SimulationParamsModel(YamlParserModel):
     def set_adaptive(cls, v, values):
         if values.get("package") in features.all_simulations:
             return True
-        else:
-            return False
+        return False
 
     @root_validator
     def set_frag_pele_parameters(cls, values):
@@ -121,6 +121,8 @@ class SimulationParamsModel(YamlParserModel):
             )
         else:
             values["unbinding_block"] = ""
+
+        return values
 
     @validator("input", always=True)
     def set_input_glob(cls, v, values):
@@ -197,14 +199,13 @@ class SimulationParamsModel(YamlParserModel):
     def set_sidechain_perturbation(cls, v, values):
         if v or values.get("covalent_residue"):
             return True
-        else:
-            return False
+        return False
 
     @validator("proximityDetection", always=True)
     def set_proximityDetection(cls, v):
         if v is False:
             return "false"
-        return cls.simulation_params.get("proximityDetection", "true")
+        return cls.simulation_params.get("proximityDetection", True)
 
     @validator(
         "selection_to_perturb",
@@ -281,9 +282,7 @@ class SimulationParamsModel(YamlParserModel):
 
         pele_exec = os.environ.get("PELE_EXEC", "")
         default_pele_exec = (
-            pele_exec
-            if pele_exec
-            else os.path.join(constants.PELE, "bin/Pele_mpi")
+            pele_exec if pele_exec else os.path.join(constants.PELE, "bin/Pele_mpi")
         )
         return default_pele_exec
 
@@ -300,9 +299,7 @@ class SimulationParamsModel(YamlParserModel):
 
         pele_data = os.environ.get("PELE_DATA", "")
         default_pele_Data = (
-            pele_data
-            if pele_data
-            else os.path.join(constants.PELE, "Data")
+            pele_data if pele_data else os.path.join(constants.PELE, "Data")
         )
         return default_pele_Data
 
@@ -338,9 +335,7 @@ class SimulationParamsModel(YamlParserModel):
 
         pele_license = os.environ.get("PELE_LICENSE", "")
         default_pele_license = (
-            pele_license
-            if pele_license
-            else os.path.join(constants.PELE, "licenses")
+            pele_license if pele_license else os.path.join(constants.PELE, "licenses")
         )
         return default_pele_license
 
@@ -355,7 +350,18 @@ class SimulationParamsModel(YamlParserModel):
 
     @validator("water_arg", always=True)
     def parse_water_arg(cls, v, values):
-
         if values["waters"] == "all_waters":
             return hp.retrieve_all_waters(values["system"])
         return values["waters"]
+
+    @validator("equil_steps")
+    def calculate_equilibration_steps(cls, v, values):
+        if v:
+            return int(v / values["cpus"]) + 1
+        return cls.simulation_params.get("equilibration_steps", 1)
+
+    @validator("poses")
+    def calculate_poses(cls, v, values):
+        if v:
+            return v
+        return values["cpus"] - 1

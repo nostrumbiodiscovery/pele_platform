@@ -98,7 +98,7 @@ class YamlParser(PydanticProxy):
         -------
             YamlParser parameters as dict.
         """
-        return self.model.dict()
+        return self.model.dict(exclude_none=True, by_alias=True)
 
     def to_json(self):
         """
@@ -108,7 +108,7 @@ class YamlParser(PydanticProxy):
         -------
             YamlParser parameters in JSON format.
         """
-        return self.model.json()
+        return self.model.json(exclude_none=True, by_alias=True)
 
     def initialize_model(self, data):
         """
