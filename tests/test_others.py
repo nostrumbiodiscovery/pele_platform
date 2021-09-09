@@ -1,3 +1,4 @@
+import glob
 import os
 import pytest
 import shutil
@@ -192,8 +193,8 @@ def test_skip_preprocess():
     """
     yaml = os.path.join(test_path, "box/input_gpcr.yaml")
     (job,) = main.run_platform_from_yaml(yaml)
-    input_file = os.path.join(job.inputs_dir, "complex_processed.pdb")
-    assert os.path.exists(input_file)
+    input_files = glob.glob(os.path.join(job.inputs_dir, "*_processed.pdb"))
+    assert not input_files
 
 
 @pytest.mark.parametrize(

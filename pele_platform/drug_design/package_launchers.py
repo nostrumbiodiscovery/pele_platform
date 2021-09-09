@@ -6,24 +6,24 @@ from pele_platform.Errors import custom_errors as ce
 from pele_platform.building_blocks import simulation as blocks
 from pele_platform.building_blocks import selection as selection
 from pele_platform.features import adaptive as ft
+from pele_platform.context import context
 
 
 class AdaptiveLauncher(LauncherBase):
 
     def run(self):
         self.set_simulation_type()
-        self.builder.build_adaptive_variables(self.builder.initial_args)
-        self.env = self.builder.parameters
-        self.env.create_files_and_folders()
-        self.env = si.run_adaptive(self.env)
-        return [self.env]
+        context.parameters_builder.build_adaptive_variables()
+        context.parameters.create_files_and_folders()
+        si.run_adaptive()
+        return [context.parameters]
 
     def set_simulation_type(self):
         # NEEDS IMPROVEMENT. Ensuring it doesn't crash in features.adaptive
         # with something like ('EnviroBuilder' object has no attribute 'full'), do you have a better idea?
-        for arg in dir(self.builder.initial_args):
+        for arg in dir(context.yaml_parser):
             if arg in ft.all_simulations:
-                setattr(self.builder, arg, getattr(self.builder.initial_args, arg))
+                setattr(context.parameters_builder, arg, getattr(context.yaml_parser, arg))
 
 
 class WorkflowLauncher(LauncherBase):
@@ -34,7 +34,7 @@ class WorkflowLauncher(LauncherBase):
         available = {**dict((name, func) for name, func in inspect.getmembers(selection)),
                      **dict((name, func) for name, func in inspect.getmembers(blocks))}
 
-        iterable = self.builder.initial_args.workflow
+        iterable = context.yaml_parser.workflow
         simulation_blocks = [i.get('type', None) for i in iterable]
 
         for i in simulation_blocks:

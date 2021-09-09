@@ -1,6 +1,7 @@
-import pele_platform.constants.pele_params as pcs
-
 from copy import deepcopy
+
+import pele_platform.constants.pele_params as pcs
+from pele_platform.context import context
 
 """
 Description of the file: This file specifies what files to use
@@ -237,34 +238,34 @@ all_simulations = [
 ]
 
 
-def retrieve_software_settings(args):
+def retrieve_software_settings():
     software_settings = deepcopy(SOFTWARE_CONSTANTS)
 
-    if args.full:
+    if context.yaml_parser.full:
         type_simulation = "global"
-    elif args.in_out:
+    elif context.yaml_parser.in_out:
         type_simulation = "in_out"
-    elif args.in_out_soft:
+    elif context.yaml_parser.in_out_soft:
         type_simulation = "in_out_soft"
-    elif args.induced_fit_exhaustive:
+    elif context.yaml_parser.induced_fit_exhaustive:
         type_simulation = "induced_fit_exhaustive"
-    elif args.induced_fit_fast:
+    elif context.yaml_parser.induced_fit_fast:
         type_simulation = "induced_fit_fast"
-    elif args.rescoring:
+    elif context.yaml_parser.rescoring:
         type_simulation = "rescoring"
-    elif args.out_in:
+    elif context.yaml_parser.out_in:
         type_simulation = "out_in"
-    elif args.gpcr_orth:
+    elif context.yaml_parser.gpcr_orth:
         type_simulation = "gpcr_orth"
-    elif args.interaction_restrictions:
+    elif context.yaml_parser.interaction_restrictions:
         type_simulation = "interaction_restrictions"
-    elif args.site_finder_global:
+    elif context.yaml_parser.site_finder_global:
         type_simulation = "site_finder_global"
-    elif args.site_finder_local:
+    elif context.yaml_parser.site_finder_local:
         type_simulation = "site_finder_local"
-    elif args.covalent_docking_refinement:
+    elif context.yaml_parser.covalent_docking_refinement:
         type_simulation = "covalent_docking_refinement"
-    elif args.covalent_residue:
+    elif context.yaml_parser.covalent_residue:
         type_simulation = "covalent_docking"
     else:
         # Standard file (user will change the parameters)

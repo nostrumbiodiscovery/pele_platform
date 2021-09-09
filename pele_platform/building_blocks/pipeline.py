@@ -3,11 +3,12 @@ from typing import List
 
 from pele_platform.building_blocks.selection import *
 from pele_platform.building_blocks.simulation import *
-from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
+from pele_platform.context import context
 
 
 class Pipeline:
-    def __init__(self, iterable: List[dict], builder: ParametersBuilder):
+
+    def __init__(self, iterable: List[dict]):
         """
         Initializes Pipeline class.
 
@@ -15,12 +16,8 @@ class Pipeline:
         ----------
         iterable : List[dict]
             List of dictionaries containing workflow steps and their optional parameters.
-        builder : ParametersBuilder
-            ParametersBuilder object.
         """
         self.iterable = iterable
-        self.builder = builder
-        self.env = None
 
     def run(self):
         """
@@ -43,8 +40,8 @@ class Pipeline:
             options = step.get("options", {})
             folder = "{}_{}".format(self.iterable.index(step) + 1, simulation_name)
             print("AAAAAAAAAAAAAAAA folder in Pipeline", folder)
-            self.builder, self.env = simulation(self.builder, options, folder, self.env).run()
-            output.append(deepcopy(self.env))
+            simulation(options, folder).run()
+            output.append(context.parameters_copy)
         return output
 
     def check_pipeline(self):
@@ -92,5 +89,5 @@ class Pipeline:
         If input.yaml contains debug: true flag, the execution of the Pipeline should stop after setting up
         parameters and folders for the first simulation.
         """
-        if self.builder.initial_args.debug:
+        if context.yaml_parser.debug:
             self.iterable = [self.iterable[0]]  # 1st simulation in the Pipeline only

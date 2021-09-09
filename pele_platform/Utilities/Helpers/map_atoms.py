@@ -1,8 +1,8 @@
-from typing import Any, List, Union
+from typing import List, Union
 
 from pele_platform.Utilities.Helpers import helpers
-from pele_platform.Utilities.Parameters import parameters
 from pele_platform.constants import constants
+from pele_platform.context import context
 
 
 class AtomMapper:
@@ -22,25 +22,21 @@ class AtomMapper:
 
     def __init__(
         self,
-        args: parameters.ParametersBuilder,
-        env: parameters.ParametersBuilder,
         original_system: str,
         flags_to_check: List[str] = None,
     ) -> None:
-        self.args = args
-        self.logger = env.logger
         self.original_system = original_system
-        self.preprocessed_pdb = env.system
+        self.preprocessed_pdb = context.parameters.system
         self.atom_string_flags = (
             flags_to_check if flags_to_check else constants.atom_string_flags
         )
         self.all_args = [
             arg
             for arg in self.atom_string_flags
-            if getattr(self.args, arg, None) is not None
+            if getattr(context.parameters, arg, None) is not None
         ]
 
-    def run(self) -> parameters.ParametersBuilder:
+    def run(self):
         """
         Run the whole mapping process.
 
@@ -51,11 +47,10 @@ class AtomMapper:
         args: pele_env.EnviroBuilder - the original user parameters with overwritten atom strings
         """
         for arg in self.all_args:
-            arg_value = getattr(self.args, arg)
+            arg_value = getattr(context.parameters, arg)
             arg_value = atom_number_to_atom_string(self.original_system, arg_value)
             new_atom_string = self.check_atom_string(arg_value)
-            setattr(self.args, arg, new_atom_string)
-        return self.args
+            setattr(context.parameters, arg, new_atom_string)
 
     def check_atom_string(self, args: List[str]) -> List[str]:
         """
@@ -75,9 +70,9 @@ class AtomMapper:
                 helpers.get_coords_from_residue(self.preprocessed_pdb, arg)
                 output.append(arg)
             except Exception as e:
-                self.logger.info("{} - mapping it now!".format(e))
+                context.parameters.logger.info("{} - mapping it now!".format(e))
                 _, after = self.map_atom_string(
-                    arg, self.original_system, self.preprocessed_pdb, self.logger
+                    arg, self.original_system, self.preprocessed_pdb
                 )
                 output.append(after)
         return output
@@ -87,7 +82,6 @@ class AtomMapper:
         atom_string: str,
         original_input: str,
         preprocessed_file: str,
-        logger: Any,
     ) -> (str, str):
         """
         Maps old atom string to a new atom string by comparing coordinates of the original and preprocessed PBD files.
@@ -130,7 +124,7 @@ class AtomMapper:
                         new_atom_name, new_resnum, _, new_chain = get_atom_from_line(p)
                         before = "{}:{}:{}".format(chain, resnum, atom_name)
                         after = "{}:{}:{}".format(new_chain, new_resnum, new_atom_name)
-                        logger.info("Atom {} mapped to {}.".format(before, after))
+                        context.parameters.logger.info("Atom {} mapped to {}.".format(before, after))
                         return before, after
 
 

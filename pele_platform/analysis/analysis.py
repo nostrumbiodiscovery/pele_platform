@@ -1,6 +1,7 @@
 """
 This module manages the analysis toolkit of the platform.
 """
+from pele_platform.context import context
 
 __all__ = ["Analysis"]
 
@@ -99,15 +100,9 @@ class Analysis(object):
         self._dataframe = self._data_handler.get_reports_dataframe()
 
     @classmethod
-    def from_parameters(cls, parameters):
+    def from_parameters(cls):
         """
         It initializes an Analysis object from a Parameters object.
-
-        Parameters
-        ----------
-        parameters : a Parameters object
-            The Parameters object containing the parameters that belong
-            to the simulation
 
         Returns
         -------
@@ -116,6 +111,7 @@ class Analysis(object):
             supplied
         """
         import os
+        parameters = context.parameters
 
         # Set the simulation output path from parameters
         simulation_output = os.path.join(parameters.pele_dir,

@@ -4,6 +4,7 @@ This is the main module designed to run the PELE platform from command line.
 """
 from pele_platform.Errors import custom_errors
 from pele_platform.Utilities.Helpers.launcher import Launcher
+from pele_platform.context import context
 
 __author__ = "Nostrum Biodiscovery"
 __email__ = "pelesupport@nostrumbiodiscovery.com"
@@ -57,20 +58,18 @@ def run_platform_from_yaml(input_yaml):
         The corresponding Parameters object with the parameters of the
         simulation
     """
-    # Generate the yaml object from the input yaml
     from pele_platform.Utilities.Helpers import yaml_parser
+    context.reset()
+    context.yaml_parser = yaml_parser.YamlParser(input_yaml)
 
-    yaml_obj = yaml_parser.YamlParser(input_yaml)
-
-    # Attempt to parse the yaml object
     try:
-        yaml_obj.read()
+        context.yaml_parser.read()
     except AttributeError:
         raise custom_errors.WrongYamlFile(
             "Input file: {}".format(input_yaml)
             + " does not look like a correct yaml file")
 
-    launcher = Launcher(yaml_obj)
+    launcher = Launcher()
     job_parameters = launcher.launch()
 
     return job_parameters

@@ -84,6 +84,7 @@ K_CONSTR = [
 
 POLARISATION = ["    1   1.6445   0.8750  0.200000 0.9545   0.8222   0.005000000   0.000000000"]
 
+
 @pytest.mark.parametrize(
     ("yaml", "expected"),
     [
@@ -92,11 +93,6 @@ POLARISATION = ["    1   1.6445   0.8750  0.200000 0.9545   0.8222   0.005000000
         (ALL_METAL_CONSTR_ARGS, ALL_METAL_CONSTR),
         (SQUARE_PLANAR_ARGS, SQUARE_PLANAR),
         (TETRAHEDRAL_ARGS, TETRAHEDRAL),
-        pytest.param(
-            K_ARGS,
-            K_CONSTR,
-            marks=pytest.mark.xfail(reason="Potassium template not included."),
-        ),
     ],
 )
 def test_metal_constraints(yaml, expected):
@@ -105,6 +101,7 @@ def test_metal_constraints(yaml, expected):
     Most inputs refer to specific geometries that should be recognised but it also covers different metals (e.g. K).
     """
     errors = []
+
     output = main.run_platform_from_yaml(yaml)
     job = output[0]
     errors = tests.utils.check_file_regex(job.pele_dir, "pele.conf", expected, errors)

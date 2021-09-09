@@ -1,33 +1,31 @@
 from abc import ABC, abstractmethod
 import os
 
-from pele_platform.Utilities.Parameters import parameters
+from pele_platform.context import context
 
 
 class Block(ABC):
 
     def __init__(
             self,
-            parameters_builder: parameters.ParametersBuilder,
             options: dict,
             folder_name: str,
-            env: parameters.Parameters = None,
     ) -> None:
         """
         Initialize Block class.
 
         Parameters
         ----------
-        parameters_builder : ParametersBuilder
         options : dict
+            Dictionary with arguments to override default Block parameters.
         folder_name : str
-        env : Parameters
+            Name of the folder in which the Block will be executed (one level under LIG_Pele).
         """
         self.options = options
         self.folder_name = folder_name
-        self.builder = parameters_builder
         self.original_dir = os.path.abspath(os.getcwd())
-        self.env = env if env else self.builder.build_adaptive_variables(self.builder.initial_args)
+        if not context.parameters:
+            context.parameters_builder.build_adaptive_variables()
 
     @abstractmethod
     def run(self):
@@ -40,13 +38,15 @@ class Block(ABC):
         """
         if self.options:
             user_folder = self.options.get("working_folder", None)
-            self.env.folder_name = user_folder if user_folder else self.folder_name
+            context.parameters.folder_name = user_folder if user_folder else self.folder_name
         else:
-            self.env.folder_name = self.folder_name
+            context.parameters.folder_name = self.folder_name
 
-        if self.env.pele_dir == self.builder.pele_dir:
-            self.env.pele_dir = os.path.join(self.builder.pele_dir, self.env.folder_name)
+        if context.parameters.pele_dir == context.parameters_builder.pele_dir:
+            context.parameters.pele_dir = os.path.join(context.parameters_builder.pele_dir,
+                                                       context.parameters.folder_name)
         else:
-            self.env.pele_dir = os.path.join(os.path.dirname(self.env.pele_dir), self.env.folder_name)
+            context.parameters.pele_dir = os.path.join(os.path.dirname(context.parameters.pele_dir),
+                                                       context.parameters.folder_name)
 
-        self.env.inputs_dir = os.path.join(self.env.pele_dir, "input")
+        context.parameters.inputs_dir = os.path.join(context.parameters.pele_dir, "input")

@@ -18,7 +18,7 @@ expected_params1 = [
     '"atLeastOneSelectedTrial": true',
 ]
 
-expected_params2 = ['"refinementAngle": 15']
+expected_params2 = ['"refinementAngle": 15.0']
 
 
 def test_covalent_docking_production():

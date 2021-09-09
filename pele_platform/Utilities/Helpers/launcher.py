@@ -5,9 +5,9 @@ import pele_platform.drug_design.package_launchers
 import pele_platform.enzyme_engineering.saturated_mutagenesis
 import pele_platform.Checker.main as checker
 from pele_platform.Frag.simulation import FragRunner
-from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 from pele_platform.constants import constants
-from pele_platform.Utilities.Helpers import yaml_parser
+from pele_platform.context import context
+from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 
 
 PACKAGES = dict(
@@ -27,19 +27,15 @@ PACKAGES = dict(
 @dataclass
 class Launcher:
 
-    _args: yaml_parser.YamlParser
-    parameters: ParametersBuilder = None
-
     def launch(self):
         """
         Launches PELE package from input.yaml.
 
         Returns
         -------
-            ParametersBuilder object(s) with simulation parameters.
+            Parameters object(s) with simulation parameters.
         """
-        self.parameters = ParametersBuilder()
-        self.parameters.initial_args = self._args  # to keep the original args
+        context.parameters_builder = ParametersBuilder()  # move to Context init?
         print(
             constants.version_header.format(
                 pkg_resources.get_distribution("pele_platform").version
@@ -55,16 +51,16 @@ class Launcher:
         -------
             Parameters object(s) containing simulation parameters for each block.
         """
-        if not self._args.no_check:
-            checker.check_executable_and_env_variables(self._args)
+        if not context.yaml_parser.no_check:
+            checker.check_executable_and_env_variables(context.yaml_parser)
 
         for package_name, package in PACKAGES.items():
-            selected_package = getattr(self._args, package_name)
+            selected_package = getattr(context.yaml_parser, package_name)
             if selected_package:
                 break
         else:
             package_name = "adaptive"
             package = pele_platform.drug_design.package_launchers.AdaptiveLauncher
 
-        self.parameters.package = self._args.package = package_name
-        return package(self.parameters).run()
+        context.parameters_builder.package = context.yaml_parser.package = package_name
+        return package().run()

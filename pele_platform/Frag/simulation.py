@@ -4,7 +4,6 @@ import shutil
 import re
 import glob
 
-
 import pele_platform.Utilities.Helpers.simulation as ad
 import pele_platform.Frag.helpers as hp
 import pele_platform.Frag.checker as ch
@@ -15,36 +14,26 @@ import pele_platform.constants.constants as cs
 import frag_pele.main as frag
 from pele_platform.analysis.analysis import Analysis
 from pele_platform.Utilities.Helpers import water
+from pele_platform.context import context
 
 
 class FragRunner(object):
-    def __init__(self, args):
+    def __init__(self):
         """
         Initializes FragRunner class.
-
-        Parameters
-        ----------
-        args : ParametersBuilder
-            ParametersBuilder generated in Launcher.
         """
-        self.builder = args
-        self.builder.build_frag_variables(self.builder.initial_args)
-        self._parameters = self.builder.parameters
-
-    @property
-    def parameters(self):
-        return self._parameters
+        context.parameters_builder.build_frag_variables()
 
     def run(self):
         self._set_test_variables()
         self._prepare_control_file()
         self._launch()
-        if not self.parameters.debug:
+        if not context.parameters.debug:
             self._analysis()
-        return self.parameters
+        return context.parameters
 
     def _launch(self):
-        params = self.parameters
+        params = context.parameters
         with tempfile.TemporaryDirectory() as tmpdirname:
             if params.ligands:  # Full ligands as sdf
                 fragment_files = self._prepare_input_file(logger=params.logger)
@@ -73,43 +62,43 @@ class FragRunner(object):
 
     def _prepare_control_file(self):
         # Create tmp folder with frag control_file
-        params = self.parameters
+        params = context.parameters
 
         tmp_dir = tempfile.mkdtemp()
         tmp_control_file = os.path.join(tmp_dir, os.path.basename(params.control_file))
         shutil.copy(params.control_file, tmp_control_file)
         adaptive = ad.SimulationBuilder("", tmp_control_file, params)
-        # Fill to time because we have flags inside flags
-        formatted_params = adaptive.format_parameters(params)
-        adaptive.fill_pele_template(formatted_params, params.water_object)
-        adaptive.fill_pele_template(formatted_params, params.water_object)
-        self.parameters.control_file = tmp_control_file
 
-        return self.parameters.control_file
+        # Fill to time because we have flags inside flags
+        formatted_params = adaptive.format_parameters()
+        adaptive.fill_pele_template(formatted_params, params.water_object)
+        adaptive.fill_pele_template(formatted_params, params.water_object)
+        context.parameters.control_file = tmp_control_file
+
+        return context.parameters.control_file
 
     def _prepare_parameters(self):
-        self.parameters.spython = cs.SCHRODINGER  # Commented to use Frag 2.2.1 instead of Frag 3.0.0
+        context.parameters.spython = cs.SCHRODINGER  # Commented to use Frag 2.2.1 instead of Frag 3.0.0
 
     def _set_test_variables(self):
-        if self.parameters.test:
-            self.parameters.gr_steps = 1
-            self.parameters.frag_steps = 2
-            self.parameters.frag_eq_steps = 1
-            self.parameters.temperature = 100000
-            self.parameters.anm_freq = 0
-            self.parameters.minimizatoon = 0
-            self.parameters.sidechain_freq = 0
-            self.parameters.water_freq = 0
-            self.parameters.cpus = 4
+        if context.parameters.test:
+            context.parameters.gr_steps = 1
+            context.parameters.frag_steps = 2
+            context.parameters.frag_eq_steps = 1
+            context.parameters.temperature = 100000
+            context.parameters.anm_freq = 0
+            context.parameters.minimizatoon = 0
+            context.parameters.sidechain_freq = 0
+            context.parameters.water_freq = 0
+            context.parameters.cpus = 4
         else:
             pass
 
     def _run(self):
-        params = self.parameters
+        params = context.parameters
         if not params.frag_restart_libraries:
             self._extract_working_directory()
         try:
-            breakpoint()
             frag.main(
                 params.core_process,
                 params.input,
@@ -170,9 +159,9 @@ class FragRunner(object):
         from rdkit import Chem
         import rdkit.Chem.rdmolops as rd
 
-        self.parameters.input = "input.conf"
+        context.parameters.input = "input.conf"
 
-        params = self.parameters
+        params = context.parameters
 
         # Check input file
         limit_atoms_ligand = 100
@@ -225,12 +214,12 @@ class FragRunner(object):
         return fragment_files
 
     def _create_fragment_from_ligand(
-        self, ligand, ligand_core, result=0, substructure=True, symmetry=False
+            self, ligand, ligand_core, result=0, substructure=True, symmetry=False
     ):
         import rdkit.Chem.AllChem as rp
         from rdkit import Chem
 
-        params = self.parameters
+        params = context.parameters
         (
             fragment,
             old_atoms,
@@ -269,52 +258,52 @@ class FragRunner(object):
     def _analysis(self):
         # TODO create a list of the libraries defined in the current input.yaml
         # Retrieve water indices to cluster, if running analysis only
-        if self.parameters.only_analysis:
+        if context.parameters.only_analysis:
             self._extract_working_directory()
-            for path in self.parameters.working_dir:
+            for path in context.parameters.working_dir:
                 if not os.path.exists(path):
-                    if not os.path.exists(self.parameters.folder):
+                    if not os.path.exists(context.parameters.folder):
                         raise ce.MissingWorkingDir("Missing working_folder parameter. Please set the "
                                                    "path of the trajectories using the flag working_"
                                                    "folder in your input.yaml")
             self._prepare_parameters()
-            self.parameters.water_ids_to_track = water.water_ids_from_conf(self.parameters.control_file)
+            context.parameters.water_ids_to_track = water.water_ids_from_conf(context.parameters.control_file)
 
-        if self.parameters.args.analysis_to_point:
-            self.parameters.analysis_to_point = self.parameters.args.analysis_to_point
+        if context.yaml_parser.analysis_to_point:
+            context.parameters.analysis_to_point = context.yaml_parser.analysis_to_point
             ana.main(
-                path=self.parameters.folder,
-                atom_coords=self.parameters.analysis_to_point,
-                pattern=os.path.basename(self.parameters.system),
+                path=context.parameters.folder,
+                atom_coords=context.parameters.analysis_to_point,
+                pattern=os.path.basename(context.parameters.system),
             )
-        for path in self.parameters.working_dir:
+        for path in context.parameters.working_dir:
             simulation_output = os.path.join(path, 'sampling_result')
             analysis_folder = os.path.join(path, "results")
 
             analysis = Analysis(
                 resname="GRW",
-                chain=self.parameters.chain,
+                chain=context.parameters.chain,
                 simulation_output=simulation_output,
-                be_column=self.parameters.be_column,
-                limit_column=self.parameters.limit_column,
-                traj=self.parameters.traj_name,
-                report=self.parameters.report_name,
-                skip_initial_structures=not self.parameters.test,
-                kde=self.parameters.kde,
-                kde_structs=self.parameters.kde_structs,
-                topology=self.parameters.topology,
-                cpus=self.parameters.cpus,
-                water_ids_to_track=self.parameters.water_ids_to_track,
+                be_column=context.parameters.be_column,
+                limit_column=context.parameters.limit_column,
+                traj=context.parameters.traj_name,
+                report=context.parameters.report_name,
+                skip_initial_structures=not context.parameters.test,
+                kde=context.parameters.kde,
+                kde_structs=context.parameters.kde_structs,
+                topology=context.parameters.topology,
+                cpus=context.parameters.cpus,
+                water_ids_to_track=context.parameters.water_ids_to_track,
             )
             analysis.generate(
                 analysis_folder,
-                clustering_type=self.parameters.clustering_method.lower(),
-                bandwidth=self.parameters.bandwidth,
-                analysis_nclust=self.parameters.analysis_nclust,
-                max_top_clusters=self.parameters.max_top_clusters,
-                top_clusters_criterion=self.parameters.top_clusters_criterion,
-                min_population=self.parameters.min_population,
-                representatives_criterion=self.parameters.cluster_representatives_criterion,
+                clustering_type=context.parameters.clustering_method.lower(),
+                bandwidth=context.parameters.bandwidth,
+                analysis_nclust=context.parameters.analysis_nclust,
+                max_top_clusters=context.parameters.max_top_clusters,
+                top_clusters_criterion=context.parameters.top_clusters_criterion,
+                min_population=context.parameters.min_population,
+                representatives_criterion=context.parameters.cluster_representatives_criterion,
             )
 
     def _clean_up(self, fragment_files):
@@ -323,7 +312,7 @@ class FragRunner(object):
                 os.remove(file)
 
     def _extract_working_directory(self):
-        params = self.parameters
+        params = context.parameters
         params.working_dir = []
         if os.path.isfile(params.core):
             complex_name = os.path.basename(params.core).split(".pdb")[0]  # And if it is a path, get only the name
@@ -335,21 +324,22 @@ class FragRunner(object):
             for line in input_file.readlines():
                 ID = os.path.basename(line).replace(".pdb", "")
                 sentence = re.sub(r"\s+", "", ID, flags=re.UNICODE)
-                if self.parameters.folder:
-                    params.working_dir.append(os.path.join(self.parameters.folder, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
+                if context.parameters.folder:
+                    params.working_dir.append(
+                        os.path.join(context.parameters.folder, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
                 else:
-                    params.working_dir.append(os.path.join(current_path, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
-
+                    params.working_dir.append(
+                        os.path.join(current_path, "{}_{}".format(pdb_basename, sentence)).strip('\n'))
 
     def _frag_restart(self):
         self._extract_working_directory()
-        with open(self.parameters.input, "r") as conf_file:
+        with open(context.parameters.input, "r") as conf_file:
             final_bonds = []
-            for line, path in zip(conf_file.readlines(), self.parameters.working_dir):
+            for line, path in zip(conf_file.readlines(), context.parameters.working_dir):
                 if len(glob.glob(os.path.join(path, "*_top.pdb"))) == 0:
                     if os.path.exists(path):
                         shutil.rmtree(path)
                     final_bonds.append(line)
-            with open(self.parameters.input, "w") as conf_file:
+            with open(context.parameters.input, "w") as conf_file:
                 for line in final_bonds:
                     conf_file.write(line + "\n")

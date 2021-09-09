@@ -25,9 +25,10 @@ import pele_platform.Adaptive.plop_solvent as sv
 import pele_platform.Adaptive.plop_ligand_parametrization as lg
 from pele_platform.Utilities.Helpers import ligand_conformations
 from pele_platform.Checker import pdb_checker
+from pele_platform.context import context
 
 
-def run_adaptive(parameters):
+def run_adaptive():
     """
     Main function to prepare and launch the simulation.
 
@@ -36,326 +37,324 @@ def run_adaptive(parameters):
     3) Analyse simulation
     """
     missing_residues = []
-    args = parameters.args
 
-    if parameters.adaptive_restart and not parameters.only_analysis:
-        with helpers.cd(parameters.pele_dir):
-            adaptiveSampling.main(parameters.ad_ex_temp)
-            parameters.logger.info("Simulation run successfully (:\n\n")
+    if context.parameters.adaptive_restart and not context.parameters.only_analysis:
+        with helpers.cd(context.parameters.pele_dir):
+            adaptiveSampling.main(context.parameters.ad_ex_temp)
+            context.parameters.logger.info("Simulation run successfully (:\n\n")
 
-    elif not parameters.only_analysis and not parameters.restart:
-        parameters.logger.info(
+    elif not context.parameters.only_analysis and not context.parameters.restart:
+        context.parameters.logger.info(
             "System: {}; Platform Functionality: {}\n\n".format(
-                parameters.residue, parameters.software))
+                context.parameters.residue, context.parameters.software))
 
-        pdb_checker.PDBChecker(parameters.system).check_negative_residues()
+        pdb_checker.PDBChecker(context.parameters.system).check_negative_residues()
 
-        if parameters.perturbation:
+        if context.parameters.perturbation:
             syst = sp.SystemBuilder.build_system(
-                parameters.system,
-                args.mae_lig,
-                args.residue,
-                parameters.pele_dir,
-                inputs_dir=parameters.inputs_dir)
+                context.parameters.system,
+                context.parameters.mae_lig,
+                context.parameters.residue,
+                context.parameters.pele_dir,
+                inputs_dir=context.parameters.inputs_dir)
         else:
             syst = sp.SystemBuilder(
-                parameters.system,
+                context.parameters.system,
                 None,
                 None,
-                parameters.pele_dir,
-                inputs_dir=parameters.inputs_dir)
+                context.parameters.pele_dir,
+                inputs_dir=context.parameters.inputs_dir)
 
-        parameters.logger.info("Prepare complex {}".format(syst.system))
+        context.parameters.logger.info("Prepare complex {}".format(syst.system))
 
         # If user overrides 'system' with 'input'
-        if parameters.input:
+        if context.parameters.input:
             inputs_simulation = []
 
-            for input_file in parameters.input:
-                input_path = os.path.join(parameters.inputs_dir, os.path.basename(input_file))
+            for input_file in context.parameters.input:
+                input_path = os.path.join(context.parameters.inputs_dir, os.path.basename(input_file))
                 shutil.copy(input_file, input_path)
 
-                if not parameters.no_ppp:
+                if not context.parameters.no_ppp:
                     input_path, missing_residues, _, _, _ = ppp.main(
                         input_path,
-                        parameters.inputs_dir,
+                        context.parameters.inputs_dir,
                         output_pdb=["", ],
-                        charge_terminals=args.charge_ter,
-                        no_gaps_ter=args.gaps_ter,
+                        charge_terminals=context.parameters.charge_ter,
+                        no_gaps_ter=context.parameters.gaps_ter,
                         constrain_smiles=None,
-                        ligand_pdb=parameters.ligand_ref)
+                        ligand_pdb=context.parameters.ligand_ref)
 
-                input_path = os.path.join(parameters.inputs_dir, os.path.basename(input_path))
+                input_path = os.path.join(context.parameters.inputs_dir, os.path.basename(input_path))
                 inputs_simulation.append(input_path)
 
-            parameters.input = inputs_simulation
+            context.parameters.input = inputs_simulation
 
         # If randomization in necessary (PPI, site_finder, global exploration)...
-        elif args.full or args.randomize or args.ppi or args.site_finder:
-            ligand_positions, box_radius, box_center = rd.randomize_starting_position(
-                parameters.ligand_ref,
-                parameters.receptor,
-                outputfolder=parameters.inputs_dir,
-                nposes=parameters.poses,
-                test=parameters.test,
-                user_center=parameters.center_of_interface,
-                logger=parameters.logger)
-            if not args.gpcr_orth and not args.out_in:
-                parameters.box_center = box_center
-                parameters.box_radius = box_radius
 
-            if parameters.no_ppp:
+        elif context.parameters.full or context.parameters.randomize or context.parameters.ppi or context.parameters.site_finder:
+            ligand_positions, box_radius, box_center = rd.randomize_starting_position(
+                context.parameters.ligand_ref,
+                context.parameters.receptor,
+                outputfolder=context.parameters.inputs_dir,
+                nposes=context.parameters.poses,
+                test=context.parameters.test,
+                user_center=context.parameters.center_of_interface,
+                logger=context.parameters.logger)
+            if not context.parameters.gpcr_orth and not context.parameters.out_in:
+                context.parameters.box_center = box_center
+                context.parameters.box_radius = box_radius
+
+            if context.parameters.no_ppp:
                 receptor = syst.system
             else:
                 receptor, missing_residues, _, _, _ = ppp.main(
                     syst.system,
-                    parameters.inputs_dir,  # to ensure it goes to pele_dir/input, not pele_dir
+                    context.parameters.inputs_dir,  # to ensure it goes to pele_dir/input, not pele_dir
                     output_pdb=["", ],
-                    charge_terminals=args.charge_ter,
-                    no_gaps_ter=args.gaps_ter,
+                    charge_terminals=context.parameters.charge_ter,
+                    no_gaps_ter=context.parameters.gaps_ter,
                     constrain_smiles=None,
-                    ligand_pdb=parameters.ligand_ref)
+                    ligand_pdb=context.parameters.ligand_ref)
 
             inputs = rd.join(
                 receptor,
                 ligand_positions,
-                parameters.residue,
-                output_folder=parameters.inputs_dir)
+                context.parameters.residue,
+                output_folder=context.parameters.inputs_dir)
 
-            parameters.input = [os.path.join(parameters.inputs_dir, inp)
+            context.parameters.input = [os.path.join(context.parameters.inputs_dir, inp)
                                 for inp in inputs]
-            parameters.system = parameters.input[0]
+            context.parameters.system = context.parameters.input[0]
 
             hp.silentremove(ligand_positions)
 
         # Prepare System
-        if parameters.no_ppp or parameters.input or parameters.covalent_residue:
+        if context.parameters.no_ppp or context.parameters.input or context.parameters.covalent_residue:
             # No need to run system through PPP, if we already preprocessed
-            # parameters.input
-            if parameters.input:
+            # context.parameters.input
+            if context.parameters.input:
                 # If we have more than one input
-                for input_file in parameters.input:
+                for input_file in context.parameters.input:
                     try:
-                        shutil.copy(input_file, parameters.inputs_dir)
+                        shutil.copy(input_file, context.parameters.inputs_dir)
                     except shutil.SameFileError:  # systems that go through randomization are already moved
                         pass
             else:
                 try:
-                    shutil.copy(parameters.system, parameters.inputs_dir)
+                    shutil.copy(context.parameters.system, context.parameters.inputs_dir)
                 except shutil.SameFileError:
                     pass
         else:
-            parameters.nonstandard.extend(hp.find_nonstd_residue(syst.system))
-            parameters.system, missing_residues, _, _, _ = ppp.main(
+            context.parameters.nonstandard.extend(hp.find_nonstd_residue(syst.system))
+            context.parameters.system, missing_residues, _, _, _ = ppp.main(
                 syst.system,
-                parameters.inputs_dir,
+                context.parameters.inputs_dir,
                 output_pdb=["", ],
-                charge_terminals=args.charge_ter,
-                no_gaps_ter=args.gaps_ter,
-                mid_chain_nonstd_residue=parameters.nonstandard,
-                skip=parameters.skip_prep,
-                back_constr=parameters.ca_constr,
+                charge_terminals=context.parameters.charge_ter,
+                no_gaps_ter=context.parameters.gaps_ter,
+                mid_chain_nonstd_residue=context.parameters.nonstandard,
+                skip=context.parameters.skip_prep,
+                back_constr=context.parameters.ca_constr,
                 constrain_smiles=None,
-                ligand_pdb=parameters.ligand_ref,
-                ca_interval=parameters.ca_interval)
+                ligand_pdb=context.parameters.ligand_ref,
+                ca_interval=context.parameters.ca_interval)
 
-        parameters.constraints = alpha_constraints.retrieve_constraints(
-            parameters.system,
-            interval=parameters.ca_interval,
-            back_constr=parameters.ca_constr,
-            ter_constr=parameters.terminal_constr)
+        context.parameters.constraints = alpha_constraints.retrieve_constraints(
+            context.parameters.system,
+            interval=context.parameters.ca_interval,
+            back_constr=context.parameters.ca_constr,
+            ter_constr=context.parameters.terminal_constr)
 
         # Metal constraints
-        if not args.no_metal_constraints:
-            metal_constraints, parameters.external_constraints = mc.main(
-                args.external_constraints,
-                parameters.input[0] if parameters.input else parameters.system,
+        if not context.parameters.no_metal_constraints:
+            metal_constraints, context.parameters.external_constraints = mc.main(
+                context.parameters.external_constraints,
+                context.parameters.input[0] if context.parameters.input else context.parameters.system,
                 syst.system,
-                permissive=parameters.permissive_metal_constr,
-                all_metals=args.constrain_all_metals,
-                external=parameters.external_constraints,
-                logger=parameters.logger)
+                permissive=context.parameters.permissive_metal_constr,
+                all_metals=context.parameters.constrain_all_metals,
+                external=context.parameters.external_constraints,
+                logger=context.parameters.logger)
 
-            parameters.external_constraints = hp.retrieve_constraints_for_pele(
-                parameters.external_constraints, parameters.system)
+            context.parameters.external_constraints = hp.retrieve_constraints_for_pele(
+                context.parameters.external_constraints, context.parameters.system)
 
             metal_constraints_json = hp.retrieve_constraints_for_pele(
                 metal_constraints,
-                parameters.system)
+                context.parameters.system)
 
-            parameters.external_constraints.extend(metal_constraints_json)
+            context.parameters.external_constraints.extend(metal_constraints_json)
 
         else:
-            parameters.external_constraints = hp.retrieve_constraints_for_pele(
-                parameters.external_constraints, parameters.system)
+            context.parameters.external_constraints = hp.retrieve_constraints_for_pele(
+                context.parameters.external_constraints, context.parameters.system)
 
         # Keep JSON ordered by having first title and then constraints
-        if parameters.external_constraints:
-            parameters.constraints = (parameters.constraints[0:1]
-                                      + parameters.external_constraints
-                                      + parameters.constraints[1:])
-        if parameters.remove_constraints:
-            parameters.constraints = ""
+        if context.parameters.external_constraints:
+            context.parameters.constraints = (context.parameters.constraints[0:1]
+                                      + context.parameters.external_constraints
+                                      + context.parameters.constraints[1:])
+        if context.parameters.remove_constraints:
+            context.parameters.constraints = ""
 
-        parameters.logger.info(f"Complex {parameters.system} prepared\n\n")
+        context.parameters.logger.info(f"Complex {context.parameters.system} prepared\n\n")
 
         # Ligand/metal and solvent parameters
-        if (parameters.perturbation or parameters.sidechain_perturbation) and parameters.use_peleffy:
-            ligand_parametrizer = parametrizer.Parametrizer.from_parameters(parameters)
-            ligand_parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
+        if (context.parameters.perturbation or context.parameters.sidechain_perturbation) and context.parameters.use_peleffy:
+            ligand_parametrizer = parametrizer.Parametrizer.from_parameters()
+            ligand_parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=context.parameters.system)
 
-        elif (parameters.perturbation or parameters.sidechain_perturbation) and not parameters.use_peleffy:
+        elif (context.parameters.perturbation or context.parameters.sidechain_perturbation) and not context.parameters.use_peleffy:
             # Parametrize the ligand
-            ligand_params = lg.LigandParametrization(parameters)
+            ligand_params = lg.LigandParametrization()
             ligand_params.generate()
 
             # Parametrize missing residues identified by PPP
             for res, __, _ in missing_residues:
-                if res != args.residue and res not in parameters.skip_ligand_prep:
-                    parameters.logger.info("Creating template for residue {}".format(res))
-                    with hp.cd(parameters.pele_dir):
-                        mr.create_template(parameters, res)
-                    parameters.logger.info("Template {}z created\n\n".format(res))
+                if res != context.parameters.residue and res not in context.parameters.skip_ligand_prep:
+                    context.parameters.logger.info("Creating template for residue {}".format(res))
+                    with hp.cd(context.parameters.pele_dir):
+                        mr.create_template(res)
+                    context.parameters.logger.info("Template {}z created\n\n".format(res))
 
-        if parameters.ligand_conformations:
-            ligand_conformations.LigandConformations(path=parameters.ligand_conformations, system=parameters.system,
-                                                     resname=parameters.residue, forcefield=parameters.forcefield,
-                                                     pele_dir=parameters.pele_dir).generate()
+        if context.parameters.ligand_conformations:
+            ligand_conformations.LigandConformations(path=context.parameters.ligand_conformations, system=context.parameters.system,
+                                                     resname=context.parameters.residue, forcefield=context.parameters.forcefield,
+                                                     pele_dir=context.parameters.pele_dir).generate()
 
         # Create simulation box, if performing perturbation
-        if parameters.perturbation:
-            box = bx.BoxSetter(parameters.box_center,
-                               parameters.box_radius,
-                               parameters.ligand_ref,
-                               parameters.logger)
-            parameters.box = box.generate_json()
+        if context.parameters.perturbation:
+            box = bx.BoxSetter(context.parameters.box_center,
+                               context.parameters.box_radius,
+                               context.parameters.ligand_ref,
+                               context.parameters.logger)
+            context.parameters.box = box.generate_json()
         else:
-            parameters.box = ""
+            context.parameters.box = ""
 
         # Solvent parameters
         solvent = sv.ImplicitSolvent(
-            parameters.solvent,
-            parameters.obc_tmp,
-            parameters.template_folder,
-            parameters.obc_file,
-            parameters.logger,
+            context.parameters.solvent,
+            context.parameters.obc_tmp,
+            context.parameters.template_folder,
+            context.parameters.obc_file,
+            context.parameters.logger,
         )
         solvent.generate()
 
         # Build PCA
-        if parameters.pca_traj:
-            pca_obj = pca.PCA(parameters.pca_traj, parameters.pele_dir)
-            parameters.pca = pca_obj.generate(parameters.logger)
+        if context.parameters.pca_traj:
+            pca_obj = pca.PCA(context.parameters.pca_traj, context.parameters.pele_dir)
+            context.parameters.pca = pca_obj.generate(context.parameters.logger)
 
         # Core constraints based on SMILES string
-        if parameters.constrain_core:
-            smiles_input_pdb = parameters.input[0] if parameters.input else parameters.system
+        if context.parameters.constrain_core:
+            smiles_input_pdb = context.parameters.input[0] if context.parameters.input else context.parameters.system
             smiles = smiles_constraints.SmilesConstraints(
                 smiles_input_pdb,
-                parameters.constrain_core,
-                parameters.residue,
-                parameters.chain,
-                parameters.constrain_core_spring)
+                context.parameters.constrain_core,
+                context.parameters.residue,
+                context.parameters.chain,
+                context.parameters.constrain_core_spring)
             smi_constraint = smiles.run()
-            parameters.constraints = (parameters.constraints[0:1]
+            context.parameters.constraints = (context.parameters.constraints[0:1]
                                       + smi_constraint
-                                      + parameters.constraints[1:])
+                                      + context.parameters.constraints[1:])
 
         # Waters
         water_obj = wt.WaterIncluder(
-            parameters.input if parameters.input else [parameters.system],
-            parameters.n_waters,
-            user_waters=parameters.waters,
-            ligand_perturbation_params=parameters.parameters,
-            water_center=args.water_center,
-            water_radius=parameters.water_radius,
-            allow_empty_selectors=parameters.allow_empty_selectors,
-            water_temp=parameters.water_temp,
-            water_trials=parameters.water_trials,
-            water_overlap=parameters.water_overlap,
-            water_constr=parameters.water_constr,
-            test=parameters.test,
-            water_freq=parameters.water_freq,
-            ligand_residue=parameters.residue)
+            context.parameters.input if context.parameters.input else [context.parameters.system],
+            context.parameters.n_waters,
+            user_waters=context.parameters.waters,
+            ligand_perturbation_params=context.parameters.parameters,
+            water_center=context.parameters.water_center,
+            water_radius=context.parameters.water_radius,
+            allow_empty_selectors=context.parameters.allow_empty_selectors,
+            water_temp=context.parameters.water_temp,
+            water_trials=context.parameters.water_trials,
+            water_overlap=context.parameters.water_overlap,
+            water_constr=context.parameters.water_constr,
+            test=context.parameters.test,
+            water_freq=context.parameters.water_freq,
+            ligand_residue=context.parameters.residue)
         water_obj.run()
-        parameters.parameters = water_obj.ligand_perturbation_params
-        parameters.water_ids_to_track = water_obj.water_ids_to_track
+        context.parameters.parameters = water_obj.ligand_perturbation_params
+        context.parameters.water_ids_to_track = water_obj.water_ids_to_track
 
-        args = AtomMapper(args, parameters, syst.system).run()
+        AtomMapper(syst.system).run()
 
         # Metrics builder - builds JSON strings for PELE to be able to
         # track atom distances, RMSD, etc.
         metrics = mt.MetricBuilder()
-        parameters.metrics = (
+        context.parameters.metrics = (
             metrics.distance_to_atom_json(
                 os.path.join(
-                    parameters.input[0] if parameters.input else parameters.system
+                    context.parameters.input[0] if context.parameters.input else context.parameters.system
                 ),
-                args.atom_dist,
+                context.parameters.atom_dist,
             )
-            if args.atom_dist
+            if context.parameters.atom_dist
             else ""
         )
-        parameters.native = (
-            metrics.rsmd_to_json(args.native, parameters.chain) if args.native else ""
+        context.parameters.native = (
+            metrics.rsmd_to_json(context.parameters.native, context.parameters.chain) if context.parameters.native else ""
         )
 
-        parameters.local_nonbonding_energy = metrics.local_nonbonding_energy_json(parameters.covalent_residue,
-                                                                                  parameters.nonbonding_radius)
+        context.parameters.local_nonbonding_energy = metrics.local_nonbonding_energy_json(context.parameters.covalent_residue,
+                                                                                  context.parameters.nonbonding_radius)
 
         # metal polarisation
-        if parameters.polarize_metals:
+        if context.parameters.polarize_metals:
             mp.change_metal_charges(
-                parameters.template_folder,
-                parameters.forcefield,
-                parameters.polarization_factor,
-                parameters.system,
+                context.parameters.template_folder,
+                context.parameters.forcefield,
+                context.parameters.polarization_factor,
+                context.parameters.system,
             )
 
-        parameters.adap_ex_input = ", ".join(
-            [f'"{input_file}"' for input_file in parameters.input]).strip('"') if parameters.input else parameters.system
+        context.parameters.adap_ex_input = ", ".join(
+            [f'"{input_file}"' for input_file in context.parameters.input]).strip('"') if context.parameters.input else context.parameters.system
 
         # Fill in simulation templates
         adaptive = ad.SimulationBuilder(
-            parameters.ad_ex_temp,
-            parameters.pele_exit_temp,
-            parameters.topology
+            context.parameters.ad_ex_temp,
+            context.parameters.pele_exit_temp,
+            context.parameters.topology
         )
-        adaptive.generate_inputs(parameters, water_obj)
+        adaptive.generate_inputs(water_obj)
 
         # Run simulation only if we are not in debug mode
-        if not parameters.debug:
-            parameters.logger.info("Running Simulation")
+        if not context.parameters.debug:
+            context.parameters.logger.info("Running Simulation")
             adaptive.run()
-            parameters.logger.info("Simulation run successfully (:\n\n")
+            context.parameters.logger.info("Simulation run successfully (:\n\n")
 
-    elif parameters.restart:
+    elif context.parameters.restart:
         # Start simulation from scratch (unlike adaptive_restart) but use files created in debug mode
-        parameters.logger.info(f"Launching simulation from {parameters.pele_dir}")
-        adaptive = ad.SimulationBuilder(parameters.ad_ex_temp, parameters.pele_exit_temp, parameters.topology)
+        context.parameters.logger.info(f"Launching simulation from {context.parameters.pele_dir}")
+        adaptive = ad.SimulationBuilder(context.parameters.ad_ex_temp, context.parameters.pele_exit_temp, context.parameters.topology)
         adaptive.run()
-        parameters.logger.info("Simulation run successfully (:\n\n")
+        context.parameters.logger.info("Simulation run successfully (:\n\n")
 
     # Run analysis
-    if parameters.analyse and not parameters.debug:
+    if context.parameters.analyse and not context.parameters.debug:
         from pele_platform.analysis import Analysis
 
         # Retrieve water IDs to track from existing pele.conf, if running analysis only
-        if parameters.only_analysis:
-            parameters.water_ids_to_track = wt.water_ids_from_conf(parameters.pele_temp)
+        if context.parameters.only_analysis:
+            context.parameters.water_ids_to_track = wt.water_ids_from_conf(context.parameters.pele_temp)
 
-        analysis_folder = os.path.join(parameters.pele_dir, "results")
+        analysis_folder = os.path.join(context.parameters.pele_dir, "results")
 
-        analysis = Analysis.from_parameters(parameters)
+        analysis = Analysis.from_parameters()
         analysis.generate(
             analysis_folder,
-            clustering_type=parameters.clustering_method.lower(),
-            bandwidth=parameters.bandwidth,
-            analysis_nclust=parameters.analysis_nclust,
-            max_top_clusters=parameters.max_top_clusters,
-            min_population=parameters.min_population,
-            max_top_poses=parameters.max_top_poses,
-            top_clusters_criterion=parameters.top_clusters_criterion,
-            representatives_criterion=parameters.cluster_representatives_criterion)
-
-    return parameters
+            clustering_type=context.parameters.clustering_method.lower(),
+            bandwidth=context.parameters.bandwidth,
+            analysis_nclust=context.parameters.analysis_nclust,
+            max_top_clusters=context.parameters.max_top_clusters,
+            min_population=context.parameters.min_population,
+            max_top_poses=context.parameters.max_top_poses,
+            top_clusters_criterion=context.parameters.top_clusters_criterion,
+            representatives_criterion=context.parameters.cluster_representatives_criterion)

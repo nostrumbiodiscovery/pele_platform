@@ -10,6 +10,7 @@ from Bio.PDB import PDBParser
 from pele_platform.Errors import custom_errors
 from pele_platform.constants import constants
 from pele_platform.Utilities.Helpers import helpers
+from pele_platform.context import context
 
 
 class Parametrizer:
@@ -104,15 +105,10 @@ class Parametrizer:
         self.solvent_template = solvent_template
 
     @classmethod
-    def from_parameters(cls, parameters):
+    def from_parameters(cls):
         """
         Initializes Parametrization from simulation parameters (e.g. passed
         from Adaptive.simulation).
-
-        Parameters
-        ----------
-        parameters : ParametersBuilder object
-            Simulation parameters passed from Adaptive.simulation
 
         Returns
         -------
@@ -120,26 +116,26 @@ class Parametrizer:
             Parametrization object initialized from simulation parameters
         """
         if hasattr(
-            parameters, "as_datalocal"
+            context.parameters, "as_datalocal"
         ):  # to allow initializing Parametrizer from YamlParser object
-            as_datalocal = parameters.as_datalocal
+            as_datalocal = context.parameters.as_datalocal
         else:
             as_datalocal = True
 
         obj = Parametrizer(
-            forcefield=parameters.forcefield,
-            charge_parametrization_method=parameters.charge_parametrization_method,
-            gridres=parameters.gridres,
-            solvent=parameters.solvent,
-            external_templates=parameters.external_templates,
-            external_rotamers=parameters.external_rotamers,
+            forcefield=context.parameters.forcefield,
+            charge_parametrization_method=context.parameters.charge_parametrization_method,
+            gridres=context.parameters.gridres,
+            solvent=context.parameters.solvent,
+            external_templates=context.parameters.external_templates,
+            external_rotamers=context.parameters.external_rotamers,
             as_datalocal=as_datalocal,
-            pele_dir=parameters.pele_dir,
-            exclude_terminal_rotamers=parameters.exclude_terminal_rotamers,
-            ligand_core_constraints=parameters.core,
-            ligand_resname=parameters.residue,
-            ligands_to_skip=parameters.skip_ligand_prep,
-            solvent_template=parameters.solvent_template,
+            pele_dir=context.parameters.pele_dir,
+            exclude_terminal_rotamers=context.parameters.exclude_terminal_rotamers,
+            ligand_core_constraints=context.parameters.core,
+            ligand_resname=context.parameters.residue,
+            ligands_to_skip=context.parameters.skip_ligand_prep,
+            solvent_template=context.parameters.solvent_template,
         )
 
         return obj

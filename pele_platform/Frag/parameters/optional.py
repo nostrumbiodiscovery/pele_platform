@@ -1,13 +1,15 @@
 """
 This module handles the assignment of optional parameters for FragPELE.
 """
+from pele_platform.context import context
 
 
 class FragOptionalParameters(object):
     """
     Class to assign the optional parameters for FragPELE.
     """
-    def __init__(self, parameters, args):
+
+    def __init__(self):
         """
         Given a Parameters object, it initializes the optional parameters for
         FragPELE.
@@ -16,96 +18,88 @@ class FragOptionalParameters(object):
            * We need to unify all classes that prepare the parameters
              for Frag. We need an abstract class to ensure that all of them
              modify correctly the Parameters object
-
-        Parameters
-        ----------
-        parameters : a Parameters object
-            The Parameters object containing the parameters for PELE
-        args : a YamlParser object
-            The YamlParser object containing the input parameters chosen
-            by the user
         """
         from pele_platform.Utilities.Helpers.constraints import \
             alpha_constraints
         from pele_platform.constants import constants
 
         # Set simulation control file
-        parameters.frag_run = args.frag_run
+        context.parameters.frag_run = context.yaml_parser.frag_run
 
         # Set constraints
-        parameters.constraints = alpha_constraints.retrieve_constraints(
-            parameters.core, interval=parameters.ca_interval,
-            back_constr=parameters.ca_constr,
-            ter_constr=parameters.terminal_constr)
+        context.parameters.constraints = alpha_constraints.retrieve_constraints(
+            context.parameters.core, interval=context.parameters.ca_interval,
+            back_constr=context.parameters.ca_constr,
+            ter_constr=context.parameters.terminal_constr)
 
         # Set chain
-        if args.chain_core:
-            parameters.chain_core = args.chain_core
+        if context.yaml_parser.chain_core:
+            context.parameters.chain_core = context.yaml_parser.chain_core
         else:
-            parameters.chain_core = parameters.simulation_params.get("chain_core", "L")
+            context.parameters.chain_core = context.parameters.simulation_params.get("chain_core", "L")
 
         # Set box
-        if parameters.box_radius:
-            parameters.box = constants.BOX.format(parameters.box_radius,
-                                                  parameters.box_center)
+        if context.parameters.box_radius:
+            context.parameters.box = constants.BOX.format(context.parameters.box_radius,
+                                                          context.parameters.box_center)
         else:
-            parameters.box = ""
+            context.parameters.box = ""
 
         # Set ligand
-        parameters.gridres = args.gridres
-        parameters.plop_path = "PlopRotTemp_S_2017/ligand_prep.py"
+        context.parameters.gridres = context.yaml_parser.gridres
+        context.parameters.plop_path = "PlopRotTemp_S_2017/ligand_prep.py"
 
         # Set output
-        if args.frag_criteria:
-            parameters.criteria = args.frag_criteria
+        if context.yaml_parser.frag_criteria:
+            context.parameters.criteria = context.yaml_parser.frag_criteria
         else:
-            parameters.criteria = \
-                parameters.simulation_params.get("frag_criteria",
-                                                 "Binding Energy")
+            context.parameters.criteria = \
+                context.parameters.simulation_params.get("frag_criteria",
+                                                         "Binding Energy")
 
-        if args.frag_output_folder:
-            parameters.output_folder = args.frag_output_folder
+        if context.yaml_parser.frag_output_folder:
+            context.parameters.output_folder = context.yaml_parser.frag_output_folder
         else:
-            parameters.output_folder = \
-                parameters.simulation_params.get("frag_output_folder",
-                                           "growing_steps")
+            context.parameters.output_folder = \
+                context.parameters.simulation_params.get("frag_output_folder",
+                                                         "growing_steps")
 
-        if args.frag_cluster_folder:
-            parameters.cluster_folder = args.frag_cluster_folder
+        if context.yaml_parser.frag_cluster_folder:
+            context.parameters.cluster_folder = context.yaml_parser.frag_cluster_folder
         else:
-            parameters.cluster_folder = \
-                parameters.simulation_params.get("frag_cluster_folder",
-                                           "clustering_PDBs")
+            context.parameters.cluster_folder = \
+                context.parameters.simulation_params.get("frag_cluster_folder",
+                                                         "clustering_PDBs")
 
         # Set other parameters
-        parameters.distcont = 4
-        parameters.threshold = 0.3
-        parameters.condition = "min"
-        parameters.metricweights = "linear"
-        parameters.nclusters = 5
-        parameters.min_overlap = 0.5
-        parameters.max_overlap = 0.7
-        parameters.frag_chain = "L"
-        parameters.banned = None
-        parameters.limit = None
-        parameters.rename = False
-        parameters.threshold_clash = 1.7
-        parameters.translation_high = 0.05
-        parameters.translation_low = 0.02
-        parameters.rotation_high = 0.1
-        parameters.rotation_low = 0.05
-        parameters.explorative = False
-        parameters.frag_radius = 10
-        parameters.sampling_control = None
-        parameters.only_prepare = False
-        parameters.only_grow = False
-        parameters.no_check = True
+        context.parameters.distcont = 4
+        context.parameters.threshold = 0.3
+        context.parameters.condition = "min"
+        context.parameters.metricweights = "linear"
+        context.parameters.nclusters = 5
+        context.parameters.min_overlap = 0.5
+        context.parameters.max_overlap = 0.7
+        context.parameters.frag_chain = "L"
+        context.parameters.banned = None
+        context.parameters.limit = None
+        context.parameters.rename = False
+        context.parameters.threshold_clash = 1.7
+        context.parameters.translation_high = 0.05
+        context.parameters.translation_low = 0.02
+        context.parameters.rotation_high = 0.1
+        context.parameters.rotation_low = 0.05
+        context.parameters.explorative = False
+        context.parameters.frag_radius = 10
+        context.parameters.sampling_control = None
+        context.parameters.only_prepare = False
+        context.parameters.only_grow = False
+        context.parameters.no_check = True
 
         # Interaction restrictions Parameters (only used by adaptive)
-        parameters.interaction_restrictions = ""
-        parameters.met_interaction_restrictions = ""
+        context.parameters.interaction_restrictions = ""
+        context.parameters.met_interaction_restrictions = ""
 
-        if args.cleanup:
-            parameters.cleanup = args.cleanup
+        if context.yaml_parser.cleanup:
+            context.parameters.cleanup = context.yaml_parser.cleanup
         else:
-            parameters.cleanup = False
+            context.parameters.cleanup = False

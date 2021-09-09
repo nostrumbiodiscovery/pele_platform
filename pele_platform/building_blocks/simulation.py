@@ -11,6 +11,7 @@ from pele_platform.building_blocks import blocks
 from pele_platform.Utilities.Parameters import parameters
 import pele_platform.features.adaptive as ft
 from pele_platform.Adaptive import parametrizer
+from pele_platform.context import context
 
 
 class Simulation(blocks.Block):
@@ -23,9 +24,8 @@ class Simulation(blocks.Block):
 
     def run(self) -> (parameters.ParametersBuilder, parameters.Parameters):
         self.simulation_setup()
-        self.env = si.run_adaptive(self.env)
+        si.run_adaptive()
         self.post_simulation_cleanup()
-        return self.builder, self.env
 
     def simulation_setup(self):
         self.set_working_folder()
@@ -34,8 +34,8 @@ class Simulation(blocks.Block):
         self.create_folders()
         self.set_params(simulation_type=self.keyword)
         self.set_package_params()
-        if hasattr(self.env, "next_step"):
-            self.env.input = glob.glob(self.env.next_step)
+        if hasattr(context.parameters, "next_step"):
+            context.parameters.input = glob.glob(context.parameters.next_step)
         self.water_handler()
 
     def post_simulation_cleanup(self):
@@ -43,9 +43,9 @@ class Simulation(blocks.Block):
         Sets both types of restart to false, so that the platform does not look for logger file while executing the
         next building block. Disables PDB preprocessing, since it would have been done at the first step.
         """
-        self.env.restart = False
-        self.env.adaptive_restart = False
-        self.env.no_ppp = True
+        context.parameters.restart = False
+        context.parameters.adaptive_restart = False
+        context.parameters.no_ppp = True
 
     @abstractmethod
     def set_package_params(self):
@@ -60,10 +60,10 @@ class Simulation(blocks.Block):
         Adaptive restart implies picking up the simulation at the last iteration, whereas restart runs PELE from scratch
         but without overwriting adaptive.conf and pele.conf files.
         """
-        output_dir = os.path.join(self.env.pele_dir, self.env.output)
+        output_dir = os.path.join(context.parameters.pele_dir, context.parameters.output)
 
-        if self.env.adaptive_restart and not os.path.exists(output_dir):
-            self.env.adaptive_restart = False
+        if context.parameters.adaptive_restart and not os.path.exists(output_dir):
+            context.parameters.adaptive_restart = False
 
     def set_params(self, simulation_type):
         """
@@ -71,8 +71,8 @@ class Simulation(blocks.Block):
         we have induced_fit_fast: true and rescoring: true, because some random parameters were carried over.
         """
         for sim in ft.all_simulations:  # make sure everything else is False
-            setattr(self.env, sim, "")
-        setattr(self.env, simulation_type, True)  # set the simulation you need
+            setattr(context.parameters, sim, "")
+        setattr(context.parameters, simulation_type, True)  # set the simulation you need
 
     def set_user_params(self):
         """
@@ -80,26 +80,26 @@ class Simulation(blocks.Block):
         """
         if self.options:
             for key, value in self.options.items():
-                setattr(self.env, key, value)
+                setattr(context.parameters, key, value)
 
     def create_folders(self):
-        self.env.create_files_and_folders()
+        context.parameters.create_files_and_folders()
 
     def water_handler(self):
         """
         In the PPI and Allosteric packages, water perturbation is only executed in the refinement simulation. We
         temporarily hide n_waters parameter to avoid adding water molecules to the global/interface exploration.
         """
-        if getattr(self.builder.initial_args, "n_waters", None):
-            if (self.keyword == "full" and self.builder.package == "allosteric") or (
+        if getattr(context.yaml_parser, "n_waters", None):
+            if (self.keyword == "full" and context.parameters_builder.package == "allosteric") or (
                     self.keyword == "induced_fit_exhaustive"
-                    and self.builder.package == "ppi"
+                    and context.parameters_builder.package == "ppi"
             ):
                 self.hide_water()
             elif (
                     self.keyword == "induced_fit_exhaustive"
-                    and self.builder.package == "site_finder"
-            ) or (self.keyword == "rescoring" and self.builder.package == "ppi"):
+                    and context.parameters_builder.package == "site_finder"
+            ) or (self.keyword == "rescoring" and context.parameters_builder.package == "ppi"):
                 self.add_water()
 
     def hide_water(self):
@@ -107,17 +107,17 @@ class Simulation(blocks.Block):
         Temporarily hide n_waters as _n_waters, so that water perturbation is not performed during global/interface
         exploration.
         """
-        self.env._n_waters = self.env.n_waters
-        self.env.n_waters = 0
-        self.env.water_arg = None
-        self.env.waters = None
+        context.parameters._n_waters = context.parameters.n_waters
+        context.parameters.n_waters = 0
+        context.parameters.water_arg = None
+        context.parameters.waters = None
 
     def add_water(self):
         """
         Reinstate hidden n_waters.
         """
-        self.env.n_waters = getattr(self.env, "_n_waters", None)
-        self.env.waters = "all_waters"
+        context.parameters.n_waters = getattr(context.parameters, "_n_waters", None)
+        context.parameters.waters = "all_waters"
 
 
 class GlobalExploration(Simulation):
@@ -141,12 +141,12 @@ class LocalExplorationExhaustive(Simulation):
     keyword = "induced_fit_exhaustive"
 
     def set_package_params(self):
-        if self.builder.package == "ppi":
-            self.env.water_arg = None
-            self.env.system = prepare_structure(
-                self.env.system,
-                self.env.ligand_pdb,
-                self.env.protein,
+        if context.parameters_builder.package == "ppi":
+            context.parameters.water_arg = None
+            context.parameters.system = prepare_structure(
+                context.parameters.system,
+                context.parameters.ligand_pdb,
+                context.parameters.protein,
                 remove_water=False,
             )
 
@@ -156,20 +156,20 @@ class Rescoring(Simulation):
     keyword = "rescoring"
 
     def set_package_params(self):
-        if self.builder.package == "ppi":
+        if context.parameters_builder.package == "ppi":
             self.set_ppi_params()
 
     def set_ppi_params(self):
         """
         Overrides default Rescoring parameters if running PPI.
         """
-        if not self.env.test:
-            self.env.iterations = 1
-            self.env.steps = 100
-            self.env.box_radius = 100
+        if not context.parameters.test:
+            context.parameters.iterations = 1
+            context.parameters.steps = 100
+            context.parameters.box_radius = 100
 
-        if hasattr(self.env, "_n_waters"):
-            self.env.n_waters = self.env._n_waters
+        if hasattr(context.parameters, "_n_waters"):
+            context.parameters.n_waters = context.parameters._n_waters
 
 
 class GPCR(Simulation):
@@ -177,26 +177,26 @@ class GPCR(Simulation):
     keyword = "gpcr_orth"
 
     def set_package_params(self):
-        self.env.orthosteric_site = self.builder.initial_args.orthosteric_site
-        self.env.initial_site = self.builder.initial_args.initial_site
-        self.env.center_of_interface = self.env.initial_site
+        context.parameters.orthosteric_site = context.yaml_parser.orthosteric_site
+        context.parameters.initial_site = context.yaml_parser.initial_site
+        context.parameters.center_of_interface = context.parameters.initial_site
         box_center, box_radius = helpers.retrieve_box(
-            self.env.system,
-            self.env.initial_site,
-            self.env.orthosteric_site,
+            context.parameters.system,
+            context.parameters.initial_site,
+            context.parameters.orthosteric_site,
             weights=[0.35, 0.65],
         )
-        self.env.box_center = (
-            self.builder.initial_args.box_center
-            if self.builder.initial_args.box_center
+        context.parameters.box_center = (
+            context.yaml_parser.box_center
+            if context.yaml_parser.box_center
             else box_center
         )
-        self.env.box_radius = (
-            self.builder.initial_args.box_radius
-            if self.builder.initial_args.box_radius
+        context.parameters.box_radius = (
+            context.yaml_parser.box_radius
+            if context.yaml_parser.box_radius
             else box_radius
         )
-        self.env.randomize = True
+        context.parameters.randomize = True
 
 
 class OutIn(Simulation):
@@ -210,32 +210,32 @@ class OutIn(Simulation):
     def _check_mandatory_fields(self):
         compulsory_flags = ["final_site", "initial_site"]
         for flag in compulsory_flags:
-            if getattr(self.builder.initial_args, flag) is None:
+            if getattr(context.yaml_parser, flag) is None:
                 raise custom_errors.OutInError(
                     f"Flag {flag} must be specified for out_in package."
                 )
 
     def set_outin_params(self):
-        self.env.final_site = self.builder.initial_args.final_site
-        self.env.initial_site = self.builder.initial_args.initial_site
-        self.env.center_of_interface = self.env.initial_site
+        context.parameters.final_site = context.yaml_parser.final_site
+        context.parameters.initial_site = context.yaml_parser.initial_site
+        context.parameters.center_of_interface = context.parameters.initial_site
         box_center, box_radius = helpers.retrieve_box(
-            self.builder.initial_args.system,
-            self.env.initial_site,
-            self.env.final_site,
+            context.yaml_parser.system,
+            context.parameters.initial_site,
+            context.parameters.final_site,
             weights=[0.35, 0.65],
         )
-        self.env.box_center = (
-            self.builder.initial_args.box_center
-            if self.builder.initial_args.box_center
+        context.parameters.box_center = (
+            context.yaml_parser.box_center
+            if context.yaml_parser.box_center
             else box_center
         )
-        self.env.box_radius = (
-            self.builder.initial_args.box_radius
-            if self.builder.initial_args.box_radius
+        context.parameters.box_radius = (
+            context.yaml_parser.box_radius
+            if context.yaml_parser.box_radius
             else box_radius
         )
-        self.env.randomize = True
+        context.parameters.randomize = True
 
 
 class CovalentDockingExploration(Simulation):
@@ -243,30 +243,30 @@ class CovalentDockingExploration(Simulation):
     keyword = "covalent_docking"
 
     def set_package_params(self):
-        self.env.residue_type = self.get_residue_type()
+        context.parameters.residue_type = self.get_residue_type()
         self.correct_system()
         self.set_general_perturbation_params()
-        self.env.system = self.run_ppp()
-        parametrizer.parametrize_covalent_residue(self.env.pele_data, self.env.pele_dir, self.env.gridres,
-                                                  self.env.residue_type, self.env.residue,
-                                                  ppp_system=self.env.system)
+        context.parameters.system = self.run_ppp()
+        parametrizer.parametrize_covalent_residue(context.parameters.pele_data, context.parameters.pele_dir, context.parameters.gridres,
+                                                  context.parameters.residue_type, context.parameters.residue,
+                                                  ppp_system=context.parameters.system)
 
     def set_general_perturbation_params(self):
         """
         Sets parameters for the initial side chain perturbation, making sure we set the correct working folder and
         ignore refinement distance for now.
         """
-        if isinstance(self.env.skip_ligand_prep, list):
-            self.env.skip_ligand_prep.append(self.env.residue)
+        if isinstance(context.parameters.skip_ligand_prep, list):
+            context.parameters.skip_ligand_prep.append(context.parameters.residue)
         else:
-            self.env.skip_ligand_prep = [self.env.residue]
+            context.parameters.skip_ligand_prep = [context.parameters.residue]
 
     def get_residue_type(self):
         """
         Extracts name of the residue the covalent ligand is bound to before correcting the system.
         """
-        chain, residue_number = self.env.covalent_residue.split(":")
-        residue_type = helpers.get_residue_name(self.env.system, chain, residue_number)
+        chain, residue_number = context.parameters.covalent_residue.split(":")
+        residue_type = helpers.get_residue_name(context.parameters.system, chain, residue_number)
         return residue_type
 
     def correct_system(self):
@@ -277,22 +277,22 @@ class CovalentDockingExploration(Simulation):
         from frag_pele.Covalent import pdb_corrector
 
         corrected_system = os.path.join(
-            self.env.inputs_dir,
-            os.path.basename(self.env.system.replace(".pdb", "_corrected.pdb")),
+            context.parameters.inputs_dir,
+            os.path.basename(context.parameters.system.replace(".pdb", "_corrected.pdb")),
         )
-        chain, residue_number = self.env.covalent_residue.split(":")
+        chain, residue_number = context.parameters.covalent_residue.split(":")
 
         pdb_corrector.run(
-            self.env.system,
+            context.parameters.system,
             chain,
             int(residue_number),
             corrected_system,
-            ligand_resname=self.env.residue,
-            ligand_chain=self.env.chain,
+            ligand_resname=context.parameters.residue,
+            ligand_chain=context.parameters.chain,
         )
 
         self.retrieve_ligand_conects()
-        self.env.system = corrected_system
+        context.parameters.system = corrected_system
 
     def retrieve_ligand_conects(self):
         """
@@ -301,11 +301,11 @@ class CovalentDockingExploration(Simulation):
         original_atom_numbers = list()
         original_conects = list()
 
-        covalent_chain, covalent_resnum = self.env.covalent_residue.split(":")
-        extracted_ligand = os.path.join(self.env.inputs_dir, f"{self.env.residue}.pdb")
+        covalent_chain, covalent_resnum = context.parameters.covalent_residue.split(":")
+        extracted_ligand = os.path.join(context.parameters.inputs_dir, f"{context.parameters.residue}.pdb")
 
         # Load original PDB
-        with open(self.env.system, "r") as system_file:
+        with open(context.parameters.system, "r") as system_file:
             system_lines = [
                 line
                 for line in system_file.readlines()
@@ -313,7 +313,7 @@ class CovalentDockingExploration(Simulation):
 
         # Find ligand covalent residue lines in the original PDB and extract atom numbers
         for line in system_lines:
-            if line[17:20].strip() == self.env.residue:
+            if line[17:20].strip() == context.parameters.residue:
                 original_atom_numbers.append(line[7:11].strip())
             if line[22:26].strip() == covalent_resnum and line[21] == covalent_chain:
                 original_atom_numbers.append(line[7:11].strip())
@@ -351,23 +351,23 @@ class CovalentDockingExploration(Simulation):
         """
         import PPP.main as ppp
 
-        self.env.nonstandard.extend(helpers.find_nonstd_residue(self.env.system))
+        context.parameters.nonstandard.extend(helpers.find_nonstd_residue(context.parameters.system))
 
-        if self.env.no_ppp:
-            return self.env.system
+        if context.parameters.no_ppp:
+            return context.parameters.system
         else:
             return ppp.main(
-                self.env.system,
-                self.env.inputs_dir,
+                context.parameters.system,
+                context.parameters.inputs_dir,
                 output_pdb=["", ],
-                charge_terminals=self.env.charge_ter,
-                no_gaps_ter=self.env.gaps_ter,
-                mid_chain_nonstd_residue=self.env.nonstandard,
-                skip=self.env.skip_prep,
-                back_constr=self.env.ca_constr,
+                charge_terminals=context.parameters.charge_ter,
+                no_gaps_ter=context.parameters.gaps_ter,
+                mid_chain_nonstd_residue=context.parameters.nonstandard,
+                skip=context.parameters.skip_prep,
+                back_constr=context.parameters.ca_constr,
                 constrain_smiles=None,
-                ligand_pdb=self.env.ligand_ref,
-                ca_interval=self.env.ca_interval)[0]
+                ligand_pdb=context.parameters.ligand_ref,
+                ca_interval=context.parameters.ca_interval)[0]
 
 
 class CovalentDockingRefinement(Simulation):
@@ -378,8 +378,8 @@ class CovalentDockingRefinement(Simulation):
         """
         Sets parameters for the refinement side chain perturbation, including the refinement distance (default = 10 A).
         """
-        self.env.no_ppp = True
-        self.env.covalent_docking_refinement = True
+        context.parameters.no_ppp = True
+        context.parameters.covalent_docking_refinement = True
         self.recover_templates_from_global()
 
     def recover_templates_from_global(self):
@@ -387,7 +387,7 @@ class CovalentDockingRefinement(Simulation):
         Sets templates created in the first part of the simulation as external templates and ensures
         the parametrization of those ligands is skipped during refinement.
         """
-        global_pele_dir = os.path.dirname(self.env.pele_dir)
+        global_pele_dir = os.path.dirname(context.parameters.pele_dir)
 
         templates = glob.glob(
             os.path.join(global_pele_dir, "*", "DataLocal", "Templates", "OPLS2005", "Protein", "*")
@@ -397,19 +397,19 @@ class CovalentDockingRefinement(Simulation):
             )
         )
 
-        self.env.template = [
+        context.parameters.template = [
             template
             for template in templates
             if os.path.basename(template) != "templates_generated"
         ]
 
-        self.env.rotamers = glob.glob(
+        context.parameters.rotamers = glob.glob(
             os.path.join(global_pele_dir, "DataLocal", "LigandRotamerLibs", "*")
         )
 
-        for template in self.env.rotamers:
-            self.env.skip_ligand_prep.append(
+        for template in context.parameters.rotamers:
+            context.parameters.skip_ligand_prep.append(
                 os.path.basename(template.strip(".rot.assign"))
             )
 
-        self.env.skip_ligand_prep = list(set(self.env.skip_ligand_prep))
+        context.parameters.skip_ligand_prep = list(set(context.parameters.skip_ligand_prep))

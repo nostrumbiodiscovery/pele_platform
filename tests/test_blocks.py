@@ -5,7 +5,6 @@ import pytest
 import tests.utils
 from pele_platform import main
 from pele_platform.constants import constants
-import pele_platform.Utilities.Parameters.parameters as pv
 from pele_platform.Errors import custom_errors
 import pele_platform.building_blocks.simulation as bb
 from pele_platform.building_blocks.pipeline import Pipeline
@@ -15,7 +14,8 @@ from pele_platform.building_blocks.selection import (
     Clusters,
 )
 from pele_platform.Utilities.Helpers import helpers
-import pele_platform.Utilities.Helpers.yaml_parser as yp
+from pele_platform.context import context
+from .utils import initialize_context
 
 
 test_path = os.path.join(constants.DIR, "Examples")
@@ -89,8 +89,7 @@ def test_pipeline_checker(iterable):
     3. Empty pipeline.
     """
     with pytest.raises(custom_errors.PipelineError):
-        env = pv.ParametersBuilder()
-        Pipeline(iterable, env).run()
+        Pipeline(iterable).run()
 
 
 @pytest.mark.parametrize(
@@ -136,23 +135,16 @@ def test_simulation_blocks(yaml, package, block, expected):
     Launches simulation blocks one by one, checks if the correct package was initiated and pele.conf file contains the
     right defaults (steps, iterations, etc.).
     """
-    # get YamlParser ready
-    yaml_file = os.path.join(test_path, yaml)
-    yaml = yp.YamlParser(yaml_file)
-    yaml.read()
-
-    # create pele environment
-    pele_env = pv.ParametersBuilder()
-    pele_env.initial_args = yaml
-    pele_env.initial_args.package = pele_env.package = package
+    yaml = os.path.join(test_path, yaml)
+    initialize_context(yaml)
+    context.yaml_parser.package = context.parameters_builder.package = package
 
     # run Building Block
-    simulation_block = block(pele_env, {}, "test_folder", pele_env.parameters)
-    builder, params = simulation_block.run()
+    simulation_block = block({}, "test_folder")
+    simulation_block.run()
 
-    directory = params.pele_dir
-    errors = []
-    errors = tests.utils.check_file(directory, "adaptive.conf", expected, errors)
+    directory = context.parameters.pele_dir
+    errors = tests.utils.check_file(directory, "adaptive.conf", expected, [])
     assert not errors
 
 
@@ -163,7 +155,6 @@ def mock_simulation_env():
     require basic attributes such as resname or iterations, which would normally be passed from the previous block in
     the pipeline.
     """
-
     user_dict = {
         "working_folder": os.path.join(test_path, "Blocks/mock_simulation"),
         "cpus": 5,
@@ -171,14 +162,9 @@ def mock_simulation_env():
         "system": "fake.pdb",
     }
 
-    parser = yp.YamlParser.from_dict(user_dict)
-    parser.read()
-    builder = pv.ParametersBuilder()
-    builder.build_adaptive_variables(parser)
-    env = builder.parameters
-    env.create_files_and_folders()
-
-    return builder, env
+    initialize_context(user_dict=user_dict)
+    context.parameters_builder.build_adaptive_variables()
+    context.parameters.create_files_and_folders()
 
 
 @pytest.mark.parametrize(
@@ -195,19 +181,16 @@ def test_selection_blocks(mock_simulation_env, selection_block, options, expecte
     Launches all selection blocks using a fake simulation folder and Parameters, then checks if the right input
     files were selected in each case.
     """
-    builder, env = mock_simulation_env
     test_folder_name = f"test_folder"
-    _, selection = selection_block(
-        parameters_builder=builder,
+    selection_block(
         options=options,
         folder_name=test_folder_name,
-        env=env,
     ).run()
 
-    selected_inputs = glob.glob(selection.next_step)
+    selected_inputs = glob.glob(context.parameters.next_step)
     assert len(selected_inputs) == expected
     helpers.check_remove_folder(
-        os.path.join(os.path.dirname(selection.pele_dir), test_folder_name)
+        os.path.join(os.path.dirname(context.parameters.pele_dir), test_folder_name)
     )
 
 

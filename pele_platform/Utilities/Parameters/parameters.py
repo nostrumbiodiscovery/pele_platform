@@ -8,6 +8,7 @@ __all__ = ["ParametersBuilder", "Parameters"]
 import shutil
 from pele_platform.Utilities.Parameters.SimulationParams import simulation_params
 from pele_platform.Utilities.Parameters.SimulationFolders import simulation_folders
+from pele_platform.context import context
 
 
 class ParametersBuilder(object):
@@ -25,17 +26,11 @@ class ParametersBuilder(object):
         self.initial_args = None
         self.package = None
 
-    def build_adaptive_variables(self, args):
+    def build_adaptive_variables(self):
         """
         It builds the parameters for adaptive, according to the arguments
         that are supplied, and returns the corresponding Parameters
         instance.
-
-        Parameters
-        ----------
-        args : a YamlParser object
-            The YamlParser object containing the input parameters chosen
-            by the user
 
         Returns
         -------
@@ -47,19 +42,18 @@ class ParametersBuilder(object):
         from pele_platform.Utilities.Helpers import helpers
 
         # Define main PELE directory
-        main_dir = os.path.abspath("{}_Pele".format(args.residue))
-        self.yamlfile = args.yaml_file
+        main_dir = os.path.abspath("{}_Pele".format(context.yaml_parser.residue))
 
         # Set the PELE directory
         # In case that folder is not set by the user, we will try to suggest
         # the best candidate considering whether we want to restart a previous
         # simulation or we want to run a new one from scratch.
 
-        if not args.folder:
+        if not context.yaml_parser.folder:
             # If the simulation is being restarted (after debug), adaptive_restarted (from last epoch)
             # or if we're running only_analysis we need to retrieve the LAST pele_dir. Otherwise create a new one
             # with a new index.
-            if args.restart or args.adaptive_restart or args.only_analysis:
+            if context.yaml_parser.restart or context.yaml_parser.adaptive_restart or context.yaml_parser.only_analysis:
                 pele_dir = helpers.get_latest_peledir(main_dir)
             else:
                 pele_dir = helpers.get_next_peledir(main_dir)
@@ -67,37 +61,33 @@ class ParametersBuilder(object):
         # In case that the user has specified the output folder, we will
         # use it, regardless it already exists.
         else:
-            pele_dir = os.path.abspath(args.folder)
+            pele_dir = os.path.abspath(context.yaml_parser.folder)
 
         print("AAAAAAAAAA ParametersBuilder pele_dir", pele_dir)
 
         # Retrieve the specific args for adaptive
-        specific_args, simulation = adaptive.retrieve_software_settings(args)
+        specific_args, simulation = adaptive.retrieve_software_settings()
 
         # Add pele_dir
-        specific_args['pele_dir'] = self.pele_dir = pele_dir if not hasattr(self, "pele_dir") else self.pele_dir
+        if not hasattr(context.parameters_builder, "pele_dir"):
+            specific_args['pele_dir'] = pele_dir
+            context.parameters_builder.pele_dir = pele_dir
+        else:
+            specific_args['pele_dir'] = self.pele_dir
 
         # Initialize Parameters object
-        self._parameters = Parameters(args, specific_args)
+        context.parameters = Parameters(specific_args)
         self._initialized = True
 
         # Set software
-        self.parameters.software = "Adaptive"
-        self.parameters.simulation = simulation
+        context.parameters.software = "Adaptive"
+        context.parameters.simulation = simulation
 
-        return self.parameters
-
-    def build_frag_variables(self, args):
+    def build_frag_variables(self):
         """
         It builds the parameters for frag, according to the arguments
         that are supplied, and returns the corresponding Parameters
         instance.
-
-        Parameters
-        ----------
-        args : a YamlParser object
-            The YamlParser object containing the input parameters chosen
-            by the user
 
         Returns
         -------
@@ -112,37 +102,32 @@ class ParametersBuilder(object):
         from pele_platform.Frag.parameters import FragOptionalParameters
 
         # Retrieve the specific args for FragPELE
-        specific_args = frag.retrieve_software_settings(args)
+        specific_args = frag.retrieve_software_settings()
 
         # Initialize Parameters object
-        self._parameters = Parameters(args, specific_args, initialize_simulation_paths=False)
+        context.parameters = Parameters(specific_args, initialize_simulation_paths=False)
         self._initialized = True
 
         # Initialize water parameters for FragPELE
-        FragWaterParams(self.parameters, args)
+        FragWaterParams()
 
         # Initialize file parameters for FragPELE
-        FragInputFiles(self.parameters, args)
+        FragInputFiles()
 
         # Initialize simulation parameters for FragPELE
-        FragSimulationParameters(self.parameters, args)
+        FragSimulationParameters()
 
         # Initialize metrics parameters for FragPELE
-        FragMetrics(self.parameters, args)
+        FragMetrics()
 
         # Initialize optional parameters for FragPELE
-        FragOptionalParameters(self.parameters, args)
-
-        # Keep initial arguments
-        self.parameters.args = args
+        FragOptionalParameters()
 
         # Create logger
-        self.parameters.create_logger(".")
+        context.parameters.create_logger(".")
 
         # Set software
-        self.parameters.software = "Frag"
-
-        return self.parameters
+        context.parameters.software = "Frag"
 
     @property
     def initialized(self):
@@ -195,7 +180,7 @@ class Parameters(simulation_params.SimulationParams,
          and folders outside this method.
     """
 
-    def __init__(self, args, specific_args=None,
+    def __init__(self, specific_args=None,
                  initialize_simulation_params=True,
                  initialize_simulation_paths=True):
         """
@@ -210,9 +195,6 @@ class Parameters(simulation_params.SimulationParams,
 
         Parameters
         ----------
-        args : a YamlParser object
-            The YamlParser object containing the input parameters chosen
-            by the user
         specific_args : dict
             The dictionary containing the specific parameters for this
             Parameter object
@@ -220,7 +202,6 @@ class Parameters(simulation_params.SimulationParams,
             Whether to initialize the simulation parameters or not. Default
             is True
         """
-        self.args = args
         self.specific_args = specific_args if specific_args is not None else {}
 
         # Set specific parameters, they need to be set before initializing
@@ -230,7 +211,7 @@ class Parameters(simulation_params.SimulationParams,
 
         # Initialize the parameters from parent classes
         if initialize_simulation_params:
-            simulation_params.SimulationParams.__init__(self, args)
+            simulation_params.SimulationParams.__init__(self, context.yaml_parser)
 
         # We need to set the specific arguments again
         for key, value in specific_args.items():
@@ -243,7 +224,7 @@ class Parameters(simulation_params.SimulationParams,
             self.create_files()
 
         self.create_logger()
-        shutil.copy(self.args.yaml_file, self.pele_dir)
+        shutil.copy(context.yaml_parser.yaml_file, self.pele_dir)
 
     def create_folders(self):
         """

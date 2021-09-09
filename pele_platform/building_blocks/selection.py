@@ -7,8 +7,8 @@ import pandas as pd
 import shutil
 
 from pele_platform.building_blocks import blocks
-import pele_platform.Utilities.Parameters.parameters as pv
 from pele_platform.analysis.analysis import Analysis
+from pele_platform.context import context
 
 
 class Selection(blocks.Block):
@@ -17,20 +17,20 @@ class Selection(blocks.Block):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.n_inputs = self.env.cpus - 1
+        self.n_inputs = context.parameters.cpus - 1
         self.inputs = None
-        self.analysis = Analysis.from_parameters(self.env)
+        self.analysis = Analysis.from_parameters()
 
     def copy_files(self):
         """
         Copies files selected as self.inputs into a Selection directory.
         """
-        if not os.path.isdir(self.env.pele_dir):
-            os.makedirs(self.env.pele_dir, exist_ok=True)
+        if not os.path.isdir(context.parameters.pele_dir):
+            os.makedirs(context.parameters.pele_dir, exist_ok=True)
 
         for i in self.inputs:
             try:
-                shutil.copy(i, self.env.pele_dir)
+                shutil.copy(i, context.parameters.pele_dir)
             except shutil.SameFileError:
                 pass
 
@@ -38,7 +38,7 @@ class Selection(blocks.Block):
         """
         Sets self.next step so that the inputs can be used by the next Simulation block.
         """
-        self.env.next_step = os.path.join(self.env.pele_dir, "*.pdb")
+        context.parameters.next_step = os.path.join(context.parameters.pele_dir, "*.pdb")
 
     def set_optional_params(self):
         """
@@ -46,7 +46,7 @@ class Selection(blocks.Block):
         """
         if self.options:
             for key, value in self.options.items():
-                setattr(self.env, key, value)
+                setattr(context.parameters, key, value)
 
     @abstractmethod
     def get_inputs(self):
@@ -65,7 +65,6 @@ class Selection(blocks.Block):
         self.set_working_folder()
         self.copy_files()
         self.set_next_step()
-        return self.builder, self.env
 
 
 class LowestEnergy(Selection):
@@ -76,15 +75,13 @@ class LowestEnergy(Selection):
 
     def __init__(
         self,
-        parameters_builder: pv.ParametersBuilder,
         options: dict,
         folder_name: str,
-        env: pv.Parameters,
     ):
-        super().__init__(parameters_builder, options, folder_name, env)
+        super().__init__(options, folder_name)
 
     def get_inputs(self):
-        top_poses_folder = os.path.join(self.env.pele_dir, "temp")
+        top_poses_folder = os.path.join(context.parameters.pele_dir, "temp")
 
         self.analysis.generate_top_poses(top_poses_folder, n_poses=self.n_inputs)
         self.inputs = glob.glob(os.path.join(top_poses_folder, "*.pdb"))
@@ -97,12 +94,10 @@ class GMM(Selection):
 
     def __init__(
         self,
-        parameters_builder: pv.ParametersBuilder,
         options: dict,
         folder_name: str,
-        env: pv.Parameters,
     ):
-        super().__init__(parameters_builder, options, folder_name, env)
+        super().__init__(options, folder_name)
 
     def get_inputs(self):
         temp_dir = "temp"
@@ -125,17 +120,15 @@ class Clusters(Selection):
 
     def __init__(
         self,
-        parameters_builder: pv.ParametersBuilder,
         options: dict,
         folder_name: str,
-        env: pv.Parameters,
     ):
-        super().__init__(parameters_builder, options, folder_name, env)
+        super().__init__(options, folder_name)
         self.inputs = None
 
     def get_inputs(self):
 
-        clusters_dir = os.path.join(self.env.pele_dir, "results/clusters/cluster*.pdb")
+        clusters_dir = os.path.join(context.parameters.pele_dir, "results/clusters/cluster*.pdb")
         clusters_files = glob.glob(clusters_dir)
 
         if len(clusters_files) > self.n_inputs:
@@ -161,12 +154,10 @@ class ScatterN(Selection):
 
     def __init__(
         self,
-        parameters_builder: pv.ParametersBuilder,
         options: dict,
         folder_name: str,
-        env: pv.Parameters,
     ):
-        super().__init__(parameters_builder, options, folder_name, env)
+        super().__init__(options, folder_name)
         self.inputs = None
 
     def get_inputs(self):
@@ -212,17 +203,17 @@ class LowestLocalNonbondingEnergy(Selection):
     def get_inputs(self):
         """
         """
-        n_inputs = int(self.env.cpus / 6)
+        n_inputs = int(context.parameters.cpus / 6)
         max_top_clusters = n_inputs if n_inputs > 1 else 1  # tests only have 5 CPUs
         temp_dir = "temp"
-        output_path = os.path.join(self.env.pele_dir, self.env.output)
+        output_path = os.path.join(context.parameters.pele_dir, context.parameters.output)
 
         analysis_object = Analysis(
             simulation_output=output_path,
-            resname=self.env.residue,
-            chain=self.env.chain,
-            traj=self.env.traj_name,
-            topology=self.env.topology,
+            resname=context.parameters.residue,
+            chain=context.parameters.chain,
+            traj=context.parameters.traj_name,
+            topology=context.parameters.topology,
             cpus=1,
             skip_initial_structures=False,
         )

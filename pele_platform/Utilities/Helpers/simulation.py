@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from copy import deepcopy
 import os
+
 import AdaptivePELE.adaptiveSampling as ad
 from pele_platform.Utilities.Helpers import helpers, template_builder
 import pele_platform.Utilities.Parameters.parameters as pv
@@ -8,6 +9,7 @@ import pele_platform.Utilities.Helpers.water as wt
 from pele_platform.Utilities.Parameters.parameters import Parameters
 from pele_platform.constants import constants
 from pele_platform.Adaptive.interaction_restrictions import InteractionRestrictionsBuilder
+from pele_platform.context import context
 
 
 @dataclass
@@ -16,20 +18,18 @@ class SimulationBuilder(template_builder.TemplateBuilder):
     pele_file: str
     topology: str
 
-    def generate_inputs(self, parameters, water_obj):
+    def generate_inputs(self, water_obj):
         """
         It generates the input files for Adaptive PELE, according to the
         parameters previously generated.
 
         Parameters
         ----------
-        parameters : a Parameters object
-            The Parameters object containing the parameters for PELE
         water_obj : a WaterIncluder object
             The parameters for aquaPELE, if applicable
         """
         # Convert raw parameters to JSON strings
-        formatted_params = self.format_parameters(parameters)
+        formatted_params = self.format_parameters()
 
         # Fill two times because we have flags inside flags
         self.fill_pele_template(formatted_params, water_obj)
@@ -38,19 +38,15 @@ class SimulationBuilder(template_builder.TemplateBuilder):
         self.fill_adaptive_template(formatted_params)
 
     @staticmethod
-    def format_parameters(user_parameters):
+    def format_parameters():
         """
         Injects user-defined parameters into strings compatible with PELE configuration files.
-
-        Parameters
-        ----------
-        user_parameters : Parameters
 
         Returns
         --------
         Deepcopy of parameters with correct JSON string formatting.
         """
-        parameters = deepcopy(user_parameters)
+        parameters = context.parameters_copy
 
         if parameters.covalent_residue:
             parameters.covalent_sasa = constants.SASA_COVALENT.format(parameters.covalent_residue)

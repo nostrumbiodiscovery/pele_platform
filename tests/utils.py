@@ -2,6 +2,10 @@ import math
 import os
 import re
 
+from pele_platform.context import context
+from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
+from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
+
 
 def truncate(f, n):
     return math.floor(f * 10 ** n) / 10 ** n
@@ -63,3 +67,25 @@ def check_file_regex(directory, file, patterns, errors):
             errors.append(pattern)
 
     return errors
+
+
+def initialize_context(yaml_file=None, user_dict=None):
+    """
+    Initializes context from YAML file.
+
+    Parameters
+    ----------
+    yaml_file : str
+        Path to input.yaml.
+    user_dict : dict
+        Dictionary with user-defined parameters.
+    """
+    context.reset()
+
+    if yaml_file:
+        context.yaml_parser = YamlParser.from_yaml(yaml_file)
+    elif user_dict:
+        context.yaml_parser = YamlParser.from_dict(user_dict)
+
+    context.yaml_parser.read()
+    context.parameters_builder = ParametersBuilder()  # TODO: Move to Context init

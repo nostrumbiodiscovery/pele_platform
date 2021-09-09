@@ -2,6 +2,7 @@ import os
 import PlopRotTemp as plop
 import pele_platform.constants.constants as cs
 import pele_platform.Errors.custom_errors as ce
+from pele_platform.context import context
 
 try:
     import subprocess32 as subprocess
@@ -11,26 +12,26 @@ except SyntaxError:
     import subprocess
 
 
-def parametrize_miss_residues(env, resname=None, ligand=None):
+def parametrize_miss_residues(resname=None, ligand=None):
 
-    resname = env.residue if not resname else resname
+    resname = context.parameters.residue if not resname else resname
 
-    if resname not in env.skip_ligand_prep:
+    if resname not in context.parameters.skip_ligand_prep:
         SPYTHON = os.path.join(cs.SCHRODINGER, "utilities/python")
         if not os.path.exists(SPYTHON):
             SPYTHON = os.path.join(cs.SCHRODINGER, "run")
         file_path = os.path.join(os.path.dirname(plop.__file__), "main.py")
-        options = retrieve_options(env)
-        templatedir = os.path.join(env.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms")
-        rotamerdir = os.path.join(env.pele_dir, "DataLocal/LigandRotamerLibs")
+        options = retrieve_options()
+        templatedir = os.path.join(context.parameters.pele_dir, "DataLocal/Templates/OPLS2005/HeteroAtoms")
+        rotamerdir = os.path.join(context.parameters.pele_dir, "DataLocal/LigandRotamerLibs")
         my_env = os.environ.copy()
         my_env["SCHRODINGER_PYTHONPATH"] = os.path.join(
             cs.SCHRODINGER, "internal/lib/python2.7/site-packages/"
         )
         my_env["SCHRODINGER"] = cs.SCHRODINGER
 
-        ligand = ligand if ligand else env.lig
-        env.logger.info(
+        ligand = ligand if ligand else context.parameters.lig
+        context.parameters.logger.info(
             "{} {} {} {} --outputname {} --templatedir {} --rotamerdir {}".format(
                 SPYTHON, file_path, options, ligand, resname, templatedir, rotamerdir
             )
@@ -54,22 +55,22 @@ def parametrize_miss_residues(env, resname=None, ligand=None):
             )
 
 
-def retrieve_options(env):
+def retrieve_options():
     """
     Retrieve PlopRotTemp options from input arguments
     """
 
     options = []
-    if not env.core:
+    if not context.parameters.core:
         options.extend(["--core -1"])
-    if env.mtor != 4:
-        options.extend(["--mtor {}".format(env.mtor)])
-    if env.n != 1000:
-        options.extend(["--n {}".format(env.n)])
-    if env.forcefield != "OPLS2005":
-        options.extend(["--force {}".format(env.forcefield)])
-    if env.mae_lig:
+    if context.parameters.mtor != 4:
+        options.extend(["--mtor {}".format(context.parameters.mtor)])
+    if context.parameters.n != 1000:
+        options.extend(["--n {}".format(context.parameters.n)])
+    if context.parameters.forcefield != "OPLS2005":
+        options.extend(["--force {}".format(context.parameters.forcefield)])
+    if context.parameters.mae_lig:
         options.extend(["--mae_charges"])
-    if env.gridres != 10:
-        options.extend(["--gridres {}".format(env.gridres)])
+    if context.parameters.gridres != 10:
+        options.extend(["--gridres {}".format(context.parameters.gridres)])
     return " ".join(options)
