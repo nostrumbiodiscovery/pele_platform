@@ -38,7 +38,7 @@ def test_singularity_exec(ext_args=ARGS_1):
     initialize_context(ext_args)
     launcher = Launcher()
     with pytest.raises(custom_errors.ExecutableNotInPath):
-        launcher.launch()
+        launcher.launch_pele()
 
 
 @pytest.mark.parametrize("ext_args, check_mpi, expected1, expected2", test_data)

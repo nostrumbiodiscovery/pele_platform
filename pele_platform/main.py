@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This is the main module designed to run the PELE platform from command line.
+This is the main module designed to run the NBD platform from command line.
 """
 from pele_platform.Errors import custom_errors
 from pele_platform.Utilities.Helpers.launcher import Launcher
@@ -33,7 +33,6 @@ def parse_args(args=None):
 
     parser = ArgumentParser(description='Automatic platform to launch PELE simulations.')
     parser.add_argument('input_file', type=str, help='YAML input file.')
-
     parsed_args = parser.parse_args(args) if args else parser.parse_args()
     return parsed_args.input_file
 
@@ -70,7 +69,7 @@ def run_platform_from_yaml(input_yaml):
             + " does not look like a correct yaml file")
 
     launcher = Launcher()
-    job_parameters = launcher.launch()
+    job_parameters = launcher.launch_pele()
 
     return job_parameters
 

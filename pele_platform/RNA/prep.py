@@ -90,5 +90,3 @@ if __name__ == "__main__":
     parser = parse_args(parser)
     args = parser.parse_args()
     pdb_fixed = main(args.pdb)
-            
-               

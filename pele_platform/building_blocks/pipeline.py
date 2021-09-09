@@ -1,7 +1,6 @@
-from copy import deepcopy
 from typing import List
 
-from pele_platform.building_blocks.selection import *
+from pele_platform.building_blocks.selection import *  # TODO: Is there a better way to do this?
 from pele_platform.building_blocks.simulation import *
 from pele_platform.context import context
 
@@ -21,34 +20,69 @@ class Pipeline:
 
     def run(self):
         """
-        Run the whole Pipeline.
+        Checks the content of the Pipelines and adjusts it, if running in debug mode, then executes everything.
 
         Returns
         -------
         A list of ParametersBuilder objects containing simulation parameters for each block.
         """
-        self.check_pipeline()
-        self.check_debug()
+        PipelineChecker(self.iterable).check()
         return self.launch_pipeline()
-        # TODO: Separate out the checker
 
     def launch_pipeline(self):
+        """
+        Executes building blocks in the list one by one, appending a deepcopy of Parameters to output after each step.
+
+        Returns
+        -------
+            A list of Parameters objects
+        """
         output = []
         for step in self.iterable:
+
             simulation_name = step.get("type")
+            folder = f"{self.iterable.index(step) + 1}_{simulation_name}"
+
             simulation = eval(simulation_name)
             options = step.get("options", {})
-            folder = "{}_{}".format(self.iterable.index(step) + 1, simulation_name)
-            print("AAAAAAAAAAAAAAAA folder in Pipeline", folder)
+
             simulation(options, folder).run()
             output.append(context.parameters_copy)
+
         return output
+
+
+class PipelineChecker:
+
+    def __init__(self, iterable):
+        """
+        Initializes PipelineChecker class.
+
+        Parameters
+        ----------
+        iterable : List[dict]
+            List of dictionaries containing the simulation type and optional parameters.
+        """
+        self.iterable = iterable
+
+    def check(self):
+        """
+        Runs all checks.
+
+        Returns
+        -------
+            Returns adjusted Pipeline object.
+        """
+
+        self.check_pipeline()
+        self.check_debug()
+
+        return self.iterable
 
     def check_pipeline(self):
         """
         Checks the pipeline to ensure it's not empty and the simulation are selection blocks occur alternately.
         """
-
         if len(self.iterable) == 0:
             raise custom_errors.PipelineError("Pipeline doesn't contain any building_blocks.")
 
