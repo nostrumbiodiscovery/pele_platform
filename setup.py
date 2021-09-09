@@ -38,7 +38,25 @@ setup(
     },
     include_package_data=True,
     install_requires=[
+        "PyYAML",
+        "fpdf",
+        "scikit-learn>0.20",
+        "pillow",
         "scipy",
+        "matplotlib",
+        "mdtraj==1.9.5",
+        "biopython",
+        "pandas==1.2.3",
+        "pytest",
+        "cython",
+        "numpy",
+        "peleffy==1.3.3",
+        "hdbscan==0.8.27",
+        "AdaptivePELE==1.7.1",
+        "frag_pele==3.1.1",
+        "PPPele==1.0.8",
+        "PlopRotTemp==1.0.1",
+        "seaborn"
     ],
     ext_modules=ext_modules,  # accepts a glob pattern
 )
