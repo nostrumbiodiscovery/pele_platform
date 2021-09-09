@@ -7,16 +7,38 @@ from pele_platform.context import context
 
 class Pipeline:
 
-    def __init__(self, iterable: List[dict]):
+    def __init__(self, steps, refinement_steps=None):
         """
         Initializes Pipeline class.
 
         Parameters
         ----------
-        iterable : List[dict]
-            List of dictionaries containing workflow steps and their optional parameters.
+        steps : List[dict]
+            List of dictionaries containing workflow steps to run if skip_refinement is enabled.
+        refinement_steps : List[dict]
+            Remaining list of steps
         """
-        self.iterable = iterable
+        self.steps = steps
+        self.refinement_steps = refinement_steps if refinement_steps else []
+
+        if not context.yaml_parser.skip_refinement:
+            self.iterable = self.steps + self.refinement_steps
+        else:
+            self.iterable = self.steps
+
+    @classmethod
+    def make_pipeline(cls, steps, refinement_steps=None):
+        """
+        Initializes Pipeline class with predefined steps.
+
+        Parameters
+        ----------
+        steps : List[dict]
+            List of dictionaries containing workflow steps to run if skip_refinement is enabled.
+        refinement_steps : List[dict]
+            Remaining list of steps
+        """
+        return Pipeline(steps, refinement_steps)
 
     def run(self):
         """
@@ -26,7 +48,7 @@ class Pipeline:
         -------
         A list of ParametersBuilder objects containing simulation parameters for each block.
         """
-        PipelineChecker(self.iterable).check()
+        self.iterable = PipelineChecker(self.iterable).check()
         return self.launch_pipeline()
 
     def launch_pipeline(self):

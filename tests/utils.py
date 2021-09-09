@@ -3,8 +3,12 @@ import os
 import re
 
 from pele_platform.context import context
+from pele_platform.constants import constants
 from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
+
+
+test_path = os.path.join(constants.DIR, "Examples")
 
 
 def truncate(f, n):
@@ -80,7 +84,7 @@ def initialize_context(yaml_file=None, user_dict=None):
     user_dict : dict
         Dictionary with user-defined parameters.
     """
-    context.reset()
+    context.reset_parameters()
 
     if yaml_file:
         context.yaml_parser = YamlParser.from_yaml(yaml_file)

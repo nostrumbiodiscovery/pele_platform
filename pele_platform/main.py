@@ -58,7 +58,7 @@ def run_platform_from_yaml(input_yaml):
         simulation
     """
     from pele_platform.Utilities.Helpers import yaml_parser
-    context.reset()
+    context.reset_parameters()
     context.yaml_parser = yaml_parser.YamlParser(input_yaml)
 
     try:
