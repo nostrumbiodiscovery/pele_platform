@@ -21,7 +21,8 @@ setup(
     url="https://github.com/NostrumBioDiscovery/pele_platform",
     author="Nostrum Biodiscovery",
     author_email="pelesupport@nostrumbiodiscovery.com",
-    packages=find_packages(exclude=["docs", "tests", "tests.data"]),
+    packages=find_packages(include=["data", ],
+                           exclude=["docs", "tests", "tests.data", ]),
     package_data={
         "pele_platform/AdaptivePELE/atomset": ["*.pxd"],
         "pele_platform/AdaptivePELE/freeEnergies/": ["*.pyx"],
