@@ -108,3 +108,7 @@ class IncorrectResidueNumbers(Exception):
 
 class IncompatibleYamlFlags(Exception):
     pass
+
+
+class ClusteringError(Exception):
+    pass

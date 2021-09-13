@@ -106,12 +106,12 @@ UNBINDING = """
 DISTANCE_ATOMS = """
                      {{
                      "type":"com_distance",
-                     "tag":"distance{2}",
+                     "tag":"distance{metric_name}",
                      "selection_group_1":{{
-                     "atoms": {{ "ids":["{0}"]}}
+                     "{atom1_tag}": {{ "ids":["{atom1}"]}}
                      }},
                      "selection_group_2":{{
-                     "atoms": {{ "ids":["{1}"]}}
+                     "{atom2_tag}": {{ "ids":["{atom2}"]}}
                      }}
                      }},
                      """
@@ -503,6 +503,13 @@ CONFORMATION_FREQUENCY = '"conformationPerturbationFrequency": {},'
 version_header = """
 PELE Platform {}
 --------------------------
+Nostrum Biodiscovery SL
+All rights reserved, 2021.
+"""
+
+plotter_version_header = """
+PELE Platform Plotter {}
+-------------------------
 Nostrum Biodiscovery SL
 All rights reserved, 2021.
 """
