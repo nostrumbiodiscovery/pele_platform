@@ -21,6 +21,10 @@ Default parameters
 - iterations: 100
 - pele steps: 8
 
+Modes
++++++++
+- in_out
+- in_out_soft
 
 Recommendations
 +++++++++++++++++
