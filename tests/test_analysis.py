@@ -694,4 +694,4 @@ def test_inner_clustering(analysis, multi, expected):
     results = [element for element in results if "water" not in element]
 
     assert len(results) == expected
-    check_remove_folder(working_folder)
+    helpers.check_remove_folder(working_folder)

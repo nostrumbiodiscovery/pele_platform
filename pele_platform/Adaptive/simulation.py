@@ -298,7 +298,7 @@ def run_adaptive():
             else ""
         )
         context.parameters.native = (
-            metrics.rsmd_to_json(context.parameters.native, context.parameters.chain) if context.parameters.native else ""
+            metrics.rmsd_to_json(context.parameters.native, context.parameters.chain) if context.parameters.native else ""
         )
 
         context.parameters.local_nonbonding_energy = metrics.local_nonbonding_energy_json(context.parameters.covalent_residue,

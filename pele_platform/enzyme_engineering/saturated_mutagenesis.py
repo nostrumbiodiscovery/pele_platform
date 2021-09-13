@@ -53,8 +53,6 @@ class SaturatedMutagenesis:
             context.yaml_parser.folder = os.path.join(
                 self.working_folder, "{}{}".format(self.subset_folder, idx)
             )
-            print("AAAAAAAAAAAAAAAAAAAAAAAAAAa context.yaml_parser.folder", context.yaml_parser.folder)
-            print("AAAAAAAAAAAAAAAAAAAAA subset", subset)
             context.parameters_builder.build_adaptive_variables()
             context.parameters.create_files_and_folders()
 

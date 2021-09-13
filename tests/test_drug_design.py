@@ -25,8 +25,7 @@ def test_api_packages(package, yaml_file):
     """
     Builds parameters and runs predefined package (Pipeline) for API.
     """
+    context.reset_parameters()
     yaml_file = os.path.join(test_path, yaml_file)
-
     context.build_parameters(yaml_file=yaml_file)
     eval(f"{package}()").run()
-    context.reset_parameters()

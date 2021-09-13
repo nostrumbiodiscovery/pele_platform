@@ -63,8 +63,6 @@ class ParametersBuilder(object):
         else:
             pele_dir = os.path.abspath(context.yaml_parser.folder)
 
-        print("AAAAAAAAAA ParametersBuilder pele_dir", pele_dir)
-
         # Retrieve the specific args for adaptive
         specific_args, simulation = adaptive.retrieve_software_settings()
 
@@ -231,7 +229,7 @@ class Parameters(simulation_params.SimulationParams,
             Create pele folders
         """
         from pele_platform.Utilities.Helpers import helpers
-        print("AAAAAAAAAAAAAA self.pele_dir in create_folders", self.pele_dir)
+
         for folder in self.folders:
             helpers.create_dir(self.pele_dir, folder)
 

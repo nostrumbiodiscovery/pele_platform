@@ -31,7 +31,7 @@ class FragMetrics(object):
             context.parameters.metrics = ""
 
         if context.yaml_parser.native:
-            context.parameters.native = metric_builder.rsmd_to_json(context.yaml_parser.native,
+            context.parameters.native = metric_builder.rmsd_to_json(context.yaml_parser.native,
                                                                     context.parameters.chain)
         else:
             context.parameters.native = ""
