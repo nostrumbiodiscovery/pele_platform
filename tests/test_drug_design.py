@@ -9,16 +9,16 @@ from .utils import test_path
 @pytest.mark.parametrize(
     ("package", "yaml_file"),
     [
-        ("packages.SiteFinder", os.path.join("site_finder", "input_folder.yaml")),
-        ("packages.PPI", os.path.join("PPI", "input.yaml")),
-        ("packages.GPCR", os.path.join("gpcr", "input.yaml")),
-        ("packages.OutIn", os.path.join("out_in", "input.yaml")),
-        ("packages.InducedFitFast", os.path.join("induced_fit", "input_fast.yaml")),
+        ("pipelines.SiteFinder", os.path.join("site_finder", "input_folder.yaml")),
+        ("pipelines.PPI", os.path.join("PPI", "input.yaml")),
+        ("pipelines.GPCR", os.path.join("gpcr", "input.yaml")),
+        ("pipelines.OutIn", os.path.join("out_in", "input.yaml")),
+        ("pipelines.InducedFitFast", os.path.join("induced_fit", "input_fast.yaml")),
         (
-            "packages.InducedFitExhaustive",
+            "pipelines.InducedFitExhaustive",
             os.path.join("induced_fit", "input_exhaustive.yaml"),
         ),
-        ("packages.CovalentDocking", os.path.join("covalent_docking", "input1.yaml")),
+        ("pipelines.CovalentDocking", os.path.join("covalent_docking", "input1.yaml")),
     ],
 )
 def test_api_packages(package, yaml_file):

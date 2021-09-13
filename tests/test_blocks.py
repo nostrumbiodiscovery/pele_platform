@@ -72,6 +72,13 @@ CovalentDockingRefinement_lines = [
     '"peleSteps" : 100',
 ]
 
+user_dict = {
+    "working_folder": os.path.join(test_path, "Blocks/mock_simulation"),
+    "cpus": 5,
+    "resname": "LIG",
+    "system": "fake.pdb",
+}
+
 
 @pytest.mark.parametrize(
     "iterable",
@@ -88,6 +95,7 @@ def test_pipeline_checker(iterable):
     2. Pipeline containing two Simulation blocks in a row, without Selection in between.
     3. Empty pipeline.
     """
+    initialize_context(user_dict=user_dict)
     with pytest.raises(custom_errors.PipelineError):
         Pipeline(iterable).run()
 
@@ -155,13 +163,6 @@ def mock_simulation_env():
     require basic attributes such as resname or iterations, which would normally be passed from the previous block in
     the pipeline.
     """
-    user_dict = {
-        "working_folder": os.path.join(test_path, "Blocks/mock_simulation"),
-        "cpus": 5,
-        "resname": "LIG",
-        "system": "fake.pdb",
-    }
-
     initialize_context(user_dict=user_dict)
     context.parameters_builder.build_adaptive_variables()
     context.parameters.create_files_and_folders()

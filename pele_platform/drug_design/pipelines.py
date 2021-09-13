@@ -28,8 +28,7 @@ class Adaptive:
 
 class Workflow:
 
-    @property
-    def steps(self):
+    def __new__(cls):
 
         available = {**dict((name, func) for name, func in inspect.getmembers(selection)),
                      **dict((name, func) for name, func in inspect.getmembers(blocks))}
@@ -42,7 +41,8 @@ class Workflow:
                 raise ce.PipelineError(
                     "Block {} cannot be found. Please check spelling and refer to the PELE Platform documentation "
                     "for an up-to-date list of available building_blocks".format(i))
-        return iterable
+
+        return Pipeline.make_pipeline(iterable)
 
 
 class SiteFinder:
