@@ -21,6 +21,8 @@ class Context:
         self.yaml_parser = None
         self.parameters_builder = None
 
+        # TODO: Context manager with new_context...
+
     @property
     def parameters_copy(self):
         return copy.deepcopy(self.parameters)

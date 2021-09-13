@@ -40,7 +40,6 @@ class SimulationParamsModel(YamlParserModel):
     covalent_sasa: str = Field()
     max_trials_for_one: int = Field()
     conformation_perturbation: str = Field()
-    equilibration_mode: str = Field()
     water_ids_to_track: List[str] = Field(default=list())
     inputs_dir: str = Field()
     residue_type: str = Field()

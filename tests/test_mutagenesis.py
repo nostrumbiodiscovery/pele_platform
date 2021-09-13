@@ -70,13 +70,14 @@ def test_mutagenesis_restart():
         shutil.rmtree(pele_dir, ignore_errors=True)
     shutil.copytree(restart_folder, pele_dir)
 
-    all_jobs = main.run_platform_from_yaml(yaml)
-    last_job = all_jobs[-1]
-    mutation_folder = os.path.splitext(os.path.basename(last_job.input[0]))[0]
-    restart_trajectories = glob.glob(
-        os.path.join(last_job.pele_dir, last_job.output, mutation_folder, "traj*")
-    )
-    assert len(restart_trajectories) == 2
+    last_job, = main.run_platform_from_yaml(yaml)
+
+    # Assert Subset 1 did not run, since it's already completed
+    assert os.path.basename(last_job.pele_dir) == "Subset_2"
+
+    # Make sure Subset 2 produced trajectories
+    trajectories = glob.glob(os.path.join(last_job.pele_dir, last_job.output))
+    assert trajectories
 
 
 def test_cpus_error():

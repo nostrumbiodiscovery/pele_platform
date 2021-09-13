@@ -20,10 +20,14 @@ PACKAGES = dict(
     induced_fit_fast=pele_platform.drug_design.pipelines.InducedFitFast,
     workflow=pele_platform.drug_design.pipelines.Workflow,
     covalent_residue=pele_platform.drug_design.pipelines.CovalentDocking,
+    saturated_mutagenesis=pele_platform.enzyme_engineering.saturated_mutagenesis.SaturatedMutagenesis,
 )
 
 
 class Launcher:
+
+
+    # TODO: Initialize context here and unify with main.run_platform...
 
     print(
         constants.version_header.format(

@@ -215,6 +215,24 @@ SOFTWARE_CONSTANTS = {
             "iterations": 1,
             "refinement_angle": 10,
             "params": "",
+        },
+        "saturated_mutagenesis": {
+            "clust_type": "null",
+            "analyse": False,
+            "spawning_type": "independent",
+            "bias_column": 5,
+            "epsilon": 0.25,
+            "density": "null",
+            "simulation_type": "pele",
+            "iterations": 1,
+            "pele_steps": 1000,
+            "cluster_values": [2.0, 5, 7],
+            "cluster_conditions": [1, 0.6, 0.0],
+            "steric_trials": 500,
+            "overlap_factor": 0.65,
+            "params": pcs.INDUCED_FIT,
+            "box_radius": 6,
+            "equilibration_mode": "equilibrationSelect",
         }
     },
 }
@@ -235,6 +253,7 @@ all_simulations = [
     "site_finder_local",
     "covalent_docking",
     "covalent_docking_refinement",
+    "saturated_mutagenesis"
 ]
 
 
@@ -267,6 +286,8 @@ def retrieve_software_settings():
         type_simulation = "covalent_docking_refinement"
     elif context.yaml_parser.covalent_residue:
         type_simulation = "covalent_docking"
+    elif context.yaml_parser.saturated_mutagenesis:
+        type_simulation = "saturated_mutagenesis"
     else:
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"

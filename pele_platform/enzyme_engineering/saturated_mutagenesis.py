@@ -1,16 +1,15 @@
 from copy import deepcopy
-from dataclasses import dataclass, field
 import glob
 from itertools import cycle
 import os
 import re
 import shutil
-from typing import List
 import warnings
 
 from pele_platform.Utilities.Parameters import parameters
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Adaptive import simulation
+from pele_platform.context import context
 
 
 def set_starting_point(logged_subsets):
@@ -23,14 +22,12 @@ class SaturatedMutagenesis:
     """
     Interface to run saturated mutagenesis simulation from another repository.
     """
-    def __init__(self, builder, start=1, subset_folder="Subset_"):
-        self.builder = builder
+    def __init__(self, start=1, subset_folder="Subset_"):
         self.already_computed = list()
         self.all_jobs = list()
         self.original_dir = os.path.abspath(os.getcwd())
         self.subset_folder = subset_folder
         self.start = start
-        self.env = None
         self.all_mutations = list()
 
     def run(self):
@@ -43,9 +40,6 @@ class SaturatedMutagenesis:
             A list of job parameters (EnviroBuilder objects) for each
             simulation subset
         """
-        self.builder.build_adaptive_variables(self.builder.initial_args)
-        self.env = self.builder.parameters
-        self.set_package_params()
         self.check_cpus()
         self.set_working_folder()
         self.all_mutations = self.retrieve_inputs()
@@ -53,17 +47,22 @@ class SaturatedMutagenesis:
         self.split_into_subsets()
 
         for idx, subset in enumerate(self.mutation_subsets, self.start):
-            self.env.input = subset
-            self.env.cpus = self.env.cpus_per_mutation * len(subset) + 1
-            self.env.folder = os.path.join(
+            context.yaml_parser.no_metal_constraints = True  # TODO: need to investigate that
+            context.yaml_parser.input = subset
+            context.yaml_parser.cpus = context.yaml_parser.cpus_per_mutation * len(subset) + 1
+            context.yaml_parser.folder = os.path.join(
                 self.working_folder, "{}{}".format(self.subset_folder, idx)
             )
+            print("AAAAAAAAAAAAAAAAAAAAAAAAAAa context.yaml_parser.folder", context.yaml_parser.folder)
+            print("AAAAAAAAAAAAAAAAAAAAA subset", subset)
+            context.parameters_builder.build_adaptive_variables()
+            context.parameters.create_files_and_folders()
 
             with helpers.cd(self.original_dir):
-                job = simulation.run_adaptive(self.env)
-                self.postprocessing(job)
-                self.all_jobs.append(deepcopy(job))
-                self.logger(job)
+                simulation.run_adaptive()
+                self.postprocessing(context.parameters)
+                self.all_jobs.append(deepcopy(context.parameters))
+                self.logger(context.parameters)
 
         return self.all_jobs
 
@@ -83,7 +82,7 @@ class SaturatedMutagenesis:
         )
 
         # Check what systems and folders are already in the log
-        if os.path.exists(logger_file) and self.env.adaptive_restart:
+        if os.path.exists(logger_file) and context.yaml_parser.adaptive_restart:
             with open(logger_file, "r") as f:
                 lines = f.readlines()
                 for line in lines:
@@ -114,7 +113,7 @@ class SaturatedMutagenesis:
 
             # Set parameters for the next run
             self.start = set_starting_point(logged_subset_folders)
-            self.env.adaptive_restart = False
+            context.yaml_parser.adaptive_restart = False
 
     def postprocessing(self, job):
         """
@@ -123,7 +122,7 @@ class SaturatedMutagenesis:
 
         Parameters
         ----------
-        job : parameters.ParametersBuilder
+        job : parameters.Parameters
             Output job parameters.
         """
         output_path = os.path.join(job.pele_dir, job.output)
@@ -156,7 +155,7 @@ class SaturatedMutagenesis:
 
         Parameters
         ----------
-        job: parameters.ParametersBuilder
+        job: parameters.Parameters
             Object returned from simulation.run_adaptive
         """
         logger_file = os.path.join(self.working_folder, "completed_mutations.log")
@@ -182,10 +181,10 @@ class SaturatedMutagenesis:
         -------
             List of strings containing paths to input PDBs.
         """
-        if "*" in self.env.system:
-            all_mutations = glob.glob(self.env.system)
+        if "*" in context.yaml_parser.system:
+            all_mutations = glob.glob(context.yaml_parser.system)
         else:
-            all_mutations = self.env.system
+            all_mutations = context.yaml_parser.system
 
         if isinstance(all_mutations, str):
             all_mutations = [all_mutations]
@@ -197,14 +196,14 @@ class SaturatedMutagenesis:
         Finds all PDB files with mutations and splits them into subsets
         according to the available CPUs.
         """
-        available_cpus = self.env.cpus - 1
-        if available_cpus % self.env.cpus_per_mutation != 0:
+        available_cpus = context.yaml_parser.cpus - 1
+        if available_cpus % context.yaml_parser.cpus_per_mutation != 0:
             warnings.warn(
                 "The total number of CPUs - 1 should be divisible by the "
                 + "number of CPUs per mutation."
             )
 
-        max_systems = int(available_cpus / self.env.cpus_per_mutation)
+        max_systems = int(available_cpus / context.yaml_parser.cpus_per_mutation)
         self.mutation_subsets = [
             self.all_mutations[i : i + max_systems]
             for i in range(0, len(self.all_mutations), max_systems)
@@ -219,21 +218,11 @@ class SaturatedMutagenesis:
         ValueError if the number of CPUs per mutation is higher than the
             total number of available CPUs
         """
-        if self.env.cpus_per_mutation > self.env.cpus - 1:
+        if context.yaml_parser.cpus_per_mutation > context.yaml_parser.cpus - 1:
             raise ValueError(
                 "The number of CPUs per mutation needs to be lower than "
                 + "the total number of CPUs - 1."
             )
-
-    def set_package_params(self):
-        """
-        Adds package-specific parameters to the environment, such as
-        skipping the analysis, setting the right simulation and
-        clustering types, etc.
-        """
-        self.env.clust_type = "null"
-        self.env.induced_fit_exhaustive = True
-        self.env.analyse = False
 
     def set_working_folder(self):
         """
@@ -242,15 +231,15 @@ class SaturatedMutagenesis:
         subset are enumerated automatically and placed within the top
         level directory.
         """
-        resname_folder = os.path.abspath("{}_Pele".format(self.env.residue))
-        if not self.env.folder:
+        resname_folder = os.path.abspath("{}_Pele".format(context.yaml_parser.residue))
+        if not context.yaml_parser.folder:
             self.working_folder = (
                 helpers.get_next_peledir(resname_folder)
-                if not self.env.adaptive_restart
+                if not context.yaml_parser.adaptive_restart
                 else helpers.get_latest_peledir(resname_folder)
             )
         else:
-            self.working_folder = os.path.abspath(self.env.folder)
+            self.working_folder = os.path.abspath(context.yaml_parser.folder)
 
     @staticmethod
     def sort_numerically(path):

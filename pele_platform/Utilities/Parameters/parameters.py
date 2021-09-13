@@ -73,7 +73,7 @@ class ParametersBuilder(object):
             specific_args['pele_dir'] = pele_dir
             context.parameters_builder.pele_dir = pele_dir
         else:
-            specific_args['pele_dir'] = self.pele_dir
+            specific_args['pele_dir'] = pele_dir
 
         # Initialize Parameters object
         context.parameters = Parameters(specific_args)

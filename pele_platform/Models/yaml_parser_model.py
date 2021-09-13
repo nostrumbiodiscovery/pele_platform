@@ -206,6 +206,12 @@ class YamlParserModel(BaseModel):
         categories=["Simulation parameters"],
         description="Number of equilibration steps to perform.",
     )
+    equilibration_mode: str = Field(
+        description="",
+        categories=["Simulation parameters"],
+        value_from_simulation_params=True,
+        simulation_params_default="equilibrationSelect",
+    )
     adaptive_restart: bool = Field(
         description="Restart adaptive simulation from the last epoch.",
         categories=["General settings"],
@@ -518,9 +524,10 @@ class YamlParserModel(BaseModel):
         categories=["Advanced"],
     )
     analyse: bool = Field(
-        default=True,
         description="Whether to run analysis or not.",
         categories=["Analysis"],
+        value_from_simulation_params=True,
+        simulation_params_default=True,
     )
     constrain_core: str = Field(
         value_from_simulation_params=True,
