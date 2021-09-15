@@ -12,7 +12,6 @@ Step by step guides to setting up your own simulation.
     - `GPCR orthosteric site exploration <gpcr/index.html>`_
     - `Induced fit with interaction restrictions <interaction_restrictions/index.html>`_
     - `Binding events <binding/index.html>`_
-    - `Unbinding events <binding/unbinding.html>`_
     - `Biased simulation <bias/index.html>`_
     - `Conformational change simulation <pca/index.html>`_
     - `Protein minimization <minimization/index.html>`_
@@ -52,10 +51,6 @@ Step by step guides to setting up your own simulation.
 
 .. toctree::
    binding/index.rst
-   :hidden:
-
-.. toctree::
-   binding/unbinding.rst
    :hidden:
 
 .. toctree::
