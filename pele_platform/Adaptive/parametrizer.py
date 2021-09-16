@@ -327,10 +327,11 @@ class Parametrizer:
         from peleffy.forcefield import OPLS2005ForceField
 
         # If OpenFF extension is missing, add it
-        if "openff" in forcefield_name.lower() and not forcefield_name.lower().endswith(
-            "offxml"
-        ):
-            forcefield_name += ".offxml"
+        if "openff" in forcefield_name.lower():
+            if not forcefield_name.lower().endswith("offxml"):
+                forcefield_name += ".offxml"
+            if "_unconstrained" not in forcefield_name.lower():
+                forcefield_name = forcefield_name.replace("openff", "openff_unconstrained")
 
         # Select force field by name
         selector = ForceFieldSelector()
@@ -697,7 +698,6 @@ class Parametrizer:
                 )
 
             return fixed_atoms
-
 
     def _handle_solvent_template(self, topologies):
         """

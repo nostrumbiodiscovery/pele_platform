@@ -282,6 +282,8 @@ Alternatively, as before, you can provide your own template and/or rotamer files
 
     - **rotamers**: External rotamer library files.
 
+    - **solvent_template**: External file with solvent parameters in JSON format.
+
 ..  code-block:: yaml
 
   templates:
@@ -290,6 +292,8 @@ Alternatively, as before, you can provide your own template and/or rotamer files
   rotamers:
     - "/home/simulation_files/MG.rot.assign"
     - "/home/simulation_files/LIG.rot.assign"
+  solvent_template:
+    - "/home/simulation_files/ligandParams.txt"
 
 
 Ligand conformations

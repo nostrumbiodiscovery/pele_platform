@@ -358,7 +358,7 @@ def run_adaptive(args):
             adaptive.run()
             parameters.logger.info("Simulation run successfully (:\n\n")
 
-    elif parameters.restart:
+    elif parameters.restart and not parameters.only_analysis:
         # Start simulation from scratch (unlike adaptive_restart) but use files created in debug mode
         parameters.logger.info(f"Launching simulation from {parameters.pele_dir}")
         adaptive = ad.SimulationBuilder(parameters.ad_ex_temp, parameters.pele_exit_temp, parameters.topology)

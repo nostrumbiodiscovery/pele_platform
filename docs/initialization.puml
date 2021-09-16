@@ -1,0 +1,64 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+actor User
+participant "run_platform_from_yaml" as RunFromYaml
+participant YamlParser
+participant Launcher
+participant ParametersBuilder
+participant "package<LauncherBase>" as package
+
+
+User -> RunFromYaml: yaml_file: __str__
+activate RunFromYaml
+
+
+RunFromYaml -> YamlParser: yaml_file: __str__
+activate YamlParser
+RunFromYaml <-- YamlParser: yaml_obj: __YamlParser__
+deactivate YamlParser
+RunFromYaml -> YamlParser: yaml_obj.read()
+activate YamlParser
+RunFromYaml <-- YamlParser
+deactivate YamlParser
+
+
+RunFromYaml -> Launcher: yaml_obj: __YamlParser__
+activate Launcher
+Launcher -> Launcher: self._args = yaml_obj
+RunFromYaml <-- Launcher: launcher: __Launcher__
+deactivate Launcher
+RunFromYaml -> Launcher: launcher.launch()
+activate Launcher
+
+    Launcher -> ParametersBuilder
+    Launcher <-- ParametersBuilder: self.parameters: __ParametersBuilder__
+    Launcher -> Launcher:   self.parameters.initial_args = self._args
+
+    Launcher -> package: package(self.parameters).run()
+    activate package
+
+    package -> package: self.builder = launcher.parameters
+
+
+'self.builder.build_adaptive_variables(self.builder.initial_args)
+    package -> ParametersBuilder: self.builder.build_adaptive_variables
+
+    Launcher <- package: job_params
+    deactivate package
+
+
+
+RunFromYaml <-- Launcher: job_params
+deactivate Launcher
+
+
+
+
+
+User <-- RunFromYaml: job_params
+deactivate RunFromYaml
+
+
+@enduml
