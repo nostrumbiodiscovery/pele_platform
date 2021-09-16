@@ -166,7 +166,7 @@ In order to run a simulation, PELE requires the following files for every non-st
 
     - **IMPACT template**: containing force field parameters, please refer to `this site <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format>`_ for further information.
     - **rotamer library**: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. More information available `here <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers>`_.
-    - **solvent template**: some special solvents like "OBC" require extra parameters, which are set in this file.
+    - **solvent template**: some special solvents like "OBC" require extra parameters, which are set in this file. Mind that it is **mandatory when using OpenFF**, since it works with the OBC solvent only.
 
 The platform currently has **two implementations** for building hetero molecule parameters - PlopRotTemp (soon to be deprecated) and
 `Peleffy <https://github.com/martimunicoy/peleffy>`_ (PELE Force Field Yielder), which offers more functionality but is still in beta testing.
