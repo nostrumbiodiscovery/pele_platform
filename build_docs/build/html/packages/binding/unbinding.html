@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Biased simulation &mdash; pele platform 1.6.0b2 documentation</title>
+  <title>Unbinding simulation &mdash; pele platform 1.6.0b2 documentation</title>
   
 
   
@@ -37,8 +37,8 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="copyright" title="Copyright" href="../../copyright.html" />
-    <link rel="next" title="Simulate big conformational moves of your receptor with PCA-PELE" href="../pca/index.html" />
-    <link rel="prev" title="Unbinding simulation" href="../binding/unbinding.html" /> 
+    <link rel="next" title="Biased simulation" href="../bias/index.html" />
+    <link rel="prev" title="Binding simulation" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -100,12 +100,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../libraries/index.html">Grow a custom fragment library</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../interaction_restrictions/index.html">Interaction restrictions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binding/unbinding.html">Unbinding simulation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Biased simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="index.html">Binding simulation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Unbinding simulation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#inputs">Inputs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#input">Input</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#default-parameters">Default parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modes">Modes</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#recommendations">Recommendations</a></li>
 </ul>
 </li>
@@ -119,6 +119,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../minimization/index.html">Minimize your protein</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../covalent_docking/index.html">Covalent docking</a></li>
@@ -193,13 +194,13 @@
         
           <li><a href="../index.html">Run simulation</a> &raquo;</li>
         
-      <li>Biased simulation</li>
+      <li>Unbinding simulation</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/packages/bias/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/packages/binding/unbinding.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -212,69 +213,62 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="biased-simulation">
-<h1>Biased simulation<a class="headerlink" href="#biased-simulation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="unbinding-simulation">
+<h1>Unbinding simulation<a class="headerlink" href="#unbinding-simulation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>This simulation aims to find a binding mode containing a specific interaction between two atoms, it provides the user
-with a list of ranked binding modes of the chosen small molecule with the desired interaction.</p>
-<p>For more details, check out our article: <a class="reference external" href="https://www.nature.com/articles/s41598-017-08445-5">Adaptive simulations, towards interactive protein-ligand modeling</a>.</p>
-<div class="section" id="inputs">
-<h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><ul class="simple">
+<p>The unbinding simulation aims to find the unbinding path of a small molecule to a given receptor.
+It explores the dissociative path of a molecule and is useful when studying the dissociative binding path, or to open up the pocket
+Our software will automatically set the center of the simulation box along an exit simulation.
+Upon completion of the simulation, the user will be presented with a ranking of binding modes of the small molecule.</p>
+<div class="section" id="input">
+<h3>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
 <li><p>protein-ligand PDB file</p></li>
 <li><p>YAML file with parameters</p></li>
 </ul>
-</div></blockquote>
 </div>
 <div class="section" id="default-parameters">
 <h3>Default parameters<a class="headerlink" href="#default-parameters" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p>iterations: 100</p></li>
 <li><p>pele steps: 8</p></li>
 </ul>
-</div></blockquote>
+</div>
+<div class="section" id="modes">
+<h3>Modes<a class="headerlink" href="#modes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>in_out</p></li>
+<li><p>in_out_soft</p></li>
+</ul>
 </div>
 <div class="section" id="recommendations">
 <h3>Recommendations<a class="headerlink" href="#recommendations" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>We recommend using <strong>at least 50 CPUs</strong>.</p></li>
-<li><p>Expected computational time is 3h but it is system-dependent.</p></li>
+<ol class="arabic simple">
+<li><p>We recommend using <strong>at least 30 CPUs</strong>.</p></li>
+<li><p>Expected computational time is 2h.</p></li>
 </ol>
-</div></blockquote>
 </div>
 </div>
 <div class="section" id="complex-preparation">
 <h2>1. Complex Preparation<a class="headerlink" href="#complex-preparation" title="Permalink to this headline">¶</a></h2>
-<p>Prepare the system with maestro (Protein Preparation Wizard) and output a complex.pdb. The complex.pdb must contain the protein-ligand in the desired initial conformation.
-If the binding site is known, the ligand must be set as close as possible to the protein surface on that side of the protein.</p>
+<p>Prepare the system with Maestro (Protein Preparation Wizard) and output as <code class="docutils literal notranslate"><span class="pre">complex.pdb</span></code>.</p>
 </div>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">#####Normal simulation (any type)########</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span> <span class="c1"># Protein ligand PDB</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1"># Ligand chain name</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span> <span class="c1"># Ligand residue name</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;complex.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span> <span class="c1"># Ligand chain ID</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;STR&#39;</span> <span class="c1"># Ligand residue name</span>
 <span class="c1"># Distance to track along the simulation</span>
 <span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1"># First atom (chain ID:residue number:atom name)</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1"># Second atom</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
-<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1"># Binding simulation</span>
-<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;A:577:N&quot;</span>
-<span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;A:867:CB&quot;</span>
-<span class="c1">###############BIAS PART#######################</span>
-<span class="nt">spawning</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">epsilon</span> <span class="c1"># Apply bias</span>
-<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span> <span class="c1"># Level of bias ranging from 0 to 1</span>
-<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span> <span class="c1"># Column of the report starting by one to bias the results towards. (You may want to first launch a simulation with the default bias_column, then inspect the simulation report. Last, kill that simulation to launch another one with the optimized bias column value)</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:HG&quot;</span> <span class="c1"># First atom (chain ID:residue number:atom name</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;A:3:CA&quot;</span> <span class="c1"># Second atom</span>
+<span class="nt">in_out</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
 </pre></div>
 </div>
-<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a></p>
+<p>For more optional flags please refer to <a class="reference external" href="../../flags/index.html">optional flags</a>.</p>
 </div>
 <div class="section" id="run-simulation">
 <h2>3. Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h2>
@@ -313,10 +307,10 @@ Ranked cluster representatives can be found in:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../pca/index.html" class="btn btn-neutral float-right" title="Simulate big conformational moves of your receptor with PCA-PELE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../bias/index.html" class="btn btn-neutral float-right" title="Biased simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../binding/unbinding.html" class="btn btn-neutral float-left" title="Unbinding simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Binding simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
