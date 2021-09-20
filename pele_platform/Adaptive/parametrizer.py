@@ -245,16 +245,8 @@ class Parametrizer:
 
             for file in self.external_templates:
                 try:
-                    if "opls2005" in self.forcefield.type.lower():
-                        shutil.copy(file, template_paths[0])
-                    elif "openFF" in self.forcefield.type.lower():
-                        shutil.copy(file, template_paths[-1])
-                    # Copy into both OPLS2005 and OpenFF template directories,
-                    # since we don't know which force field we are supposed
-                    # to use
-                    else:
-                        shutil.copy(file, template_paths[0])
-                        shutil.copy(file, template_paths[-1])
+                    shutil.copy(file, template_paths[0])
+                    shutil.copy(file, template_paths[-1])
                 except IOError:
                     raise custom_errors.TemplateFileNotFound(
                         f"Could not locate {file} file. "
@@ -327,10 +319,11 @@ class Parametrizer:
         from peleffy.forcefield import OPLS2005ForceField
 
         # If OpenFF extension is missing, add it
-        if "openff" in forcefield_name.lower() and not forcefield_name.lower().endswith(
-            "offxml"
-        ):
-            forcefield_name += ".offxml"
+        if "openff" in forcefield_name.lower():
+            if not forcefield_name.lower().endswith("offxml"):
+                forcefield_name += ".offxml"
+            if "_unconstrained" not in forcefield_name.lower():
+                forcefield_name = forcefield_name.replace("openff", "openff_unconstrained")
 
         # Select force field by name
         selector = ForceFieldSelector()
@@ -576,7 +569,7 @@ class Parametrizer:
 
                     impact = Impact(topology)
                     impact.to_file(impact_template_path)
-                    impact_template_paths = [impact_template_path]
+                    impact_template_paths = [os.path.dirname(impact_template_path)]
 
                     print(f"Parametrized {molecule.tag.strip()}.")
                 except AssertionError as e:
@@ -610,9 +603,13 @@ class Parametrizer:
                 os.path.join(self.working_dir, self.OFF_IMPACT_TEMPLATE_PATH),
             ]
 
+            for path in impact_template_paths:
+                if not os.path.exists(path):
+                    os.makedirs(path)
+
         self._copy_external_parameters(
             os.path.dirname(rotamer_library_path),
-            [os.path.dirname(path) for path in impact_template_paths],
+            impact_template_paths,
         )
 
     def _retrieve_solvent_model(self, solvent_name, forcefield):
@@ -697,7 +694,6 @@ class Parametrizer:
                 )
 
             return fixed_atoms
-
 
     def _handle_solvent_template(self, topologies):
         """
