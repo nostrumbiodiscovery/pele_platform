@@ -56,9 +56,9 @@ poses plotted using the ``kde_structs`` flag, where the default included 1000 be
     kde: true
     kde_structs: 200
 
-Example plot of binding energy vs ligand SASA with a KDE including 1000 best energy poses.
+Example plot of ligand RMSD vs binding energy.
 
-.. image:: ../img/kde.png
+.. image:: ../img/plotter_example1.png
   :width: 400
   :align: center
 
@@ -163,7 +163,7 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
                 * "interaction_mean" - interaction energy mean
                 * "population" - cluster population
 
-        cluster_representatives_criterion : str (optional, default = "interaction_5_percentile")
+        representatives_criterion : str (optional, default = "interaction_5_percentile")
             Method for selecting representative structures for each cluster, you can choose one of:
 
                 * "total_25_percentile" - total energy 25th percentile
@@ -204,7 +204,7 @@ Performs clustering of the output poses based on ligand heavy atom coordinates u
                 - "interaction_5_percentile" - interaction energy 5th percentile
                 - "interaction_mean" - interaction energy mean
                 - "population" - cluster population
-        cluster_representatives_criterion : str (optional, default = "interaction_5_percentile")
+        representatives_criterion : str (optional, default = "interaction_5_percentile")
             Method for selecting representative structures for each cluster, you can choose one of:
 
                 - "total_25_percentile" - total energy 25th percentile

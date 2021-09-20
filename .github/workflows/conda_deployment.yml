@@ -31,6 +31,6 @@ jobs:
         run: |
           anaconda login --hostname PELEPlat160rc1host${{ matrix.os }}${{ matrix.python-version }} --username ${{ secrets.ANACONDA_USER }} --password ${{ secrets.ANACONDA_PASSWD }}
       - name: Deploy package to conda
-        run: conda build -c nostrumbiodiscovery -c martimunicoy -c conda-forge devtools/conda_recipe
+        run: conda build -c nostrumbiodiscovery -c conda-forge devtools/conda_recipe
       - name: Logout from anaconda
         run: anaconda logout

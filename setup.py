@@ -2,14 +2,23 @@ from setuptools import setup, find_packages
 
 # To use a consistent encoding
 from codecs import open
-from os import path
+import os
 import versioneer
 
-here = path.abspath(path.dirname(__file__))
+here = os.path.abspath(os.path.dirname(__file__))
 ext_modules = []
 
+
+def find_package_data(data_root, package_root):
+    files = []
+    for root, dirnames, filenames in os.walk(data_root):
+        for fn in filenames:
+            files.append(os.path.relpath(os.path.join(root, fn), package_root))
+    return files
+
+
 # Get the long description from the README file
-with open(path.join(here, "README.rst"), encoding="utf-8") as f:
+with open(os.path.join(here, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
@@ -21,10 +30,11 @@ setup(
     url="https://github.com/NostrumBioDiscovery/pele_platform",
     author="Nostrum Biodiscovery",
     author_email="pelesupport@nostrumbiodiscovery.com",
-    packages=find_packages(exclude=["docs", "tests", "tests.data"]),
+    packages=find_packages(exclude=["docs", "tests", "tests.data", ]),
     package_data={
         "pele_platform/AdaptivePELE/atomset": ["*.pxd"],
         "pele_platform/AdaptivePELE/freeEnergies/": ["*.pyx"],
+        "pele_platform": find_package_data("pele_platform/data", "pele_platform")
     },
     include_package_data=True,
     install_requires=[
@@ -50,3 +60,4 @@ setup(
     ],
     ext_modules=ext_modules,  # accepts a glob pattern
 )
+
