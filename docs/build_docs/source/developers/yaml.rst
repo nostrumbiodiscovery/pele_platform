@@ -559,7 +559,7 @@ Nonstandard
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``nonstandard`` software setting.
 If there is no software setting,
 it will default to ``[]``.
@@ -758,7 +758,7 @@ Restart
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``restart`` software setting.
 If there is no software setting,
 it will default to ``'all'``.
@@ -1329,7 +1329,7 @@ Anm Direction
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``anm_direction`` software setting.
 If there is no software setting,
 it will default to ``'random'``.
@@ -1360,7 +1360,7 @@ Anm Mix Modes
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``anm_mix_modes`` software setting.
 If there is no software setting,
 it will default to ``'mixMainModeWithOthersModes'``.
@@ -1391,7 +1391,7 @@ Anm Picking Mode
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``anm_picking_mode`` software setting.
 If there is no software setting,
 it will default to ``'RANDOM_MODE'``.
@@ -1422,7 +1422,7 @@ Anm Displacement
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``anm_displacement`` software setting.
 If there is no software setting,
 it will default to ``0.75``.
@@ -1453,7 +1453,7 @@ Anm Modes Change
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``anm_modes_change`` software setting.
 If there is no software setting,
 it will default to ``4``.
@@ -1480,7 +1480,7 @@ Anm Num Of Modes
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``anm_num_of_modes`` software setting.
 If there is no software setting,
 it will default to ``6``.
@@ -1511,7 +1511,7 @@ Anm Relaxation Constr
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``anm_relaxation_constr`` software setting.
 If there is no software setting,
 it will default to ``0.5``.
@@ -1619,7 +1619,7 @@ Sasa
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``sasa`` software setting.
 If there is no software setting,
 it will default to ``'\n                        { "type": "sasa",\n\n                           "tag": "sasaLig",\n\n                           "selection": { "chains": { "names": ["$CHAIN"] } }\n\n                        },\n'``.
@@ -1652,7 +1652,7 @@ Binding Energy
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``binding_energy`` software setting.
 If there is no software setting,
 it will default to ``'\n                        { "type": "bindingEnergy",\n\n                           "boundPartSelection": { "chains": { "names": ["$CHAIN"] } }\n\n                        },\n'``.
@@ -1685,7 +1685,7 @@ Parameters
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``params`` software setting.
 If there is no software setting,
 it will default to ``True``.
@@ -1741,7 +1741,7 @@ Selection To Perturb
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``selection_to_perturb`` software setting.
 If there is no software setting,
 it will default to ``'"selectionToPerturb" : { "chains" : { "names" : [ "$CHAIN" ] } },'``.
@@ -1797,7 +1797,7 @@ Constrain Core
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``constrain_core`` software setting.
 
 
@@ -1822,7 +1822,7 @@ Spawning Condition
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``spawning_condition`` software setting.
 
 
@@ -1986,7 +1986,7 @@ COMligandConstraint / Com
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``COMligandConstraint`` software setting.
 If there is no software setting,
 it will default to ``0``.
@@ -2278,7 +2278,7 @@ External Template
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``template`` software setting.
 If there is no software setting,
 it will default to ``[]``.
@@ -2303,7 +2303,7 @@ External Rotamers
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``rotamers`` software setting.
 If there is no software setting,
 it will default to ``[]``.
@@ -2552,7 +2552,7 @@ Forcefield
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``forcefield`` software setting.
 If there is no software setting,
 it will default to ``'OPLS2005'``.
@@ -2715,7 +2715,7 @@ Temperature
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``temperature`` software setting.
 If there is no software setting,
 it will default to ``1500``.
@@ -2746,7 +2746,7 @@ Sidechain Res / Sidechain Resolution
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``sidechain_resolution`` software setting.
 If there is no software setting,
 it will default to ``30``.
@@ -2777,7 +2777,7 @@ Steric Trials
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``steric_trials`` software setting.
 If there is no software setting,
 it will default to ``250``.
@@ -2808,7 +2808,7 @@ Overlap Factor
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``overlap_factor`` software setting.
 If there is no software setting,
 it will default to ``0.65``.
@@ -2839,7 +2839,7 @@ Number of translations in the same direction.
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``steering`` software setting.
 If there is no software setting,
 it will default to ``0``.
@@ -2870,7 +2870,7 @@ Solvent
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``solvent`` software setting.
 If there is no software setting,
 it will default to ``'VDGBNP'``.
@@ -2901,7 +2901,7 @@ Spawning
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``spawning_type`` software setting.
 If there is no software setting,
 it will default to ``'independent'``.
@@ -2934,7 +2934,7 @@ Iterations
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``iterations`` software setting.
 
 
@@ -2995,7 +2995,7 @@ Pele Steps
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``pele_steps`` software setting.
 If there is no software setting,
 it will default to ``8``.
@@ -3028,7 +3028,7 @@ Cpus
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``cpus`` software setting.
 If there is no software setting,
 it will default to ``60``.
@@ -3059,7 +3059,7 @@ Density
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``density`` software setting.
 If there is no software setting,
 it will default to ``'null'``.
@@ -3090,7 +3090,7 @@ Cluster Values
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``cluster_values`` software setting.
 If there is no software setting,
 it will default to ``'[1.75, 2.5, 4, 6]'``.
@@ -3117,7 +3117,7 @@ Cluster Conditions
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``cluster_conditions`` software setting.
 If there is no software setting,
 it will default to ``'[1, 0.6, 0.4, 0.0]'``.
@@ -3144,7 +3144,7 @@ Simulation Type
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``simulation_type`` software setting.
 If there is no software setting,
 it will default to ``'pele'``.
@@ -3202,7 +3202,7 @@ Clust Type
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``clust_type`` software setting.
 If there is no software setting,
 it will default to ``'rmsd'``.
@@ -3315,7 +3315,7 @@ Epsilon
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``epsilon`` software setting.
 If there is no software setting,
 it will default to ``0``.
@@ -3346,7 +3346,7 @@ Bias Column
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``bias_column`` software setting.
 If there is no software setting,
 it will default to ``5``.
@@ -3377,7 +3377,7 @@ Randomize
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``randomize`` software setting.
 If there is no software setting,
 it will default to ``False``.
@@ -3655,7 +3655,7 @@ Maestro file to extract quantum charges.
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``mae_lig`` software setting.
 
 
@@ -3686,7 +3686,7 @@ Skip Ligand Prep
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``args.skip_ligand_prep`` software setting.
 If there is no software setting,
 it will default to ``[]``.
@@ -3719,7 +3719,7 @@ Skip Preprocess / No Ppp
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``no_ppp`` software setting.
 If there is no software setting,
 it will default to ``False``.
@@ -3750,7 +3750,7 @@ Skip Preprocess / Skip Prep
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``skip_prep`` software setting.
 If there is no software setting,
 it will default to ``False``.
@@ -3787,7 +3787,7 @@ Box Radius
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``box_radius`` software setting.
 
 
@@ -3924,7 +3924,7 @@ Randomize
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``randomize`` software setting.
 If there is no software setting,
 it will default to ``False``.
@@ -3986,7 +3986,7 @@ Waters
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``waters`` software setting.
 If there is no software setting,
 it will default to ``[]``.
@@ -4034,7 +4034,7 @@ Water Temp
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``water_temp`` software setting.
 If there is no software setting,
 it will default to ``5000``.
@@ -4061,7 +4061,7 @@ Water Overlap
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``water_overlap`` software setting.
 If there is no software setting,
 it will default to ``0.78``.
@@ -4092,7 +4092,7 @@ Water Constr
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``water_constr`` software setting.
 If there is no software setting,
 it will default to ``0``.
@@ -4119,7 +4119,7 @@ Water Trials
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``water_trials`` software setting.
 If there is no software setting,
 it will default to ``10000``.
@@ -4196,7 +4196,7 @@ N Waters
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``n_waters`` software setting.
 If there is no software setting,
 it will default to ``0``.
@@ -5145,7 +5145,7 @@ N Components
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``n_components`` software setting.
 If there is no software setting,
 it will default to ``10``.
@@ -5313,7 +5313,7 @@ N Components
 
 
 
-If value is  falsy,
+If value is  false,
 it will fall back to ``n_components`` software setting.
 If there is no software setting,
 it will default to ``10``.
