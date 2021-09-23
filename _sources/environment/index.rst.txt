@@ -14,7 +14,7 @@ They must be defined for the pele_platform to work correctly:
     .. code-block:: bash
 
         export PELE=/path/to/PELE-1.X/
-        export SCHRODINGER=/path/to/schoringer/20XX/
+        export SCHRODINGER=/path/to/schrodinger/20XX/
 
 Optional variables
 ------------------
