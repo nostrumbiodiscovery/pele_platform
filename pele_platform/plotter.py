@@ -1598,9 +1598,6 @@ if __name__ == "__main__":
     if (isinstance(z_data, EmptyAxisData) and requested and
             plot_type.lower() != 'density'):
         z_data = request_axis_data('Z', 'n', pele_data, optional=True)
-    if (isinstance(z_data, EmptyAxisData) and requested and
-            plot_type.lower() != 'histogram'):
-        z_data = request_axis_data('Z', 'n', pele_data, optional=True)
 
     # Initialize plot data
     plot_data = PlotData(x_data, y_data, z_data)
