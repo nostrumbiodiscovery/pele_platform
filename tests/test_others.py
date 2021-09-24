@@ -443,3 +443,33 @@ def test_out_in_metrics():
     job = main.run_platform_from_yaml(yaml_file)
     errors = tk.check_file(job.pele_dir, "pele.conf", expected_metrics, [])
     assert not errors
+
+
+def test_center_of_mass():
+    """
+    This test checks that center of mass algorithm works as intended.
+    """
+
+    from pele_platform.Utilities.Helpers.center_of_mass import center_of_mass
+    from pele_platform.Utilities.Helpers import get_data_file_path
+
+    pdb_file = get_data_file_path('test_files/4rgb_ligand.pdb')
+    center = center_of_mass(pdb_file)
+    assert center == [-34.079, -36.534, -4.657]
+
+    pdb_file = get_data_file_path('test_files/4rgb_ligand_noelement.pdb')
+    center = center_of_mass(pdb_file)
+    assert center == [-34.079, -36.534, -4.657]
+
+    pdb_file = get_data_file_path('test_files/4rgb_ligand_short.pdb')
+    center = center_of_mass(pdb_file)
+    print(center)
+    assert center == [-34.079, -36.534, -4.657]
+
+    pdb_file = get_data_file_path('test_files/4rgb_ligand_wrongelement.pdb')
+    center = center_of_mass(pdb_file)
+    assert center == [-34.079, -36.534, -4.657]
+
+    pdb_file = get_data_file_path('test_files/4rgb_ligand_wrong.pdb')
+    with pytest.raises(KeyError):
+        center = center_of_mass(pdb_file)
