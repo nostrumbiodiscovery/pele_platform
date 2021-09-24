@@ -34,10 +34,11 @@ Please, mind that each data source requires a use of different command line argu
 
 **2. Select plot type**
 
-The new Plotter offers three different plot types, each able to visualise up to three data columns (except for the density plot, which can only display two columns):
+The new Plotter offers four different plot types, each able to visualise up to three data columns (except for the density and histogram plots, which can only display two columns):
 
     - standard **scatter** plot
-    - **density** plot, similar to scatter, but including kernel density estimation on the axes
+    - **density** plot, similar to scatter, but displaying kernel density estimates (KDE) on the axes.
+    - **histogram** plot, similar to the density plot but showing histograms instead.
     - **interactive** which allows you to hover over data points to determine which trajectory they originate from.
 
 You should set the plot type using ``-t`` argument, however, if you do not, it will default to the standard scatter plot.
@@ -46,7 +47,7 @@ You should set the plot type using ``-t`` argument, however, if you do not, it w
 
 You can plot any of the metrics appearing in your report files by pointing the Plotter to the right **column number**. As a minimum,
 you will have to provide metrics for x- and y-axis, however, you can also set z-axis, which will colour the data points
-according to that metric (this does not apply to the density plot).
+according to that metric (this does not apply to the density or histogram plots).
 
 If you are unsure which numbers correspond to each metric, you can simply set data source and plot type and hit "enter".
 The tool will show you all available options and walk you through the setup.
@@ -59,7 +60,7 @@ Colour scheme
 
 Once you get the basics done, you can customize the colour scheme of your plot using the following arguments:
 
-    - ``--color`` to change the colour of the data points, you can select on of the built-in options:
+    - ``--color`` to change the colour of the data points, you can select one of the built-in options:
 
         .. hlist::
             :columns: 3
@@ -142,7 +143,7 @@ You can plot only the relevant data by setting limits to the scope of values plo
 Other
 +++++++++
 
-You can further customize the **density plot** by using:
+You can further customise the **density plot** by using:
 
     - ``--with_edges`` argument to visualise the distribution on the plot area
     - ``--n_levels`` to adjust the number of levels shown on the plot area.
@@ -152,7 +153,7 @@ Finally, the Nostrum Biodiscovery **logo** can be hidden by using ``--hide_logo`
 Saving to file
 -----------------
 
-If you want to save plot **to file** instead of displaying it, use ``--save_to`` argument and supply a path to file (this option does not apply to interactive plots).
+If you want to save the plot **to a file** instead of displaying it, use the ``--save_to`` argument and supply a path to the file (this option does not apply to interactive plots).
 
 Examples
 ----------
