@@ -12,6 +12,11 @@ CONSTR_ATOM = """{{ "type": "constrainAtomToPosition", "springConstant": {0}, "e
 CONSTR_DIST = """{{ "type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom": "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}" }},"""
 CONSTR_CALPHA = """{{ "type": "constrainAtomToPosition", "springConstant": {2}, "equilibriumDistance": 0.0, "constrainThisAtom": "{0}:{1}:_CA_" }},"""
 
+json_start = [
+    """"constraints":[""",
+]
+json_end = ["],"]
+
 
 class AlphaConstraints(object):
 
@@ -136,11 +141,6 @@ class AlphaConstraints(object):
             A list of string constraints (backbone, gaps and terminal) ready to be injected into the PELE configuration
             file (pele.conf).
         """
-        json_start = [
-            """"constraints":[""",
-        ]
-        json_end = ["],"]
-
         all_constraints = (
                 self.backbone_constraints
                 + self.gaps_constraints
@@ -242,6 +242,9 @@ def retrieve_constraints(
     -------
         A list of string constraints ready to be injected into the PELE configuration file.
     """
+    if interval == 0:
+        return json_start + json_end
+
     constr = AlphaConstraints(pdb_file, interval, back_constr, ter_constr)
     constraints = constr.build_constraints()
     return constraints

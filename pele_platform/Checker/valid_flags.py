@@ -35,7 +35,7 @@ VALID_FLAGS_PLATFORM = {
     "equilibration_mode": "equilibration_mode",
     "eq_steps": "equilibration_steps",
     "adaptive_restart": "adaptive_restart",
-    "input": "global_inputs",
+    "input": "input",
     "report_name": "report",
     "traj_name": "traj",
     "adaptive": "adaptive",
@@ -214,4 +214,5 @@ VALID_FLAGS_PLATFORM = {
     "minimum_steps": "minimum_steps",
     "covalent_docking_refinement": "covalent_docking_refinement",
     "perturbation_trials": "perturbation_trials",
+    "protein_protein_refinement": "protein_protein_refinement",
 }

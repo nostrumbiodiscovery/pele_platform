@@ -1,0 +1,4 @@
+protein_protein_refinement: true
+chain: A  # chain of the protein to be perturbed as ligand
+system: ../pele_platform/Examples/out_in/1_3ZON_complex.pdb
+debug: true

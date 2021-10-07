@@ -59,7 +59,7 @@ def run_adaptive(args):
         if not os.path.exists(parameters.inputs_dir):
             os.mkdir(parameters.inputs_dir)
 
-        if parameters.perturbation:
+        if parameters.perturbation and not args.protein_protein_refinement:
             syst = sp.SystemBuilder.build_system(
                 parameters.system,
                 args.mae_lig,
@@ -116,7 +116,6 @@ def run_adaptive(args):
             if not args.gpcr_orth and not args.out_in:
                 parameters.box_center = box_center
                 parameters.box_radius = box_radius
-
             if parameters.no_ppp:
                 receptor = syst.system
             else:
@@ -215,11 +214,11 @@ def run_adaptive(args):
         parameters.logger.info(f"Complex {parameters.system} prepared\n\n")
 
         # Ligand/metal and solvent parameters
-        if (parameters.perturbation or parameters.sidechain_perturbation) and parameters.use_peleffy:
+        if (parameters.perturbation or parameters.sidechain_perturbation) and not args.protein_protein_refinement and parameters.use_peleffy:
             ligand_parametrizer = parametrizer.Parametrizer.from_parameters(parameters)
             ligand_parametrizer.parametrize_ligands_from(pdb_file=syst.system, ppp_file=parameters.system)
 
-        elif (parameters.perturbation or parameters.sidechain_perturbation) and not parameters.use_peleffy:
+        elif (parameters.perturbation or parameters.sidechain_perturbation) and not args.protein_protein_refinement and not parameters.use_peleffy:
             # Parametrize the ligand
             ligand_params = lg.LigandParametrization(parameters)
             ligand_params.generate()
@@ -244,7 +243,7 @@ def run_adaptive(args):
                                                      pele_dir=parameters.pele_dir).generate()
 
         # Create simulation box, if performing perturbation
-        if parameters.perturbation:
+        if parameters.perturbation and not args.protein_protein_refinement:
             box = bx.BoxSetter(parameters.box_center,
                                parameters.box_radius,
                                parameters.ligand_ref,

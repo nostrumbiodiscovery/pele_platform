@@ -73,6 +73,7 @@ class SimulationParams(
         else:
             self.system = args.system
             self.input = args.input
+
         self.residue = args.residue
         self.chain = args.chain
         if self.adaptive:
@@ -233,7 +234,14 @@ class SimulationParams(
                 if args.parameters
                 else self.simulation_params.get("params", True)
             )
-            self.ligand = cs.LIGAND if self.perturbation else ""
+
+            if args.protein_protein_refinement:
+                self.ligand = cs.LIGAND_CHAIN.format(args.chain)
+            elif self.perturbation:
+                self.ligand = cs.LIGAND
+            else:
+                self.ligand = ""
+
             self.binding_energy = (
                 args.binding_energy
                 if args.binding_energy
@@ -417,7 +425,7 @@ class SimulationParams(
             args.constrain_core_spring if args.constrain_core_spring else 50.0
         )
         self.no_ppp = (
-            args.no_ppp if args.no_ppp else self.simulation_params.get("no_ppp", False)
+            args.no_ppp if args.no_ppp is not None else self.simulation_params.get("no_ppp", False)
         )
 
     def ligand_params(self, args):

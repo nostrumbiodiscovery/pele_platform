@@ -7,6 +7,7 @@ import pele_platform.gpcr.main as gpcr
 import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
 from pele_platform.enzyme_engineering.saturated_mutagenesis import SaturatedMutagenesis
+from pele_platform.pp_refinement.main import ProteinProteinRefinement
 from pele_platform.covalent_docking.main import CovalentDocking
 from pele_platform.constants import constants
 import pele_platform.Utilities.Parameters.parameters as pv
@@ -27,6 +28,7 @@ class Launcher:
     saturated_mutagenesis: str = "saturated_mutagenesis"
     interaction_restrictions: str = "interaction_restrictions"
     covalent_docking: str = "covalent_docking"
+    protein_protein_refinement: str = "protein_protein_refinement"
 
     def launch(self) -> pv.ParametersBuilder:
         # Launch package from input.yaml
@@ -56,6 +58,8 @@ class Launcher:
         elif package == self.frag:
             # Set variables and input ready
             job_variables = fr.FragRunner(self._args).run_simulation()
+        elif package == self.protein_protein_refinement:
+            job_variables = ProteinProteinRefinement(self._args).run()
         return job_variables
 
     def _define_package_to_run(self) -> None:
@@ -76,5 +80,7 @@ class Launcher:
             self._args.package = self.interaction_restrictions
         elif self._args.covalent_residue:
             self._args.package = self.covalent_docking
+        elif self._args.protein_protein_refinement:
+            self._args.package = self.protein_protein_refinement
         else: 
             self._args.package = self.adaptive

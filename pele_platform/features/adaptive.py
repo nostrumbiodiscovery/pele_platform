@@ -234,7 +234,23 @@ SOFTWARE_CONSTANTS = {
             "iterations": 1,
             "refinement_angle": 10,
             "params": "",
-        }
+        },
+        "protein_protein_refinement": {
+            "no_ppp": True,
+            "params": pcs.INDUCED_FIT,
+            "cluster_values": [3.0, 5, 6],
+            "cluster_conditions": [0.2, 0.10, 0],
+            "epsilon": 0.2,
+            "anm_freq": 0,
+            "iterations": 1,
+            "pele_steps": 250,
+            "min_freq": 1,
+            "spawning_type": "epsilon",
+            "sidechain_freq": 1,
+            "proximityDetection": "false",
+            "steering": 0,
+            "ca_interval": 0,  # to remove any backbone constraints
+        },
     },
 }
 
@@ -269,6 +285,8 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "covalent_docking_refinement"
     elif args.covalent_residue:
         type_simulation = "covalent_docking"
+    elif args.protein_protein_refinement:
+        type_simulation = "protein_protein_refinement"
     else:
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"

@@ -256,6 +256,7 @@ INTERACTION_RESTRICTIONS = """
 """
 
 LIGAND = '"ligandResname" : "$LIG_RES",'
+LIGAND_CHAIN = '"ligandChain": "{}",'
 
 # PPI waters
 water_O = "HETATM {}  OW  HOH {}{:>4}     {}  1.00  0.00           O\n"

@@ -1,0 +1,3 @@
+protein_protein_refinement: true
+chain: C  # chain of the protein to be perturbed as ligand
+test: true

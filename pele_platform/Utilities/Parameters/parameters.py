@@ -283,7 +283,8 @@ class Parameters(simulation_params.SimulationParams,
         import logging
 
         directory = directory if directory else self.pele_dir
-        log_name = os.path.join(directory, "{}.log".format(self.residue))
+        log_name = "{}.log".format(self.residue) if self.residue else "simulation.log"
+        log_name = os.path.join(directory, log_name)
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
         self.logger.propagate = False

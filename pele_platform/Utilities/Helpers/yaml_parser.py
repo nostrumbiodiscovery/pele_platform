@@ -394,6 +394,9 @@ class YamlParser(object):
             valid_flags["covalent_docking_refinement"], None
         )
 
+        # Protein-protein refinement
+        self.protein_protein_refinement = data.get(valid_flags["protein_protein_refinement"], None)
+
         if self.test:
             warnings.warn(
                 "WARNING: This simulation is a test do not use the input files to run production simulations"
@@ -406,7 +409,6 @@ class YamlParser(object):
             self.sidechain_freq = 0
             self.n_components = 3
             self.temperature = self.temp = 10000
-            self.n_components = 3
             self.analysis_nclust = 4
             self.max_top_clusters = 4
             self.cpus_per_mutation = 2
