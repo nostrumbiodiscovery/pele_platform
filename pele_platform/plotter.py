@@ -15,7 +15,7 @@ import os
 
 
 # Constants
-PLOT_TYPE_CHOICES = ('scatter', 'interactive', 'density')
+PLOT_TYPE_CHOICES = ('scatter', 'interactive', 'density', 'histogram')
 DEFAULT_PLOT_TYPE = 'scatter'
 COLORS = {'blue': ('lightskyblue', 'royalblue'),
           'red': ('#f5bcbc', 'firebrick'),
@@ -161,7 +161,7 @@ class PlotAppearance(object):
     """
 
     def __init__(self, colormap_name, plot_color, background_color,
-                 display_edges=None, n_levels=5, lines=[], title=None,
+                 display_edges=None, bins=100, n_levels=5, lines=[], title=None,
                  hide_logo=False):
         """
         It initializes a PlotAppearance object.
@@ -179,6 +179,8 @@ class PlotAppearance(object):
         display_edges : bool
             Whether to display level edges or not in a density plot.
             Default is False
+        bins : int
+            Number of bins to use in a histogram plot. Default is 100
         n_levels : int
             Number of levels to display in a density plot. Default is 5
         lines : list[Line]
@@ -192,6 +194,7 @@ class PlotAppearance(object):
         self.plot_color = plot_color
         self.background_color = background_color
         self.display_edges = display_edges
+        self.bins = bins
         self.n_levels = n_levels
         self.lines = lines
         self.title = title
@@ -458,6 +461,8 @@ def parse_args():
         'purple', 'orange']
     with_edges : bool
         Display edges of levels in the density plot
+    bins : int
+        Number of bins to use in a histogram plot
     n_levels : int
         Number of levels to display in the density plot when
         edges are shown
@@ -536,6 +541,8 @@ def parse_args():
     parser.add_argument('--with_edges', dest='with_edges',
                         action='store_true',
                         help='Display edges of levels in the density plot')
+    parser.add_argument('--bins', type=int, default=100,
+                        help='Number of bins to use in a histogram plot')
     parser.add_argument('--n_levels', type=int, default=5,
                         help='Number of levels to display in the density' +
                         'plot when edges are shown')
@@ -583,6 +590,7 @@ def parse_args():
     colormap = parsed_args.colormap
     color = parsed_args.color
     with_edges = parsed_args.with_edges
+    bins = parsed_args.bins
     n_levels = parsed_args.n_levels
     background_color = parsed_args.background_color
     vertical_lines = parsed_args.vertical_line
@@ -637,7 +645,7 @@ def parse_args():
     return csv_file, results_folder, output_folder, \
         report_name, trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
-        colormap, color, with_edges, n_levels, background_color, \
+        colormap, color, with_edges, bins, n_levels, background_color, \
         vertical_lines, horizontal_lines, title, hide_logo, save_to
 
 
@@ -646,7 +654,7 @@ def print_parameters(csv_file, results_folder, output_folder,
                      plot_type, xdata, ydata, zdata,
                      xlowest, xhighest, ylowest, yhighest,
                      zlowest, zhighest, colormap, color,
-                     with_edges, n_levels, background_color,
+                     with_edges, bins, n_levels, background_color,
                      vertical_lines, horizontal_lines, title,
                      hide_logo, save_to):
     """
@@ -703,6 +711,8 @@ def print_parameters(csv_file, results_folder, output_folder,
         'purple', 'orange']
     with_edges : bool
         Display edges of levels in the density plot
+    bins : int
+        Number of bins to use in a histogram plot
     n_levels : int
         Number of levels to display in the density plot when
         edges are shown
@@ -729,7 +739,7 @@ def print_parameters(csv_file, results_folder, output_folder,
                                 xlowest, xhighest,
                                 ylowest, yhighest,
                                 zlowest, zhighest,
-                                colormap, color, with_edges,
+                                colormap, color, with_edges, bins,
                                 n_levels, background_color,
                                 vertical_lines, horizontal_lines,
                                 title, hide_logo, save_to]])
@@ -807,6 +817,10 @@ def print_parameters(csv_file, results_folder, output_folder,
           ' ' * (max_len - (len(str(with_edges))
                             if with_edges is not None else 1)),
           '-' if with_edges is None else with_edges)
+    print(' - bins:         ',
+          ' ' * (max_len - (len(str(bins))
+                            if bins is not None else 1)),
+          '-' if bins is None else bins)
     print(' - n_levels:         ',
           ' ' * (max_len - (len(str(n_levels))
                             if n_levels is not None else 1)),
@@ -1427,6 +1441,97 @@ def density_plot(pele_data, plot_data, plot_appearance, save_to):
         pyplot.savefig(save_to, dpi=200)
 
 
+def histogram_plot(pele_data, plot_data, plot_appearance, save_to):
+    """
+    It generates a histogram.
+
+    Parameters
+    ----------
+    pele_data : a Pandas.DataFrame object
+        The DataFrame that contains the PELE simulation data
+    plot_data : a PlotData object
+        The PlotData containing the information to plot in each
+        axes
+    plot_appearance : a PlotAppearance object
+        The appearance settings for the plot
+    save_to : str
+        If it is not None, the resulting plot will be saved to this path
+    """
+    from matplotlib import pyplot
+    import seaborn as sns
+
+    sns.set_style("ticks")
+
+    x_values = plot_data.get_xs_from_pele_data(pele_data).to_numpy()
+    y_values = plot_data.get_ys_from_pele_data(pele_data).to_numpy()
+
+    color1, color2 = COLORS[plot_appearance.plot_color]
+
+    cmap = sns.dark_palette(color2, reverse=True, as_cmap=True)
+
+    ax = sns.JointGrid(x=x_values, y=y_values)
+
+    if plot_appearance.display_edges is False:
+        markers_alpha = 0.7
+    else:
+        markers_alpha = 0.4
+        ax.plot_joint(sns.kdeplot, cmap=cmap, shade=False,
+                      n_levels=plot_appearance.n_levels)
+
+    ax.plot_joint(sns.scatterplot, color=color1, edgecolor=color2,
+                  marker='o', alpha=markers_alpha, s=20)
+
+    sns.histplot(x=x_values, ax=ax.ax_marg_x, color=color1, bins=plot_appearance.bins, stat='count',
+                alpha=0.5, edgecolor=color2)
+
+    sns.histplot(y=y_values, ax=ax.ax_marg_y, color=color1, bins=plot_appearance.bins, stat='count',
+                alpha=0.5, edgecolor=color2)
+
+    # Axes settings
+    title = plot_appearance.title
+    if title is None:
+        title = "PELE Histogram"
+    ax.fig.suptitle(title, fontweight='bold')
+    ax.ax_joint.set_xlabel(plot_data.x_data.label, fontweight='bold')
+    ax.ax_joint.set_ylabel(plot_data.y_data.label, fontweight='bold')
+    ax.ax_marg_x.set_xlim(plot_data.x_data.lowest,
+                          plot_data.x_data.highest)
+    ax.ax_marg_y.set_ylim(plot_data.y_data.lowest,
+                          plot_data.y_data.highest)
+
+    # Add lines
+    for line in plot_appearance.lines:
+        if line.vertical:
+            ax.ax_joint.axvline(line.intercept,
+                                color=line.color,
+                                linestyle=':', linewidth=2)
+        else:
+            ax.ax_joint.axhline(line.intercept,
+                                color=line.color,
+                                linestyle=':', linewidth=2)
+
+    # Adjust layout
+    pyplot.tight_layout()
+
+    # Display NBD logo
+    if not plot_appearance.hide_logo:
+        import matplotlib.cbook as cbook
+        import matplotlib.image as image
+        from pele_platform.Utilities.Helpers import get_data_file_path
+
+        with cbook.get_sample_data(get_data_file_path('NBD.png')) as file:
+            im = image.imread(file)
+
+        newax = ax.fig.add_axes([0.79, 0.80, 0.2, 0.2], anchor='NE', zorder=1)
+        newax.imshow(im)
+        newax.axis('off')
+
+    # Plot it or save it
+    if save_to is None:
+        pyplot.show()
+    else:
+        pyplot.savefig(save_to, dpi=200)
+
 # Main workflow to be executed
 if __name__ == "__main__":
     # Import external libraries
@@ -1441,7 +1546,7 @@ if __name__ == "__main__":
     csv_file, results_folder, output_folder, report_name, \
         trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
-        colormap, color,  with_edges, n_levels, background_color, \
+        colormap, color,  with_edges, bins, n_levels, background_color, \
         vertical_lines, horizontal_lines, title, hide_logo, \
         save_to = parse_args()
 
@@ -1454,7 +1559,7 @@ if __name__ == "__main__":
                      report_name, trajectory_name, plot_type,
                      xdata, ydata, zdata, xlowest, xhighest,
                      ylowest, yhighest, zlowest, zhighest,
-                     colormap, color, with_edges, n_levels,
+                     colormap, color, with_edges, bins, n_levels,
                      background_color, vertical_lines,
                      horizontal_lines, title, hide_logo, save_to)
 
@@ -1501,7 +1606,7 @@ if __name__ == "__main__":
     plot_appearance = PlotAppearance(colormap_name=colormap,
                                      plot_color=color,
                                      background_color=background_color,
-                                     display_edges=with_edges,
+                                     display_edges=with_edges, bins=bins,
                                      n_levels=n_levels,
                                      lines=vertical_lines + horizontal_lines,
                                      title=title,
@@ -1523,3 +1628,5 @@ if __name__ == "__main__":
         scatter_plot(pele_data, plot_data, plot_appearance, save_to)
     elif plot_type.lower() == 'density':
         density_plot(pele_data, plot_data, plot_appearance, save_to)
+    elif plot_type.lower() == 'histogram':
+        histogram_plot(pele_data, plot_data, plot_appearance, save_to)
