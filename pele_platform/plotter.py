@@ -1754,7 +1754,7 @@ if __name__ == "__main__":
     import pandas as pd
 
     # Avoid Python2
-    from .Checker.python_version import check_python_version
+    from pele_platform.Checker.python_version import check_python_version
 
     check_python_version()
 
@@ -1840,7 +1840,7 @@ if __name__ == "__main__":
 
     # Generate the right plot type
     if save_to is None:
-        print('-> Displaying plot. Close the windows to exit.')
+        print('-> Displaying plot. Close the window to exit.')
     else:
         print(f'-> Saving plot to {save_to}')
 
