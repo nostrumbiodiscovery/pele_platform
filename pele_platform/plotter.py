@@ -161,8 +161,8 @@ class PlotAppearance(object):
     """
 
     def __init__(self, colormap_name, plot_color, background_color,
-                 display_edges=None, bins=100, n_levels=5, lines=[], title=None,
-                 hide_logo=False):
+                 display_edges=None, n_levels=5, n_bins=[100, 100],
+                 lines=[], title=None, hide_logo=False):
         """
         It initializes a PlotAppearance object.
 
@@ -179,10 +179,11 @@ class PlotAppearance(object):
         display_edges : bool
             Whether to display level edges or not in a density plot.
             Default is False
-        bins : int
-            Number of bins to use in a histogram plot. Default is 100
         n_levels : int
             Number of levels to display in a density plot. Default is 5
+        n_bins : tuple[int, int]
+            Number of bins to display in the histogram plot, first element
+            corresponds to the X axis and the second to the Y axis
         lines : list[Line]
             A list of Line objects. Default is an empty list
         title : str
@@ -194,8 +195,8 @@ class PlotAppearance(object):
         self.plot_color = plot_color
         self.background_color = background_color
         self.display_edges = display_edges
-        self.bins = bins
         self.n_levels = n_levels
+        self.n_bins = n_bins
         self.lines = lines
         self.title = title
         self.hide_logo = hide_logo
@@ -461,11 +462,12 @@ def parse_args():
         'purple', 'orange']
     with_edges : bool
         Display edges of levels in the density plot
-    bins : int
-        Number of bins to use in a histogram plot
     n_levels : int
         Number of levels to display in the density plot when
         edges are shown
+    n_bins : tuple[int, int]
+        Number of bins to display in the histogram plot, first element
+        corresponds to the X axis and the second to the Y axis
     background_color : str
         The background color for the plot. It must be a CSS4 compatible
         color name
@@ -541,11 +543,13 @@ def parse_args():
     parser.add_argument('--with_edges', dest='with_edges',
                         action='store_true',
                         help='Display edges of levels in the density plot')
-    parser.add_argument('--bins', type=int, default=100,
-                        help='Number of bins to use in a histogram plot')
     parser.add_argument('--n_levels', type=int, default=5,
-                        help='Number of levels to display in the density' +
+                        help='Number of levels to display in the density ' +
                         'plot when edges are shown')
+    parser.add_argument('--n_bins', type=int, default=[100, ], nargs='*',
+                        help='Number of bins to use in a histogram plot. ' +
+                        'Either one value to apply to both axis or two ' +
+                        'values corresponding to X and Y axes, respectively')
     parser.add_argument('--background_color', type=str, default='white',
                         help='Background color for the plot.')
     parser.add_argument('--vertical_line', action='append', type=str,
@@ -590,8 +594,8 @@ def parse_args():
     colormap = parsed_args.colormap
     color = parsed_args.color
     with_edges = parsed_args.with_edges
-    bins = parsed_args.bins
     n_levels = parsed_args.n_levels
+    n_bins = parsed_args.n_bins
     background_color = parsed_args.background_color
     vertical_lines = parsed_args.vertical_line
     title = parsed_args.title
@@ -642,11 +646,19 @@ def parse_args():
         if os.path.splitext(os.path.basename(save_to))[1] != '.png':
             raise ValueError('Plot can only be saved with PNG format')
 
+    if len(n_bins) == 1:
+        n_bins = n_bins * 2
+    elif len(n_bins) != 2:
+        raise ValueError('Invalid number of bins: either one value to ' +
+                         'apply it to both axis or two values corresponding ' +
+                         'to X and Y axes, respectively, are accepted')
+
     return csv_file, results_folder, output_folder, \
         report_name, trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
-        colormap, color, with_edges, bins, n_levels, background_color, \
-        vertical_lines, horizontal_lines, title, hide_logo, save_to
+        colormap, color, with_edges, n_levels, n_bins, \
+        background_color, vertical_lines, horizontal_lines, title, \
+        hide_logo, save_to
 
 
 def print_parameters(csv_file, results_folder, output_folder,
@@ -654,7 +666,7 @@ def print_parameters(csv_file, results_folder, output_folder,
                      plot_type, xdata, ydata, zdata,
                      xlowest, xhighest, ylowest, yhighest,
                      zlowest, zhighest, colormap, color,
-                     with_edges, bins, n_levels, background_color,
+                     with_edges, n_levels, n_bins, background_color,
                      vertical_lines, horizontal_lines, title,
                      hide_logo, save_to):
     """
@@ -711,11 +723,12 @@ def print_parameters(csv_file, results_folder, output_folder,
         'purple', 'orange']
     with_edges : bool
         Display edges of levels in the density plot
-    bins : int
-        Number of bins to use in a histogram plot
     n_levels : int
         Number of levels to display in the density plot when
         edges are shown
+    n_bins : tuple[int, int]
+        Number of bins to display in the histogram plot, first element
+        corresponds to the X axis and the second to the Y axis
     background_color : str
         The background color for the plot. It must be a CSS4 compatible
         color name
@@ -739,8 +752,8 @@ def print_parameters(csv_file, results_folder, output_folder,
                                 xlowest, xhighest,
                                 ylowest, yhighest,
                                 zlowest, zhighest,
-                                colormap, color, with_edges, bins,
-                                n_levels, background_color,
+                                colormap, color, with_edges,
+                                n_levels, n_bins, background_color,
                                 vertical_lines, horizontal_lines,
                                 title, hide_logo, save_to]])
 
@@ -817,14 +830,14 @@ def print_parameters(csv_file, results_folder, output_folder,
           ' ' * (max_len - (len(str(with_edges))
                             if with_edges is not None else 1)),
           '-' if with_edges is None else with_edges)
-    print(' - bins:         ',
-          ' ' * (max_len - (len(str(bins))
-                            if bins is not None else 1)),
-          '-' if bins is None else bins)
     print(' - n_levels:         ',
           ' ' * (max_len - (len(str(n_levels))
                             if n_levels is not None else 1)),
           '-' if n_levels is None else n_levels)
+    print(' - n_bins:           ',
+          ' ' * (max_len - (len(str(n_bins))
+                            if n_bins is not None else 1)),
+          '-' if n_bins is None else n_bins)
     print(' - background_color: ',
           ' ' * (max_len - (len(str(background_color))
                             if background_color is not None else 1)),
@@ -1484,11 +1497,13 @@ def histogram_plot(pele_data, plot_data, plot_appearance, save_to):
     ax.plot_joint(sns.scatterplot, color=color1, edgecolor=color2,
                   marker='o', alpha=markers_alpha, s=20)
 
-    sns.histplot(x=x_values, ax=ax.ax_marg_x, color=color1, bins=plot_appearance.bins, stat='count',
-                alpha=0.5, edgecolor=color2)
+    sns.histplot(x=x_values, ax=ax.ax_marg_x, color=color1,
+                 bins=plot_appearance.n_bins[0], stat='count',
+                 alpha=0.5, edgecolor=color2)
 
-    sns.histplot(y=y_values, ax=ax.ax_marg_y, color=color1, bins=plot_appearance.bins, stat='count',
-                alpha=0.5, edgecolor=color2)
+    sns.histplot(y=y_values, ax=ax.ax_marg_y, color=color1,
+                 bins=plot_appearance.n_bins[1], stat='count',
+                 alpha=0.5, edgecolor=color2)
 
     # Axes settings
     title = plot_appearance.title
@@ -1549,9 +1564,9 @@ if __name__ == "__main__":
     csv_file, results_folder, output_folder, report_name, \
         trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
-        colormap, color,  with_edges, bins, n_levels, background_color, \
-        vertical_lines, horizontal_lines, title, hide_logo, \
-        save_to = parse_args()
+        colormap, color,  with_edges, n_levels, n_bins, \
+        background_color, vertical_lines, horizontal_lines, \
+        title, hide_logo, save_to = parse_args()
 
     # Print header
     from pele_platform.constants import constants
@@ -1562,8 +1577,8 @@ if __name__ == "__main__":
                      report_name, trajectory_name, plot_type,
                      xdata, ydata, zdata, xlowest, xhighest,
                      ylowest, yhighest, zlowest, zhighest,
-                     colormap, color, with_edges, bins, n_levels,
-                     background_color, vertical_lines,
+                     colormap, color, with_edges, n_levels,
+                     n_bins, background_color, vertical_lines,
                      horizontal_lines, title, hide_logo, save_to)
 
     # Get PELE data
@@ -1609,8 +1624,9 @@ if __name__ == "__main__":
     plot_appearance = PlotAppearance(colormap_name=colormap,
                                      plot_color=color,
                                      background_color=background_color,
-                                     display_edges=with_edges, bins=bins,
+                                     display_edges=with_edges,
                                      n_levels=n_levels,
+                                     n_bins=n_bins,
                                      lines=vertical_lines + horizontal_lines,
                                      title=title,
                                      hide_logo=hide_logo)
