@@ -1057,7 +1057,10 @@ def get_colormap(colormap_name):
         oranges = pyplot.cm.get_cmap('Oranges', 512)
         cmap = ListedColormap(oranges(np.linspace(0.95, 0.4, 256)))
     else:
-        raise NameError('Unknown colormap name: \'{}\''.format(colormap_name))
+        try:
+            cmap = pyplot.cm.get_cmap(colormap_name)
+        except ValueError:
+            raise NameError(f'Unknown colormap name: \'{colormap_name}\'')
 
     return cmap
 
