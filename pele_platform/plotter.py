@@ -411,6 +411,14 @@ class Filter(object):
         """
         initial_points = len(pele_data)
 
+        try:
+            pele_data.iloc[:, self.column - 1] = \
+                pele_data.iloc[:, self.column - 1] .astype(float)
+        except ValueError:
+            print(f' - Values in column {self.column} are not numeric ' +
+                  'and cannot be filtered')
+            return pele_data
+
         if self.condition == '<':
             pele_data = pele_data[pele_data.iloc[:, self.column - 1]
                                   < self.threshold]
