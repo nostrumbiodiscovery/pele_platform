@@ -577,6 +577,7 @@ class SimulationParams(
         )
         self.clustering_filtering_threshold = args.clustering_filtering_threshold if args.clustering_filtering_threshold is not None else 0.25
         self.plot_filtering_threshold = args.plot_filtering_threshold if args.plot_filtering_threshold is not None else 0.02
+        self.clustering_coverage = args.clustering_coverage if args.clustering_coverage is not None else 0.75
 
     def constraints_params(self, args):
         """

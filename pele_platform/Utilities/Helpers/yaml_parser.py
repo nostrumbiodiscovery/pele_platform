@@ -367,6 +367,7 @@ class YamlParser(object):
         self.clustering_filtering_threshold = data.get(
             valid_flags["clustering_filtering_threshold"], None
         )
+        self.clustering_coverage = data.get(valid_flags["clustering_coverage"], None)
 
         # peleffy parametrization
         self.charge_parametrization_method = data.get(
