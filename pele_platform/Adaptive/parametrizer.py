@@ -575,7 +575,7 @@ class Parametrizer:
 
                     print(f"Parametrized {molecule.tag.strip()}.")
                 except AssertionError as e:
-                    warnings.warn(
+                    raise custom_errors.LigandPreparationError(
                         f"Failed to parametrize residue {molecule.tag.strip()}. You can skip it or "
                         f"parametrize manually (see documentation: "
                         f"https://nostrumbiodiscovery.github.io/pele_platform/errors/index.html#parametrization"
