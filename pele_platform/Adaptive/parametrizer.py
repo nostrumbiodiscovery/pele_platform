@@ -247,7 +247,9 @@ class Parametrizer:
                 try:
                     shutil.copy(file, template_paths[0])
                     shutil.copy(file, template_paths[-1])
-                except IOError:
+                except shutil.SameFileError:
+                    pass
+                except FileNotFoundError:
                     raise custom_errors.TemplateFileNotFound(
                         f"Could not locate {file} file. "
                         f"Please double-check the path."
