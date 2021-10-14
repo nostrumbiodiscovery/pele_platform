@@ -284,6 +284,8 @@ Alternatively, as before, you can provide your own template and/or rotamer files
 
     - **solvent_template**: External file with solvent parameters in JSON format.
 
+    - **skip_ligand_prep**: List of residue names that should not be parametrized automatically.
+
 ..  code-block:: yaml
 
   templates:
@@ -294,6 +296,9 @@ Alternatively, as before, you can provide your own template and/or rotamer files
     - "/home/simulation_files/LIG.rot.assign"
   solvent_template:
     - "/home/simulation_files/ligandParams.txt"
+  skip_ligand_prep:
+    - "LIG"
+    - "MG"
 
 
 Ligand conformations
