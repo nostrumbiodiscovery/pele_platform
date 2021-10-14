@@ -432,20 +432,32 @@ class Analysis(object):
         if bandwidth == "auto" and clustering_type == "meanshift":
 
             n_points_to_assign = round(coordinates.shape[0] * self.clustering_coverage)
+            interval = 4
 
             print(f"Searching bandwidth to cover {self.clustering_coverage * 100}% of poses...")
-            bandwidth_grid = range(2, 36, 4)
-            best_grid_point = self.attempt_clustering_iteratively(bandwidth_grid, n_points_to_assign, coordinates,
-                                                                  dataframe, path,
-                                                                  top_clusters_criterion, max_top_clusters,
-                                                                  min_population, clustering)
+            bandwidth_grid = range(2, 36, interval)
+            cluster_subset, cluster_summary, best_grid_point = self.attempt_clustering_iteratively(bandwidth_grid,
+                                                                                                   n_points_to_assign,
+                                                                                                   coordinates,
+                                                                                                   dataframe, path,
+                                                                                                   top_clusters_criterion,
+                                                                                                   max_top_clusters,
+                                                                                                   min_population,
+                                                                                                   clustering)
             print("Refining grid search...")
+            if best_grid_point - interval < 0:
+                bandwidth_fine_grid = np.linspace(1, best_grid_point, 5)
+            else:
+                bandwidth_fine_grid = np.linspace(best_grid_point - interval, best_grid_point, 5)
 
-            bandwidth_fine_grid = np.linspace(best_grid_point - 4, best_grid_point, 5)
-            best_grid_point = self.attempt_clustering_iteratively(bandwidth_fine_grid, n_points_to_assign, coordinates,
-                                                                  dataframe, path,
-                                                                  top_clusters_criterion, max_top_clusters,
-                                                                  min_population, clustering)
+            cluster_subset, cluster_summary, best_grid_point = self.attempt_clustering_iteratively(bandwidth_fine_grid,
+                                                                                                   n_points_to_assign,
+                                                                                                   coordinates,
+                                                                                                   dataframe, path,
+                                                                                                   top_clusters_criterion,
+                                                                                                   max_top_clusters,
+                                                                                                   min_population,
+                                                                                                   clustering)
             print(f"Final mean shift bandwidth: {best_grid_point}.")
         else:
             cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
@@ -456,7 +468,7 @@ class Analysis(object):
                                                                  max_top_clusters=max_top_clusters,
                                                                  min_population=min_population)
 
-            if cluster_summary is None:
+            if cluster_summary is None or cluster_subset is None:
                 return
 
         # If water coordinates have been extracted, use them to locate
@@ -521,7 +533,7 @@ class Analysis(object):
                 best_grid_point = grid_point
                 break
 
-        return best_grid_point
+        return cluster_subset, cluster_summary, best_grid_point
 
     def _get_clusters(self, clustering, coordinates, dataframe, path, top_clusters_criterion, max_top_clusters,
                       min_population):
