@@ -550,19 +550,19 @@ def parse_filters(filters_data):
                 condition = '=='
             elif condition.lower() == 'lt':
                 condition = '<'
-            elif condition.lower() == 'ht':
+            elif condition.lower() == 'gt':
                 condition = '>'
-            elif condition.lower() == 'let':
+            elif condition.lower() == 'le':
                 condition = '<='
-            elif condition.lower() == 'het':
+            elif condition.lower() == 'ge':
                 condition = '>='
 
             if condition not in ['<', '==', '>', '<=', '>=']:
                 raise FilterParserException('Wrong condition. One of ' +
                                             '[\'<\', \'==\', \'>\', ' +
                                             '\'<=\', \'>=\', \'eq\', ' +
-                                            '\'lt\', \'eq\', \'ht\', ' +
-                                            '\'let\', \'het\'] '+
+                                            '\'lt\', \'eq\', \'gt\', ' +
+                                            '\'le\', \'ge\'] '+
                                             'is expected, ' +
                                             f'got {condition}')
 
@@ -744,7 +744,7 @@ def parse_args():
                         'It expects the following data: metric_column + ' +
                         'condition + threshold_value. Condition must be ' +
                         'one of [\'<\', \'>\', \'==\', \'<=\', \'>=\', ' +
-                        '\'lt\', \'eq\', \'ht\', \'let\', \'het\'].',
+                        '\'lt\', \'eq\', \'gt\', \'le\', \'ge\'].',
                         nargs=3, metavar=('INT', 'STR', 'FLOAT'))
     parser.add_argument('--title', type=str, default=None,
                         help='The title to print in the plot.')
