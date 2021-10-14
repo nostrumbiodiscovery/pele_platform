@@ -445,7 +445,8 @@ class Analysis(object):
                                                                      min_population=min_population)
 
                 # Check how many points were clustered and adjust the bandwidth, if necessary
-                assigned_points = sum([1 for label in cluster_subset if label != "-"])
+                assigned_points = sum([1 for label in cluster_subset if label != -1])
+
                 if n_points_to_assign > assigned_points:
                     bandwidth += 1
 
