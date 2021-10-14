@@ -376,7 +376,7 @@ class Analysis(object):
         clustering_type : str
             The clustering method that will be used to generate the
             clusters
-        bandwidth : float
+        bandwidth : Union[float, str]
             Bandwidth for the mean shift and HDBSCAN clustering. Default is
             2.5
         analysis_nclust : int
@@ -431,34 +431,41 @@ class Analysis(object):
 
         if bandwidth == "auto" and clustering_type == "meanshift":
 
-            n_points_to_assign = round(coordinates.shape[0] * self.clustering_coverage)
-            interval = 4
-
+            n_points_to_assign = coordinates.shape[0] * self.clustering_coverage
             print(f"Searching bandwidth to cover {self.clustering_coverage * 100}% of poses...")
-            bandwidth_grid = range(2, 36, interval)
-            cluster_subset, cluster_summary, best_grid_point = self.attempt_clustering_iteratively(bandwidth_grid,
-                                                                                                   n_points_to_assign,
-                                                                                                   coordinates,
-                                                                                                   dataframe, path,
-                                                                                                   top_clusters_criterion,
-                                                                                                   max_top_clusters,
-                                                                                                   min_population,
-                                                                                                   clustering)
-            print("Refining grid search...")
-            if best_grid_point - interval < 0:
-                bandwidth_fine_grid = np.linspace(1, best_grid_point, 5)
-            else:
-                bandwidth_fine_grid = np.linspace(best_grid_point - interval, best_grid_point, 5)
 
-            cluster_subset, cluster_summary, best_grid_point = self.attempt_clustering_iteratively(bandwidth_fine_grid,
-                                                                                                   n_points_to_assign,
-                                                                                                   coordinates,
-                                                                                                   dataframe, path,
-                                                                                                   top_clusters_criterion,
-                                                                                                   max_top_clusters,
-                                                                                                   min_population,
-                                                                                                   clustering)
-            print(f"Final mean shift bandwidth: {best_grid_point}.")
+            low = 1
+            high = 50
+
+            # Binary search to find the best bandwidth
+            while low <= high:
+                mid = (low + high) / 2
+                clustering._bandwidth = mid
+
+                cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
+                                                                     coordinates=coordinates,
+                                                                     dataframe=dataframe,
+                                                                     path=path,
+                                                                     top_clusters_criterion=top_clusters_criterion,
+                                                                     max_top_clusters=max_top_clusters,
+                                                                     min_population=min_population)
+
+                # Check how many points were clustered
+                assigned_points = sum([1 for label in cluster_subset if label != -1])
+
+                if assigned_points > n_points_to_assign:
+                    # Search only in the bottom half of the bandwidths
+                    high = mid - 1
+
+                elif assigned_points < n_points_to_assign:
+                    # Search only in the top half of the bandwidths
+                    low = mid + 1
+
+                else:
+                    break
+
+            print(
+                f"Selected bandwidth {clustering._bandwidth} covers {(assigned_points / len(cluster_subset) * 100)}% of all poses.")
         else:
             cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
                                                                  coordinates=coordinates,
@@ -468,8 +475,8 @@ class Analysis(object):
                                                                  max_top_clusters=max_top_clusters,
                                                                  min_population=min_population)
 
-            if cluster_summary is None or cluster_subset is None:
-                return
+        if cluster_summary is None or cluster_subset is None:
+            return
 
         # If water coordinates have been extracted, use them to locate
         # main water sites for each top cluster
@@ -510,30 +517,6 @@ class Analysis(object):
         self._plot_clusters(cluster_subset, dataframe, path)
 
         print(f"Generate cluster graphs and plot their descriptors")
-
-    def attempt_clustering_iteratively(self, bandwidth_grid, n_points_to_assign, coordinates, dataframe, path,
-                                       top_clusters_criterion, max_top_clusters, min_population, clustering):
-
-        best_grid_point = 0
-
-        for grid_point in bandwidth_grid:
-            clustering._bandwidth = grid_point
-            cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
-                                                                 coordinates=coordinates,
-                                                                 dataframe=dataframe,
-                                                                 path=path,
-                                                                 top_clusters_criterion=top_clusters_criterion,
-                                                                 max_top_clusters=max_top_clusters,
-                                                                 min_population=min_population)
-
-            # Check how many points were clustered and adjust the bandwidth, if necessary
-            assigned_points = sum([1 for label in cluster_subset if label != -1])
-
-            if assigned_points >= n_points_to_assign:
-                best_grid_point = grid_point
-                break
-
-        return cluster_subset, cluster_summary, best_grid_point
 
     def _get_clusters(self, clustering, coordinates, dataframe, path, top_clusters_criterion, max_top_clusters,
                       min_population):
@@ -1167,9 +1150,6 @@ class Analysis(object):
         dataframe : a pandas.dataframe object
             The dataframe containing the PELE reports information that
             follows the same ordering as the array of clusters
-        cluster_summary : a pandas.dataframe object
-            The dataframe containing summary of all clusters that were
-            analyzed
         representative_structures : dict[str, tuple[str, int]]
             Dictionary containing the representative structures that
             were selected. Cluster label is the key and value is a list
