@@ -73,6 +73,9 @@ class Analysis(object):
         random_seed : int
             Random seed to use in clustering. If it was not set in input.yaml.
             The default does not set a specific seed
+        clustering_coverage : float
+            The percentage of points that needs to be assigned to a top cluster when running mean shift clustering
+            with automated bandwidth.
         """
         from pele_platform.analysis import DataHandler
 
@@ -362,8 +365,7 @@ class Analysis(object):
                           max_top_clusters=8,
                           top_clusters_criterion="interaction_25_percentile",
                           min_population=0.01,
-                          representatives_criterion="interaction_5_percentile",
-                          clustering_coverage=0.75):
+                          representatives_criterion="interaction_5_percentile", ):
         """
         It generates the structural clustering of ligand poses.
 
@@ -397,9 +399,8 @@ class Analysis(object):
             "total_5_percentile", "total_mean", "total_min",
             "interaction_25_percentile", "interaction_5_percentile",
             "interaction_mean", "interaction_min"]
-        clustering_coverage : float
-            Percentage of total points that must have a cluster assigned, needs to be between 0 and 1.
         """
+        import numpy as np
         import os
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
         from pele_platform.constants.constants import metric_top_clusters_criterion
@@ -429,28 +430,23 @@ class Analysis(object):
         print(f"Cluster ligand binding modes")
 
         if bandwidth == "auto" and clustering_type == "meanshift":
-            print(f"Searching bandwidth to cover {self.clustering_coverage * 100}% of poses.")
-            assigned_points = 0
+
             n_points_to_assign = round(coordinates.shape[0] * self.clustering_coverage)
-            bandwidth = 3
 
-            while n_points_to_assign > assigned_points:
-                clustering._bandwidth = bandwidth
-                cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
-                                                                     coordinates=coordinates,
-                                                                     dataframe=dataframe,
-                                                                     path=path,
-                                                                     top_clusters_criterion=top_clusters_criterion,
-                                                                     max_top_clusters=max_top_clusters,
-                                                                     min_population=min_population)
+            print(f"Searching bandwidth to cover {self.clustering_coverage * 100}% of poses...")
+            bandwidth_grid = range(2, 36, 4)
+            best_grid_point = self.attempt_clustering_iteratively(bandwidth_grid, n_points_to_assign, coordinates,
+                                                                  dataframe, path,
+                                                                  top_clusters_criterion, max_top_clusters,
+                                                                  min_population, clustering)
+            print("Refining grid search...")
 
-                # Check how many points were clustered and adjust the bandwidth, if necessary
-                assigned_points = sum([1 for label in cluster_subset if label != -1])
-
-                if n_points_to_assign > assigned_points:
-                    bandwidth += 1
-
-            print(f"Final mean shift bandwidth: {bandwidth}.")
+            bandwidth_fine_grid = np.linspace(best_grid_point - 4, best_grid_point, 5)
+            best_grid_point = self.attempt_clustering_iteratively(bandwidth_fine_grid, n_points_to_assign, coordinates,
+                                                                  dataframe, path,
+                                                                  top_clusters_criterion, max_top_clusters,
+                                                                  min_population, clustering)
+            print(f"Final mean shift bandwidth: {best_grid_point}.")
         else:
             cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
                                                                  coordinates=coordinates,
@@ -502,6 +498,30 @@ class Analysis(object):
         self._plot_clusters(cluster_subset, dataframe, path)
 
         print(f"Generate cluster graphs and plot their descriptors")
+
+    def attempt_clustering_iteratively(self, bandwidth_grid, n_points_to_assign, coordinates, dataframe, path,
+                                       top_clusters_criterion, max_top_clusters, min_population, clustering):
+
+        best_grid_point = 0
+
+        for grid_point in bandwidth_grid:
+            clustering._bandwidth = grid_point
+            cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
+                                                                 coordinates=coordinates,
+                                                                 dataframe=dataframe,
+                                                                 path=path,
+                                                                 top_clusters_criterion=top_clusters_criterion,
+                                                                 max_top_clusters=max_top_clusters,
+                                                                 min_population=min_population)
+
+            # Check how many points were clustered and adjust the bandwidth, if necessary
+            assigned_points = sum([1 for label in cluster_subset if label != -1])
+
+            if assigned_points >= n_points_to_assign:
+                best_grid_point = grid_point
+                break
+
+        return best_grid_point
 
     def _get_clusters(self, clustering, coordinates, dataframe, path, top_clusters_criterion, max_top_clusters,
                       min_population):
@@ -1235,6 +1255,8 @@ class Analysis(object):
         -------
         filtered_coordinates : numpy.array
             The array of coordinates resulting from the filtering
+        filtered_water_coordinates : numpy.array
+            The array of water coordinates resulting from filtering.
         filtered_dataframe : a pandas.dataframe object
             The dataframe resulting from the filtering
         energetic_threshold : float
