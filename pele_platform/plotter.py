@@ -362,7 +362,7 @@ class Filter(object):
             It represents the condition to apply in the filtering.
             One of ['<', '==', '>', '<=', '>=']
         threshold : float
-           Whether it is a vertical or an horizontal line. Default is
+           Threshold value to be applied to the column data.```
            'True'
         """
 
