@@ -362,8 +362,7 @@ class Filter(object):
             It represents the condition to apply in the filtering.
             One of ['<', '==', '>', '<=', '>=']
         threshold : float
-           Threshold value to be applied to the column data.```
-           'True'
+           Threshold value to be applied to the column data.
         """
 
         if not isinstance(column, int):
@@ -486,7 +485,7 @@ def parse_line_data(line_data, vertical):
                 from matplotlib import colors as mcolors
                 if color not in mcolors.CSS4_COLORS:
                     raise ValueError('wrong color: ' +
-                                     f'{lines_color}, it must be a ' +
+                                     f'{color}, it must be a ' +
                                      'CSS4-compatible color name.')
 
             else:
@@ -1755,6 +1754,7 @@ def histogram_plot(pele_data, plot_data, plot_appearance, save_to):
         pyplot.show()
     else:
         pyplot.savefig(save_to, dpi=200)
+
 
 # Main workflow to be executed
 if __name__ == "__main__":
