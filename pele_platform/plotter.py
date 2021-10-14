@@ -351,7 +351,7 @@ class Filter(object):
 
     def __init__(self, column, condition, threshold):
         """
-        It initializes a Line object.
+        It initializes a Filter object.
 
         Parameters
         ----------
