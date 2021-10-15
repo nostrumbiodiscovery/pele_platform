@@ -400,8 +400,8 @@ class Analysis(object):
             "interaction_25_percentile", "interaction_5_percentile",
             "interaction_mean", "interaction_min"]
         """
-        import numpy as np
         import os
+
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
         from pele_platform.constants.constants import metric_top_clusters_criterion
 
@@ -432,9 +432,10 @@ class Analysis(object):
         if bandwidth == "auto" and clustering_type == "meanshift":
 
             n_points_to_assign = coordinates.shape[0] * self.clustering_coverage
+            assigned_points = 0
             print(f"Searching bandwidth to cover {self.clustering_coverage * 100}% of poses...")
 
-            low = 1
+            low = 2
             high = 50
 
             # Binary search to find the best bandwidth
@@ -464,8 +465,12 @@ class Analysis(object):
                 else:
                     break
 
-            print(
-                f"Selected bandwidth {clustering._bandwidth} covers {(assigned_points / len(cluster_subset) * 100)}% of all poses.")
+            if assigned_points < n_points_to_assign:
+                print(f"Warning: The mean shift clustering reached a maximum bandwidth of {high} but did not manage "
+                      f"to cover the required percentage of all structures.")
+            else:
+                print(f"Selected bandwidth {clustering._bandwidth} covers {(assigned_points / len(cluster_subset) * 100)}% of all poses.")
+
         else:
             cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
                                                                  coordinates=coordinates,
@@ -475,7 +480,7 @@ class Analysis(object):
                                                                  max_top_clusters=max_top_clusters,
                                                                  min_population=min_population)
 
-        if cluster_summary is None or cluster_subset is None:
+        if cluster_summary is None:
             return
 
         # If water coordinates have been extracted, use them to locate
