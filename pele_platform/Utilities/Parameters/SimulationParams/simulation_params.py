@@ -44,6 +44,7 @@ class SimulationParams(
         self.constraints_params(args)
         self.interaction_restrictions_params(args)
         self.covalent_docking_params(args)
+        self.satumut_params(args)
         self.check_flags(args)
 
         # Create all simulation types (could be more efficient --> chnage in future)
@@ -659,6 +660,34 @@ class SimulationParams(
             self.sidechain_perturbation = ""
             self.covalent_sasa = ""
             self.refinement_angle = ""
+
+    def satumut_params(self, args):
+        """
+            Sets satumut parameters
+        """
+        self.satumut_positions_mutations = args.satumut_positions_mutations
+        self.satumut_mutation = args.satumut_mutation
+        self.satumut_multiple_mutations  = args.satumut_multiple_mutations
+        self.satumut_enantiomer_improve = args.satumut_enantiomer_improve if args.satumut_enantiomer_improve  is not None else "R"
+        self.satumut_energy_threshold = args.satumut_energy_threshold if args.satumut_energy_threshold is not None else 0.1
+        self.satumut_dihedrals_analysis = args.satumut_dihedrals_analysis
+        self.satumut_conservative = args.satumut_conservative
+        self.satumut_catalytic_distance = args.satumut_catalytic_distance if args.satumut_catalytic_distance is not None else 3.5
+        self.satumut_analysis_metric = args.satumut_analysis_metric if args.satumut_analysis_metric is not None else "distance"
+        self.satumut_threshold = args.satumut_threshold if args.satumut_threshold is not None else 0.1
+        self.satumut_plots_path = args.satumut_plots_path
+        self.satumut_summary_path = args.satumut_summary_path
+        self.satumut_profile_metric = args.satumut_profile_metric if args.satumut_profile_metric is not None else "Binding Energy"
+        self.satumut_plots_dpi = args.satumut_plots_dpi if args.satumut_plots_dpi is not None else 800
+        self.satumut_fixed_residues = args.satumut_fixed_residues
+        self.satumut_radius_neighbors = args.satumut_radius_neighbors if args.satumut_radius_neighbors is not None else 5.0
+        self.satumut_consecutive = args.satumut_consecutive if args.satumut_consecutive is not None else False
+        self.satumut_hydrogens = args.satumut_hydrogens if args.satumut_hydrogens is not None else True
+        self.satumut_pdb_dir = args.satumut_pdb_dir if args.satumut_pdb_dir is not None else "pdb_files"
+        self.plurizymer_single_mutation = args.plurizymer_single_mutation
+        self.plurizymer_turn = args.plurizymer_turn
+        self.plurizymer_atom  = args.plurizymer_atom
+
 
     @staticmethod
     def check_flags(args):
