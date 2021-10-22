@@ -62,6 +62,7 @@ class SimulationParams(
             True if args.package in ["site_finder", "adaptive", "PPI"] else None
         )
         self.frag_pele = True if args.package == "frag" else None
+        self.satumut = True if args.package == "satumut" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
         self.frag_pele_steps = "$STEPS" if self.frag_pele else "$PELE_STEPS"
@@ -669,7 +670,7 @@ class SimulationParams(
         self.satumut_mutation = args.satumut_mutation
         self.satumut_multiple_mutations  = args.satumut_multiple_mutations
         self.satumut_enantiomer_improve = args.satumut_enantiomer_improve if args.satumut_enantiomer_improve  is not None else "R"
-        self.satumut_energy_threshold = args.satumut_energy_threshold if args.satumut_energy_threshold is not None else 0.1
+        self.satumut_energy_threshold = args.satumut_energy_threshold
         self.satumut_dihedrals_analysis = args.satumut_dihedrals_analysis
         self.satumut_conservative = args.satumut_conservative
         self.satumut_catalytic_distance = args.satumut_catalytic_distance if args.satumut_catalytic_distance is not None else 3.5

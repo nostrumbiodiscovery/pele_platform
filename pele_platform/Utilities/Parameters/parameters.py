@@ -159,14 +159,11 @@ class ParametersBuilder(object):
         parameters : a Parameters object
             The Parameters object containing the parameters for PELE
         """
-        # Retrieve the specific args for FragPELE
-        specific_args = frag.retrieve_software_settings(args)
 
         # Initialize Parameters object
-        self._parameters = Parameters(args, specific_args,
+        self._parameters = Parameters(args, {"simulation_params": {}}, 
                                       initialize_simulation_paths=False)
         self._initialized = True
-
 
         # Keep initial arguments
         self.parameters.args = args
@@ -176,6 +173,7 @@ class ParametersBuilder(object):
 
         # Set software
         self.parameters.software = "satumut"
+        return self.parameters
 
     @property
     def initialized(self):
