@@ -62,7 +62,8 @@ class SimulationParams(
             True if args.package in ["site_finder", "adaptive", "PPI"] else None
         )
         self.frag_pele = True if args.package == "frag" else None
-        self.satumut = True if args.package == "satumut" else None
+        self.saturated_mutagenesis = True if args.package == "saturated_mutagenesis" else None
+        self.pluizymer = True if args.package == "pluizymer" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
         self.frag_pele_steps = "$STEPS" if self.frag_pele else "$PELE_STEPS"

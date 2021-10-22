@@ -215,6 +215,7 @@ VALID_FLAGS_PLATFORM = {
     "covalent_docking_refinement": "covalent_docking_refinement",
     "perturbation_trials": "perturbation_trials",
     # parameters for satmut/plurizymer
+    "plurizymer": "plurizymer",
     "satumut_positions_mutations": "satumut_positions_mutations",
     "satumut_mutation": "satumut_mutation",
     "satumut_multiple_mutations": "satmut_multiple_mutations",

@@ -341,10 +341,11 @@ class YamlParser(object):
         # OUTIN
         self.final_site = data.get(valid_flags["final_site"], None)
 
-        # Mutagenesis
+        # Mutagenesis/Plurizymer
         self.saturated_mutagenesis = data.get(
             valid_flags["saturated_mutagenesis"], None
         )
+        self.plurizymer = data.get(valid_flags["plurizymer"], None)
         self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
 
         self.satumut_positions_mutations = data.get(valid_flags["satumut_positions_mutations"], None)
@@ -366,6 +367,7 @@ class YamlParser(object):
         self.satumut_consecutive = data.get(valid_flags["satumut_consecutive"], False)
         self.satumut_hydrogens = data.get(valid_flags["satumut_hydrogens"], True)
         self.satumut_pdb_dir = data.get(valid_flags["satumut_pdb_dir"], "pdb_files")
+
         self.plurizymer_single_mutation = data.get(valid_flags["plurizymer_single_mutation"], None)
         self.plurizymer_turn = data.get(valid_flags["plurizymer_turn"], None)
         self.plurizymer_atom  = data.get(valid_flags["plurizymer_atom"], None)
