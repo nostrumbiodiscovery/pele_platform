@@ -9,9 +9,14 @@ from typing import List
 import warnings
 
 from pele_platform.Utilities.Parameters import parameters
-from pele_platform.Utilities.Helpers import helpers
+from pele_platform.Utilities.Helpers import helpers, yaml_parser
 from pele_platform.Adaptive import simulation
 
+from satumut.simulation import SimulationRunner
+from satumut.helper import neighbourresidues, map_atom_string
+from satumut.mutate_pdb import generate_mutations
+from satumut.analysis import consecutive_analysis
+from satumut.rs_analysis import consecutive_analysis_rs
 
 def set_starting_point(logged_subsets):
     indexes = [int(subset.replace("Subset_", "")) for subset in logged_subsets]
@@ -26,7 +31,7 @@ class SaturatedMutagenesis:
 
     Parameters
     ----------
-    env : pele_env.EnviroBuilder)
+    env : yaml_parser.YamlParser
         Arguments provided by the user in input.yaml.
     already_computed : List[str]
         Initially empty list of already computed systems.
@@ -41,12 +46,19 @@ class SaturatedMutagenesis:
     See Also folder name, default = "Subset_"
     """
 
-    env: parameters.ParametersBuilder
+    env: yaml_parser.YamlParser
     already_computed: List = field(default_factory=list)
     all_jobs: List = field(default_factory=list)
     original_dir: str = os.path.abspath(os.getcwd())
     start: int = 1
     subset_folder: str = "Subset_"
+
+    def __post_init__(self):
+        """
+            Parse the input parameters
+        """
+        builder = parameters.ParametersBuilder()
+        self.params = builder.build_satumut_variables(self.env)
 
     def run(self):
         """
@@ -60,8 +72,26 @@ class SaturatedMutagenesis:
         """
         self.set_package_params()
         self.check_cpus()
+        simulation_satumut = SimulationRunner(self.params.system, self.params.folder)
+        input_ = simulation_satumut.side_function()
+        if not self.params.satumut_positions_mutations and self.params.plurizymer_atom:
+            position = neighbourresidues(input_, self.params.plurizymer_atom,
+                                         self.params.satumut_radius_neighbors,
+                                         self.params.satumut_fixed_residues)
+        else:
+            position = self.params.satumut_positions_mutations
+
+        if not self.params.adaptive_restart:
+            generate_mutations(input_, position, hydrogens=self.params.satumut_hydrogens,
+                                           multiple=self.params.satumut_multiple_mutations,
+                                           pdb_dir=self.params.satumut_pdb_dir,
+                                           consec=self.params.satumut_consecutive,
+                                           mut=self.params.satumut_mutation,
+                                           conservative=self.params.satumut_conservative)
+        self.all_mutations = [os.path.abspath(x) for x in glob.glob(os.path.join(self.params.satumut_pdb_dir, "*.pdb"))]
+        self.check_metric_distance_atoms(input_)
+
         self.set_working_folder()
-        self.all_mutations = self.retrieve_inputs()
         self.restart_checker()
         self.split_into_subsets()
 
@@ -78,6 +108,27 @@ class SaturatedMutagenesis:
                 self.all_jobs.append(deepcopy(job))
                 self.logger(job)
 
+        dirname, original = simulation_satumut.pele_folders()
+        plot_dir = self.params.satumut_plots_path
+        if self.params.folder and not plot_dir:
+            plot_dir = self.params.folder
+        consecutive_analysis(dirname, original, self.params.satumut_plots_dpi,
+                             self.params.max_top_poses, self.params.satumut_summary_path,
+                             plot_dir, self.params.satumut_analysis_metric,
+                             self.params.cpus, self.params.satumut_threshold,
+                             self.params.satumut_catalytic_distance, self.params.xtc,
+                             energy_thres=self.params.satumut_energy_threshold,
+                             profile_with=self.params.satumut_profile_metric)
+
+        if self.params.satumut_dihedrals_analysis:
+            consecutive_analysis_rs(dirname, self.params.satumut_dihedrals_analysis, input_,
+                                    original, self.params.satumut_plots_dpi, self.params.max_top_poses,
+                                    self.params.satumut_summary_path, plot_dir,
+                                    self.params.satumut_analysis_metric, self.params.cpus,
+                                    self.params.satumut_threshold, self.params.satumut_catalytic_distance,
+                                    self.params.xtc, self.params.satumut_enantiomer_improve,
+                                    energy=self.params.satumut_energy_threshold,
+                                    profile_with=self.params.satumut_profile_metric)
         return self.all_jobs
 
     def restart_checker(self):
@@ -237,6 +288,26 @@ class SaturatedMutagenesis:
                 "The number of CPUs per mutation needs to be lower than "
                 + "the total number of CPUs - 1."
             )
+
+    def check_metric_distance_atoms(self, input_pdb):
+        """
+        Checks, if atom distance metrics are defined, that the selected
+        atoms have not changed during the mutation, and if so modify the
+        metrics section so that it correctly reflects the atoms, and change the
+        system pdb to one with the modifications applied
+
+        Parameters
+        ----------
+        input_pdb: str
+            Path to the input pdb
+        """
+        if self.env.atom_dist:
+            mutated = self.all_mutations[0]
+            for i in range(len(self.env.atom_dist)):
+                self.env.atom_dist[i] = map_atom_string(self.env.atom_dist[i], input_pdb, mutated)
+            for mutated_pdb in self.all_mutations:
+                if "original" in mutated_pdb:
+                    self.env.system = mutated_pdb
 
     def set_package_params(self):
         """
