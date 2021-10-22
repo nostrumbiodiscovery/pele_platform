@@ -26,9 +26,11 @@ import pele_platform.Adaptive.plop_solvent as sv
 import pele_platform.Adaptive.plop_ligand_parametrization as lg
 from pele_platform.Utilities.Helpers import ligand_conformations
 from pele_platform.Checker import pdb_checker
+from pele_platform.Adaptive.equilibrator import Equilibrator
+from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 
 
-def run_adaptive(args):
+def run_adaptive(args: YamlParser):
     """
     Main function to prepare and launch the simulation.
 
@@ -340,6 +342,12 @@ def run_adaptive(args):
                 parameters.polarization_factor,
                 parameters.system,
             )
+
+        # Predict cluster values in a short equilibration
+        if parameters.cluster_values == "auto":
+            equilibration = Equilibrator(args, parameters.pele_dir)
+            equilibration.run()
+            parameters.adap_ex_input = ", ".join(['"' + input + '"' for input in parameters.input]).strip('"')
 
         # Point adaptive.conf to input dir
         parameters.adap_ex_input = os.path.join(
