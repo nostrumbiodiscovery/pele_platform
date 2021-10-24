@@ -345,8 +345,9 @@ def run_adaptive(args: YamlParser):
 
         # Predict cluster values in a short equilibration
         if parameters.cluster_values == "auto":
-            equilibration = Equilibrator(args, parameters.pele_dir)
-            equilibration.run()
+            equilibration = Equilibrator(args, parameters.pele_dir, parameters.system)
+            parameters.cluster_values, parameters.cluster_conditions = equilibration.run()
+            parameters.input = equilibration.set_next_step()
             parameters.adap_ex_input = ", ".join(['"' + input + '"' for input in parameters.input]).strip('"')
 
         # Point adaptive.conf to input dir

@@ -10,7 +10,7 @@ from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 
 class Equilibrator:
 
-    def __init__(self, parameters: YamlParser, pele_dir):
+    def __init__(self, parameters: YamlParser, pele_dir, preprocessed_system):
         """
         Instantiates the Equilibrator class.
 
@@ -20,10 +20,13 @@ class Equilibrator:
             YamlParser object with user-defined parameters.
         pele_dir : str
             Path to the PELE directory in which the main simulation is performed.
+        preprocessed_system : str
+            Path to the system preprocessed by PPP.
         """
         self.parameters = parameters
         self.pele_dir = pele_dir
         self.equilibration_parameters = None
+        self.preprocessed_system = preprocessed_system
 
     def run(self):
         """
@@ -32,16 +35,11 @@ class Equilibrator:
         """
         self.generate_equilibration_parameters()
         self.run_equilibration()
-        self.update_simulation_parameters()
 
-    def update_simulation_parameters(self):
-        """
-        Updates main simulation parameters: cluster_values, cluster_conditions, protein preprocessing and inputs.
-        """
-        self.parameters.cluster_values, self.parameters.cluster_conditions = self.extract_cluster_values(
+        cluster_values, cluster_conditions = self.extract_cluster_values(
             os.path.join(self.equilibration_parameters.pele_dir, self.equilibration_parameters.output))
-        self.parameters.no_ppp = True  # The system was preprocessed in the equilibration run
-        self.set_next_step()
+
+        return cluster_values, cluster_conditions
 
     def generate_equilibration_parameters(self):
         """
@@ -54,6 +52,7 @@ class Equilibrator:
         equilibration_parameters.folder = os.path.join(self.pele_dir, "QuickEquilibration")
         equilibration_parameters.analyse = False
         equilibration_parameters.no_ppp = True
+        equilibration_parameters.system = self.preprocessed_system
 
         self.equilibration_parameters = equilibration_parameters
 
@@ -91,9 +90,15 @@ class Equilibrator:
         cluster_values = [min(threshold), np.mean(threshold), max(threshold)]
         cluster_conditions = [max(contacts), np.mean(contacts), min(contacts)]
 
+        print(f"Setting cluster values {cluster_values} and cluster conditions {cluster_conditions}.")
+
         return cluster_values, cluster_conditions
 
     def set_next_step(self):
+        """
+        Extracts the best poses generated during the equilibration, copies them over to the main simulation inputs dir
+        and overwrites the system argument.
+        """
 
         from pele_platform.analysis.analysis import Analysis
 
@@ -102,7 +107,7 @@ class Equilibrator:
         analysis.generate_top_poses(next_inputs_path, self.equilibration_parameters.cpus - 1)
 
         inputs_dir = os.path.join(self.pele_dir, "input")
-        old_systems = glob.glob(os.path.join(self.parameters.system.replace(".pdb", "*")))
+        old_systems = glob.glob(os.path.join(inputs_dir, os.path.basename(self.parameters.system.replace(".pdb", "*"))))
 
         for old_system in old_systems:
             os.remove(old_system)
@@ -112,4 +117,4 @@ class Equilibrator:
         for input_file in inputs:
             shutil.copy(input_file, inputs_dir)
 
-        self.parameters.input = [os.path.basename(input_file) for input_file in inputs]
+        return [os.path.basename(input_file) for input_file in inputs]
