@@ -63,7 +63,7 @@ class SimulationParams(
         )
         self.frag_pele = True if args.package == "frag" else None
         self.saturated_mutagenesis = True if args.package == "saturated_mutagenesis" else None
-        self.pluizymer = True if args.package == "pluizymer" else None
+        self.pluizymer = True if args.package == "plurizymer" else None
         # Trick to let frag handle control fodler parameters --> Improve
         self.complexes = "$PDB" if self.frag_pele else "$COMPLEXES"
         self.frag_pele_steps = "$STEPS" if self.frag_pele else "$PELE_STEPS"
@@ -681,7 +681,7 @@ class SimulationParams(
         self.satumut_summary_path = args.satumut_summary_path
         self.satumut_profile_metric = args.satumut_profile_metric if args.satumut_profile_metric is not None else "Binding Energy"
         self.satumut_plots_dpi = args.satumut_plots_dpi if args.satumut_plots_dpi is not None else 800
-        self.satumut_fixed_residues = args.satumut_fixed_residues
+        self.satumut_fixed_residues = args.satumut_fixed_residues if args.satumut_fixed_residues is not None else []
         self.satumut_radius_neighbors = args.satumut_radius_neighbors if args.satumut_radius_neighbors is not None else 5.0
         self.satumut_consecutive = args.satumut_consecutive if args.satumut_consecutive is not None else False
         self.satumut_hydrogens = args.satumut_hydrogens if args.satumut_hydrogens is not None else True

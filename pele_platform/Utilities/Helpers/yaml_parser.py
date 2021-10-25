@@ -362,7 +362,7 @@ class YamlParser(object):
         self.satumut_summary_path = data.get(valid_flags["satumut_summary_path"], None)
         self.satumut_profile_metric = data.get(valid_flags["satumut_profile_metric"], "Binding Energy")
         self.satumut_plots_dpi = data.get(valid_flags["satumut_plots_dpi"], 800)
-        self.satumut_fixed_residues = data.get(valid_flags["satumut_fixed_residues"], None)
+        self.satumut_fixed_residues = data.get(valid_flags["satumut_fixed_residues"], [])
         self.satumut_radius_neighbors = data.get(valid_flags["satumut_radius_neighbors"], 5.0)
         self.satumut_consecutive = data.get(valid_flags["satumut_consecutive"], False)
         self.satumut_hydrogens = data.get(valid_flags["satumut_hydrogens"], True)

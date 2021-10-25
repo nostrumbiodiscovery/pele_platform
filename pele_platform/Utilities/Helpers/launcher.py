@@ -53,7 +53,7 @@ class Launcher:
             job_variables = run_ppi(self._args)
         elif package == self.saturated_mutagenesis:
             job_variables = SaturatedMutagenesis(self._args).run()
-        elif package == self.pluryzymer:
+        elif package == self.plurizymer:
             job_variables = Plurizymer(self._args).run()
         elif package == self.covalent_docking:
             job_variables = CovalentDocking(self._args).run()
@@ -76,6 +76,8 @@ class Launcher:
             self._args.package = self.out_in
         elif self._args.saturated_mutagenesis:
             self._args.package = self.saturated_mutagenesis
+        elif self._args.plurizymer:
+            self._args.package = self.plurizymer
         elif self._args.interaction_restrictions:
             self._args.package = self.interaction_restrictions
         elif self._args.covalent_residue:
