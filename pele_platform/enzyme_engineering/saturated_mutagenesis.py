@@ -73,6 +73,7 @@ class SaturatedMutagenesis:
         """
         self.set_package_params()
         self.check_cpus()
+        self.params.folder = os.path.abspath(f"{self.params.folder}_mut")
         simulation_satumut = SimulationRunner(self.params.system, self.params.folder)
         input_ = simulation_satumut.side_function()
         # use this object to keep track of the folder where the simulations
@@ -80,7 +81,6 @@ class SaturatedMutagenesis:
         satumut_helper = CreateYamlFiles([], "", "", cpus=self.params.cpus,
                                          single=self.params.plurizymer_single_mutation,
                                          turn=self.params.plurizymer_turn)
-        self.params.folder = f"{self.params.folder}_mut"
         if not self.params.satumut_positions_mutations and self.params.plurizymer_atom:
             position = neighbourresidues(input_, self.params.plurizymer_atom,
                                          self.params.satumut_radius_neighbors,
@@ -121,14 +121,15 @@ class SaturatedMutagenesis:
             dirname, original = simulation_satumut.pele_folders()
         plot_dir = self.params.satumut_plots_path
         if self.params.folder and not plot_dir:
-            plot_dir = self.params.folder
+            plot_dir = os.path.join(self.params.folder, "analysis")
         consecutive_analysis(dirname, original, self.params.satumut_plots_dpi,
                              self.params.max_top_poses, self.params.satumut_summary_path,
                              plot_dir, self.params.satumut_analysis_metric,
                              self.params.cpus, self.params.satumut_threshold,
                              self.params.satumut_catalytic_distance, self.params.xtc,
                              energy_thres=self.params.satumut_energy_threshold,
-                             profile_with=self.params.satumut_profile_metric)
+                             profile_with=self.params.satumut_profile_metric,
+                             atoms=self.env.atom_dist)
 
         if self.params.satumut_dihedrals_analysis:
             consecutive_analysis_rs(dirname, self.params.satumut_dihedrals_analysis, input_,
