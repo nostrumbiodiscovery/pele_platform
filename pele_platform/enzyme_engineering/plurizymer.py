@@ -63,7 +63,8 @@ class Plurizymer(SaturatedMutagenesis):
         """
         self.set_package_params()
         self.check_cpus()
-        self.params.folder = os.path.abspath(f"{self.params.folder}_mut")
+        self.set_working_folder()
+        self.params.folder = f"{self.working_folder}_mut"
         simulation_satumut = SimulationRunner(self.params.system, self.params.folder)
         input_ = simulation_satumut.side_function()
         # use this object to keep track of the folder where the simulations
