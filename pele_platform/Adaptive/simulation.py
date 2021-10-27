@@ -106,13 +106,7 @@ def run_adaptive(args):
         # If randomization in necessary (PPI, site_finder, global exploration)...
         elif args.full or args.randomize or args.ppi or args.site_finder:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(
-                parameters.ligand_ref,
-                parameters.receptor,
-                outputfolder=parameters.inputs_dir,
-                nposes=parameters.poses,
-                test=parameters.test,
-                user_center=parameters.center_of_interface,
-                logger=parameters.logger)
+                parameters, args.box_center, args.box_radius)
             if not args.gpcr_orth and not args.out_in:
                 parameters.box_center = box_center
                 parameters.box_radius = box_radius

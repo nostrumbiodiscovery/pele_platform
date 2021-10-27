@@ -1,11 +1,26 @@
 from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection, rotaxis
 from Bio.PDB.vectors import Vector
 import numpy as np
-import os, argparse
+import os
 import time
+
 import pele_platform.Errors.custom_errors as cs
+from pele_platform.Utilities.Parameters.parameters import Parameters
+
 
 def calculate_com(structure):
+    """
+    Calculates center of mass of the structure (ligand or protein).
+
+    Parameters
+    ----------
+    structure : biopython Structure object
+        PDB of choice loaded into biopython (only chains of interest).
+
+    Returns
+    -------
+        A list defining center of mass of the structure.
+    """
     structure_mass = 0.0
     com = np.zeros(3)
     for atom in structure.get_atoms():
@@ -15,45 +30,62 @@ def calculate_com(structure):
     return com
 
 
-def randomize_starting_position(ligand_file, complex_file, outputfolder=".", nposes=200, test=False, user_center=None,
-                                logger=None):
+def randomize_starting_position(parameters, box_center=None, box_radius=None):
     """
     Randomize initial ligand position around the receptor.
-    Default number of poses = 200.
-    :param ligand_file:
-    :param complex_file:
-    :param nposes:
-    :return:
+
+    Parameters
+    ----------
+    parameters : Parameters
+        Parameters object passed from Adaptive.simulation.
+    box_center : Union[List[float], str]
+        Box center defined by the user, either using a list of coordinates or by specifying an atom, e.g. A:123:CA
+    box_radius : float
+        Box radius defined by the user.
+
+    Returns
+    -------
+        A list of PDB files with random ligand positions.
     """
-    if test:  np.random.seed(42)
+    if parameters.test:
+        np.random.seed(42)
 
-    # read in files
-    parser = PDBParser()
-    output = []
-    structure = parser.get_structure('protein', complex_file)
-    ligand = parser.get_structure('ligand', ligand_file)
-    COI = np.zeros(3)
+    # When running SiteFinder, the users can narrow down the area where inputs will be
+    # spawned by setting box radius and center. We're setting box_center as COI to avoid crazy code changes until 2.0.
+    if parameters.site_finder:
+        parameters.center_of_interface = box_center if box_center else None
 
-    # get center of interface (if PPI)
-    if user_center:
+    # Retrieve atom information from the string (if PPI or SF)
+    if parameters.center_of_interface:
         try:
-            chain_id, res_number, atom_name = user_center.split(":")
+            chain_id, res_number, atom_name = parameters.center_of_interface.split(":")
         except ValueError:
-            raise cs.WrongAtomStringFormat(f"The specified atom is wrong '{user_center}'. \
-Should be 'chain:resnumber:atomname'")
+            raise cs.WrongAtomStringFormat(f"The specified atom is wrong '{parameters.center_of_interface}'. "
+                                           f"Should be 'chain:residue number:atom name'.")
+
+    # Load PDB files into biopython
+    parser = PDBParser()
+    structure = parser.get_structure('protein', parameters.receptor)
+    ligand = parser.get_structure('ligand', parameters.ligand_ref)
+
+    output = []
+    COI = np.zeros(3)  # initializing to [0, 0, 0]
+
+    # Get center of interface (if PPI or custom SF box)
+    if parameters.center_of_interface:
         for chain in structure.get_chains():
             if chain.id == chain_id:
                 for residue in chain.get_residues():
                     if residue.id[1] == int(res_number):
                         for atom in residue.get_atoms():
-                            if atom.name == atom_name: 
-                                COI = np.array(list(atom.get_vector())) 
-  
+                            if atom.name == atom_name:
+                                COI = np.array(list(atom.get_vector()))
+
     # calculate protein and ligand COM
     com_protein = calculate_com(structure)
     com_ligand = calculate_com(ligand)
 
-    # calculating the maximum d of the ligand
+    # calculating the maximum dimensions of the ligand
     coor_ligand = []
     for atom in ligand.get_atoms():
         coor_ligand.append(list(atom.get_vector() - com_ligand))
@@ -62,7 +94,7 @@ Should be 'chain:resnumber:atomname'")
     coor_ligand_max = np.amax(coor_ligand, axis=0)
     d_ligand = np.sqrt(np.sum(coor_ligand_max ** 2))
 
-    # set threshold for near and far contacts based on ligand d
+    # set threshold for near and far contacts based on ligand dimensions
     if d_ligand / 2 < 5.0:
         d5_ligand = 5.0
     else:
@@ -73,8 +105,8 @@ Should be 'chain:resnumber:atomname'")
     else:
         d8_ligand = 8.0
 
-    # calculate vector to move the ligandi
-    if user_center:
+    # calculate vector to move the ligand respectively to the center of interface of center of mass of the protein
+    if parameters.center_of_interface:
         move_vector = com_ligand - COI
     else:
         move_vector = com_ligand - com_protein
@@ -94,20 +126,27 @@ Should be 'chain:resnumber:atomname'")
     coor_max = np.amax(coor, axis=0)
     d = np.sqrt(np.sum(coor_max ** 2))
 
-    # radius of the sphere from the origin
-    D = 10.0 if user_center else np.ceil(6.0 + d)
-    D_initial = D
-    logger.info("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
+    # Calculate radius of the sphere from the origin
+    if parameters.center_of_interface:
+        if parameters.site_finder and box_radius:
+            D = box_radius
+        if parameters.ppi:
+            D = 10
+    else:
+        D = np.ceil(6.0 + d)
 
-    if user_center:
+    D_initial = D
+    parameters.logger.info("Sampling {}A spherical box around the centre of the receptor/interface.".format(D))
+
+    if parameters.center_of_interface:
         sphere_cent = COI
     else:
         sphere_cent = com_protein
 
     j = 0
-    logger.info("Generating {} poses...".format(nposes))
+    parameters.logger.info("Generating {} poses...".format(parameters.poses))
     start_time = time.time()
-    while (j < nposes):
+    while j < parameters.poses:
         # generate random coordinates
         phi = np.random.uniform(0, 2 * np.pi)
         costheta = np.random.uniform(-1, 1)
@@ -147,17 +186,14 @@ Should be 'chain:resnumber:atomname'")
         if dist < D:
             # check contacts at: 5A (no contacts) and 8A (needs contacts)
             protein_list = Selection.unfold_entities(structure, "A")
-            contacts5 = []
-            contacts8 = []
-            ligand_atoms = list(ligand.get_atoms())
-            
-            contacts5.append( NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "S"))
+            contacts5 = NeighborSearch(protein_list).search(new_ligand_COM, d5_ligand, "S")
             contacts8 = NeighborSearch(protein_list).search(new_ligand_COM, d8_ligand, "S")
+
             if contacts8 and not any(contacts5):
                 j += 1
                 io = PDBIO()
                 io.set_structure(ligand)
-                output_name = os.path.join(outputfolder, 'ligand{}.pdb'.format(j))
+                output_name = os.path.join(parameters.inputs_dir, 'ligand{}.pdb'.format(j))
                 io.save(output_name)
                 output.append(output_name)
                 start_time = time.time()
@@ -167,11 +203,11 @@ Should be 'chain:resnumber:atomname'")
             if total_time > 60:
                 D += 1
                 if D - D_initial >= 20:
-                    logger.info("Original box increased by 20A. Aborting...")
+                    parameters.logger.info("Original box increased by 20A. Aborting...")
                     break
                 start_time = end_time
-                logger.info("Increasing sampling box by 1A.")
-    logger.info("{} poses created successfully.".format(j))
+                parameters.logger.info("Increasing sampling box by 1A.")
+    parameters.logger.info("{} poses created successfully.".format(j))
     return output, D, list(sphere_cent)
 
 
@@ -195,7 +231,6 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
             # exclude connects but keep initial atom names (CL problem)
             ligand_coords = {line[12:16].strip(): line[27:56] for line in fin if
                              line.startswith("ATOM") or line.startswith("HETATM")}
-            # assert len(ligand_coords) == len(ligand_content_without_coords), "Experimental part - send an issue to github"
 
             ligand_content = []
             for pdb_block in ligand_content_without_coords:
@@ -213,24 +248,3 @@ def join(receptor, ligands, residue, output_folder=".", output="input{}.pdb"):
         outputs.append(output_path)
 
     return outputs
-
-
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--ligand", type=str, required=True, help="Ligand pdb file")
-    parser.add_argument("--receptor", type=str, required=True, help="Receptor pdb file")
-    parser.add_argument("--resname", type=str, required=True, help="Ligand resname")
-    parser.add_argument("--poses", type=int, default=20, help="How many input poses to produce")
-    parser.add_argument("--output_folder", type=str, default=".", help="output folder")
-    parser.add_argument("--user_center", type=str, default=None,
-                        help="Center of protein-protein interface (chain:residue number:atom name)")
-    args = parser.parse_args()
-    return os.path.abspath(args.ligand), os.path.abspath(
-        args.receptor), args.resname, args.poses, args.output_folder, args.user_center
-
-
-if __name__ == "__main__":
-    ligand, receptor, resname, poses, output_folder, user_center = parse_args()
-    output, sphere_cent, D = randomize_starting_position(ligand, receptor, output_folder, poses, None, user_center)
-    # Make format ready to be captured"
-    print("OUTPUT; {}. Sphere center: {}. D: {}".format(output, sphere_cent, D))
