@@ -293,7 +293,7 @@ def test_atom_string_underscore(yaml=yaml):
     except ce.WrongAtomStringFormat as e:
         assert (
             str(e).strip("'")
-            == "The specified atom is wrong 'A_106:OH'. Should be 'chain:resnumber:atomname"
+            == "The specified atom is wrong 'A_106:OH'. Should be 'chain:residue number:atom name'."
         )
 
 

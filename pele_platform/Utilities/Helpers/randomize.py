@@ -130,8 +130,10 @@ def randomize_starting_position(parameters, box_center=None, box_radius=None):
     if parameters.center_of_interface:
         if parameters.site_finder and box_radius:
             D = box_radius
-        if parameters.ppi:
+        elif parameters.ppi:
             D = 10
+        else:
+            D = np.ceil(6.0 + d)
     else:
         D = np.ceil(6.0 + d)
 
