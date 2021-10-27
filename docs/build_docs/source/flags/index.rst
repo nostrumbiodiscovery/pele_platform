@@ -7,6 +7,7 @@ Optional flags for each package:
     - `Protein-Protein Inhibitors <ppi/index.html>`_
     - `Pocket Exploration <pocket_exploration/index.html>`_
     - `HT-Fragment Growing <frag/index.html>`_
+    - `Enzyme engineering <satumut/index.html>`_
 
 .. toctree::
    all_packages/index.rst
@@ -22,4 +23,8 @@ Optional flags for each package:
 
 .. toctree::
    frag/index.rst
+   :hidden:
+
+.. toctree::
+   satumut/index.rst
    :hidden:
