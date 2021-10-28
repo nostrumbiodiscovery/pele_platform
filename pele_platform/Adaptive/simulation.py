@@ -32,7 +32,7 @@ def run_adaptive(args):
     """
     Main function to prepare and launch the simulation.
 
-    1) Create EnviroBuilder - variables, folders, logger...
+    1) Create Parameters - variables, folders, logger...
     2) Prepare ligand and receptor
     3) Launch simulation
     4) Analyse simulation
@@ -47,6 +47,7 @@ def run_adaptive(args):
         with helpers.cd(parameters.pele_dir):
             adaptiveSampling.main(parameters.ad_ex_temp)
             parameters.logger.info("Simulation run successfully (:\n\n")
+        args.adaptive_restart = False
 
     elif not parameters.only_analysis and not parameters.restart:
         parameters.logger.info(
