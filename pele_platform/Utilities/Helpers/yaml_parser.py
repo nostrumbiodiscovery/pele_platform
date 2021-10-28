@@ -311,6 +311,11 @@ class YamlParser(object):
         self.frag_core_atom = data.get(valid_flags["frag_core_atom"], None)
         self.analysis_to_point = data.get(valid_flags["analysis_to_point"], None)
         self.fragment_atom = data.get(valid_flags["fragment_atom"], None)
+        self.filters = data.get(valid_flags["filters"], None)
+        self.database = data.get(valid_flags["database"], None)
+        self.f3_input = data.get(valid_flags["f3_input"], None)
+        self.f3_ligand = data.get(valid_flags["f3_ligand"], None)
+        self.only_filtering = data.get(valid_flags["only_filtering"], None)
         self.frag_restart_libraries = data.get(
             valid_flags["frag_restart_libraries"], False
         )

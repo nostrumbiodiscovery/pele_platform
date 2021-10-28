@@ -12,9 +12,11 @@ import pele_platform.Errors.custom_errors as ce
 import pele_platform.Frag.libraries as lb
 import pele_platform.Frag.analysis as ana
 import pele_platform.constants.constants as cs
+import pele_platform.Frag.filtering as fl
 import frag_pele.main as frag
 from pele_platform.analysis import Analysis
 from pele_platform.Utilities.Helpers import water
+
 
 
 class FragRunner(object):
@@ -32,9 +34,12 @@ class FragRunner(object):
     def run_simulation(self):
         self._set_test_variables()
         self._prepare_control_file()
-        self._launch()
-        if not self.parameters.debug:
-            self._analysis()
+        if not self.parameters.only_filtering:
+            self._launch()
+            if not self.parameters.debug:
+                self._analysis()
+        if self.parameters.database:
+            self._filtering()
         return self.parameters
 
     def _launch(self):
@@ -309,12 +314,72 @@ class FragRunner(object):
                 representatives_criterion=self.parameters.cluster_representatives_criterion,
             )
 
+    def _filtering(self):
+        """
+        Runs Feed Forward Frag algorithm.
+        The F3 algorithm can run in two ways:
+            1. Performing a fragment growing simulation before running F3 algorithm.
+            2. Running F3 algorithm directly on a protein-ligand system.
+        Here we extract the initial system and the ligand to then start the filtering
+        process where we obtain a list with the filtering results.
+        For each molecule retrieved from the filtering process, the algorithm performs
+        a growing simulation.
+        If the molecule has more than one R-group bound to the core (our intitial seed
+        compound), several fragment growing simulations are performed in order to grow
+        all the R-groups. To do so, it is needed to change the directory of the PDB with
+        the system as more R-groups are being bound to the core.
+        """
+        from rdkit import Chem
+        top_results = []
+        binding_energies = {}
+        initial_system_min_energy = self.parameters.core
+        initial_ligand_min_energy = self.parameters.f3_ligand
+        self.parameters.input = "input.conf"
+        initial_ligand_min_energy_mol = Chem.rdmolfiles.MolFromPDBFile(initial_ligand_min_energy, removeHs= True)
+        Chem.rdmolops.AssignStereochemistryFrom3D(initial_ligand_min_energy_mol)
+        top_molecules = fl.main(initial_ligand_min_energy_mol, initial_ligand_min_energy,
+                               self.parameters.database, self.parameters.filters)
+        print("You will perform a total of %s simulations" % len(top_molecules))
+        print("System min energy:", initial_system_min_energy)
+        print("ligand min energy:", initial_ligand_min_energy)
+        for molecule in top_molecules:
+            for fragment in range(len(top_molecules[molecule])):
+                if fragment > 0:
+                    self._extract_working_directory()
+                    for dir in self.parameters.working_dir:
+                        for result in glob.glob(dir + "/top_result/*"):
+                            top_results.append(result)
+                    for top_result in top_results:
+                        binding_energies[top_result] = os.path.splitext(top_result)[0].split('y')[-1]
+                    system_min_energy = min(binding_energies, key=binding_energies.get)
+                    ligand_min_energy = system_min_energy.split("/")[:-2][-1] + '/pregrow/growing_result_p.pdb'
+                    ligand_min_energy_mol = Chem.rdmolfiles.MolFromPDBFile(ligand_min_energy, removeHs=True)
+                    Chem.rdmolops.AssignStereochemistryFrom3D(ligand_min_energy_mol)
+                    self.parameters.core = system_min_energy
+                    self.parameters.core_process = system_min_energy
+                else:
+                    self.parameters.core = initial_system_min_energy
+                    self.parameters.core_process = initial_system_min_energy
+
+                self.parameters.frag_library = os.path.join("./frag_library", molecule + "_" + str(fragment))
+                self.parameters.frag_core_atom = top_molecules[molecule][fragment][0]
+                self.parameters.fragment_atom = top_molecules[molecule][fragment][1]
+                self._prepare_input_file_filtering()
+                self._launch()
+
     def _clean_up(self, fragment_files):
         for file in fragment_files:
             if os.path.isfile(file):
                 os.remove(file)
 
+    def _prepare_input_file_filtering(self):
+        with open("input.conf", "w+") as conf_file:
+            conf_file.write(self.parameters.core + " " + self.parameters.frag_core_atom + " " + self.parameters.fragment_atom + "\n")
+
     def _extract_working_directory(self):
+        """
+        Extracts current working directory with FragPELE simulation's output.
+        """
         params = self.parameters
         params.working_dir = []
         if os.path.isfile(params.core):
@@ -334,6 +399,9 @@ class FragRunner(object):
 
 
     def _frag_restart(self):
+        """
+        To restart FragPELE fragment libraries simulation."
+        """
         self._extract_working_directory()
         with open(self.parameters.input, "r") as conf_file:
             final_bonds = []

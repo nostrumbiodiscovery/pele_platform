@@ -29,6 +29,7 @@ class FragInputFiles(object):
         self.input_parameters(parameters, args)
         self.frag_from_core_parameters(parameters, args)
         self.frag_from_sdf_parameters(parameters, args)
+        self.filtering_parameters(parameters, args)
 
     @staticmethod
     def input_parameters(parameters, args):
@@ -108,4 +109,26 @@ class FragInputFiles(object):
         parameters.ligands = args.frag_ligands
         parameters.frag_library = args.frag_library
         parameters.fragment_atom = args.fragment_atom
+        parameters.frag_library = args.frag_library
         parameters.frag_restart_libraries = args.frag_restart_libraries
+
+    @staticmethod
+    def filtering_parameters(parameters, args):
+        """
+        Given a Parameters object, it assigns the parameters that are required
+        to run Feed Forward Frag.
+
+        Parameters
+        ----------
+        parameters : a Parameters object
+            The Parameters object containing the parameters for PELE
+        args : a YamlParser object
+            The YamlParser object containing the input parameters chosen
+            by the user
+        """
+
+        parameters.database = args.database
+        parameters.filters = args.filters
+        parameters.f3_ligand = args.f3_ligand
+        parameters.only_filtering = args.only_filtering
+

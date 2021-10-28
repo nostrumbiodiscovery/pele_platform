@@ -2,6 +2,9 @@ import glob
 import os
 import subprocess
 import shutil
+import sys
+import tempfile
+
 
 from rdkit import Chem
 from pele_platform.constants import constants as cs
@@ -26,14 +29,14 @@ def get_symmetry_groups(mol):
     rank = {} 
     symmetry_list = []
     symmetry_rank_list = []
-    counter = 0
-    
+
     for counter, atom in enumerate(mol.GetAtoms()):
         rank[atom.GetIdx()] = list(Chem.CanonicalRankAtoms(mol, breakTies=False))[counter]
     for idx, symmetry_rank in rank.items():
         if symmetry_rank not in symmetry_rank_list:
             symmetry_rank_list.append(symmetry_rank)
             symmetry_list.append(idx)
+
     return symmetry_list
 
 
@@ -84,6 +87,7 @@ def growing_sites(fragment,
                 for h in hydrogens:
                     h_name = h.GetMonomerInfo().GetName().strip()
                     bonds.append("{} {} {}-{}".format(fragment, user_bond, at_name, h_name))
+
     return bonds
 
 
@@ -206,7 +210,7 @@ def get_fragment_files(path,
     all_files : list
                 List of paths of the fragments in the fragment library.
     """
-    fragment_files = []                                                                                                                                                                 
+    fragment_files = []
     extensions = ['*.pdb', '*.sdf']                                                                                                                                                     
     
     for e in extensions:                                                                                                                                                                
@@ -238,14 +242,13 @@ def main(user_bond,
          tmpdirname):
     # find the library and extract fragments
     path = get_library(frag_library)
-    all_files = get_fragment_files(path, logger, tmpdirname) 
-    
+    all_files = get_fragment_files(path, logger, tmpdirname)
     # get all possible growing sites
     bond_list = []
     for file in all_files:
         bond_list.extend(growing_sites(file, user_bond, fragment_atom))
-    
-    # write input.conf 
+
+    # write input.conf
     write_config_file(OUTPUT, bond_list)
-    
+
     return OUTPUT

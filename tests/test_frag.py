@@ -62,7 +62,6 @@ water_lines = [
 
 ]
 
-
 def test_frag_sim(
     capsys,
     ext_args=FRAG_SIM_ARGS,
@@ -89,7 +88,6 @@ def test_frag_sim(
     assert "Skipped - FragPELE will not run." not in captured.out
     assert os.path.exists(job.working_dir[0])
     assert len(top_results) == 3
-
 
 def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     """
@@ -118,7 +116,6 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
     assert "Skipped - FragPELE will not run." not in captured.out
     assert os.path.exists(new_output_path)
     assert len(top_results) == 2
-
 
 def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
     """
@@ -149,7 +146,6 @@ def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):
         job.working_dir[0], "DataLocal/LigandRotamerLibs/SB4.rot.assign", "60", errors
     )
     assert not errors
-
 
 def test_sdf_joiner(ext_args=FRAG_JOINER_ARGS):
     """
@@ -194,7 +190,6 @@ def test_libraries(capsys, yaml_file, expected_lines):
         assert False
     assert not errors
 
-
 def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     """
     Tests the automated analysis to retrieve most promising fragments
@@ -212,7 +207,6 @@ def test_analysis_to_point(ext_args=FRAG_ANALYSIS_TO_POINT):
     )
     assert not errors
 
-
 def test_symmetry(ext_args=FRAG_SYMMETRY):
     """
     Tests the asymmetric hydrogen detector.
@@ -228,7 +222,6 @@ def test_symmetry(ext_args=FRAG_SYMMETRY):
     errors = []
     errors = td.check_file(os.getcwd(), "input.conf", PDB_lines, errors)
     assert not errors
-
 
 def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
     """
@@ -248,7 +241,6 @@ def test_fragment_atom(capsys, ext_args=FRAGMENT_ATOM):
 
     except Exception:
         assert False
-
 
 def test_frag_waters(ext_args=FRAG_WATERS):
     """

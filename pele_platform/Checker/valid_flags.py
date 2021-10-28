@@ -195,6 +195,10 @@ VALID_FLAGS_PLATFORM = {
     "top_clusters_criterion": "top_clusters_criterion",
     "cluster_representatives_criterion": "cluster_representatives_criterion",
     "fragment_atom": "fragment_atom",
+    "filters": "filters",
+    "database": "database",
+    "f3_input": "f3_input",
+    "f3_ligand": "f3_ligand",
     "site_finder_local": "site_finder_local",
     "site_finder_global": "site_finder_global",
     "charge_parametrization_method": "charge_parametrization_method",
@@ -214,4 +218,5 @@ VALID_FLAGS_PLATFORM = {
     "minimum_steps": "minimum_steps",
     "covalent_docking_refinement": "covalent_docking_refinement",
     "perturbation_trials": "perturbation_trials",
+    "only_filtering": "only_filtering"
 }
