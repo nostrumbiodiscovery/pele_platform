@@ -15,24 +15,5 @@ def test_equilibrator_production():
     results = os.path.join(job_params.pele_dir, "results", "clusters")
     assert os.path.isdir(results)
 
-    errors = check_file(job_params.pele_dir, "adaptive.conf", ['[2.0, 2.0, 2.0]', '[1.48, 1.48, 1.48]'], [])
+    errors = check_file(job_params.pele_dir, "adaptive.conf", ['[1.48, 0.48]', '[2.0, 5, 7]'], [])
     assert not errors
-
-
-def test_values_extraction():
-    """
-    Checks extraction of cluster values and conditions given the path to the output folder.
-    """
-    output_path = os.path.join(
-        test_path,
-        "analysis",
-        "data",
-        "output",
-    )
-
-    cluster_values, cluster_conditions = Equilibrator.extract_cluster_values(
-        output_path
-    )
-
-    assert cluster_conditions == [0.44, 0.244, 0.09]
-    assert cluster_values == [2.5, 3.7, 4.0]
