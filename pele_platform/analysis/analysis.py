@@ -261,8 +261,11 @@ class Analysis(object):
                                bandwidth, analysis_nclust,
                                max_top_clusters, top_clusters_criterion,
                                min_population, representatives_criterion)
+
         self.generate_report(plots_folder, top_poses_folder,
                              clusters_folder, best_metrics, report_file)
+
+        self.save_params_to_file(path, locals())
 
     def generate_plots(self, path):
         """
@@ -1789,3 +1792,32 @@ class Analysis(object):
                              f"output trajectories. Make sure you are " +
                              f"passing a correct 'resname' argument to " +
                              f"Analysis.")
+
+    def save_params_to_file(self, path, generate_params):
+        """
+        Saves all parameters used to generated Analysis to a TXT file.
+
+        Parameters
+        ----------
+        path : str
+            Path to directory where the file should be saved.
+        generate_params : dict
+            Symbol table from generate() method.
+        """
+        import os
+
+        filename = os.path.join(path, "parameters.txt")
+
+        params = {key: value for key, value in self.__dict__.items() if not key.startswith("_")}
+        params.update(
+            {key: value for key, value in generate_params.items()
+             if "file" not in key
+             and "folder" not in key
+             and "path" not in key})
+        del params["self"]
+        del params["os"]
+
+        with open(filename, "w+") as file:
+            file.write("Analysis parameters\n-------------------\n")
+            for key, value in params.items():
+                file.write(f"{key}: {value}\n")
