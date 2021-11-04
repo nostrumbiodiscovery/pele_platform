@@ -141,6 +141,7 @@ class SaturatedMutagenesis:
                                     self.params.xtc, self.params.satumut_enantiomer_improve,
                                     energy=self.params.satumut_energy_threshold,
                                     profile_with=self.params.satumut_profile_metric)
+        os.chdir(self.original_dir)
         return self.all_jobs
 
     def set_simulation_folder(self, helper):
