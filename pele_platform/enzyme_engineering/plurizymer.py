@@ -106,4 +106,5 @@ class Plurizymer(SaturatedMutagenesis):
                 self.params.plurizymer_atom,
                 self.params.xtc, self.params.cpus)
 
+        os.chdir(self.original_dir)
         return self.all_jobs
