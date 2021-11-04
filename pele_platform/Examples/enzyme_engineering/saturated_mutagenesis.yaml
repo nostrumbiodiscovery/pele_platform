@@ -5,7 +5,7 @@ resname: 'ANL'
 cpus: 3
 cpus_per_mutation: 1
 steps: 1
-equilibration: false
+equilibration: true
 satumut_positions_mutations:
  - A:454
 satumut_mutation:

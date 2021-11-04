@@ -32,10 +32,10 @@ def test_mutagenesis_production():
         # Check if all files from iterations folder were postprocessed and moved to their respective mutation folders
         assert not glob.glob(os.path.join(job.pele_dir, job.output, "0/traj*pdb"))
 
-        # # Assert the equilibration files remained in their folders
-        # assert glob.glob(
-        #     os.path.join(job.pele_dir, job.output, "equilibration*", "report*")
-        # )
+        # Assert the equilibration files remained in their folders
+        assert glob.glob(
+            os.path.join(job.pele_dir, job.output, "equilibration*", "report*")
+        )
 
         # Check if the default induced fit exhaustive lines are present in pele configuration file
         induced_fit_lines = test_adaptive_defaults.INDUCE_FIT_PELE
