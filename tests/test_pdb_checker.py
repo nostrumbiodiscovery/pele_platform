@@ -1,5 +1,6 @@
 import os
 import pytest
+import shutil
 
 from pele_platform.constants import constants
 from pele_platform.Errors import custom_errors
@@ -48,8 +49,10 @@ def test_capped_termini():
     Checks if the platform correctly removes capped termini.
     """
     file = os.path.join(test_path, "checker", "capped.pdb")
+    file_copy = file.replace(".pdb", "_copy.pdb")
+    shutil.copy(file, file_copy)
 
-    checker = pdb_checker.PDBChecker(file)
+    checker = pdb_checker.PDBChecker(file_copy)
     checker.remove_capped_termini()
 
     with open(checker.file, "r") as f:
@@ -57,4 +60,4 @@ def test_capped_termini():
         assert "ACE" not in content
         assert "NMA" not in content
 
-    os.system("git checkout file")
+    os.remove(file_copy)
