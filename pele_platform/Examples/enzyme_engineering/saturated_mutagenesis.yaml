@@ -1,7 +1,13 @@
 saturated_mutagenesis: true
-system: '../pele_platform/Examples/enzyme_engineering/pdb_files/*.pdb'
+system: '../pele_platform/Examples/enzyme_engineering/pdb_files/T454A.pdb'
 chain: 'L'
 resname: 'ANL'
-cpus_per_mutation: 2
-test: true
-equilibration: true
+cpus: 3
+cpus_per_mutation: 1
+steps: 1
+equilibration: false
+satumut_positions_mutations:
+ - A:454
+satumut_mutation:
+ - ASP
+ - GLU
