@@ -7,6 +7,7 @@ from pele_platform.Errors import custom_errors
 
 
 class PDBChecker:
+
     def __init__(self, file):
         """
         Initializes PDBChecker class and load relevant lines from the file.
@@ -49,10 +50,29 @@ class PDBChecker:
         PDB file with added CONECT lines (necessary for Parametrizer).
         """
         self.check_protonation()
+        self.remove_capped_termini()
         self.check_negative_residues()
         self.file = self.check_conects()
 
         return self.file
+
+    def remove_capped_termini(self):
+        """
+        Removes any lines containing ACE and NMA residues, then saves them to replace the original file.
+        """
+        to_remove = []
+        for line in self.atom_lines:
+            if line[17:20].strip() == "ACE" or line[17:20].strip() == "NMA":
+                to_remove.append(line)
+
+        if to_remove:
+            warnings.warn(f"File {self.file} contains uncapped termini. Removing all ACE and NMA lines...")
+
+        self.atom_lines = [line for line in self.atom_lines if line not in to_remove]
+
+        with open(self.file, "w") as file:
+            for line in self.atom_lines:
+                file.write(line)
 
     def check_protonation(self):
         """
