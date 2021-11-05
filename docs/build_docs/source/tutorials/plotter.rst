@@ -125,10 +125,18 @@ Override the default **axis labels** by passing a string after the metric column
 
 Moreover, to add a **custom title** to your figure, all you have to do is use ``--title`` argument and supply a string with your desired text.
 
-Values range
-+++++++++++++
+Filters and ranges
++++++++++++++++++++
 
-You can plot only the relevant data by setting limits to the scope of values plotted on each axis using the following flags:
+Apply custom **filters** to data points by setting specific thresholds for each column, it can be done by passing the following parameters to the ``--filter`` command line argument:
+
+        - column number corresponding to the metric where the filter will be applied
+        - character representing the condition to apply in the filtering, one of: ``<``, ``==``, ``>``, ``<=``, ``>=`` or ``lt``, ``eq``, ``gt``, ``le``, ``ge``
+        - the cutoff value.
+
+For example, to include only those values from column report 5, which are greater or equal 15, you'd do the following: ``--filter 5 >= 15``
+
+You can also plot only the relevant data by setting **limits** to the scope of values plotted on each axis using the following flags:
 
     .. hlist::
         :columns: 3
@@ -146,6 +154,7 @@ Other
 You can further customise the **density plot** by using:
 
     - ``--with_edges`` argument to visualise the distribution on the plot area
+    - ``--n_bins`` to define the number of bins to display in the histogram plot, first element corresponds to the X axis and the second to the Y axis.  If only one value is provided, it will be applied to both axes.
     - ``--n_levels`` to adjust the number of levels shown on the plot area.
 
 Finally, the Nostrum Biodiscovery **logo** can be hidden by using ``--hide_logo`` argument.
