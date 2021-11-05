@@ -1,6 +1,7 @@
-Elucidating the binding path with the OutIn package
-===================================================
-In this tutorial we will use the OutIn package to predict the binding path of an inhibitor of tyrosine kinase domain of fibroblast growth factor receptor 1 (PDB 1AGW) using
+Elucidating ligand's binding path
+==================================
+
+In this tutorial we will use the **OutIn package** to predict the binding path of an inhibitor of tyrosine kinase domain of fibroblast growth factor receptor 1 (PDB 1AGW) using
 an APO (PDB 1FGK) structure as a starting point.
 
 1. Protein file
@@ -19,7 +20,7 @@ In general, PELE input files need to follow a few guidelines:
 a. **Download the protein structures** 1AGW (holo) and 1FGK (apo) by clicking on ``File -> Get PDB`` and inputting their respective codes. Once the download is complete, you should see both structures in the entry list on the left panel.
 
 .. image:: ../img/outin_1a.png
-  :width: 400
+  :width: 300
   :align: center
 
 b. **Preprocess the holo structure**. Select entry 1AGW, click on ``Tasks`` and search ``Protein Preparation Wizard``. Check the following options and hit ``Preprocess``. When prompted about multiple occupancy issues, simply select all entries and ``Commit``.
@@ -33,7 +34,7 @@ If you do not have Prime installed, you can skip filling in missing loops and si
 c. **Extract the ligand**. Select the ligand, then click on the ``Build`` menu and copy it to a new entry. It should show up in the entry list on the left.
 
 .. image:: ../img/outin_1c.png
-  :width: 400
+  :width: 300
   :align: center
 
 d. **Preprocess the apo structure**. Select entry 1FGK and remove all chains except for B, you can do that by selecting each chain and using the ``Delete selected atoms`` button in the ``Build`` menu. Preprocess remaining chain with ``Protein Preparation Wizard`` using the same options as before.
@@ -46,7 +47,12 @@ e. **Merge**. Select the preprocessed 1FGK and ligand entries, then right click 
   :width: 400
   :align: center
 
-f. **Adjust ligand properties**. Select the ligand, open ``Build`` and choose ``Other edits -> Change atom properties...``. Set residue name to **LIG** and chain name to **Z**. Choose ``PDB atom name`` from the drop down list and select ``Set unique PDB atom names within residues``. Click ``Apply`` and close the window.
+f. **Adjust ligand properties**
+    * Select the ligand, open ``Build`` and choose ``Other edits -> Change atom properties...``
+    * Set residue name to **LIG** and chain name to **Z**
+    * Set residue number to **1**
+    * Choose ``PDB atom name`` from the drop down list and select ``Set unique PDB atom names within residues``
+    * Click ``Apply`` and close the window.
 
 ::
 
@@ -66,25 +72,35 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     - **initial_site** - residue corresponding to the starting point of the simulation, on the outside of the protein
     - **final_site** - end point of the simulation, where the ligand is supposed to bind
     - **epsilon** - strength of the bias applied, needs to be between 0 and 1, where 0 corresponds to no bias applied
+    - **spawning** - type of spawning when running an adaptive simulation, here changing to "epsilon" to apply the bias
+    - **bias_column** - column of the report (counting from 1) towards which the simulation should be biased
     - **constraint_level**: - level of constraining alpha carbons of the protein to prevent structure collapse
     - **cpus** - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).
 
 ..  code-block:: yaml
 
+    # General settings
     system: 'system.pdb'
     chain: 'Z'
     resname: 'LIG'
     out_in: true
     cpus: 60
-    epsilon: 0.5
+    constraint_level: 3  # Not mandatory but it will apply higher constraints to the protein backbone
+    seed: 12345
+
+    # Structural specifications
     initial_site: "B:486:O"
-    final_site: "B:562:O"  # hinge interaction
+    final_site: "B:562:O"  # Defines the final site near the hinge
     atom_dist:
-        - "Z:1000:H1"
+        - "Z:1:H1"  # Distance used to lead the entrance of the ligand to the hinge
         - "B:562:O"
-        - "Z:1000:O1"
+        - "Z:1:O1"
         - "B:564:H"
-    constraint_level: 3
+
+    # Add bias towards the first distance we defined
+    spawning: "epsilon"
+    epsilon: 0.5
+    bias_column: 8
 
 **We strongly recommend running a test first to ensure all your input files are valid.**
 Simply include ``test: true`` in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test
