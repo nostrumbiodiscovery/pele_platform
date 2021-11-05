@@ -1,7 +1,7 @@
 Elucidating the binding path with the OutIn package
 ===================================================
-In this tutorial we will use the OutIn package to predict the binding path of a JAK-2 kinase inhibitor (PDB 3E64) using
-an APO (PDB ....) structure as a starting point.
+In this tutorial we will use the OutIn package to predict the binding path of an inhibitor of tyrosine kinase domain of fibroblast growth factor receptor 1 (PDB 1AGW) using
+an APO (PDB 1FGK) structure as a starting point.
 
 1. Protein file
 ----------------
@@ -16,15 +16,15 @@ In general, PELE input files need to follow a few guidelines:
     * Ligand residue name cannot be ``UNK``.
     * We also recommend removing any solvents and crystallization artefacts.
 
-a. **Download the protein structures** 3E64 (holo) and 3E64 (apo) by clicking on ``File -> Get PDB`` and inputting their respective codes. Once the download is complete, you should see both structures in the entry list on the left panel.
+a. **Download the protein structures** 1AGW (holo) and 1FGK (apo) by clicking on ``File -> Get PDB`` and inputting their respective codes. Once the download is complete, you should see both structures in the entry list on the left panel.
 
 .. image:: ../img/outin_1a.png
   :width: 400
   :align: center
 
-b. **Preprocess the holo structure**. Select entry 3E64, click on ``Tasks`` and search ``Protein Preparation Wizard``. Check the following options and hit ``Preprocess``. When prompted about multiple occupancy issues, simply select all entries and ``Commit``.
+b. **Preprocess the holo structure**. Select entry 1AGW, click on ``Tasks`` and search ``Protein Preparation Wizard``. Check the following options and hit ``Preprocess``. When prompted about multiple occupancy issues, simply select all entries and ``Commit``.
 
-.. image:: ../img/outin_1a.png
+.. image:: ../img/outin_1b.png
   :width: 400
   :align: center
 
@@ -36,11 +36,11 @@ c. **Extract the ligand**. Select the ligand, then click on the ``Build`` menu a
   :width: 400
   :align: center
 
-d. **Preprocess the apo structure**. Select entry 6E2Q and remove all chains except for A, you can do that by selecting each chain and using the ``Delete selected atoms`` button in the ``Build`` menu. Preprocess remaining chain with ``Protein Preparation Wizard`` using the same options as before.
+d. **Preprocess the apo structure**. Select entry 1FGK and remove all chains except for B, you can do that by selecting each chain and using the ``Delete selected atoms`` button in the ``Build`` menu. Preprocess remaining chain with ``Protein Preparation Wizard`` using the same options as before.
 
 ::
 
-e. **Merge**. Select the preprocessed 6E2Q and ligand entries, then right click and ``Merge`` into one entry.
+e. **Merge**. Select the preprocessed 1FGK and ligand entries, then right click and ``Merge`` into one entry. The ligand can be placed anywhere in the system, since PELE will automatically move it to the simulation box.
 
 .. image:: ../img/outin_1e.png
   :width: 400
@@ -62,11 +62,12 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     - **chain** - ligand chain ID, here ``Z``
     - **resname** - ligand residue name, in our case ``LIG``
     - **out_in** - sets the defaults for the OutIn simulation
+    - **atom_dist** - atom distances to track throughout the simulation
     - **initial_site** - residue corresponding to the starting point of the simulation, on the outside of the protein
     - **final_site** - end point of the simulation, where the ligand is supposed to bind
-    - **epsilon** - value of the bias applied, needs to be between 0 and 1, where 0 corresponds to no bias applied
-    - **cpus** - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only)
-    - **seed** - random seed to ensure reproducibility.
+    - **epsilon** - strength of the bias applied, needs to be between 0 and 1, where 0 corresponds to no bias applied
+    - **constraint_level**: - level of constraining alpha carbons of the protein to prevent structure collapse
+    - **cpus** - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).
 
 ..  code-block:: yaml
 
@@ -74,11 +75,16 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     chain: 'Z'
     resname: 'LIG'
     out_in: true
-    seed: 12345
     cpus: 60
     epsilon: 0.5
-    initial_site:
-    final_site: "A:750:N"  # hinge interaction
+    initial_site: "B:486:O"
+    final_site: "B:562:O"  # hinge interaction
+    atom_dist:
+        - "Z:1000:H1"
+        - "B:562:O"
+        - "Z:1000:O1"
+        - "B:564:H"
+    constraint_level: 3
 
 **We strongly recommend running a test first to ensure all your input files are valid.**
 Simply include ``test: true`` in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test
