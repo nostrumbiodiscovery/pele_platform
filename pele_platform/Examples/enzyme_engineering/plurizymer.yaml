@@ -1,0 +1,12 @@
+system: ""
+system: '../pele_platform/Examples/enzyme_engineering/pdb_plurizymer/LPMO_GTP_bound.pdb'
+chain: "L"
+resname: "GTP"
+plurizymer: true
+seed: 12345
+steps: 1
+cpus: 4
+cpus_per_mutation: 1
+working_folder: "PT"
+plurizymer_single_mutation: "SER"
+plurizymer_atom: "L:GTP:C4"
