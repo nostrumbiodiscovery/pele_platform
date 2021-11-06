@@ -68,14 +68,16 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     - **chain** - ligand chain ID, here ``Z``
     - **resname** - ligand residue name, in our case ``LIG``
     - **out_in** - sets the defaults for the OutIn simulation
-    - **atom_dist** - atom distances to track throughout the simulation
+    - **cpus** - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).
+    - **seed** - pseudorandom numbers seed for reproducibility
+    - **iterations** - number of iterations to perform. The default is 100 but since we set a distance bias we can reduce the length of the simulation
     - **initial_site** - residue corresponding to the starting point of the simulation, on the outside of the protein
     - **final_site** - end point of the simulation, where the ligand is supposed to bind
-    - **epsilon** - strength of the bias applied, needs to be between 0 and 1, where 0 corresponds to no bias applied
+    - **atom_dist** - atom distances to track throughout the simulation
     - **spawning** - type of spawning when running an adaptive simulation, here changing to "epsilon" to apply the bias
+    - **epsilon** - strength of the bias applied, needs to be between 0 and 1, where 0 corresponds to no bias applied
     - **bias_column** - column of the report (counting from 1) towards which the simulation should be biased
-    - **constraint_level**: - level of constraining alpha carbons of the protein to prevent structure collapse
-    - **cpus** - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).
+    - **cluster_conditions** - contact conditions to define the size of Adaptive clusters
 
 ..  code-block:: yaml
 
@@ -84,9 +86,9 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     chain: 'Z'
     resname: 'LIG'
     out_in: true
-    cpus: 60
-    constraint_level: 3  # Not mandatory but it will apply higher constraints to the protein backbone
+    cpus: 50
     seed: 12345
+    iterations: 20  # Applying a biased entrance allows us to reduce the length of the simulation
 
     # Structural specifications
     initial_site: "B:486:O"
@@ -101,10 +103,12 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     spawning: "epsilon"
     epsilon: 0.5
     bias_column: 8
+    cluster_conditions: [0.8, 0.5, 0.0]  # Apply custom cluster conditions to perform better in an open cavity like this one
 
 **We strongly recommend running a test first to ensure all your input files are valid.**
 Simply include ``test: true`` in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test
 flag and start a full production run. Otherwise, inspect the logs and correct any mistakes indicated in the error codes.
+
 
 3. Launching the simulation
 ---------------------------
