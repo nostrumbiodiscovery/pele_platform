@@ -137,21 +137,29 @@ a. Plots
 The ``plots`` directory contains several plots to help you get the general idea of the progress of the simulation, showing relationships between
 the binding energy and solvent accessible surface area of the ligand, distance between two selected atoms or any other metric of your choice.
 
-For example, ......
+For example, if we open the plot called ``distance1.5_Binding_Energy_plot.png``, we will be able to see the binding energy of each
+accepted pose during the simulation with respect to the first distance that was specified in the input.yaml. The distance we
+defined was between atoms ``H1`` of the ligand and ``O`` of residue 562, hence, the hinge interaction. From the values of the plot
+we can see how the ligand could have access the binding site from an outer position.
 
-.. image:: ../img/outin_4a.png
+.. image:: ../img/out_in_plot.png
   :width: 400
   :align: center
+
 
 b. Top poses
 ++++++++++++++++++
 
-PELE scans all produced poses and retrieves the top 100 lowest binding energy structures to the ``top_poses`` folder. The file names indicate
-the trajectory and model IDs of each structure as well as its associated binding energy.
+PELE also scans all produced poses and retrieves the top 100 lowest binding energy structures to the ``top_poses`` folder. The file names indicate
+the trajectory and model IDs of each structure as well as its associated binding energy. According to the previous plot, some of the structures
+with low binding energy values will satisfy the hinge interaction.
 
-Shown below....
+We can visualize the structure with the lowest binding energy and check the pose of the ligand. We can see how the hinge interaction
+is preserved. On the other hand, the branch with the piperazine ring is not matching with the crystallographic pose (represented in dark
+grey) since PELE found an extra interaction between the final aldehyde group and the protein. However, if our goal is to reproduce the binding mode
+of this ligand, it is recommended to start an induced fit docking simulation from this final pose that is already inserted in the binding site.
 
-.. image:: ../img/outin_4b.png
+.. image:: ../img/out_in_best_pose.png
   :width: 400
   :align: center
 
@@ -159,7 +167,20 @@ Shown below....
 c. Clusters
 +++++++++++
 
+Although ``plots`` and ``top_poses`` give important information to known if the hinge interaction could be achieved, the data
+inside ``clusters`` is usually very helpful since it shows the most important binding modes obtained through the simulation.
+Inside this folder we find a representative structure of each cluster and the energetic profiles of PELE colored by the clusters
+that have been obtained. Thus, it is easy to identify those clusters associated with lower binding energies that might look
+more interesting.
 
-.. image:: ../img/outin_4c.png
+For instance, we can see that cluster D (purple points in the plot and yellow pose in the structure) is the cluster that has the
+lowest binding energy and it keeps the same interaction as seen in the best pose above. Besides, black crosses locate the points
+that were taken as representative structures in each case.
+
+.. image:: ../img/out_in_cluster_plot.png
+  :width: 400
+  :align: center
+
+.. image:: ../img/out_in_clusters.png
   :width: 400
   :align: center
