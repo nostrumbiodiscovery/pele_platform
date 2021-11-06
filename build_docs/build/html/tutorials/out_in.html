@@ -1,0 +1,425 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Elucidating ligand’s binding path &mdash; pele platform 1.6.0b2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Common errors" href="../errors/index.html" />
+    <link rel="prev" title="Creating custom plots with PELE Plotter" href="plotter.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gpcr.html">GPCR tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frag_pele.html">Fragment growing tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="site_finder.html">Site finder tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html">Understanding the output files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotter.html">Creating custom plots with PELE Plotter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Elucidating ligand’s binding path</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#protein-file">1. Protein file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-configuration-file">2. PELE configuration file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#launching-the-simulation">3. Launching the simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#analysis-of-the-results">4. Analysis of the results</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-plots">a. Plots</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-top-poses">b. Top poses</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-clusters">c. Clusters</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>Elucidating ligand’s binding path</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/out_in.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="elucidating-ligand-s-binding-path">
+<h1>Elucidating ligand’s binding path<a class="headerlink" href="#elucidating-ligand-s-binding-path" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial we will use the <strong>OutIn package</strong> to predict the binding path of an inhibitor of tyrosine kinase domain of fibroblast growth factor receptor 1 (PDB 1AGW) using
+an APO (PDB 1FGK) structure as a starting point.</p>
+<div class="section" id="protein-file">
+<h2>1. Protein file<a class="headerlink" href="#protein-file" title="Permalink to this headline">¶</a></h2>
+<p>We will be using Schrödinger Maestro (release 2021-3) to preprocess a complex of interest from Protein Data Bank so
+that it can be used by PELE (Protein Energy Landscape Exploration).</p>
+<p>In general, PELE input files need to follow a few guidelines:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The protein needs to be correctly protonated.</p></li>
+<li><p>The ligand must be in a separate, unique chain.</p></li>
+<li><p>Ligand residue name cannot be <code class="docutils literal notranslate"><span class="pre">UNK</span></code>.</p></li>
+<li><p>We also recommend removing any solvents and crystallization artefacts.</p></li>
+</ul>
+</div></blockquote>
+<ol class="loweralpha simple">
+<li><p><strong>Download the protein structures</strong> 1AGW (holo) and 1FGK (apo) by clicking on <code class="docutils literal notranslate"><span class="pre">File</span> <span class="pre">-&gt;</span> <span class="pre">Get</span> <span class="pre">PDB</span></code> and inputting their respective codes. Once the download is complete, you should see both structures in the entry list on the left panel.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/outin_1a.png"><img alt="../_images/outin_1a.png" class="align-center" src="../_images/outin_1a.png" style="width: 300px;" /></a>
+<ol class="loweralpha simple" start="2">
+<li><p><strong>Preprocess the holo structure</strong>. Select entry 1AGW, click on <code class="docutils literal notranslate"><span class="pre">Tasks</span></code> and search <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Preparation</span> <span class="pre">Wizard</span></code>. Check the following options and hit <code class="docutils literal notranslate"><span class="pre">Preprocess</span></code>. When prompted about multiple occupancy issues, simply select all entries and <code class="docutils literal notranslate"><span class="pre">Commit</span></code>.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/outin_1b.png"><img alt="../_images/outin_1b.png" class="align-center" src="../_images/outin_1b.png" style="width: 400px;" /></a>
+<p>If you do not have Prime installed, you can skip filling in missing loops and side chains, but we do recommend doing that.</p>
+<ol class="loweralpha simple" start="3">
+<li><p><strong>Extract the ligand</strong>. Select the ligand, then click on the <code class="docutils literal notranslate"><span class="pre">Build</span></code> menu and copy it to a new entry. It should show up in the entry list on the left.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/outin_1c.png"><img alt="../_images/outin_1c.png" class="align-center" src="../_images/outin_1c.png" style="width: 300px;" /></a>
+<ol class="loweralpha simple" start="4">
+<li><p><strong>Preprocess the apo structure</strong>. Select entry 1FGK and remove all chains except for B, you can do that by selecting each chain and using the <code class="docutils literal notranslate"><span class="pre">Delete</span> <span class="pre">selected</span> <span class="pre">atoms</span></code> button in the <code class="docutils literal notranslate"><span class="pre">Build</span></code> menu. Preprocess remaining chain with <code class="docutils literal notranslate"><span class="pre">Protein</span> <span class="pre">Preparation</span> <span class="pre">Wizard</span></code> using the same options as before.</p></li>
+</ol>
+<ol class="loweralpha simple" start="5">
+<li><p><strong>Merge</strong>. Select the preprocessed 1FGK and ligand entries, then right click and <code class="docutils literal notranslate"><span class="pre">Merge</span></code> into one entry. The ligand can be placed anywhere in the system, since PELE will automatically move it to the simulation box.</p></li>
+</ol>
+<a class="reference internal image-reference" href="../_images/outin_1e.png"><img alt="../_images/outin_1e.png" class="align-center" src="../_images/outin_1e.png" style="width: 400px;" /></a>
+<ol class="loweralpha simple" start="6">
+<li><dl class="simple">
+<dt><strong>Adjust ligand properties</strong></dt><dd><ul class="simple">
+<li><p>Select the ligand, open <code class="docutils literal notranslate"><span class="pre">Build</span></code> and choose <code class="docutils literal notranslate"><span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">atom</span> <span class="pre">properties...</span></code></p></li>
+<li><p>Set residue name to <strong>LIG</strong> and chain name to <strong>Z</strong></p></li>
+<li><p>Set residue number to <strong>1</strong></p></li>
+<li><p>Choose <code class="docutils literal notranslate"><span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">name</span></code> from the drop down list and select <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">unique</span> <span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">names</span> <span class="pre">within</span> <span class="pre">residues</span></code></p></li>
+<li><p>Click <code class="docutils literal notranslate"><span class="pre">Apply</span></code> and close the window.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+<ol class="loweralpha simple" start="7">
+<li><p><strong>Save</strong> the merged entry as <code class="docutils literal notranslate"><span class="pre">system.pdb</span></code> in your working directory.</p></li>
+</ol>
+</div>
+<div class="section" id="pele-configuration-file">
+<h2>2. PELE configuration file<a class="headerlink" href="#pele-configuration-file" title="Permalink to this headline">¶</a></h2>
+<p>Create <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> file in your working directory, it should contain the following flags:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>system</strong> - path to the protein-ligand PDB file</p></li>
+<li><p><strong>chain</strong> - ligand chain ID, here <code class="docutils literal notranslate"><span class="pre">Z</span></code></p></li>
+<li><p><strong>resname</strong> - ligand residue name, in our case <code class="docutils literal notranslate"><span class="pre">LIG</span></code></p></li>
+<li><p><strong>out_in</strong> - sets the defaults for the OutIn simulation</p></li>
+<li><p><strong>cpus</strong> - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).</p></li>
+<li><p><strong>seed</strong> - pseudorandom numbers seed for reproducibility</p></li>
+<li><p><strong>iterations</strong> - number of iterations to perform. The default is 100 but since we set a distance bias we can reduce the length of the simulation</p></li>
+<li><p><strong>initial_site</strong> - residue corresponding to the starting point of the simulation, on the outside of the protein</p></li>
+<li><p><strong>final_site</strong> - end point of the simulation, where the ligand is supposed to bind</p></li>
+<li><p><strong>atom_dist</strong> - atom distances to track throughout the simulation</p></li>
+<li><p><strong>spawning</strong> - type of spawning when running an adaptive simulation, here changing to “epsilon” to apply the bias</p></li>
+<li><p><strong>epsilon</strong> - strength of the bias applied, needs to be between 0 and 1, where 0 corresponds to no bias applied</p></li>
+<li><p><strong>bias_column</strong> - column of the report (counting from 1) towards which the simulation should be biased</p></li>
+<li><p><strong>cluster_conditions</strong> - contact conditions to define the size of Adaptive clusters</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General settings</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>  <span class="c1"># Applying a biased entrance allows us to reduce the length of the simulation</span>
+
+<span class="c1"># Structural specifications</span>
+<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;B:486:O&quot;</span>
+<span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;B:562:O&quot;</span>  <span class="c1"># Defines the final site near the hinge</span>
+<span class="nt">atom_dist</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;Z:1:H1&quot;</span>  <span class="c1"># Distance used to lead the entrance of the ligand to the hinge</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;B:562:O&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;Z:1:O1&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;B:564:H&quot;</span>
+
+<span class="c1"># Add bias towards the first distance we defined</span>
+<span class="nt">spawning</span><span class="p">:</span> <span class="s">&quot;epsilon&quot;</span>
+<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="nt">cluster_conditions</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">0.8</span><span class="p p-Indicator">,</span> <span class="nv">0.5</span><span class="p p-Indicator">,</span> <span class="nv">0.0</span><span class="p p-Indicator">]</span>  <span class="c1"># Apply custom cluster conditions to perform better in an open cavity like this one</span>
+</pre></div>
+</div>
+<p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong>
+Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test
+flag and start a full production run. Otherwise, inspect the logs and correct any mistakes indicated in the error codes.</p>
+</div>
+<div class="section" id="launching-the-simulation">
+<h2>3. Launching the simulation<a class="headerlink" href="#launching-the-simulation" title="Permalink to this headline">¶</a></h2>
+<p>Once you have <code class="docutils literal notranslate"><span class="pre">system.pdb</span></code> and <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> in your working directory, you can launch the simulation using one of the following methods:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>directly</strong> on command line using <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pele_platform.main</span> <span class="pre">input.yaml</span></code></p></li>
+<li><p>submit a slurm file to the <strong>queue system</strong> (ask your IT manager, if you are not sure how to do it). In our case, the slurm file is called <code class="docutils literal notranslate"><span class="pre">run.sl</span></code> and we can launch it on the command line using <code class="docutils literal notranslate"><span class="pre">sbatch</span> <span class="pre">slurm.sl</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Example slurm file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>!/bin/bash
+<span class="gp">#</span>SBATCH -J PELE
+<span class="gp">#</span>SBATCH --output<span class="o">=</span>mpi_%j.out
+<span class="gp">#</span>SBATCH --error<span class="o">=</span>mpi_%j.err
+<span class="gp">#</span>SBATCH --ntasks<span class="o">=</span><span class="m">50</span>
+<span class="gp">#</span>SBATCH --mem-per-cpu<span class="o">=</span><span class="m">1000</span>
+
+<span class="go">python -m pele_platform.main input.yaml</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="analysis-of-the-results">
+<h2>4. Analysis of the results<a class="headerlink" href="#analysis-of-the-results" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="a-plots">
+<h3>a. Plots<a class="headerlink" href="#a-plots" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">plots</span></code> directory contains several plots to help you get the general idea of the progress of the simulation, showing relationships between
+the binding energy and solvent accessible surface area of the ligand, distance between two selected atoms or any other metric of your choice.</p>
+<p>For example, if we open the plot called <code class="docutils literal notranslate"><span class="pre">distance1.5_Binding_Energy_plot.png</span></code>, we will be able to see the binding energy of each
+accepted pose during the simulation with respect to the first distance that was specified in the input.yaml. The distance we
+defined was between atoms <code class="docutils literal notranslate"><span class="pre">H1</span></code> of the ligand and <code class="docutils literal notranslate"><span class="pre">O</span></code> of residue 562, hence, the hinge interaction. From the values of the plot
+we can see how the ligand could have access the binding site from an outer position.</p>
+<a class="reference internal image-reference" href="../_images/out_in_plot.png"><img alt="../_images/out_in_plot.png" class="align-center" src="../_images/out_in_plot.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="b-top-poses">
+<h3>b. Top poses<a class="headerlink" href="#b-top-poses" title="Permalink to this headline">¶</a></h3>
+<p>PELE also scans all produced poses and retrieves the top 100 lowest binding energy structures to the <code class="docutils literal notranslate"><span class="pre">top_poses</span></code> folder. The file names indicate
+the trajectory and model IDs of each structure as well as its associated binding energy. According to the previous plot, some of the structures
+with low binding energy values will satisfy the hinge interaction.</p>
+<p>We can visualize the structure with the lowest binding energy and check the pose of the ligand. We can see how the hinge interaction
+is preserved. On the other hand, the branch with the piperazine ring is not matching with the crystallographic pose (represented in dark
+grey) since PELE found an extra interaction between the final aldehyde group and the protein. However, if our goal is to reproduce the binding mode
+of this ligand, it is recommended to start an induced fit docking simulation from this final pose that is already inserted in the binding site.</p>
+<a class="reference internal image-reference" href="../_images/out_in_best_pose.png"><img alt="../_images/out_in_best_pose.png" class="align-center" src="../_images/out_in_best_pose.png" style="width: 400px;" /></a>
+</div>
+<div class="section" id="c-clusters">
+<h3>c. Clusters<a class="headerlink" href="#c-clusters" title="Permalink to this headline">¶</a></h3>
+<p>Although <code class="docutils literal notranslate"><span class="pre">plots</span></code> and <code class="docutils literal notranslate"><span class="pre">top_poses</span></code> give important information to known if the hinge interaction could be achieved, the data
+inside <code class="docutils literal notranslate"><span class="pre">clusters</span></code> is usually very helpful since it shows the most important binding modes obtained through the simulation.
+Inside this folder we find a representative structure of each cluster and the energetic profiles of PELE colored by the clusters
+that have been obtained. Thus, it is easy to identify those clusters associated with lower binding energies that might look
+more interesting.</p>
+<p>For instance, we can see that cluster D (purple points in the plot and yellow pose in the structure) is the cluster that has the
+lowest binding energy and it keeps the same interaction as seen in the best pose above. Besides, black crosses locate the points
+that were taken as representative structures in each case.</p>
+<a class="reference internal image-reference" href="../_images/out_in_cluster_plot.png"><img alt="../_images/out_in_cluster_plot.png" class="align-center" src="../_images/out_in_cluster_plot.png" style="width: 400px;" /></a>
+<a class="reference internal image-reference" href="../_images/out_in_clusters.png"><img alt="../_images/out_in_clusters.png" class="align-center" src="../_images/out_in_clusters.png" style="width: 400px;" /></a>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../errors/index.html" class="btn btn-neutral float-right" title="Common errors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plotter.html" class="btn btn-neutral float-left" title="Creating custom plots with PELE Plotter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
