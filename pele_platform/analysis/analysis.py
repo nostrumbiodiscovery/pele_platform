@@ -193,7 +193,7 @@ class Analysis(object):
         return self._data_handler.remove_outliers_from_dataframe(self._dataframe, threshold)
 
     def generate(self, path, clustering_type='meanshift',
-                 bandwidth=2.5, analysis_nclust=10,
+                 bandwidth="auto", analysis_nclust=10,
                  max_top_clusters=8,
                  top_clusters_criterion="interaction_25_percentile",
                  min_population=0.01, max_top_poses=100,
@@ -361,7 +361,7 @@ class Analysis(object):
         return best_metrics
 
     def generate_clusters(self, path, clustering_type,
-                          bandwidth=2.5, analysis_nclust=10,
+                          bandwidth="auto", analysis_nclust=10,
                           max_top_clusters=8,
                           top_clusters_criterion="interaction_25_percentile",
                           min_population=0.01,

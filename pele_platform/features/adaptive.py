@@ -216,7 +216,7 @@ SOFTWARE_CONSTANTS = {
             "steric_trials": 200,
             "params": pcs.SITE_FINDER_LOCAL,
             "min_cluster_population": 0.005,
-            "bandwidth": 10.0,
+            "bandwidth": "auto",
             "cluster_representatives_criterion": "interaction_min"
         },
         "covalent_docking": {

@@ -380,7 +380,7 @@ class SimulationParams(
         self.bandwidth = (
             args.bandwidth
             if args.bandwidth
-            else self.simulation_params.get("bandwidth", 2.5)
+            else self.simulation_params.get("bandwidth", "auto")
         )
         self.clustering_method = (
             args.clustering_method
