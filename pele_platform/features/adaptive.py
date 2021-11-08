@@ -106,7 +106,7 @@ SOFTWARE_CONSTANTS = {
             "box_radius": 6,
         },
         "in_out": {
-            "spawning_type": "max",
+            "spawning_type": "epsilon",
             "bias_column": 6,
             "epsilon": 0.75,
             "density": "exitContinuous",
