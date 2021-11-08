@@ -157,11 +157,22 @@ b. with OPLS2005
     impact = Impact(topology)
     impact.to_file('ligz')
 
-4. Generating OBC **solvent parameters** (applicable only if using OpenFF)
+4. Generating **solvent parameters**
+
+a. with OpenFF
 
 .. code-block:: python
 
     from peleffy.solvent import OBC2
 
     solvent = OBC2(topology)  # use previously generated topology
+    solvent.to_file('ligandParams.txt')
+
+b. with OPLS2005
+
+.. code-block:: python
+
+    from peleffy.solvent import OPLSOBC
+
+    solvent = OPLSOBC(topology)  # use previously generated topology
     solvent.to_file('ligandParams.txt')
