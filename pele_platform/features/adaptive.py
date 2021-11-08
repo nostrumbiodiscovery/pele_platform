@@ -119,6 +119,7 @@ SOFTWARE_CONSTANTS = {
             "overlap_factor": 0.65,
             "params": pcs.IN_OUT,
             "box_radius": 10,
+            "spawning_condition": "max",
         },
         "in_out_soft": {
             "spawning_type": "independentMetric",
