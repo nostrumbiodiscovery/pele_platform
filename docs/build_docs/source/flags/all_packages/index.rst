@@ -520,7 +520,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **clustering_method**: If you want to override the default clustering method (meanshift), you can set this flag to ``gaussianmixture`` or ``HDBSCAN``.
 
-- **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering). You can also use "auto" option when running the mean shift clustering to let the software automatically choose a value; default = 5.0
+- **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering). You can use "auto" option when running the mean shift clustering to let the software automatically choose a value; default = "auto"
 
 - **max_top_clusters**: Maximum number of clusters to be selected. Default = 8.
 
