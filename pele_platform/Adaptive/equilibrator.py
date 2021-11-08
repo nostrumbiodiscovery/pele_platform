@@ -98,7 +98,7 @@ class Equilibrator:
         if min(contacts) < max(contacts):
             minimum = min(contacts)
         else:
-            minimum = max(contacts) - 1
+            minimum = max(max(contacts) - 1, 0)
 
         # To ensure the final values are not negative
         if minimum < 0:
