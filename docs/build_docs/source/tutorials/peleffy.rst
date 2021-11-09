@@ -49,6 +49,7 @@ If your PDB file is missing the **CONECT lines**:
     * Make sure you did not disable them in the export window of Maestro.
     * Check if your bond orders are assigned correctly, they can be adjusted with Protein Preparation Wizard tool.
 
+
 Command line
 -------------
 
@@ -175,4 +176,33 @@ b. with OPLS2005
     from peleffy.solvent import OPLSOBC
 
     solvent = OPLSOBC(topology)  # use previously generated topology
-    solvent.to_file('ligandParams.txt')
+    solvent.to_file('solventParamsHCTOBC.txt')
+
+
+Templates usage
+---------------
+
+Once the templates have been generated, they can be used in a PELE simulation. PELE will need these templates
+for any non standard residue included in the system to simulate. It is important to mention that PDB atom names
+of each non standard residue in the system must match with those names from the structures employed in the
+template generation. A good practice is to assign unique PDB atom names to non standard residues present in the
+system, isolate them and, one by one, generate their templates with peleffy. In this way, the system
+that will be simulated will already contain non standard residues with the right PDB atom names.
+
+Templates must be saved in specific locations so PELE can find them. Each type of template must
+be saved in a different folder inside the `DataLocal` directory. `DataLocal` must be created in the working
+directory where the simulation runs.
+
++---------------------------------+------------------------------------------------+-------------------------------------------------------+
+| **Template**                    | **Filename**                                   | **Directory**                                         |
++---------------------------------+------------------------------------------------+-------------------------------------------------------+
+| OPLS2005 parameters template    | ligz, resz, xxxz                               | ``DataLocal/Templates/OPLS2005/HeteroAtoms/``         |
++---------------------------------+------------------------------------------------+-------------------------------------------------------+
+| OpenFF parameters template      | ligz, resz, xxxz                               | ``DataLocal/Templates/OpenFF/Parsley/``               |
++---------------------------------+------------------------------------------------+-------------------------------------------------------+
+| Rotamer library                 | LIG.rot.assign, RES.rot.assign, XXX.rot.assign | ``DataLocal/LigandRotamerLibs/``                      |
++---------------------------------+------------------------------------------------+-------------------------------------------------------+
+| OBC solvent template (OPLS2005) | ligandParams.txt                               | ``DataLocal/OBC/``                                    |
++---------------------------------+------------------------------------------------+-------------------------------------------------------+
+| OBC solvent template (OpenFF)   | solventParamsHCTOBC.txt                        | ``DataLocal/OBC/``                                    |
++---------------------------------+------------------------------------------------+-------------------------------------------------------+
