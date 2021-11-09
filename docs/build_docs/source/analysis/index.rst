@@ -125,6 +125,9 @@ class Analysis
             Percentage of output structures to filter our before clustering.
         plot_filtering_threshold : float (optional, default = 0.02)
             Percentage of output structures to filter out before creating plots. Default = 0.02
+        clustering_coverage : float (optional, default = 0.75)
+            The percentage of points that needs to be assigned to a top cluster when running mean shift clustering
+            with automated bandwidth.
 
 .. code-block:: python
 
@@ -142,8 +145,9 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
             The path where the analysis results will be saved
         clustering_type : str (optional, default = 'meanshift')
             The clustering method that will be used to generate the clusters. One of ['gaussianmixture', 'meanshift', 'hdbscan'].
-        bandwidth : float (optional, default = 2.5)
-            Bandwidth for the mean shift and HDBSCAN clustering.
+        bandwidth : Union[float, str] (optional, default = "auto")
+            Bandwidth for the mean shift and HDBSCAN clustering. You can also use "auto" option when running the mean
+            shift clustering to let the software automatically choose a value.
         analysis_nclust : int (optional, default = 10)
             Number of clusters to create when using the Gaussian mixture model.
         max_top_clusters : int (optional, default = 8)
@@ -186,8 +190,9 @@ Performs clustering of the output poses based on ligand heavy atom coordinates u
             The path where the clusters will be saved.
         clustering_type : str (mandatory)
             The clustering method that will be used to generate the clusters, choose one from ['gaussianmixture', 'meanshift', 'hdbscan'].
-        bandwidth : float (optional, default = 2.5)
-            Bandwidth for the mean shift and HDBSCAN clustering (also called epsilon).
+        bandwidth : Union[float, str] (optional, default = "auto")
+            Bandwidth for the mean shift and HDBSCAN clustering. You can use "auto" option when running the mean
+            shift clustering to let the software automatically choose a value.
         analysis_nclust : int (optional, default = 10)
             Number of clusters to create when using the Gaussian mixture model.
         max_top_clusters : int (optional, default = 8)

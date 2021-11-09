@@ -21,7 +21,7 @@ class Analysis(object):
                  kde_structs=1000, topology=None, cpus=1,
                  water_ids_to_track=[], plot_filtering_threshold=0.02,
                  clustering_filtering_threshold=0.25,
-                 random_seed=None):
+                 random_seed=None, clustering_coverage=0.75):
         """
         It initializes an Analysis instance which it depends on
         the general Parameters class of the PELE Platform.
@@ -73,6 +73,9 @@ class Analysis(object):
         random_seed : int
             Random seed to use in clustering. If it was not set in input.yaml.
             The default does not set a specific seed
+        clustering_coverage : float
+            The percentage of points that needs to be assigned to a top cluster when running mean shift clustering
+            with automated bandwidth.
         """
         from pele_platform.analysis import DataHandler
 
@@ -94,6 +97,7 @@ class Analysis(object):
         self.plot_filtering_threshold = plot_filtering_threshold
         self.clustering_filtering_threshold = clustering_filtering_threshold
         self.random_seed = random_seed
+        self.clustering_coverage = clustering_coverage
 
         if self.residue:
             self._check_residue_exists()
@@ -153,7 +157,8 @@ class Analysis(object):
                             water_ids_to_track=parameters.water_ids_to_track,
                             plot_filtering_threshold=parameters.plot_filtering_threshold,
                             clustering_filtering_threshold=parameters.clustering_filtering_threshold,
-                            random_seed=parameters.seed)
+                            random_seed=parameters.seed,
+                            clustering_coverage=parameters.clustering_coverage, )
 
         return analysis
 
@@ -188,7 +193,7 @@ class Analysis(object):
         return self._data_handler.remove_outliers_from_dataframe(self._dataframe, threshold)
 
     def generate(self, path, clustering_type='meanshift',
-                 bandwidth=2.5, analysis_nclust=10,
+                 bandwidth="auto", analysis_nclust=10,
                  max_top_clusters=8,
                  top_clusters_criterion="interaction_25_percentile",
                  min_population=0.01, max_top_poses=100,
@@ -359,11 +364,11 @@ class Analysis(object):
         return best_metrics
 
     def generate_clusters(self, path, clustering_type,
-                          bandwidth=2.5, analysis_nclust=10,
+                          bandwidth="auto", analysis_nclust=10,
                           max_top_clusters=8,
                           top_clusters_criterion="interaction_25_percentile",
                           min_population=0.01,
-                          representatives_criterion="interaction_5_percentile"):
+                          representatives_criterion="interaction_5_percentile", ):
         """
         It generates the structural clustering of ligand poses.
 
@@ -374,7 +379,7 @@ class Analysis(object):
         clustering_type : str
             The clustering method that will be used to generate the
             clusters
-        bandwidth : float
+        bandwidth : Union[float, str]
             Bandwidth for the mean shift and HDBSCAN clustering. Default is
             2.5
         analysis_nclust : int
@@ -399,9 +404,9 @@ class Analysis(object):
             "interaction_mean", "interaction_min"]
         """
         import os
+
         from pele_platform.Utilities.Helpers.helpers import check_make_folder
-        from pele_platform.constants.constants import \
-            metric_top_clusters_criterion, cluster_representatives_criterion
+        from pele_platform.constants.constants import metric_top_clusters_criterion
 
         check_make_folder(path)
 
@@ -426,27 +431,60 @@ class Analysis(object):
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
-        clusters, _ = clustering.get_clusters(coordinates=coordinates,
-                                              original_df=self._dataframe,
-                                              coordinates_df=dataframe,
-                                              csv_path=os.path.dirname(path))
 
-        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
+        if bandwidth == "auto" and clustering_type == "meanshift":
 
-        cluster_summary = self._analyze_clusters(clusters, dataframe,
-                                                 rmsd_per_cluster)
+            n_points_to_assign = coordinates.shape[0] * self.clustering_coverage
+            assigned_points = 0
+            print(f"Searching bandwidth to cover {self.clustering_coverage * 100}% of poses...")
 
-        if len(cluster_summary) == 0:
-            print(f"No clusters could be obtained, " +
-                  f"clustering analysis is skipped")
+            low = 2
+            high = 50
 
+            # Binary search to find the best bandwidth
+            while low <= high:
+                mid = (low + high) / 2
+                clustering._bandwidth = mid
+
+                cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
+                                                                     coordinates=coordinates,
+                                                                     dataframe=dataframe,
+                                                                     path=path,
+                                                                     top_clusters_criterion=top_clusters_criterion,
+                                                                     max_top_clusters=max_top_clusters,
+                                                                     min_population=min_population)
+
+                # Check how many points were clustered
+                assigned_points = sum([1 for label in cluster_subset if label != -1])
+
+                if assigned_points > n_points_to_assign:
+                    # Search only in the bottom half of the bandwidths
+                    high = mid - 1
+
+                elif assigned_points < n_points_to_assign:
+                    # Search only in the top half of the bandwidths
+                    low = mid + 1
+
+                else:
+                    break
+
+            if assigned_points < n_points_to_assign:
+                print(f"Warning: The mean shift clustering reached a maximum bandwidth of {high} but did not manage "
+                      f"to cover the required percentage of all structures.")
+            else:
+                print(f"Selected bandwidth {clustering._bandwidth} covers {(assigned_points / len(cluster_subset) * 100)}% of all poses.")
+
+        else:
+            cluster_subset, cluster_summary = self._get_clusters(clustering=clustering,
+                                                                 coordinates=coordinates,
+                                                                 dataframe=dataframe,
+                                                                 path=path,
+                                                                 top_clusters_criterion=top_clusters_criterion,
+                                                                 max_top_clusters=max_top_clusters,
+                                                                 min_population=min_population)
+
+        if cluster_summary is None:
             return
-
-        cluster_subset, cluster_summary = \
-            self._select_top_clusters(clusters, cluster_summary,
-                                      top_clusters_criterion,
-                                      max_clusters_to_select=max_top_clusters,
-                                      min_population_to_select=min_population)
 
         # If water coordinates have been extracted, use them to locate
         # main water sites for each top cluster
@@ -487,6 +525,62 @@ class Analysis(object):
         self._plot_clusters(cluster_subset, dataframe, path)
 
         print(f"Generate cluster graphs and plot their descriptors")
+
+    def _get_clusters(self, clustering, coordinates, dataframe, path, top_clusters_criterion, max_top_clusters,
+                      min_population):
+        """
+        A hidden clustering method in order not to repeat code when running meanshift clustering with auto bandwidth.
+
+        Parameters
+        ----------
+        clustering : Clustering object
+            Instance of Clustering object.
+        coordinates : np.array
+            The array of coordinates resulting from the filtering.
+        dataframe : pd.DataFrame
+            The dataframe resulting from the filtering coordinates.
+        path : str
+            The path where the clusters will be saved
+        top_clusters_criterion : str
+            Criterion to select top clusters.
+        min_population : float
+            The minimum amount of structures in a cluster, takes a value
+            between 0 and 1. Default is 0.01 (i.e. 1%)
+
+        Returns
+        -------
+        cluster_subset : a numpy.array object
+            The array of cluster after the selection. Those clusters
+            that were not selected are now labeled with a -1
+        cluster_summary : a pandas.dataframe object
+            The dataframe containing summary of all clusters that were
+            analyzed. It is updated with an extra column containing
+            cluster names of top clusters
+        """
+
+        import os
+
+        clusters, _ = clustering.get_clusters(coordinates=coordinates,
+                                              original_df=self._dataframe,
+                                              coordinates_df=dataframe,
+                                              csv_path=os.path.dirname(path))
+
+        rmsd_per_cluster = self._calculate_cluster_rmsds(clusters, coordinates)
+        cluster_summary = self._analyze_clusters(clusters, dataframe, rmsd_per_cluster)
+
+        if len(cluster_summary) == 0:
+            print(f"No clusters could be obtained, " +
+                  f"clustering analysis is skipped")
+
+            return None, None
+
+        cluster_subset, cluster_summary = \
+            self._select_top_clusters(clusters, cluster_summary,
+                                      top_clusters_criterion,
+                                      max_clusters_to_select=max_top_clusters,
+                                      min_population_to_select=min_population)
+
+        return cluster_subset, cluster_summary
 
     def generate_report(self, plots_path, poses_path, clusters_path,
                         best_metrics, filename):
@@ -834,9 +928,7 @@ class Analysis(object):
             metric = "Population"
 
         # Filter cluster summary by Population
-        filtered_cluster_summary = \
-            cluster_summary[cluster_summary["Population"] >=
-                            min_population_to_select]
+        filtered_cluster_summary = cluster_summary[cluster_summary["Population"] >= min_population_to_select]
 
         if len(filtered_cluster_summary) == 0:
             print('Warning: no cluster fulfills the minimum population '
@@ -845,13 +937,9 @@ class Analysis(object):
 
         # Select top clusters based on the chosen metric
         if metric == "Population":
-            filtered_cluster_summary = \
-                filtered_cluster_summary.nlargest(max_clusters_to_select,
-                                                  metric)
+            filtered_cluster_summary = filtered_cluster_summary.nlargest(max_clusters_to_select, metric)
         else:
-            filtered_cluster_summary = \
-                filtered_cluster_summary.nsmallest(max_clusters_to_select,
-                                                   metric)
+            filtered_cluster_summary = filtered_cluster_summary.nsmallest(max_clusters_to_select, metric)
 
         top_clusters = list(filtered_cluster_summary["Cluster"])
 
@@ -1070,9 +1158,6 @@ class Analysis(object):
         dataframe : a pandas.dataframe object
             The dataframe containing the PELE reports information that
             follows the same ordering as the array of clusters
-        cluster_summary : a pandas.dataframe object
-            The dataframe containing summary of all clusters that were
-            analyzed
         representative_structures : dict[str, tuple[str, int]]
             Dictionary containing the representative structures that
             were selected. Cluster label is the key and value is a list
@@ -1170,6 +1255,8 @@ class Analysis(object):
         -------
         filtered_coordinates : numpy.array
             The array of coordinates resulting from the filtering
+        filtered_water_coordinates : numpy.array
+            The array of water coordinates resulting from filtering.
         filtered_dataframe : a pandas.dataframe object
             The dataframe resulting from the filtering
         energetic_threshold : float
@@ -1199,11 +1286,9 @@ class Analysis(object):
         if filtered_water_coordinates is not None:
             filtered_water_coordinates = np.array(filtered_water_coordinates)
 
-        filtered_dataframe = \
-            dataframe.query('currentEnergy<={}'.format(energetic_threshold))
+        filtered_dataframe = dataframe.query('currentEnergy<={}'.format(energetic_threshold))
 
-        return filtered_coordinates, filtered_water_coordinates, \
-               filtered_dataframe, energetic_threshold
+        return filtered_coordinates, filtered_water_coordinates, filtered_dataframe, energetic_threshold
 
     def _calculate_cluster_rmsds(self, clusters, coordinates):
         """

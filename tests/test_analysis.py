@@ -191,6 +191,7 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
         ("hdbscan", 5, 0),  # only gets orphan clusters [-1]
         ("meanshift", 100, 1),
         ("meanshift", 30, 3),
+        ("meanshift", "auto", 5),
         ("gaussianmixture", 1, 2),
     ],
 )

@@ -125,10 +125,13 @@ class Clustering(ABC):
 
         path = os.path.join(csv_path, "data.csv")
 
-        clustering_dataframe.insert(len(clustering_dataframe.columns),
-                                    "Cluster",
-                                    [str(element) for element
-                                     in clusters.tolist()])
+        clusters_list = [str(element) for element in clusters.tolist()]
+
+        try:
+            clustering_dataframe.insert(len(clustering_dataframe.columns),
+                                        "Cluster", clusters_list)
+        except ValueError:  # Cluster column already exists
+            clustering_dataframe["Cluster"] = clusters_list
 
         keys = [column for column in clustering_dataframe
                 if column in original_dataframe]

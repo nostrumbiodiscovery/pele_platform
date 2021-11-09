@@ -380,7 +380,7 @@ class SimulationParams(
         self.bandwidth = (
             args.bandwidth
             if args.bandwidth
-            else self.simulation_params.get("bandwidth", 2.5)
+            else self.simulation_params.get("bandwidth", "auto")
         )
         self.clustering_method = (
             args.clustering_method
@@ -577,6 +577,7 @@ class SimulationParams(
         )
         self.clustering_filtering_threshold = args.clustering_filtering_threshold if args.clustering_filtering_threshold is not None else 0.25
         self.plot_filtering_threshold = args.plot_filtering_threshold if args.plot_filtering_threshold is not None else 0.02
+        self.clustering_coverage = args.clustering_coverage if args.clustering_coverage is not None else 0.75
 
     def constraints_params(self, args):
         """
