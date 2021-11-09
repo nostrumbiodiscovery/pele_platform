@@ -103,7 +103,7 @@ PELE++ parameters
 
 - **cluster_values**: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type
 
-- **cluster_conditions**: Clusterization condition. More in AdaptivePELE. Default: Depending on simulation type
+- **cluster_conditions**: Clusterization condition. More in AdaptivePELE. If you set them to "auto" instead of a list of values, it will determine the best conditions based on the protein-ligand contacts in your system. Default: Depending on simulation type
 
 - **equilibration**: Whether to run initial equilibration or not. Default: false
 
