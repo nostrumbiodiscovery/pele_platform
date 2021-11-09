@@ -118,7 +118,7 @@ SOFTWARE_CONSTANTS = {
             "steric_trials": 500,
             "overlap_factor": 0.65,
             "params": pcs.IN_OUT,
-            "box_radius": 10,
+            "box_radius": 50,
             "spawning_condition": "max",
         },
         "in_out_soft": {
@@ -134,7 +134,7 @@ SOFTWARE_CONSTANTS = {
             "steric_trials": 500,
             "overlap_factor": 0.65,
             "params": pcs.IN_OUT,
-            "box_radius": 10,
+            "box_radius": 50,
             "spawning_condition": "max",
         },
         "rescoring": {
