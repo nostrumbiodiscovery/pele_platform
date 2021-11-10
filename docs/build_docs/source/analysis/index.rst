@@ -165,6 +165,7 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
                 * "interaction_25_percentile" - interaction energy 25th percentile
                 * "interaction_5_percentile" - interaction energy 5th percentile
                 * "interaction_mean" - interaction energy mean
+                * "interaction_min" - interaction energy minimum
                 * "population" - cluster population
 
         representatives_criterion : str (optional, default = "interaction_5_percentile")
@@ -176,6 +177,7 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
                 * "interaction_25_percentile" - interaction energy 25th percentile
                 * "interaction_5_percentile" - interaction energy 5th percentile
                 * "interaction_mean" - interaction energy mean
+                * "interaction_min" - interaction energy minimum
 
 .. code-block:: python
 
@@ -208,6 +210,7 @@ Performs clustering of the output poses based on ligand heavy atom coordinates u
                 - "interaction_25_percentile" - interaction energy 25th percentile
                 - "interaction_5_percentile" - interaction energy 5th percentile
                 - "interaction_mean" - interaction energy mean
+                - "interaction_min" - interaction energy minimum
                 - "population" - cluster population
         representatives_criterion : str (optional, default = "interaction_5_percentile")
             Method for selecting representative structures for each cluster, you can choose one of:
@@ -218,6 +221,7 @@ Performs clustering of the output poses based on ligand heavy atom coordinates u
                 - "interaction_25_percentile" - interaction energy 25th percentile
                 - "interaction_5_percentile" - interaction energy 5th percentile
                 - "interaction_mean" - interaction energy mean
+                - "interaction_min" - interaction energy minimum
 
 .. code-block:: python
 
