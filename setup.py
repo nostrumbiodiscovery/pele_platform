@@ -56,8 +56,8 @@ setup(
         "frag_pele==3.1.1",
         "PPPele==1.0.8",
         "PlopRotTemp==1.0.1",
-        "seaborn"
+        "seaborn",
+        "pyparsing==2.4.7",
     ],
     ext_modules=ext_modules,  # accepts a glob pattern
 )
-

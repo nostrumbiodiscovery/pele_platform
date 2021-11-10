@@ -1,12 +1,16 @@
 import os
+import shutil
 import warnings
 import subprocess
+import tempfile
 
 from pele_platform.constants import constants
 from pele_platform.Errors import custom_errors
+from pele_platform.Utilities.Helpers import helpers
 
 
 class PDBChecker:
+
     def __init__(self, file):
         """
         Initializes PDBChecker class and load relevant lines from the file.
@@ -17,6 +21,7 @@ class PDBChecker:
             Path to PDB file.
         """
         self.file = file
+        self.fixed_file = self.file
         self.atom_lines, self.conect_lines = self._load_lines()
 
     def _load_lines(self):
@@ -42,17 +47,50 @@ class PDBChecker:
 
     def check(self):
         """
-        Performs all checks: protonation, negative residues and CONECT lines.
+        Performs all checks: protonation, negative residues, capped termini and CONECT lines.
+        Then copies the final output PDB to the current working directory with '_fixed' suffix.
 
         Returns
         -------
-        PDB file with added CONECT lines (necessary for Parametrizer).
+        PDB file with added CONECT lines (necessary for Parametrizer) and no capped termini.
         """
-        self.check_protonation()
-        self.check_negative_residues()
-        self.file = self.check_conects()
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            with helpers.cd(tmp_dir):
+                self.check_protonation()
+                self.check_negative_residues()
+                self.fixed_file = self.remove_capped_termini()
+                added_conects_file = self.check_conects()
 
-        return self.file
+                if added_conects_file:
+                    self.fixed_file = added_conects_file
+
+                fixed_filename = os.path.join(os.path.dirname(self.file),
+                                              os.path.basename(self.file).replace(".pdb", "_fixed.pdb"))
+                shutil.copy(self.fixed_file, fixed_filename)
+
+        return fixed_filename
+
+    def remove_capped_termini(self):
+        """
+        Removes any lines containing ACE and NMA residues, then saves them to replace the original file.
+        """
+        temp_file = os.path.join(os.getcwd(), os.path.basename(self.file.replace(".pdb", "_nocaps.pdb")))
+
+        to_remove = []
+        for line in self.atom_lines:
+            if line[17:20].strip() == "ACE" or line[17:20].strip() == "NMA":
+                to_remove.append(line)
+
+        if to_remove:
+            warnings.warn(f"File {self.file} contains uncapped termini. Removing all ACE and NMA lines...")
+
+        self.atom_lines = [line for line in self.atom_lines if line not in to_remove]
+
+        with open(temp_file, "w+") as file:
+            for line in self.atom_lines:
+                file.write(line)
+
+        return temp_file
 
     def check_protonation(self):
         """
@@ -94,15 +132,14 @@ class PDBChecker:
             schrodinger_path = os.path.join(
                 constants.SCHRODINGER, "utilities/prepwizard"
             )
-            file_name, ext = os.path.splitext(self.file)
-            conect_pdb_file = f"{file_name}_conect{ext}"
-            command_pdb = f"{schrodinger_path} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID {self.file} {conect_pdb_file}"
+            conect_pdb_file = os.path.join(os.path.dirname(self.fixed_file),
+                                           os.path.basename(self.fixed_file.replace(".pdb", "_conect.pdb")))
+            command_pdb = f"{schrodinger_path} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID {self.fixed_file} {conect_pdb_file}"
             subprocess.call(command_pdb.split())
 
             return conect_pdb_file
-
         else:
-            return self.file
+            return None
 
     def check_negative_residues(self):
         """
