@@ -65,10 +65,10 @@ def test_full_execution():
     Runs the full workflow.
     """
     file = os.path.join(test_path, "checker", "capped_no_connects.pdb")
-    expected_output = "capped_no_connects_fixed.pdb"
+    expected_output = os.path.join(test_path, "checker", "capped_no_connects_fixed.pdb")
 
     checker = pdb_checker.PDBChecker(file)
     checker.check()
     assert os.path.isfile(expected_output)
 
-    os.remove("capped_no_connects_fixed.pdb")
+    os.remove(expected_output)
