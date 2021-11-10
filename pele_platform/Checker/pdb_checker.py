@@ -64,6 +64,7 @@ class PDBChecker:
 
         fixed_filename = os.path.join(os.getcwd(), os.path.basename(self.file).replace(".pdb", "_fixed.pdb"))
         shutil.copy(self.fixed_file, fixed_filename)
+        return fixed_filename
 
     def remove_capped_termini(self):
         """
