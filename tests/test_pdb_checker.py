@@ -24,7 +24,7 @@ def test_missing_connects_error():
     Checks if we raise an warning when PDB file is missing CONECT lines and create a new file with Schrodinger.
     """
     file = os.path.join(test_path, "constraints", "no_connects.pdb")
-    expected_output = os.path.join(test_path, "constraints", "no_connects_fixed.pdb")
+    expected_output = os.path.join(test_path, "constraints", "no_connects_conect.pdb")
 
     with pytest.warns(UserWarning):
         pdb_checker.PDBChecker(file).check_conects()
@@ -50,25 +50,25 @@ def test_capped_termini():
     file = os.path.join(test_path, "checker", "capped.pdb")
 
     checker = pdb_checker.PDBChecker(file)
-    checker.remove_capped_termini()
-    assert "NMA" not in checker.atom_lines
-    assert "ACE" not in checker.atom_lines
+    output = checker.remove_capped_termini()
+
+    with open(output, "r") as f:
+        content = f.read()
+        assert "ACE" not in content
+        assert "NMA" not in content
+
+    os.remove(output)
 
 
-def test_checker_all():
+def test_full_execution():
     """
-    Runs the whole PDB checker.
+    Runs the full workflow.
     """
-    file = os.path.join(test_path, "checker", "capped.pdb")
+    file = os.path.join(test_path, "checker", "capped_no_connects.pdb")
+    expected_output = "capped_no_connects_fixed.pdb"
 
     checker = pdb_checker.PDBChecker(file)
-    output = checker.check()
+    checker.check()
+    assert os.path.isfile(expected_output)
 
-    assert os.path.basename(output) == "capped_fixed.pdb"
-
-    with open(output, "r") as file:
-        lines = file.readlines()
-
-    assert any(["CONECT" in line for line in lines])
-    assert not any(["NMA" in line for line in lines])
-    assert not any(["ACE" in line for line in lines])
+    os.remove("capped_no_connects_fixed.pdb")
