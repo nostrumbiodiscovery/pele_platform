@@ -19,6 +19,8 @@ class PDBChecker:
         """
         self.file = file
         self.atom_lines, self.conect_lines = self._load_lines()
+        self.preprocessed_file = os.path.join(os.path.dirname(self.file),
+                                              os.path.basename(self.file.replace(".pdb", "_fixed.pdb")))
 
     def _load_lines(self):
         """
@@ -52,9 +54,9 @@ class PDBChecker:
         self.check_protonation()
         self.remove_capped_termini()
         self.check_negative_residues()
-        self.file = self.check_conects()
+        self.check_conects()
 
-        return self.file
+        return self.preprocessed_file
 
     def remove_capped_termini(self):
         """
@@ -69,10 +71,6 @@ class PDBChecker:
             warnings.warn(f"File {self.file} contains uncapped termini. Removing all ACE and NMA lines...")
 
         self.atom_lines = [line for line in self.atom_lines if line not in to_remove]
-
-        with open(self.file, "w") as file:
-            for line in self.atom_lines:
-                file.write(line)
 
     def check_protonation(self):
         """
@@ -97,32 +95,35 @@ class PDBChecker:
             )
 
     def check_conects(self):
-        """
-        Checks the PDB file for CONECT lines and attempts to add them, if there are none.
+        """Checks the PDB file for CONECT lines and attempts to add them, if there are none.
 
-        Returns
-        --------
-        PDB file with added CONECT lines.
+        It will write lines to a temporary PDB file to be used as input for prepwizard, then run subprocess and save
+        the file with CONECT lines as self.preprocessed_file. The temp file gets removed.
         """
         if len(self.conect_lines) < 1:
             warnings.warn(
                 f"PDB file {self.file} is missing the CONECT lines at the end!"
             )
 
-            # Import and export with Schrodinger to add CONECT lines without making any other changes
-            print("Adding CONECT lines with Schrodinger...")
-            schrodinger_path = os.path.join(
-                constants.SCHRODINGER, "utilities/prepwizard"
-            )
-            file_name, ext = os.path.splitext(self.file)
-            conect_pdb_file = f"{file_name}_conect{ext}"
-            command_pdb = f"{schrodinger_path} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID {self.file} {conect_pdb_file}"
-            subprocess.call(command_pdb.split())
+            temp_filename = "temp_file.pdb"
+            with open(temp_filename, "w+") as temp_file:
+                for line in self.atom_lines:
+                    temp_file.write(line)
 
-            return conect_pdb_file
+                # Import and export with Schrodinger to add CONECT lines without making any other changes
+                print("Adding CONECT lines with Schrodinger...")
+                schrodinger_path = os.path.join(
+                    constants.SCHRODINGER, "utilities/prepwizard"
+                )
+                command_pdb = f"{schrodinger_path} -nohtreat -noepik -noprotassign -noimpref -noccd -delwater_hbond_cutoff 0 -NOJOBID {temp_filename} {self.preprocessed_file}"
+                print(command_pdb)
+                subprocess.call(command_pdb.split())
+
+            # if os.path.isfile(temp_filename):
+            #     os.remove(temp_filename)
 
         else:
-            return self.file
+            self.preprocessed_file = self.file
 
     def check_negative_residues(self):
         """

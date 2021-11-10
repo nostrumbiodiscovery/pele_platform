@@ -1,6 +1,5 @@
 import os
 import pytest
-import shutil
 
 from pele_platform.constants import constants
 from pele_platform.Errors import custom_errors
@@ -25,7 +24,7 @@ def test_missing_connects_error():
     Checks if we raise an warning when PDB file is missing CONECT lines and create a new file with Schrodinger.
     """
     file = os.path.join(test_path, "constraints", "no_connects.pdb")
-    expected_output = os.path.join(test_path, "constraints", "no_connects_conect.pdb")
+    expected_output = os.path.join(test_path, "constraints", "no_connects_fixed.pdb")
 
     with pytest.warns(UserWarning):
         pdb_checker.PDBChecker(file).check_conects()
@@ -49,15 +48,27 @@ def test_capped_termini():
     Checks if the platform correctly removes capped termini.
     """
     file = os.path.join(test_path, "checker", "capped.pdb")
-    file_copy = file.replace(".pdb", "_copy.pdb")
-    shutil.copy(file, file_copy)
 
-    checker = pdb_checker.PDBChecker(file_copy)
+    checker = pdb_checker.PDBChecker(file)
     checker.remove_capped_termini()
+    assert "NMA" not in checker.atom_lines
+    assert "ACE" not in checker.atom_lines
 
-    with open(checker.file, "r") as f:
-        content = f.read()
-        assert "ACE" not in content
-        assert "NMA" not in content
 
-    os.remove(file_copy)
+def test_checker_all():
+    """
+    Runs the whole PDB checker.
+    """
+    file = os.path.join(test_path, "checker", "capped.pdb")
+
+    checker = pdb_checker.PDBChecker(file)
+    output = checker.check()
+
+    assert os.path.basename(output) == "capped_fixed.pdb"
+
+    with open(output, "r") as file:
+        lines = file.readlines()
+
+    assert any(["CONECT" in line for line in lines])
+    assert not any(["NMA" in line for line in lines])
+    assert not any(["ACE" in line for line in lines])
