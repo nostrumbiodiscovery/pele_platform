@@ -127,7 +127,7 @@ EXIT_SOFT_DEFAULTS_ADAPTIVE = [
 
 
 EXIT_DEFAULTS_PELE = [
-    '"radius": 10',
+    '"radius": 50',
     '"numberOfStericTrials": 500',
     pp.IN_OUT
 
