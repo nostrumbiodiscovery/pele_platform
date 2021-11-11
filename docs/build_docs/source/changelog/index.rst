@@ -1,6 +1,35 @@
 Versions
 ############
 
+
+PELE Platform 1.6.1
+====================
+
+- Updated randomization of the initial ligand poses, so that they will only be spawned in a user-defined box. As a result, the pocket search can be focused on a specific part of the protein.
+
+- Introduced automated bandwidth selection for the meanshift algorithm.
+
+- Saving analysis parameters to file for later inspection.
+
+- Added support for Open Force Field 2.0.
+
+- Introduced automated selection of cluster conditions for AdaptivePELE.
+
+- Fixed SameFileError exception raised during ligand parametrization.
+
+- Raised an exception when ligand parametrization fails (previously a warning), so it does not fail silently.
+
+- Fixed missing logger bugs when restarting SiteFinder and SaturatedMutagenesis.
+
+- Froze pyparsing version to avoid dependency clashes with prody.
+
+- Automated removal of capped termini.
+
+- Changed box radius defaults for OutIn packages.
+
+- Updates to documentation, including OutIn and ligand parametrization tutorials.
+
+
 PELE Platform 1.6
 =================
 
