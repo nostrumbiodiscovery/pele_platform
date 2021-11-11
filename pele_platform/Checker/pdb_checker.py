@@ -89,6 +89,8 @@ class PDBChecker:
         with open(temp_file, "w+") as file:
             for line in self.atom_lines:
                 file.write(line)
+            for line in self.conect_lines:
+                file.write(line)
 
         return temp_file
 
