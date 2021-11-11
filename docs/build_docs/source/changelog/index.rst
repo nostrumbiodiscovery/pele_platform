@@ -9,6 +9,8 @@ PELE Platform 1.6.1
 
 - Introduced automated bandwidth selection for the meanshift algorithm.
 
+- PELE Plotter 1.1 with new plot types and filtering option
+
 - Saving analysis parameters to file for later inspection.
 
 - Added support for Open Force Field 2.0.
