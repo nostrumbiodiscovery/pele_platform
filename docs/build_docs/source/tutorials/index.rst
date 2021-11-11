@@ -13,7 +13,7 @@ We assume you have already installed the software and have access to Schrödinge
     - `Pocket exploration and comparison to the native pose by calculating RMSD <site_finder.html>`_
     - `Creating custom plots with built-in Plotter <plotter.html>`_
     - `Ligand parametrization using peleffy <peleffy.html>`_
-    - `Binding simulation of a JAK-2 kinase<out_in.html>`_
+    - `Binding simulation of a JAK-2 kinase <out_in.html>`_
 
 For further information about the obtained outputs files, refer to `this page <outputs.html>`_.
 
