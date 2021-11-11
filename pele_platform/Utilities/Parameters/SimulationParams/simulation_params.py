@@ -573,7 +573,7 @@ class SimulationParams(
         self.cluster_representatives_criterion = (
             args.cluster_representatives_criterion
             if args.cluster_representatives_criterion is not None
-            else "interaction_5_percentile"
+            else "interaction_min"
         )
         self.clustering_filtering_threshold = args.clustering_filtering_threshold if args.clustering_filtering_threshold is not None else 0.25
         self.plot_filtering_threshold = args.plot_filtering_threshold if args.plot_filtering_threshold is not None else 0.02

@@ -168,7 +168,7 @@ Runs the full analysis workflow (plots, top poses and clusters) and saves the re
                 * "interaction_min" - interaction energy minimum
                 * "population" - cluster population
 
-        representatives_criterion : str (optional, default = "interaction_5_percentile")
+        representatives_criterion : str (optional, default = "interaction_min")
             Method for selecting representative structures for each cluster, you can choose one of:
 
                 * "total_25_percentile" - total energy 25th percentile
@@ -212,7 +212,7 @@ Performs clustering of the output poses based on ligand heavy atom coordinates u
                 - "interaction_mean" - interaction energy mean
                 - "interaction_min" - interaction energy minimum
                 - "population" - cluster population
-        representatives_criterion : str (optional, default = "interaction_5_percentile")
+        representatives_criterion : str (optional, default = "interaction_min")
             Method for selecting representative structures for each cluster, you can choose one of:
 
                 - "total_25_percentile" - total energy 25th percentile

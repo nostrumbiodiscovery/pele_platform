@@ -197,7 +197,7 @@ class Analysis(object):
                  max_top_clusters=8,
                  top_clusters_criterion="interaction_25_percentile",
                  min_population=0.01, max_top_poses=100,
-                 representatives_criterion="interaction_5_percentile"):
+                 representatives_criterion="interaction_min"):
         """
         It runs the full analysis workflow (plots, top poses and clusters)
         and saves the results in the supplied path.
@@ -368,7 +368,7 @@ class Analysis(object):
                           max_top_clusters=8,
                           top_clusters_criterion="interaction_25_percentile",
                           min_population=0.01,
-                          representatives_criterion="interaction_5_percentile", ):
+                          representatives_criterion="interaction_min", ):
         """
         It generates the structural clustering of ligand poses.
 
