@@ -7,7 +7,7 @@ outputs and display them on a variety of graphs.
 __author__ = "Nostrum Biodiscovery"
 __email__ = "pelesupport@nostrumbiodiscovery.com"
 __license__ = "Apache-2.0"
-__version__ = "1.0"
+__version__ = "1.1"
 
 
 # General imports
