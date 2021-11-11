@@ -16,8 +16,8 @@ Conda
     # Install Python 3.8:
     conda install -c conda-forge python=3.8
 
-    # Install PELE Platform 1.6.0 (might take a while to get retrieve the right dependencies):
-    conda install -c nostrumbiodiscovery -c conda-forge pele_platform=1.6.0
+    # Install PELE Platform 1.6.1
+    conda install -c nostrumbiodiscovery -c conda-forge pele_platform=1.6.1
 
     # Export environment variables
     export PELE=/path/to/PELE-1.X/
