@@ -457,7 +457,7 @@ class Parametrizer:
         from peleffy.template import Impact
         from peleffy.forcefield.parameters import BaseParameterWrapper
 
-        pdb_file = PDBChecker(pdb_file).check()
+        pdb_file = PDBChecker(pdb_file, self.working_dir).check()
 
         ligand_core_constraints = self._fix_atom_names(
             self.ligand_resname, self.ligand_core_constraints, pdb_file

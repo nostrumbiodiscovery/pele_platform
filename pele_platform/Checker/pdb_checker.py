@@ -11,7 +11,7 @@ from pele_platform.Utilities.Helpers import helpers
 
 class PDBChecker:
 
-    def __init__(self, file):
+    def __init__(self, file, pele_dir=None):
         """
         Initializes PDBChecker class and load relevant lines from the file.
 
@@ -21,6 +21,7 @@ class PDBChecker:
             Path to PDB file.
         """
         self.file = file
+        self.inputs_dir = os.path.join(pele_dir, "input") if pele_dir else os.getcwd()
         self.fixed_file = self.file
         self.atom_lines, self.conect_lines = self._load_lines()
 
@@ -64,9 +65,23 @@ class PDBChecker:
                 if added_conects_file:
                     self.fixed_file = added_conects_file
 
-                fixed_filename = os.path.join(os.path.dirname(self.file),
-                                              os.path.basename(self.file).replace(".pdb", "_fixed.pdb"))
-                shutil.copy(self.fixed_file, fixed_filename)
+                self.fixed_file = self.save_file()
+
+        return self.fixed_file
+
+    def save_file(self):
+        """
+        Copies the final file from the temporary directory to the inputs directory (e.g. LIG_Pele/input).
+
+        Returns
+        -------
+            Path to the corrected file name.
+        """
+        if not os.path.exists(self.inputs_dir):
+            os.mkdir(self.inputs_dir)
+
+        fixed_filename = os.path.join(self.inputs_dir, os.path.basename(self.file).replace(".pdb", "_fixed.pdb"))
+        shutil.copy(self.fixed_file, fixed_filename)
 
         return fixed_filename
 
