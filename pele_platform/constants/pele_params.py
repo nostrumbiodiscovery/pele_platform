@@ -3,9 +3,7 @@ This file contains de perturbation
 parameters of PELE for each type of simulation
 """
 
-
-
-OUT_IN = ''' 
+ANM = ''' 
              ,
              "parametersChanges" : [
                  { "ifAnyIsTrue": [ "rand >= .5" ],
@@ -251,4 +249,31 @@ SITE_FINDER_LOCAL = """
              "otherwise": { "Perturbation::parameters": { "steeringUpdateFrequency": 1, "numberOfTrials" : 10} }
          }
          ]
+"""
+
+
+OUT_IN = """
+,
+             "parametersChanges" : [
+                 { "ifAnyIsTrue": [ "rand >= .5" ],
+                     "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
+                     "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.25 } }
+                 },
+                 { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+                     "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.75, "numberOfTrials" : 10 } },
+                     "otherwise": { "Perturbation::parameters": { "translationRange": 1.5, "numberOfTrials" : 10 } }
+                 },
+                 { "ifAnyIsTrue": [ "rand2 >= 0.6" ],
+                     "doThesechanges": { "Perturbation::parameters": { "steeringUpdateFrequency": 0 } },
+                     "otherwise": { "Perturbation::parameters": { "steeringUpdateFrequency": 2 } }
+                 },
+                 { "ifAnyIsTrue": [ "sasaLig >= 0.85" ],
+                     "doThesechanges": { "Perturbation::parameters": { "translationRange": 3.0, "numberOfTrials" : 20 } },
+                     "otherwise": {  }
+                 },
+                 { "ifAnyIsTrue": [ "sasaLig <= 0.35" ],
+                     "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1, "translationRange": 0.75, "numberOfTrials" : 20 } },
+                     "otherwise": {  }
+                 }
+                 ]
 """
