@@ -67,7 +67,6 @@ def randomize_starting_position(parameters, box_center=None, box_radius=None):
     parser = PDBParser()
     structure = parser.get_structure('protein', parameters.receptor)
     ligand = parser.get_structure('ligand', parameters.ligand_ref)
-
     output = []
     COI = np.zeros(3)  # initializing to [0, 0, 0]
 
@@ -80,6 +79,7 @@ def randomize_starting_position(parameters, box_center=None, box_radius=None):
                         for atom in residue.get_atoms():
                             if atom.name == atom_name:
                                 COI = np.array(list(atom.get_vector()))
+                                print("Center of interface:", COI)
 
     # calculate protein and ligand COM
     com_protein = calculate_com(structure)
@@ -130,10 +130,10 @@ def randomize_starting_position(parameters, box_center=None, box_radius=None):
     if parameters.center_of_interface:
         if parameters.site_finder and box_radius:
             D = box_radius
-        elif parameters.ppi:
+        elif box_radius:  # GPCR and OutIn
+            D = box_radius
+        else:  # ppi
             D = 10
-        else:
-            D = np.ceil(6.0 + d)
     else:
         D = np.ceil(6.0 + d)
 
