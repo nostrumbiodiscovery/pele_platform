@@ -303,6 +303,9 @@ a tuple that contains the PDB chain and the residue number, e.g.
 </dd>
 <dt>plot_filtering_threshold<span class="classifier">float (optional, default = 0.02)</span></dt><dd><p>Percentage of output structures to filter out before creating plots. Default = 0.02</p>
 </dd>
+<dt>clustering_coverage<span class="classifier">float (optional, default = 0.75)</span></dt><dd><p>The percentage of points that needs to be assigned to a top cluster when running mean shift clustering
+with automated bandwidth.</p>
+</dd>
 </dl>
 </div></blockquote>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pele_platform.analysis</span> <span class="kn">import</span> <span class="n">Analysis</span>
@@ -320,7 +323,8 @@ a tuple that contains the PDB chain and the residue number, e.g.
 </dd>
 <dt>clustering_type<span class="classifier">str (optional, default = ‘meanshift’)</span></dt><dd><p>The clustering method that will be used to generate the clusters. One of [‘gaussianmixture’, ‘meanshift’, ‘hdbscan’].</p>
 </dd>
-<dt>bandwidth<span class="classifier">float (optional, default = 2.5)</span></dt><dd><p>Bandwidth for the mean shift and HDBSCAN clustering.</p>
+<dt>bandwidth<span class="classifier">Union[float, str] (optional, default = “auto”)</span></dt><dd><p>Bandwidth for the mean shift and HDBSCAN clustering. You can also use “auto” option when running the mean
+shift clustering to let the software automatically choose a value.</p>
 </dd>
 <dt>analysis_nclust<span class="classifier">int (optional, default = 10)</span></dt><dd><p>Number of clusters to create when using the Gaussian mixture model.</p>
 </dd>
@@ -344,7 +348,7 @@ a tuple that contains the PDB chain and the residue number, e.g.
 </ul>
 </div></blockquote>
 </dd>
-<dt>representatives_criterion<span class="classifier">str (optional, default = “interaction_5_percentile”)</span></dt><dd><p>Method for selecting representative structures for each cluster, you can choose one of:</p>
+<dt>representatives_criterion<span class="classifier">str (optional, default = “interaction_min”)</span></dt><dd><p>Method for selecting representative structures for each cluster, you can choose one of:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>“total_25_percentile” - total energy 25th percentile</p></li>
@@ -372,7 +376,8 @@ a tuple that contains the PDB chain and the residue number, e.g.
 </dd>
 <dt>clustering_type<span class="classifier">str (mandatory)</span></dt><dd><p>The clustering method that will be used to generate the clusters, choose one from [‘gaussianmixture’, ‘meanshift’, ‘hdbscan’].</p>
 </dd>
-<dt>bandwidth<span class="classifier">float (optional, default = 2.5)</span></dt><dd><p>Bandwidth for the mean shift and HDBSCAN clustering (also called epsilon).</p>
+<dt>bandwidth<span class="classifier">Union[float, str] (optional, default = “auto”)</span></dt><dd><p>Bandwidth for the mean shift and HDBSCAN clustering. You can use “auto” option when running the mean
+shift clustering to let the software automatically choose a value.</p>
 </dd>
 <dt>analysis_nclust<span class="classifier">int (optional, default = 10)</span></dt><dd><p>Number of clusters to create when using the Gaussian mixture model.</p>
 </dd>
@@ -394,7 +399,7 @@ a tuple that contains the PDB chain and the residue number, e.g.
 </ul>
 </div></blockquote>
 </dd>
-<dt>representatives_criterion<span class="classifier">str (optional, default = “interaction_5_percentile”)</span></dt><dd><p>Method for selecting representative structures for each cluster, you can choose one of:</p>
+<dt>representatives_criterion<span class="classifier">str (optional, default = “interaction_min”)</span></dt><dd><p>Method for selecting representative structures for each cluster, you can choose one of:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>“total_25_percentile” - total energy 25th percentile</p></li>

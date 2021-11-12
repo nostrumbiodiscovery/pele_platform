@@ -187,12 +187,21 @@
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="conda">
 <h2>Conda<a class="headerlink" href="#conda" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c nostrumbiodiscovery -c conda-forge pele_platform
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new conda environment from scratch:</span>
+conda create -n pele_platform
 
+<span class="c1"># Activate the new conda environment:</span>
+conda activate pele_platform
+
+<span class="c1"># Install Python 3.8:</span>
+conda install -c conda-forge <span class="nv">python</span><span class="o">=</span><span class="m">3</span>.8
+
+<span class="c1"># Install PELE Platform 1.6.1</span>
+conda install -c nostrumbiodiscovery -c conda-forge <span class="nv">pele_platform</span><span class="o">=</span><span class="m">1</span>.6.1
+
+<span class="c1"># Export environment variables</span>
 <span class="nb">export</span> <span class="nv">PELE</span><span class="o">=</span>/path/to/PELE-1.X/
-
 <span class="nb">export</span> <span class="nv">SCHRODINGER</span><span class="o">=</span>/path/to/schoringer/20XX/
-
 <span class="nb">export</span> <span class="nv">PELE_LICENSE</span><span class="o">=</span>/path/to/pele/licenses/
 </pre></div>
 </div>

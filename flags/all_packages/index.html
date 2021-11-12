@@ -282,7 +282,7 @@
 <li><p><strong>spawning</strong>: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional</p></li>
 <li><p><strong>density</strong>: Density type ([null, exitContinuous…]. More in AdaptivePELE docs). Default: null</p></li>
 <li><p><strong>cluster_values</strong>: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type</p></li>
-<li><p><strong>cluster_conditions</strong>: Clusterization condition. More in AdaptivePELE. Default: Depending on simulation type</p></li>
+<li><p><strong>cluster_conditions</strong>: Clusterization condition. More in AdaptivePELE. If you set them to “auto” instead of a list of values, it will determine the best conditions based on the protein-ligand contacts in your system. Default: Depending on simulation type</p></li>
 <li><p><strong>equilibration</strong>: Whether to run initial equilibration or not. Default: false</p></li>
 <li><p><strong>equilibration_steps</strong>: Equilibration steps. Default: 2</p></li>
 <li><p><strong>adaptive_restart</strong>: Use adaptive restart with the working folder option to restart the simulation from the last epoch. Default: false</p></li>
@@ -333,7 +333,7 @@
 <div><ul class="simple">
 <li><p><strong>IMPACT template</strong>: containing force field parameters, please refer to <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format">this site</a> for further information.</p></li>
 <li><p><strong>rotamer library</strong>: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. More information available <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers">here</a>.</p></li>
-<li><p><strong>solvent template</strong>: some special solvents like “OBC” require extra parameters, which are set in this file.</p></li>
+<li><p><strong>solvent template</strong>: some special solvents like “OBC” require extra parameters, which are set in this file. Mind that it is <strong>mandatory when using OpenFF</strong>, since it works with the OBC solvent only.</p></li>
 </ul>
 </div></blockquote>
 <p>The platform currently has <strong>two implementations</strong> for building hetero molecule parameters - PlopRotTemp (soon to be deprecated) and
@@ -460,6 +460,8 @@ available:</p>
 <div><ul class="simple">
 <li><p><strong>templates</strong>: External forcefield template files.</p></li>
 <li><p><strong>rotamers</strong>: External rotamer library files.</p></li>
+<li><p><strong>solvent_template</strong>: External file with solvent parameters in JSON format.</p></li>
+<li><p><strong>skip_ligand_prep</strong>: List of residue names that should not be parametrized automatically.</p></li>
 </ul>
 </div></blockquote>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">templates</span><span class="p">:</span>
@@ -468,6 +470,11 @@ available:</p>
 <span class="nt">rotamers</span><span class="p">:</span>
   <span class="p p-Indicator">-</span> <span class="s">&quot;/home/simulation_files/MG.rot.assign&quot;</span>
   <span class="p p-Indicator">-</span> <span class="s">&quot;/home/simulation_files/LIG.rot.assign&quot;</span>
+<span class="nt">solvent_template</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/home/simulation_files/ligandParams.txt&quot;</span>
+<span class="nt">skip_ligand_prep</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;LIG&quot;</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;MG&quot;</span>
 </pre></div>
 </div>
 </div>
@@ -662,7 +669,7 @@ constraints levels and those predefined in each package.</p>
 <li><p><strong>mae</strong>: To extract the best energy and cluster poses as .mae files with the metrics as properties (schrodinger need it). Default: false</p></li>
 <li><p><strong>analysis</strong>: Whether to run or not the analysis at the end of the simulation. Default: true</p></li>
 <li><p><strong>clustering_method</strong>: If you want to override the default clustering method (meanshift), you can set this flag to <code class="docutils literal notranslate"><span class="pre">gaussianmixture</span></code> or <code class="docutils literal notranslate"><span class="pre">HDBSCAN</span></code>.</p></li>
-<li><p><strong>bandwidth</strong>: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0</p></li>
+<li><p><strong>bandwidth</strong>: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering). You can use “auto” option when running the mean shift clustering to let the software automatically choose a value; default = “auto”</p></li>
 <li><p><strong>max_top_clusters</strong>: Maximum number of clusters to be selected. Default = 8.</p></li>
 <li><p><strong>top_clusters_criterion</strong>: Method of selecting top clusters, you can choose one of:</p>
 <blockquote>
@@ -687,9 +694,9 @@ constraints levels and those predefined in each package.</p>
 <li><p>“total_mean” - total energy mean</p></li>
 <li><p>“total_min” - total energy min</p></li>
 <li><p>“interaction_25_percentile” - interaction energy 25th percentile</p></li>
-<li><p>“interaction_5_percentile” - interaction energy 5th percentile (default)</p></li>
+<li><p>“interaction_5_percentile” - interaction energy 5th percentile</p></li>
 <li><p>“interaction_mean” - interaction energy mean</p></li>
-<li><p>“interaction_min” - interaction energy min</p></li>
+<li><p>“interaction_min” - interaction energy min (default)</p></li>
 </ul>
 </div></blockquote>
 </li>
@@ -697,6 +704,7 @@ constraints levels and those predefined in each package.</p>
 <li><p><strong>clustering_filtering_threshold</strong>: Percentage of output structures to filter our before clustering. Default = 0.25.</p></li>
 <li><p><strong>plot_filtering_threshold</strong>: Percentage of output structures to filter out before creating plots. Default = 0.02</p></li>
 <li><p><strong>min_population</strong>: The minimum population that selected clusters must fulfil. It takes a value between 0 and 1. The default value of 0.01 implies that all selected clusters need to have a population above 1% of the total amount of sampled poses.</p></li>
+<li><p><strong>clustering_coverage</strong>: The percentage of points that needs to be assigned to a top cluster when running mean shift clustering with automated bandwidth.</p></li>
 </ul>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">be_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>

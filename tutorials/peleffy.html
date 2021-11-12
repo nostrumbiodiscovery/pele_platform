@@ -1,0 +1,511 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Ligand parametrization using peleffy &mdash; pele platform 1.6.0b2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Elucidating ligand’s binding path" href="out_in.html" />
+    <link rel="prev" title="Creating custom plots with PELE Plotter" href="plotter.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gpcr.html">GPCR tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frag_pele.html">Fragment growing tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="site_finder.html">Site finder tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="outputs.html">Understanding the output files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotter.html">Creating custom plots with PELE Plotter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Ligand parametrization using peleffy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input-files">Input files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-line">Command line</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#templates-usage">Templates usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="out_in.html">Elucidating ligand’s binding path</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorials</a> &raquo;</li>
+        
+      <li>Ligand parametrization using peleffy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tutorials/peleffy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ligand-parametrization-using-peleffy">
+<h1>Ligand parametrization using peleffy<a class="headerlink" href="#ligand-parametrization-using-peleffy" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>The main purpose of peleffy is to build the parameter files for PELE. Basically, PELE requires two files for each non-standard residue found in the system:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>IMPACT template</strong>: a file containing the atom types and parameters of the ligand. Its job is to link each atom with the corresponding parameters using PDB atom names. Thus, PDB atom names in the input PDB file must match with the expected PDB atom names in the Impact file. This file intrinsically contains the information about the topology and connectivity of each residue.</p></li>
+<li><p><strong>Rotamer library</strong>: a file containing the branches that can rotate with respect to a central atomic core. Each branch consists in a set of consecutive rotatable bonds.</p></li>
+</ul>
+</div></blockquote>
+<p>Besides, a third file with the Solvent parameters might be required when employing the OBC implicit solvent.</p>
+<a class="reference internal image-reference" href="https://martimunicoy.github.io/peleffy/_images/PELE_templates_scheme.png"><img alt="https://martimunicoy.github.io/peleffy/_images/PELE_templates_scheme.png" class="align-center" src="https://martimunicoy.github.io/peleffy/_images/PELE_templates_scheme.png" style="width: 600px;" /></a>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Peleffy comes with the PELE Platform installation, so make sure you activate the correct python environment before
+attempting the tutorial, e.g.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda activate pele_platform
+</pre></div>
+</div>
+<p>You also might need Schrödinger software (any version or license type), if your ligand is not yet preprocessed.</p>
+</div>
+<div class="section" id="input-files">
+<h2>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
+<p>You will need a PDB file containing the ligand, make sure it has:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>unique PDB atom names</p></li>
+<li><p>correct protonation</p></li>
+<li><p>CONECT lines at the end of the file.</p></li>
+</ul>
+</div></blockquote>
+<p>To ensure ligand atoms have <strong>unique PDB atom names</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Open your ligand file in Schrödinger</p></li>
+<li><p>Select the ligand with a mouse click</p></li>
+<li><p>Go to <code class="docutils literal notranslate"><span class="pre">Build</span></code> and click on <code class="docutils literal notranslate"><span class="pre">Other</span> <span class="pre">edits</span> <span class="pre">-&gt;</span> <span class="pre">Change</span> <span class="pre">atom</span> <span class="pre">properties</span></code></p></li>
+<li><p>Select <code class="docutils literal notranslate"><span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">name</span></code> from the drop down list and select <code class="docutils literal notranslate"><span class="pre">Set</span> <span class="pre">unique</span> <span class="pre">PDB</span> <span class="pre">atom</span> <span class="pre">names</span> <span class="pre">within</span> <span class="pre">residues</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>If your PDB file is missing the <strong>CONECT lines</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Make sure you did not disable them in the export window of Maestro.</p></li>
+<li><p>Check if your bond orders are assigned correctly, they can be adjusted with Protein Preparation Wizard tool.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="command-line">
+<h2>Command line<a class="headerlink" href="#command-line" title="Permalink to this headline">¶</a></h2>
+<p>The easiest way to parametrize your ligand is through the command line interface:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m peleffy.main my_ligand.pdb
+</pre></div>
+</div>
+<p>If you need to tweak any parameters, you can choose from several command line arguments:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 14%" />
+<col style="width: 54%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Parameter</strong></p></td>
+<td><p><strong>Argument</strong></p></td>
+<td><p><strong>Functionality</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-h</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--help</span></code></p>
+</td>
+<td><p>None</p></td>
+<td><p>Show help message and exit</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">NAME</span></code></p></td>
+<td><p>string</p></td>
+<td><p>OpenForceField’s forcefield name.</p>
+<p>Default is openff_unconstrained-1.2.0.offxml.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">PATH</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--output</span> <span class="pre">PATH</span></code></p>
+</td>
+<td><p>string</p></td>
+<td><p>Output path. Default is the current working directory</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-r</span> <span class="pre">INT</span></code></p></td>
+<td><p>integer</p></td>
+<td><p>Rotamer library resolution in degrees. Default is 30.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--with_solvent</span></code></p></td>
+<td><p>None</p></td>
+<td><p>Generate solvent parameters for OBC.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--as_datalocal</span></code></p></td>
+<td><p>None</p></td>
+<td><p>Output will be saved following PELE’s</p>
+<p>DataLocal hierarchy.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-c</span> <span class="pre">NAME</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--charge_method</span> <span class="pre">NAME</span></code></p>
+</td>
+<td><p>string</p></td>
+<td><p>The name of the method to use to compute charges,</p>
+<p>you can choose one from: gasteiger, am1bcc, OPLS.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--charges_from_file</span> <span class="pre">PATH</span></code></p></td>
+<td><p>string</p></td>
+<td><p>The path to the file with charges.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--chain</span> <span class="pre">CHAIN</span></code></p></td>
+<td><p>string</p></td>
+<td><p>Chain ID of the molecule to parameterize.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--include_terminal_rotamers</span></code></p></td>
+<td><p>None</p></td>
+<td><p>Do not exclude terminal rotamers when building</p>
+<p>the rotamer library.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Example:</strong> Parametrization of ligand contained in my_ligand.pdb file with openff-1.3.0 force field, rotamer resolution
+of 10 degrees, am1bcc charge calculation method and custom output directory.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m peleffy.main my_ligand.pdb -f openff_unconstrained-1.3.0.offxml -o <span class="s2">&quot;ligand_params&quot;</span> -r <span class="m">10</span> -c am1bcc
+</pre></div>
+</div>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>If you are comfortable with python, you can make use of peleffy’s API to parametrize your ligand. Follow the steps below
+to get a general idea how it works and for more details, please refer to <a class="reference external" href="https://martimunicoy.github.io/peleffy/index.html">peleffy documentation</a>.</p>
+<ol class="arabic simple">
+<li><p>The first step is always initializing a <strong>Molecule object</strong>, you can do it either from a PDB file or a string of SMILES</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">peleffy.topology</span> <span class="kn">import</span> <span class="n">Molecule</span>
+
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="s2">&quot;my_ligand.pdb&quot;</span><span class="p">)</span>  <span class="c1"># from a PDB file</span>
+<span class="n">molecule</span> <span class="o">=</span> <span class="n">Molecule</span><span class="p">(</span><span class="n">smiles</span><span class="o">=</span><span class="s1">&#39;c1ccc2cc3ccccc3cc2c1&#39;</span><span class="p">,</span> <span class="n">hydrogens_are_explicit</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># from SMILES</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Generating <strong>rotamer library</strong></p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a rotamer library</span>
+<span class="n">rotamer_library</span> <span class="o">=</span> <span class="n">RotamerLibrary</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">rotamer_library</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;LIG.rot.assign&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><strong>Parametrization</strong> and creating the Impact file</p></li>
+</ol>
+<ol class="loweralpha simple">
+<li><p>with OpenFF</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">peleffy.forcefield</span> <span class="kn">import</span> <span class="n">OpenForceField</span>
+<span class="kn">from</span> <span class="nn">peleffy.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span> <span class="nn">peleffy.template</span> <span class="kn">import</span> <span class="n">Impact</span>
+
+<span class="n">openff</span> <span class="o">=</span> <span class="n">OpenForceField</span><span class="p">(</span><span class="s1">&#39;openff_unconstrained-1.2.0.offxml&#39;</span><span class="p">)</span>
+<span class="n">parameters</span> <span class="o">=</span> <span class="n">openff</span><span class="o">.</span><span class="n">parameterize</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span>
+<span class="n">topology</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+<span class="n">impact</span> <span class="o">=</span> <span class="n">Impact</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
+<span class="n">impact</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;ligz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="2">
+<li><p>with OPLS2005</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">peleffy.forcefield</span> <span class="kn">import</span> <span class="n">OpenForceField</span>
+<span class="kn">from</span> <span class="nn">peleffy.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span> <span class="nn">peleffy.template</span> <span class="kn">import</span> <span class="n">Impact</span>
+
+<span class="n">openff</span> <span class="o">=</span> <span class="n">OpenForceField</span><span class="p">(</span><span class="s1">&#39;openff_unconstrained-1.2.0.offxml&#39;</span><span class="p">)</span>
+<span class="n">parameters</span> <span class="o">=</span> <span class="n">openff</span><span class="o">.</span><span class="n">parameterize</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">charge_method</span><span class="o">=</span><span class="s1">&#39;OPLS2005&#39;</span><span class="p">)</span>
+<span class="n">topology</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">molecule</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+
+<span class="n">impact</span> <span class="o">=</span> <span class="n">Impact</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
+<span class="n">impact</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;ligz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Generating <strong>solvent parameters</strong></p></li>
+</ol>
+<ol class="loweralpha simple">
+<li><p>with OpenFF</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">peleffy.solvent</span> <span class="kn">import</span> <span class="n">OBC2</span>
+
+<span class="n">solvent</span> <span class="o">=</span> <span class="n">OBC2</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>  <span class="c1"># use previously generated topology</span>
+<span class="n">solvent</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;ligandParams.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<ol class="loweralpha simple" start="2">
+<li><p>with OPLS2005</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">peleffy.solvent</span> <span class="kn">import</span> <span class="n">OPLSOBC</span>
+
+<span class="n">solvent</span> <span class="o">=</span> <span class="n">OPLSOBC</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>  <span class="c1"># use previously generated topology</span>
+<span class="n">solvent</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;solventParamsHCTOBC.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="templates-usage">
+<h2>Templates usage<a class="headerlink" href="#templates-usage" title="Permalink to this headline">¶</a></h2>
+<p>Once the templates have been generated, they can be used in a PELE simulation. PELE will need these templates
+for any non standard residue included in the system to simulate. It is important to mention that PDB atom names
+of each non standard residue in the system must match with those names from the structures employed in the
+template generation. A good practice is to assign unique PDB atom names to non standard residues present in the
+system, isolate them and, one by one, generate their templates with peleffy. In this way, the system
+that will be simulated will already contain non standard residues with the right PDB atom names.</p>
+<p>Templates must be saved in specific locations so PELE can find them. Each type of template must
+be saved in a different folder inside the <cite>DataLocal</cite> directory. <cite>DataLocal</cite> must be created in the working
+directory where the simulation runs.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 35%" />
+<col style="width: 40%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Template</strong></p></td>
+<td><p><strong>Filename</strong></p></td>
+<td><p><strong>Directory</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>OPLS2005 parameters template</p></td>
+<td><p>ligz, resz, xxxz</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DataLocal/Templates/OPLS2005/HeteroAtoms/</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>OpenFF parameters template</p></td>
+<td><p>ligz, resz, xxxz</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DataLocal/Templates/OpenFF/Parsley/</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Rotamer library</p></td>
+<td><p>LIG.rot.assign, RES.rot.assign, XXX.rot.assign</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DataLocal/LigandRotamerLibs/</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>OBC solvent template (OPLS2005)</p></td>
+<td><p>ligandParams.txt</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DataLocal/OBC/</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>OBC solvent template (OpenFF)</p></td>
+<td><p>solventParamsHCTOBC.txt</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">DataLocal/OBC/</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="out_in.html" class="btn btn-neutral float-right" title="Elucidating ligand’s binding path" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plotter.html" class="btn btn-neutral float-left" title="Creating custom plots with PELE Plotter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

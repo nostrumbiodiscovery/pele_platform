@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="copyright" title="Copyright" href="../copyright.html" />
-    <link rel="next" title="Elucidating ligand’s binding path" href="out_in.html" />
+    <link rel="next" title="Ligand parametrization using peleffy" href="peleffy.html" />
     <link rel="prev" title="Understanding the output files" href="outputs.html" /> 
 </head>
 
@@ -117,7 +117,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#colour-scheme">Colour scheme</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#custom-lines">Custom lines</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#axis-labels-and-title">Axis labels and title</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#values-range">Values range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#filters-and-ranges">Filters and ranges</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#other">Other</a></li>
 </ul>
 </li>
@@ -125,6 +125,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="peleffy.html">Ligand parametrization using peleffy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="out_in.html">Elucidating ligand’s binding path</a></li>
 </ul>
 </li>
@@ -233,11 +234,12 @@ of all available arguments.</p>
 </pre></div>
 </div>
 <p><strong>2. Select plot type</strong></p>
-<p>The new Plotter offers three different plot types, each able to visualise up to three data columns (except for the density plot, which can only display two columns):</p>
+<p>The new Plotter offers four different plot types, each able to visualise up to three data columns (except for the density and histogram plots, which can only display two columns):</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>standard <strong>scatter</strong> plot</p></li>
-<li><p><strong>density</strong> plot, similar to scatter, but including kernel density estimation on the axes</p></li>
+<li><p><strong>density</strong> plot, similar to scatter, but displaying kernel density estimates (KDE) on the axes.</p></li>
+<li><p><strong>histogram</strong> plot, similar to the density plot but showing histograms instead.</p></li>
 <li><p><strong>interactive</strong> which allows you to hover over data points to determine which trajectory they originate from.</p></li>
 </ul>
 </div></blockquote>
@@ -245,7 +247,7 @@ of all available arguments.</p>
 <p><strong>3. Choose metrics to plot</strong></p>
 <p>You can plot any of the metrics appearing in your report files by pointing the Plotter to the right <strong>column number</strong>. As a minimum,
 you will have to provide metrics for x- and y-axis, however, you can also set z-axis, which will colour the data points
-according to that metric (this does not apply to the density plot).</p>
+according to that metric (this does not apply to the density or histogram plots).</p>
 <p>If you are unsure which numbers correspond to each metric, you can simply set data source and plot type and hit “enter”.
 The tool will show you all available options and walk you through the setup.</p>
 </div>
@@ -256,7 +258,7 @@ The tool will show you all available options and walk you through the setup.</p>
 <p>Once you get the basics done, you can customize the colour scheme of your plot using the following arguments:</p>
 <blockquote>
 <div><ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">--color</span></code> to change the colour of the data points, you can select on of the built-in options:</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">--color</span></code> to change the colour of the data points, you can select one of the built-in options:</p>
 <blockquote>
 <div><table class="hlist"><tr><td><ul class="simple">
 <li><p>blue</p></li>
@@ -329,9 +331,18 @@ It must be a <a class="reference external" href="https://www.w3.org/wiki/CSS/Pro
 </div>
 <p>Moreover, to add a <strong>custom title</strong> to your figure, all you have to do is use <code class="docutils literal notranslate"><span class="pre">--title</span></code> argument and supply a string with your desired text.</p>
 </div>
-<div class="section" id="values-range">
-<h3>Values range<a class="headerlink" href="#values-range" title="Permalink to this headline">¶</a></h3>
-<p>You can plot only the relevant data by setting limits to the scope of values plotted on each axis using the following flags:</p>
+<div class="section" id="filters-and-ranges">
+<h3>Filters and ranges<a class="headerlink" href="#filters-and-ranges" title="Permalink to this headline">¶</a></h3>
+<p>Apply custom <strong>filters</strong> to data points by setting specific thresholds for each column, it can be done by passing the following parameters to the <code class="docutils literal notranslate"><span class="pre">--filter</span></code> command line argument:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>column number corresponding to the metric where the filter will be applied</p></li>
+<li><p>character representing the condition to apply in the filtering, one of: <code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">==</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;=</span></code> or <code class="docutils literal notranslate"><span class="pre">lt</span></code>, <code class="docutils literal notranslate"><span class="pre">eq</span></code>, <code class="docutils literal notranslate"><span class="pre">gt</span></code>, <code class="docutils literal notranslate"><span class="pre">le</span></code>, <code class="docutils literal notranslate"><span class="pre">ge</span></code></p></li>
+<li><p>the cutoff value.</p></li>
+</ul>
+</div></blockquote>
+<p>For example, to include only those values from column report 5, which are greater or equal 15, you’d do the following: <code class="docutils literal notranslate"><span class="pre">--filter</span> <span class="pre">5</span> <span class="pre">&gt;=</span> <span class="pre">15</span></code></p>
+<p>You can also plot only the relevant data by setting <strong>limits</strong> to the scope of values plotted on each axis using the following flags:</p>
 <blockquote>
 <div><table class="hlist"><tr><td><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--xlowest</span></code></p></li>
@@ -350,10 +361,11 @@ It must be a <a class="reference external" href="https://www.w3.org/wiki/CSS/Pro
 </div>
 <div class="section" id="other">
 <h3>Other<a class="headerlink" href="#other" title="Permalink to this headline">¶</a></h3>
-<p>You can further customize the <strong>density plot</strong> by using:</p>
+<p>You can further customise the <strong>density plot</strong> by using:</p>
 <blockquote>
 <div><ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--with_edges</span></code> argument to visualise the distribution on the plot area</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--n_bins</span></code> to define the number of bins to display in the histogram plot, first element corresponds to the X axis and the second to the Y axis.  If only one value is provided, it will be applied to both axes.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--n_levels</span></code> to adjust the number of levels shown on the plot area.</p></li>
 </ul>
 </div></blockquote>
@@ -362,7 +374,7 @@ It must be a <a class="reference external" href="https://www.w3.org/wiki/CSS/Pro
 </div>
 <div class="section" id="saving-to-file">
 <h2>Saving to file<a class="headerlink" href="#saving-to-file" title="Permalink to this headline">¶</a></h2>
-<p>If you want to save plot <strong>to file</strong> instead of displaying it, use <code class="docutils literal notranslate"><span class="pre">--save_to</span></code> argument and supply a path to file (this option does not apply to interactive plots).</p>
+<p>If you want to save the plot <strong>to a file</strong> instead of displaying it, use the <code class="docutils literal notranslate"><span class="pre">--save_to</span></code> argument and supply a path to the file (this option does not apply to interactive plots).</p>
 </div>
 <div class="section" id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
@@ -397,7 +409,7 @@ It must be a <a class="reference external" href="https://www.w3.org/wiki/CSS/Pro
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="out_in.html" class="btn btn-neutral float-right" title="Elucidating ligand’s binding path" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="peleffy.html" class="btn btn-neutral float-right" title="Ligand parametrization using peleffy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="outputs.html" class="btn btn-neutral float-left" title="Understanding the output files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

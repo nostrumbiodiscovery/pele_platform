@@ -112,6 +112,7 @@
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Versions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pele-platform-1-6-1">PELE Platform 1.6.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pele-platform-1-6">PELE Platform 1.6</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-5-1">v1.5.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v1-5-0">v1.5.0</a></li>
@@ -199,6 +200,24 @@
             
   <div class="section" id="versions">
 <h1>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="pele-platform-1-6-1">
+<h2>PELE Platform 1.6.1<a class="headerlink" href="#pele-platform-1-6-1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Updated randomization of the initial ligand poses, so that they will only be spawned in a user-defined box. As a result, the pocket search can be focused on a specific part of the protein.</p></li>
+<li><p>Introduced automated bandwidth selection for the meanshift algorithm.</p></li>
+<li><p>PELE Plotter 1.1 with new plot types and filtering option</p></li>
+<li><p>Saving analysis parameters to file for later inspection.</p></li>
+<li><p>Added support for Open Force Field 2.0.</p></li>
+<li><p>Introduced automated selection of cluster conditions for AdaptivePELE.</p></li>
+<li><p>Fixed SameFileError exception raised during ligand parametrization.</p></li>
+<li><p>Raised an exception when ligand parametrization fails (previously a warning), so it does not fail silently.</p></li>
+<li><p>Fixed missing logger bugs when restarting SiteFinder and SaturatedMutagenesis.</p></li>
+<li><p>Froze pyparsing version to avoid dependency clashes with prody.</p></li>
+<li><p>Automated removal of capped termini.</p></li>
+<li><p>Changed box radius defaults for OutIn packages.</p></li>
+<li><p>Updates to documentation, including OutIn and ligand parametrization tutorials.</p></li>
+</ul>
+</div>
 <div class="section" id="pele-platform-1-6">
 <h2>PELE Platform 1.6<a class="headerlink" href="#pele-platform-1-6" title="Permalink to this headline">¶</a></h2>
 <p>The new release of the PELE Platform contains many new features and stability changes. The most important ones are:</p>
