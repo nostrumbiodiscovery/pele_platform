@@ -5,6 +5,8 @@ Versions
 PELE Platform 1.6.1
 ====================
 
+A minor release of the PELE Platform that contains stability and efficiency improvements. Find below the full list of modifications:
+
 - Updated randomization of the initial ligand poses, so that they will only be spawned in a user-defined box. As a result, the pocket search can be focused on a specific part of the protein.
 
 - Introduced automated bandwidth selection for the meanshift algorithm.
