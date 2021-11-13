@@ -41,6 +41,12 @@ SOFTWARE_CONSTANTS = {
             "params": pcs.OUT_IN,
             "box_radius": 30,
             "bias_column": 7,
+            "anm_freq": 4,
+            "sidechain_freq": 1,
+            "min_freq": 1,
+            "water_freq": 1,
+            "COMligandConstraint": 1.0,
+            "sidechain_resolution": 10,
         },
         "gpcr_orth": {
             "spawning_type": "epsilon",
@@ -173,7 +179,7 @@ SOFTWARE_CONSTANTS = {
             "cluster_conditions": "[0.6, 0.4, 0.0]",
             "steric_trials": 250,
             "overlap_factor": 0.65,
-            "params": pcs.OUT_IN,
+            "params": pcs.ANM,
             "box_radius": 30,
         },
         "interaction_restrictions": {
@@ -241,7 +247,6 @@ SOFTWARE_CONSTANTS = {
 
 
 def retrieve_software_settings(args, pele_dir):
-
     software_settings = deepcopy(SOFTWARE_CONSTANTS)
 
     if args.full:
