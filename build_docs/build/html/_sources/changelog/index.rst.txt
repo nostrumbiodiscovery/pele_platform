@@ -27,7 +27,7 @@ PELE Platform 1.6.1
 
 - Automated removal of capped termini.
 
-- Changed box radius defaults for OutIn packages.
+- Changed default parameters for the OutIn package.
 
 - Updates to documentation, including OutIn and ligand parametrization tutorials.
 
