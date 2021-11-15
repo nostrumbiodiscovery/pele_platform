@@ -342,8 +342,6 @@ def run_adaptive(args: YamlParser):
         if parameters.cluster_conditions == "auto":
             equilibration = Equilibrator(args, parameters)
             parameters.cluster_conditions = equilibration.run()
-            parameters.input = equilibration.set_next_step()
-            parameters.adap_ex_input = ", ".join(['"' + input + '"' for input in parameters.input]).strip('"')
 
         # Point adaptive.conf to input dir
         parameters.adap_ex_input = os.path.join(

@@ -1,9 +1,7 @@
 from copy import deepcopy
-import glob
 import numpy as np
 import os
 import pandas as pd
-import shutil
 
 from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 from pele_platform.Utilities.Parameters.parameters import Parameters
@@ -110,37 +108,3 @@ class Equilibrator:
 
         print(f"Setting cluster conditions {cluster_conditions}.")
         return cluster_conditions
-
-    def set_next_step(self):
-        """
-        Extracts the best poses generated during the equilibration, copies them over to the main simulation inputs dir
-        and overwrites the system argument.
-        """
-
-        from pele_platform.analysis.analysis import Analysis
-
-        next_inputs_path = os.path.join(
-            self.equilibration_parameters.pele_dir, "selected_poses"
-        )
-        analysis = Analysis.from_parameters(self.equilibration_parameters)
-        analysis.generate_top_poses(
-            next_inputs_path, self.equilibration_parameters.cpus - 1
-        )
-
-        inputs_dir = os.path.join(self.parameters.pele_dir, "input")
-        old_systems = glob.glob(
-            os.path.join(
-                inputs_dir,
-                os.path.basename(self.args.system.replace(".pdb", "*")),
-            )
-        )
-
-        for old_system in old_systems:
-            os.remove(old_system)
-
-        inputs = glob.glob(os.path.join(next_inputs_path, "*.pdb"))
-
-        for input_file in inputs:
-            shutil.copy(input_file, inputs_dir)
-
-        return [os.path.basename(input_file) for input_file in inputs]

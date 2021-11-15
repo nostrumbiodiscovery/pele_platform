@@ -15,7 +15,7 @@ from .test_adaptive import test_path, check_file
         ),
         (
             os.path.join("out_in", "input_auto_clustering.yaml"),
-            "[0.39, 0.06]",
+            "[0.44, 0.06]",
             "[2, 5, 7]",
         ),
     ],
