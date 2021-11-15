@@ -6,35 +6,30 @@ import pandas as pd
 import shutil
 
 from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
+from pele_platform.Utilities.Parameters.parameters import Parameters
 
 
 class Equilibrator:
 
-    def __init__(self, parameters: YamlParser, pele_dir, preprocessed_system, cluster_values):
+    def __init__(self, args: YamlParser, parameters: Parameters):
         """
         Instantiates the Equilibrator class.
 
         Parameters
         ----------
-        parameters : YamlParser
-            YamlParser object with user-defined parameters.
-        pele_dir : str
-            Path to the PELE directory in which the main simulation is performed.
-        preprocessed_system : str
-            Path to the system preprocessed by PPP.
-        cluster_values : List[float]
-            Cluster values from Parameters object (will contain default values if the user did not set any).
+        args : YamlParser
+            YamlParser object with user-defined args.
+        parameters : Parameters
+            Parameters object with user-defined args.
         """
+        self.args = args
         self.parameters = parameters
-        self.pele_dir = pele_dir
         self.equilibration_parameters = None
-        self.preprocessed_system = preprocessed_system
-        self.cluster_values = cluster_values
 
     def run(self):
         """
         Runs the equilibration workflow to extract cluster values based on protein-ligand contacts and adjust the main
-        simulation parameters accordingly.
+        simulation args accordingly.
         """
         self.generate_equilibration_parameters()
         self.run_equilibration()
@@ -50,24 +45,29 @@ class Equilibrator:
 
     def generate_equilibration_parameters(self):
         """
-        Generates parameters for the short equilibration simulation.
+        Generates args for the short equilibration simulation.
         """
-        equilibration_parameters = deepcopy(self.parameters)
+        equilibration_parameters = deepcopy(self.args)
         equilibration_parameters.iterations = 1
         equilibration_parameters.pele_steps = 5
         equilibration_parameters.cluster_conditions = None
         equilibration_parameters.folder = os.path.join(
-            self.pele_dir, "output", "preequilibration"
+            self.parameters.pele_dir, self.parameters.output, "preequilibration"
         )
         equilibration_parameters.analyse = False
         equilibration_parameters.no_ppp = True
-        equilibration_parameters.system = self.preprocessed_system
+        equilibration_parameters.randomize = False
+
+        if self.parameters.input:  # in case the original package had multiple inputs or was randomized
+            equilibration_parameters.input = self.parameters.input
+        else:
+            equilibration_parameters.system = self.parameters.system
 
         self.equilibration_parameters = equilibration_parameters
 
     def run_equilibration(self):
         """
-        Launches the simulation with equilibration parameters.
+        Launches the simulation with equilibration args.
         """
         from pele_platform.Adaptive.simulation import run_adaptive
 
@@ -83,7 +83,7 @@ class Equilibrator:
             List of cluster conditions.
         """
         clustering_file = os.path.join(output_path, "0", "clustering", "summary.txt")
-        n_cluster_values = len(eval(self.cluster_values))   # cluster_values are a string
+        n_cluster_values = len(eval(self.parameters.cluster_values))   # cluster_values are a string
 
         if not os.path.exists(clustering_file):
             raise FileNotFoundError(
@@ -127,11 +127,11 @@ class Equilibrator:
             next_inputs_path, self.equilibration_parameters.cpus - 1
         )
 
-        inputs_dir = os.path.join(self.pele_dir, "input")
+        inputs_dir = os.path.join(self.parameters.pele_dir, "input")
         old_systems = glob.glob(
             os.path.join(
                 inputs_dir,
-                os.path.basename(self.parameters.system.replace(".pdb", "*")),
+                os.path.basename(self.args.system.replace(".pdb", "*")),
             )
         )
 
