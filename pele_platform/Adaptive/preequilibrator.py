@@ -7,11 +7,11 @@ from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 from pele_platform.Utilities.Parameters.parameters import Parameters
 
 
-class Equilibrator:
+class PreEquilibrator:
 
     def __init__(self, args: YamlParser, parameters: Parameters):
         """
-        Instantiates the Equilibrator class.
+        Instantiates the PreEquilibrator class.
 
         Parameters
         ----------
