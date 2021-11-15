@@ -57,7 +57,7 @@ class Equilibrator:
         equilibration_parameters.pele_steps = 5
         equilibration_parameters.cluster_conditions = None
         equilibration_parameters.folder = os.path.join(
-            self.pele_dir, "QuickEquilibration"
+            self.pele_dir, "output", "preequilibration"
         )
         equilibration_parameters.analyse = False
         equilibration_parameters.no_ppp = True
