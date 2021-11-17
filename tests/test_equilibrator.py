@@ -10,12 +10,12 @@ from .test_adaptive import test_path, check_file
     [
         (
             os.path.join("induced_fit", "input_auto_clustering.yaml"),
-            "[1.48, 0.48]",
+            "[1.48, 0.0]",
             "[2.0, 5, 7]",
         ),
         (
             os.path.join("out_in", "input_auto_clustering.yaml"),
-            "[0.44, 0.06]",
+            "[0.28, 0.0]",
             "[2, 5, 7]",
         ),
     ],

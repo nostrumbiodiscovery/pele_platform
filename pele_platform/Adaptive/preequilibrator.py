@@ -1,4 +1,5 @@
 from copy import deepcopy
+from itertools import chain
 import numpy as np
 import os
 import pandas as pd
@@ -90,20 +91,16 @@ class PreEquilibrator:
 
         with open(clustering_file, "r") as file:
             df = pd.read_csv(file, delimiter=r"\s+")
+
         contacts = df["contacts"].tolist()
+        sizes = df["size"].tolist()
 
-        # To avoid cases where there is only one cluster and linspace will fail
-        if min(contacts) < max(contacts):
-            minimum = min(contacts)
-        else:
-            minimum = max(max(contacts) - 1, 0)
-
-        # To ensure the final values are not negative
-        if minimum < 0:
-            minimum = 0
+        contacts_distribution = list(chain.from_iterable([[contact] * size for contact, size in zip(contacts, sizes)]))
+        minimum = 0.0
+        maximum = np.quantile(contacts_distribution, 0.9)
 
         cluster_conditions = list(
-            np.linspace(max(contacts), minimum, num=n_cluster_values - 1)
+            np.linspace(maximum, minimum, num=n_cluster_values - 1)
         )
 
         print(f"Setting cluster conditions {cluster_conditions}.")
