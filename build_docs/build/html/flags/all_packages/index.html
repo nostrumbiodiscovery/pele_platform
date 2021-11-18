@@ -105,7 +105,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#receptor-preparation">Receptor preparation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#ligand-preparation">Ligand preparation</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#ploprottemp">PlopRotTemp</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Peleffy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Peleffy</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#use-your-own-files">Use your own files</a></li>
 </ul>
 </li>
@@ -281,9 +281,9 @@
 <li><p><strong>debug</strong>: Use this flag to only create the inputs of the simulation. No simulation is run.</p></li>
 <li><p><strong>spawning</strong>: Spawning type ([independent, inverselyProportional or epsilon so far]). Default: inverselyProportional</p></li>
 <li><p><strong>density</strong>: Density type ([null, exitContinuous…]. More in AdaptivePELE docs). Default: null</p></li>
-<li><p><strong>cluster_values</strong>: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type</p></li>
-<li><p><strong>cluster_conditions</strong>: Clusterization condition. More in AdaptivePELE. If you set them to “auto” instead of a list of values, it will determine the best conditions based on the protein-ligand contacts in your system. Default: Depending on simulation type</p></li>
-<li><p><strong>equilibration</strong>: Whether to run initial equilibration or not. Default: false</p></li>
+<li><p><strong>cluster_values</strong>: Clusterization values, more details in <a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/UserManual.html#clustering-block">AdaptivePELE documentation</a>. Default: Depending on simulation type</p></li>
+<li><p><strong>cluster_conditions</strong>: Clusterization condition, more details in <a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/UserManual.html#clustering-block">AdaptivePELE documentation</a>. If you set them to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code> instead of a list of values, it will run a short <strong>pre-equilibration</strong> to determine the best conditions based on the protein-ligand contacts in your system. Default: Depending on simulation type.</p></li>
+<li><p><strong>equilibration</strong>: When set to true, it will equilibrate the system and <strong>generate multiple starting poses</strong>. This is what differentiates equilibration from pre-equilibration, which is used only to identify the best cluster conditions and generated outputs will not be used for the main simulation. Default: false.</p></li>
 <li><p><strong>equilibration_steps</strong>: Equilibration steps. Default: 2</p></li>
 <li><p><strong>adaptive_restart</strong>: Use adaptive restart with the working folder option to restart the simulation from the last epoch. Default: false</p></li>
 <li><p><strong>restart</strong>: Use restart flag set to true to start a simulation from scratch (with existing input PDBs and configuration files), for example after using the debug mode or manually editing pele.conf or adaptive.conf. Default: false</p></li>
@@ -405,8 +405,8 @@ available:</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id1">
-<h3>Peleffy<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Peleffy<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>In order to use Peleffy instead of PlopRotTemp, you need to set <code class="docutils literal notranslate"><span class="pre">use_peleffy:</span> <span class="pre">true</span></code> in input YAML.</p>
 <p>You can use the following parameters to control the way peleffy will parametrize non-standard molecules for you:</p>
 <ul>
