@@ -553,6 +553,7 @@ def mock_parameters():
     parameters.poses = 10
     parameters.inputs_dir = inputs_dir
     parameters.test = True
+    parameters.seed = 12345
     parameters.logger = logging.getLogger(__name__)
 
     return parameters
