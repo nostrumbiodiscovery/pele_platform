@@ -10,12 +10,12 @@ from .test_adaptive import test_path
     [
         (
             os.path.join("induced_fit", "input_auto_clustering.yaml"),
-            [1.48, 0.48],
+            [1.48, 0.0],
             [2.0, 5, 7],
         ),
         (
             os.path.join("out_in", "input_auto_clustering.yaml"),
-            [0.44, 0.0],
+            [0.39, 0.0],
             [2, 5, 7],
         ),
     ],
@@ -34,4 +34,4 @@ def test_equilibrator_production(yaml_file, conditions, values):
     assert os.path.isdir(results)
 
     assert job_params.cluster_conditions == conditions
-    assert job_params.cluster_values == values
+    assert job_params.cluster_values == str(values)

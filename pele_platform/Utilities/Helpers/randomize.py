@@ -88,8 +88,7 @@ def randomize_starting_position(parameters, box_center=None, box_radius=None):
     -------
         A list of PDB files with random ligand positions.
     """
-    if parameters.test:
-        np.random.seed(42)
+    np.random.seed(parameters.seed)
 
     # When running SiteFinder, the users can narrow down the area where inputs will be
     # spawned by setting box radius and center. We're setting box_center as COI to avoid crazy code changes until 2.0.
