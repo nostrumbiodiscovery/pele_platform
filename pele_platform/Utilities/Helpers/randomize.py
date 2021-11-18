@@ -6,7 +6,6 @@ import time
 
 import pele_platform.Errors.custom_errors as cs
 from pele_platform.Utilities.Parameters.parameters import Parameters
-from pele_platform.Utilities.Helpers import helpers
 
 
 def calculate_com(structure):
@@ -31,46 +30,6 @@ def calculate_com(structure):
     return com
 
 
-def set_box(final_site, ligand_positions, system):
-    """
-    Sets the box radius based on the spread of initial poses generated during randomization and the final site
-    coordinates.
-
-    The following logic is applied:
-        - the mid-point of all ligands is used as one end of the box (centroid)
-        - user-define final site is used as the other end of the box (final_site)
-        - box center is set as a mid-point between the centroid and the final site
-        - the radius is the distance between the centroid and the final site plus 2 A.
-
-    Parameters
-    ----------
-    final_site : str
-        Final site set by the user, i.e. orthosteric_site (when running GPCR) or final_site (OutIn).
-    ligand_positions : List[str]
-        List of PDB files with initial ligand positions (before they are joined to the protein).
-    system : str
-        Path to PDB file with the protein-ligand complex.
-
-    Returns
-    -------
-        Box radius, box_center.
-    """
-    parser = PDBParser()
-    all_coms = []
-
-    final_site = helpers.get_coords_from_residue(system, final_site)
-
-    for file in ligand_positions:
-        structure = parser.get_structure('input', file)
-        all_coms.append(calculate_com(structure))
-
-    centroid = np.average(all_coms, axis=0)  # middle point of where all the ligands were generated
-    distance = np.linalg.norm(centroid - final_site)  # width of the whole box
-    box_radius = distance / 2 + 2  # half of the with of the box + 2A
-    box_center = np.average([final_site, centroid], axis=0)  # mid point between ligand centroid and final site
-    return round(box_radius, 3), list(box_center)
-
-
 def randomize_starting_position(parameters, box_center=None, box_radius=None):
     """
     Randomize initial ligand position around the receptor.
@@ -88,7 +47,8 @@ def randomize_starting_position(parameters, box_center=None, box_radius=None):
     -------
         A list of PDB files with random ligand positions.
     """
-    np.random.seed(parameters.seed)
+    if parameters.test:
+        np.random.seed(42)
 
     # When running SiteFinder, the users can narrow down the area where inputs will be
     # spawned by setting box radius and center. We're setting box_center as COI to avoid crazy code changes until 2.0.

@@ -26,7 +26,7 @@ import pele_platform.Adaptive.plop_solvent as sv
 import pele_platform.Adaptive.plop_ligand_parametrization as lg
 from pele_platform.Utilities.Helpers import ligand_conformations
 from pele_platform.Checker import pdb_checker
-from pele_platform.Adaptive.preequilibrator import PreEquilibrator
+from pele_platform.Adaptive.equilibrator import Equilibrator
 from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 
 
@@ -92,13 +92,13 @@ def run_adaptive(args: YamlParser):
                     input_proc = input_path
                 else:
                     input_proc, missing_residues, _, _, _ = ppp.main(
-                        input_path,
-                        parameters.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
-                        output_pdb=["", ],
-                        charge_terminals=args.charge_ter,
-                        no_gaps_ter=args.gaps_ter,
-                        constrain_smiles=None,
-                        ligand_pdb=parameters.ligand_ref)
+                            input_path,
+                            parameters.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
+                            output_pdb=["", ],
+                            charge_terminals=args.charge_ter,
+                            no_gaps_ter=args.gaps_ter,
+                            constrain_smiles=None,
+                            ligand_pdb=parameters.ligand_ref)
                 input_proc = os.path.basename(input_proc)
                 input_proc = os.path.join(parameters.inputs_dir, input_proc)
                 parameters.inputs_simulation.append(input_proc)
@@ -110,6 +110,9 @@ def run_adaptive(args: YamlParser):
         elif args.full or args.randomize or args.ppi or args.site_finder:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(
                 parameters, args.box_center, args.box_radius)
+            if not args.gpcr_orth and not args.out_in:
+                parameters.box_center = box_center
+                parameters.box_radius = box_radius
 
             if parameters.no_ppp:
                 receptor = syst.system
@@ -131,20 +134,6 @@ def run_adaptive(args: YamlParser):
 
             parameters.input = [os.path.join(parameters.inputs_dir, inp)
                                 for inp in inputs]
-
-            if args.gpcr_orth or args.out_in:
-                randomization_box_radius, randomization_box_center = rd.set_box(
-                    args.final_site if args.final_site else args.orthosteric_site, ligand_positions,
-                    parameters.system)
-
-                if not args.box_center:
-                    parameters.box_center = randomization_box_center
-                if not args.box_radius:
-                    parameters.box_radius = randomization_box_radius
-
-            else:
-                parameters.box_center = box_center
-                parameters.box_radius = box_radius
 
             parameters.adap_ex_input = ", ".join(
                 ['"' + input + '"' for input in parameters.input]
@@ -351,8 +340,10 @@ def run_adaptive(args: YamlParser):
 
         # Predict cluster values in a short equilibration
         if parameters.cluster_conditions == "auto":
-            preequilibration = PreEquilibrator(args, parameters)
-            parameters.cluster_conditions = preequilibration.run()
+            equilibration = Equilibrator(args, parameters.pele_dir, parameters.system, parameters.cluster_values)
+            parameters.cluster_conditions = equilibration.run()
+            parameters.input = equilibration.set_next_step()
+            parameters.adap_ex_input = ", ".join(['"' + input + '"' for input in parameters.input]).strip('"')
 
         # Point adaptive.conf to input dir
         parameters.adap_ex_input = os.path.join(

@@ -101,11 +101,11 @@ PELE++ parameters
 
 - **density**: Density type ([null, exitContinuous...]. More in AdaptivePELE docs). Default: null
 
-- **cluster_values**: Clusterization values, more details in `AdaptivePELE documentation <https://adaptivepele.github.io/AdaptivePELE/UserManual.html#clustering-block>`_. Default: Depending on simulation type
+- **cluster_values**: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type
 
-- **cluster_conditions**: Clusterization condition, more details in `AdaptivePELE documentation <https://adaptivepele.github.io/AdaptivePELE/UserManual.html#clustering-block>`_. If you set them to ``"auto"`` instead of a list of values, it will run a short **pre-equilibration** to determine the best conditions based on the protein-ligand contacts in your system. Default: Depending on simulation type.
+- **cluster_conditions**: Clusterization condition. More in AdaptivePELE. If you set them to "auto" instead of a list of values, it will determine the best conditions based on the protein-ligand contacts in your system. Default: Depending on simulation type
 
-- **equilibration**: When set to true, it will equilibrate the system and **generate multiple starting poses**. This is what differentiates equilibration from pre-equilibration, which is used only to identify the best cluster conditions and generated outputs will not be used for the main simulation. Default: false.
+- **equilibration**: Whether to run initial equilibration or not. Default: false
 
 - **equilibration_steps**: Equilibration steps. Default: 2
 

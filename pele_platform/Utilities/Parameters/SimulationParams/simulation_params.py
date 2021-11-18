@@ -70,13 +70,9 @@ class SimulationParams(
         if "*" in args.system:
             self.system = glob.glob(args.system)[0]
             self.input = glob.glob(args.system) if not args.input else args.input
-        elif args.input and not args.system:
-            self.system = args.input[0]
-            self.input = args.input
         else:
             self.system = args.system
             self.input = args.input
-
         self.residue = args.residue
         self.chain = args.chain
         if self.adaptive:

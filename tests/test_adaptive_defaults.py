@@ -143,6 +143,8 @@ WATER_PARAMS_DEFAULTS_PELE = [
 ]
 
 GPCR_DEFAULTS_PELE = [
+    '"radius": 19.970223159033843,',
+    '"fixedCenter": [-71.78435134887695,-13.431749963760375,-42.46209926605225]',
     '"numberOfStericTrials": 100,',
     pp.GPCR_ORTH
 ]
@@ -158,6 +160,8 @@ GPCR_DEFAULTS_ADAPTIVE = [
 ]
 
 GPCR2_DEFAULTS_PELE = [
+    '"radius": 10,',
+    '"fixedCenter": [10,10,10]',
     '"numberOfStericTrials": 100,',
     pp.GPCR_ORTH,
     '{ "type": "constrainAtomToPosition", "springConstant": 5.0, "equilibriumDistance": 0.0, "constrainThisAtom": "A:65:_CA_" },',

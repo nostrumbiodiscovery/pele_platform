@@ -1,5 +1,4 @@
 from Bio.PDB import PDBParser
-import glob
 import numpy as np
 import os
 import shutil
@@ -15,7 +14,6 @@ import pele_platform.Errors.custom_errors as ce
 from pele_platform.Utilities.Helpers.constraints import smiles_constraints as smi
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Utilities.Helpers import randomize
-
 
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(
@@ -524,18 +522,6 @@ def test_randomize(
         shutil.rmtree(mock_parameters.inputs_dir)
 
 
-def test_box_set_randomization():
-    """
-    Checks if the box is correctly set based on the spawned ligands and final site set by the user.
-    """
-    system = os.path.join(test_path, "site_finder", "complex.pdb")
-    ligand_positions = glob.glob(os.path.join(test_path, "randomize", "ligand*pdb"))
-    radius, center = randomize.set_box("A:686:CG2", ligand_positions=ligand_positions, system=system)
-
-    assert radius == pytest.approx(14.25, 0.1)
-    assert center == pytest.approx([51.54914308, -26.13929772, -20.28310314], 0.1)
-
-
 @pytest.fixture
 def mock_parameters():
     folder = os.path.join(test_path, "randomize")
@@ -549,7 +535,7 @@ def mock_parameters():
     parameters.residue = "API"
     parameters.chain = "Z"
     parameters.receptor = os.path.join(folder, "receptor.pdb")
-    parameters.ligand_ref = os.path.join(folder, "ref_ligand.pdb")
+    parameters.ligand_ref = os.path.join(folder, "ligand.pdb")
     parameters.poses = 10
     parameters.inputs_dir = inputs_dir
     parameters.test = True
