@@ -101,7 +101,10 @@ class PreEquilibrator:
         contacts_distribution = list(chain.from_iterable([[contact] * size for contact, size in zip(contacts, sizes)]))
 
         maximum = np.quantile(contacts_distribution, 0.9)
-        minimum = min(np.quantile(contacts_distribution, 0.3), max(maximum - 1, 0.0))
+        minimum = np.quantile(contacts_distribution, 0.3)
+
+        if maximum == minimum:
+            minimum = max(maximum - 1, 0.0)
 
         cluster_conditions = list(
             np.linspace(maximum, minimum, num=n_cluster_values - 1)
