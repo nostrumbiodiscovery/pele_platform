@@ -55,6 +55,9 @@ class PreEquilibrator:
         equilibration_parameters.analyse = False
         equilibration_parameters.no_ppp = True
         equilibration_parameters.randomize = False
+        equilibration_parameters.box_radius = self.parameters.box_radius
+        equilibration_parameters.box_center = self.parameters.box_center
+        equilibration_parameters.analyse = False
 
         if self.parameters.input:  # in case the original package had multiple inputs or was randomized
             equilibration_parameters.input = self.parameters.input

@@ -2,7 +2,7 @@ import os
 import pytest
 
 from pele_platform.main import run_platform_from_yaml
-from .test_adaptive import test_path, check_file
+from .test_adaptive import test_path
 
 
 @pytest.mark.parametrize(
@@ -10,13 +10,13 @@ from .test_adaptive import test_path, check_file
     [
         (
             os.path.join("induced_fit", "input_auto_clustering.yaml"),
-            "[1.48, 0.48]",
-            "[2.0, 5, 7]",
+            [1.48, 0.48],
+            [2.0, 5, 7],
         ),
         (
             os.path.join("out_in", "input_auto_clustering.yaml"),
-            "[0.44, 0.06]",
-            "[2, 5, 7]",
+            [0.44, 0.0],
+            [2, 5, 7],
         ),
     ],
 )
@@ -33,5 +33,5 @@ def test_equilibrator_production(yaml_file, conditions, values):
     results = os.path.join(job_params.pele_dir, "results", "clusters")
     assert os.path.isdir(results)
 
-    errors = check_file(job_params.pele_dir, "adaptive.conf", [conditions, values], [])
-    assert not errors
+    assert job_params.cluster_conditions == conditions
+    assert job_params.cluster_values == values
