@@ -134,7 +134,7 @@ class SimulationParams(
         self.sidechain_resolution = (
             args.sidechain_resolution
             if args.sidechain_resolution
-            else self.simulation_params.get("sidechain_resolution", 30)
+            else self.simulation_params.get("sidechain_resolution", 10)
         )
         self.proximityDetection = (
             "false"
