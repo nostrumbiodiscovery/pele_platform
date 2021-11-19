@@ -112,15 +112,6 @@ RESCORING = '''
                       "otherwise": { "Perturbation::parameters": { "translationRange": 0.5} }
              
                   },
-             
-                  {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
-             
-                         "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 25 } },
-             
-                         "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 25  }}
-             
-                 }
-             
              ]
 '''
 

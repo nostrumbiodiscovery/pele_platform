@@ -96,8 +96,8 @@ REF_DEFAULTS_ADAPTIVE = [
 REF_DEFAULTS_PELE = [
     '"numberOfStericTrials": 500',
     '"radius": 6,',
-    '"anmFrequency" : 6,',
-    '"sideChainPredictionFrequency" : 3,',
+    '"anmFrequency" : 0,',
+    '"sideChainPredictionFrequency" : 1,',
     '"minimizationFrequency" : 1,',
     '"temperature": 1000',
     '"displacementFactor" : 0.5',

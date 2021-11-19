@@ -163,8 +163,8 @@ SOFTWARE_CONSTANTS = {
             "overlap_factor": 0.65,
             "params": pcs.RESCORING,
             "box_radius": 6,
-            "anm_freq": 6,
-            "sidechain_freq": 3,
+            "anm_freq": 0,
+            "sidechain_freq": 1,
             "min_freq": 1,
             "temperature": 1000,
             "anm_displacement": 0.5,
@@ -172,6 +172,7 @@ SOFTWARE_CONSTANTS = {
             "ca_constr": 2.5,
             "terminal_constr": 5.0,
             "ca_interval": 8,
+            "constraints_level": 3,
         },
         "anm": {
             "spawning_type": "independent",
