@@ -518,6 +518,9 @@ class SimulationParams(
         self.water_ids_to_track = []
 
     def box_params(self, args):
+
+        self.box = args.box if args.box is not None else True
+
         self.box_radius = (
             args.box_radius
             if args.box_radius

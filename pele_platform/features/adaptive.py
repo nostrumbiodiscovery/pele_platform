@@ -162,7 +162,7 @@ SOFTWARE_CONSTANTS = {
             "steric_trials": 500,
             "overlap_factor": 0.65,
             "params": pcs.RESCORING,
-            "box_radius": 6,
+            "box": False,
             "anm_freq": 0,
             "sidechain_freq": 1,
             "min_freq": 1,
