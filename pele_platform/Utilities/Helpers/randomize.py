@@ -2,6 +2,7 @@ from Bio.PDB import PDBParser, PDBIO, NeighborSearch, Selection, rotaxis
 from Bio.PDB.vectors import Vector
 import numpy as np
 import os
+import re
 import time
 
 import pele_platform.Errors.custom_errors as cs
@@ -97,11 +98,14 @@ def randomize_starting_position(parameters, box_center=None, box_radius=None):
 
     # Retrieve atom information from the string (if PPI or SF)
     if parameters.center_of_interface:
-        try:
-            chain_id, res_number, atom_name = parameters.center_of_interface.split(":")
-        except ValueError:
+        pattern = r"([A-z]\:\d{1,4}\:[A-Z0-9]{1,4})"
+        match = re.match(pattern, parameters.center_of_interface)
+
+        if not match:
             raise cs.WrongAtomStringFormat(f"The specified atom is wrong '{parameters.center_of_interface}'. "
                                            f"Should be 'chain:residue number:atom name'.")
+        else:
+            chain_id, res_number, atom_name = parameters.center_of_interface.split(":")
 
     # Load PDB files into biopython
     parser = PDBParser()

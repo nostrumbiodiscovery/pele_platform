@@ -283,7 +283,7 @@ def test_atom_string_error(yaml=yaml):
     except ce.WrongAtomStringFormat as e:
         assert (
             str(e).strip("'")
-            == "The specified atom is wrong '157:A:N'. Should be 'chain:resnumber:atomname"
+            == "The specified atom is wrong '157:A:N'. Should be 'chain:residue number:atom name'."
         )
         return
     assert False
