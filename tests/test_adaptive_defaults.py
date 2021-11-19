@@ -34,7 +34,7 @@ INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE = [
 
 INDUCE_FIT_FAST_DEFAULTS_ADAPTIVE = [
     '"type" : "inverselyProportional"',
-    '"iterations" : 30,',
+    '"iterations" : 25,',
     '"peleSteps" : 12,',
     '"processors" : 60,'
 ]
@@ -42,7 +42,9 @@ INDUCE_FIT_FAST_DEFAULTS_ADAPTIVE = [
 INDUCE_FIT_PELE = [
     pp.INDUCED_FIT,
     '"radius": 6,',
-    '"numberOfStericTrials": 500'
+    '"numberOfStericTrials": 500',
+    '"perturbationCOMConstraintConstant" : 1.0,',
+    '"minimizationFrequency" : 1,',
 ]
 
 BIAS_DEFAULTS_ADAPTIVE = [

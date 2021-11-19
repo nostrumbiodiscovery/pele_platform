@@ -102,7 +102,7 @@ SOFTWARE_CONSTANTS = {
             "epsilon": 0.25,
             "density": "null",
             "simulation_type": "pele",
-            "iterations": 30,
+            "iterations": 25,
             "pele_steps": 12,
             "cluster_values": "[2.0, 5, 7]",
             "cluster_conditions": "[1, 0.6, 0.0]",
@@ -110,6 +110,9 @@ SOFTWARE_CONSTANTS = {
             "overlap_factor": 0.65,
             "params": pcs.INDUCED_FIT,
             "box_radius": 6,
+            "min_freq": 1,
+            "COMligandConstraint": 1.0,
+            "constraints_level": 2,
         },
         "in_out": {
             "spawning_type": "epsilon",
