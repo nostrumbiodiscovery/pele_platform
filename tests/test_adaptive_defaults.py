@@ -8,7 +8,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 
 OUT_IN_ARGS = os.path.join(test_path, "out_in/input_default.yaml")
 BIAS_ARGS = os.path.join(test_path, "bias/input_defaults.yaml")
-INDUCED_EX_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive_defaults.yaml")
+INDUCED_LONG_ARGS = os.path.join(test_path, "induced_fit/input_exhaustive_defaults.yaml")
 INDUCED_FAST_ARGS = os.path.join(test_path, "induced_fit/input_fast_defaults.yaml")
 GLOBAL_ARGS = os.path.join(test_path, "global/input_defaults.yaml")
 EXIT_ARGS = os.path.join(test_path, "exit/input_defaults.yaml")
@@ -25,10 +25,10 @@ RESCORING_ARGS = os.path.join(test_path, "rescoring/input_defaults.yaml")
 GPCR_ARGS = os.path.join(test_path, "gpcr/input_defaults.yaml")
 GPCR2_ARGS = os.path.join(test_path, "gpcr/input_defaults2.yaml")
 
-INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE = [
-    '"type" : "independent"',
-    '"iterations" : 1,',
-    '"peleSteps" : 1000,',
+INDUCE_FIT_LONG_DEFAULTS_ADAPTIVE = [
+    '"type" : "inverselyProportional"',
+    '"iterations" : 10,',
+    '"peleSteps" : 100,',
     '"processors" : 60,'
 ]
 
@@ -169,10 +169,10 @@ GPCR2_DEFAULTS_PELE = [
 ]
 
 
-def test_induced_exhaustive_defaults(ext_args=INDUCED_EX_ARGS):
+def test_induced_exhaustive_defaults(ext_args=INDUCED_LONG_ARGS):
     errors = []
     job = main.run_platform_from_yaml(ext_args)
-    errors = check_file(job.pele_dir, "adaptive.conf", INDUCE_FIT_EXHAUSTIVE_DEFAULTS_ADAPTIVE, errors)
+    errors = check_file(job.pele_dir, "adaptive.conf", INDUCE_FIT_LONG_DEFAULTS_ADAPTIVE, errors)
     errors = check_file(job.pele_dir, "pele.conf", INDUCE_FIT_PELE, errors)
     assert not errors
 
