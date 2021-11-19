@@ -81,7 +81,7 @@ SOFTWARE_CONSTANTS = {
             "params": pcs.GLOBAL,
             "box_radius": None,
         },
-        "induced_fit_exhaustive": {
+        "induced_fit_long": {
             "spawning_type": "independent",
             "bias_column": 5,
             "epsilon": 0.25,
@@ -255,8 +255,8 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "in_out"
     elif args.in_out_soft:
         type_simulation = "in_out_soft"
-    elif args.induced_fit_exhaustive:
-        type_simulation = "induced_fit_exhaustive"
+    elif args.induced_fit_long:
+        type_simulation = "induced_fit_long"
     elif args.induced_fit_fast:
         type_simulation = "induced_fit_fast"
     elif args.rescoring:

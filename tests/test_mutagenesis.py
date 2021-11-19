@@ -13,7 +13,7 @@ test_path = os.path.join(constants.DIR, "Examples/enzyme_engineering")
 def test_mutagenesis_production():
     """
     Tests end-to-end saturated mutagenesis run on 5 CPUs to make sure we get the right output and pele.conf looks
-    as expected (i.e. has induced_fit_exhaustive defaults).
+    as expected (i.e. has induced_fit_long defaults).
     """
     yaml = os.path.join(test_path, "saturated_mutagenesis.yaml")
     all_jobs = main.run_platform_from_yaml(yaml)

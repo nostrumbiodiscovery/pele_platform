@@ -48,7 +48,7 @@ def run_ppi(parsed_yaml: dict) -> (pv.ParametersBuilder, pv.ParametersBuilder):
     parsed_yaml.system = protein_file
 
     # start simulation 1 - induced fit
-    parsed_yaml.induced_fit_exhaustive = True
+    parsed_yaml.induced_fit_long = True
     simulation1 = si.run_adaptive(parsed_yaml)
     simulation1_path = os.path.join(simulation1.pele_dir, simulation1.output)
 
@@ -63,7 +63,7 @@ def run_ppi(parsed_yaml: dict) -> (pv.ParametersBuilder, pv.ParametersBuilder):
     if not parsed_yaml.skip_refinement:
         parsed_yaml.system = os.path.join(working_folder, "refinement_input/*.pdb")
         parsed_yaml.folder = os.path.join(working_folder, "2_refinement_simulation")
-        parsed_yaml.induced_fit_exhaustive = None
+        parsed_yaml.induced_fit_long = None
         parsed_yaml.ppi = None
         parsed_yaml.poses = None
         parsed_yaml.rescoring = True

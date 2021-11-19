@@ -213,8 +213,8 @@ class YamlParser(object):
         self.water_constr = data.get(valid_flags["water_constr"], None)
         self.water_trials = data.get(valid_flags["water_trials"], None)
         self.water_radius = data.get(valid_flags["water_radius"], None)
-        self.induced_fit_exhaustive = data.get(
-            valid_flags["induced_fit_exhaustive"], None
+        self.induced_fit_long = data.get(
+            valid_flags["induced_fit_long"], None
         )
         self.induced_fit_fast = data.get(valid_flags["induced_fit_fast"], None)
         self.frag = data.get(valid_flags["frag"], None)

@@ -245,7 +245,7 @@ class SaturatedMutagenesis:
         clustering types, etc.
         """
         self.env.clust_type = "null"
-        self.env.induced_fit_exhaustive = True
+        self.env.induced_fit_long = True
         self.env.analyse = False
 
     def set_working_folder(self):
