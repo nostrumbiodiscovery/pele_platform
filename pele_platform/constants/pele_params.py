@@ -130,8 +130,8 @@ INDUCED_FIT = '''
              ,
 "parametersChanges" : [
      { "ifAnyIsTrue": [ "rand >= .5" ],
-         "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
-         "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.15 } }
+         "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } },
+         "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.2 } }
      },
      { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
          "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.5} },
