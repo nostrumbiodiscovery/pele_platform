@@ -248,7 +248,23 @@ SOFTWARE_CONSTANTS = {
             "iterations": 1,
             "refinement_angle": 10,
             "params": "",
-        }
+        },
+        "saturated_mutagenesis": {
+            "spawning": "independent",
+            "bias_column": 5,
+            "epsilon": 0.25,
+            "density": "null",
+            "simulation_type": "pele",
+            "iterations": 1,
+            "pele_steps": 1000,
+            "cluster_values": "[2.0, 5, 7]",
+            "cluster_conditions": "[1, 0.6, 0.0]",
+            "steric_trials": 500,
+            "overlap_factor": 0.65,
+            "params": pcs.INDUCED_FIT,
+            "box_radius": 6,
+            "clust_type": "null",
+        },
     },
 }
 
@@ -282,6 +298,8 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "covalent_docking_refinement"
     elif args.covalent_residue:
         type_simulation = "covalent_docking"
+    elif args.saturated_mutagenesis:
+        type_simulation = "saturated_mutagenesis"
     else:
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"
