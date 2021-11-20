@@ -249,7 +249,7 @@ v1.3.0
 
 - Include a default posprocessing module with plots, top poses and clusters
   
-- Separate between AdaptivePELE induced fit (induced_fit_fast) and PELE indeced fit (induced_fit_exhaustive)
+- Separate between AdaptivePELE induced fit (induced_fit_fast) and PELE indeced fit (induced_fit_long)
 
 - Include skip_ligand_prep option to jump PlopRotTemp missing residue
 

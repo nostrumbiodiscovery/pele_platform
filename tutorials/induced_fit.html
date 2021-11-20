@@ -219,7 +219,7 @@ You can download the structure <a class="reference download internal" download="
 <li><p><strong>system</strong> - path to the protein-ligand PDB file</p></li>
 <li><p><strong>chain</strong> - ligand chain ID, here <code class="docutils literal notranslate"><span class="pre">Z</span></code></p></li>
 <li><p><strong>resname</strong> - ligand residue name, in our case <code class="docutils literal notranslate"><span class="pre">LIG</span></code></p></li>
-<li><p><strong>induced_fit_exhaustive</strong> - to run an exhaustive induced fit simulation</p></li>
+<li><p><strong>induced_fit_long</strong> - to run an exhaustive induced fit simulation</p></li>
 <li><p><strong>atom_dist</strong> - atoms used to track the progress of the simulation, we will use one from the ligand and one from the receptor, following <code class="docutils literal notranslate"><span class="pre">chain</span> <span class="pre">ID:residue</span> <span class="pre">number:atom</span> <span class="pre">name</span></code> format</p></li>
 <li><p><strong>cpus</strong> - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only)</p></li>
 <li><p><strong>seed</strong> - random seed to ensure reproducibility.</p></li>
@@ -228,7 +228,7 @@ You can download the structure <a class="reference download internal" download="
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking.pdb&#39;</span>
 <span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span>
 <span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
-<span class="nt">induced_fit_exhaustive</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">induced_fit_long</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
 <span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
 <span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
 <span class="nt">atom_dist</span><span class="p">:</span>

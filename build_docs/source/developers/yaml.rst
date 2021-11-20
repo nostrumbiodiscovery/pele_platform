@@ -4224,10 +4224,10 @@ Induced Fit Exhaustive
 
 
 
-:YAML key: induced_fit_exhaustive
+:YAML key: induced_fit_long
 
 
-:Parser key: induced_fit_exhaustive
+:Parser key: induced_fit_long
 :Type: ``bool``
 
 
@@ -5518,7 +5518,3 @@ Processors:
  * ``str_validator`` from `Pydantic`
 
  * ``validate_atom_string`` from `YamlParserModel`
-
-
-
-
