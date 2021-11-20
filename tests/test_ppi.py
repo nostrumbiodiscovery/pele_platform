@@ -29,7 +29,7 @@ def test_ppi_skipref(yaml=yaml):
 yaml = os.path.join(test_path, "PPI/input.yaml")
 
 
-def test_ppi_default(energy_result=-5.3, yaml=yaml):
+def test_ppi_default(energy_result=-6.76, yaml=yaml):
 
     # Function to test
     job, job2 = main.run_platform_from_yaml(yaml)

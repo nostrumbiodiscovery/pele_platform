@@ -65,7 +65,7 @@ class InteractionRestrictionsBuilder:
         json_string : str
             conditions formatted in JSON.
         """
-        return cs.INTERACTION_RESTRICTIONS.format('",\n\t"'.join(self.conditions))
+        return cs.INTERACTION_RESTRICTIONS.format('",\t"'.join(self.conditions))
 
     def metrics_to_json(self):
         """
@@ -76,7 +76,7 @@ class InteractionRestrictionsBuilder:
         json_string : str
             metrics formatted in JSON.
         """
-        return "\n".join(self.metrics)
+        return "".join(self.metrics)
 
     def _add_metric(self, pdb, config, values, name):
         """

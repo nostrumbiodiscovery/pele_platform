@@ -16,7 +16,7 @@ from pele_platform.Utilities.Parameters.SimulationParams.site_finder import site
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 import pele_platform.Utilities.Helpers.helpers as hp
 
-LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
+LOGFILE = '\n"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(
