@@ -8,9 +8,9 @@ from PPP.checks_module import CheckforGaps
 terminal_constr_spring = 5
 backbone_constr_spring = 0.5
 
-CONSTR_ATOM = """{{ "type": "constrainAtomToPosition", "springConstant": {0}, "equilibriumDistance": 0.0, "constrainThisAtom": "{1}:{2}:{3}" }},"""
-CONSTR_DIST = """{{ "type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom": "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}" }},"""
-CONSTR_CALPHA = """{{ "type": "constrainAtomToPosition", "springConstant": {2}, "equilibriumDistance": 0.0, "constrainThisAtom": "{0}:{1}:_CA_" }},"""
+CONSTR_ATOM = """\t\t\t{{ "type": "constrainAtomToPosition", "springConstant": {0}, "equilibriumDistance": 0.0, "constrainThisAtom": "{1}:{2}:{3}" }},"""
+CONSTR_DIST = """\t\t\t{{ "type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom": "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}" }},"""
+CONSTR_CALPHA = """\t\t\t{{ "type": "constrainAtomToPosition", "springConstant": {2}, "equilibriumDistance": 0.0, "constrainThisAtom": "{0}:{1}:_CA_" }},"""
 
 
 class AlphaConstraints(object):
@@ -24,7 +24,7 @@ class AlphaConstraints(object):
         pdb: str
             path to the system PDB
         interval: int
-            interval at which backbone CA are supposed to be constrainte
+            interval at which backbone CA are supposed to be constrained
         backbone_spring: float
             spring constant for backbone CA constraints
         terminal_spring: float

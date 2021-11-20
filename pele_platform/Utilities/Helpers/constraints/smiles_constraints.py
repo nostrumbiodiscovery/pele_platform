@@ -85,7 +85,7 @@ class SmilesConstraints:
         else:
             for m in substructures[0]:
                 atom = ligand.GetAtomWithIdx(m).GetMonomerInfo()
-                template = '{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
+                template = '\n{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
                 constraints.append(template.format(spring_constant, chain, atom.GetResidueNumber(),
                                                         atom.GetName().replace(" ", "_")))
         return constraints

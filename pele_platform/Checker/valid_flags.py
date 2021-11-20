@@ -94,7 +94,7 @@ VALID_FLAGS_PLATFORM = {
     "orthosteric_site": "orthosteric_site",
     "final_site": "final_site",
     "initial_site": "initial_site",
-    "induced_fit_exhaustive": "induced_fit_exhaustive",
+    "induced_fit_long": "induced_fit_long",
     "induced_fit_fast": "induced_fit_fast",
     "frag": "frag",
     "ca_constr": "ca_constr",

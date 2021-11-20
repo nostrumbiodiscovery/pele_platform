@@ -40,7 +40,6 @@ class SaturatedMutagenesis:
     subset_folder : str
     See Also folder name, default = "Subset_"
     """
-
     env: parameters.ParametersBuilder
     already_computed: List = field(default_factory=list)
     all_jobs: List = field(default_factory=list)
@@ -244,8 +243,7 @@ class SaturatedMutagenesis:
         skipping the analysis, setting the right simulation and
         clustering types, etc.
         """
-        self.env.clust_type = "null"
-        self.env.induced_fit_exhaustive = True
+        self.env.saturated_mutagenesis = True
         self.env.analyse = False
 
     def set_working_folder(self):

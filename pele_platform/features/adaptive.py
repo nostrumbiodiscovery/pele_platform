@@ -81,20 +81,23 @@ SOFTWARE_CONSTANTS = {
             "params": pcs.GLOBAL,
             "box_radius": None,
         },
-        "induced_fit_exhaustive": {
-            "spawning_type": "independent",
+        "induced_fit_long": {
+            "spawning_type": "inverselyProportional",
             "bias_column": 5,
             "epsilon": 0.25,
             "density": "null",
             "simulation_type": "pele",
-            "iterations": 1,
-            "pele_steps": 1000,
+            "iterations": 10,
+            "pele_steps": 100,
             "cluster_values": "[2.0, 5, 7]",
             "cluster_conditions": "[1, 0.6, 0.0]",
             "steric_trials": 500,
             "overlap_factor": 0.65,
             "params": pcs.INDUCED_FIT,
             "box_radius": 6,
+            "min_freq": 1,
+            "COMligandConstraint": 1.0,
+            "constraints_level": 2,
         },
         "induced_fit_fast": {
             "spawning_type": "inverselyProportional",
@@ -102,7 +105,7 @@ SOFTWARE_CONSTANTS = {
             "epsilon": 0.25,
             "density": "null",
             "simulation_type": "pele",
-            "iterations": 30,
+            "iterations": 25,
             "pele_steps": 12,
             "cluster_values": "[2.0, 5, 7]",
             "cluster_conditions": "[1, 0.6, 0.0]",
@@ -110,6 +113,9 @@ SOFTWARE_CONSTANTS = {
             "overlap_factor": 0.65,
             "params": pcs.INDUCED_FIT,
             "box_radius": 6,
+            "min_freq": 1,
+            "COMligandConstraint": 1.0,
+            "constraints_level": 2,
         },
         "in_out": {
             "spawning_type": "epsilon",
@@ -156,9 +162,9 @@ SOFTWARE_CONSTANTS = {
             "steric_trials": 500,
             "overlap_factor": 0.65,
             "params": pcs.RESCORING,
-            "box_radius": 6,
-            "anm_freq": 6,
-            "sidechain_freq": 3,
+            "box": False,
+            "anm_freq": 0,
+            "sidechain_freq": 1,
             "min_freq": 1,
             "temperature": 1000,
             "anm_displacement": 0.5,
@@ -166,6 +172,7 @@ SOFTWARE_CONSTANTS = {
             "ca_constr": 2.5,
             "terminal_constr": 5.0,
             "ca_interval": 8,
+            "constraints_level": 3,
         },
         "anm": {
             "spawning_type": "independent",
@@ -241,7 +248,23 @@ SOFTWARE_CONSTANTS = {
             "iterations": 1,
             "refinement_angle": 10,
             "params": "",
-        }
+        },
+        "saturated_mutagenesis": {
+            "spawning": "independent",
+            "bias_column": 5,
+            "epsilon": 0.25,
+            "density": "null",
+            "simulation_type": "pele",
+            "iterations": 1,
+            "pele_steps": 1000,
+            "cluster_values": "[2.0, 5, 7]",
+            "cluster_conditions": "[1, 0.6, 0.0]",
+            "steric_trials": 500,
+            "overlap_factor": 0.65,
+            "params": pcs.INDUCED_FIT,
+            "box_radius": 6,
+            "clust_type": "null",
+        },
     },
 }
 
@@ -255,8 +278,8 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "in_out"
     elif args.in_out_soft:
         type_simulation = "in_out_soft"
-    elif args.induced_fit_exhaustive:
-        type_simulation = "induced_fit_exhaustive"
+    elif args.induced_fit_long:
+        type_simulation = "induced_fit_long"
     elif args.induced_fit_fast:
         type_simulation = "induced_fit_fast"
     elif args.rescoring:
@@ -275,6 +298,8 @@ def retrieve_software_settings(args, pele_dir):
         type_simulation = "covalent_docking_refinement"
     elif args.covalent_residue:
         type_simulation = "covalent_docking"
+    elif args.saturated_mutagenesis:
+        type_simulation = "saturated_mutagenesis"
     else:
         # Standard file (user will change the parameters)
         type_simulation = "induced_fit_fast"

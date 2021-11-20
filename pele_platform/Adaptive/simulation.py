@@ -252,7 +252,7 @@ def run_adaptive(args: YamlParser):
                                                      pele_dir=parameters.pele_dir).generate()
 
         # Create simulation box, if performing perturbation
-        if parameters.perturbation:
+        if parameters.perturbation and parameters.box:
             box = bx.BoxSetter(parameters.box_center,
                                parameters.box_radius,
                                parameters.ligand_ref,
