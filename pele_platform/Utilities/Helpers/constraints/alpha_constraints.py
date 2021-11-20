@@ -24,7 +24,7 @@ class AlphaConstraints(object):
         pdb: str
             path to the system PDB
         interval: int
-            interval at which backbone CA are supposed to be constrainte
+            interval at which backbone CA are supposed to be constrained
         backbone_spring: float
             spring constant for backbone CA constraints
         terminal_spring: float

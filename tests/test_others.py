@@ -16,7 +16,6 @@ from pele_platform.Utilities.Helpers.constraints import smiles_constraints as sm
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Utilities.Helpers import randomize
 
-
 test_path = os.path.join(cs.DIR, "Examples")
 EXTERNAL_CONSTR_ARGS = os.path.join(
     test_path, "constraints/input_external_constraints.yaml"
@@ -29,8 +28,8 @@ MAP_ARGS = os.path.join(test_path, "checker/input_map_atom_str.yaml")
 MAPPED = ['atoms": { "ids":["Z:1:_C13"]}']
 
 EXT_CONSTR = [
-    '{ "type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_H__" },',
-    '{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"}',
+    '\t\t\t{"type": "constrainAtomToPosition", "springConstant": 5, "equilibriumDistance": 0.0, "constrainThisAtom": "A:1:_H__" },',
+    '\t\t\t{"type": "constrainAtomsDistance", "springConstant": 50, "equilibriumDistance": 2.34, "constrainThisAtom":  "A:1:_H__", "toThisOtherAtom": "L:1:_C21"}',
 ]
 
 SMILES_CONSTR = [
@@ -68,12 +67,12 @@ def test_checker():
     ("yaml_file", "error"),
     [
         (
-            os.path.join(test_path, "checker/input_space.yaml"),
-            "Please ensure every key in input.yaml is followed by a colon and a space. There seem to be some issues on line 2, character 1.",
+                os.path.join(test_path, "checker/input_space.yaml"),
+                "Please ensure every key in input.yaml is followed by a colon and a space. There seem to be some issues on line 2, character 1.",
         ),
         (
-            os.path.join(test_path, "checker/input_tab.yaml"),
-            "Please remove any trailing tabs from input.yaml, there seem to be one on line 1, character 60.",
+                os.path.join(test_path, "checker/input_tab.yaml"),
+                "Please remove any trailing tabs from input.yaml, there seem to be one on line 1, character 60.",
         ),
     ],
 )
@@ -214,8 +213,8 @@ def test_template_error(yaml=yaml):
         job = main.run_platform_from_yaml(yaml)
     except ce.TemplateFileNotFound as e:
         assert (
-            str(e).strip("'")
-            == "Could not locate mgadeaz file. Please double-check the path."
+                str(e).strip("'")
+                == "Could not locate mgadeaz file. Please double-check the path."
         )
         return
     assert False
@@ -239,8 +238,8 @@ def test_rotamer_error(yaml=yaml):
         job = main.run_platform_from_yaml(yaml)
     except ce.RotamersFileNotFound as e:
         assert (
-            str(e).strip("'")
-            == "Could not locate mgadeaz file. Please double-check the path."
+                str(e).strip("'")
+                == "Could not locate mgadeaz file. Please double-check the path."
         )
         return
     assert False
@@ -254,8 +253,8 @@ def test_out_in_flag(yaml=yaml):
         job = main.run_platform_from_yaml(yaml)
     except ce.OutInError as e:
         assert (
-            str(e).strip("'")
-            == "flag final_site must be specified for the out_in package."
+                str(e).strip("'")
+                == "flag final_site must be specified for the out_in package."
         )
         return
     assert False
@@ -269,8 +268,8 @@ def test_atom_string_error(yaml=yaml):
         job = main.run_platform_from_yaml(yaml)
     except ce.WrongAtomStringFormat as e:
         assert (
-            str(e).strip("'")
-            == "The specified atom is wrong '157:A:N'. Should be 'chain:residue number:atom name'."
+                str(e).strip("'")
+                == "The specified atom is wrong '157:A:N'. Should be 'chain:residue number:atom name'."
         )
         return
     assert False
@@ -284,8 +283,8 @@ def test_atom_string_underscore(yaml=yaml):
         job = main.run_platform_from_yaml(yaml)
     except ce.WrongAtomStringFormat as e:
         assert (
-            str(e).strip("'")
-            == "The specified atom is wrong 'A_106:OH'. Should be 'chain:residue number:atom name'."
+                str(e).strip("'")
+                == "The specified atom is wrong 'A_106:OH'. Should be 'chain:residue number:atom name'."
         )
 
 
@@ -297,8 +296,8 @@ def test_unk_error():
         job = main.run_platform_from_yaml(yaml)
     except ce.LigandNameNotSupported as e:
         assert (
-            str(e)
-            == "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
+                str(e)
+                == "'UNK' ligand name is not supported, please rename it, e.g. 'LIG'."
         )
         return
     assert False
@@ -318,8 +317,8 @@ def test_substructure_error():
         job = main.run_platform_from_yaml(yaml)
     except ce.SubstructureError as e:
         assert (
-            str(e).strip("'")
-            == "More than one substructure found in your ligand. Make sure SMILES constrain pattern is not ambiguous!"
+                str(e).strip("'")
+                == "More than one substructure found in your ligand. Make sure SMILES constrain pattern is not ambiguous!"
         )
 
 
@@ -340,9 +339,9 @@ def test_SmilesConstraints_class():
     constraints = obj.build_constraints(matches, ligand, obj.spring_constant, obj.chain)
 
     assert (
-        smarts_from_smiles
-        == smarts_from_smarts
-        == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
+            smarts_from_smiles
+            == smarts_from_smarts
+            == "[#6]-[#7]1-[#6]-[#6]-[#7H+](-[#6]-[#6]-1)-[#6]-[#6]-[#8]"
     )
     assert matches == ((9, 0, 1, 2, 3, 4, 5, 6, 7, 8),)
     assert constraints == SMILES_CONSTR
@@ -442,20 +441,20 @@ def test_out_in_metrics():
 @pytest.mark.parametrize(
     ("site_finder", "ppi", "center_of_interface", "box_center", "box_radius", "expected_sphere_cent",),
     (
-        # classic site_finder: sphere center at protein COM, radius depends on protein size
-        [True, False, False, None, None, [58.46355848210691, 7.33174024600783, -24.401180347171945]],
-        # site finder focused on a box: sphere cent = box center, radius = box_radius
-        [True, False, False, "A:686:CG2", 20, [47.18299865722656, -21.364999771118164, -30.69099998474121]],
-        # # classic PPI: sphere cent = COI, default radius = 10
-        [False, True, "A:979:OD1", None, None, [53.71099853515625, -28.28499984741211, -8.913999557495117]],
-        # # other cases (GPCR, OutIn) without box: sphere cent = COI/initial_site, default radius
-        [False, False, "A:979:OD1", None, None, [53.71099853515625, -28.28499984741211, -8.913999557495117]],
-        # # other cases (GPCR, OutIn) with box: sphere cent = COI/initial_site, radius = box radius
-        [False, False, "A:979:OD1", "A:686:CG2", 5, [53.71099853515625, -28.28499984741211, -8.913999557495117]],
+            # classic site_finder: sphere center at protein COM, radius depends on protein size
+            [True, False, False, None, None, [58.46355848210691, 7.33174024600783, -24.401180347171945]],
+            # site finder focused on a box: sphere cent = box center, radius = box_radius
+            [True, False, False, "A:686:CG2", 20, [47.18299865722656, -21.364999771118164, -30.69099998474121]],
+            # # classic PPI: sphere cent = COI, default radius = 10
+            [False, True, "A:979:OD1", None, None, [53.71099853515625, -28.28499984741211, -8.913999557495117]],
+            # # other cases (GPCR, OutIn) without box: sphere cent = COI/initial_site, default radius
+            [False, False, "A:979:OD1", None, None, [53.71099853515625, -28.28499984741211, -8.913999557495117]],
+            # # other cases (GPCR, OutIn) with box: sphere cent = COI/initial_site, radius = box radius
+            [False, False, "A:979:OD1", "A:686:CG2", 5, [53.71099853515625, -28.28499984741211, -8.913999557495117]],
     ),
 )
 def test_randomize(
-    mock_parameters, site_finder, ppi, center_of_interface, box_center, box_radius, expected_sphere_cent,
+        mock_parameters, site_finder, ppi, center_of_interface, box_center, box_radius, expected_sphere_cent,
 ):
     """
     Checks if randomization works correctly in all possible scenarios.

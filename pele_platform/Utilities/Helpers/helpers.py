@@ -254,8 +254,8 @@ def retrieve_all_waters(pdb, exclude=False):
 
 
 def retrieve_constraints_for_pele(constraints, pdb):
-    CONSTR_ATOM_POINT = '{\t\t\t{"type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
-    CONSTR_ATOM_ATOM = '{\t\t\t{"type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom":  "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}"}},'
+    CONSTR_ATOM_POINT = '\t\t\t{{"type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
+    CONSTR_ATOM_ATOM = '\t\t\t{{"type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom":  "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}"}},'
     final_constraints = []
     for constraint in constraints:
         # Atom to point constraint: 2.2-A:123:2 or 2.2-1986
