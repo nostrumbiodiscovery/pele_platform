@@ -168,7 +168,7 @@ WATER = """\n
          }}, 
 """
 
-PCA = """"\npreloadedModesIn" : "{}","""
+PCA = """\n\t\t\t"preloadedModesIn" : "{}","""
 
 SIDECHAIN_PERTURBATION = """\n
          "SideChainPerturbation":{
