@@ -96,7 +96,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#inputs">Inputs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#default-parameters">Default parameters</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#recommendations">Recommendations</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#complex-preparation">1. Complex Preparation</a></li>
@@ -219,7 +218,11 @@
 <p>The induced fit simulation aims to enhance docking poses by taking into account the receptor flexibility. In order to
 achieve this, we developed a curated side chain prediction and ANM algorithms, which were benchmarked against standard
 docking techniques.</p>
-<p>To find out more, check out our publication: <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pubmed/27545443">Challenges of docking in large, flexible and promiscuous binding sites</a></p>
+<p>Both induced fit protocols use <strong>AdaptivePELE</strong>, which enhances the exploration by iteratively running short simulations, assessing the exploration with clustering, and spawning new trajectories in the most relevant regions.</p>
+<ul class="simple">
+<li><p>Read more about AdaptivePELE in <a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/index.html">documentation</a></p></li>
+<li><p>Check out our publication <a class="reference external" href="https://www.ncbi.nlm.nih.gov/pubmed/27545443">Challenges of docking in large, flexible and promiscuous binding sites</a></p></li>
+</ul>
 <div class="section" id="inputs">
 <h3>Inputs<a class="headerlink" href="#inputs" title="Permalink to this headline">¶</a></h3>
 <blockquote>
@@ -235,9 +238,9 @@ docking techniques.</p>
 <h4>Induced fit fast<a class="headerlink" href="#induced-fit-fast" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ul class="simple">
-<li><p>iterations: 30</p></li>
-<li><p>pele steps: 12</p></li>
-<li><p>uses AdaptivePELE, i.e. enhances the exploration by iteratively running short simulations, assessing the exploration with clustering, and spawning new trajectories in the most relevant regions</p></li>
+<li><p>adaptive iterations: 25</p></li>
+<li><p>steps per iteration: 12</p></li>
+<li><p>average time: 4h</p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -245,21 +248,12 @@ docking techniques.</p>
 <h4>Induced fit long<a class="headerlink" href="#induced-fit-long" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><ul class="simple">
-<li><p>iterations: 1</p></li>
-<li><p>pele steps: 1000</p></li>
-<li><p>uses standard PELE</p></li>
+<li><p>adaptive iterations: 10</p></li>
+<li><p>steps per iteration: 100</p></li>
+<li><p>average time: 10 - 12h</p></li>
 </ul>
 </div></blockquote>
 </div>
-</div>
-<div class="section" id="recommendations">
-<h3>Recommendations<a class="headerlink" href="#recommendations" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><ol class="arabic simple">
-<li><p>Expected computational time is 2-3h for the fast protocol and 6h for long.</p></li>
-<li><p>Read more about the <a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/index.html">AdaptivePELE protocol</a>.</p></li>
-</ol>
-</div></blockquote>
 </div>
 </div>
 <div class="section" id="complex-preparation">
