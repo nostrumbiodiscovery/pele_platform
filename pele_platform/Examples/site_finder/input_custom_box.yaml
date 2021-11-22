@@ -1,0 +1,9 @@
+system: '../pele_platform/Examples/site_finder/complex.pdb'
+chain: 'Z'
+resname: 'API'
+seed: 12345
+site_finder: true
+box_radius: 12
+box_center: A:672:N
+test: true
+debug: true

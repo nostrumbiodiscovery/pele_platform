@@ -43,7 +43,7 @@ SDF_lines = [
 ]
 
 point_analysis_lines = [
-    "../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_mol1C3-H2C1-H1,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_1.1_BindingEnergy-23.4636.pdb,2.73029273852075,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_2.1_BindingEnergy-25.1634.pdb,-25.1634,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_1.1_BindingEnergy-23.4636.pdb,0.7087330424726306,2.730292738520753,-23.4636"
+    "../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_frag_mol1C3-H2C1-H1,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_frag_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_1.1_BindingEnergy-23.4636.pdb,2.73029273852075,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_frag_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_2.1_BindingEnergy-25.1634.pdb,-25.1634,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_frag_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_1.1_BindingEnergy-23.4636.pdb,0.7087330424726306,2.7302927385207525,-23.4636"
 ]
 
 water_lines = [
@@ -117,7 +117,7 @@ def test_frag_core(capsys, ext_args=FRAG_CORE_ARGS):
 
     assert "Skipped - FragPELE will not run." not in captured.out
     assert os.path.exists(new_output_path)
-    assert len(top_results) == 3
+    assert len(top_results) == 2
 
 
 def test_flags(ext_args=FLAGS_ARGS, output="water_processed_aminoCA1N1"):

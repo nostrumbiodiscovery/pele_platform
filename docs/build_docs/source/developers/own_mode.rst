@@ -10,7 +10,7 @@ Add a new feature with your own defaults under ``simulation_params`` key in ``pe
 
 .. code-block:: python
 
- "induced_fit_exhaustive" : {"spawning_type": "independent", "bias_column": 5, "epsilon":0.25, "density": "null",
+ "induced_fit_long" : {"spawning_type": "independent", "bias_column": 5, "epsilon":0.25, "density": "null",
           "simulation_type": "pele", "iterations": 1, "pele_steps": 1000,
           "cluster_values": "[1.75, 2.5, 4, 6]", "cluster_conditions": "[1, 0.6, 0.4, 0.0]",
           "steric_trials": 500, "overlap_factor": 0.65, "params": pcs.INDUCED_FIT,

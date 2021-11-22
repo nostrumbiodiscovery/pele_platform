@@ -94,7 +94,7 @@ VALID_FLAGS_PLATFORM = {
     "orthosteric_site": "orthosteric_site",
     "final_site": "final_site",
     "initial_site": "initial_site",
-    "induced_fit_exhaustive": "induced_fit_exhaustive",
+    "induced_fit_long": "induced_fit_long",
     "induced_fit_fast": "induced_fit_fast",
     "frag": "frag",
     "ca_constr": "ca_constr",
@@ -214,4 +214,5 @@ VALID_FLAGS_PLATFORM = {
     "minimum_steps": "minimum_steps",
     "covalent_docking_refinement": "covalent_docking_refinement",
     "perturbation_trials": "perturbation_trials",
+    "clustering_coverage": "clustering_coverage",
 }

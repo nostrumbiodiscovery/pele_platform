@@ -101,11 +101,11 @@ PELE++ parameters
 
 - **density**: Density type ([null, exitContinuous...]. More in AdaptivePELE docs). Default: null
 
-- **cluster_values**: Clusterization values. More in AdaptivePELE. Default: Depending on simulation type
+- **cluster_values**: Clusterization values, more details in `AdaptivePELE documentation <https://adaptivepele.github.io/AdaptivePELE/UserManual.html#clustering-block>`_. Default: Depending on simulation type
 
-- **cluster_conditions**: Clusterization condition. More in AdaptivePELE. Default: Depending on simulation type
+- **cluster_conditions**: Clusterization condition, more details in `AdaptivePELE documentation <https://adaptivepele.github.io/AdaptivePELE/UserManual.html#clustering-block>`_. If you set them to ``"auto"`` instead of a list of values, it will run a short **pre-equilibration** to determine the best conditions based on the protein-ligand contacts in your system. Default: Depending on simulation type.
 
-- **equilibration**: Whether to run initial equilibration or not. Default: false
+- **equilibration**: When set to true, it will equilibrate the system and **generate multiple starting poses**. This is what differentiates equilibration from pre-equilibration, which is used only to identify the best cluster conditions and generated outputs will not be used for the main simulation. Default: false.
 
 - **equilibration_steps**: Equilibration steps. Default: 2
 
@@ -166,7 +166,7 @@ In order to run a simulation, PELE requires the following files for every non-st
 
     - **IMPACT template**: containing force field parameters, please refer to `this site <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format>`_ for further information.
     - **rotamer library**: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. More information available `here <https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers>`_.
-    - **solvent template**: some special solvents like "OBC" require extra parameters, which are set in this file.
+    - **solvent template**: some special solvents like "OBC" require extra parameters, which are set in this file. Mind that it is **mandatory when using OpenFF**, since it works with the OBC solvent only.
 
 The platform currently has **two implementations** for building hetero molecule parameters - PlopRotTemp (soon to be deprecated) and
 `Peleffy <https://github.com/martimunicoy/peleffy>`_ (PELE Force Field Yielder), which offers more functionality but is still in beta testing.
@@ -282,6 +282,10 @@ Alternatively, as before, you can provide your own template and/or rotamer files
 
     - **rotamers**: External rotamer library files.
 
+    - **solvent_template**: External file with solvent parameters in JSON format.
+
+    - **skip_ligand_prep**: List of residue names that should not be parametrized automatically.
+
 ..  code-block:: yaml
 
   templates:
@@ -290,6 +294,11 @@ Alternatively, as before, you can provide your own template and/or rotamer files
   rotamers:
     - "/home/simulation_files/MG.rot.assign"
     - "/home/simulation_files/LIG.rot.assign"
+  solvent_template:
+    - "/home/simulation_files/ligandParams.txt"
+  skip_ligand_prep:
+    - "LIG"
+    - "MG"
 
 
 Ligand conformations
@@ -516,7 +525,7 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 
 - **clustering_method**: If you want to override the default clustering method (meanshift), you can set this flag to ``gaussianmixture`` or ``HDBSCAN``.
 
-- **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering); default = 5.0
+- **bandwidth**: Value for the Mean Shift bandwidth (when using the Mean Shift algorithm) or epsilon (when using the HDBSCAN clustering). You can use "auto" option when running the mean shift clustering to let the software automatically choose a value; default = "auto"
 
 - **max_top_clusters**: Maximum number of clusters to be selected. Default = 8.
 
@@ -539,9 +548,9 @@ Run a post simulation analysis to extract plots, top poses and clusters.
         * "total_mean" - total energy mean
         * "total_min" - total energy min
         * "interaction_25_percentile" - interaction energy 25th percentile
-        * "interaction_5_percentile" - interaction energy 5th percentile (default)
+        * "interaction_5_percentile" - interaction energy 5th percentile
         * "interaction_mean" - interaction energy mean
-        * "interaction_min" - interaction energy min
+        * "interaction_min" - interaction energy min (default)
 
 - **max_top_poses**: Maximum number of top poses to be retrieved. Default = 100.
 
@@ -550,6 +559,8 @@ Run a post simulation analysis to extract plots, top poses and clusters.
 - **plot_filtering_threshold**: Percentage of output structures to filter out before creating plots. Default = 0.02
 
 - **min_population**: The minimum population that selected clusters must fulfil. It takes a value between 0 and 1. The default value of 0.01 implies that all selected clusters need to have a population above 1% of the total amount of sampled poses.
+
+- **clustering_coverage**: The percentage of points that needs to be assigned to a top cluster when running mean shift clustering with automated bandwidth.
 
 ..  code-block:: yaml
 

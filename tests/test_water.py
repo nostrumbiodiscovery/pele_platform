@@ -118,7 +118,7 @@ def test_include_water_no_ligand_API(
     # os.remove(input_file)
     assert (
         water_object.water_line
-        == '\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 18, "fixedCenter": [1.0000000000, 2.0000000000, 3.0000000000], "type": "sphericalBox"}}]\n         }, \n'
+        == '\n\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 18, "fixedCenter": [1.0000000000, 2.0000000000, 3.0000000000], "type": "sphericalBox"}}]\n         }, \n'
     )
     assert not errors
 
@@ -162,7 +162,7 @@ def test_include_water_ligand_API(
     # os.remove(input_file)
     assert (
         water_object.water_line
-        == '\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 6, "fixedCenter": [-87.5760388319, -7.1355193027, -64.8428620317], "type": "sphericalBox"}}]\n         }, \n'
+        == '\n\n         "WaterPerturbation":\n         {\n             "watersToPerturb": { "links": { "ids": [ "A:402", "A:403" ] } },\n             "parameters":\n             {\n                 \n                 "temperature": 1,\n                 "numberOfStericTrials": 1,\n                 "overlapFactor": 1,\n                 "COMConstraintConstant": 1\n             },\n             "waterSites": [{"watersToPerturb": {"links": {"ids": ["A:402", "A:403"] }}, "Box": {"radius": 6, "fixedCenter": [-87.5760388319, -7.1355193027, -64.8428620317], "type": "sphericalBox"}}]\n         }, \n'
     )
     assert not errors
 

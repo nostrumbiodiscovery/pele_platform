@@ -1,0 +1,10 @@
+system: '../pele_platform/Examples/out_in/1_3ZON_complex.pdb'
+chain: 'Z'
+resname: 'IK1'
+restart: false
+initial_site: "A:577:N"
+final_site: "A:867:CB"
+seed: 12345
+out_in: true
+test: true
+cluster_conditions: auto

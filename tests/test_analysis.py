@@ -9,6 +9,7 @@ import pele_platform.main as main
 from pele_platform.analysis import Analysis, DataHandler, Plotter
 from pele_platform.Utilities.Helpers.helpers import check_remove_folder
 
+
 test_path = os.path.join(cs.DIR, "Examples")
 simulation_path = "../pele_platform/Examples/analysis/data/output"
 REPORT_NAME = "report"
@@ -170,9 +171,15 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
     results_folder = os.path.join(job_params.pele_dir, "results")
     top_poses = glob.glob(os.path.join(results_folder, "top_poses/*pdb"))
     clusters = glob.glob(os.path.join(results_folder, "clusters/*pdb"))
+    params_file = os.path.join(results_folder, "parameters.txt")
 
     assert len(top_poses) == expected_poses
     assert len(clusters) == expected_clusters
+    assert os.path.isfile(params_file)
+
+    with open(params_file, "r") as file:
+        content = file.read()
+        assert "clustering_type: meanshift" in content
 
     # Clean up
     check_remove_folder(results_folder)
@@ -184,6 +191,7 @@ def test_analysis_production(yaml_file, expected_poses, expected_clusters):
         ("hdbscan", 5, 0),  # only gets orphan clusters [-1]
         ("meanshift", 100, 1),
         ("meanshift", 30, 3),
+        ("meanshift", "auto", 5),
         ("gaussianmixture", 1, 2),
     ],
 )

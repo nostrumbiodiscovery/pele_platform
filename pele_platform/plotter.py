@@ -7,7 +7,7 @@ outputs and display them on a variety of graphs.
 __author__ = "Nostrum Biodiscovery"
 __email__ = "pelesupport@nostrumbiodiscovery.com"
 __license__ = "Apache-2.0"
-__version__ = "1.0"
+__version__ = "1.1"
 
 
 # General imports
@@ -15,7 +15,7 @@ import os
 
 
 # Constants
-PLOT_TYPE_CHOICES = ('scatter', 'interactive', 'density')
+PLOT_TYPE_CHOICES = ('scatter', 'interactive', 'density', 'histogram')
 DEFAULT_PLOT_TYPE = 'scatter'
 COLORS = {'blue': ('lightskyblue', 'royalblue'),
           'red': ('#f5bcbc', 'firebrick'),
@@ -161,8 +161,8 @@ class PlotAppearance(object):
     """
 
     def __init__(self, colormap_name, plot_color, background_color,
-                 display_edges=None, n_levels=5, lines=[], title=None,
-                 hide_logo=False):
+                 display_edges=None, n_levels=5, n_bins=[100, 100],
+                 lines=[], title=None, hide_logo=False):
         """
         It initializes a PlotAppearance object.
 
@@ -181,6 +181,9 @@ class PlotAppearance(object):
             Default is False
         n_levels : int
             Number of levels to display in a density plot. Default is 5
+        n_bins : tuple[int, int]
+            Number of bins to display in the histogram plot, first element
+            corresponds to the X axis and the second to the Y axis
         lines : list[Line]
             A list of Line objects. Default is an empty list
         title : str
@@ -193,6 +196,7 @@ class PlotAppearance(object):
         self.background_color = background_color
         self.display_edges = display_edges
         self.n_levels = n_levels
+        self.n_bins = n_bins
         self.lines = lines
         self.title = title
         self.hide_logo = hide_logo
@@ -340,6 +344,102 @@ class Line(object):
         return repr
 
 
+class Filter(object):
+    """
+    It represents a filter to be applied to PELE data.
+    """
+
+    def __init__(self, column, condition, threshold):
+        """
+        It initializes a Filter object.
+
+        Parameters
+        ----------
+        column : int
+           The column number corresponding to the metric where
+           the filter will be applied
+        condition : str
+            It represents the condition to apply in the filtering.
+            One of ['<', '==', '>', '<=', '>=']
+        threshold : float
+           Threshold value to be applied to the column data.
+        """
+
+        if not isinstance(column, int):
+            raise TypeError('Wrong type for column. Integer is expected, ' +
+                            f'got {column}')
+
+        if condition not in ['<', '==', '>', '<=', '>=']:
+            raise NameError('Wrong condition. One of ' +
+                            '[\'<\', \'=\', \'>\', \'<=\', \'>=\'] ' +
+                            f'is expected, got {condition}')
+
+        if not isinstance(threshold, (float, int)):
+            raise TypeError('Wrong type for column. Float is expected, ' +
+                            f'got {threshold}')
+
+        self.column = column
+        self.condition = condition
+        self.threshold = threshold
+
+    def __str__(self):
+        """
+        It sets the string representation of the Filter class.
+
+        Returns
+        -------
+        string_repr : str
+            The string representation of a Filter object
+        """
+
+        return f'{self.column} {self.condition} {self.threshold}'
+
+    def apply(self, pele_data):
+        """
+        It applies the filter to the PELE data that is supplied.
+
+        Parameters
+        ----------
+        pele_data : a Pandas.DataFrame object
+            The DataFrame that contains the PELE simulation data
+
+        Returns
+        -------
+        filtered_pele_data : a Pandas.DataFrame object
+            The DataFrame that contains the filtered data
+        """
+        initial_points = len(pele_data)
+
+        try:
+            pele_data.iloc[:, self.column - 1] = \
+                pele_data.iloc[:, self.column - 1] .astype(float)
+        except ValueError:
+            print(f' - Values in column {self.column} are not numeric ' +
+                  'and cannot be filtered')
+            return pele_data
+
+        if self.condition == '<':
+            pele_data = pele_data[pele_data.iloc[:, self.column - 1]
+                                  < self.threshold]
+        elif self.condition == '>':
+            pele_data = pele_data[pele_data.iloc[:, self.column - 1]
+                                  > self.threshold]
+        elif self.condition == '==':
+            pele_data = pele_data[pele_data.iloc[:, self.column - 1]
+                                  == self.threshold]
+        elif self.condition == '>=':
+            pele_data = pele_data[pele_data.iloc[:, self.column - 1]
+                                  >= self.threshold]
+        elif self.condition == '<=':
+            pele_data = pele_data[pele_data.iloc[:, self.column - 1]
+                                  <= self.threshold]
+
+        final_points = len(pele_data)
+
+        print(f' - {initial_points} points were reduced to {final_points}')
+
+        return pele_data
+
 
 # Methods
 def parse_line_data(line_data, vertical):
@@ -385,7 +485,7 @@ def parse_line_data(line_data, vertical):
                 from matplotlib import colors as mcolors
                 if color not in mcolors.CSS4_COLORS:
                     raise ValueError('wrong color: ' +
-                                     f'{lines_color}, it must be a ' +
+                                     f'{color}, it must be a ' +
                                      'CSS4-compatible color name.')
 
             else:
@@ -401,6 +501,87 @@ def parse_line_data(line_data, vertical):
                   str(error))
 
     return lines
+
+
+def parse_filters(filters_data):
+    """
+    It parses the supplied filter data and initializes the corresponding
+    Filter objects.
+
+    Parameters
+    ----------
+    filters_data : list[tuple[int, str, float]]
+        It is a list 3 dimensional tuples containing the filters
+        to be applied into the PELE data
+
+    Returns
+    -------
+    filters : list[Filter]
+        It is a list of parsed filters
+    """
+    class FilterParserException(BaseException):
+        """It sets a line parser exception."""
+        pass
+
+    filters = list()
+
+    for one_filter_data in filters_data:
+        try:
+            if not isinstance(one_filter_data, (list, tuple)):
+                raise FilterParserException()
+
+            if len(one_filter_data) != 3:
+                raise FilterParserException('Invalid filter format. ' +
+                                            'Expected: \'column\', '+
+                                            '\'condition\', ' +
+                                            '\'threshold\'], ' +
+                                            f'got {one_filter_data}')
+
+            try:
+                column = int(one_filter_data[0])
+            except TypeError:
+                raise FilterParserException('Invalid column. ' +
+                                            'Expected an integer, got ' +
+                                            f'{one_filter_data[0]}')
+
+            condition = one_filter_data[1]
+
+            if condition.lower() == 'eq':
+                condition = '=='
+            elif condition.lower() == 'lt':
+                condition = '<'
+            elif condition.lower() == 'gt':
+                condition = '>'
+            elif condition.lower() == 'le':
+                condition = '<='
+            elif condition.lower() == 'ge':
+                condition = '>='
+
+            if condition not in ['<', '==', '>', '<=', '>=']:
+                raise FilterParserException('Wrong condition. One of ' +
+                                            '[\'<\', \'==\', \'>\', ' +
+                                            '\'<=\', \'>=\', \'eq\', ' +
+                                            '\'lt\', \'eq\', \'gt\', ' +
+                                            '\'le\', \'ge\'] '+
+                                            'is expected, ' +
+                                            f'got {condition}')
+
+            try:
+                threshold = float(one_filter_data[2])
+            except TypeError:
+                raise FilterParserException('Invalid column. ' +
+                                            'Expected a float, got ' +
+                                            f'{one_filter_data[0]}')
+
+            filter = Filter(column=column, condition=condition,
+                            threshold=threshold)
+            filters.append(filter)
+
+        except FilterParserException as error:
+            print(f"Warning: filter data not recognized: {one_filter_data}, ",
+                  str(error))
+
+    return filters
 
 
 def parse_args():
@@ -461,6 +642,9 @@ def parse_args():
     n_levels : int
         Number of levels to display in the density plot when
         edges are shown
+    n_bins : tuple[int, int]
+        Number of bins to display in the histogram plot, first element
+        corresponds to the X axis and the second to the Y axis
     background_color : str
         The background color for the plot. It must be a CSS4 compatible
         color name
@@ -468,6 +652,8 @@ def parse_args():
         A list of all vertical Line objects
     horizontal_lines : list[Line]
         A list of all horizontal Line objects
+    filters : list[Filter]
+        The list of filters to apply to PELE data
     title : str
         The title to print in the plot
     hide_logo : bool
@@ -537,8 +723,12 @@ def parse_args():
                         action='store_true',
                         help='Display edges of levels in the density plot')
     parser.add_argument('--n_levels', type=int, default=5,
-                        help='Number of levels to display in the density' +
+                        help='Number of levels to display in the density ' +
                         'plot when edges are shown')
+    parser.add_argument('--n_bins', type=int, default=[100, ], nargs='*',
+                        help='Number of bins to use in a histogram plot. ' +
+                        'Either one value to apply to both axis or two ' +
+                        'values corresponding to X and Y axes, respectively.')
     parser.add_argument('--background_color', type=str, default='white',
                         help='Background color for the plot.')
     parser.add_argument('--vertical_line', action='append', type=str,
@@ -549,6 +739,13 @@ def parse_args():
                         help='It adds an horizontal line to the intercept ' +
                         'that is supplied.', nargs='*',
                         metavar=('INT', 'STR'))
+    parser.add_argument('--filter', action='append', type=str,
+                        help='It applies a filter to the PELE dataset. ' +
+                        'It expects the following data: metric_column + ' +
+                        'condition + threshold_value. Condition must be ' +
+                        'one of [\'<\', \'>\', \'==\', \'<=\', \'>=\', ' +
+                        '\'lt\', \'eq\', \'gt\', \'le\', \'ge\'].',
+                        nargs=3, metavar=('INT', 'STR', 'FLOAT'))
     parser.add_argument('--title', type=str, default=None,
                         help='The title to print in the plot.')
     parser.add_argument('--hide_logo', dest='hide_logo',
@@ -584,8 +781,11 @@ def parse_args():
     color = parsed_args.color
     with_edges = parsed_args.with_edges
     n_levels = parsed_args.n_levels
+    n_bins = parsed_args.n_bins
     background_color = parsed_args.background_color
     vertical_lines = parsed_args.vertical_line
+    horizontal_lines = parsed_args.horizontal_line
+    filters = parsed_args.filter
     title = parsed_args.title
     hide_logo = parsed_args.hide_logo
     save_to = parsed_args.save_to
@@ -594,11 +794,16 @@ def parse_args():
         vertical_lines = list()
     else:
         vertical_lines = parse_line_data(vertical_lines, vertical=True)
-    horizontal_lines = parsed_args.horizontal_line
+
     if horizontal_lines is None:
         horizontal_lines = list()
     else:
         horizontal_lines = parse_line_data(horizontal_lines, vertical=False)
+
+    if filters is None:
+        filters = list()
+    else:
+        filters = parse_filters(filters)
 
     # Check parameters
     if csv_file is not None:
@@ -634,11 +839,19 @@ def parse_args():
         if os.path.splitext(os.path.basename(save_to))[1] != '.png':
             raise ValueError('Plot can only be saved with PNG format')
 
+    if len(n_bins) == 1:
+        n_bins = n_bins * 2
+    elif len(n_bins) != 2:
+        raise ValueError('Invalid number of bins: either one value to ' +
+                         'apply it to both axis or two values corresponding ' +
+                         'to X and Y axes, respectively, are accepted')
+
     return csv_file, results_folder, output_folder, \
         report_name, trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
-        colormap, color, with_edges, n_levels, background_color, \
-        vertical_lines, horizontal_lines, title, hide_logo, save_to
+        colormap, color, with_edges, n_levels, n_bins, \
+        background_color, vertical_lines, horizontal_lines, filters, \
+        title, hide_logo, save_to
 
 
 def print_parameters(csv_file, results_folder, output_folder,
@@ -646,8 +859,8 @@ def print_parameters(csv_file, results_folder, output_folder,
                      plot_type, xdata, ydata, zdata,
                      xlowest, xhighest, ylowest, yhighest,
                      zlowest, zhighest, colormap, color,
-                     with_edges, n_levels, background_color,
-                     vertical_lines, horizontal_lines, title,
+                     with_edges, n_levels, n_bins, background_color,
+                     vertical_lines, horizontal_lines, filters, title,
                      hide_logo, save_to):
     """
     It prints the parameters supplied by the user.
@@ -706,6 +919,9 @@ def print_parameters(csv_file, results_folder, output_folder,
     n_levels : int
         Number of levels to display in the density plot when
         edges are shown
+    n_bins : tuple[int, int]
+        Number of bins to display in the histogram plot, first element
+        corresponds to the X axis and the second to the Y axis
     background_color : str
         The background color for the plot. It must be a CSS4 compatible
         color name
@@ -713,6 +929,8 @@ def print_parameters(csv_file, results_folder, output_folder,
         A list of all vertical Line objects
     horizontal_lines : list[Line]
         A list of all horizontal Line objects
+    filters : list[Filter]
+        The list of filters to apply to PELE data
     title : str
         The title to print in the plot
     hide_logo : bool
@@ -730,7 +948,7 @@ def print_parameters(csv_file, results_folder, output_folder,
                                 ylowest, yhighest,
                                 zlowest, zhighest,
                                 colormap, color, with_edges,
-                                n_levels, background_color,
+                                n_levels, n_bins, background_color,
                                 vertical_lines, horizontal_lines,
                                 title, hide_logo, save_to]])
 
@@ -811,6 +1029,10 @@ def print_parameters(csv_file, results_folder, output_folder,
           ' ' * (max_len - (len(str(n_levels))
                             if n_levels is not None else 1)),
           '-' if n_levels is None else n_levels)
+    print(' - n_bins:           ',
+          ' ' * (max_len - (len(str(n_bins))
+                            if n_bins is not None else 1)),
+          '-' if n_bins is None else n_bins)
     print(' - background_color: ',
           ' ' * (max_len - (len(str(background_color))
                             if background_color is not None else 1)),
@@ -823,6 +1045,16 @@ def print_parameters(csv_file, results_folder, output_folder,
           ' ' * (max_len - (len(str(horizontal_lines))
                             if horizontal_lines is not None else 1)),
           '-' if horizontal_lines is None else horizontal_lines)
+    if len(filters) == 0:
+        print(' - filters:          ',
+              ' ' * (max_len - 1),
+              '-')
+    else:
+        for i, filter in enumerate(filters, start=1):
+            print(f' - filter{i}: ',
+                  ' ' * (9 - len(str(i))),
+                  ' ' * (max_len - (len(str(filter)))),
+                  str(filter))
     print(' - title:            ',
           ' ' * (max_len - (len(str(title))
                             if title is not None else 1)),
@@ -1043,7 +1275,10 @@ def get_colormap(colormap_name):
         oranges = pyplot.cm.get_cmap('Oranges', 512)
         cmap = ListedColormap(oranges(np.linspace(0.95, 0.4, 256)))
     else:
-        raise NameError('Unknown colormap name: \'{}\''.format(colormap_name))
+        try:
+            cmap = pyplot.cm.get_cmap(colormap_name)
+        except ValueError:
+            raise NameError(f'Unknown colormap name: \'{colormap_name}\'')
 
     return cmap
 
@@ -1427,13 +1662,107 @@ def density_plot(pele_data, plot_data, plot_appearance, save_to):
         pyplot.savefig(save_to, dpi=200)
 
 
+def histogram_plot(pele_data, plot_data, plot_appearance, save_to):
+    """
+    It generates a histogram.
+
+    Parameters
+    ----------
+    pele_data : a Pandas.DataFrame object
+        The DataFrame that contains the PELE simulation data
+    plot_data : a PlotData object
+        The PlotData containing the information to plot in each
+        axes
+    plot_appearance : a PlotAppearance object
+        The appearance settings for the plot
+    save_to : str
+        If it is not None, the resulting plot will be saved to this path
+    """
+    from matplotlib import pyplot
+    import seaborn as sns
+
+    sns.set_style("ticks")
+
+    x_values = plot_data.get_xs_from_pele_data(pele_data).to_numpy()
+    y_values = plot_data.get_ys_from_pele_data(pele_data).to_numpy()
+
+    color1, color2 = COLORS[plot_appearance.plot_color]
+
+    cmap = sns.dark_palette(color2, reverse=True, as_cmap=True)
+
+    ax = sns.JointGrid(x=x_values, y=y_values)
+
+    if plot_appearance.display_edges is False:
+        markers_alpha = 0.7
+    else:
+        markers_alpha = 0.4
+        ax.plot_joint(sns.kdeplot, cmap=cmap, shade=False,
+                      n_levels=plot_appearance.n_levels)
+
+    ax.plot_joint(sns.scatterplot, color=color1, edgecolor=color2,
+                  marker='o', alpha=markers_alpha, s=20)
+
+    sns.histplot(x=x_values, ax=ax.ax_marg_x, color=color1,
+                 bins=plot_appearance.n_bins[0], stat='count',
+                 alpha=0.5, edgecolor=color2)
+
+    sns.histplot(y=y_values, ax=ax.ax_marg_y, color=color1,
+                 bins=plot_appearance.n_bins[1], stat='count',
+                 alpha=0.5, edgecolor=color2)
+
+    # Axes settings
+    title = plot_appearance.title
+    if title is None:
+        title = "PELE Histogram"
+    ax.fig.suptitle(title, fontweight='bold')
+    ax.ax_joint.set_xlabel(plot_data.x_data.label, fontweight='bold')
+    ax.ax_joint.set_ylabel(plot_data.y_data.label, fontweight='bold')
+    ax.ax_marg_x.set_xlim(plot_data.x_data.lowest,
+                          plot_data.x_data.highest)
+    ax.ax_marg_y.set_ylim(plot_data.y_data.lowest,
+                          plot_data.y_data.highest)
+
+    # Add lines
+    for line in plot_appearance.lines:
+        if line.vertical:
+            ax.ax_joint.axvline(line.intercept,
+                                color=line.color,
+                                linestyle=':', linewidth=2)
+        else:
+            ax.ax_joint.axhline(line.intercept,
+                                color=line.color,
+                                linestyle=':', linewidth=2)
+
+    # Adjust layout
+    pyplot.tight_layout()
+
+    # Display NBD logo
+    if not plot_appearance.hide_logo:
+        import matplotlib.cbook as cbook
+        import matplotlib.image as image
+        from pele_platform.Utilities.Helpers import get_data_file_path
+
+        with cbook.get_sample_data(get_data_file_path('NBD.png')) as file:
+            im = image.imread(file)
+
+        newax = ax.fig.add_axes([0.79, 0.80, 0.2, 0.2], anchor='NE', zorder=1)
+        newax.imshow(im)
+        newax.axis('off')
+
+    # Plot it or save it
+    if save_to is None:
+        pyplot.show()
+    else:
+        pyplot.savefig(save_to, dpi=200)
+
+
 # Main workflow to be executed
 if __name__ == "__main__":
     # Import external libraries
     import pandas as pd
 
     # Avoid Python2
-    from .Checker.python_version import check_python_version
+    from pele_platform.Checker.python_version import check_python_version
 
     check_python_version()
 
@@ -1441,9 +1770,9 @@ if __name__ == "__main__":
     csv_file, results_folder, output_folder, report_name, \
         trajectory_name, plot_type, xdata, ydata, zdata, \
         xlowest, xhighest, ylowest, yhighest, zlowest, zhighest, \
-        colormap, color,  with_edges, n_levels, background_color, \
-        vertical_lines, horizontal_lines, title, hide_logo, \
-        save_to = parse_args()
+        colormap, color,  with_edges, n_levels, n_bins, \
+        background_color, vertical_lines, horizontal_lines, \
+        filters, title, hide_logo, save_to = parse_args()
 
     # Print header
     from pele_platform.constants import constants
@@ -1455,8 +1784,9 @@ if __name__ == "__main__":
                      xdata, ydata, zdata, xlowest, xhighest,
                      ylowest, yhighest, zlowest, zhighest,
                      colormap, color, with_edges, n_levels,
-                     background_color, vertical_lines,
-                     horizontal_lines, title, hide_logo, save_to)
+                     n_bins, background_color, vertical_lines,
+                     horizontal_lines, filters, title, hide_logo,
+                     save_to)
 
     # Get PELE data
     if csv_file is not None:
@@ -1494,6 +1824,10 @@ if __name__ == "__main__":
             plot_type.lower() != 'density'):
         z_data = request_axis_data('Z', 'n', pele_data, optional=True)
 
+    for i, filter in enumerate(filters, start=1):
+        print(f'-> Applying filter {i}')
+        pele_data = filter.apply(pele_data)
+
     # Initialize plot data
     plot_data = PlotData(x_data, y_data, z_data)
 
@@ -1503,6 +1837,7 @@ if __name__ == "__main__":
                                      background_color=background_color,
                                      display_edges=with_edges,
                                      n_levels=n_levels,
+                                     n_bins=n_bins,
                                      lines=vertical_lines + horizontal_lines,
                                      title=title,
                                      hide_logo=hide_logo)
@@ -1513,7 +1848,7 @@ if __name__ == "__main__":
 
     # Generate the right plot type
     if save_to is None:
-        print('-> Displaying plot. Close the windows to exit.')
+        print('-> Displaying plot. Close the window to exit.')
     else:
         print(f'-> Saving plot to {save_to}')
 
@@ -1523,3 +1858,5 @@ if __name__ == "__main__":
         scatter_plot(pele_data, plot_data, plot_appearance, save_to)
     elif plot_type.lower() == 'density':
         density_plot(pele_data, plot_data, plot_appearance, save_to)
+    elif plot_type.lower() == 'histogram':
+        histogram_plot(pele_data, plot_data, plot_appearance, save_to)

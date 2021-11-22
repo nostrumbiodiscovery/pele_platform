@@ -2,6 +2,7 @@ from typing import Any, List, Union
 
 from pele_platform.Utilities.Helpers import helpers
 from pele_platform.Utilities.Parameters import parameters
+from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 from pele_platform.constants import constants
 
 
@@ -21,11 +22,11 @@ class AtomMapper:
     """
 
     def __init__(
-        self,
-        args: parameters.ParametersBuilder,
-        env: parameters.ParametersBuilder,
-        original_system: str,
-        flags_to_check: List[str] = None,
+            self,
+            args: YamlParser,
+            env: parameters.Parameters,
+            original_system: str,
+            flags_to_check: List[str] = None,
     ) -> None:
         self.args = args
         self.logger = env.logger
@@ -40,7 +41,7 @@ class AtomMapper:
             if getattr(self.args, arg, None) is not None
         ]
 
-    def run(self) -> parameters.ParametersBuilder:
+    def run(self) -> YamlParser:
         """
         Run the whole mapping process.
 
@@ -84,10 +85,10 @@ class AtomMapper:
 
     @staticmethod
     def map_atom_string(
-        atom_string: str,
-        original_input: str,
-        preprocessed_file: str,
-        logger: Any,
+            atom_string: str,
+            original_input: str,
+            preprocessed_file: str,
+            logger: Any,
     ) -> (str, str):
         """
         Maps old atom string to a new atom string by comparing coordinates of the original and preprocessed PBD files.
@@ -116,7 +117,8 @@ class AtomMapper:
             ]
 
         with open(preprocessed_file, "r") as prep:
-            preprocessed_lines = [line for line in prep.readlines() if line.startswith("HETATM") or line.startswith("ATOM")]
+            preprocessed_lines = [line for line in prep.readlines() if
+                                  line.startswith("HETATM") or line.startswith("ATOM")]
 
         # retrieve atom info from the original PDB
         try:
@@ -129,9 +131,9 @@ class AtomMapper:
         initial_coords = None
         for initial_line in initial_lines:
             if (
-                initial_line[21].strip() == chain
-                and initial_line[22:26].strip() == resnum
-                and (atom_name is None or initial_line[12:16].strip() == atom_name)
+                    initial_line[21].strip() == chain
+                    and initial_line[22:26].strip() == resnum
+                    and (atom_name is None or initial_line[12:16].strip() == atom_name)
             ):
                 initial_coords = get_coords_from_line(initial_line)
 
@@ -187,7 +189,7 @@ def get_coords_from_line(line):
 
 
 def atom_number_to_atom_string(
-    pdb_file: str, number: Union[int, List[int], List[str], str]
+        pdb_file: str, number: Union[int, List[int], List[str], str]
 ):
     """
     Converts PDB atom number to PELE's atom string format, if necessary.
@@ -209,7 +211,7 @@ def atom_number_to_atom_string(
                 lines = f.readlines()
             for line in lines:
                 if line[6:11].strip() == str(n) and (
-                    line.startswith("HETATM") or line.startswith("ATOM")
+                        line.startswith("HETATM") or line.startswith("ATOM")
                 ):
                     atom_name, resnum, _, chain = get_atom_from_line(line)
                     output.append("{}:{}:{}".format(chain, resnum, atom_name))

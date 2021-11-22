@@ -26,13 +26,15 @@ import pele_platform.Adaptive.plop_solvent as sv
 import pele_platform.Adaptive.plop_ligand_parametrization as lg
 from pele_platform.Utilities.Helpers import ligand_conformations
 from pele_platform.Checker import pdb_checker
+from pele_platform.Adaptive.preequilibrator import PreEquilibrator
+from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 
 
-def run_adaptive(args):
+def run_adaptive(args: YamlParser):
     """
     Main function to prepare and launch the simulation.
 
-    1) Create EnviroBuilder - variables, folders, logger...
+    1) Create Parameters - variables, folders, logger...
     2) Prepare ligand and receptor
     3) Launch simulation
     4) Analyse simulation
@@ -47,6 +49,7 @@ def run_adaptive(args):
         with helpers.cd(parameters.pele_dir):
             adaptiveSampling.main(parameters.ad_ex_temp)
             parameters.logger.info("Simulation run successfully (:\n\n")
+        args.adaptive_restart = False
 
     elif not parameters.only_analysis and not parameters.restart:
         parameters.logger.info(
@@ -89,13 +92,13 @@ def run_adaptive(args):
                     input_proc = input_path
                 else:
                     input_proc, missing_residues, _, _, _ = ppp.main(
-                            input_path,
-                            parameters.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
-                            output_pdb=["", ],
-                            charge_terminals=args.charge_ter,
-                            no_gaps_ter=args.gaps_ter,
-                            constrain_smiles=None,
-                            ligand_pdb=parameters.ligand_ref)
+                        input_path,
+                        parameters.inputs_dir,  # to ensure it goes to pele_dir/inputs, not pele_dir
+                        output_pdb=["", ],
+                        charge_terminals=args.charge_ter,
+                        no_gaps_ter=args.gaps_ter,
+                        constrain_smiles=None,
+                        ligand_pdb=parameters.ligand_ref)
                 input_proc = os.path.basename(input_proc)
                 input_proc = os.path.join(parameters.inputs_dir, input_proc)
                 parameters.inputs_simulation.append(input_proc)
@@ -106,16 +109,7 @@ def run_adaptive(args):
         # If randomization in necessary (PPI, site_finder, global exploration)...
         elif args.full or args.randomize or args.ppi or args.site_finder:
             ligand_positions, box_radius, box_center = rd.randomize_starting_position(
-                parameters.ligand_ref,
-                parameters.receptor,
-                outputfolder=parameters.inputs_dir,
-                nposes=parameters.poses,
-                test=parameters.test,
-                user_center=parameters.center_of_interface,
-                logger=parameters.logger)
-            if not args.gpcr_orth and not args.out_in:
-                parameters.box_center = box_center
-                parameters.box_radius = box_radius
+                parameters, args.box_center, args.box_radius)
 
             if parameters.no_ppp:
                 receptor = syst.system
@@ -137,6 +131,20 @@ def run_adaptive(args):
 
             parameters.input = [os.path.join(parameters.inputs_dir, inp)
                                 for inp in inputs]
+
+            if args.gpcr_orth or args.out_in:
+                randomization_box_radius, randomization_box_center = rd.set_box(
+                    args.final_site if args.final_site else args.orthosteric_site, ligand_positions,
+                    parameters.system)
+
+                if not args.box_center:
+                    parameters.box_center = randomization_box_center
+                if not args.box_radius:
+                    parameters.box_radius = randomization_box_radius
+
+            else:
+                parameters.box_center = box_center
+                parameters.box_radius = box_radius
 
             parameters.adap_ex_input = ", ".join(
                 ['"' + input + '"' for input in parameters.input]
@@ -244,7 +252,7 @@ def run_adaptive(args):
                                                      pele_dir=parameters.pele_dir).generate()
 
         # Create simulation box, if performing perturbation
-        if parameters.perturbation:
+        if parameters.perturbation and parameters.box:
             box = bx.BoxSetter(parameters.box_center,
                                parameters.box_radius,
                                parameters.ligand_ref,
@@ -341,6 +349,11 @@ def run_adaptive(args):
                 parameters.system,
             )
 
+        # Predict cluster values in a short equilibration
+        if parameters.cluster_conditions == "auto":
+            preequilibration = PreEquilibrator(args, parameters)
+            parameters.cluster_conditions = preequilibration.run()
+
         # Point adaptive.conf to input dir
         parameters.adap_ex_input = os.path.join(
             parameters.inputs_dir, parameters.adap_ex_input
@@ -358,7 +371,7 @@ def run_adaptive(args):
             adaptive.run()
             parameters.logger.info("Simulation run successfully (:\n\n")
 
-    elif parameters.restart:
+    elif parameters.restart and not parameters.only_analysis:
         # Start simulation from scratch (unlike adaptive_restart) but use files created in debug mode
         parameters.logger.info(f"Launching simulation from {parameters.pele_dir}")
         adaptive = ad.SimulationBuilder(parameters.ad_ex_temp, parameters.pele_exit_temp, parameters.topology)

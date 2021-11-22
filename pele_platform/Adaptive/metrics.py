@@ -28,7 +28,7 @@ class MetricBuilder:
         return self.distance
 
     def _distance_to_json(self, distances):
-        return "\n".join(distances)
+        return "".join(distances)
 
     def rmsd_to_json(self, pdb_reference, chain_rmsd):
         self.rmsd = cs.NATIVE.format(os.path.abspath(pdb_reference), chain_rmsd)

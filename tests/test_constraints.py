@@ -122,10 +122,13 @@ def test_alpha_constraints(
     )
     obj.build_constraints()
 
-    assert obj.terminal_constraints == expected_ter_lines
+    obtained_terminal_constraints = [constraint.strip() for constraint in obj.terminal_constraints]
+    obtained_backbone_constraints = [constraint.strip() for constraint in obj.backbone_constraints]
+
+    assert obtained_terminal_constraints == expected_ter_lines
 
     for line in expected_ca_lines:
-        assert line in obj.backbone_constraints
+        assert line in obtained_backbone_constraints
 
 
 @pytest.mark.parametrize(
