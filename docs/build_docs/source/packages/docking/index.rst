@@ -26,7 +26,7 @@ Induced fit fast
     - pele steps: 12
     - uses AdaptivePELE, i.e. enhances the exploration by iteratively running short simulations, assessing the exploration with clustering, and spawning new trajectories in the most relevant regions
 
-Induced fit exhaustive
+Induced fit long
 ************************
 
     - iterations: 1
@@ -37,7 +37,7 @@ Induced fit exhaustive
 Recommendations
 +++++++++++++++++++
 
-    #. Expected computational time is 2-3h for the fast protocol and 6h for exhaustive.
+    #. Expected computational time is 2-3h for the fast protocol and 6h for long.
     #. Read more about the `AdaptivePELE protocol <https://adaptivepele.github.io/AdaptivePELE/index.html>`_.
 
 

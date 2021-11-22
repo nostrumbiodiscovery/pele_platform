@@ -103,9 +103,12 @@ class PreEquilibrator:
         maximum = np.quantile(contacts_distribution, 0.9)
         minimum = np.quantile(contacts_distribution, 0.3)
 
-        if maximum - minimum < 1:
-            minimum = maximum - 1
+        if (maximum - minimum < 0.8) and (maximum > 1.0):
+            minimum = maximum - 0.9
 
+        elif (maximum - minimum < 0.3) and (maximum > 0.5):
+            minimum = maximum - 0.3
+            
         cluster_conditions = list(
             np.linspace(maximum, minimum, num=n_cluster_values - 1)
         )
