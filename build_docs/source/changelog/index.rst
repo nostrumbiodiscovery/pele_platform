@@ -17,7 +17,9 @@ A minor release of the PELE Platform that contains stability and efficiency impr
 
 - Added support for Open Force Field 2.0.
 
-- Introduced automated selection of cluster conditions for AdaptivePELE.
+- Introduced automated selection of cluster conditions for AdaptivePELE with the new preequilibration stage.
+
+- Induced fit exhaustive is renamed to induced fit long.
 
 - Fixed SameFileError exception raised during ligand parametrization.
 
