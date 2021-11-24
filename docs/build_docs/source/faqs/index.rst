@@ -1,8 +1,23 @@
 Frequently asked questions (FAQs)
 =================================
 
+If you do not find a solution to your problem, feel free to send us an email at pelesupport@nostrumbiodiscovery.com.
+We're here to help!
+
+    `1. Why does it ask me to check atoms?`_
+
+    `2. PELE cannot located a file, how do I fix it? (FileNotFoundError)`_
+
+    `3. Why did it fail to extract the ligand? (ValueError)`_
+
+    `4. How to add CONECT lines? (ConnectionsError)`_
+
+    `5. How to handle ligand parametrization failure?`_
+
+|
+
 1. Why does it ask me to check atoms?
-----------------------------------
+-------------------------------------
 
 Example error message
 ++++++++++++++++++++++
@@ -83,7 +98,7 @@ Note that **CONECT lines are required for peleffy** forcefield builder.
 
 
 5. How to handle ligand parametrization failure?
----------------------------------------------
+-----------------------------------------------
 
 Example error message
 ++++++++++++++++++++++
