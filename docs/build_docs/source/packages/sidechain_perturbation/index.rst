@@ -1,13 +1,14 @@
-===================
-Covalent docking
-===================
+======================
+Sidechain perturbation
+======================
 
 
 Introduction
 ---------------
 
-The covalent docking simulations aim to optimise the interactions between a covalently bound ligand and surrounding residues. It is composed of
-two stages - the initial, general docking simulation, followed by the refinement of poses with the lowest local non-bonding energy.
+Sidechain perturbation algorithm aims to optimize the interactions between a covalently bound ligand and surrounding residues.
+It is composed of two stages - the initial, general docking simulation, followed by the refinement of poses with the
+lowest local non-bonding energy.
 
 Input
 ++++++++

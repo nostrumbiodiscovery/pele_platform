@@ -1,5 +1,5 @@
-Docking pose refinement
-=============================
+Induced fit
+===========
 
 Introduction
 -----------------

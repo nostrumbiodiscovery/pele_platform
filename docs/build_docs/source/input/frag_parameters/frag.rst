@@ -1,4 +1,5 @@
-FragPELE parameters
+===================
+fragPELE parameters
 ===================
 
 These flags are **exclusive to FragPELE** modes.

@@ -1,9 +1,33 @@
+============
 Installation
-===============
+============
 
 
-Conda
------
+PELE Platform is shipped as a Conda package that can be installed using `conda-forge`
+and `nostrumbiodiscovery` channels from Anaconda.
+
+
+Requirements
+------------
+
+    - Miniconda3 or Conda package
+    - Schrödinger Suite (2017-1 or later)
+    - PELE++ code (optional, only required to run PELE but not to run PELE
+      Plotter or the Analysis package)
+
+
+OS support
+----------
+Currently, the platform only supports Linux and MacOS operating systems.
+
+
+Conda installation
+------------------
+
+The most straightforward way to install the Platform is with Conda. The preferable
+installation strategy is to generate a new Conda environment to hold the source code
+and its dependencies. In order to generate a Conda environment and install the
+Platform, please, follow the steps below:
 
 .. code-block:: bash
 
@@ -40,8 +64,10 @@ Test installation
 
 .. code-block:: bash
 
-    git clone https://github.com/NostrumBioDiscovery/pele_platform.git
+    git clone https://github.com/nostrumbiodiscovery/pele_platform.git
 
     cd pele_platform/tests
+
+    conda activate pele_platform
 
     python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml

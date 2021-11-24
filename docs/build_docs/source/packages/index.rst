@@ -1,22 +1,22 @@
-Run simulation
-===========================================
+Simulation packages
+===================
 
 Step by step guides to setting up your own simulation.
 
     - `Docking pose refinement <docking/index.html>`_
     - `Pose scoring <rescoring/index.html>`_
-    - `Pocket exploration <pocket_exploration/index.html>`_
+    - `Pocket exploration <site_finder/index.html>`_
     - `Protein-protein inhibitors <ppi/index.html>`_
     - `High-throughput fragment growing <frag/index.html>`_
     - `Growing custom fragment library <libraries/index.html>`_
     - `GPCR orthosteric site exploration <gpcr/index.html>`_
     - `Induced fit with interaction restrictions <interaction_restrictions/index.html>`_
-    - `Binding events <binding/index.html>`_
-    - `Unbinding events <binding/unbinding.html>`_
+    - `Binding events <migration/binding.html>`_
+    - `Unbinding events <migration/unbinding.html>`_
     - `Biased simulation <bias/index.html>`_
     - `Conformational change simulation <pca/index.html>`_
     - `Protein minimization <minimization/index.html>`_
-    - `Covalent docking <covalent_docking/index.html>`_
+    - `Side chain perturbation <sidechain_perturbation/index.html>`_
 
 .. toctree::
    docking/index.rst
@@ -51,11 +51,11 @@ Step by step guides to setting up your own simulation.
    :hidden:
 
 .. toctree::
-   binding/index.rst
+   migration/binding.rst
    :hidden:
 
 .. toctree::
-   binding/unbinding.rst
+   migration/unbinding.rst
    :hidden:
 
 .. toctree::

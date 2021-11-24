@@ -1,8 +1,8 @@
-Common errors
-================
+Frequently asked questions (FAQs)
+=================================
 
 Check atoms
---------------
+-----------
 
 The following error message indicates that the atom(s) you chose to calculate the distance metric or constrain does not exist.
 
