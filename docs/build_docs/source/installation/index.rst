@@ -3,8 +3,8 @@ Installation
 ============
 
 
-PELE Platform is shipped as a Conda package that can be installed using `conda-forge`
-and `nostrumbiodiscovery` channels from Anaconda.
+PELE Platform is shipped as a Conda package that can be installed using ``conda-forge``
+and ``nostrumbiodiscovery`` channels from Anaconda.
 
 
 Requirements

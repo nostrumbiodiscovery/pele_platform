@@ -25,6 +25,9 @@ conformations from where PELE simulations can start. In any case, we must
 ensure that our model is as accurate as possible since the success of our
 simulation will depend on it.
 
+We have a collection of tutorials where we explain step by step the procedure
+to prepare the initial structure for PELE
+
 
 Fix missing loops
 -----------------
@@ -89,3 +92,8 @@ through CONECT lines.
 
 Please, check `this tutorial <../tutorials/peleffy.html>`_ if you want learn further details about heteromolecule
 parametrization.
+
+
+Ligand preparation
+------------------
+The ligand

@@ -26,9 +26,9 @@ energy surface of biochemical systems.
    :maxdepth: 1
 
    pele/index.rst
+   input/index.rst
    packages/index.rst
    analysis/index.rst
-   input/index.rst
    api/index.rst
 
 
