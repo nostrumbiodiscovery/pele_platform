@@ -6,7 +6,7 @@ We're here to help!
 
     `1. Why does it ask me to check atoms?`_
 
-    `2. PELE cannot located a file, how do I fix it? (FileNotFoundError)`_
+    `2. PELE cannot locate a file, how do I fix it? (FileNotFoundError)`_
 
     `3. Why did it fail to extract the ligand? (ValueError)`_
 
@@ -44,7 +44,7 @@ You can easily check residue numbers and atom names in the bottom panel in Maest
   :align: center
 
 
-2. PELE cannot located a file, how do I fix it? (FileNotFoundError)
+2. PELE cannot locate a file, how do I fix it? (FileNotFoundError)
 -----------------------------------------------------------------
 
 Example error message
@@ -91,7 +91,7 @@ Example error message
 Solution
 +++++++++
 
-This warning indicates the the PDB file is missing the connectivity section. To resolve the issue, you should import
+This warning indicates that the PDB file is missing the connectivity section. To resolve the issue, you should import
 the PDB in Schrödinger Maestro and preprocess it, launching the Protein Preparation Wizard.
 
 Note that **CONECT lines are required for peleffy** forcefield builder.
