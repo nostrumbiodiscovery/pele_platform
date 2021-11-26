@@ -11,9 +11,13 @@ the Platform PELE can be applied.
    basic_parameters/general.rst
    basic_parameters/pele.rst
    basic_parameters/adaptive.rst
-   basic_parameters/constraints.rst
-   basic_parameters/box.rst
    basic_parameters/water.rst
+   basic_parameters/ligand.rst
+   basic_parameters/box.rst
+   basic_parameters/metrics.rst
+   basic_parameters/constraints.rst
+   basic_parameters/metals.rst
+   basic_parameters/analysis.rst
 
 In case that they are not flexible enough and do not cover a particular case,
 do not hesitate to reach us out at pelesupport@nostrumbiodiscovery.com.
