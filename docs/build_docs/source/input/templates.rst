@@ -30,3 +30,5 @@ using `peleffy <../tutorials/peleffy.html>`_ via:
 
 Once the files have been generated, you need to supply them to the PELE platform by setting specific flags
 in ``input.yaml``.
+
+# TODO: Add a link to docs about "rotamers" and "templates" flag.
