@@ -98,11 +98,6 @@ overall method is composed of five steps, as outlined below:
     and map the whole protein-ligand conformational space.
 
 
-.. image:: ../img/frag_pele_algorithm.png
-  :width: 500
-  :align: center
-
-
 Further reading
 ---------------
 
