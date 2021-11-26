@@ -5,7 +5,7 @@ PELE basis
 Our **Protein Energy Landscape Exploration** (PELE) tool combines protein structure prediction algorithms and Metropolis Monte Carlo techniques
 to efficiently tackle tasks like predicting binding sites, docking pose refinement or modelling exit path of a ligand.
 
-.. image:: ../img/induced_fit.gif
+.. image:: ../img/induced_fit_compressed.gif
   :width: 400
   :align: center
 
