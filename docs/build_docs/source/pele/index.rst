@@ -102,13 +102,6 @@ overall method is composed of five steps, as outlined below:
     and map the whole protein-ligand conformational space.
 
 
-.. figure:: ../img/frag_pele_algorithm.png
-  :width: 500
-  :align: center
-
-  Fragment growing stages performed by FragPELE
-
-
 Further reading
 ---------------
 
