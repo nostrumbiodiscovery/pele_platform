@@ -2,8 +2,14 @@
 PELE basis
 ==========
 
-Our Protein Energy Landscape Exploration (PELE) tool combines protein structure prediction algorithms and Metropolis Monte Carlo techniques
+Our **Protein Energy Landscape Exploration** (PELE) tool combines protein structure prediction algorithms and Metropolis Monte Carlo techniques
 to efficiently tackle tasks like predicting binding sites, docking pose refinement or modelling exit path of a ligand.
+
+.. image:: ../img/induced_fit.gif
+  :width: 400
+  :align: center
+
+If you would like to find out more about the C++ engine running underneath, please refer to the `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/>`_.
 
 PELE algorithm
 --------------
@@ -22,8 +28,8 @@ Each simulation consists of several steps executing the following algorithm:
 
     **3. Acceptance.** The new structure is accepted (defining a new minimum) or rejected based on the Metropolis criterion.
 
-.. image:: https://nostrumbiodiscovery.github.io/pele_docs/_images/pele_scheme.png
-  :width: 400
+.. image:: ../img/pele_algorithm.png
+  :width: 600
   :align: center
 
 
@@ -62,8 +68,14 @@ FragPELE
 --------------
 
 FragPELE is a new tool for *in silico* hit-to-lead drug design, capable of **growing a fragment** into a core while exploring
-the protein-ligand conformational space. The software is intended to automatically grow one or more fragments onto
-different hydrogens of the same scaffold, the overall method is composed of five steps, as outlined below:
+the protein-ligand conformational space.
+
+.. image:: ../img/frag_pele.gif
+  :width: 300
+  :align: center
+
+The software is intended to automatically grow one or more fragments onto different hydrogens of the same scaffold, the
+overall method is composed of five steps, as outlined below:
 
     **1. Preparation.** Preprocessing of the PDB file to ensure the protein and the scaffold are correctly protonated and
     have assigned bond orders.
