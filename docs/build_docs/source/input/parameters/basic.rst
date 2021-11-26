@@ -11,6 +11,7 @@ the Platform PELE can be applied.
    basic_parameters/general.rst
    basic_parameters/pele.rst
    basic_parameters/adaptive.rst
+   basic_parameters/frag.rst
    basic_parameters/water.rst
    basic_parameters/ligand.rst
    basic_parameters/box.rst
