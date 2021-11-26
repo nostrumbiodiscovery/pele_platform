@@ -5,9 +5,11 @@ PELE basis
 Our **Protein Energy Landscape Exploration** (PELE) tool combines protein structure prediction algorithms and Metropolis Monte Carlo techniques
 to efficiently tackle tasks like predicting binding sites, docking pose refinement or modelling exit path of a ligand.
 
-.. image:: ../img/induced_fit_compressed.gif
+.. figure:: ../img/induced_fit_compressed.gif
   :width: 400
   :align: center
+
+  Visualisation of the PELE algorithm
 
 If you would like to find out more about the C++ engine running underneath, please refer to the `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/>`_.
 
@@ -28,9 +30,11 @@ Each simulation consists of several steps executing the following algorithm:
 
     **3. Acceptance.** The new structure is accepted (defining a new minimum) or rejected based on the Metropolis criterion.
 
-.. image:: ../img/pele_algorithm.png
+.. figure:: ../img/pele_algorithm.png
   :width: 600
   :align: center
+
+  Stages of every PELE step
 
 
 AdaptivePELE
@@ -49,9 +53,11 @@ The algorithm is composed of three main steps: sampling, clustering, and spawnin
     **3. Spawning.** In the last step, the initial structures (seeds) for the next iteration are selected with the goal
     of improving the search in poorly sampled regions or to optimize a user-defined metric.
 
-.. image:: https://adaptivepele.github.io/AdaptivePELE/_images/adaptiveDiagram.png
-  :width: 400
+.. figure:: ../img/adaptive_flow.png
+  :width: 500
   :align: center
+
+  Flow chart depicting the AdaptivePELE algorithm
 
 AquaPELE
 ----------
@@ -70,9 +76,11 @@ FragPELE
 FragPELE is a new tool for *in silico* hit-to-lead drug design, capable of **growing a fragment** into a core while exploring
 the protein-ligand conformational space.
 
-.. image:: ../img/frag_pele.gif
+.. figure:: ../img/frag_pele.gif
   :width: 300
   :align: center
+
+  Visualisation of fragment growing in a protein cavity
 
 The software is intended to automatically grow one or more fragments onto different hydrogens of the same scaffold, the
 overall method is composed of five steps, as outlined below:
@@ -94,9 +102,11 @@ overall method is composed of five steps, as outlined below:
     and map the whole protein-ligand conformational space.
 
 
-.. image:: ../img/frag_pele_algorithm.png
+.. figure:: ../img/frag_pele_algorithm.png
   :width: 500
   :align: center
+
+  Fragment growing stages performed by FragPELE
 
 
 Further reading
