@@ -11,22 +11,24 @@ to efficiently tackle tasks like predicting binding sites, docking pose refineme
 
 If you would like to find out more about the C++ engine running underneath, please refer to the `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/>`_.
 
+
 PELE algorithm
 --------------
 
 Each simulation consists of several steps executing the following algorithm:
 
-    **1. Perturbation.** Localised perturbation of the ligand (if present), involving random translation and rotation,
+    **1. Perturbation.** Localized perturbation of the ligand (if present), involving random translation and rotation,
     followed by simple side chain relocation to avoid clashes. Additionally, the protein is minimized by driving alpha
     carbons to new positions resulting from a small displacement in a low frequency anisotropic normal mode (ANM).
 
-    ➜ This step might also involve water perturbation - find out more about `AquaPELE`_.
+    .. note::
+        This step might also involve water perturbation - find out more about `AquaPELE`_.
 
     **2. Relaxation.** Optimization of side chains in proximity to the ligand as well as those whose energy changed the
     most during ANM, using a rotamer library with a resolution of 10°. This is followed by a global minimization with
     Truncated Newton minimizer.
 
-    **3. Acceptance.** The new structure is accepted (defining a new minimum) or rejected based on the Metropolis criterion.
+    **3. Acceptance.** The new structure is accepted or rejected based on the Metropolis criterion.
 
 .. image:: ../img/pele_algorithm.png
   :width: 600
@@ -34,11 +36,11 @@ Each simulation consists of several steps executing the following algorithm:
 
 
 AdaptivePELE
---------------
+------------
 
 AdaptivePELE is a Python package developed around the core PELE algorithm aimed to **enhance the exploration** of standard
 molecular simulations by iteratively running short simulations, assessing the exploration with a clustering, and
-spawning new trajectories in interesting regions.
+spawning new trajectories in regions of interest.
 
 The algorithm is composed of three main steps: sampling, clustering, and spawning, which run in an iterative approach.
 
@@ -53,8 +55,9 @@ The algorithm is composed of three main steps: sampling, clustering, and spawnin
   :width: 400
   :align: center
 
+
 AquaPELE
-----------
+--------
 
 AquaPELE extends the exploration capabilities of the standard PELE algorithm by introducing and additional Monte Carlo
 step to **perturb water molecules** inside protein cavities and dynamically adjust their effects to the current state of
@@ -64,8 +67,9 @@ The implementation employs a mixed implicit/explicit approach which allows predi
 or the rearrangement and displacement of conserved water molecules upon the binding of a ligand while retaining the
 efficiency.
 
+
 FragPELE
---------------
+--------
 
 FragPELE is a new tool for *in silico* hit-to-lead drug design, capable of **growing a fragment** into a core while exploring
 the protein-ligand conformational space.
