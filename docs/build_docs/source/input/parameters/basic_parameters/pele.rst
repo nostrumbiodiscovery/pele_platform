@@ -14,13 +14,17 @@ List of PELE general parameters:
     7. `sidechain_freq <#sidechain-freq>`__
     8. `min_freq <#min-freq>`__
     9. `water_freq <#water-freq>`__
-    10. `solvent <#solvent>`__
+    10. `conformation_freq <#conformation-freq>`__
+    11. `forcefield <#forcefield>`__
+    12. `solvent <#solvent>`__
 
 List of examples:
 
     - `Example 1 <#example-1>`__
     - `Example 2 <#example-2>`__
     - `Example 3 <#example-3>`__
+    - `Example 4 <#example-4>`__
+    - `Example 5 <#example-5>`__
 
 
 steps
@@ -29,7 +33,6 @@ steps
     - Description: The number of PELE steps to perform in each PELE iteration.
       Thus, this is the exact number of steps that each PELE explorer will
       execute and, as a result, all trajectories will have the same length.
-
     - Type: ``Integer``
     - Default: it depends on the package
 
@@ -47,6 +50,7 @@ steps
       `iterations <adaptive.html#iterations>`__,
       `minimum_steps <#minimum-steps>`__,
       `packages <../packages.html>`__,
+      `PELE basis <../../../pele/index.html>`__,
       `Example 1 <#example-1>`__,
       `Example 2 <#example-2>`__
 
@@ -59,7 +63,6 @@ minimum_steps
       the requested number of steps. As a result, those explorers that
       are faster might end up performing more steps than the minimum
       threshold.
-
     - Type: ``Boolean``
     - Default: ``False``
 
@@ -72,6 +75,7 @@ minimum_steps
 
     .. seealso::
       `steps <#steps>`__,
+      `PELE basis <../../../pele/index.html>`__,
       `Example 2 <#example-2>`__
 
 
@@ -83,7 +87,6 @@ equilibration
       the bias towards the initial ligand position since the production
       run starts from the different poses that are obtained during the
       equilibration.
-
     - Type: ``Boolean``
     - Default: ``False``
 
@@ -105,7 +108,6 @@ equilibration_steps
 
     - Description: The number of PELE steps to perform during the equilibration
       stage.
-
     - Type: ``Integer``
     - Default: ``2``
 
@@ -121,11 +123,11 @@ temperature
 
     - Description: The temperature in Kelvin to be used in the Metropolis
       criterion of PELE.
-
     - Type: ``Float``
     - Default: ``1500``
 
     .. seealso::
+      `PELE basis <../../../pele/index.html>`__,
       `Example 3 <#example-3>`__
 
 
@@ -137,7 +139,6 @@ anm_freq
       frequency of 2 means running every 2 steps. Thus, increasing the
       frequency of the ANM algorithm will reduce the protein perturbation
       but the simulation will run faster.
-
     - Type: ``Integer``
     - Default: it depends on the package
 
@@ -151,6 +152,7 @@ anm_freq
        Setting a frequency of 0 completely disables the ANM algorithm.
 
     .. seealso::
+      `PELE basis <../../../pele/index.html>`__,
       `Example 3 <#example-3>`__
 
 
@@ -163,7 +165,6 @@ sidechain_freq
       Thus, increasing the frequency of the side chain prediction algorithm
       will reduce the side chain relaxation but the simulation will run
       faster.
-
     - Type: ``Integer``
     - Default: it depends on the package
 
@@ -178,6 +179,7 @@ sidechain_freq
        algorithm.
 
     .. seealso::
+      `PELE basis <../../../pele/index.html>`__,
       `Example 3 <#example-3>`__
 
 
@@ -189,7 +191,6 @@ min_freq
       frequency of 2 means running every 2 steps. Thus, increasing the
       frequency of the minimization algorithm will reduce the acceptance ratio
       of the Metropolis criterion but the simulation will run faster.
-
     - Type: ``Integer``
     - Default: it depends on the package
 
@@ -203,6 +204,7 @@ min_freq
        Setting a frequency of 0 completely disables the minimization algorithm.
 
     .. seealso::
+      `PELE basis <../../../pele/index.html>`__,
       `Example 3 <#example-3>`__
 
 
@@ -214,7 +216,6 @@ water_freq
       frequency of 2 means running every 2 steps. Thus, increasing the
       frequency of aquaPELE algorithm will reduce water sampling
       but the simulation will run faster.
-
     - Type: ``Integer``
     - Default: it depends on the package
 
@@ -224,7 +225,6 @@ water_freq
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
-# TODO
     .. note::
        Note that aquaPELE is enabled only when we set some waters molecules
        to be perturbed. Refer to `water parameters <water.html>`__ in order
@@ -232,6 +232,37 @@ water_freq
 
     .. note::
        Setting a frequency of 0 completely disables the aquaPELE algorithm.
+
+    .. seealso::
+      `aquaPELE parameters <water.html>`__,
+      `Example 3 <#example-3>`__
+
+
+conformation_freq
++++++++++++++++++
+
+    - Description: The frequency for the conformation perturbation algorithm
+      of PELE. For example, a frequency of 1 means that it will run at every
+      PELE step, and a frequency of 2 means running every 2 steps. Thus,
+      increasing the frequency of conformation perturbation will promote the
+      sampling of the different ligand conformations but the acceptance
+      ratio of PELE steps might significantly decrease.
+    - Type: ``Integer``
+    - Default: ``4``
+
+    .. note::
+       Note that conformation perturbation is enabled only when we set
+       the ``ligand_conformations`` parameter. Refer
+       to `ligand parameters <ligand.html#ligand-conformations>`__ in order
+       to get further information about how to set it up.
+
+    .. note::
+       Setting a frequency of 0 completely disables the conformation
+       perturbation algorithm.
+
+    .. seealso::
+      `ligand_conformations <ligand.html#ligand-conformations>`__,
+      `Example 4 <#example-4>`__
 
 
 forcefield
@@ -252,16 +283,19 @@ forcefield
     - Type: ``String``
     - Default: ``OPLS2005``
 
-# TODO
     .. warning::
        Selecting any OpenFF force field requires the use of peleffy to
-       parametrize non standard residues. Currently, peleffy is not the default
-       parametrization tool. To know how to enable it,
-       check `ligand parametrization<ligand.html>`__.
+       parametrize non standard residues. Currently, peleffy is not the
+       default parametrization tool. To know how to enable it,
+       check `parametrization <parametrization.html>`__ options.
 
     .. note::
        Using any OpenFF force field implies modeling protein residues with
        OPLS2005 and non standard residues with OpenFF.
+
+    .. seealso::
+      `use_peleffy <parametrization.html#use-peleffy>`__,
+      `Example 5 <#example-5>`__
 
 
 solvent
@@ -278,6 +312,10 @@ solvent
 
     .. warning::
        Note that the only implicit solvent compatible with OpenFF is ``OBC``.
+
+    .. seealso::
+      `forcefield <#forcefield>`__,
+      `Example 6 <#example-6>`__
 
 
 Example 1
@@ -377,3 +415,93 @@ the acceptance probability increases.
     sidechain_freq: 1
     min_freq: 2
     temperature: 2000
+
+
+Example 4
++++++++++
+
+In this example we set an induced fit docking simulation with 30 computation
+cores. We also provide a path that contains different conformations of
+our ligand with the ``ligand_conformations`` parameter. This option will
+activate the Conformation perturbation algorithm that adds an extra
+perturbation step to visit all supplied ligand conformations during
+the PELE simulation. However, to diminish the effects of the Conformation
+perturbation algorithm, we reduce its frequency from a default of ``4``
+to ``6``. This strategy will modification will help to prevent the
+Metropolis acceptance ratio from dropping too much.
+
+..  code-block:: yaml
+
+    # Required parameters
+    system: 'system.pdb'
+    chain: 'L'
+    resname: 'LIG'
+
+    # General parameters
+    cpus: 30
+    seed: 2021
+
+    # Package selection
+    induced_fit_fast: True
+
+    # Ligand parameters
+    ligand_conformations: "LIG_conformations"
+
+    # PELE parameters
+    conformation_freq: 6
+
+
+Example 5
++++++++++
+
+In this example we set an induced fit docking simulation with 30 computation
+cores. We also select the latest OpenFF force field, which works with the OBC
+solvent model. In order to use it, we need to activate peleffy. Check
+`parametrization <parametrozation.html#use-peleffy>`__ section to get
+further details.
+
+..  code-block:: yaml
+
+    # Required parameters
+    system: 'system.pdb'
+    chain: 'L'
+    resname: 'LIG'
+
+    # General parameters
+    cpus: 30
+    seed: 2021
+
+    # Package selection
+    induced_fit_fast: True
+
+    # Parametrization parameters
+    use_peleffy: True
+
+    # PELE parameters
+    forcefield: "openff-2.0.0"
+
+
+Example 6
++++++++++
+
+In this example we set an induced fit docking simulation with 30 computation
+cores. We also change the implicit solvent model. The default solvent when
+using **OPLS2005** is **VDGBNP**. However, we can also use **OBC** if
+we select it with the ``solvent`` parameter.
+
+..  code-block:: yaml
+
+    # Required parameters
+    system: 'system.pdb'
+    chain: 'L'
+    resname: 'LIG'
+
+    # General parameters
+    cpus: 30
+    seed: 2021
+
+    # Package selection
+    induced_fit_fast: True
+
+    # PELE parameters
+    solvent: "VDGBNP"

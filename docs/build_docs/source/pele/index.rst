@@ -13,6 +13,7 @@ to efficiently tackle tasks like predicting binding sites, docking pose refineme
 
 If you would like to find out more about the C++ engine running underneath, please refer to the `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/>`_.
 
+
 PELE algorithm
 --------------
 
@@ -30,6 +31,8 @@ Each simulation consists of several steps executing the following algorithm:
 
     **3. Acceptance.** The new structure is accepted (defining a new minimum) or rejected based on the Metropolis criterion.
 
+Check how to set it up `here <../input/parameters/basic_parameters/pele.html>`__.
+
 .. figure:: ../img/pele_algorithm.png
   :width: 600
   :align: center
@@ -38,7 +41,7 @@ Each simulation consists of several steps executing the following algorithm:
 
 
 AdaptivePELE
---------------
+------------
 
 AdaptivePELE is a Python package developed around the core PELE algorithm aimed to **enhance the exploration** of standard
 molecular simulations by iteratively running short simulations, assessing the exploration with a clustering, and
@@ -53,14 +56,17 @@ The algorithm is composed of three main steps: sampling, clustering, and spawnin
     **3. Spawning.** In the last step, the initial structures (seeds) for the next iteration are selected with the goal
     of improving the search in poorly sampled regions or to optimize a user-defined metric.
 
+Check how to set it up `here <../input/parameters/basic_parameters/adaptive.html>`__.
+
 .. figure:: ../img/adaptive_flow.png
   :width: 500
   :align: center
 
   Flow chart depicting the AdaptivePELE algorithm
 
+
 AquaPELE
-----------
+--------
 
 AquaPELE extends the exploration capabilities of the standard PELE algorithm by introducing and additional Monte Carlo
 step to **perturb water molecules** inside protein cavities and dynamically adjust their effects to the current state of
@@ -70,8 +76,21 @@ The implementation employs a mixed implicit/explicit approach which allows predi
 or the rearrangement and displacement of conserved water molecules upon the binding of a ligand while retaining the
 efficiency.
 
+Check how to set it up `here <../input/parameters/basic_parameters/water.html>`__.
+
+
+Conformation perturbation
+-------------------------
+
+PELE provides the possibility to narrow down the range of available ligand conformations to increase the efficiency of
+sampling. It will automatically generate a library of conformations when supplied with a directory of ligand clusters
+originating from conformational search or `Bioactive Conformational Ensemble server <https://mmb.irbbarcelona.org/BCE/>`_.
+
+Check how to set it up `here <../input/parameters/basic_parameters/ligand.html#ligand-conformations>`__.
+
+
 FragPELE
---------------
+--------
 
 FragPELE is a new tool for *in silico* hit-to-lead drug design, capable of **growing a fragment** into a core while exploring
 the protein-ligand conformational space.
@@ -80,9 +99,9 @@ the protein-ligand conformational space.
   :width: 300
   :align: center
 
-  Visualisation of fragment growing in a protein cavity
+  Visualization of fragment growing in a protein cavity
 
-The software is intended to automatically grow one or more fragments onto different hydrogens of the same scaffold, the
+The software is intended to automatically grow one or more fragments onto different hydrogen atoms of the same scaffold, the
 overall method is composed of five steps, as outlined below:
 
     **1. Preparation.** Preprocessing of the PDB file to ensure the protein and the scaffold are correctly protonated and
@@ -101,6 +120,7 @@ overall method is composed of five steps, as outlined below:
     **5. Sampling & scoring.** Once the ligand is completely grown, a longer PELE simulation is performed to score the
     and map the whole protein-ligand conformational space.
 
+Check how to set it up `here <../input/parameters/basic_parameters/frag.html>`__.
 
 Further reading
 ---------------
@@ -113,5 +133,7 @@ as further improvements, such as AdaptivePELE or FragPELE.
 * `Adaptive simulations, towards interactive protein-ligand modeling <https://www.nature.com/articles/s41598-017-08445-5>`_ by Daniel Lecina, Joan F. Gilabert, and Victor Guallar
 
 * `aquaPELE: A Monte Carlo-Based Algorithm to Sample the Effects of Buried Water Molecules in Proteins <https://pubs.acs.org/doi/10.1021/acs.jctc.0c00925>`_ by Martí Municoy, Sergi Roda, Daniel Soler, Alberto Soutullo, and Victor Guallar
+
+* `Bioactive Conformational Ensemble Server and Database. A Public Framework to Speed Up In Silico Drug Discovery <https://pubs.acs.org/doi/10.1021/acs.jctc.0c00305>`_ by Sanja Zivanovic, Genís Bayarri, Francesco Colizzi, David Moreno, Josep Lluís Gelpí, Robert Soliva, Adam Hospital and Modesto Orozco
 
 * `FragPELE: Dynamic Ligand Growing within a Binding Site. A Novel Tool for Hit-To-Lead Drug Design <https://pubs.acs.org/doi/10.1021/acs.jcim.9b00938>`_ by Carles Perez, Daniel Soler, Robert Soliva, and Victor Guallar

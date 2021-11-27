@@ -27,7 +27,8 @@ True. They are listed below:
 Other packages can be activated when specific parameters are set, like:
 
     - fragPELE: our fragment growing protocol has its own parameters.
-      More information `here <../../packages/frag/index.html>`__.
+      More information `here <basic_parameters/frag.html>`__.
     - sidechainPerturbation: when ``covalent_residue`` is set, the side chain
       perturbation algorithm will run to perturb covalently bound non standard
-      residues. More information `here <../../packages/site_finder/index.html>`__.
+      residues.
+      More information `here <basic_parameters/sidechain_perturbation.html>`__.
