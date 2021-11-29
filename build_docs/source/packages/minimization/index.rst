@@ -18,7 +18,7 @@ Default parameters
 
     - iterations: 20
     - pele_steps: 12
-    - `constraint level <https://nostrumbiodiscovery.github.io/pele_platform/flags/all_packages/index.html#carbon-alpha-constraints>`_: 2
+    - `constraint level <../../input/parameters/basic_parameters/constraints.html#constraint_level>`_: 2
 
 Recommendations
 ++++++++++++++++++
