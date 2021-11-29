@@ -68,7 +68,7 @@ Check how to set it up `here <../input/parameters/basic_parameters/adaptive.html
 AquaPELE
 --------
 
-AquaPELE extends the exploration capabilities of the standard PELE algorithm by introducing and additional Monte Carlo
+AquaPELE extends the exploration capabilities of the standard PELE algorithm by introducing an additional Monte Carlo
 step to **perturb water molecules** inside protein cavities and dynamically adjust their effects to the current state of
 the system.
 

@@ -76,7 +76,7 @@ Solution
 +++++++++
 
 This error indicates that the software was not able to find the ligand in the PDB file. Make sure ``chain`` and ``resname`` flags
-in your input file have correct values. Remember that ligands need to have a unique chain IDs!
+in your input file have correct values. Remember that the ligand needs to have a unique chain ID!
 
 4. How to add CONECT lines? (ConnectionsError)
 ---------------------------------------------

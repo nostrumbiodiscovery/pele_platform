@@ -40,7 +40,7 @@ box-center
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -78,7 +78,7 @@ box-radius
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 

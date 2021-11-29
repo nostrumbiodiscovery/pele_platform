@@ -1,7 +1,7 @@
 General parameters
 ------------------
 
-These are general parameters that affect to the global behaviour of the Platform.
+These are general parameters that affect the global behaviour of the Platform.
 
 List of general parameters:
 
@@ -46,7 +46,7 @@ test
     .. warning::
        Never use the control files generated in test mode as input for a
        production simulation because other parameters such as temperature,
-       ANM and minimization are twicked to make simulation faster.
+       ANM and minimization are tweaked to make simulation faster.
 
     .. seealso::
       `cpus <general.html#cpus>`__,
@@ -64,7 +64,7 @@ debug
 
     .. note::
       The combination of this parameter along with ``debug`` allows the user to manually modify any input file that the
-      Platform generates. For example, running first on debug mode will generate input files like ``pele.conf``,
+      Platform generates. For example, running first in debug mode will generate input files like ``pele.conf``,
       ``adaptive.conf`` or ligand templates. The user can then modify them at their will and restart the job with
       ``restart``.
 
@@ -131,7 +131,7 @@ working_folder
       When ``working_folder`` is not set, the default behaviour is to never
       replace an existing folder. So, in case that ``LIG_Pele`` directory
       already exists, the ultimate ``working_folder`` will be set to
-      ``LIG_Pele_1``, ``LIG_Pele_2``, and so.
+      ``LIG_Pele_1``, ``LIG_Pele_2``, and so on.
 
     .. seealso::
       `Example 1 <#example-1>`__,
@@ -142,7 +142,7 @@ Example 1
 +++++++++
 
 In this example we set an induced fit docking simulation with 10 computation
-cores and run it on debug mode.
+cores and run it in debug mode.
 Moreover, test and restart modes are disabled. Finally, we also establish a
 specific seed for the pseudo-random numbers generator and a custom working folder.
 
@@ -169,7 +169,7 @@ Example 2
 +++++++++
 
 In this example we set an induced fit docking simulation with 10 computation
-cores and run it on test mode.
+cores and run it in test mode.
 When using this mode, the number of computation cores that will be used is always
 going to be 5, regardless of the number of cores requested with the ``cpus`` parameter.
 
@@ -194,7 +194,7 @@ Example 3
 In this example we ask the induced fit docking simulation to be restarted.
 Consequently, the Platform expects to find a directory previously created
 with valid input files. To generate them, we need to execute the Platform
-on debug mode, as shown in `Example 1 <#example-1>`__. So, in this case
+in debug mode, as shown in `Example 1 <#example-1>`__. So, in this case
 the working_folder that we set it must already exist.
 
 ..  code-block:: yaml

@@ -24,5 +24,5 @@ the Platform PELE can be applied.
 
 In case that basic parameters are not flexible enough and do not cover a particular case,
 do not hesitate to reach us out at pelesupport@nostrumbiodiscovery.com.
-Besides, you might also find a solution checking our `Advanced Parameters <advanced.html>`__
+Besides, you might also find a solution by checking our `Advanced Parameters <advanced.html>`__
 section.
