@@ -1,0 +1,407 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Frequently asked questions (FAQs) &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="PELE basis" href="../pele/index.html" />
+    <link rel="prev" title="Release history" href="../changelog/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Frequently asked questions (FAQs)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#why-does-it-ask-me-to-check-atoms">1. Why does it ask me to check atoms?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#example-error-message">Example error message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#solution">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pele-cannot-locate-a-file-how-do-i-fix-it-filenotfounderror">2. PELE cannot locate a file, how do I fix it? (FileNotFoundError)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Example error message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#why-did-it-fail-to-extract-the-ligand-valueerror">3. Why did it fail to extract the ligand? (ValueError)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Example error message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-add-conect-lines-connectionserror">4. How to add CONECT lines? (ConnectionsError)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Example error message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Solution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-handle-ligand-parametrization-failure">5. How to handle ligand parametrization failure?</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Example error message</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Solution</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-remove-the-residue">a. Remove the residue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#b-parametrize-manually">b. Parametrize manually</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#how-to-analyse-the-output-files">6. How to analyse the output files?</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Frequently asked questions (FAQs)</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/faqs/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="frequently-asked-questions-faqs">
+<h1>Frequently asked questions (FAQs)<a class="headerlink" href="#frequently-asked-questions-faqs" title="Permalink to this headline">¶</a></h1>
+<p>If you do not find a solution to your problem, feel free to send us an email at <a class="reference external" href="mailto:pelesupport&#37;&#52;&#48;nostrumbiodiscovery&#46;com">pelesupport<span>&#64;</span>nostrumbiodiscovery<span>&#46;</span>com</a>.
+We’re here to help!</p>
+<blockquote>
+<div><p><a class="reference internal" href="#why-does-it-ask-me-to-check-atoms">1. Why does it ask me to check atoms?</a></p>
+<p><a class="reference internal" href="#pele-cannot-locate-a-file-how-do-i-fix-it-filenotfounderror">2. PELE cannot locate a file, how do I fix it? (FileNotFoundError)</a></p>
+<p><a class="reference internal" href="#why-did-it-fail-to-extract-the-ligand-valueerror">3. Why did it fail to extract the ligand? (ValueError)</a></p>
+<p><a class="reference internal" href="#how-to-add-conect-lines-connectionserror">4. How to add CONECT lines? (ConnectionsError)</a></p>
+<p><a class="reference internal" href="#how-to-handle-ligand-parametrization-failure">5. How to handle ligand parametrization failure?</a></p>
+<p><a class="reference internal" href="#how-to-analyse-the-output-files">6. How to analyse the output files?</a></p>
+</div></blockquote>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<div class="section" id="why-does-it-ask-me-to-check-atoms">
+<h2>1. Why does it ask me to check atoms?<a class="headerlink" href="#why-does-it-ask-me-to-check-atoms" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="example-error-message">
+<h3>Example error message<a class="headerlink" href="#example-error-message" title="Permalink to this headline">¶</a></h3>
+<p>The following error message indicates that the atom(s) you chose to calculate the distance metric or constrain does
+not exist.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Check the atoms A:999:C given to calculate the distance metric.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="solution">
+<h3>Solution<a class="headerlink" href="#solution" title="Permalink to this headline">¶</a></h3>
+<p>To resolve the issue, you should:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>ensure the atom string has the correct format, i.e. <code class="docutils literal notranslate"><span class="pre">&quot;chain_id:residue_number:atom_name&quot;</span></code></p></li>
+<li><p>examine the protein structure in Schrödinger Maestro (or open the PDB file as text) and double-check, if the atom exists.</p></li>
+</ul>
+</div></blockquote>
+<p>You can easily check residue numbers and atom names in the bottom panel in Maestro by hovering the mouse pointer over a specific atom. In this example, the correct atom string would be <code class="docutils literal notranslate"><span class="pre">&quot;A:106:OH&quot;</span></code>.</p>
+<a class="reference internal image-reference" href="../_images/ppi_tutorial_1e.png"><img alt="../_images/ppi_tutorial_1e.png" class="align-center" src="../_images/ppi_tutorial_1e.png" style="width: 400px;" /></a>
+</div>
+</div>
+<div class="section" id="pele-cannot-locate-a-file-how-do-i-fix-it-filenotfounderror">
+<h2>2. PELE cannot locate a file, how do I fix it? (FileNotFoundError)<a class="headerlink" href="#pele-cannot-locate-a-file-how-do-i-fix-it-filenotfounderror" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Example error message<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">FileNotFoundError: [Errno 2] No such file or directory: &#39;/home/anna/errors/file.pdb&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Solution<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>If PELE raises <code class="docutils literal notranslate"><span class="pre">FileNotFoundError</span></code>, it probably means it cannot find one of the files specified in <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code> such as system, ligand or RMSD reference. Make sure:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>there are no spelling mistakes in file names</p></li>
+<li><p>all required files are located in your working directory (or provide a relative path in your input file instead).</p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="why-did-it-fail-to-extract-the-ligand-valueerror">
+<h2>3. Why did it fail to extract the ligand? (ValueError)<a class="headerlink" href="#why-did-it-fail-to-extract-the-ligand-valueerror" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Example error message<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ValueError: Something went wrong when extracting the ligand. Check residue&amp;Chain on input</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id4">
+<h3>Solution<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>This error indicates that the software was not able to find the ligand in the PDB file. Make sure <code class="docutils literal notranslate"><span class="pre">chain</span></code> and <code class="docutils literal notranslate"><span class="pre">resname</span></code> flags
+in your input file have correct values. Remember that the ligand needs to have a unique chain ID!</p>
+</div>
+</div>
+<div class="section" id="how-to-add-conect-lines-connectionserror">
+<h2>4. How to add CONECT lines? (ConnectionsError)<a class="headerlink" href="#how-to-add-conect-lines-connectionserror" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h3>Example error message<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pele_platform.Errors.custom_errors.ConnectionsError: Your PDB file is missing the CONECT lines. Please do not remove them after Schrodinger preprocessing.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>Solution<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>This warning indicates that the PDB file is missing the connectivity section. To resolve the issue, you should import
+the PDB in Schrödinger Maestro and preprocess it, launching the Protein Preparation Wizard.</p>
+<p>Note that <strong>CONECT lines are required for peleffy</strong> forcefield builder.</p>
+</div>
+</div>
+<div class="section" id="how-to-handle-ligand-parametrization-failure">
+<h2>5. How to handle ligand parametrization failure?<a class="headerlink" href="#how-to-handle-ligand-parametrization-failure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h3>Example error message<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p>Sometimes parametrization of a hetero molecule (cofactor, modified residue, crystallization factor) will fail, which
+should result in the following warning message:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Failed to parametrize residue MET. You can skip it or parametrize manually</span>
+<span class="gp gp-VirtualEnv">(see documentation: https://nostrumbiodiscovery.github.io/pele_platform/errors/index.html#parametrization)</span><span class="go">.</span>
+<span class="go">The error raised was: Size of atom parameter lists should match.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id8">
+<h3>Solution<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>Depending on the complexity of the system you are studying, there are two options available:</p>
+<div class="section" id="a-remove-the-residue">
+<h4>a. Remove the residue<a class="headerlink" href="#a-remove-the-residue" title="Permalink to this headline">¶</a></h4>
+<p>If the hetero molecule is <strong>not necessary</strong> to study your system, the easiest way to handle this is to <strong>remove it from the PDB file</strong>. Similarly, you can ignore the warning, but PELE is likely going to crash because it will miss the template.</p>
+</div>
+<div class="section" id="b-parametrize-manually">
+<h4>b. Parametrize manually<a class="headerlink" href="#b-parametrize-manually" title="Permalink to this headline">¶</a></h4>
+<p>Alternatively, you can <strong>parametrize the molecule manually</strong> and pass obtained template and rotamer files in the <code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Save the residue to a separate PDB file, ensure the CONECT lines are included and the Lewis structure is correct.</p></li>
+<li><p>Run the following command inside the Python environment of the platform to create the default rotamer and template files. For more options, please refer to the <a class="reference external" href="https://martimunicoy.github.io/peleffy/usage.html">Open Force Field for PELE documentation</a>.</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m peleffy.main ligand.pdb</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p>Add paths to your newly created files to the input.yaml, for example:</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">templates</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/path/to/metz&quot;</span>
+
+<span class="nt">rotamers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;/path/to/MET.rot.assign&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="how-to-analyse-the-output-files">
+<h2>6. How to analyse the output files?<a class="headerlink" href="#how-to-analyse-the-output-files" title="Permalink to this headline">¶</a></h2>
+<p>You should mostly focus on the <code class="docutils literal notranslate"><span class="pre">results</span></code> directory, which contains curated, user-friendly analysis stored in the following folders:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">top_poses</span></code> - top 100 lowest binding energy structures</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plots</span></code> - plots of multiple metrics selected by the user</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clusters</span></code> - lowest binding energy cluster representatives and clustering plots.</p></li>
+</ul>
+</div></blockquote>
+<p>If you want to understand more about other files generated by the Platform, please refer to <a class="reference external" href="../tutorials/outputs.html">Understanding the output files</a> tutorial.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../pele/index.html" class="btn btn-neutral float-right" title="PELE basis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../changelog/index.html" class="btn btn-neutral float-left" title="Release history" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

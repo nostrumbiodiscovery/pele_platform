@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Environment variables &mdash; pele platform 1.6.0b2 documentation</title>
+  <title>Environment variables &mdash; pele platform 1.6.1 documentation</title>
   
 
   
@@ -37,8 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="copyright" title="Copyright" href="../copyright.html" />
-    <link rel="next" title="Optional flags" href="../flags/index.html" />
-    <link rel="prev" title="Covalent docking" href="../packages/covalent_docking/index.html" /> 
+    <link rel="prev" title="Advanced tips and tricks" href="../developers/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -62,7 +61,7 @@
             
             
               <div class="version">
-                1.6
+                1.6.1
               </div>
             
           
@@ -87,43 +86,36 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
-</ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Environment variables</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#mandatory-variables">Mandatory variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#optional-variables">Optional variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pele-exec">PELE_EXEC:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pele-data">PELE_DATA:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pele-documents">PELE_DOCUMENTS:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pele-license">PELE_LICENSE:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#singularity-exec">SINGULARITY_EXEC:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-exec">PELE_EXEC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-data">PELE_DATA</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-documents">PELE_DOCUMENTS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-license">PELE_LICENSE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#singularity-exec">SINGULARITY_EXEC</a></li>
 </ul>
 </li>
 </ul>
 </li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
 </ul>
 
             
@@ -209,7 +201,7 @@
 <div class="section" id="optional-variables">
 <h2>Optional variables<a class="headerlink" href="#optional-variables" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="pele-exec">
-<h3>PELE_EXEC:<a class="headerlink" href="#pele-exec" title="Permalink to this headline">¶</a></h3>
+<h3>PELE_EXEC<a class="headerlink" href="#pele-exec" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The PELE executable can be configured in several ways (from highest to lowest precedence):</p>
 <blockquote>
@@ -232,7 +224,7 @@
 </div></blockquote>
 </div>
 <div class="section" id="pele-data">
-<h3>PELE_DATA:<a class="headerlink" href="#pele-data" title="Permalink to this headline">¶</a></h3>
+<h3>PELE_DATA<a class="headerlink" href="#pele-data" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The PELE data folder can be configured in several ways (from highest to lowest precedence):</p>
 <blockquote>
@@ -255,7 +247,7 @@
 </div></blockquote>
 </div>
 <div class="section" id="pele-documents">
-<h3>PELE_DOCUMENTS:<a class="headerlink" href="#pele-documents" title="Permalink to this headline">¶</a></h3>
+<h3>PELE_DOCUMENTS<a class="headerlink" href="#pele-documents" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>The PELE documents folder can be configured in several ways (from highest to lowest precedence):</p>
 <blockquote>
@@ -278,7 +270,7 @@
 </div></blockquote>
 </div>
 <div class="section" id="pele-license">
-<h3>PELE_LICENSE:<a class="headerlink" href="#pele-license" title="Permalink to this headline">¶</a></h3>
+<h3>PELE_LICENSE<a class="headerlink" href="#pele-license" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Licenses can be configured in several ways (from highest to lowest precedence):</p>
 <blockquote>
@@ -301,7 +293,7 @@
 </div></blockquote>
 </div>
 <div class="section" id="singularity-exec">
-<h3>SINGULARITY_EXEC:<a class="headerlink" href="#singularity-exec" title="Permalink to this headline">¶</a></h3>
+<h3>SINGULARITY_EXEC<a class="headerlink" href="#singularity-exec" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><p>Path of the singularity container that contains the PELE executable. It can be configured in two ways:</p>
 <blockquote>
@@ -331,10 +323,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../flags/index.html" class="btn btn-neutral float-right" title="Optional flags" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="../packages/covalent_docking/index.html" class="btn btn-neutral float-left" title="Covalent docking" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../developers/index.html" class="btn btn-neutral float-left" title="Advanced tips and tricks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -1,29 +1,67 @@
 Understanding the output files
 ================================
 
-Information about the output of your simulation
------------------------------------------------------
+Folder structure
+-----------------
 
-#. When performing a simulation, a folder will be created. If the simulation is repeated, the folder won't be deleted and a new one will be created.
-   The processed input, control files and the simulation folder will be stored there. The default name is: *resname_Pele_X*, where X is a number.
+Each time you launch a **new simulation**, the Platform will generate a top level directory including all input and output
+files.
 
-#. The created folder will be organized as:
-	* DataLocal (folder): See `PELE Molecular Parameters <https://nostrumbiodiscovery.github.io/pele_docs/molecularParameters.html>`_
-	* Lig.mae: Rotamer library
-	* docking.pdb: PDB of the docked molecules
-	* ligand.pdb: PDB of the ligand
-	* receptor.pdb: PDB of the receptor
-	* LIG.log: Log file 
-	* adaptive.conf: See `Control file outline <https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline>`_
-	* input.yaml: PELE input file
-	* pele.conf: Control file. See `General structure of a control file <https://nostrumbiodiscovery.github.io/pele_docs/GeneralStructure/GeneralStructure.html>`_
+Unless you provide a **custom folder name** using ``working_folder`` parameters, it will automatically enumerate one
+based on the name of the perturbed ligand, e.g. ``LIG_Pele``, ``LIG_Pele_1``, etc. ensuring the old simulations will not
+be overwritten.
 
-#. It is recommended to first run the program with the test flag. Thus, the simulation will run using 5 CPUs.
+.. code:: console
 
-Related Topics
---------------------
+    .
+    └── LIG_Pele
+        ├── Data
+        ├── DataLocal
+        ├── Documents
+        ├── input
+        ├── output
+        └── results
+            ├── top_poses
+            ├── plots
+            └── clusters
 
-* `Installation <../installation/index.html>`_
-* `Prepare your own simulation <../packages/index.html>`_
-* `Common errors <../errors/index.html>`_
-* `Versions <../changelog/index.html>`_
+Top level directory
+-------------------
+
+The top level directory contains the logs, configuration files and a copy of input.yaml created by the user.
+
+    * ``LIG.log:`` log file
+    * ``adaptive.conf``: control file for AdaptivePELE (`learn more <https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline>`_)
+    * ``input.yaml``: user's configuration file
+    * ``pele.conf``: control file for PELE (`learn more <https://nostrumbiodiscovery.github.io/pele_docs/GeneralStructure/GeneralStructure.html>`_)
+    * ``LIG.mae``: the rotamer library
+
+Additionally, it contains several Data and Documents folder required by PELE++, which contain residue templates and
+rotamer libraries. More details `here <https://nostrumbiodiscovery.github.io/pele_docs/molecularParameters.html>`_.
+
+Input
+-----
+
+The input folded contains:
+
+    * ``system_preprocessed.pdb``: original PDB file preprocessed by the Platform
+    * ``input*.pdb``: input files with initial poses (depends on the package)
+    * ``receptor.pdb``: PDB file with extracted protein
+    * ``ligand.pdb``: PDB file with extracted ligand.
+
+Output
+------
+
+Most importantly, this directory contains **raw PELE output**, i.e. report and trajectory files containing every step of the simulation, split
+into several folders, depending on the number of iterations performed.
+
+Additionally, you will find information about topologies and clustering performed by AdaptivePELE.
+
+Results
+-------
+
+The results directory holds a more **user-friendly, curated output** comprising of three separate folders:
+
+    * ``top_poses`` - top 100 lowest binding energy structures, unless the user specified a different number of top poses to be extracted
+    * ``plots`` - plots of multiple metrics selected by the user (such as SASA or atom distance), providing an insight into the progress of the simulation
+    * ``clusters`` - lowest binding energy cluster representatives (unless the user specified a different metric) and clustering plots.

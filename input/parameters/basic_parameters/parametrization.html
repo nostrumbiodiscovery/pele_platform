@@ -1,0 +1,529 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Residue parametrization &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" />
+    <link rel="next" title="fragPELE parameters" href="frag.html" />
+    <link rel="prev" title="Adaptive PELE parameters" href="adaptive.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Input files preparation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../system_preparation.html">PDB preparation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../yaml.html">Input yaml parameters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../required.html">Required parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packages.html">Package selection</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html">Basic parameters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="general.html">General parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pele.html">PELE general parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="adaptive.html">Adaptive PELE parameters</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Residue parametrization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frag.html">fragPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sidechain_perturbation.html">Side chain perturbation parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="water.html">aquaPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ligand.html">Ligand parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="box.html">Perturbation site parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metrics.html">PELE metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="constraints.html">Constraint parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metals.html">Metal parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html">Analysis parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced.html">Advanced parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../templates.html">Custom template generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Input files preparation</a> &raquo;</li>
+        
+          <li><a href="../../yaml.html">Input yaml parameters</a> &raquo;</li>
+        
+          <li><a href="../basic.html">Basic parameters</a> &raquo;</li>
+        
+      <li>Residue parametrization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/input/parameters/basic_parameters/parametrization.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="residue-parametrization">
+<h1>Residue parametrization<a class="headerlink" href="#residue-parametrization" title="Permalink to this headline">¶</a></h1>
+<p>These are parameters to manage the parametrization of residues. For a complete
+guide on the parameters that PELE needs in order to run successfully, check
+the <a class="reference external" href="../../templates.html">Custom template generation</a> documentation.</p>
+<p>List of ligand parameters:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="#use-peleffy">use_peleffy</a></p></li>
+<li><p><a class="reference external" href="#templates">templates</a></p></li>
+<li><p><a class="reference external" href="#rotamers">rotamers</a></p></li>
+<li><p><a class="reference external" href="#solvent-template">solvent_template</a></p></li>
+</ol>
+</div></blockquote>
+<p>List of examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="#example-1">Example 1</a></p></li>
+<li><p><a class="reference external" href="#example-2">Example 2</a></p></li>
+<li><p><a class="reference external" href="#example-3">Example 3</a></p></li>
+<li><p><a class="reference external" href="#example-4">Example 4</a></p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="use-peleffy">
+<h2>use_peleffy<a class="headerlink" href="#use-peleffy" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Activates peleffy instead of the default parameters builder.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Boolean</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Although it is still not the default option, peleffy will soon be
+the default option to parametrize non standard residues.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that the usage of any OpenFF force field requires activating
+peleffy.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To get more information about peleffy you can check
+its <a class="reference external" href="https://martimunicoy.github.io/peleffy/index.html">specific documentation</a></p>
+<blockquote>
+<div><p>or one of our <a class="reference external" href="../../../tutorials/peleffy.html">tutorials</a>.</p>
+</div></blockquote>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="../../../tutorials/peleffy.html">peleffy tutorial</a>,
+<a class="reference external" href="pele.html#forcefield">forcefield</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-2">Example 2</a>,
+<a class="reference external" href="#example-4">Example 4</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="templates">
+<h2>templates<a class="headerlink" href="#templates" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets a list of external templates. Templates are
+files containing the parameters of the force field corresponding
+to a specific residue. Check <a class="reference external" href="../../templates.html">this page</a>
+to get further information.</p></li>
+<li><p>Type: list of <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Double check that all atoms in the template match with those in the
+input structure of PELE for all involved residues. In case that
+PELE finds any mismatch between these files, it will raise an
+exception with information about any non matching atom that is found.
+To solve these problems, read carefully PELE messages and verify
+the parametrization process.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Any residue parametrized in one of the external templates supplied
+with this flag will not be parametrized with our internal
+parametrization workflow.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#rotamers">rotamers</a>,
+<a class="reference external" href="#solvent-template">solvent_template</a>,
+<a class="reference external" href="#example-3">Example 3</a>,
+<a class="reference external" href="#example-4">Example 4</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="rotamers">
+<h2>rotamers<a class="headerlink" href="#rotamers" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets a list of rotamer libraries. Rotamer libraries are
+files containing the list of rotatable bonds of a residue arranged
+by rotatable branches. Check <a class="reference external" href="../../templates.html">this page</a>
+to get further information.</p></li>
+<li><p>Type: list of <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When the template of a residue is externally supplied
+with <code class="docutils literal notranslate"><span class="pre">templates</span></code> option, the internal parametrization workflow
+skips the preparation of that residue. In order to account for
+its rotamers, you must also supply them through an external file as
+they will not be automatically generated.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#templates">templates</a>,
+<a class="reference external" href="#solvent-template">solvent_template</a>,
+<a class="reference external" href="#example-3">Example 3</a>,
+<a class="reference external" href="#example-4">Example 4</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="solvent-template">
+<h2>solvent_template<a class="headerlink" href="#solvent-template" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets a list of solvent templates. Solvent templates are
+files containing the solvent parameters of a residue.
+Check <a class="reference external" href="../../templates.html">this page</a>
+to get further information.</p></li>
+<li><p>Type: list of <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When the template of a residue is externally supplied
+with <code class="docutils literal notranslate"><span class="pre">templates</span></code> option, the internal parametrization workflow
+skips the preparation of that residue. In order to correctly set
+its solvent parameters, you must also supply them through an external
+file as they will not be automatically generated.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Solvent templates are only required when the OBC solvent model is used.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#templates">templates</a>,
+<a class="reference external" href="#rotamers">rotamers</a>,
+<a class="reference external" href="pele.html#templates">solvent</a>,
+<a class="reference external" href="#example-3">Example 3</a>,
+<a class="reference external" href="#example-4">Example 4</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. We also activate peleffy and use the latest OpenFF force field
+to parametrize non standard residues.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># PELE parameters</span>
+<span class="nt">forcefield</span><span class="p">:</span> <span class="s">&quot;openff-2.0.0&quot;</span>
+
+<span class="c1"># Parametrization parameters</span>
+<span class="nt">use_peleffy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. We also activate peleffy and use the OPLS2005 force field
+to parametrize non standard residues.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># PELE parameters</span>
+<span class="nt">forcefield</span><span class="p">:</span> <span class="s">&quot;OPLS2005&quot;</span>
+
+<span class="c1"># Parametrization parameters</span>
+<span class="nt">use_peleffy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. We are using the default force field, which is OPLS2005. However,
+in this case, we supply custom templates for our ligand. These files can
+be generated externally with peleffy.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Parametrization parameters</span>
+<span class="nt">templates</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/ligz&quot;</span>
+<span class="nt">rotamers</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/LIG.rot.assign&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-4">
+<h2>Example 4<a class="headerlink" href="#example-4" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. We are using the latest OpenFF force field, which works with the OBC
+solvent model. So, in this case, if we supply custom templates for our ligand
+we also need to supply the solvent template. These files can be generated
+externally with peleffy.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># PELE parameters</span>
+<span class="nt">forcefield</span><span class="p">:</span> <span class="s">&quot;openff-2.0.0&quot;</span>
+
+<span class="c1"># Parametrization parameters</span>
+<span class="nt">use_peleffy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="nt">templates</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/ligz&quot;</span>
+<span class="nt">rotamers</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/LIG.rot.assign&quot;</span>
+<span class="nt">solvent_template</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/ligandParams.txt&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="frag.html" class="btn btn-neutral float-right" title="fragPELE parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="adaptive.html" class="btn btn-neutral float-left" title="Adaptive PELE parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../../../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

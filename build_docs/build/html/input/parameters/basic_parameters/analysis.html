@@ -1,0 +1,570 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Analysis parameters &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" />
+    <link rel="next" title="Advanced parameters" href="../advanced.html" />
+    <link rel="prev" title="Metal parameters" href="metals.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Input files preparation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../system_preparation.html">PDB preparation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../yaml.html">Input yaml parameters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../required.html">Required parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packages.html">Package selection</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html">Basic parameters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="general.html">General parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pele.html">PELE general parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="adaptive.html">Adaptive PELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parametrization.html">Residue parametrization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frag.html">fragPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sidechain_perturbation.html">Side chain perturbation parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="water.html">aquaPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ligand.html">Ligand parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="box.html">Perturbation site parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metrics.html">PELE metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="constraints.html">Constraint parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metals.html">Metal parameters</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Analysis parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced.html">Advanced parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../templates.html">Custom template generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Input files preparation</a> &raquo;</li>
+        
+          <li><a href="../../yaml.html">Input yaml parameters</a> &raquo;</li>
+        
+          <li><a href="../basic.html">Basic parameters</a> &raquo;</li>
+        
+      <li>Analysis parameters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/input/parameters/basic_parameters/analysis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="analysis-parameters">
+<h1>Analysis parameters<a class="headerlink" href="#analysis-parameters" title="Permalink to this headline">¶</a></h1>
+<p>These are parameters to set up the analysis package of the Platform.</p>
+<p>List of aquaPELE parameters:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="#analyse">analyse</a></p></li>
+<li><p><a class="reference external" href="#only-analysis">only_analysis</a></p></li>
+<li><p><a class="reference external" href="#bandwidth">bandwidth</a></p></li>
+<li><p><a class="reference external" href="#max-top-clusters">max_top_clusters</a></p></li>
+<li><p><a class="reference external" href="#top-clusters-criterion">top_clusters_criterion</a></p></li>
+<li><p><a class="reference external" href="#cluster-representatives-criterion">cluster_representatives_criterion</a></p></li>
+<li><p><a class="reference external" href="#max-top-poses">max_top_poses</a></p></li>
+<li><p><a class="reference external" href="#min-population">min_population</a></p></li>
+<li><p><a class="reference external" href="#clustering-coverage">clustering_coverage</a></p></li>
+</ol>
+</div></blockquote>
+<p>List of examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="#example-1">Example 1</a></p></li>
+<li><p><a class="reference external" href="#example-2">Example 2</a></p></li>
+<li><p><a class="reference external" href="#example-3">Example 3</a></p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="analyse">
+<h2>analyse<a class="headerlink" href="#analyse" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Whether to run or not the analysis at the end of the
+simulation.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Boolean</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#only-analysis">only_analysis</a>,
+<a class="reference external" href="#example-1">Example 1</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="only-analysis">
+<h2>only_analysis<a class="headerlink" href="#only-analysis" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Analyze an existing PELE simulation without running a
+new one from scratch.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Boolean</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We recommend adding the path to the simulation you want to analyse using the working_folder flag.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#analyse">analyse</a>,
+<a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="bandwidth">
+<h2>bandwidth<a class="headerlink" href="#bandwidth" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the cluster size for the clustering algorithm.
+If it is set to “auto” the software automatically will choose a
+right value</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Float</span></code> or <code class="docutils literal notranslate"><span class="pre">auto</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">auto</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">auto</span></code> mode will only run when using the Mean Shift
+algorithm as clustering method. Although it is the default method
+and the only one that is recommended, there are other clustering
+methods implemented in the Platform
+(check <a class="reference external" href="../advanced.html">advanced parameters</a> to get further
+information).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When it is set to <code class="docutils literal notranslate"><span class="pre">auto</span></code>, it will select the best bandwidth value
+to cover the percentage of all explored points that is set with the
+<code class="docutils literal notranslate"><span class="pre">clustering_coverage</span></code> parameter.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#clustering-coverage">clustering_coverage</a>,
+<a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="max-top-clusters">
+<h2>max_top_clusters<a class="headerlink" href="#max-top-clusters" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the maximum number of clusters to be selected
+as top.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">8</span></code></p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="top-clusters-criterion">
+<h2>top_clusters_criterion<a class="headerlink" href="#top-clusters-criterion" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p>Description: Sets the method of selecting top clusters, we can
+choose one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">total_25_percentile</span></code> - total energy 25th percentile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_5_percentile</span></code> - total energy 5th percentile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_mean</span></code> - total energy mean</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_min</span></code> - total energy min</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interaction_25_percentile</span></code> - interaction energy 25th percentile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interaction_5_percentile</span></code> - interaction energy 5th percentile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interaction_mean</span></code> - interaction energy mean</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interaction_min</span></code> - interaction energy min</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">population</span></code> - cluster population</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">interaction_25_percentile</span></code></p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="cluster-representatives-criterion">
+<h2>cluster_representatives_criterion<a class="headerlink" href="#cluster-representatives-criterion" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p>Description: Sets method of selecting representative structures for each
+cluster, you can choose one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">total_25_percentile</span></code> - total energy 25th percentile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_5_percentile</span></code> - total energy 5th percentile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_mean</span></code> - total energy mean</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_min</span></code> - total energy min</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interaction_25_percentile</span></code> - interaction energy 25th percentile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interaction_5_percentile</span></code> - interaction energy 5th percentile</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interaction_mean</span></code> - interaction energy mean</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">interaction_min</span></code> - interaction energy min</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">interaction_min</span></code></p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="max-top-poses">
+<h2>max_top_poses<a class="headerlink" href="#max-top-poses" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the maximum number of top poses to be retrieved.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="min-population">
+<h2>min_population<a class="headerlink" href="#min-population" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the minimum population that selected clusters
+must fulfil. It takes a value between 0 and 1. The default value
+of 0.01 implies that all selected clusters need to have a population
+above 1% of the total amount of sampled poses.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Float</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">0.01</span></code></p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="clustering-coverage">
+<h2>clustering_coverage<a class="headerlink" href="#clustering-coverage" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the minimum percentage of points that needs to be
+assigned to a top cluster when running mean shift clustering with
+automated <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code>. Thus, clustering bandwidth will keep
+increasing once covering the coverage percentage that is defined.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Float</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">0.75</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that this parameter is only used when the <code class="docutils literal notranslate"><span class="pre">auto</span></code> <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code>
+mode is set.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#bandwidth">bandwidth</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. Besides, we disable the analysis package so the simulation will run
+but it will not be analyzed.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Analysis parameters</span>
+<span class="nt">analyse</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. However, instead of running the whole simulation from scratch, we
+ask the analyze an existing simulation with the <code class="docutils literal notranslate"><span class="pre">only_analysis</span></code> option.
+It is a useful feature when we want to reanalyze a previous simulation
+changing some parameters, like shown below.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Analysis parameters</span>
+<span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="nt">bandwidth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="nt">max_top_clusters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="nt">top_clusters_criterion</span><span class="p">:</span> <span class="s">&quot;population&quot;</span>
+<span class="nt">cluster_representatives_criterion</span><span class="p">:</span> <span class="s">&quot;interaction_mean&quot;</span>
+<span class="nt">max_top_poses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="nt">min_population</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.005</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. For the analysis, we rely on the default bandwidth parameter, which
+is <code class="docutils literal notranslate"><span class="pre">auto</span></code>. This option finds the right clustering <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code> for the
+Mean Shift algorithm according to the <code class="docutils literal notranslate"><span class="pre">clustering_coverage</span></code>. Thus, the
+right <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code> is selected to include inside top cluster selection, at
+least, the percentage of points that is supplied with
+the <code class="docutils literal notranslate"><span class="pre">clustering_coverage</span></code> parameter.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Analysis parameters</span>
+<span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;LIG_Pele&quot;</span>
+<span class="nt">clustering_coverage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.60</span>
+<span class="nt">bandwidth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="nt">max_top_clusters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="nt">top_clusters_criterion</span><span class="p">:</span> <span class="s">&quot;population&quot;</span>
+<span class="nt">cluster_representatives_criterion</span><span class="p">:</span> <span class="s">&quot;interaction_mean&quot;</span>
+<span class="nt">max_top_poses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="nt">min_population</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.005</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../advanced.html" class="btn btn-neutral float-right" title="Advanced parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="metals.html" class="btn btn-neutral float-left" title="Metal parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../../../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

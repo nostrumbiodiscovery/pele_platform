@@ -1,5 +1,6 @@
-Simulate big conformational moves of your receptor with PCA-PELE
-==================================================================
+================================================
+Large protein conformational moves with PCA-PELE
+================================================
 
 Introduction
 -------------------

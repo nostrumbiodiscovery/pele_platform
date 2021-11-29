@@ -1,5 +1,6 @@
-Minimize your protein
-==========================
+====================
+Protein minimization
+====================
 
 Introduction
 ------------------

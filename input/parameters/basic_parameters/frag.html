@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>fragPELE parameters &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" />
+    <link rel="next" title="Side chain perturbation parameters" href="sidechain_perturbation.html" />
+    <link rel="prev" title="Residue parametrization" href="parametrization.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Input files preparation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../system_preparation.html">PDB preparation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../yaml.html">Input yaml parameters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../required.html">Required parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packages.html">Package selection</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html">Basic parameters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="general.html">General parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pele.html">PELE general parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="adaptive.html">Adaptive PELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parametrization.html">Residue parametrization</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">fragPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sidechain_perturbation.html">Side chain perturbation parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="water.html">aquaPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ligand.html">Ligand parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="box.html">Perturbation site parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metrics.html">PELE metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="constraints.html">Constraint parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metals.html">Metal parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html">Analysis parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced.html">Advanced parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../templates.html">Custom template generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Input files preparation</a> &raquo;</li>
+        
+          <li><a href="../../yaml.html">Input yaml parameters</a> &raquo;</li>
+        
+          <li><a href="../basic.html">Basic parameters</a> &raquo;</li>
+        
+      <li>fragPELE parameters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/input/parameters/basic_parameters/frag.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="fragpele-parameters">
+<h1>fragPELE parameters<a class="headerlink" href="#fragpele-parameters" title="Permalink to this headline">¶</a></h1>
+<p>These are parameters to set up aquaPELE algorithm within a PELE simulation.</p>
+<p>List of aquaPELE parameters:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="#frag-core">frag_core</a></p></li>
+<li><p><a class="reference external" href="#chain-core">chain_core</a></p></li>
+<li><p><a class="reference external" href="#frag-ligands">frag_ligands</a></p></li>
+<li><p><a class="reference external" href="#frag-library">frag_library</a></p></li>
+<li><p><a class="reference external" href="#frag-core-atom">frag_core_atom</a></p></li>
+<li><p><a class="reference external" href="#fragment-atom">fragment_atom</a></p></li>
+<li><p><a class="reference external" href="#growing-steps">growing_steps</a></p></li>
+<li><p><a class="reference external" href="#steps-in-gs">steps_in_gs</a></p></li>
+<li><p><a class="reference external" href="#frag-eq-steps">frag_eq_steps</a></p></li>
+</ol>
+</div></blockquote>
+<p>List of examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="#example-1">Example 1</a></p></li>
+<li><p><a class="reference external" href="#example-2">Example 2</a></p></li>
+<li><p><a class="reference external" href="#example-3">Example 3</a></p></li>
+<li><p><a class="reference external" href="#example-4">Example 4</a></p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="frag-core">
+<h2>frag_core<a class="headerlink" href="#frag-core" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Defines the path to PDB file containing the protein
+and docked scaffold.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is a mandatory parameter for fragPELE.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The scaffold or core is the molecule on which the fragments will
+be inserted.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-4">Example 4</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="chain-core">
+<h2>chain_core<a class="headerlink" href="#chain-core" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the unique chain id of the scaffold supplied
+in the <code class="docutils literal notranslate"><span class="pre">frag_core</span></code> structure.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Character</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is a mandatory parameter for fragPELE.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The scaffold, also referred to as core, is the molecule on which the
+fragments will be inserted.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#frag-core">frag_core</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-4">Example 4</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="frag-ligands">
+<h2>frag_ligands<a class="headerlink" href="#frag-ligands" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Defines the path to the SDF containing fully grown
+ligands. Fully grown means that each ligand must contain both
+scaffold and fragment already attached.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Each ligand present in the SDF must contain the scaffold defined
+in the <code class="docutils literal notranslate"><span class="pre">frag_core</span></code> and one fragment. If the substructure searcher
+is not able to find the scaffold in any of the fragments, the
+simulation will fail.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is an alternative method to run fragPELE. Instead of supplying
+an SDF containing fully grown ligands, we can supply a library of
+fragments with a parameter called <code class="docutils literal notranslate"><span class="pre">frag_library</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">frag_ligands</span></code> and <code class="docutils literal notranslate"><span class="pre">frag_library</span></code> parameters cannot be
+defined simultaneously.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#frag-core">frag_core</a>,
+<a class="reference external" href="#chain-core">chain_core</a>,
+<a class="reference external" href="#frag-library">frag_library</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-4">Example 4</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="frag-library">
+<h2>frag_library<a class="headerlink" href="#frag-library" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Defines the path to a folder containing fragment files.
+Fragments can be supplied as PDB or SDF but all of them must be
+placed into the same folder. Each fragment included into
+the <code class="docutils literal notranslate"><span class="pre">frag_library</span></code> directory will be inserted to the scaffold
+(or molecular core). The chemical bonding will take place between
+the atom of the scaffold selected with <code class="docutils literal notranslate"><span class="pre">frag_core_atom</span></code> and
+all non symmetric hydrogen atoms found in each fragment. We can
+also fix the hydrogen atom of the fragment we want to connect
+setting the parameter called <code class="docutils literal notranslate"><span class="pre">fragment_atom</span></code>.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There is an alternative method to run fragPELE. Instead of supplying
+a fragment library, we can supply an SDF containing fully grown
+ligands, with a parameter called <code class="docutils literal notranslate"><span class="pre">frag_ligands</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">frag_ligands</span></code> and <code class="docutils literal notranslate"><span class="pre">frag_library</span></code> parameters cannot be
+defined simultaneously.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#frag-core">frag_core</a>,
+<a class="reference external" href="#chain-core">chain_core</a>,
+<a class="reference external" href="#frag-ligands">frag_ligands</a>,
+<a class="reference external" href="#frag-core-atom">frag_core_atom</a>,
+<a class="reference external" href="#fragment-atoms">fragment_atom</a>,
+<a class="reference external" href="#example-2">Example 2</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="frag-core-atom">
+<h2>frag_core_atom<a class="headerlink" href="#frag-core-atom" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p>Description: Defines which is the atom of the scaffold the fragments
+must be connected to when using fragment libraries
+(<code class="docutils literal notranslate"><span class="pre">frag_library</span></code> parameter).</p></li>
+<li><p>Type: Two atoms, <code class="docutils literal notranslate"><span class="pre">String</span></code>-<code class="docutils literal notranslate"><span class="pre">String</span></code>, where each string corresponds
+to the name of one atom of the scaffold.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>First atom: heavy atom connected to the hydrogen atom that will
+be replaced with each fragment.</p></li>
+<li><p>Second atom: hydrogen atom to replace.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that this parameter only has an effect when a fragment library
+is supplied through the <code class="docutils literal notranslate"><span class="pre">frag_library</span></code> parameter.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is a mandatory parameter for fragPELE when a fragment library
+is supplied.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#frag-library">frag_library</a>,
+<a class="reference external" href="#example-2">Example 2</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="fragment-atom">
+<h2>fragment_atom<a class="headerlink" href="#fragment-atom" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Defines which is the atom of each fragment the scaffold
+must be connected to when using fragment libraries
+(<code class="docutils literal notranslate"><span class="pre">frag_library</span></code> parameter).</p></li>
+<li><p>Type: One atom, <code class="docutils literal notranslate"><span class="pre">String</span></code>, hydrogen atom to remove and replace
+with the scaffold.</p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">fragment_atom</span></code> is specified, all fragments from the library
+must contain one hydrogen atom that matches with that name. Then,
+the connection to the scaffold will be applied through that position.
+This strategy requires a manual selection of each attachment atom
+and the assignment of the right PDB atom name to it.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that this parameter only has an effect when a fragment library
+is supplied through the <code class="docutils literal notranslate"><span class="pre">frag_library</span></code> parameter.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is an optional parameter. When missing, bonding to the scaffold
+will take place through all asymmetric hydrogen atoms.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#frag-library">frag_library</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="growing-steps">
+<h2>growing_steps<a class="headerlink" href="#growing-steps" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the number of growing steps to apply during the
+growth of the fragment.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">6</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Increasing the number of growing steps will smooth the alchemical
+change during the growth of the fragment but the simulation will
+become more expensive.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#steps-in-gs">steps_in_gs</a>,
+<a class="reference external" href="#frag-eq-steps">frag_eq_steps</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="steps-in-gs">
+<h2>steps_in_gs<a class="headerlink" href="#steps-in-gs" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the number of PELE steps to perform at each
+growing step.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">3</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Increasing the number of growing steps will promote the conformational
+sampling and reallocation of the ligand and its neighboring side
+chains but the simulation will become more expensive.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#growing-steps">growing_steps</a>,
+<a class="reference external" href="#frag-eq-steps">frag_eq_steps</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="frag-eq-steps">
+<h2>frag_eq_steps<a class="headerlink" href="#frag-eq-steps" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets the number of PELE steps to perform during the
+final equilibration stage, which happens once the fragment is fully
+grown.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">20</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Increasing the number of equilibration steps will promote the conformational
+sampling and reallocation of the ligand and its neighboring side
+chains but the simulation will become more expensive.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#growing-steps">growing_steps</a>,
+<a class="reference external" href="#steps-in-gs">steps_in_gs</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set up a fragPELE simulation with 30 computation
+cores. The goal is to take the initial structure supplied with the
+<code class="docutils literal notranslate"><span class="pre">frag_core</span></code> parameter and alchemically convert it to molecules
+defined with the <code class="docutils literal notranslate"><span class="pre">frag_ligands</span></code> parameter.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex_with_scaffold.pdb&quot;</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># fragPELE parameters</span>
+<span class="nt">frag_ligands</span><span class="p">:</span> <span class="s">&quot;fully_grown_ligands.sdf&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set up a fragPELE simulation with 30 computation
+cores. The goal is to take the initial structure supplied with the
+<code class="docutils literal notranslate"><span class="pre">frag_core</span></code> parameter and alchemically attach all fragments defined
+in the library files from the path set by the <code class="docutils literal notranslate"><span class="pre">frag_library</span></code> parameter.
+We must also specify the atom of the scaffold where fragments need to
+be inserted using <code class="docutils literal notranslate"><span class="pre">frag_core_atom</span></code> parameter. In this case, we
+attach fragments through a hydrogen atom called <strong>H6</strong> that is connected
+to a carbon atom with name <strong>C6</strong>. Fragments will be connected to
+this position through all asymmetric hydrogen atoms.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex_with_scaffold.pdb&quot;</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># fragPELE parameters</span>
+<span class="nt">frag_library</span><span class="p">:</span> <span class="s">&quot;path/to/frag/libraries&quot;</span>
+<span class="nt">frag_core_atom</span><span class="p">:</span> <span class="s">&quot;C6-H6&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set up a fragPELE simulation with 30 computation
+cores. The goal is to take the initial structure supplied with the
+<code class="docutils literal notranslate"><span class="pre">frag_core</span></code> parameter and alchemically attach all fragments defined
+in the library files from the path set by the <code class="docutils literal notranslate"><span class="pre">frag_library</span></code> parameter.
+We must also specify the atom of the scaffold where fragments need to
+be inserted using <code class="docutils literal notranslate"><span class="pre">frag_core_atom</span></code> parameter. In this case, we
+attach fragments through a hydrogen atom called <strong>H6</strong> that is connected
+to a carbon atom with name <strong>C6</strong>. Since we also supply the <code class="docutils literal notranslate"><span class="pre">fragment_atom</span></code>
+parameter, fragments will be connected to atom <strong>C6</strong> from scaffold
+through the hydrogen atom called <strong>HGRW</strong>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex_with_scaffold.pdb&quot;</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># fragPELE parameters</span>
+<span class="nt">frag_library</span><span class="p">:</span> <span class="s">&quot;path/to/frag/libraries&quot;</span>
+<span class="nt">frag_core_atom</span><span class="p">:</span> <span class="s">&quot;C6-H6&quot;</span>
+<span class="nt">fragment_atom</span><span class="p">:</span> <span class="s">&quot;HGRW&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-4">
+<h2>Example 4<a class="headerlink" href="#example-4" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set up a fragPELE simulation with 30 computation
+cores. The goal is to take the initial structure supplied with the
+<code class="docutils literal notranslate"><span class="pre">frag_core</span></code> parameter and alchemically convert it to molecules
+defined with the <code class="docutils literal notranslate"><span class="pre">frag_ligands</span></code> parameter. Besides, we are
+significantly increasing the length of the alchemical growth because
+we ask for more growing steps (<code class="docutils literal notranslate"><span class="pre">growing_steps</span></code>) and more PELE steps
+per growing step (<code class="docutils literal notranslate"><span class="pre">steps_in_gs</span></code>). On the other hand, we reduce the
+length of the final equilibration (<code class="docutils literal notranslate"><span class="pre">frag_eq_steps</span></code>).</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex_with_scaffold.pdb&quot;</span>
+<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># fragPELE parameters</span>
+<span class="nt">frag_ligands</span><span class="p">:</span> <span class="s">&quot;fully_grown_ligands.sdf&quot;</span>
+<span class="nt">growing_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">steps_in_gs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">frag_eq_steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sidechain_perturbation.html" class="btn btn-neutral float-right" title="Side chain perturbation parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="parametrization.html" class="btn btn-neutral float-left" title="Residue parametrization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../../../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

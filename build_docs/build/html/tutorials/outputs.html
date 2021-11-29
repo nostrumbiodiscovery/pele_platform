@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Understanding the output files &mdash; pele platform 1.6.0b2 documentation</title>
+  <title>Understanding the output files &mdash; pele platform 1.6.1 documentation</title>
   
 
   
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.6
+                1.6.1
               </div>
             
           
@@ -87,22 +87,9 @@
               
             
             
-              <ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
-</ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="ppi.html">Protein-protein interaction tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="induced_fit.html">Docking pose refinement tutorial</a></li>
@@ -110,8 +97,11 @@
 <li class="toctree-l2"><a class="reference internal" href="frag_pele.html">Fragment growing tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="site_finder.html">Site finder tutorial</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Understanding the output files</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#information-about-the-output-of-your-simulation">Information about the output of your simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#related-topics">Related Topics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#folder-structure">Folder structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#top-level-directory">Top level directory</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#input">Input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#output">Output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#results">Results</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="plotter.html">Creating custom plots with PELE Plotter</a></li>
@@ -119,15 +109,21 @@
 <li class="toctree-l2"><a class="reference internal" href="out_in.html">Elucidating ligand’s binding path</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
 </ul>
 
             
@@ -197,37 +193,70 @@
             
   <div class="section" id="understanding-the-output-files">
 <h1>Understanding the output files<a class="headerlink" href="#understanding-the-output-files" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="information-about-the-output-of-your-simulation">
-<h2>Information about the output of your simulation<a class="headerlink" href="#information-about-the-output-of-your-simulation" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li><p>When performing a simulation, a folder will be created. If the simulation is repeated, the folder won’t be deleted and a new one will be created.
-The processed input, control files and the simulation folder will be stored there. The default name is: <em>resname_Pele_X</em>, where X is a number.</p></li>
-<li><dl class="simple">
-<dt>The created folder will be organized as:</dt><dd><ul class="simple">
-<li><p>DataLocal (folder): See <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/molecularParameters.html">PELE Molecular Parameters</a></p></li>
-<li><p>Lig.mae: Rotamer library</p></li>
-<li><p>docking.pdb: PDB of the docked molecules</p></li>
-<li><p>ligand.pdb: PDB of the ligand</p></li>
-<li><p>receptor.pdb: PDB of the receptor</p></li>
-<li><p>LIG.log: Log file</p></li>
-<li><p>adaptive.conf: See <a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline">Control file outline</a></p></li>
-<li><p>input.yaml: PELE input file</p></li>
-<li><p>pele.conf: Control file. See <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/GeneralStructure/GeneralStructure.html">General structure of a control file</a></p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>It is recommended to first run the program with the test flag. Thus, the simulation will run using 5 CPUs.</p></li>
-</ol>
+<div class="section" id="folder-structure">
+<h2>Folder structure<a class="headerlink" href="#folder-structure" title="Permalink to this headline">¶</a></h2>
+<p>Each time you launch a <strong>new simulation</strong>, the Platform will generate a top level directory including all input and output
+files.</p>
+<p>Unless you provide a <strong>custom folder name</strong> using <code class="docutils literal notranslate"><span class="pre">working_folder</span></code> parameters, it will automatically enumerate one
+based on the name of the perturbed ligand, e.g. <code class="docutils literal notranslate"><span class="pre">LIG_Pele</span></code>, <code class="docutils literal notranslate"><span class="pre">LIG_Pele_1</span></code>, etc. ensuring the old simulations will not
+be overwritten.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">.</span>
+<span class="go">└── LIG_Pele</span>
+<span class="go">    ├── Data</span>
+<span class="go">    ├── DataLocal</span>
+<span class="go">    ├── Documents</span>
+<span class="go">    ├── input</span>
+<span class="go">    ├── output</span>
+<span class="go">    └── results</span>
+<span class="go">        ├── top_poses</span>
+<span class="go">        ├── plots</span>
+<span class="go">        └── clusters</span>
+</pre></div>
 </div>
-<div class="section" id="related-topics">
-<h2>Related Topics<a class="headerlink" href="#related-topics" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference external" href="../installation/index.html">Installation</a></p></li>
-<li><p><a class="reference external" href="../packages/index.html">Prepare your own simulation</a></p></li>
-<li><p><a class="reference external" href="../errors/index.html">Common errors</a></p></li>
-<li><p><a class="reference external" href="../changelog/index.html">Versions</a></p></li>
+</div>
+<div class="section" id="top-level-directory">
+<h2>Top level directory<a class="headerlink" href="#top-level-directory" title="Permalink to this headline">¶</a></h2>
+<p>The top level directory contains the logs, configuration files and a copy of input.yaml created by the user.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LIG.log:</span></code> log file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">adaptive.conf</span></code>: control file for AdaptivePELE (<a class="reference external" href="https://adaptivepele.github.io/AdaptivePELE/Examples.html#control-file-outline">learn more</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input.yaml</span></code>: user’s configuration file</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pele.conf</span></code>: control file for PELE (<a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/GeneralStructure/GeneralStructure.html">learn more</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LIG.mae</span></code>: the rotamer library</p></li>
 </ul>
+</div></blockquote>
+<p>Additionally, it contains several Data and Documents folder required by PELE++, which contain residue templates and
+rotamer libraries. More details <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/molecularParameters.html">here</a>.</p>
+</div>
+<div class="section" id="input">
+<h2>Input<a class="headerlink" href="#input" title="Permalink to this headline">¶</a></h2>
+<p>The input folded contains:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">system_preprocessed.pdb</span></code>: original PDB file preprocessed by the Platform</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">input*.pdb</span></code>: input files with initial poses (depends on the package)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">receptor.pdb</span></code>: PDB file with extracted protein</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ligand.pdb</span></code>: PDB file with extracted ligand.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="output">
+<h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>Most importantly, this directory contains <strong>raw PELE output</strong>, i.e. report and trajectory files containing every step of the simulation, split
+into several folders, depending on the number of iterations performed.</p>
+<p>Additionally, you will find information about topologies and clustering performed by AdaptivePELE.</p>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p>The results directory holds a more <strong>user-friendly, curated output</strong> comprising of three separate folders:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">top_poses</span></code> - top 100 lowest binding energy structures, unless the user specified a different number of top poses to be extracted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plots</span></code> - plots of multiple metrics selected by the user (such as SASA or atom distance), providing an insight into the progress of the simulation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clusters</span></code> - lowest binding energy cluster representatives (unless the user specified a different metric) and clustering plots.</p></li>
+</ul>
+</div></blockquote>
 </div>
 </div>
 

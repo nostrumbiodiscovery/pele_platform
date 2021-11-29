@@ -1,0 +1,570 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Perturbation site parameters &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" />
+    <link rel="next" title="PELE metrics" href="metrics.html" />
+    <link rel="prev" title="Ligand parameters" href="ligand.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Input files preparation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../system_preparation.html">PDB preparation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../yaml.html">Input yaml parameters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../required.html">Required parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packages.html">Package selection</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html">Basic parameters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="general.html">General parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pele.html">PELE general parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="adaptive.html">Adaptive PELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parametrization.html">Residue parametrization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frag.html">fragPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sidechain_perturbation.html">Side chain perturbation parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="water.html">aquaPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ligand.html">Ligand parameters</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Perturbation site parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metrics.html">PELE metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="constraints.html">Constraint parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metals.html">Metal parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html">Analysis parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced.html">Advanced parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../templates.html">Custom template generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Input files preparation</a> &raquo;</li>
+        
+          <li><a href="../../yaml.html">Input yaml parameters</a> &raquo;</li>
+        
+          <li><a href="../basic.html">Basic parameters</a> &raquo;</li>
+        
+      <li>Perturbation site parameters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/input/parameters/basic_parameters/box.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="perturbation-site-parameters">
+<h1>Perturbation site parameters<a class="headerlink" href="#perturbation-site-parameters" title="Permalink to this headline">¶</a></h1>
+<p>These are parameters to set up the region to perturb with PELE.</p>
+<p>List of perturbation site parameters:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="#box-center">box_center</a></p></li>
+<li><p><a class="reference external" href="#box-radius">box_radius</a></p></li>
+<li><p><a class="reference external" href="#initial-site">initial_site</a></p></li>
+<li><p><a class="reference external" href="#final-site">final_site</a></p></li>
+<li><p><a class="reference external" href="#center-of-interface">center_of_interface</a></p></li>
+</ol>
+</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that some parameters should only be used to define the region
+to perturb when using specific packages. They are <code class="docutils literal notranslate"><span class="pre">initial_site</span></code>,
+<code class="docutils literal notranslate"><span class="pre">final_site</span></code> and <code class="docutils literal notranslate"><span class="pre">center_of_interface</span></code>. More information is provided
+in the corresponding sections for each parameter.</p>
+</div>
+<p>List of examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="#example-1">Example 1</a></p></li>
+<li><p><a class="reference external" href="#example-2">Example 2</a></p></li>
+<li><p><a class="reference external" href="#example-3">Example 3</a></p></li>
+<li><p><a class="reference external" href="#example-4">Example 4</a></p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="box-center">
+<h2>box-center<a class="headerlink" href="#box-center" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: The center of the perturbation box inside
+which the ligand will be perturbed.</p></li>
+<li><p>Type: 3-dimensional array of <code class="docutils literal notranslate"><span class="pre">Float</span></code></p></li>
+<li><p>Default: it depends on the package</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This parameter will prevail over the effects of other box-related
+parameters like <code class="docutils literal notranslate"><span class="pre">initial_site</span></code>, <code class="docutils literal notranslate"><span class="pre">final_site</span></code> and
+<code class="docutils literal notranslate"><span class="pre">center_of_interface</span></code> and its combination is usually not recommended.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that, currently, we only support a spherical box.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When custom boxes are set in a <code class="docutils literal notranslate"><span class="pre">site_finder</span></code> simulation, they
+change the behaviour of the package. Thus, instead of exploring
+the entire protein surface, the search will cover the custom
+box that is defined. You can check <a class="reference external" href="#example-2">Example 2</a>
+to get more details about this strategy.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#initial-site">initial_site</a>,
+<a class="reference external" href="#final-site">final_site</a>,
+<a class="reference external" href="#center-of-interface">center_of_interface</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="box-radius">
+<h2>box-radius<a class="headerlink" href="#box-radius" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: The radius, in angstroms, of the perturbation box inside
+which the ligand will be perturbed.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: it depends on the package</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This parameter will prevail over the effects of other box-related
+parameters like <code class="docutils literal notranslate"><span class="pre">initial_site</span></code>, <code class="docutils literal notranslate"><span class="pre">final_site</span></code> and
+<code class="docutils literal notranslate"><span class="pre">center_of_interface</span></code> and its combination is usually not recommended.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that, currently, we only support a spherical box.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When custom boxes are set in a <code class="docutils literal notranslate"><span class="pre">site_finder</span></code> simulation, they
+change the behaviour of the package. Thus, instead of exploring
+the entire protein surface, the search will cover the custom
+box that is defined. You can check <a class="reference external" href="#example-2">Example 2</a>
+to get more details about this strategy.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#initial-site">initial_site</a>,
+<a class="reference external" href="#final-site">final_site</a>,
+<a class="reference external" href="#center-of-interface">center_of_interface</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="initial-site">
+<h2>initial_site<a class="headerlink" href="#initial-site" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Selection of a protein atom that is near a good starting
+point for the simulation. The Platform will place the ligand as close
+as possible to this position.</p></li>
+<li><p>Type: Atom selection, <code class="docutils literal notranslate"><span class="pre">Character</span></code>:<code class="docutils literal notranslate"><span class="pre">Integer</span></code>:<code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This parameter should only be set when running the <code class="docutils literal notranslate"><span class="pre">out_in</span></code> package.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter must be used along with <code class="docutils literal notranslate"><span class="pre">final_site</span></code> in order
+to let the Platform properly define the perturbation box.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#final-site">final_site</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-3">Example 3</a>,
+<a class="reference external" href="../../tutorials/out_in.html">Out –&gt; In tutorial</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="final-site">
+<h2>final_site<a class="headerlink" href="#final-site" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Selection of a protein atom that is near the cavity
+that we want to visit. The Platform will build a perturbation box
+according to <code class="docutils literal notranslate"><span class="pre">initial_site</span></code> and <code class="docutils literal notranslate"><span class="pre">final_site</span></code> accordingly.</p></li>
+<li><p>Type: Atom selection, <code class="docutils literal notranslate"><span class="pre">Character</span></code>:<code class="docutils literal notranslate"><span class="pre">Integer</span></code>:<code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This parameter should only be set when running the <code class="docutils literal notranslate"><span class="pre">out_in</span></code> package.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter must be used along with <code class="docutils literal notranslate"><span class="pre">final_site</span></code> in order
+to let the Platform properly define the perturbation box.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#initial-site">initial_site</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-3">Example 3</a>,
+<a class="reference external" href="../../tutorials/out_in.html">Out –&gt; In tutorial</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="center-of-interface">
+<h2>center_of_interface<a class="headerlink" href="#center-of-interface" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Selection of a protein atom that is centered in the
+protein interface that we want the ligand to explore.
+The Platform will generate initial structures placing the ligand
+near this region and it will build a perturbation box to
+explore it properly.</p></li>
+<li><p>Type: Atom selection, <code class="docutils literal notranslate"><span class="pre">Character</span></code>:<code class="docutils literal notranslate"><span class="pre">Integer</span></code>:<code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This parameter should only be set when running the <code class="docutils literal notranslate"><span class="pre">PPI</span></code> package.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-4">Example 4</a>,
+<a class="reference external" href="../../tutorials/ppi.html">PPI tutorial</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. We also set a custom perturbation box. The default box used in
+an induced fit docking is to center a spherical box of 6-angstrom radius
+on the center of mass of the ligand. However, we can change its center
+and radius with values of our choice using <code class="docutils literal notranslate"><span class="pre">box_radius</span></code> and <code class="docutils literal notranslate"><span class="pre">box_center</span></code>
+parameters.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Perturbation site parameters</span>
+<span class="nt">box_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">box_center</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">21</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">-3</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set a site finder simulation with 60 computation
+cores. By default, this package will place our ligand all over the
+protein to promote the exploration of the whole surface. However,
+in case that we are interested in exploring a particular subregion of
+its surface, we can define a custom box that only covers it.
+Then, the Platform will spawn structures inside that box and will
+guarantee that the ligand does not exit it during the simulation.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">site_finder</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Perturbation site parameters</span>
+<span class="nt">box_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="nt">box_center</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">-5</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">22</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">47</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an out –&gt; in docking simulation with 60 computation
+cores. When using this package, we also need to set initial and final sites
+in order to properly define the starting point and the region to explore
+during the migration of our ligand.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Perturbation site parameters</span>
+<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;A:43:O&quot;</span>
+<span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;A:104:CD&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-4">
+<h2>Example 4<a class="headerlink" href="#example-4" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an out –&gt; in docking simulation with 60 computation
+cores. When using this package, we also need to set initial and final sites
+in order to properly define the starting point and the region to explore
+during the migration of our ligand.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">ppi</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Perturbation site parameters</span>
+<span class="nt">center_of_interface</span><span class="p">:</span> <span class="s">&quot;A:206:O&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="metrics.html" class="btn btn-neutral float-right" title="PELE metrics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ligand.html" class="btn btn-neutral float-left" title="Ligand parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../../../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

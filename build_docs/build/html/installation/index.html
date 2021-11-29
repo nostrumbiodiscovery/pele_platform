@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; pele platform 1.6.0b2 documentation</title>
+  <title>Installation &mdash; pele platform 1.6.1 documentation</title>
   
 
   
@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="copyright" title="Copyright" href="../copyright.html" />
-    <link rel="next" title="Run simulation" href="../packages/index.html" />
+    <link rel="next" title="Tutorials" href="../tutorials/index.html" />
     <link rel="prev" title="PELE Platform" href="../index.html" /> 
 </head>
 
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.6
+                1.6.1
               </div>
             
           
@@ -87,37 +87,32 @@
               
             
             
-              <ul class="current">
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#conda">Conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#os-support">OS support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conda-installation">Conda installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#singularity">Singularity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#test-installation">Test installation</a></li>
 </ul>
 </li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
 </ul>
 
             
@@ -185,8 +180,29 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="conda">
-<h2>Conda<a class="headerlink" href="#conda" title="Permalink to this headline">¶</a></h2>
+<p>PELE Platform is shipped as a Conda package that can be installed using <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code>
+and <code class="docutils literal notranslate"><span class="pre">nostrumbiodiscovery</span></code> channels from Anaconda.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Miniconda3 or Conda package</p></li>
+<li><p>Schrödinger Suite (2017-1 or later)</p></li>
+<li><p>PELE++ code (optional, only required to run PELE but not to run PELE
+Plotter or the Analysis package)</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="os-support">
+<h2>OS support<a class="headerlink" href="#os-support" title="Permalink to this headline">¶</a></h2>
+<p>Currently, the platform only supports Linux and MacOS operating systems.</p>
+</div>
+<div class="section" id="conda-installation">
+<h2>Conda installation<a class="headerlink" href="#conda-installation" title="Permalink to this headline">¶</a></h2>
+<p>The most straightforward way to install the Platform is with Conda. The preferable
+installation strategy is to generate a new Conda environment to hold the source code
+and its dependencies. In order to generate a Conda environment and install the
+Platform, please, follow the steps below:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a new conda environment from scratch:</span>
 conda create -n pele_platform
 
@@ -214,9 +230,11 @@ conda install -c nostrumbiodiscovery -c conda-forge <span class="nv">pele_platfo
 </div>
 <div class="section" id="test-installation">
 <h2>Test installation<a class="headerlink" href="#test-installation" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NostrumBioDiscovery/pele_platform.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/nostrumbiodiscovery/pele_platform.git
 
 <span class="nb">cd</span> pele_platform/tests
+
+conda activate pele_platform
 
 python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.yaml
 </pre></div>
@@ -232,7 +250,7 @@ python -m pele_platform.main ../pele_platform/Examples/induced_fit/input_fast.ya
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../packages/index.html" class="btn btn-neutral float-right" title="Run simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../tutorials/index.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../index.html" class="btn btn-neutral float-left" title="PELE Platform" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

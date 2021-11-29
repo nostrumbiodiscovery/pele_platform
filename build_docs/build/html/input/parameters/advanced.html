@@ -1,0 +1,601 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Advanced parameters &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../copyright.html" />
+    <link rel="next" title="Custom template generation" href="../templates.html" />
+    <link rel="prev" title="Analysis parameters" href="basic_parameters/analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Input files preparation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../system_preparation.html">PDB preparation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../yaml.html">Input yaml parameters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="required.html">Required parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="packages.html">Package selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="basic.html">Basic parameters</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Advanced parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#general-settings">General settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pele-general-parameters">PELE general parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adaptive-pele-parameters">Adaptive PELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#preparation-parameters">Preparation parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#residue-parametrization">Residue parametrization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ligand-parameters">Ligand parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#aquapele-parameters">aquaPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#analysis-parameters">Analysis parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#output">Output</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../templates.html">Custom template generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Input files preparation</a> &raquo;</li>
+        
+          <li><a href="../yaml.html">Input yaml parameters</a> &raquo;</li>
+        
+      <li>Advanced parameters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/input/parameters/advanced.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-parameters">
+<h1>Advanced parameters<a class="headerlink" href="#advanced-parameters" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-settings">
+<h2>General settings<a class="headerlink" href="#general-settings" title="Permalink to this headline">¶</a></h2>
+<p>Configure the settings of the simulation and the path to all dependencies in case of need (non-default installation).</p>
+<ul class="simple">
+<li><p><strong>usesrun</strong>: Use srun binary to run PELE. Only when using intel processors.</p></li>
+<li><p><strong>pele_exec</strong>: Use a pele executable that is not the default one. <strong>Needs to be used with pele_data and pele_documents</strong>. default: $PELE/bin/Pele_mpi</p></li>
+<li><p><strong>pele_data</strong>: Use a pele data folder that is not the default one. default: $PELE/Data</p></li>
+<li><p><strong>pele_documents</strong>: Use a pele documents folder that is not the default one. default: $PELE/Documents</p></li>
+<li><p><strong>singularity_exec</strong>: Use a singularity container that contains the pele executable. <strong>Cannot be used with pele_exec</strong>.</p></li>
+<li><p><strong>pele_license</strong>: Use a pele_license path that is not the default one. default: $PELE/licenses</p></li>
+<li><p><strong>schrodinger</strong>: Use a schrodinger path that is not the default one. default: $SCHRODINGER</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">usesrun</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">pele_exec</span><span class="p">:</span> <span class="s">&quot;/home/pele/bin/Pele_mpi&quot;</span>
+<span class="nt">pele_data</span><span class="p">:</span> <span class="s">&quot;/home/pele/Data/&quot;</span>
+<span class="nt">pele_documents</span><span class="p">:</span> <span class="s">&quot;/home/pele/Documents/&quot;</span>
+<span class="nt">singularity_exec</span><span class="p">:</span> <span class="s">&quot;/home/pele/pele_release.sif&quot;</span>
+<span class="nt">pele_license</span><span class="p">:</span> <span class="s">&quot;/home/pele/licenses&quot;</span>
+<span class="nt">schrodinger</span><span class="p">:</span> <span class="s">&quot;/home/pele/schrodinger2020-1/&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="pele-general-parameters">
+<h2>PELE general parameters<a class="headerlink" href="#pele-general-parameters" title="Permalink to this headline">¶</a></h2>
+<p><strong>These flags are exclusive of the PELE modes not fragPELE</strong></p>
+<p>Advanced parameters of PELE:</p>
+<ul class="simple">
+<li><p><strong>log</strong>: Retrieve PELE logfiles during simulation. Default=False</p></li>
+<li><p><strong>verbose</strong>: Set to true to activate verbose mode in PELE. DEfault=False</p></li>
+<li><p><strong>anm_displacement</strong>: Angstrom to displace carbon alphas in each ANM movement. Default=0.75</p></li>
+<li><p><strong>anm_modes_change</strong>: Number of steps before we change to a new normal mode movement. Default=4</p></li>
+<li><p><strong>sidechain_res</strong>: Receptor sidechain resolution. Default=10</p></li>
+<li><p><strong>overlap_factor</strong>: Vanderwals overlap factor (More in PELE docs). Default=0.65</p></li>
+<li><p><strong>steric_trials</strong>: Number of steric trials (More in PELE docs). Default=250</p></li>
+<li><p><strong>report</strong>: Change the name of the report file. Default: report</p></li>
+<li><p><strong>traj</strong>: Change the name of the trajectory file. Default: trajectory.pdb</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">log</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">verbose</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">anm_displacement</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="nt">anm_modes_change</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="nt">sidechain_res</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">overlap_factor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.60</span>
+<span class="nt">steric_trials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="nt">report</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">pele_report</span>
+<span class="nt">traj</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">trajectory.xtc</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adaptive-pele-parameters">
+<h2>Adaptive PELE parameters<a class="headerlink" href="#adaptive-pele-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Advanced parameters of Adaptive PELE:</p>
+<ul class="simple">
+<li><p><strong>density</strong>: Density type ([null, exitContinuous…]. More in AdaptivePELE docs). Default: null</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">density</span><span class="p">:</span> <span class="s">&quot;exitContinuous&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="preparation-parameters">
+<h2>Preparation parameters<a class="headerlink" href="#preparation-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Configure the parameters of the PPP (Protein Pele Preparation)</p>
+<ul class="simple">
+<li><p><strong>skip_preprocess</strong>: Skip protein pele preparation. Default: False</p></li>
+<li><p><strong>noTERs</strong>: Don’t include TERs on preparation. Used if PPP gets confuse with insertion codes or other. Default: False</p></li>
+<li><p><strong>charge_ters</strong>: Charge terminals of the protein. Default: False</p></li>
+<li><p><strong>nonstandard</strong>: List of names of nonstandard residues that will be omitted in protein pele preparation. Default=[]</p></li>
+<li><p><strong>prepwizard</strong>: Run Prepwizard (Still on testing version). Default: False</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">preprocess_receptor</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">noTERs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">charge_ters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="nt">nonstandard</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">TPO</span>
+<span class="nt">prepwizard</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="residue-parametrization">
+<h2>Residue parametrization<a class="headerlink" href="#residue-parametrization" title="Permalink to this headline">¶</a></h2>
+<p>In order to run a simulation, PELE requires the following files for every non-standard molecule (i.e. any non-standard small molecule or residue):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>IMPACT template</strong>: containing force field parameters, please refer to <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#impact-template-file-format">this site</a> for further information.</p></li>
+<li><p><strong>rotamer library</strong>: optional file containing the list of rotatable bonds to sample by the side chain perturbation algorithm. If missing, the flexibility of the corresponding molecule will not considered. More information available <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/fileFormats.html#sec-fileformats-ligandrotamers">here</a>.</p></li>
+<li><p><strong>solvent template</strong>: some special solvents like “OBC” require extra parameters, which are set in this file. Mind that it is <strong>mandatory when using OpenFF</strong>, since it works with the OBC solvent only.</p></li>
+</ul>
+</div></blockquote>
+<p>The platform currently has <strong>two implementations</strong> for building hetero molecule parameters - PlopRotTemp (soon to be deprecated) and
+<a class="reference external" href="https://github.com/martimunicoy/peleffy">Peleffy</a> (PELE Force Field Yielder), which offers more functionality but is still in beta testing.</p>
+<p>Please refer to the following table for the comparison of the two methods and available forcefields:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 26%" />
+<col style="width: 16%" />
+<col style="width: 42%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Builder</strong></p></td>
+<td><p><strong>Forcefields</strong></p></td>
+<td><p><strong>Solvents</strong></p></td>
+<td><p><strong>Charge parametrization methods</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>PlopRotTemp</p>
+<p>(default)</p>
+</td>
+<td><p>“OPLS2005”</p></td>
+<td><p>“OBC”</p>
+<p>“VDGBNP”</p>
+</td>
+<td><p>“OPLS2005”</p></td>
+</tr>
+<tr class="row-odd"><td><p>Peleffy</p>
+<p>(beta)</p>
+</td>
+<td><p>“OPLS2005” (default)</p>
+<p>“openff-1.3.0”</p>
+<p>“openff-1.2.1”</p>
+<p>“openff-1.2.0”</p>
+<p>“openff-1.1.1”</p>
+<p>“openff-1.1.0”</p>
+<p>“openff-1.0.1”</p>
+<p>“openff-1.0.0”</p>
+</td>
+<td><p>“OBC”</p>
+<p>“VDGBNP”</p>
+</td>
+<td><p>“gasteiger”</p>
+<p>“am1bcc” (default for OpenFF)</p>
+<p>“OPLS2005” (default for OPLS2005)</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="ploprottemp">
+<h3>PlopRotTemp<a class="headerlink" href="#ploprottemp" title="Permalink to this headline">¶</a></h3>
+<p>To continue using PlopRotTemp, you do not need to make any changes to your YAML file, previously existing flags are still
+available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>gridres</strong>: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees</p></li>
+<li><p><strong>core</strong>: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None</p></li>
+<li><p><strong>exclude_terminal_rotamers</strong>: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True</p></li>
+<li><p><strong>mae_lig</strong>: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None</p></li>
+<li><p><strong>maxtorsion</strong>: Maximum number of rotamers per flexible side chain. Default=4</p></li>
+<li><p><strong>n</strong>: Maximum number of flexible side chains in a molecule. Default=None</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">solvent</span><span class="p">:</span> <span class="s">&quot;OBC&quot;</span>
+<span class="nt">maxtorsion</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="nt">n</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">mae_lig</span><span class="p">:</span> <span class="s">&quot;/home/dsoler/lig.mae&quot;</span>
+<span class="nt">gridres</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h3>Peleffy<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>In order to use Peleffy instead of PlopRotTemp, you need to set <code class="docutils literal notranslate"><span class="pre">use_peleffy:</span> <span class="pre">true</span></code> in input YAML.</p>
+<p>You can use the following parameters to control the way peleffy will parametrize non-standard molecules for you:</p>
+<ul>
+<li><p><strong>forcefield</strong>: Forcefield used to parametrize hetero molecules, you can use one of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“OPLS2005” (default)</p></li>
+<li><p>“openff-1.3.0”</p></li>
+<li><p>“openff-1.2.1”</p></li>
+<li><p>“openff-1.2.0”</p></li>
+<li><p>“openff-1.1.1”</p></li>
+<li><p>“openff-1.1.0”</p></li>
+<li><p>“openff-1.0.1”</p></li>
+<li><p>“openff-1.0.0”</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>charge_parametrization_method</strong>: The method to use to assign partial charges to atoms:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“gasteiger”</p></li>
+<li><p>“am1bcc” (default when using any “OpenFF” force field)</p></li>
+<li><p>“OPLS2005” (default when using “OPLS2005”)</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>use_peleffy</strong>: You have to set it to True to use peleffy instead of the default parameters builder. Default=False</p></li>
+<li><p><strong>gridres</strong>: Resolution of the rotamers when sampling them by the Side Chain prediction algorithm. Default=10 degrees</p></li>
+<li><p><strong>core</strong>: List of PDB atom names that will be included as part of the rigid core. In case it is not specified, the algorithm will pick up a set of non-rotatable atoms centered in the molecular structure. Default=None</p></li>
+<li><p><strong>exclude_terminal_rotamers</strong>: Exclude terminal rotamers during parametrization of non standard molecules if they belong to a small terminal group. Default=True</p></li>
+<li><p><strong>mae_lig</strong>: External MAE file with quantum charges generated with Schrödinger suite. When supplied, any charge calculated internally in the platform will be replaced by the charges from this file. Default=None</p></li>
+</ul>
+<p>Important: Peleffy requires CONECT lines in the PDB file, otherwise they are automatically added with Schrödinger Protein Preparation Wizard.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">use_peleffy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">charge_parametrization_method</span><span class="p">:</span> <span class="s">&quot;gasteiger&quot;</span>
+<span class="nt">forcefield</span><span class="p">:</span> <span class="s">&quot;openff-1.3.0&quot;</span>
+<span class="nt">gridres</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
+<span class="nt">core</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;O1&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;C1&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;C2&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;N1&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="ligand-parameters">
+<h2>Ligand parameters<a class="headerlink" href="#ligand-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Advanced parameters for the conformation perturbation algorithm:</p>
+<ul class="simple">
+<li><p><strong>overlap_factor_conformation</strong>: van der Waals overlap factor in conformation perturbation. Default = 0.65</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">overlap_factor_conformation</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.60</span>
+</pre></div>
+</div>
+<div class="section" id="constraint-parameters">
+<h3>Constraint parameters<a class="headerlink" href="#constraint-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Alternatively to constraint levels, advanced users can manipulate the constraint parameters individually at their own risk, using the following flags:</p>
+<ul class="simple">
+<li><p><strong>terminal_constr</strong> - sets the spring constant for the terminal C-alpha constraints, default = 5 kcal/mol</p></li>
+<li><p><strong>ca_constr</strong> - sets the spring constant for the remaining C-alphas in the backbone, default = 0.5 kcal/mol</p></li>
+<li><p><strong>ca_interval</strong> - interval at which the backbone C-alphas should be constrained, default = 10 (i.e. every 10 residues).</p></li>
+</ul>
+<p>Take into account that specific modifiers of constraint parameters will prevail over the settings coming from the
+constraints levels and those predefined in each package.</p>
+<p>Other advanced parameters related with constraints:</p>
+<ul class="simple">
+<li><p><strong>water_constr</strong>: Water constraints. Default=5</p></li>
+<li><p><strong>constrain_smiles</strong>: SMILES string to indicate what part of the molecule to constrain. Default=None</p></li>
+<li><p><strong>external_constraints</strong>: You can specify 2 types of constraints: positional constraints or atom-atom constraints, e.g.</p>
+<ul>
+<li><dl class="simple">
+<dt>The positional constraints are given either by:</dt><dd><ul>
+<li><p>springConstant-atomnumber. i.e. “10-17”</p></li>
+<li><p>springConstant-chain:resnum:atomname. i.e. “5-A:1:H”</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The atom-atom constraints are specified either by:</dt><dd><ul>
+<li><p>springConstant-equilibriumDistance-atomnumber1-atomnumber2. i.e. “50-2.34-17-4159”</p></li>
+<li><p>springConstant-equilibriumDistance-chain1:resnum1:atomname1-chain2:resnum2:atomname2. i.e. “50-2.34-A:1:H-L:1:C21”</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+<li><p><strong>remove_constraints</strong>: Do not place constraints on the carbon-alpha of the protein. Default: False</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">terminal_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10.5</span>
+<span class="nt">ca_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6.0</span>
+<span class="nt">ca_interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="nt">water_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">constrain_smiles</span><span class="p">:</span> <span class="s">&quot;C2CCC1CCCCC1C2&quot;</span>
+<span class="nt">smiles_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">external_constraints</span><span class="p">:</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;10-17&quot;</span> <span class="c1">#constrain of 10kcal/mol at atomnumber 17</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;5-A:1:H&quot;</span> <span class="c1">##constrain of 10kcal/mol at atom with chain A residuenumber 1 and atomname H</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-17-4159&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atomnumbers 17 &amp; 4159</span>
+<span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-A:1:H-L:1:C21&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname</span>
+<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="metal-constraints">
+<h3>Metal constraints<a class="headerlink" href="#metal-constraints" title="Permalink to this headline">¶</a></h3>
+<p>Algorithm to automatically set metal constraints around the ligand.</p>
+<ul class="simple">
+<li><p><strong>no_metal_constraints</strong>: Ignore all metals in the PDB file, no constraints will be set automatically. Default=False</p></li>
+<li><p><strong>permissive_metal_constr</strong>: Expand the search for coordinated atoms by allowing 35% deviation from “ideal” angles. If the algorithm finds a valid geometry it will include the metal constraint into the simulation. Default=False</p></li>
+<li><p><strong>constrain_all_metals</strong>: Constrain all atoms around the metal, regardless of the angles or coordination number. Default=False</p></li>
+<li><p><strong>external_constraints</strong>: Set a manual constraint containing a metal atom to disable search for this particular metal. Default=[]</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">no_metal_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">permissive_metal_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">constrain_all_metals</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">external_constraints</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="s">&quot;50-2.34-A:1:H-L:1:MG&quot;</span> <span class="c1">#constrain of 50kcal/mol with equilibrium distance of 2.34 between atoms with respective chain resnum and atomname</span>
+<span class="nt">constrain_core</span><span class="p">:</span> <span class="s">&quot;CN(C)C(=O)c1ccc(F)cc1&quot;</span>  <span class="c1"># SMILES or SMARTS pattern</span>
+<span class="nt">constrain_core_spring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>  <span class="c1"># optional, default 50.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="aquapele-parameters">
+<h2>aquaPELE parameters<a class="headerlink" href="#aquapele-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Other advanced parameters to set up aquaPELE. Its usage is discouraged.</p>
+<ul class="simple">
+<li><p><strong>water_trials</strong>: Numerical trials on water perturbation. Default=10000</p></li>
+<li><p><strong>water_constr</strong>: COM constrain applied to th water molecule after perturbation. Default=0</p></li>
+<li><p><strong>water_overlap</strong>: Overlap factor of water. Default=0.78</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">water_trials</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">500</span>
+<span class="nt">water_constr</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+<span class="nt">water_overlap</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="analysis-parameters">
+<h2>Analysis parameters<a class="headerlink" href="#analysis-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Advanced parameters of Analysis package.</p>
+<ul class="simple">
+<li><p><strong>analysis_nclust</strong>: Numbers of clusters out of the simulation, if using the <code class="docutils literal notranslate"><span class="pre">gaussianmixture</span></code> clustering method. Default: 10</p></li>
+<li><p><strong>be_column</strong>: Column of the binding energy in the reports starting by 1. Default: 5</p></li>
+<li><p><strong>te_column</strong>: Column of the total energy in the reports starting by 1. Default: 4</p></li>
+<li><p><strong>limit_column</strong>: Specify the column where your external metrics start. Default: 6</p></li>
+<li><p><strong>mae</strong>: To extract the best energy and cluster poses as .mae files with the metrics as properties (schrodinger need it). Default: false</p></li>
+<li><p><strong>clustering_method</strong>: If you want to override the default clustering method (meanshift), you can set this flag to <code class="docutils literal notranslate"><span class="pre">gaussianmixture</span></code> or <code class="docutils literal notranslate"><span class="pre">HDBSCAN</span></code>.</p></li>
+<li><p><strong>clustering_filtering_threshold</strong>: Percentage of output structures to filter our before clustering. Default = 0.25.</p></li>
+<li><p><strong>plot_filtering_threshold</strong>: Percentage of output structures to filter out before creating plots. Default = 0.02</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">analysis_nclust</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
+<span class="nt">be_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="nt">te_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">4</span>
+<span class="nt">limit_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">6</span>
+<span class="nt">mae</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="nt">clustering_method</span><span class="p">:</span> <span class="s">&quot;gaussianmixture&quot;</span>
+<span class="nt">clustering_filtering_threshold</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="nt">plot_filtering_threshold</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.1</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In case of the <code class="docutils literal notranslate"><span class="pre">meanshift</span></code> algorithm,
+the <a class="reference external" href="basic_parameters/analysis.html#bandwidth">bandwidth</a> refers to the
+maximum RMSD allowed within the cluster, whereas in <code class="docutils literal notranslate"><span class="pre">HDBSCAN</span></code> to distances
+between your data points.</p>
+</div>
+</div>
+<div class="section" id="output">
+<h2>Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<p>Configure the output</p>
+<ul class="simple">
+<li><p><strong>output</strong>: Output folder of the simulation. Default=output</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">output</span><span class="p">:</span> <span class="s">&quot;output_sim&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../templates.html" class="btn btn-neutral float-right" title="Custom template generation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="basic_parameters/analysis.html" class="btn btn-neutral float-left" title="Analysis parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

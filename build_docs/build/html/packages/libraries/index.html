@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Grow a custom fragment library &mdash; pele platform 1.6.0b2 documentation</title>
+  <title>Fragment libraries evaluation with fragPELE &mdash; pele platform 1.6.1 documentation</title>
   
 
   
@@ -38,7 +38,7 @@
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="copyright" title="Copyright" href="../../copyright.html" />
     <link rel="next" title="GPCR orthosteric site simulation" href="../gpcr/index.html" />
-    <link rel="prev" title="Fragment growing simulation" href="../frag/index.html" /> 
+    <link rel="prev" title="fragPELE simulation" href="../frag/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.6
+                1.6.1
               </div>
             
           
@@ -87,17 +87,24 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faqs/index.html">Frequently asked questions (FAQs)</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Run simulation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../docking/index.html">Docking pose refinement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Simulation packages</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../induced_fit/index.html">Induced fit docking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../rescoring/index.html">Rank multiple putative poses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../pocket_exploration/index.html">Pocket exploration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Prepare your own PPI simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../frag/index.html">Fragment growing simulation</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Grow a custom fragment library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../site_finder/index.html">Site finder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../ppi/index.html">Protein-protein interface simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../frag/index.html">fragPELE simulation</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Fragment libraries evaluation with fragPELE</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#introduction">Introduction</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#inputs">Inputs</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#default-parameters">Default parameters</a></li>
@@ -124,36 +131,22 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../gpcr/index.html">GPCR orthosteric site simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../interaction_restrictions/index.html">Interaction restrictions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binding/index.html">Binding simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../binding/unbinding.html">Unbinding simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../interaction_restrictions/index.html">Interaction-restricted induced fit docking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/binding.html">Out –&gt; in simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../migration/unbinding.html">In –&gt; out simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../bias/index.html">Biased simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../minimization/index.html">Minimize your protein</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../covalent_docking/index.html">Covalent docking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../pca/index.html">Large protein conformational moves with PCA-PELE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../minimization/index.html">Protein minimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sidechain_perturbation/index.html">Sidechain perturbation</a></li>
 </ul>
 </li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../environment/index.html">Environment variables</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../flags/index.html">Optional flags</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../errors/index.html">Common errors</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Developers</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../changelog/index.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../environment/index.html">Environment variables</a></li>
 </ul>
 
             
@@ -200,9 +193,9 @@
     
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../index.html">Run simulation</a> &raquo;</li>
+          <li><a href="../index.html">Simulation packages</a> &raquo;</li>
         
-      <li>Grow a custom fragment library</li>
+      <li>Fragment libraries evaluation with fragPELE</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -221,11 +214,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="grow-a-custom-fragment-library">
-<h1>Grow a custom fragment library<a class="headerlink" href="#grow-a-custom-fragment-library" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="fragment-libraries-evaluation-with-fragpele">
+<h1>Fragment libraries evaluation with fragPELE<a class="headerlink" href="#fragment-libraries-evaluation-with-fragpele" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>FragPELE is now able to grow fragments from custom-made libraries! All you have to do is provide it with a directory
+<p>FragPELE is able to grow fragments from custom-made libraries. All you have to do is provide it with a directory
 containing your fragments (in PDB or SDF format) and a docked core to let the software rank your fragments and return the
 best binding modes for each.</p>
 <div class="section" id="inputs">
@@ -394,7 +387,7 @@ proximity to a certain point, for example a side chain atom you would like your 
         <a href="../gpcr/index.html" class="btn btn-neutral float-right" title="GPCR orthosteric site simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../frag/index.html" class="btn btn-neutral float-left" title="Fragment growing simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../frag/index.html" class="btn btn-neutral float-left" title="fragPELE simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

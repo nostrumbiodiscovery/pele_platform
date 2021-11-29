@@ -1,0 +1,699 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Adaptive PELE parameters &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" />
+    <link rel="next" title="Residue parametrization" href="parametrization.html" />
+    <link rel="prev" title="PELE general parameters" href="pele.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Input files preparation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../system_preparation.html">PDB preparation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../yaml.html">Input yaml parameters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../required.html">Required parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packages.html">Package selection</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html">Basic parameters</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="general.html">General parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pele.html">PELE general parameters</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Adaptive PELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parametrization.html">Residue parametrization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frag.html">fragPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sidechain_perturbation.html">Side chain perturbation parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="water.html">aquaPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ligand.html">Ligand parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="box.html">Perturbation site parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metrics.html">PELE metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="constraints.html">Constraint parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metals.html">Metal parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html">Analysis parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced.html">Advanced parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../templates.html">Custom template generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Input files preparation</a> &raquo;</li>
+        
+          <li><a href="../../yaml.html">Input yaml parameters</a> &raquo;</li>
+        
+          <li><a href="../basic.html">Basic parameters</a> &raquo;</li>
+        
+      <li>Adaptive PELE parameters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/input/parameters/basic_parameters/adaptive.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="adaptive-pele-parameters">
+<h1>Adaptive PELE parameters<a class="headerlink" href="#adaptive-pele-parameters" title="Permalink to this headline">¶</a></h1>
+<p>These are parameters that affect adaptive PELE. Thus, they affect the way
+how the phase space of the system is explored.</p>
+<p>List of adaptive PELE parameters:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="#iterations">iterations</a></p></li>
+<li><p><a class="reference external" href="#spawning">spawning</a></p></li>
+<li><p><a class="reference external" href="#adaptive-restart">adaptive_restart</a></p></li>
+<li><p><a class="reference external" href="#bias_column">bias_column</a></p></li>
+<li><p><a class="reference external" href="#epsilon">epsilon</a></p></li>
+<li><p><a class="reference external" href="#spawning-condition">spawning_condition</a></p></li>
+<li><p><a class="reference external" href="#clustering-conditions">clustering_conditions</a></p></li>
+<li><p><a class="reference external" href="#clustering-values">clustering_values</a></p></li>
+</ol>
+</div></blockquote>
+<p>List of examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="#example-1">Example 1</a></p></li>
+<li><p><a class="reference external" href="#example-2">Example 2</a></p></li>
+<li><p><a class="reference external" href="#example-3">Example 3</a></p></li>
+<li><p><a class="reference external" href="#example-4">Example 4</a></p></li>
+</ul>
+</div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Note that these parameters will not affect fragPELE.</p>
+</div>
+<div class="section" id="iterations">
+<h2>iterations<a class="headerlink" href="#iterations" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Adaptive iterations to run. When they are set to 1,
+Adaptive PELE will be disabled and the simulation will run with
+no exploration bias.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: it depends on the package</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Adaptive iterations are also referred to as epochs.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Usually, the right number of Adaptive iterations also depends on the number of
+PELE steps that are set.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="pele.html#steps">steps</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-1">Example 1</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="spawning">
+<h2>spawning<a class="headerlink" href="#spawning" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p>Description: It defines the method to spawn new structures every time
+a new Adaptive iteration starts. There are 3 options available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">independent</span></code>: Trajectories are run independently, as in
+the original PELE. It may be useful to restart simulations.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inverselyProportional</span></code>: Distributes the processors with a weight
+that is inversely proportional to the cluster population.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">epsilon</span></code>: An epsilon fraction of processors are distributed
+proportionally to the value of a metric, and the rest are
+inverselyProportional distributed. This fraction must be defined
+with an additional parameter called <code class="docutils literal notranslate"><span class="pre">epsilon</span></code>. The metric of
+interest is defined with a parameter called <code class="docutils literal notranslate"><span class="pre">bias_column</span></code>.
+The bias towards the metric of interest depends on the
+<code class="docutils literal notranslate"><span class="pre">spawning_condition</span></code> parameter.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">inverselyProportional</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#bias_column">bias_column</a>,
+<a class="reference external" href="#bias_column">epsilon</a>,
+<a class="reference external" href="#spawning-condition">spawning_condition</a>,
+<a class="reference external" href="#clustering-conditions">clustering_conditions</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="adaptive-restart">
+<h2>adaptive_restart<a class="headerlink" href="#adaptive-restart" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: When this parameter is set to True, it will try to
+continue a previous simulation that might have been interrupted.
+Thus, it will start from the last Adaptive iteration that it finds
+in the working directory until the requested number of iterations
+is achieved.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Boolean</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter must not be confused with <code class="docutils literal notranslate"><span class="pre">restart</span></code>. While <code class="docutils literal notranslate"><span class="pre">restart</span></code>
+stands for skipping any input file preparation and directly going to
+the simulation execution, it still can start from the first Adaptive
+iteration if <code class="docutils literal notranslate"><span class="pre">adaptive_restart</span></code> is set to False.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="general.html#restart">restart</a>,
+<a class="reference external" href="#example-4">Example 4</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="bias-column">
+<h2>bias_column<a class="headerlink" href="#bias-column" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Column in PELE report files that contains the metric
+of interest for Adaptive’s bias. Counter starts from 1.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: it depends on the package</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter will only be effective if <code class="docutils literal notranslate"><span class="pre">spawning</span></code> is set to <code class="docutils literal notranslate"><span class="pre">epsilon</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#spawning">spawning</a>,
+<a class="reference external" href="#epsilon">epsilon</a>,
+<a class="reference external" href="#spawning-condition">spawning_condition</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="epsilon">
+<h2>epsilon<a class="headerlink" href="#epsilon" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: The fraction of the processors that will be assigned
+according to the selected metric when <code class="docutils literal notranslate"><span class="pre">spawning</span></code> method is set
+to <code class="docutils literal notranslate"><span class="pre">epsilon</span></code>. It is a value between 0 and 1. The larger, the more
+bias will be applied to the metric of interest.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Float</span></code></p></li>
+<li><p>Default: it depends on the package</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter will only be effective if <code class="docutils literal notranslate"><span class="pre">spawning</span></code> is set to <code class="docutils literal notranslate"><span class="pre">epsilon</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#spawning">spawning</a>,
+<a class="reference external" href="#bias_column">bias_column</a>,
+<a class="reference external" href="#spawning-condition">spawning_condition</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="spawning-condition">
+<h2>spawning_condition<a class="headerlink" href="#spawning-condition" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p>Description: Defines how the bias towards the metric of interest
+is applied, i.e. whether it should promote clusters that minimize or
+maximize the metric of interest. There are 2 options available:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">max</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: it depends on the package</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter will only be effective if <code class="docutils literal notranslate"><span class="pre">spawning</span></code> is set to <code class="docutils literal notranslate"><span class="pre">epsilon</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#spawning">spawning</a>,
+<a class="reference external" href="#bias_column">bias_column</a>,
+<a class="reference external" href="#epsilon">epsilon</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="clustering-conditions">
+<h2>clustering_conditions<a class="headerlink" href="#clustering-conditions" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul>
+<li><p>Description: Defines the clustering parameters that Adaptive will employ
+to dicretize with structural clusters the conformational space of the
+ligand. The general strategy is to set up larger clusters when the ligand
+has few contacts with the protein and reduce their size when protein-ligand
+contacts increase as we want to capture this region with more detail.
+Thus, it represents an array of contacts from high to low between the
+ligand and the protein. It is related to <code class="docutils literal notranslate"><span class="pre">clustering_values</span></code> and the
+length of the <code class="docutils literal notranslate"><span class="pre">clustering_conditions</span></code> array must be equal to the length of
+<code class="docutils literal notranslate"><span class="pre">clustering_values</span></code> minus one.</p>
+<p>This parameter can be set to <code class="docutils literal notranslate"><span class="pre">auto</span></code> to automatically select the
+right clustering conditions. In this case, the Platform runs a
+preliminary step called pre-equilibration to capture the protein-ligand
+contacts for each particular case.</p>
+</li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">List[Float]</span></code> or <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: it depends on the package</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not confuse equilibration with pre-equilibration. The former consists
+in running several equilibration steps to produce different initial
+structures. The latter only checks the amount of contacts between the
+ligand and the protein to correctly set the right clustering conditions
+for Adaptive.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#clustering-values">clustering_values</a>,
+<a class="reference external" href="pele.html#equilibration">packages</a>,
+<a class="reference external" href="../packages.html">packages</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="clustering-values">
+<h2>clustering_values<a class="headerlink" href="#clustering-values" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Defines the clustering parameters that Adaptive will employ
+to dicretize with structural clusters the conformational space of the
+ligand. The general strategy is to set up larger clusters when the ligand
+has few contacts with the protein and reduce their size when protein-ligand
+contacts increase as we want to capture this region with more detail.
+Thus, it represents the size of each cluster, from low to high, that
+corresponds with the conditions defined in the <code class="docutils literal notranslate"><span class="pre">clustering_conditions</span></code>
+parameter. Higher clustering values mean larger structural clusters.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">List[Float]</span></code></p></li>
+<li><p>Default: it depends on the package</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter is set according to the Platform package that is chosen
+since it has a strong connection with the type of simulation that is pursued.
+However, if this parameter is set, it will prevail over the default
+settings of any package.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#clustering-conditions">clustering_conditions</a>,
+<a class="reference external" href="../packages.html">packages</a>
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. We then replace the default number of Adaptive iterations of the induced fit
+docking package. Instead of 25 iterations we ask for 10. This will result in an
+even faster simulation at the expense of reducing the exploration.</p>
+<p>On the other hand, we are also specifying custom parameters for Adaptive’s
+clustering. We slightly reduce the sizes of clusters with the <code class="docutils literal notranslate"><span class="pre">clustering_values</span></code>
+parameter (defaults for the induced fit fast package are <code class="docutils literal notranslate"><span class="pre">&quot;[2.0,</span> <span class="pre">5.0,</span> <span class="pre">7.0]&quot;</span></code>).
+We also set <code class="docutils literal notranslate"><span class="pre">cluster_conditions</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, so the Platform will
+run a few pre-equilibration steps to determine the best cluster conditions.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Adaptive parameters</span>
+<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">clustering_values</span><span class="p">:</span> <span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span>
+<span class="nt">cluster_conditions</span><span class="p">:</span> <span class="s">&quot;auto&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. We specify custom parameters for Adaptive’s
+clustering. We slightly reduce the sizes of clusters with the <code class="docutils literal notranslate"><span class="pre">clustering_values</span></code>
+parameter (defaults for the induced fit package are <code class="docutils literal notranslate"><span class="pre">&quot;[2.0,</span> <span class="pre">5.0,</span> <span class="pre">7.0]&quot;</span></code>).
+We also set <code class="docutils literal notranslate"><span class="pre">cluster_conditions</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;[1.5,</span> <span class="pre">0.8]&quot;</span></code>, assuming that
+our ligand is able to perform more contacts than those seen in common scenarios.
+For example, these conditions might work better in cases where our ligand
+is highly buried in a protein cavity. Default cluster conditions for the
+induced fit package are <code class="docutils literal notranslate"><span class="pre">&quot;[1.0,</span> <span class="pre">0.6]&quot;</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Adaptive parameters</span>
+<span class="nt">clustering_values</span><span class="p">:</span> <span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span>
+<span class="nt">cluster_conditions</span><span class="p">:</span> <span class="s">&quot;[1.5,</span><span class="nv"> </span><span class="s">0.8]&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an out –&gt; in simulation with 50 computation
+cores. When using this package, we also need to set initial and final sites
+in order to properly define the starting point and the region to explore
+during the migration of our ligand.
+Check <a class="reference external" href="box.html">perturbation site parameters</a> to get further information
+about these two options.</p>
+<p>Then, we replace the default Adaptive spawning method of out –&gt; in package,
+which is <code class="docutils literal notranslate"><span class="pre">inverselyProportional</span></code>, to <code class="docutils literal notranslate"><span class="pre">epsilon</span></code>. Thus, Adaptive will
+apply a certain bias towards one metric. Specifically, the portion of bias
+that will be used is <code class="docutils literal notranslate"><span class="pre">0.20</span></code>, as defined with the <code class="docutils literal notranslate"><span class="pre">epsilon</span></code> parameter.
+Moreover, the metric of interest to track is the one in the 7th column of
+PELE’s reports files, which, in this case, corresponds to the distance
+between the center of mass of the ligand and the chosen final site.
+When setting <code class="docutils literal notranslate"><span class="pre">spawning_condition</span></code> to <code class="docutils literal notranslate"><span class="pre">min</span></code>, we ask Adaptive to apply
+a bit of bias towards those structures that reduce this distance, thereby
+promoting the entrance of the ligand to the cavity we specified.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Region selection</span>
+<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;A:352:CD&quot;</span>
+<span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;A:283:ND2&quot;</span>
+
+<span class="c1"># Adaptive parameters</span>
+<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span>
+<span class="nt">spawning</span><span class="p">:</span> <span class="s">&quot;epsilon&quot;</span>
+<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.20</span>
+<span class="nt">spawning_condition</span><span class="p">:</span> <span class="s">&quot;min&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-4">
+<h2>Example 4<a class="headerlink" href="#example-4" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 30 computation
+cores. We are disabling Adaptive restart, so in case we apply a restart, the
+simulation will start from scratch, removing any Adaptive iteration that might
+have been completed in a previous run.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Adaptive parameters</span>
+<span class="nt">adaptive_restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="parametrization.html" class="btn btn-neutral float-right" title="Residue parametrization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pele.html" class="btn btn-neutral float-left" title="PELE general parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../../../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

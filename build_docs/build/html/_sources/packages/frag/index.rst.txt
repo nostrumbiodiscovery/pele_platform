@@ -1,5 +1,6 @@
-Fragment growing simulation
-===============================
+===================
+fragPELE simulation
+===================
 
 Introduction
 ----------------

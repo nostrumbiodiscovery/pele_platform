@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Advanced tips &amp; tricks &mdash; pele platform 1.6.0b2 documentation</title>
+  <title>Advanced tips &amp; tricks &mdash; pele platform 1.6.1 documentation</title>
   
 
   
@@ -36,9 +36,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="copyright" title="Copyright" href="../copyright.html" />
-    <link rel="next" title="Versions" href="../changelog/index.html" />
-    <link rel="prev" title="The reStructuredText cheat sheet: Basic syntax" href="cheatsheet_rst.html" /> 
+    <link rel="copyright" title="Copyright" href="../copyright.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -62,7 +60,7 @@
             
             
               <div class="version">
-                1.6
+                1.6.1
               </div>
             
           
@@ -87,41 +85,25 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
 </ul>
-<ul class="current">
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Developers</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="own_mode.html">Add custom simulation mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protocol.html">Documentation protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cheatsheet_rst.html">The reStructuredText cheat sheet: Basic syntax</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Advanced tips &amp; tricks</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#enable-pele-intersteplogger">1. Enable PELE InterStepLogger</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
 </ul>
 
             
@@ -168,8 +150,6 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="index.html">Developers</a> &raquo;</li>
-        
       <li>Advanced tips &amp; tricks</li>
     
     
@@ -201,6 +181,50 @@ It is useful for debugging purposes.</p>
 </div>
 <p>The new report and trajectories files were saved in the subdirectory <code class="docutils literal notranslate"><span class="pre">InterStepLogs</span></code>, inside the PELE++ output folder.</p>
 </div>
+<div class="section" id="add-custom-simulation-mode">
+<h2>2. Add custom simulation mode<a class="headerlink" href="#add-custom-simulation-mode" title="Permalink to this headline">¶</a></h2>
+<p>If your simulation set up requires tweaking a lot of parameters, you can add a new <strong>feature</strong> to the platform.</p>
+<div class="section" id="generate-your-own-mode">
+<h3>1. Generate your own mode<a class="headerlink" href="#generate-your-own-mode" title="Permalink to this headline">¶</a></h3>
+<p>Add a new feature with your own defaults under <code class="docutils literal notranslate"><span class="pre">simulation_params</span></code> key in <code class="docutils literal notranslate"><span class="pre">pele_platform/features/adaptive.py</span></code>, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;my_custom_induced_fit&quot;</span> <span class="p">:</span> <span class="p">{</span><span class="s2">&quot;spawning_type&quot;</span><span class="p">:</span> <span class="s2">&quot;independent&quot;</span><span class="p">,</span> <span class="s2">&quot;bias_column&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;epsilon&quot;</span><span class="p">:</span><span class="mf">0.25</span><span class="p">,</span> <span class="s2">&quot;density&quot;</span><span class="p">:</span> <span class="s2">&quot;null&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;simulation_type&quot;</span><span class="p">:</span> <span class="s2">&quot;pele&quot;</span><span class="p">,</span> <span class="s2">&quot;iterations&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;pele_steps&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
+         <span class="s2">&quot;cluster_values&quot;</span><span class="p">:</span> <span class="s2">&quot;[1.75, 2.5, 4, 6]&quot;</span><span class="p">,</span> <span class="s2">&quot;cluster_conditions&quot;</span><span class="p">:</span> <span class="s2">&quot;[1, 0.6, 0.4, 0.0]&quot;</span><span class="p">,</span>
+         <span class="s2">&quot;steric_trials&quot;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span> <span class="s2">&quot;overlap_factor&quot;</span><span class="p">:</span> <span class="mf">0.65</span><span class="p">,</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">pcs</span><span class="o">.</span><span class="n">INDUCED_FIT</span><span class="p">,</span>
+         <span class="s2">&quot;box_radius&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="include-it-in-the-pipeline">
+<h3>2. Include it in the pipeline<a class="headerlink" href="#include-it-in-the-pipeline" title="Permalink to this headline">¶</a></h3>
+<p>Assign the type of the simulation depending on the YAML arguments in <code class="docutils literal notranslate"><span class="pre">pele_platform/features/adaptive.py</span></code>, e.g.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">my_custom_induced_fit</span><span class="p">:</span>
+    <span class="n">type_simulation</span> <span class="o">=</span> <span class="s2">&quot;my_custom_induced_fit&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="add-an-input-option">
+<h3>3. Add an input option<a class="headerlink" href="#add-an-input-option" title="Permalink to this headline">¶</a></h3>
+<p>A new input flag will not be recognised by the platform, unless you add it to:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">_parse</span></code> function in <code class="docutils literal notranslate"><span class="pre">pele_platform/Utilities/Helpers/yaml_parser.py</span></code> and set the default to None</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">VALID_FLAGS_PLATFORM</span></code> dictionary in <code class="docutils literal notranslate"><span class="pre">pele_platform/Checker/valid_flags.py</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Example in <code class="docutils literal notranslate"><span class="pre">yaml_parser.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">induced_fit_fast</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">valid_flags</span><span class="p">[</span><span class="s2">&quot;my_custom_induced_fit&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="run-your-mode">
+<h3>4. Run your mode<a class="headerlink" href="#run-your-mode" title="Permalink to this headline">¶</a></h3>
+<p>To run your simulation mode in the input file, include the previously generated YAML flag, for example:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -208,15 +232,6 @@ It is useful for debugging purposes.</p>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../changelog/index.html" class="btn btn-neutral float-right" title="Versions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="cheatsheet_rst.html" class="btn btn-neutral float-left" title="The reStructuredText cheat sheet: Basic syntax" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

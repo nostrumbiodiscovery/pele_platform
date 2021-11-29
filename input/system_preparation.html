@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PDB preparation &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Input yaml parameters" href="yaml.html" />
+    <link rel="prev" title="Input files preparation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Input files preparation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PDB preparation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import-pdb">Import PDB</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remove-redundant-molecules">Remove redundant molecules</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#heteromolecules-and-waters">Heteromolecules and waters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#redundant-chains">Redundant chains</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#preprocess-the-protein">Preprocess the protein</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#fix-missing-loops">Fix missing loops</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fix-missing-atoms-residues">Fix missing atoms/residues</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#check-protonation-state">Check protonation state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#heteromolecule-parametrization">Heteromolecule parametrization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#adjust-the-ligand">Adjust the ligand</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="yaml.html">Input yaml parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="templates.html">Custom template generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="index.html">Input files preparation</a> &raquo;</li>
+        
+      <li>PDB preparation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/input/system_preparation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pdb-preparation">
+<h1>PDB preparation<a class="headerlink" href="#pdb-preparation" title="Permalink to this headline">¶</a></h1>
+<p>This section contains instructions and recommendations to help you with the
+preparation of the input PDB files that PELE needs in order to run successfully.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/protein_preprocessing_chart.png"><img alt="../_images/protein_preprocessing_chart.png" src="../_images/protein_preprocessing_chart.png" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">Protein preprocessing workflow using Schrödinger tools</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>We have a collection of <a class="reference external" href="../tutorials/index.html">tutorials</a> where we explain step by step the procedure
+to prepare the initial structure for PELE.</p>
+<div class="section" id="import-pdb">
+<h2>Import PDB<a class="headerlink" href="#import-pdb" title="Permalink to this headline">¶</a></h2>
+<p>We normally start from a <strong>crystallographic structure</strong> of the system that we want to
+simulate. Crystals can belong to either holo or apo forms of our target. Structures
+obtained with <strong>homology modelling</strong> can also be used.</p>
+<p>In case small backbone movements are required for a particular study (e.g. to host
+a ligand into a binding site where a close loop needs to be shifted), PELE’s
+algorithms will probably be enough to explore these rearrangements. When
+big conformational movements on the protein backbone are pursued, molecular
+dynamics simulations might be a good strategy to produce different <strong>protein
+conformations</strong> from where PELE simulations can start. In any case, we must
+ensure that our model is as accurate as possible since the success of our
+simulation will depend on it.</p>
+</div>
+<div class="section" id="remove-redundant-molecules">
+<h2>Remove redundant molecules<a class="headerlink" href="#remove-redundant-molecules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="heteromolecules-and-waters">
+<h3>Heteromolecules and waters<a class="headerlink" href="#heteromolecules-and-waters" title="Permalink to this headline">¶</a></h3>
+<p>It is worth checking the necessity and importance of cofactors, metal ions,
+water molecules, crystallization agents, etc. Particularly, we might consider
+removing most of the water molecules that are present in our structure. PELE
+uses an <strong>implicit solvent</strong> to account for its effects. Thus, we normally do
+not need to keep them. However, there are mainly three exceptions:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Structural water:</strong> water molecules inside protein cavities that are
+essential for the stability of the protein must be kept. These
+water molecules are usually participating in 3 or 4 hydrogen bonds
+with the protein.</p></li>
+<li><p><strong>Coordination water:</strong> water molecules coordinated with metals must
+be kept into the structure to satisfy the coordination geometry
+around the metal center. In this case, the Platform will automatically
+constrain these water molecules around the metal.</p></li>
+<li><p><strong>Interfacial water:</strong> water molecules that mediate with protein-ligand
+interactions can also be included explicitly. In this case, we
+should use the aquaPELE algorithm. Please, refer to
+<a class="reference external" href="yaml.html">aquaPELE parameters</a> to learn how to activate it.</p></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="redundant-chains">
+<h3>Redundant chains<a class="headerlink" href="#redundant-chains" title="Permalink to this headline">¶</a></h3>
+<p>It also makes sense to remove additional protein chains to speed up the simulation. However, if a protein belongs
+to a biologically <strong>active dimer</strong>, we normally will have to include both monomers to the simulation. Especially, if
+the region of interest lies in the interface between both monomers.</p>
+</div>
+</div>
+<div class="section" id="preprocess-the-protein">
+<h2>Preprocess the protein<a class="headerlink" href="#preprocess-the-protein" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fix-missing-loops">
+<h3>Fix missing loops<a class="headerlink" href="#fix-missing-loops" title="Permalink to this headline">¶</a></h3>
+<p>This is a matter of improving the quality of our model rather than a requirement
+of the Platform. However, it is extremely important to spend some time analyzing
+the validity of the structure that we want to simulate. It is recommended to
+add missing loops that are expected to be near the region of interest of our
+system. There are several strategies that can help us with this task like
+applying homology modelling on our structure or running computational tools
+to add those missing loops like <a class="reference external" href="https://www.schrodinger.com/products/prime">Prime</a>
+from Schrödinger.</p>
+</div>
+<div class="section" id="fix-missing-atoms-residues">
+<h3>Fix missing atoms/residues<a class="headerlink" href="#fix-missing-atoms-residues" title="Permalink to this headline">¶</a></h3>
+<p>The Platform will require the PDB to have all the atoms that standard protein
+residues are expected to have (according to the internal templates of PELE).
+For example, hydrogen atoms typically need to be added to our structure. This
+task can be easily done with <a class="reference external" href="https://www.schrodinger.com/products/maestro">Maestro</a>
+from Schrödinger. There is a tool called Protein Preparation Wizard that is able
+to add missing atoms to standard residues and assign their proper atom names.
+In most cases, the Platform will be able to run with systems that have been
+prepared with this tool.</p>
+</div>
+<div class="section" id="check-protonation-state">
+<h3>Check protonation state<a class="headerlink" href="#check-protonation-state" title="Permalink to this headline">¶</a></h3>
+<p>To obtain a reliable model, we must ensure to have the right protonation states.
+Tools like <a class="reference external" href="https://github.com/jensengroup/propka">PROPKA</a> or the H bond optimizer
+in Protein Preparation Wizard can be very helpful.</p>
+</div>
+<div class="section" id="heteromolecule-parametrization">
+<h3>Heteromolecule parametrization<a class="headerlink" href="#heteromolecule-parametrization" title="Permalink to this headline">¶</a></h3>
+<p>Any <strong>non-standard residue</strong> present in the input structure must be <strong>parametrized</strong>
+before running a PELE simulation. The Platform takes care of this task automatically.
+However, to avoid any problems during the parametrization process, it is
+recommended to assign the right connectivity to any heteromolecule. We also must
+ensure that connectivity information is saved in the resulting PDB file
+through CONECT lines.</p>
+<p>Please, check <a class="reference external" href="../tutorials/peleffy.html">this tutorial</a> if you want to learn more about heteromolecule
+parametrization.</p>
+</div>
+</div>
+<div class="section" id="adjust-the-ligand">
+<h2>Adjust the ligand<a class="headerlink" href="#adjust-the-ligand" title="Permalink to this headline">¶</a></h2>
+<p>The ligand structure needs to meet a number of criteria in order to be correctly perturbed by PELE. Most importantly,
+it needs to have a <strong>unique chain ID</strong> and any residue name except for “UNK”. Additionally, it needs to have correctly
+assigned bond orders, including <strong>CONECT lines</strong> in the PDB file, as well as <strong>unique PDB atom names</strong>.</p>
+<p>If you are not sure how to correctly prepare the ligand, you can follow section 1d from the
+<a class="reference external" href="../tutorials/frag_pele.html">Fragment growing tutorial</a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="yaml.html" class="btn btn-neutral float-right" title="Input yaml parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Input files preparation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

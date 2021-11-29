@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PELE basis &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" />
+    <link rel="next" title="Input files preparation" href="../input/index.html" />
+    <link rel="prev" title="Frequently asked questions (FAQs)" href="../faqs/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PELE basis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pele-algorithm">PELE algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adaptivepele">AdaptivePELE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#aquapele">AquaPELE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conformation-perturbation">Conformation perturbation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fragpele">FragPELE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#further-reading">Further reading</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>PELE basis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/pele/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pele-basis">
+<h1>PELE basis<a class="headerlink" href="#pele-basis" title="Permalink to this headline">¶</a></h1>
+<p>Our <strong>Protein Energy Landscape Exploration</strong> (PELE) tool combines protein structure prediction algorithms and Metropolis Monte Carlo techniques
+to efficiently tackle tasks like predicting binding sites, docking pose refinement or modelling exit path of a ligand.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/induced_fit_compressed.gif"><img alt="../_images/induced_fit_compressed.gif" src="../_images/induced_fit_compressed.gif" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">Visualisation of the PELE algorithm</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</div>
+<p>If you would like to find out more about the C++ engine running underneath, please refer to the <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/">PELE++ documentation</a>.</p>
+<div class="section" id="pele-algorithm">
+<h2>PELE algorithm<a class="headerlink" href="#pele-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>Each simulation consists of several steps executing the following algorithm:</p>
+<blockquote>
+<div><p><strong>1. Perturbation.</strong> Localised perturbation of the ligand (if present), involving random translation and rotation,
+followed by simple side chain relocation to avoid clashes. Additionally, the protein is minimized by driving alpha
+carbons to new positions resulting from a small displacement in a low frequency anisotropic normal mode (ANM).</p>
+<p>➜ This step might also involve water perturbation - find out more about <a class="reference internal" href="#aquapele">AquaPELE</a>.</p>
+<p><strong>2. Relaxation.</strong> Optimization of side chains in proximity to the ligand as well as those whose energy changed the
+most during ANM, using a rotamer library with a resolution of 10°. This is followed by a global minimization with
+Truncated Newton minimizer.</p>
+<p><strong>3. Acceptance.</strong> The new structure is accepted (defining a new minimum) or rejected based on the Metropolis criterion.</p>
+</div></blockquote>
+<p>Check how to set it up <a class="reference external" href="../input/parameters/basic_parameters/pele.html">here</a>.</p>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="../_images/pele_algorithm.png"><img alt="../_images/pele_algorithm.png" src="../_images/pele_algorithm.png" style="width: 600px;" /></a>
+<p class="caption"><span class="caption-text">Stages of every PELE step</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="adaptivepele">
+<h2>AdaptivePELE<a class="headerlink" href="#adaptivepele" title="Permalink to this headline">¶</a></h2>
+<p>AdaptivePELE is a Python package developed around the core PELE algorithm aimed to <strong>enhance the exploration</strong> of standard
+molecular simulations by iteratively running short simulations, assessing the exploration with a clustering, and
+spawning new trajectories in interesting regions.</p>
+<p>The algorithm is composed of three main steps: sampling, clustering, and spawning, which run in an iterative approach.</p>
+<blockquote>
+<div><p><strong>1. Sampling.</strong> During this phase, several trajectories are run independently to generate a number of uncorrelated poses.</p>
+<p><strong>2. Clustering.</strong> Obtained conformations are clustered using the leader algorithm based on ligand RMSD.</p>
+<p><strong>3. Spawning.</strong> In the last step, the initial structures (seeds) for the next iteration are selected with the goal
+of improving the search in poorly sampled regions or to optimize a user-defined metric.</p>
+</div></blockquote>
+<p>Check how to set it up <a class="reference external" href="../input/parameters/basic_parameters/adaptive.html">here</a>.</p>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="../_images/adaptive_flow.png"><img alt="../_images/adaptive_flow.png" src="../_images/adaptive_flow.png" style="width: 500px;" /></a>
+<p class="caption"><span class="caption-text">Flow chart depicting the AdaptivePELE algorithm</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+</div>
+<div class="section" id="aquapele">
+<h2>AquaPELE<a class="headerlink" href="#aquapele" title="Permalink to this headline">¶</a></h2>
+<p>AquaPELE extends the exploration capabilities of the standard PELE algorithm by introducing an additional Monte Carlo
+step to <strong>perturb water molecules</strong> inside protein cavities and dynamically adjust their effects to the current state of
+the system.</p>
+<p>The implementation employs a mixed implicit/explicit approach which allows prediction of the principal hydration sites
+or the rearrangement and displacement of conserved water molecules upon the binding of a ligand while retaining the
+efficiency.</p>
+<p>Check how to set it up <a class="reference external" href="../input/parameters/basic_parameters/water.html">here</a>.</p>
+</div>
+<div class="section" id="conformation-perturbation">
+<h2>Conformation perturbation<a class="headerlink" href="#conformation-perturbation" title="Permalink to this headline">¶</a></h2>
+<p>PELE provides the possibility to narrow down the range of available ligand conformations to increase the efficiency of
+sampling. It will automatically generate a library of conformations when supplied with a directory of ligand clusters
+originating from conformational search or <a class="reference external" href="https://mmb.irbbarcelona.org/BCE/">Bioactive Conformational Ensemble server</a>.</p>
+<p>Check how to set it up <a class="reference external" href="../input/parameters/basic_parameters/ligand.html#ligand-conformations">here</a>.</p>
+</div>
+<div class="section" id="fragpele">
+<h2>FragPELE<a class="headerlink" href="#fragpele" title="Permalink to this headline">¶</a></h2>
+<p>FragPELE is a new tool for <em>in silico</em> hit-to-lead drug design, capable of <strong>growing a fragment</strong> into a core while exploring
+the protein-ligand conformational space.</p>
+<div class="figure align-center" id="id4">
+<a class="reference internal image-reference" href="../_images/frag_pele.gif"><img alt="../_images/frag_pele.gif" src="../_images/frag_pele.gif" style="width: 300px;" /></a>
+<p class="caption"><span class="caption-text">Visualization of fragment growing in a protein cavity</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+<p>The software is intended to automatically grow one or more fragments onto different hydrogen atoms of the same scaffold, the
+overall method is composed of five steps, as outlined below:</p>
+<blockquote>
+<div><p><strong>1. Preparation.</strong> Preprocessing of the PDB file to ensure the protein and the scaffold are correctly protonated and
+have assigned bond orders.</p>
+<p><strong>2. Fragment linkage.</strong> In order to link the fragment to the scaffold, the coordinates of the hydrogens associated with
+user-defined heavy atoms will be aligned, and the hydrogens will be subsequently deleted to create a new bond.</p>
+<p><strong>3. Fragment reduction.</strong> The bonding and non-bonding terms of the fragment atoms are reduced to later be grown
+dynamically within the binding site.</p>
+<p><strong>4. Fragment growing.</strong> The new fragment is grown within a few epochs using the AdaptivePELE methodology. At each
+epoch, the atoms’ parameters are linearly increased and a few PELE steps are performed to account for the receptor
+flexibility.</p>
+<p><strong>5. Sampling &amp; scoring.</strong> Once the ligand is completely grown, a longer PELE simulation is performed to score the
+and map the whole protein-ligand conformational space.</p>
+</div></blockquote>
+<p>Check how to set it up <a class="reference external" href="../input/parameters/basic_parameters/frag.html">here</a>.</p>
+</div>
+<div class="section" id="further-reading">
+<h2>Further reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h2>
+<p>Over the years, numerous publications have been written about the methodology and applications of PELE itself, as well
+as further improvements, such as AdaptivePELE or FragPELE.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://pubs.acs.org/doi/abs/10.1021/ct0501811">PELE: Protein Energy Landscape Exploration. A Novel Monte Carlo Based Technique</a> by Kenneth W. Borrelli, Andreas Vitalis, Raul Alcantara, and Victor Guallar</p></li>
+<li><p><a class="reference external" href="https://www.nature.com/articles/s41598-017-08445-5">Adaptive simulations, towards interactive protein-ligand modeling</a> by Daniel Lecina, Joan F. Gilabert, and Victor Guallar</p></li>
+<li><p><a class="reference external" href="https://pubs.acs.org/doi/10.1021/acs.jctc.0c00925">aquaPELE: A Monte Carlo-Based Algorithm to Sample the Effects of Buried Water Molecules in Proteins</a> by Martí Municoy, Sergi Roda, Daniel Soler, Alberto Soutullo, and Victor Guallar</p></li>
+<li><p><a class="reference external" href="https://pubs.acs.org/doi/10.1021/acs.jctc.0c00305">Bioactive Conformational Ensemble Server and Database. A Public Framework to Speed Up In Silico Drug Discovery</a> by Sanja Zivanovic, Genís Bayarri, Francesco Colizzi, David Moreno, Josep Lluís Gelpí, Robert Soliva, Adam Hospital and Modesto Orozco</p></li>
+<li><p><a class="reference external" href="https://pubs.acs.org/doi/10.1021/acs.jcim.9b00938">FragPELE: Dynamic Ligand Growing within a Binding Site. A Novel Tool for Hit-To-Lead Drug Design</a> by Carles Perez, Daniel Soler, Robert Soliva, and Victor Guallar</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../input/index.html" class="btn btn-neutral float-right" title="Input files preparation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../faqs/index.html" class="btn btn-neutral float-left" title="Frequently asked questions (FAQs)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

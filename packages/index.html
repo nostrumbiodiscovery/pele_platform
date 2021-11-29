@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Run simulation &mdash; pele platform 1.6.0b2 documentation</title>
+  <title>Simulation packages &mdash; pele platform 1.6.1 documentation</title>
   
 
   
@@ -37,8 +37,8 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="copyright" title="Copyright" href="../copyright.html" />
-    <link rel="next" title="Docking pose refinement" href="docking/index.html" />
-    <link rel="prev" title="Installation" href="../installation/index.html" /> 
+    <link rel="next" title="Induced fit docking" href="induced_fit/index.html" />
+    <link rel="prev" title="Custom template generation" href="../input/templates.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.6
+                1.6.1
               </div>
             
           
@@ -87,48 +87,41 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Run simulation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="docking/index.html">Docking pose refinement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simulation packages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="induced_fit/index.html">Induced fit docking</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rescoring/index.html">Rank multiple putative poses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pocket_exploration/index.html">Pocket exploration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ppi/index.html">Prepare your own PPI simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frag/index.html">Fragment growing simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="libraries/index.html">Grow a custom fragment library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="site_finder/index.html">Site finder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ppi/index.html">Protein-protein interface simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frag/index.html">fragPELE simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="libraries/index.html">Fragment libraries evaluation with fragPELE</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpcr/index.html">GPCR orthosteric site simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="interaction_restrictions/index.html">Interaction restrictions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binding/index.html">Binding simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="binding/unbinding.html">Unbinding simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interaction_restrictions/index.html">Interaction-restricted induced fit docking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration/binding.html">Out –&gt; in simulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="migration/unbinding.html">In –&gt; out simulation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bias/index.html">Biased simulation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pca/index.html">Simulate big conformational moves of your receptor with PCA-PELE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="minimization/index.html">Minimize your protein</a></li>
-<li class="toctree-l2"><a class="reference internal" href="covalent_docking/index.html">Covalent docking</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pca/index.html">Large protein conformational moves with PCA-PELE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimization/index.html">Protein minimization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sidechain_perturbation/index.html">Sidechain perturbation</a></li>
 </ul>
 </li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
-</ul>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
 </ul>
 
             
@@ -175,7 +168,7 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Run simulation</li>
+      <li>Simulation packages</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -194,54 +187,26 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="run-simulation">
-<h1>Run simulation<a class="headerlink" href="#run-simulation" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="simulation-packages">
+<h1>Simulation packages<a class="headerlink" href="#simulation-packages" title="Permalink to this headline">¶</a></h1>
 <p>Step by step guides to setting up your own simulation.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><a class="reference external" href="docking/index.html">Docking pose refinement</a></p></li>
-<li><p><a class="reference external" href="rescoring/index.html">Pose scoring</a></p></li>
-<li><p><a class="reference external" href="pocket_exploration/index.html">Pocket exploration</a></p></li>
-<li><p><a class="reference external" href="ppi/index.html">Protein-protein inhibitors</a></p></li>
-<li><p><a class="reference external" href="frag/index.html">High-throughput fragment growing</a></p></li>
-<li><p><a class="reference external" href="libraries/index.html">Growing custom fragment library</a></p></li>
-<li><p><a class="reference external" href="gpcr/index.html">GPCR orthosteric site exploration</a></p></li>
-<li><p><a class="reference external" href="interaction_restrictions/index.html">Induced fit with interaction restrictions</a></p></li>
-<li><p><a class="reference external" href="binding/index.html">Binding events</a></p></li>
-<li><p><a class="reference external" href="binding/unbinding.html">Unbinding events</a></p></li>
-<li><p><a class="reference external" href="bias/index.html">Biased simulation</a></p></li>
-<li><p><a class="reference external" href="pca/index.html">Conformational change simulation</a></p></li>
-<li><p><a class="reference external" href="minimization/index.html">Protein minimization</a></p></li>
-<li><p><a class="reference external" href="covalent_docking/index.html">Covalent docking</a></p></li>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="induced_fit/index.html">Induced fit docking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rescoring/index.html">Rank multiple putative poses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="site_finder/index.html">Site finder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ppi/index.html">Protein-protein interface simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="frag/index.html">fragPELE simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="libraries/index.html">Fragment libraries evaluation with fragPELE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gpcr/index.html">GPCR orthosteric site simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="interaction_restrictions/index.html">Interaction-restricted induced fit docking</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration/binding.html">Out –&gt; in simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration/unbinding.html">In –&gt; out simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bias/index.html">Biased simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pca/index.html">Large protein conformational moves with PCA-PELE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="minimization/index.html">Protein minimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sidechain_perturbation/index.html">Sidechain perturbation</a></li>
 </ul>
-</div></blockquote>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
-</div>
-<div class="toctree-wrapper compound">
 </div>
 </div>
 
@@ -253,10 +218,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="docking/index.html" class="btn btn-neutral float-right" title="Docking pose refinement" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="induced_fit/index.html" class="btn btn-neutral float-right" title="Induced fit docking" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../installation/index.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../input/templates.html" class="btn btn-neutral float-left" title="Custom template generation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

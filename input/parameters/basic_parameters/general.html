@@ -1,0 +1,496 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>General parameters &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="copyright" title="Copyright" href="../../../copyright.html" />
+    <link rel="next" title="PELE general parameters" href="pele.html" />
+    <link rel="prev" title="Basic parameters" href="../basic.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Input files preparation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../system_preparation.html">PDB preparation</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../yaml.html">Input yaml parameters</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../required.html">Required parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../packages.html">Package selection</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html">Basic parameters</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">General parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pele.html">PELE general parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="adaptive.html">Adaptive PELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parametrization.html">Residue parametrization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frag.html">fragPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sidechain_perturbation.html">Side chain perturbation parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="water.html">aquaPELE parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="ligand.html">Ligand parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="box.html">Perturbation site parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metrics.html">PELE metrics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="constraints.html">Constraint parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="metals.html">Metal parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html">Analysis parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../advanced.html">Advanced parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../templates.html">Custom template generation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Input files preparation</a> &raquo;</li>
+        
+          <li><a href="../../yaml.html">Input yaml parameters</a> &raquo;</li>
+        
+          <li><a href="../basic.html">Basic parameters</a> &raquo;</li>
+        
+      <li>General parameters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/input/parameters/basic_parameters/general.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="general-parameters">
+<h1>General parameters<a class="headerlink" href="#general-parameters" title="Permalink to this headline">¶</a></h1>
+<p>These are general parameters that affect the global behaviour of the Platform.</p>
+<p>List of general parameters:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="#cpus">cpus</a></p></li>
+<li><p><a class="reference external" href="#test">test</a></p></li>
+<li><p><a class="reference external" href="#debug">debug</a></p></li>
+<li><p><a class="reference external" href="#restart">restart</a></p></li>
+<li><p><a class="reference external" href="#seed">seed</a></p></li>
+<li><p><a class="reference external" href="#working-folder">working_folder</a></p></li>
+</ol>
+</div></blockquote>
+<p>List of examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="#example-1">Example 1</a></p></li>
+<li><p><a class="reference external" href="#example-2">Example 2</a></p></li>
+<li><p><a class="reference external" href="#example-3">Example 3</a></p></li>
+</ul>
+</div></blockquote>
+<div class="section" id="cpus">
+<h2>cpus<a class="headerlink" href="#cpus" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: The number of computation cores that the Platform will use.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">60</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When running on test mode the number of cpus is ignored and the simulation
+only uses 5 of them.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="general.html#test">test</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-2">Example 2</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="test">
+<h2>test<a class="headerlink" href="#test" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Run a quick test to check the simulation works (~2 min).</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Boolean</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Never use the control files generated in test mode as input for a
+production simulation because other parameters such as temperature,
+ANM and minimization are tweaked to make simulation faster.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="general.html#cpus">cpus</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-2">Example 2</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="debug">
+<h2>debug<a class="headerlink" href="#debug" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Use this flag to only create the inputs of the simulation.
+No actual simulation will run.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Boolean</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The combination of this parameter along with <code class="docutils literal notranslate"><span class="pre">debug</span></code> allows the user to manually modify any input file that the
+Platform generates. For example, running first in debug mode will generate input files like <code class="docutils literal notranslate"><span class="pre">pele.conf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">adaptive.conf</span></code> or ligand templates. The user can then modify them at their will and restart the job with
+<code class="docutils literal notranslate"><span class="pre">restart</span></code>.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="general.html#restart">restart</a>,
+<a class="reference external" href="#example-1">Example 1</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="restart">
+<h2>restart<a class="headerlink" href="#restart" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Use restart parameter set to True to start a simulation
+from scratch (with existing input PDBs and configuration files).</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Boolean</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The combination of this parameter along with <code class="docutils literal notranslate"><span class="pre">debug</span></code> allows the user to manually modify any input file that the
+Platform generates. For example, running first on debug mode will generate input files like <code class="docutils literal notranslate"><span class="pre">pele.conf</span></code>,
+<code class="docutils literal notranslate"><span class="pre">adaptive.conf</span></code> or ligand templates. The user can then modify them at their will and restart the job with
+<code class="docutils literal notranslate"><span class="pre">restart</span></code>.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This parameter must not be confused with <code class="docutils literal notranslate"><span class="pre">adaptive_restart</span></code>.
+While <code class="docutils literal notranslate"><span class="pre">restart</span></code> stands for skipping any input file preparation
+and directly going to the simulation execution, it still can start
+from the first Adaptive iteration if <code class="docutils literal notranslate"><span class="pre">adaptive_restart</span></code> is set to
+False.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="general.html#debug">debug</a>,
+<a class="reference external" href="adaptive.html#adaptive_restart">adaptive_restart</a>,
+<a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="seed">
+<h2>seed<a class="headerlink" href="#seed" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Seed for Platform’s pseudo-random numbers generator for reproducibility.
+When no <code class="docutils literal notranslate"><span class="pre">seed</span></code> is set, it will be initialized to a random number. This
+random number can be consulted afterwards by checking <code class="docutils literal notranslate"><span class="pre">adaptive.conf</span></code> file.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">Integer</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is always a good practice to establish a fixed seed in order to guarantee
+reproducibility.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-1">Example 1</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="working-folder">
+<h2>working_folder<a class="headerlink" href="#working-folder" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Directory where the simulation will run.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">String</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">LIG_Pele</span></code>, where LIG is the residue name of our ligand</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When <code class="docutils literal notranslate"><span class="pre">working_folder</span></code> is not set, the default behaviour is to never
+replace an existing folder. So, in case that <code class="docutils literal notranslate"><span class="pre">LIG_Pele</span></code> directory
+already exists, the ultimate <code class="docutils literal notranslate"><span class="pre">working_folder</span></code> will be set to
+<code class="docutils literal notranslate"><span class="pre">LIG_Pele_1</span></code>, <code class="docutils literal notranslate"><span class="pre">LIG_Pele_2</span></code>, and so on.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-1">Example 1</a>,
+<a class="reference external" href="#example-3">Example 3</a></p>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="example-1">
+<h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 10 computation
+cores and run it in debug mode.
+Moreover, test and restart modes are disabled. Finally, we also establish a
+specific seed for the pseudo-random numbers generator and a custom working folder.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;my_custom_choice&quot;</span>
+
+<span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-2">
+<h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set an induced fit docking simulation with 10 computation
+cores and run it in test mode.
+When using this mode, the number of computation cores that will be used is always
+going to be 5, regardless of the number of cores requested with the <code class="docutils literal notranslate"><span class="pre">cpus</span></code> parameter.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+
+<span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-3">
+<h2>Example 3<a class="headerlink" href="#example-3" title="Permalink to this headline">¶</a></h2>
+<p>In this example we ask the induced fit docking simulation to be restarted.
+Consequently, the Platform expects to find a directory previously created
+with valid input files. To generate them, we need to execute the Platform
+in debug mode, as shown in <a class="reference external" href="#example-1">Example 1</a>. So, in this case
+the working_folder that we set it must already exist.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span>
+<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;my_custom_choice&quot;</span>
+
+<span class="c1"># Required parameters</span>
+<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
+<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
+<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+
+<span class="c1"># Package selection</span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pele.html" class="btn btn-neutral float-right" title="PELE general parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../basic.html" class="btn btn-neutral float-left" title="Basic parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../../../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

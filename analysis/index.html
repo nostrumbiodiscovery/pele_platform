@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Analysis &mdash; pele platform 1.6.0b2 documentation</title>
+  <title>Analysis &mdash; pele platform 1.6.1 documentation</title>
   
 
   
@@ -37,8 +37,8 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="copyright" title="Copyright" href="../copyright.html" />
-    <link rel="next" title="Tutorials" href="../tutorials/index.html" />
-    <link rel="prev" title="FragPELE parameters" href="../flags/frag/index.html" /> 
+    <link rel="next" title="API" href="../api/index.html" />
+    <link rel="prev" title="Sidechain perturbation" href="../packages/sidechain_perturbation/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.6
+                1.6.1
               </div>
             
           
@@ -87,19 +87,18 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
 </ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Run simulation</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../flags/index.html">Optional flags</a></li>
-</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#output-files">Output files</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#folder-structure">Folder structure</a></li>
@@ -111,29 +110,14 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#clusters">Clusters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#api">API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#class-analysis">class Analysis</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generate">generate()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generate-clusters">generate_clusters()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generate-plots">generate_plots()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generate-top-poses">generate_top_poses()</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generate-report">generate_report()</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
 </ul>
-</li>
-</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../errors/index.html">Common errors</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Developers</a></li>
-</ul>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Versions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
 </ul>
 
             
@@ -236,7 +220,6 @@
 <h2>Plots<a class="headerlink" href="#plots" title="Permalink to this headline">¶</a></h2>
 <p>The software will automatically create scatter plots for all metrics, however, if you want to enhance your analysis, you
 can check out our PELE Plotter script. See <a class="reference internal" href="../tutorials/plotter.html#plottertutorial"><span class="std std-ref">this tutorial</span></a> to get more information.</p>
-<p>For more advanced interactive plots, please refer to <a class="reference external" href="https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html">PELE++ documentation</a>.</p>
 <div class="section" id="kernel-density-estimate-plot">
 <h3>Kernel density estimate plot<a class="headerlink" href="#kernel-density-estimate-plot" title="Permalink to this headline">¶</a></h3>
 <p>The KDE plots can aid the simulation analysis by visualising the distribution of ligand poses (similarly to a histogram)
@@ -261,213 +244,6 @@ poses plotted using the <code class="docutils literal notranslate"><span class="
 throughout the simulation.</p>
 <a class="reference internal image-reference" href="../_images/cluster_scatter.png"><img alt="../_images/cluster_scatter.png" class="align-center" src="../_images/cluster_scatter.png" style="width: 400px;" /></a>
 </div>
-<div class="section" id="api">
-<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
-<p>We included an option to run analysis as API for those of our users, who are familiar with Python. All you have to do is
-initialize the Analysis class with the three mandatory parameters (resname, chain and simulation_output) and any optional
-you might want to include.</p>
-<div class="section" id="class-analysis">
-<h3>class Analysis<a class="headerlink" href="#class-analysis" title="Permalink to this headline">¶</a></h3>
-<blockquote>
-<div><dl class="simple">
-<dt>resname<span class="classifier">str (mandatory)</span></dt><dd><p>Residue name of the ligand, e.g. “LIG”</p>
-</dd>
-<dt>chain<span class="classifier">str (mandatory)</span></dt><dd><p>Chain ID of the ligand, e.g. “Z.”</p>
-</dd>
-<dt>simulation_output<span class="classifier">str (mandatory)</span></dt><dd><p>Path to the output folder of the simulation, e.g. “LIG_Pele/output”</p>
-</dd>
-<dt>be_column<span class="classifier">int (optional, default = 4)</span></dt><dd><p>Report column with energy metric.</p>
-</dd>
-<dt>limit_column<span class="classifier">int (optional, default = None)</span></dt><dd><p>Integer specifying the first column from which the meaningful metrics start, e.g. SASA or RMSD.</p>
-</dd>
-<dt>traj<span class="classifier">str (optional, default = “trajectory.pdb”)</span></dt><dd><p>Trajectory name defaults to “trajectory.pdb”, but you should use “trajectory.xtc” if using XTC format.</p>
-</dd>
-<dt>report<span class="classifier">str (optional, default = “report”)</span></dt><dd><p>Report file name, if not using default.</p>
-</dd>
-<dt>skip_initial_structures<span class="classifier">bool (optional, default = False)</span></dt><dd><p>Skips initial structures (step 0 of the simulation). Should be set to False when running test
-with only one step.</p>
-</dd>
-<dt>kde<span class="classifier">bool (optional, default = False)</span></dt><dd><p>Set to True to create kernel density estimator plots.</p>
-</dd>
-<dt>kde_structs<span class="classifier">int (optional, default = 1000)</span></dt><dd><p>Maximum number of structures to consider for the KDE plot.</p>
-</dd>
-<dt>topology<span class="classifier">str (optional, default = None)</span></dt><dd><p>Path to the topology file, if using XTC trajectories.</p>
-</dd>
-<dt>cpus: int (optional, default = 1)</dt><dd><p>Number of CPUs to use.</p>
-</dd>
-<dt>water_ids_to_track<span class="classifier">List (optional, default = [])</span></dt><dd><p>List of IDs of water molecules to cluster. Each water ID is defined by
-a tuple that contains the PDB chain and the residue number, e.g.
-<code class="docutils literal notranslate"><span class="pre">water_ids_to_track</span> <span class="pre">=</span> <span class="pre">[(&quot;A&quot;,</span> <span class="pre">234),</span> <span class="pre">(&quot;A&quot;,</span> <span class="pre">235)]</span></code></p>
-</dd>
-<dt>clustering_filtering_threshold<span class="classifier">float (optional, default = 0.25)</span></dt><dd><p>Percentage of output structures to filter our before clustering.</p>
-</dd>
-<dt>plot_filtering_threshold<span class="classifier">float (optional, default = 0.02)</span></dt><dd><p>Percentage of output structures to filter out before creating plots. Default = 0.02</p>
-</dd>
-<dt>clustering_coverage<span class="classifier">float (optional, default = 0.75)</span></dt><dd><p>The percentage of points that needs to be assigned to a top cluster when running mean shift clustering
-with automated bandwidth.</p>
-</dd>
-</dl>
-</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="kn">from</span> <span class="nn">pele_platform.analysis</span> <span class="kn">import</span> <span class="n">Analysis</span>
-<span class="o">&gt;&gt;</span> <span class="n">analysis</span> <span class="o">=</span> <span class="n">Analysis</span><span class="p">(</span><span class="n">resname</span><span class="o">=</span><span class="s2">&quot;LIG&quot;</span><span class="p">,</span> <span class="n">chain</span><span class="o">=</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="n">simulation_output</span><span class="o">=</span><span class="s2">&quot;LIG_Pele/output&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Then you can use one of the available methods to generate top poses, perform clustering or run the whole analysis workflow, e.g.</p>
-</div>
-<div class="section" id="generate">
-<h3>generate()<a class="headerlink" href="#generate" title="Permalink to this headline">¶</a></h3>
-<p>Runs the full analysis workflow (plots, top poses and clusters) and saves the results in the supplied path.</p>
-<blockquote>
-<div><dl>
-<dt>path<span class="classifier">str</span></dt><dd><p>The path where the analysis results will be saved</p>
-</dd>
-<dt>clustering_type<span class="classifier">str (optional, default = ‘meanshift’)</span></dt><dd><p>The clustering method that will be used to generate the clusters. One of [‘gaussianmixture’, ‘meanshift’, ‘hdbscan’].</p>
-</dd>
-<dt>bandwidth<span class="classifier">Union[float, str] (optional, default = “auto”)</span></dt><dd><p>Bandwidth for the mean shift and HDBSCAN clustering. You can also use “auto” option when running the mean
-shift clustering to let the software automatically choose a value.</p>
-</dd>
-<dt>analysis_nclust<span class="classifier">int (optional, default = 10)</span></dt><dd><p>Number of clusters to create when using the Gaussian mixture model.</p>
-</dd>
-<dt>max_top_clusters<span class="classifier">int (optional, default = 8)</span></dt><dd><p>Maximum number of clusters to return.</p>
-</dd>
-<dt>min_population<span class="classifier">float (optional, default = 0.01)</span></dt><dd><p>The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1% of all structures.</p>
-</dd>
-<dt>max_top_poses<span class="classifier">int (optional, default = 100)</span></dt><dd><p>Number of top poses to retrieve.</p>
-</dd>
-<dt>top_clusters_criterion<span class="classifier">str (optional, default = “interaction_25_percentile”)</span></dt><dd><p>Method for selecting the top clusters, you can use one of:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>“total_25_percentile” - total energy 25th percentile</p></li>
-<li><p>“total_5_percentile” - total energy 5th percentile</p></li>
-<li><p>“total_mean” - total energy mean</p></li>
-<li><p>“interaction_25_percentile” - interaction energy 25th percentile</p></li>
-<li><p>“interaction_5_percentile” - interaction energy 5th percentile</p></li>
-<li><p>“interaction_mean” - interaction energy mean</p></li>
-<li><p>“interaction_min” - interaction energy minimum</p></li>
-<li><p>“population” - cluster population</p></li>
-</ul>
-</div></blockquote>
-</dd>
-<dt>representatives_criterion<span class="classifier">str (optional, default = “interaction_min”)</span></dt><dd><p>Method for selecting representative structures for each cluster, you can choose one of:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>“total_25_percentile” - total energy 25th percentile</p></li>
-<li><p>“total_5_percentile” - total energy 5th percentile</p></li>
-<li><p>“total_mean” - total energy mean</p></li>
-<li><p>“interaction_25_percentile” - interaction energy 25th percentile</p></li>
-<li><p>“interaction_5_percentile” - interaction energy 5th percentile</p></li>
-<li><p>“interaction_mean” - interaction energy mean</p></li>
-<li><p>“interaction_min” - interaction energy minimum</p></li>
-</ul>
-</div></blockquote>
-</dd>
-</dl>
-</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;my_folder&quot;</span><span class="p">,</span> <span class="n">clustering_type</span><span class="o">=</span><span class="s2">&quot;gaussianmixture&quot;</span><span class="p">,</span> <span class="n">analysis_nclust</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="generate-clusters">
-<h3>generate_clusters()<a class="headerlink" href="#generate-clusters" title="Permalink to this headline">¶</a></h3>
-<p>Performs clustering of the output poses based on ligand heavy atom coordinates using a user-defined method.</p>
-<blockquote>
-<div><dl>
-<dt>path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the clusters will be saved.</p>
-</dd>
-<dt>clustering_type<span class="classifier">str (mandatory)</span></dt><dd><p>The clustering method that will be used to generate the clusters, choose one from [‘gaussianmixture’, ‘meanshift’, ‘hdbscan’].</p>
-</dd>
-<dt>bandwidth<span class="classifier">Union[float, str] (optional, default = “auto”)</span></dt><dd><p>Bandwidth for the mean shift and HDBSCAN clustering. You can use “auto” option when running the mean
-shift clustering to let the software automatically choose a value.</p>
-</dd>
-<dt>analysis_nclust<span class="classifier">int (optional, default = 10)</span></dt><dd><p>Number of clusters to create when using the Gaussian mixture model.</p>
-</dd>
-<dt>max_top_clusters<span class="classifier">int (optional, default = 8)</span></dt><dd><p>Maximum number of clusters to return. If a large number of clusters is created, only a specific subset with the best metrics is returned.</p>
-</dd>
-<dt>min_population<span class="classifier">float (optional, default = 0.01)</span></dt><dd><p>The minimum amount of structures in a cluster, takes a value between 0 and 1, where 0.01 refers to 1%.</p>
-</dd>
-<dt>top_clusters_criterion<span class="classifier">str (optional, default = “interaction_25_percentile”)</span></dt><dd><p>Method for selecting the top clusters, you can use one of:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>“total_25_percentile” - total energy 25th percentile</p></li>
-<li><p>“total_5_percentile” - total energy 5th percentile</p></li>
-<li><p>“total_mean” - total energy mean</p></li>
-<li><p>“interaction_25_percentile” - interaction energy 25th percentile</p></li>
-<li><p>“interaction_5_percentile” - interaction energy 5th percentile</p></li>
-<li><p>“interaction_mean” - interaction energy mean</p></li>
-<li><p>“interaction_min” - interaction energy minimum</p></li>
-<li><p>“population” - cluster population</p></li>
-</ul>
-</div></blockquote>
-</dd>
-<dt>representatives_criterion<span class="classifier">str (optional, default = “interaction_min”)</span></dt><dd><p>Method for selecting representative structures for each cluster, you can choose one of:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>“total_25_percentile” - total energy 25th percentile</p></li>
-<li><p>“total_5_percentile” - total energy 5th percentile</p></li>
-<li><p>“total_mean” - total energy mean</p></li>
-<li><p>“interaction_25_percentile” - interaction energy 25th percentile</p></li>
-<li><p>“interaction_5_percentile” - interaction energy 5th percentile</p></li>
-<li><p>“interaction_mean” - interaction energy mean</p></li>
-<li><p>“interaction_min” - interaction energy minimum</p></li>
-</ul>
-</div></blockquote>
-</dd>
-</dl>
-</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_clusters</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">&quot;my_clusters&quot;</span><span class="p">,</span> <span class="n">clustering_type</span><span class="o">=</span><span class="s2">&quot;gaussianmixture&quot;</span><span class="p">,</span> <span class="n">analysis_nclust</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="generate-plots">
-<h3>generate_plots()<a class="headerlink" href="#generate-plots" title="Permalink to this headline">¶</a></h3>
-<p>Generates scatter plots for all metrics versus binding energy and total energy.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the plots will be saved.</p>
-</dd>
-</dl>
-</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_plots</span><span class="p">(</span><span class="s2">&quot;my_plots_folder&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="generate-top-poses">
-<h3>generate_top_poses()<a class="headerlink" href="#generate-top-poses" title="Permalink to this headline">¶</a></h3>
-<p>Retrieves the best binding energy poses and saves them in the PDB format, returns a list of metrics associated with each pose.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the top poses will be saved.</p>
-</dd>
-<dt>n_poses<span class="classifier">int (optional, default = 100)</span></dt><dd><p>The number of top poses to retrieve.</p>
-</dd>
-</dl>
-</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">best_metrics</span> <span class="o">=</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_top_poses</span><span class="p">(</span><span class="s2">&quot;my_working_folder&quot;</span><span class="p">,</span> <span class="n">n_poses</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="generate-report">
-<h3>generate_report()<a class="headerlink" href="#generate-report" title="Permalink to this headline">¶</a></h3>
-<p>It generates the final simulation report as a PDF file.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>plots_path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the plots are saved.</p>
-</dd>
-<dt>poses_path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the top poses are saved.</p>
-</dd>
-<dt>clusters_path<span class="classifier">str (mandatory)</span></dt><dd><p>The path where the clusters are saved.</p>
-</dd>
-<dt>best_metrics<span class="classifier">list[float] (mandatory)</span></dt><dd><p>The list that contains the metrics belonging to the extracted best poses, extracted by generate_top_poses method.</p>
-</dd>
-<dt>filename<span class="classifier">str (mandatory)</span></dt><dd><p>The filename for the simulation report.</p>
-</dd>
-</dl>
-</div></blockquote>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="n">analysis</span><span class="o">.</span><span class="n">generate_report</span><span class="p">(</span><span class="s2">&quot;my_plots_folder&quot;</span><span class="p">,</span> <span class="s2">&quot;my_working_folder&quot;</span><span class="p">,</span> <span class="s2">&quot;my_clusters&quot;</span><span class="p">,</span> <span class="n">best_metrics</span><span class="p">,</span> <span class="s2">&quot;report.pdf&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
 </div>
 
 
@@ -478,10 +254,10 @@ shift clustering to let the software automatically choose a value.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../tutorials/index.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../flags/frag/index.html" class="btn btn-neutral float-left" title="FragPELE parameters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../packages/sidechain_perturbation/index.html" class="btn btn-neutral float-left" title="Sidechain perturbation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
