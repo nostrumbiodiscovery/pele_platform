@@ -171,8 +171,8 @@ spawning_condition
 ++++++++++++++++++
 
     - Description: Defines how the bias towards the metric of interest
-      is applied. If spawning method must promote clusters that maximize or
-      minimize the metric of interest. There are 2 options available:
+      is applied, i.e. whether it should promote clusters that minimize or
+      maximize the metric of interest. There are 2 options available:
         - ``max``
         - ``min``
 

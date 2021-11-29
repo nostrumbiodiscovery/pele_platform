@@ -5,7 +5,7 @@ These are parameters to set up the analysis package of the Platform.
 
 List of aquaPELE parameters:
 
-    1. `analysis <#analysis>`__
+    1. `analyse <#analyse>`__
     2. `only_analysis <#only-analysis>`__
     3. `bandwidth <#bandwidth>`__
     4. `max_top_clusters <#max-top-clusters>`__
@@ -22,7 +22,7 @@ List of examples:
     - `Example 3 <#example-3>`__
 
 
-analysis
+analyse
 ++++++++
 
     - Description: Whether to run or not the analysis at the end of the
@@ -43,8 +43,11 @@ only_analysis
     - Type: ``Boolean``
     - Default: ``False``
 
+    .. note::
+      We recommend adding the path to the simulation you want to analyse using the working_folder flag.
+
     .. seealso::
-      `analysis <#analysis>`__,
+      `analyse <#analyse>`__,
       `Example 2 <#example-2>`__
 
 
@@ -195,7 +198,7 @@ but it will not be analyzed.
     induced_fit_fast: True
 
     # Analysis parameters
-    analysis: False
+    analyse: False
 
 
 Example 2
@@ -258,4 +261,11 @@ the ``clustering_coverage`` parameter.
 
     # Analysis parameters
     only_analysis: True
+    working_folder: "LIG_Pele"
     clustering_coverage: 0.60
+    bandwidth: 8
+    max_top_clusters: 12
+    top_clusters_criterion: "population"
+    cluster_representatives_criterion: "interaction_mean"
+    max_top_poses: 20
+    min_population: 0.005

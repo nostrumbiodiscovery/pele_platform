@@ -39,10 +39,9 @@ rmsd_pdb
     - Default: ``None``
 
     .. note::
-       Note that the PDB structure that is supplied must contain the same
-       ligand as the input structure of PELE. The ligand must share the same
-       residue name and number, and also the same atom names as the input
-       structure.
+       Note that the PDB structure supplied as a reference must be aligned to the input structure prior
+       to the simulation. Additionally, it must contain the same ligand with matching residue name, residue
+       number and PDB atom names.
 
     .. seealso::
       `atom_dist <#atom-dist>`__,
