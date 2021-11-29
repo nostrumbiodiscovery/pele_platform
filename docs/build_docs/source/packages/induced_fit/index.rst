@@ -1,5 +1,6 @@
-Induced fit
-===========
+===================
+Induced fit docking
+===================
 
 Introduction
 -----------------

@@ -1,20 +1,21 @@
+===================
 Simulation packages
 ===================
 
 Step by step guides to setting up your own simulation.
 
-    - `Docking pose refinement <docking/index.html>`_
-    - `Pose scoring <rescoring/index.html>`_
-    - `Pocket exploration <site_finder/index.html>`_
-    - `Protein-protein inhibitors <ppi/index.html>`_
-    - `High-throughput fragment growing <frag/index.html>`_
-    - `Growing custom fragment library <libraries/index.html>`_
-    - `GPCR orthosteric site exploration <gpcr/index.html>`_
-    - `Induced fit with interaction restrictions <interaction_restrictions/index.html>`_
-    - `Binding events <migration/binding.html>`_
-    - `Unbinding events <migration/unbinding.html>`_
+    - `Induced fit docking <induced_fit/index.html>`_
+    - `Rank multiple putative poses <rescoring/index.html>`_
+    - `Site finder <site_finder/index.html>`_
+    - `PPI simulation <ppi/index.html>`_
+    - `fragPELE simulation <frag/index.html>`_
+    - `Fragment libraries evaluation with fragPELE <libraries/index.html>`_
+    - `GPCR orthosteric site simulation <gpcr/index.html>`_
+    - `Interaction-restricted induced fit docking <interaction_restrictions/index.html>`_
+    - `Out --> in simulation <migration/binding.html>`_
+    - `In --> out simulation <migration/unbinding.html>`_
     - `Biased simulation <bias/index.html>`_
-    - `Conformational change simulation <pca/index.html>`_
+    - `Large protein conformational moves with PCA-PELE <pca/index.html>`_
     - `Protein minimization <minimization/index.html>`_
     - `Side chain perturbation <sidechain_perturbation/index.html>`_
 
