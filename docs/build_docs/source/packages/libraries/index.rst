@@ -1,10 +1,11 @@
-Grow a custom fragment library
-================================
+===========================================
+Fragment libraries evaluation with fragPELE
+===========================================
 
 Introduction
 -------------
 
-FragPELE is now able to grow fragments from custom-made libraries! All you have to do is provide it with a directory
+FragPELE is able to grow fragments from custom-made libraries. All you have to do is provide it with a directory
 containing your fragments (in PDB or SDF format) and a docked core to let the software rank your fragments and return the
 best binding modes for each.
 

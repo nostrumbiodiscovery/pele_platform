@@ -1,9 +1,10 @@
-Versions
-############
+===============
+Release history
+===============
 
 
 PELE Platform 1.6.1
-====================
+-------------------
 
 A minor release of the PELE Platform that contains stability and efficiency improvements. Find below the full list of modifications:
 
@@ -37,7 +38,7 @@ A minor release of the PELE Platform that contains stability and efficiency impr
 
 
 PELE Platform 1.6
-=================
+-----------------
 
 The new release of the PELE Platform contains many new features and stability changes. The most important ones are:
 
@@ -105,7 +106,7 @@ Other changes are:
 
 
 v1.5.1
-==========================
+------
 
 - AquaPELE
 
@@ -127,7 +128,7 @@ v1.5.1
 
 
 v1.5.0
-==========================
+------
 
 - PPI package
 
@@ -155,7 +156,7 @@ v1.5.0
 
 
 v1.4.4
-=====================
+------
 
 - Include further testing of alignment and rdkit symmetry problem
 
@@ -165,13 +166,13 @@ v1.4.4
 
 
 v1.4.3
-======================
+------
 
 - Fix rdkit substructure search symmetry problem by alignment
 
 
 v1.4.2
-====================
+------
 
 - FragPELE better tested
 
@@ -185,13 +186,13 @@ v1.4.2
 
 
 v1.4.1
-======================
+------
 
 - Wrongly updated
 
 
 v1.4.0
-=======================
+------
 
 - FragPELE supported (Beta-version)
 
@@ -211,7 +212,7 @@ v1.4.0
 
 
 v1.3.4
-=======================
+------
 
 - Make mae flag convert clusters as well as top poses to mae
 
@@ -221,13 +222,13 @@ v1.3.4
 
 
 v1.3.3
-=======================
+------
 
 - Include only analysis flag
 
 
 v1.3.2
-=======================
+------
 
 - Automatically score the simulation by making the average of the 25% best energy structures.
 
@@ -237,7 +238,7 @@ v1.3.2
 
 
 v1.3.1
-=======================
+------
 
 - Fixed bug in xtc analysis
 
@@ -245,7 +246,7 @@ v1.3.1
 
 
 v1.3.0 
-=======================
+------
 
 - Set constraints by smiles
 
@@ -263,7 +264,7 @@ v1.3.0
 
 
 v1.2.3
-=======================
+------
 
 - Automatic PCA mode
 
@@ -273,7 +274,7 @@ v1.2.3
 
 
 v1.2.2
-=======================
+------
 
 - Fix global exploration bug when joining ligand & receptor
 
@@ -285,7 +286,7 @@ v1.2.2
 
 
 v1.2.1
-=======================
+------
 
 - Add verboseMode
 
@@ -297,7 +298,7 @@ v1.2.1
 
 
 v1.2.0
-=======================
+------
 
 - Conda installation
 
@@ -307,7 +308,7 @@ v1.2.0
 
 
 v1.1.0
-=======================
+------
 
 - Automatic Platform to automatically launch PELE&adaptivePELE. It creates the forcefield parameters, the control files, the PELE input.pdb and finally launch the simulation.
 

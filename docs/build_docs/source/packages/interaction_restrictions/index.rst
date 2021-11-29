@@ -1,5 +1,6 @@
-Interaction restrictions
-=============================
+==========================================
+Interaction-restricted induced fit docking
+==========================================
 
 Introduction
 ---------------
