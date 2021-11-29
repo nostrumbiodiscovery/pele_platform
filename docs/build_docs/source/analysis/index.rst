@@ -41,8 +41,6 @@ Plots
 The software will automatically create scatter plots for all metrics, however, if you want to enhance your analysis, you
 can check out our PELE Plotter script. See :ref:`this tutorial<PlotterTutorial>` to get more information.
 
-For more advanced interactive plots, please refer to `PELE++ documentation <https://nostrumbiodiscovery.github.io/pele_docs/intro/GeneralAnalysis/GeneralAnalysis.html>`_.
-
 Kernel density estimate plot
 ++++++++++++++++++++++++++++++
 
