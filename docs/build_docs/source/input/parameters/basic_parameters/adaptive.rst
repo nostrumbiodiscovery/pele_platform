@@ -335,12 +335,12 @@ induced fit package are ``"[1.0, 0.6]"``.
 Example 3
 +++++++++
 
-# TODO
 In this example we set an out --> in simulation with 50 computation
 cores. When using this package, we also need to set initial and final sites
 in order to properly define the starting point and the region to explore
-during the migration of our ligand. Check `box parameters <box.html>`__
-to get further information about these two options.
+during the migration of our ligand.
+Check `perturbation site parameters <box.html>`__ to get further information
+about these two options.
 
 Then, we replace the default Adaptive spawning method of out --> in package,
 which is ``inverselyProportional``, to ``epsilon``. Thus, Adaptive will

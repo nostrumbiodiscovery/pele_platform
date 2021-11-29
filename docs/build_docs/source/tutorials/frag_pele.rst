@@ -195,4 +195,4 @@ The simulation will create a folder with the following organization:
 Optative Flags
 --------------
 
-See `here <input/parameters/basic_parameters/frag.html>`_ the optative flags for FragPELE.
+See `here <../input/parameters/basic_parameters/frag.html>`_ the optative flags for FragPELE.
