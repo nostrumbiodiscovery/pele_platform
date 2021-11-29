@@ -9,7 +9,10 @@ The induced fit simulation aims to enhance docking poses by taking into account 
 achieve this, we developed a curated side chain prediction and ANM algorithms, which were benchmarked against standard
 docking techniques.
 
-To find out more, check out our publication: `Challenges of docking in large, flexible and promiscuous binding sites <https://www.ncbi.nlm.nih.gov/pubmed/27545443>`_
+Both induced fit protocols use **AdaptivePELE**, which enhances the exploration by iteratively running short simulations, assessing the exploration with clustering, and spawning new trajectories in the most relevant regions.
+
+* Read more about AdaptivePELE in `documentation <https://adaptivepele.github.io/AdaptivePELE/index.html>`_
+* Check out our publication `Challenges of docking in large, flexible and promiscuous binding sites <https://www.ncbi.nlm.nih.gov/pubmed/27545443>`_
 
 Inputs
 +++++++++++++
@@ -23,23 +26,16 @@ Default parameters
 Induced fit fast
 ******************
 
-    - iterations: 30
-    - pele steps: 12
-    - uses AdaptivePELE, i.e. enhances the exploration by iteratively running short simulations, assessing the exploration with clustering, and spawning new trajectories in the most relevant regions
+    - adaptive iterations: 25
+    - steps per iteration: 12
+    - average time: 4h
 
 Induced fit long
 ************************
 
-    - iterations: 1
-    - pele steps: 1000
-    - uses standard PELE
-
-
-Recommendations
-+++++++++++++++++++
-
-    #. Expected computational time is 2-3h for the fast protocol and 6h for long.
-    #. Read more about the `AdaptivePELE protocol <https://adaptivepele.github.io/AdaptivePELE/index.html>`_.
+    - adaptive iterations: 10
+    - steps per iteration: 100
+    - average time: 10 - 12h
 
 
 1. Complex Preparation
