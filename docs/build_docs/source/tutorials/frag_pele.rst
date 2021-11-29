@@ -191,7 +191,8 @@ The simulation will create a folder with the following organization:
     - **top_result.pdb:** PDB file of the top result from the simulation.
     - **pele_template.conf**
 
-Optative Flags
-------------------
 
-See `here <../documentation/frag/index.html>`_ the optative flags for FragPELE.
+Optative Flags
+--------------
+
+See `here <input/parameters/basic_parameters/frag.html>`_ the optative flags for FragPELE.

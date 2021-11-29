@@ -1,5 +1,6 @@
-Pocket exploration
-=====================
+===========
+Site finder
+===========
 
 Introduction
 --------------

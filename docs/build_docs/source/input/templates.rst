@@ -33,7 +33,7 @@ using `peleffy <../tutorials/peleffy.html>`_ via:
 
     * or using `Python API <../tutorials/peleffy.html#api>`_.
 
-Once the files have been generated, you need to supply them to the PELE platform by setting specific flags
-in ``input.yaml``.
-
-# TODO: Add a link to docs about "rotamers" and "templates" flag.
+Once the files have been generated, you need to supply them to the PELE platform
+by setting specific parameters in ``input.yaml``. Check
+the `residue parametrization <parameters/basic_parameters/parametrization.html>`__ section
+to know how to set them.
