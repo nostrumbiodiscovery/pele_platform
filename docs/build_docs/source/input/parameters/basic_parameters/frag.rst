@@ -1,9 +1,9 @@
 fragPELE parameters
 -------------------
 
-These are parameters to set up aquaPELE algorithm within a PELE simulation.
+These are parameters to set up a fragPELE simulation.
 
-List of aquaPELE parameters:
+List of fragPELE parameters:
 
     1. `frag_core <#frag-core>`__
     2. `chain_core <#chain-core>`__
