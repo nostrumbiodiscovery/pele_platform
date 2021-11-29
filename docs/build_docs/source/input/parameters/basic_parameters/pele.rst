@@ -25,6 +25,8 @@ List of examples:
     - `Example 3 <#example-3>`__
     - `Example 4 <#example-4>`__
     - `Example 5 <#example-5>`__
+    - `Example 6 <#example-6>`__
+    - `Example 7 <#example-7>`__
 
 
 steps
@@ -234,7 +236,7 @@ water_freq
 
     .. seealso::
       `aquaPELE parameters <water.html>`__,
-      `Example 3 <#example-3>`__
+      `Example 4 <#example-4>`__
 
 
 conformation_freq
@@ -261,7 +263,7 @@ conformation_freq
 
     .. seealso::
       `ligand_conformations <ligand.html#ligand-conformations>`__,
-      `Example 4 <#example-4>`__
+      `Example 5 <#example-5>`__
 
 
 forcefield
@@ -294,7 +296,7 @@ forcefield
 
     .. seealso::
       `use_peleffy <parametrization.html#use-peleffy>`__,
-      `Example 5 <#example-5>`__
+      `Example 6 <#example-6>`__
 
 
 solvent
@@ -314,7 +316,7 @@ solvent
 
     .. seealso::
       `forcefield <#forcefield>`__,
-      `Example 6 <#example-6>`__
+      `Example 7 <#example-7>`__
 
 
 Example 1
@@ -420,6 +422,35 @@ Example 4
 +++++++++
 
 In this example we set an induced fit docking simulation with 30 computation
+cores. We also activate aquaPELE by adding 2 new water molecules with
+``n_waters`` parameter. Finally, we set the frequency at which aquaPELE
+runs with ``water_freq`` option. Thus, it runs every 2 PELE steps.
+
+..  code-block:: yaml
+
+    # Required parameters
+    system: 'system.pdb'
+    chain: 'L'
+    resname: 'LIG'
+
+    # General parameters
+    cpus: 30
+    seed: 2021
+
+    # Package selection
+    induced_fit_fast: True
+
+    # aquaPELE parameters
+    n_waters: 2
+
+    # PELE parameters
+    water_freq: 2
+
+
+Example 5
++++++++++
+
+In this example we set an induced fit docking simulation with 30 computation
 cores. We also provide a path that contains different conformations of
 our ligand with the ``ligand_conformations`` parameter. This option will
 activate the Conformation perturbation algorithm that adds an extra
@@ -444,13 +475,13 @@ Metropolis acceptance ratio from dropping too much.
     induced_fit_fast: True
 
     # Ligand parameters
-    ligand_conformations: "LIG_conformations"
+    ligand_conformations: "LIG_conformations/"
 
     # PELE parameters
     conformation_freq: 6
 
 
-Example 5
+Example 6
 +++++++++
 
 In this example we set an induced fit docking simulation with 30 computation
@@ -480,7 +511,7 @@ further details.
     forcefield: "openff-2.0.0"
 
 
-Example 6
+Example 7
 +++++++++
 
 In this example we set an induced fit docking simulation with 30 computation
@@ -503,4 +534,4 @@ we select it with the ``solvent`` parameter.
     induced_fit_fast: True
 
     # PELE parameters
-    solvent: "VDGBNP"
+    solvent: "OBC"

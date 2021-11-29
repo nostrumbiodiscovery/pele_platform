@@ -67,10 +67,11 @@ bandwidth
 
     .. note::
        When it is set to ``auto``, it will select the best bandwidth value
-       to cover 
+       to cover the percentage of all explored points that is set with the
+       ``clustering_coverage`` parameter.
 
     .. seealso::
-      `clustering_coverage <#clustering-coverage>`__
+      `clustering_coverage <#clustering-coverage>`__,
       `Example 2 <#example-2>`__
 
 
@@ -155,14 +156,19 @@ min_population
 clustering_coverage
 +++++++++++++++++++
 
-    - Description: Sets the percentage of points that needs to be assigned
-      to a top cluster when running mean shift clustering with automated
-      bandwidth.
-
+    - Description: Sets the minimum percentage of points that needs to be
+      assigned to a top cluster when running mean shift clustering with
+      automated ``bandwidth``. Thus, clustering bandwidth will keep
+      increasing once covering the coverage percentage that is defined.
     - Type: ``Float``
     - Default: ``0.75``
 
+    .. note::
+       Note that this parameter is only used when the ``auto`` ``bandwidth``
+       mode is set.
+
     .. seealso::
+      `bandwidth <#bandwidth>`__,
       `Example 3 <#example-3>`__
 
 
@@ -228,7 +234,12 @@ Example 3
 +++++++++
 
 In this example we set an induced fit docking simulation with 30 computation
-cores. For the analysis, we rely on the default bandwidth parameter.
+cores. For the analysis, we rely on the default bandwidth parameter, which
+is ``auto``. This option finds the right clustering ``bandwidth`` for the
+Mean Shift algorithm according to the ``clustering_coverage``. Thus, the
+right ``bandwidth`` is selected to include inside top cluster selection, at
+least, the percentage of points that is supplied with
+the ``clustering_coverage`` parameter.
 
 ..  code-block:: yaml
 
@@ -246,10 +257,4 @@ cores. For the analysis, we rely on the default bandwidth parameter.
 
     # Analysis parameters
     only_analysis: True
-    bandwidth: 8
-    max_top_clusters: 12
-    top_clusters_criterion: "population"
-    cluster_representatives_criterion: "interaction_mean"
-    max_top_poses: 20
-    min_population: 0.005
-
+    clustering_coverage: 0.60
