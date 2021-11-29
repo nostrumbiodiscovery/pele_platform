@@ -10,6 +10,7 @@ List of general parameters:
     3. `debug <#debug>`__
     4. `restart <#restart>`__
     5. `seed <#seed>`__
+    6. `working_folder <#working-folder>`__
 
 List of examples:
 

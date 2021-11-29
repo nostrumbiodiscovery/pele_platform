@@ -70,6 +70,7 @@ bandwidth
        to cover the percentage of all explored points that is set with the
        ``clustering_coverage`` parameter.
 
+
     .. seealso::
       `clustering_coverage <#clustering-coverage>`__,
       `Example 2 <#example-2>`__

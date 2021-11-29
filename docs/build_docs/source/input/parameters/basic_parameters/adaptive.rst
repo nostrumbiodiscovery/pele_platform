@@ -22,6 +22,9 @@ List of examples:
     - `Example 3 <#example-3>`__
     - `Example 4 <#example-4>`__
 
+.. warning::
+   Note that these parameters will not affect fragPELE.
+
 
 iterations
 ++++++++++
