@@ -38,7 +38,7 @@ steps
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -67,11 +67,10 @@ minimum_steps
     - Default: ``False``
 
     .. note::
-       This strategy allows the exploration to be more efficient since
-       all computation cores do not have to wait for the rest to finish.
-       However, it will produce an unbalanced sampling since some explorers
-       might produce larger trajectories due to the fact that we force a
-       minimum of steps to be executed but not a maximum.
+       This strategy allows for more efficient exploration, since the cores that already reached the
+       required number of steps do not wait idly but continue the computation until all explorers have
+       finished. However, it will produce an unbalanced sampling since some explorers might produce larger
+       trajectories due to the fact that we force a minimum of steps to be executed but not a maximum.
 
     .. seealso::
       `steps <#steps>`__,
@@ -91,8 +90,8 @@ equilibration
     - Default: ``False``
 
     .. note::
-       Do not confuse equilibration with pre-equilibration. The former consists
-       in running several equilibration steps to produce different initial
+       Do not confuse equilibration with pre-equilibration. The former entails
+       running several equilibration steps to produce different initial
        structures. The latter only checks the amount of contacts between the
        ligand and the protein to correctly set the right clustering conditions
        for Adaptive.
@@ -144,7 +143,7 @@ anm_freq
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -170,7 +169,7 @@ sidechain_freq
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -196,7 +195,7 @@ min_freq
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -221,12 +220,12 @@ water_freq
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
     .. note::
-       Note that aquaPELE is enabled only when we set some waters molecules
+       Note that aquaPELE is enabled only when we set some water molecules
        to be perturbed. Refer to `water parameters <water.html>`__ in order
        to get further information about how to set up aquaPELE.
 
@@ -327,7 +326,7 @@ docking package. Instead of 12 steps we ask for 6. This will result in an
 even faster simulation (twice as fast) at the expense of reducing the
 exploration.
 
-We are also enabling the equilibration. Thus, prior the production run we will
+We are also enabling the equilibration. Thus, prior to the production run we will
 run a few steps to obtain different starting positions of our ligand. The
 number of PELE steps that will be devoted to the equilibration is set to 5,
 replacing the default value of 2 equilibration steps.
@@ -427,7 +426,7 @@ activate the Conformation perturbation algorithm that adds an extra
 perturbation step to visit all supplied ligand conformations during
 the PELE simulation. However, to diminish the effects of the Conformation
 perturbation algorithm, we reduce its frequency from a default of ``4``
-to ``6``. This strategy will modification will help to prevent the
+to ``6``. This strategy modification will help to prevent the
 Metropolis acceptance ratio from dropping too much.
 
 ..  code-block:: yaml

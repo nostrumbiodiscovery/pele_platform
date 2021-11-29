@@ -33,7 +33,7 @@ constraint_level
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        We strongly suggest relying on the default
        settings for each package. However, in case of studying a system where the
        defaults are not optimal (more flexibility or rigidity required),

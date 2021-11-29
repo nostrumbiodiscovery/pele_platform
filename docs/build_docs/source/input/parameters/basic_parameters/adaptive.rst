@@ -35,7 +35,7 @@ iterations
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -74,7 +74,7 @@ spawning
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -124,7 +124,7 @@ bias_column
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -152,7 +152,7 @@ epsilon
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -181,7 +181,7 @@ spawning_condition
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -202,8 +202,8 @@ clustering_conditions
       has few contacts with the protein and reduce their size when protein-ligand
       contacts increase as we want to capture this region with more detail.
       Thus, it represents an array of contacts from high to low between the
-      ligand and the protein. It is related with ``clustering_values`` and the
-      length of ``clustering_conditions`` array must be equal to the length of
+      ligand and the protein. It is related to ``clustering_values`` and the
+      length of the ``clustering_conditions`` array must be equal to the length of
       ``clustering_values`` minus one.
 
       This parameter can be set to ``auto`` to automatically select the
@@ -216,7 +216,7 @@ clustering_conditions
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -252,7 +252,7 @@ clustering_values
 
     .. note::
        This parameter is set according to the Platform package that is chosen
-       since it has a strong with the type of simulation that is pursued.
+       since it has a strong connection with the type of simulation that is pursued.
        However, if this parameter is set, it will prevail over the default
        settings of any package.
 
@@ -275,7 +275,7 @@ On the other hand, we are also specifying custom parameters for Adaptive's
 clustering. We slightly reduce the sizes of clusters with the ``clustering_values``
 parameter (defaults for the induced fit fast package are ``"[2.0, 5.0, 7.0]"``).
 We also set ``cluster_conditions`` to ``"auto"``, so the Platform will
-run a few preequilibration steps to determine the best cluster conditions.
+run a few pre-equilibration steps to determine the best cluster conditions.
 
 ..  code-block:: yaml
 

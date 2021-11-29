@@ -34,9 +34,9 @@ Remove redundant molecules
 
 Heteromolecules and waters
 ++++++++++++++++++++++++++
-It is worth to check the necessity and importance of cofactors, metal ions,
+It is worth checking the necessity and importance of cofactors, metal ions,
 water molecules, crystallization agents, etc. Particularly, we might consider
-removing most of water molecules that are present in our structure. PELE
+removing most of the water molecules that are present in our structure. PELE
 uses an **implicit solvent** to account for its effects. Thus, we normally do
 not need to keep them. However, there are mainly three exceptions:
     - **Structural water:** water molecules inside protein cavities that are
@@ -98,7 +98,7 @@ recommended to assign the right connectivity to any heteromolecule. We also must
 ensure that connectivity information is saved in the resulting PDB file
 through CONECT lines.
 
-Please, check `this tutorial <../tutorials/peleffy.html>`_ if you want learn further details about heteromolecule
+Please, check `this tutorial <../tutorials/peleffy.html>`_ if you want to learn more about heteromolecule
 parametrization.
 
 

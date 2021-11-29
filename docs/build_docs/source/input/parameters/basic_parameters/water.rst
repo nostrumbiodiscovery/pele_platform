@@ -1,7 +1,7 @@
 aquaPELE parameters
 -------------------
 
-These are parameters to set up aquaPELE algorithm within a PELE simulation.
+These are parameters to set up the aquaPELE algorithm within a PELE simulation.
 
 List of aquaPELE parameters:
 
@@ -44,7 +44,7 @@ waters
     - Description: Water molecules to be perturbed with aquaPELE. They
       must belong to the input structure that is supplied to the Platform.
       Water molecules must be selected by supplying their chain and residue
-      number. For example, "W:15" will select water molecule from chain "W"
+      number. For example, "W:15" will select the water molecule from chain "W"
       and with residue number 15. All water molecules present in the system
       can be automatically selected with ``"all_waters"``.
 
@@ -97,9 +97,9 @@ water_temp
 ++++++++++
 
     - Description: Temperature, in Kelvin, for the internal Metropolis criterion
-      of aquaPELE. The higher it is, the easier is to accept new water
-      locations, even, if they increase the energy of the system. Thus, the
-      higher it is the harder is to accept the new state of the system at the
+      of aquaPELE. The higher it is, the easier it is to accept new water
+      locations, even if they increase the energy of the system. Thus, the
+      higher it is the harder it is to accept the new state of the system at the
       end of the PELE step by the outer Metropolis criterion. However, a high
       temperature promotes the sampling of water molecules.
 
@@ -108,9 +108,9 @@ water_temp
 
     .. note::
        Note the difference between ``temperature`` and ``water_temp``. The
-       former affects to the global Metropolis criterion that is applied
+       former affects the global Metropolis criterion that is applied
        at the end of each PELE step and decides if we accept or reject the
-       new state of the system. The latter only affects to the internal
+       new state of the system. The latter only affects the internal
        Metropolis criterion of aquaPELE which is in charge of accepting or
        rejecting each water move.
 
