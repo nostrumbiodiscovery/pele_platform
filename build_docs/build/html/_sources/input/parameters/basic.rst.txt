@@ -22,6 +22,10 @@ the Platform PELE can be applied.
    basic_parameters/metals.rst
    basic_parameters/analysis.rst
 
+.. image:: ../../img/yaml_parameters.png
+  :width: 550
+  :align: center
+
 In case that basic parameters are not flexible enough and do not cover a particular case,
 do not hesitate to reach us out at pelesupport@nostrumbiodiscovery.com.
 Besides, you might also find a solution by checking our `Advanced Parameters <advanced.html>`__
