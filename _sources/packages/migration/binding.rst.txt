@@ -55,7 +55,7 @@ Prepare the input file ``input.yml``:
 
 **Note:** PELE will automatically . Then simulation will start.
 
-For more optional flags please refer to `optional flags <../../flags/index.html>`_.
+For more optional flags please refer to `optional flags <../../input/yaml.html>`_.
 
 
 3. Run simulation

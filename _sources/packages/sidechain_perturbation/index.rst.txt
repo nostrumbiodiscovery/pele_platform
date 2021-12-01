@@ -69,7 +69,7 @@ Additionally, you can also control:
     nonbonding_radius: 5
     refinement_angle: 15
 
-For more optional flags please refer to `optional flags <../../flags/index.html>`_..
+For more optional flags please refer to `optional flags <../../input/yaml.html>`_..
 
 
 3. Run simulation

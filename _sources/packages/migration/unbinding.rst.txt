@@ -55,7 +55,7 @@ Prepare the input file ``input.yml``:
     in_out: true
     cpus: 30
 
-For more optional flags please refer to `optional flags <../../flags/index.html>`_.
+For more optional flags please refer to `optional flags <../../input/yaml.html>`_.
 
 3. Run simulation
 --------------------

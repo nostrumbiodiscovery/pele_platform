@@ -18,7 +18,7 @@ Default parameters
 
     - iterations: 20
     - pele_steps: 12
-    - `constraint level <../../input/parameters/basic_parameters/constraints.html#constraint_level>`_: 2
+    - `constraint level <../../input/parameters/basic_parameters/constraints.html>`_: 2
 
 Recommendations
 ++++++++++++++++++
@@ -53,7 +53,7 @@ Prepare the input file ``input.yml``:
     cpus: 20
     rescoring: true # Minimize
 
-For more optional flags please refer to `optional flags <../../flags/index.html>`_
+For more optional flags please refer to `optional flags <../../input/yaml.html>`_.
 
 3. Run simulation
 ---------------------
