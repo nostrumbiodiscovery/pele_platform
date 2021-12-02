@@ -15,6 +15,8 @@ want to supply custom templates for our ligand or other non standard residues.
     - ``templates``: optionally, we can supply parameter templates or rotamer
       libraries for specific non standard residues.
 
+.. image:: ../img/platform_flow.png
+  :align: center
 
 Below we list several instructions to correctly prepare input PDB files for PELE:
 
