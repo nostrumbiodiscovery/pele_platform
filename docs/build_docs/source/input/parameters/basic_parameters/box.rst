@@ -121,7 +121,7 @@ initial_site
       `final_site <#final-site>`__,
       `packages <../packages.html>`__,
       `Example 3 <#example-3>`__,
-      `Out --> In tutorial <../../tutorials/out_in.html>`__
+      `Out --> In tutorial <../../../tutorials/out_in.html>`__
 
 
 final_site
@@ -144,7 +144,7 @@ final_site
       `initial_site <#initial-site>`__,
       `packages <../packages.html>`__,
       `Example 3 <#example-3>`__,
-      `Out --> In tutorial <../../tutorials/out_in.html>`__
+      `Out --> In tutorial <../../../tutorials/out_in.html>`__
 
 
 center_of_interface
@@ -164,7 +164,7 @@ center_of_interface
     .. seealso::
       `packages <../packages.html>`__,
       `Example 4 <#example-4>`__,
-      `PPI tutorial <../../tutorials/ppi.html>`__
+      `PPI tutorial <../../../tutorials/ppi.html>`__
 
 
 Example 1

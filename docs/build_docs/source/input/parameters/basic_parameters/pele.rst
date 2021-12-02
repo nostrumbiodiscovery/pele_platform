@@ -490,7 +490,7 @@ Example 6
 In this example we set an induced fit docking simulation with 30 computation
 cores. We also select the latest OpenFF force field, which works with the OBC
 solvent model. In order to use it, we need to activate peleffy. Check
-`parametrization <parametrozation.html#use-peleffy>`__ section to get
+`parametrization <parametrization.html#use-peleffy>`__ section to get
 further details.
 
 ..  code-block:: yaml
