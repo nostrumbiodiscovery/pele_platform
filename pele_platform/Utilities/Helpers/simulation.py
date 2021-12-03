@@ -108,6 +108,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             "MINIMUM_STEPS": env.minimum_steps,
             "CONFORMATION_PERTURBATION": env.conformation_perturbation,
             "OVERLAP_CONFORMATION": env.overlap_factor_conformation,
+            "SIDECHAIN_RADIUS": env.sidechain_radius,
         }
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)

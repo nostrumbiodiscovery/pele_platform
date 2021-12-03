@@ -253,6 +253,12 @@ class SimulationParams(
             self.binding_energy = ""
             self.sasa = ""
 
+        self.sidechain_radius = (
+            args.sidechain_radius
+            if args.sidechain_radius is not None
+            else self.simulation_params.get("sidechain_radius", 6)
+        )
+
     def main_adaptive_params(self, args):
         self.spawning = (
             args.spawning

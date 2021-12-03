@@ -246,6 +246,7 @@ class YamlParser(object):
         self.anm_relaxation_constr = data.get(
             valid_flags["anm_relaxation_constr"], None
         )
+        self.sidechain_radius = data.get(valid_flags["sidechain_radius"], None)
         self.remove_constraints = data.get(valid_flags["remove_constraints"], None)
         self.pca_traj = data.get(valid_flags["pca_traj"], None)
         self.perturbation = data.get(valid_flags["perturbation"], None)
