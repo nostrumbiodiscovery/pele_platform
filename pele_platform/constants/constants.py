@@ -97,7 +97,7 @@ UNBINDING = """\n
 DISTANCE_ATOMS = """\n
                      {{
                      "type":"com_distance",
-                     "tag":"distance{metric_name}",
+                     "tag":"{metric_name}",
                      "selection_group_1":{{
                      "{atom1_tag}": {{ "ids":["{atom1}"]}}
                      }},
