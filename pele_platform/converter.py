@@ -270,7 +270,11 @@ def convert_trajectories(input_path, output_path, input_format,
             output_sizes += output_size
             if output_size > 0:
                 converted_trajectories.append(trajectory_path)
-
+            else:
+                messages.append(f'Warning, verification failed for ' +
+                                f'{trajectory_path}. It could not ' +
+                                f'be converted properly and original ' +
+                                f'trajectory will not be deleted')
             break
 
         # Case of a single trajectory in multiple Adaptive directories
@@ -290,7 +294,11 @@ def convert_trajectories(input_path, output_path, input_format,
             output_sizes += output_size
             if output_size > 0:
                 converted_trajectories.append(trajectory_path)
-
+            else:
+                messages.append(f'Warning, verification failed for ' +
+                                f'{trajectory_path}. It could not ' +
+                                f'be converted properly and original ' +
+                                f'trajectory will not be deleted')
             continue
 
         # Case of multiple trajectories in multiple Adaptive directories
@@ -316,6 +324,11 @@ def convert_trajectories(input_path, output_path, input_format,
             output_sizes += output_size
             if output_size > 0:
                 converted_trajectories.append(trajectory)
+            else:
+                messages.append(f'Warning, verification failed for ' +
+                                f'{trajectory}. It could not be converted ' +
+                                f'properly and original trajectory will ' +
+                                f'not be deleted')
 
     # Print all warnings at the end
     for message in messages:
