@@ -58,6 +58,7 @@ setup(
         "PlopRotTemp==1.0.1",
         "seaborn",
         "pyparsing==2.4.7",
+        "tqdm",
     ],
     ext_modules=ext_modules,  # accepts a glob pattern
 )

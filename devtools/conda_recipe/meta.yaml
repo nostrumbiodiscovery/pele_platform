@@ -47,6 +47,7 @@ requirements:
     - mdtraj==1.9.5
     - seaborn
     - pyparsing==2.4.7
+    - tqdm
 
 test:
   imports:
