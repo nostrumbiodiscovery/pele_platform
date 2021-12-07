@@ -496,7 +496,7 @@ def verify_trajectory(trajectory_path, output_path):
     trajectory1 = mdtraj.load(pdb_trajectory)
     trajectory2 = mdtraj.load(xtc_trajectory, top=trajectory1)
 
-    is_okay = np.allclose(trajectory1.xyz, trajectory2.xyz)
+    is_okay = np.allclose(trajectory1.xyz, trajectory2.xyz, atol=1.e-3)
 
     return is_okay
 
