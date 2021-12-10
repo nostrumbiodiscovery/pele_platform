@@ -740,9 +740,10 @@ class Analysis(object):
         if all([len(epoch) == 0 for epoch in epochs]):
             epochs = [0, ] * len(values)
 
-        # TODO which is the purpose of this hardcoded distance_key?
-        distance_key = "distance0.5"
-        if distance_key in dataframe.columns:
+        distance_keys = [column for column in dataframe.columns if column.startswith("distance")]
+        distance_key = distance_keys[0] if distance_keys else None
+
+        if distance_key:
             dist_values = dataframe[distance_key].tolist()
             filename_template = "{}.{}.{}_BindEner{:.2f}_AtomDist{:.2f}.pdb"
             file_names = \

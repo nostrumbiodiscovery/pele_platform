@@ -215,4 +215,5 @@ VALID_FLAGS_PLATFORM = {
     "covalent_docking_refinement": "covalent_docking_refinement",
     "perturbation_trials": "perturbation_trials",
     "clustering_coverage": "clustering_coverage",
+    "sidechain_radius": "sidechain_radius",
 }
