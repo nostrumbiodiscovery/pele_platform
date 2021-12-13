@@ -23,7 +23,7 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     - **system** - path to the protein-ligand PDB file
     - **chain** - ligand chain ID, here ``Z``
     - **resname** - ligand residue name, in our case ``LIG``
-    - **induced_fit_exhaustive** - to run an exhaustive induced fit simulation
+    - **induced_fit_long** - to run an exhaustive induced fit simulation
     - **atom_dist** - atoms used to track the progress of the simulation, we will use one from the ligand and one from the receptor, following ``chain ID:residue number:atom name`` format
     - **cpus** - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only)
     - **seed** - random seed to ensure reproducibility.
@@ -33,7 +33,7 @@ Create ``input.yaml`` file in your working directory, it should contain the foll
     system: 'docking.pdb'
     chain: 'Z'
     resname: 'LIG'
-    induced_fit_exhaustive: true
+    induced_fit_long: true
     seed: 12345
     cpus: 50
     atom_dist:

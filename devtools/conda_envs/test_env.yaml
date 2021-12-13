@@ -2,7 +2,6 @@ name: peleplatform_env
 
 channels:
   - nostrumbiodiscovery
-  - martimunicoy
   - eapm
   - conda-forge
 
@@ -29,3 +28,4 @@ dependencies:
   - hdbscan==0.8.27
   - mdtraj==1.9.5
   - satumut
+  - pyparsing==2.4.7

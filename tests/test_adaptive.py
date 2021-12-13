@@ -85,8 +85,9 @@ PELE_VALUES = [
     '"modesMixingOption" : "DontMixModes",',
     '"pickingCase" : "random"',
     '"numberOfModes": 3',
-    '"preloadedModesIn" : "modes.nmd",',
+    '\n\t\t\t"preloadedModesIn" : "modes.nmd",',
     '"relaxationSpringConstant" : 3',
+    '"sideChainPredictionRegionRadius" : 8,',
 ]
 
 PCA_VALUES = [

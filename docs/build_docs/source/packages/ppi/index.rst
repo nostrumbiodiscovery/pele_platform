@@ -1,5 +1,6 @@
-Prepare your own PPI simulation
-=====================================
+====================================
+Protein-protein interface simulation
+====================================
 
 Introduction
 ---------------

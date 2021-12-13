@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+import pkg_resources
+
 import pele_platform.Checker.main as ck
 import pele_platform.Frag.simulation as fr
 import pele_platform.Adaptive.simulation as ad
@@ -11,14 +13,13 @@ from pele_platform.enzyme_engineering.saturated_mutagenesis import SaturatedMuta
 from pele_platform.covalent_docking.main import CovalentDocking
 from pele_platform.constants import constants
 import pele_platform.Utilities.Parameters.parameters as pv
-import argparse
-import pkg_resources
+from pele_platform.Utilities.Helpers.yaml_parser import YamlParser
 
 
 @dataclass
 class Launcher:
 
-    _args: argparse.ArgumentParser
+    _args: YamlParser
     frag: str = "frag"
     ppi: str = "PPI"
     site_finder: str = "site_finder"

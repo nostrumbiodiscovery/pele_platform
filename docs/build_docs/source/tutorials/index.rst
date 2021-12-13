@@ -12,6 +12,8 @@ We assume you have already installed the software and have access to Schrödinge
     - `Performing a fragment growing simulation in p38 kinase <frag_pele.html>`_
     - `Pocket exploration and comparison to the native pose by calculating RMSD <site_finder.html>`_
     - `Creating custom plots with built-in Plotter <plotter.html>`_
+    - `Ligand parametrization using peleffy <peleffy.html>`_
+    - `Binding simulation of a JAK-2 kinase <out_in.html>`_
 
 For further information about the obtained outputs files, refer to `this page <outputs.html>`_.
 
@@ -41,4 +43,12 @@ For further information about the obtained outputs files, refer to `this page <o
 
 .. toctree::
    plotter.rst
+   :hidden:
+
+.. toctree::
+   peleffy.rst
+   :hidden:
+
+.. toctree::
+   out_in.rst
    :hidden:

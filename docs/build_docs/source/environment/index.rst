@@ -14,12 +14,12 @@ They must be defined for the pele_platform to work correctly:
     .. code-block:: bash
 
         export PELE=/path/to/PELE-1.X/
-        export SCHRODINGER=/path/to/schoringer/20XX/
+        export SCHRODINGER=/path/to/schrodinger/20XX/
 
 Optional variables
 ------------------
 
-PELE_EXEC:
+PELE_EXEC
 ++++++++++
 
     The PELE executable can be configured in several ways (from highest to lowest precedence):
@@ -38,7 +38,7 @@ PELE_EXEC:
 
       3. If no path is specified, the PELE executable must be ``/path/to/PELE-1.X/bin/Pele_mpi`` (according to the path specified by the environment variable PELE).
 
-PELE_DATA:
+PELE_DATA
 ++++++++++
 
     The PELE data folder can be configured in several ways (from highest to lowest precedence):
@@ -57,7 +57,7 @@ PELE_DATA:
 
       3. If no path is specified, the PELE data folder must be ``/path/to/PELE-1.X/Data`` (according to the path specified by the environment variable PELE).
 
-PELE_DOCUMENTS:
+PELE_DOCUMENTS
 +++++++++++++++
 
     The PELE documents folder can be configured in several ways (from highest to lowest precedence):
@@ -76,7 +76,7 @@ PELE_DOCUMENTS:
 
       3. If no path is specified, the PELE documents folder must be ``/path/to/PELE-1.X/Documents`` (according to the path specified by the environment variable PELE).
 
-PELE_LICENSE:
+PELE_LICENSE
 +++++++++++++
 
     Licenses can be configured in several ways (from highest to lowest precedence):
@@ -96,7 +96,7 @@ PELE_LICENSE:
       3. If no path is specified, licenses must be under ``/path/to/PELE-1.X/licenses/`` (according to the path specified by the environment variable PELE).
 
 
-SINGULARITY_EXEC:
+SINGULARITY_EXEC
 +++++++++++++++++
 
     Path of the singularity container that contains the PELE executable. It can be configured in two ways:

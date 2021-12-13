@@ -4,16 +4,23 @@ import pytest
 import shutil
 
 from pele_platform.constants import constants
+from pele_platform.constants import pele_params
 from pele_platform import main
 from tests import test_adaptive_defaults
 
 test_path = os.path.join(constants.DIR, "Examples/enzyme_engineering")
 
+SAT_MUT_LINES = [
+    pele_params.INDUCED_FIT,
+    '"radius": 6,',
+    '"numberOfStericTrials": 500',
+]
+
 
 def test_mutagenesis_production():
     """
     Tests end-to-end saturated mutagenesis run on 5 CPUs to make sure we get the right output and pele.conf looks
-    as expected (i.e. has induced_fit_exhaustive defaults).
+    as expected (i.e. has induced_fit_long defaults).
     """
     yaml = os.path.join(test_path, "saturated_mutagenesis.yaml")
     all_jobs = main.run_platform_from_yaml(yaml)
@@ -38,9 +45,8 @@ def test_mutagenesis_production():
         )
 
         # Check if the default induced fit exhaustive lines are present in pele configuration file
-        induced_fit_lines = test_adaptive_defaults.INDUCE_FIT_PELE
         errors = test_adaptive_defaults.check_file(
-            job.pele_dir, "pele.conf", induced_fit_lines, []
+            job.pele_dir, "pele.conf", SAT_MUT_LINES, []
         )
         assert not errors
 

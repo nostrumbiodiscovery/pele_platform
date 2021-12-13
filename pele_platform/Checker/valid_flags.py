@@ -94,7 +94,7 @@ VALID_FLAGS_PLATFORM = {
     "orthosteric_site": "orthosteric_site",
     "final_site": "final_site",
     "initial_site": "initial_site",
-    "induced_fit_exhaustive": "induced_fit_exhaustive",
+    "induced_fit_long": "induced_fit_long",
     "induced_fit_fast": "induced_fit_fast",
     "frag": "frag",
     "ca_constr": "ca_constr",
@@ -214,7 +214,6 @@ VALID_FLAGS_PLATFORM = {
     "minimum_steps": "minimum_steps",
     "covalent_docking_refinement": "covalent_docking_refinement",
     "perturbation_trials": "perturbation_trials",
-    # parameters for satmut/plurizymer
     "plurizymer": "plurizymer",
     "satumut_positions_mutations": "satumut_positions_mutations",
     "satumut_mutation": "satumut_mutation",
@@ -238,4 +237,6 @@ VALID_FLAGS_PLATFORM = {
     "plurizymer_single_mutation": "plurizymer_single_mutation",
     "plurizymer_turn": "plurizymer_turn",
     "plurizymer_atom": "plurizymer_atom"
+    "clustering_coverage": "clustering_coverage",
+    "sidechain_radius": "sidechain_radius",
 }

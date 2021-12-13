@@ -1,8 +1,6 @@
 import os
 import logging
 import numpy as np
-import re
-import subprocess
 import shutil
 import sys
 import warnings
@@ -11,7 +9,6 @@ from Bio.PDB import PDBParser
 import pele_platform.Errors.custom_errors as cs
 from multiprocessing import Pool
 from functools import partial
-from packaging import version
 from pele_platform.Errors.custom_errors import ResidueNotFound, PELENotFound
 from pkg_resources import resource_filename
 
@@ -32,13 +29,15 @@ def get_data_file_path(relative_path):
     output_path : str
         The path in the package's data location, if found
     """
-    output_path = resource_filename('pele_platform', os.path.join(
-        'data', relative_path))
+    output_path = resource_filename(
+        "pele_platform", os.path.join("data", relative_path)
+    )
 
     if not os.path.exists(output_path):
         raise ValueError(
             "Sorry! {} does not exist. ".format(output_path)
-            + "If you just added it, you'll have to re-install")
+            + "If you just added it, you'll have to re-install"
+        )
 
     return output_path
 
@@ -243,7 +242,9 @@ def retrieve_all_waters(pdb, exclude=False):
                 [
                     "{}:{}".format(line[21:22], line[22:26].strip())
                     for line in f
-                    if line and "HOH" in line and (line.startswith("ATOM") or line.startswith("HETATM"))
+                    if line
+                    and "HOH" in line
+                    and (line.startswith("ATOM") or line.startswith("HETATM"))
                 ]
             )
         )
@@ -253,8 +254,8 @@ def retrieve_all_waters(pdb, exclude=False):
 
 
 def retrieve_constraints_for_pele(constraints, pdb):
-    CONSTR_ATOM_POINT = '{{ "type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
-    CONSTR_ATOM_ATOM = '{{"type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom":  "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}"}},'
+    CONSTR_ATOM_POINT = '\t\t\t{{"type": "constrainAtomToPosition", "springConstant": {}, "equilibriumDistance": 0.0, "constrainThisAtom": "{}:{}:{}" }},'
+    CONSTR_ATOM_ATOM = '\t\t\t{{"type": "constrainAtomsDistance", "springConstant": {}, "equilibriumDistance": {}, "constrainThisAtom":  "{}:{}:{}", "toThisOtherAtom": "{}:{}:{}"}},'
     final_constraints = []
     for constraint in constraints:
         # Atom to point constraint: 2.2-A:123:2 or 2.2-1986
@@ -285,18 +286,6 @@ def retrieve_constraints_for_pele(constraints, pdb):
             )
         final_constraints.append(constraint)
     return final_constraints
-
-
-def retrieve_box(structure, residue_1, residue_2, weights=[0.5, 0.5]):
-    # get center of interface (if PPI)
-    coords1 = get_coords_from_residue(structure, residue_1)
-    coords2 = get_coords_from_residue(structure, residue_2)
-
-    box_center = np.average([coords1, coords2], axis=0, weights=weights)
-    box_radius = (
-        abs(np.linalg.norm(coords1 - coords2)) / 2 + 4
-    )  # Sum 4 to give more space
-    return list(box_center), box_radius
 
 
 def get_coords_from_residue(structure, original_residue):
@@ -490,7 +479,9 @@ def retrieve_atom_names(pdb_file, residues):
         lines = f.readlines()
 
     # Retrieve HETATM lines only
-    pdb_lines = [line for line in lines if line.startswith("HETATM") or line.startswith("ATOM")]
+    pdb_lines = [
+        line for line in lines if line.startswith("HETATM") or line.startswith("ATOM")
+    ]
 
     for index, line in enumerate(pdb_lines):
 
@@ -538,14 +529,20 @@ def get_residue_name(pdb_file, chain, residue_number):
         residue_number = str(residue_number)
 
     with open(pdb_file, "r") as file:
-        lines = [line for line in file.readlines() if line.startswith("ATOM") or line.startswith("HETATM")]
+        lines = [
+            line
+            for line in file.readlines()
+            if line.startswith("ATOM") or line.startswith("HETATM")
+        ]
 
     for line in lines:
         if line[21].strip() == chain and line[22:26].strip() == residue_number:
             residue_name = line[17:20].strip().lower()
             return residue_name
     else:
-        raise ResidueNotFound(f"Could not find residue {residue_number} in chain {chain} in PDB file {pdb_file}.")
+        raise ResidueNotFound(
+            f"Could not find residue {residue_number} in chain {chain} in PDB file {pdb_file}."
+        )
 
 
 def get_residue_number(pdb_file, chain, residue_name):
@@ -566,36 +563,23 @@ def get_residue_number(pdb_file, chain, residue_name):
         A string with residue number.
     """
     with open(pdb_file, "r") as file:
-        pdb_lines = [line for line in file.readlines() if line.startswith("ATOM") or line.startswith("HETATM")]
+        pdb_lines = [
+            line
+            for line in file.readlines()
+            if line.startswith("ATOM") or line.startswith("HETATM")
+        ]
 
     for line in pdb_lines:
-        if line[21].strip() == chain and line[17:20].strip().lower() == residue_name.lower():
+        if (
+            line[21].strip() == chain
+            and line[17:20].strip().lower() == residue_name.lower()
+        ):
             residue_number = line[22:26].strip()
             return residue_number
     else:
-        raise ResidueNotFound(f"Could not find residue {residue_name} in chain {chain} in PDB file {pdb_file}.")
-
-
-# def get_pele_version():
-#     """
-#     Gets PELE version based on what's found under PELE variable.
-#
-#     Returns
-#     -------
-#     current_version : packaging.version
-#         Version of PELE.
-#
-#     Raises
-#     -------
-#     PELENotFound if PELE variable is not set.
-#     """
-#     pele_path = os.path.join(pele_from_os, "bin/Pele_mpi")
-#     output = subprocess.check_output(f"{pele_path} --version", shell=True)
-#     current_version = version.parse(
-#         re.findall(r"Version\: (\d+\.\d+\.\d+)\.", str(output))[0]
-#     )
-#
-#     return current_version
+        raise ResidueNotFound(
+            f"Could not find residue {residue_name} in chain {chain} in PDB file {pdb_file}."
+        )
 
 
 def parse_atom_dist(atom_dist, pdb):
@@ -616,7 +600,9 @@ def parse_atom_dist(atom_dist, pdb):
     atom_tag : str
         Tag necessary for the metrics JSON - "links" when using residue string and "atoms" when setting residue string.
     """
-    if not str(atom_dist).isdigit() and len(atom_dist.split(":")) == 2:  # When atom_dist is a residue string
+    if (
+        not str(atom_dist).isdigit() and len(atom_dist.split(":")) == 2
+    ):  # When atom_dist is a residue string
         atom = atom_dist
         atom_tag = "links"
     else:

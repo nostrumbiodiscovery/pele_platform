@@ -15,20 +15,21 @@ class MetricBuilder:
         for i in range(1, len(atom_dist), 2):
             atom1, atom1_tag = hp.parse_atom_dist(atom_dist[i - 1], pdb)
             atom2, atom2_tag = hp.parse_atom_dist(atom_dist[i], pdb)
+            metric_name = f'distance_{atom1.replace("_", "").replace(":", "")}_{atom2.replace("_", "").replace(":", "")}'
             distances.append(
                 cs.DISTANCE_ATOMS.format(
                     atom1=atom1,
                     atom1_tag=atom1_tag,
                     atom2=atom2,
                     atom2_tag=atom2_tag,
-                    metric_name=i / 2,
+                    metric_name=metric_name,
                 )
             )
         self.distance = self._distance_to_json(distances)
         return self.distance
 
     def _distance_to_json(self, distances):
-        return "\n".join(distances)
+        return "".join(distances)
 
     def rmsd_to_json(self, pdb_reference, chain_rmsd):
         self.rmsd = cs.NATIVE.format(os.path.abspath(pdb_reference), chain_rmsd)

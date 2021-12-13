@@ -2,10 +2,11 @@ name: peleplatform
 
 channels:
   - nostrumbiodiscovery
-  - martimunicoy
   - eapm
   - conda-forge
 
 dependencies:
+  - python=3.8
+  - pyparsing=2.4.7
   - pele_platform
 

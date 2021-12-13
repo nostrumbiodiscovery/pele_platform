@@ -3,9 +3,7 @@ This file contains de perturbation
 parameters of PELE for each type of simulation
 """
 
-
-
-OUT_IN = ''' 
+ANM = '''\n
              ,
              "parametersChanges" : [
                  { "ifAnyIsTrue": [ "rand >= .5" ],
@@ -27,7 +25,7 @@ OUT_IN = '''
 ]
 '''
 
-GPCR_ORTH = '''
+GPCR_ORTH = '''\n
              ,
              "parametersChanges" : [
                  { "ifAnyIsTrue": [ "rand >= .5" ],
@@ -53,27 +51,17 @@ GPCR_ORTH = '''
                ]
 '''
 
-IN_OUT = '''
+IN_OUT = '''\n
              ,
-
                  "parametersChanges" : [
-
                      { "ifAnyIsTrue": [ "rand >= .5" ],
-
                          "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } },
-
                          "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.15 } }
-
                      },
-
                      {
-
                        "ifAnyIsTrue": [ "rand1 >= 0.40" ],
-
                          "doThesechanges": { "Perturbation::parameters": { "translationRange": 2.0 } },
-
                          "otherwise": { "Perturbation::parameters": { "translationRange": 2.0 } }
-
                     },
                     {
                       "ifAnyIsTrue": [ "rand3 >= 0.10" ],
@@ -95,59 +83,42 @@ IN_OUT = '''
 
 '''
 
-RESCORING = '''
+RESCORING = '''\n
              ,
              "parametersChanges" : [
-             
                   { "ifAnyIsTrue": [ "rand >= .5" ],
-             
                       "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
-             
                       "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } }
-             
                   },
-             
                   { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
-             
                       "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.25} },
-             
-                      "otherwise": { "Perturbation::parameters": { "translationRange": 0.5} }
-             
-                  },
-             
-                  {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
-             
-                         "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 25 } },
-             
-                         "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0 , "numberOfTrials": 25  }}
-             
-                 }
-             
+                      "otherwise": { "Perturbation::parameters": { "translationRange": 0.5} } 
+                  }
              ]
 '''
 
 
 
-INDUCED_FIT = '''
+INDUCED_FIT = '''\n
              ,
-"parametersChanges" : [
-     { "ifAnyIsTrue": [ "rand >= .5" ],
-         "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
-         "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.15 } }
-     },
-     { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
-         "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.5} },
-         "otherwise": { "Perturbation::parameters": { "translationRange": 1.0} }
-     },
-     {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
-            "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 30 } },
-            "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 1 , "numberOfTrials": 10  }}
-    }
+            "parametersChanges" : [
+                 { "ifAnyIsTrue": [ "rand >= .5" ],
+                     "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.05 } },
+                     "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.2 } }
+                 },
+                 { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+                     "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.5} },
+                     "otherwise": { "Perturbation::parameters": { "translationRange": 1.0} }
+                 },
+                 {  "ifAnyIsTrue": [ "rand2 >= 0.5" ],
+                        "doThesechanges": {  "Perturbation::parameters": { "steeringUpdateFrequency": 0, "numberOfTrials": 30 } },
+                        "otherwise": {  "Perturbation::parameters": { "steeringUpdateFrequency": 1 , "numberOfTrials": 10  }}
+                }
 ]
 '''
 
 
-GLOBAL = '''
+GLOBAL = '''\n
              ,
              "parametersChanges" : [
                  { "ifAnyIsTrue": [ "rand >= .5" ],
@@ -173,7 +144,7 @@ GLOBAL = '''
               ]
 '''
 
-WATER_PARAMS = '''
+WATER_PARAMS = '''\n
                      ,{
                          "ifAnyIsTrue": [ "rand3 <= 0.4" ],
                          "doThesechanges": { "WaterPerturbation::parameters": { "translationRange": 4.0 } },
@@ -186,7 +157,7 @@ WATER_PARAMS = '''
 '''
 
 
-FRAG = '''
+FRAG = '''\n
 ,
                  "parametersChanges" : [
                      { "ifAnyIsTrue": [ "rand >= 0.5" ],
@@ -200,7 +171,7 @@ FRAG = '''
                   ]
 '''
 
-INTERACTION_RESTRICTIONS = '''
+INTERACTION_RESTRICTIONS = '''\n
 ,
 "parametersChanges" : [
      {{ "ifAnyIsTrue": [ "{}" ],
@@ -209,7 +180,7 @@ INTERACTION_RESTRICTIONS = '''
      }}]
 '''
 
-SITE_FINDER_GLOBAL = """
+SITE_FINDER_GLOBAL = """\n
 ,
     "parametersChanges" : [
          { "ifAnyIsTrue": [ "rand >= .5" ],
@@ -235,7 +206,7 @@ SITE_FINDER_GLOBAL = """
          ]
 """
 
-SITE_FINDER_LOCAL = """
+SITE_FINDER_LOCAL = """\n
 ,
         "parametersChanges" : [
          { "ifAnyIsTrue": [ "rand >= .5" ],
@@ -251,4 +222,31 @@ SITE_FINDER_LOCAL = """
              "otherwise": { "Perturbation::parameters": { "steeringUpdateFrequency": 1, "numberOfTrials" : 10} }
          }
          ]
+"""
+
+
+OUT_IN = """\n
+,
+             "parametersChanges" : [
+                 { "ifAnyIsTrue": [ "rand >= .5" ],
+                     "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1 } },
+                     "otherwise": { "Perturbation::parameters": { "rotationScalingFactor": 0.25 } }
+                 },
+                 { "ifAnyIsTrue": [ "rand1 >= 0.5" ],
+                     "doThesechanges": { "Perturbation::parameters": { "translationRange": 0.75, "numberOfTrials" : 10 } },
+                     "otherwise": { "Perturbation::parameters": { "translationRange": 1.5, "numberOfTrials" : 10 } }
+                 },
+                 { "ifAnyIsTrue": [ "rand2 >= 0.6" ],
+                     "doThesechanges": { "Perturbation::parameters": { "steeringUpdateFrequency": 0 } },
+                     "otherwise": { "Perturbation::parameters": { "steeringUpdateFrequency": 2 } }
+                 },
+                 { "ifAnyIsTrue": [ "sasaLig >= 0.85" ],
+                     "doThesechanges": { "Perturbation::parameters": { "translationRange": 3.0, "numberOfTrials" : 20 } },
+                     "otherwise": {  }
+                 },
+                 { "ifAnyIsTrue": [ "sasaLig <= 0.35" ],
+                     "doThesechanges": { "Perturbation::parameters": { "rotationScalingFactor": 0.1, "translationRange": 0.75, "numberOfTrials" : 20 } },
+                     "otherwise": {  }
+                 }
+                 ]
 """

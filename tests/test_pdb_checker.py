@@ -41,3 +41,34 @@ def test_negative_residues():
 
     with pytest.raises(custom_errors.IncorrectResidueNumbers):
         pdb_checker.PDBChecker(file).check_negative_residues()
+
+
+def test_capped_termini():
+    """
+    Checks if the platform correctly removes capped termini.
+    """
+    file = os.path.join(test_path, "checker", "capped.pdb")
+
+    checker = pdb_checker.PDBChecker(file)
+    output = checker.remove_capped_termini()
+
+    with open(output, "r") as f:
+        content = f.read()
+        assert "ACE" not in content
+        assert "NMA" not in content
+
+    os.remove(output)
+
+
+def test_full_execution():
+    """
+    Runs the full workflow.
+    """
+    file = os.path.join(test_path, "checker", "capped_no_connects.pdb")
+    expected_output = os.path.join(os.getcwd(), "capped_no_connects_fixed.pdb")
+
+    checker = pdb_checker.PDBChecker(file)
+    checker.check()
+    assert os.path.isfile(expected_output)
+
+    os.remove(expected_output)

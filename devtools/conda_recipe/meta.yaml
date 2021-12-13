@@ -47,6 +47,7 @@ requirements:
     - mdtraj==1.9.5
     - seaborn
     - satumut
+    - pyparsing==2.4.7
 
 test:
   imports:

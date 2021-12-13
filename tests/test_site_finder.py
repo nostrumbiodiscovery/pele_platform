@@ -124,3 +124,18 @@ def test_defaults(yaml_file, adaptive_lines):
     errors = check_file(params.pele_dir, "pele.conf", PELE, errors=[])
     errors = check_file(params.pele_dir, "adaptive.conf", adaptive_lines, errors)
     assert not errors
+
+
+def test_custom_randomization():
+    """
+    Checks if the randomization was focused around user-defined box_center and box_radius.
+    """
+
+    yaml_file = os.path.join(test_path, "site_finder", "input_custom_box.yaml")
+    params = main.run_platform_from_yaml(yaml_file)[0]
+
+    assert params.center_of_interface == "A:672:N"
+    assert params.box_radius == 12
+
+    inputs = glob.glob(os.path.join(params.inputs_dir, "input*pdb"))
+    assert len(inputs) == params.cpus - 1

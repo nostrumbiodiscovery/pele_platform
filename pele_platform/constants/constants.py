@@ -59,29 +59,21 @@ CLUSTERS = 40
 PLATFORM_RESTART = "all"
 EQ_STEPS = 50
 GRIDRES = "10.0"
-NATIVE = """
+NATIVE = """\n
                                    {{
        
                                       "type": "rmsd",
-       
                                       "Native": {{\n\
                                        "path":\n\
                                        "{}" }},\n\
-       
                                       "selection": {{ "chains": {{ "names": [ "{}" ] }} }},\n\
-       
                                       "includeHydrogens": false,\n\
-       
                                       "doSuperposition": false,\n\
-       
                                       "tag" : "ligandRMSD"\n\
-       
                                    }},\n\
-       
-       
             """
 
-WATER_ENERGY = """
+WATER_ENERGY = """\n
                             {{
                             "type": "bindingEnergy",\n\
                             "boundPartSelection": {{ "chains": {{ "names": ["{0}"] }} }},\n\
@@ -89,7 +81,7 @@ WATER_ENERGY = """
                             }},\n\
                            """
 
-UNBINDING = """
+UNBINDING = """\n
             "modeMovingBox" : "unbinding",
             "exitCondition" : {{
                 "type" : "metricMultipleTrajectories",
@@ -102,10 +94,10 @@ UNBINDING = """
             }},
             """
 
-DISTANCE_ATOMS = """
+DISTANCE_ATOMS = """\n
                      {{
                      "type":"com_distance",
-                     "tag":"distance{metric_name}",
+                     "tag":"{metric_name}",
                      "selection_group_1":{{
                      "{atom1_tag}": {{ "ids":["{atom1}"]}}
                      }},
@@ -115,7 +107,7 @@ DISTANCE_ATOMS = """
                      }},
                      """
 
-LOCAL_NONBONDING_ENERGY = """
+LOCAL_NONBONDING_ENERGY = """\n
                      {{
                      "type": "localNonBondingEnergy",
                      "selection": {{ "links": {{ "ids": ["{}"] }} }},
@@ -123,7 +115,7 @@ LOCAL_NONBONDING_ENERGY = """
                       }},
 """
 
-DISTANCE_ATOMS_TAG = """
+DISTANCE_ATOMS_TAG = """\n
                      {{
                      "type":"com_distance",
                      "tag":"{0}",
@@ -136,7 +128,7 @@ DISTANCE_ATOMS_TAG = """
                      }},
                      """
 
-ANGLE_ATOMS_TAG = """
+ANGLE_ATOMS_TAG = """\n
                      {{
                      "type":"atomsAngle",
                      "tag":"{0}",
@@ -152,8 +144,7 @@ ANGLE_ATOMS_TAG = """
                      }},
                      """
 
-BOX = """
-
+BOX = """\n
                 "Box": {{
                     "type": "sphericalBox",
                     "radius": {0},
@@ -161,7 +152,7 @@ BOX = """
                 }},
 """
 
-WATER = """
+WATER = """\n
          "WaterPerturbation":
          {{
              "watersToPerturb": {{ "links": {{ "ids": [ {} ] }} }},
@@ -177,9 +168,9 @@ WATER = """
          }}, 
 """
 
-PCA = """"preloadedModesIn" : "{}","""
+PCA = """\n\t\t\t"preloadedModesIn" : "{}","""
 
-SIDECHAIN_PERTURBATION = """
+SIDECHAIN_PERTURBATION = """\n
          "SideChainPerturbation":{
                         "sideChainsToPerturb": { "links": {"ids": ["$COVALENT_RESIDUE"] } },
                         "parameters":{
@@ -196,7 +187,7 @@ SELECTION_TO_PERTURB = (
     '"selectionToPerturb" : { "chains" : { "names" : [ "$CHAIN" ] } },'
 )
 
-PERTURBATION = """
+PERTURBATION = """\n
           "Perturbation": {
                 $BOX
                 "perturbationType":"naive",
@@ -206,11 +197,11 @@ PERTURBATION = """
                     "numberOfStericTrials": $STERIC_TRIALS,
                     "steeringUpdateFrequency": $STEERING,
                     "overlapFactor": $OVERLAP
-                }   
-                
+                }          
             },
 """
-CONFORMATION_PERTURBATION = '''
+
+CONFORMATION_PERTURBATION = '''\n
         "ConformationPerturbation":{
             "parameters": {
                 "overlapFactor": $OVERLAP_CONFORMATION
@@ -218,37 +209,28 @@ CONFORMATION_PERTURBATION = '''
         },
 '''
 
-BE = """
+BE = """\n
                         { "type": "bindingEnergy",
-
                            "boundPartSelection": { "chains": { "names": ["$CHAIN"] } }
-
                         },
 """
 
-SASA = """
+SASA = """\n
                         { "type": "sasa",
-
                            "tag": "sasaLig",
-
                            "selection": { "chains": { "names": ["$CHAIN"] } }
-
                         },
 """
 
-SASA_COVALENT = """
+SASA_COVALENT = """\n
                         {{ "type": "sasa",
-
                            "tag": "sasaLig",
-
                            "selection": {{ "links": {{ "ids": ["{}"] }} }}
-
                         }},
 """
 
 INTERACTION_RESTRICTIONS = """
-,
-
+\n,
 "interactionRestrictions":
 [
 	"{0}"
@@ -495,7 +477,7 @@ in_pele_data = ["caz", "clz", "cuiz", "cuz", "hohz", "mgz", "mnz", "naz", "spcz"
 
 refinement_angle = '"refinementAngle": {},'
 
-CONFORMATION_FREQUENCY = '"conformationPerturbationFrequency": {},'
+CONFORMATION_FREQUENCY = '\n"conformationPerturbationFrequency": {},'
 
 version_header = """
 PELE Platform {}

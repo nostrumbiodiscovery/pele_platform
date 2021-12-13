@@ -457,7 +457,7 @@ class Parametrizer:
         from peleffy.template import Impact
         from peleffy.forcefield.parameters import BaseParameterWrapper
 
-        pdb_file = PDBChecker(pdb_file).check()
+        pdb_file = PDBChecker(pdb_file, self.working_dir).check()
 
         ligand_core_constraints = self._fix_atom_names(
             self.ligand_resname, self.ligand_core_constraints, pdb_file
@@ -575,7 +575,7 @@ class Parametrizer:
 
                     print(f"Parametrized {molecule.tag.strip()}.")
                 except AssertionError as e:
-                    warnings.warn(
+                    raise custom_errors.LigandPreparationError(
                         f"Failed to parametrize residue {molecule.tag.strip()}. You can skip it or "
                         f"parametrize manually (see documentation: "
                         f"https://nostrumbiodiscovery.github.io/pele_platform/errors/index.html#parametrization"

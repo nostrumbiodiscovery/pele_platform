@@ -16,7 +16,7 @@ from pele_platform.Utilities.Parameters.SimulationParams.site_finder import site
 from pele_platform.Utilities.Parameters.SimulationParams.PPI import ppi
 import pele_platform.Utilities.Helpers.helpers as hp
 
-LOGFILE = '"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
+LOGFILE = '\n"simulationLogPath" : "$OUTPUT_PATH/logFile.txt",'
 
 
 class SimulationParams(
@@ -73,9 +73,13 @@ class SimulationParams(
         if "*" in args.system:
             self.system = glob.glob(args.system)[0]
             self.input = glob.glob(args.system) if not args.input else args.input
+        elif args.input and not args.system:
+            self.system = args.input[0]
+            self.input = args.input
         else:
             self.system = args.system
             self.input = args.input
+
         self.residue = args.residue
         self.chain = args.chain
         if self.adaptive:
@@ -133,7 +137,7 @@ class SimulationParams(
         self.sidechain_resolution = (
             args.sidechain_resolution
             if args.sidechain_resolution
-            else self.simulation_params.get("sidechain_resolution", 30)
+            else self.simulation_params.get("sidechain_resolution", 10)
         )
         self.proximityDetection = (
             "false"
@@ -251,6 +255,12 @@ class SimulationParams(
             self.ligand = ""
             self.binding_energy = ""
             self.sasa = ""
+
+        self.sidechain_radius = (
+            args.sidechain_radius
+            if args.sidechain_radius is not None
+            else self.simulation_params.get("sidechain_radius", 6)
+        )
 
     def main_adaptive_params(self, args):
         self.spawning = (
@@ -383,7 +393,7 @@ class SimulationParams(
         self.bandwidth = (
             args.bandwidth
             if args.bandwidth
-            else self.simulation_params.get("bandwidth", 2.5)
+            else self.simulation_params.get("bandwidth", "auto")
         )
         self.clustering_method = (
             args.clustering_method
@@ -517,6 +527,9 @@ class SimulationParams(
         self.water_ids_to_track = []
 
     def box_params(self, args):
+
+        self.box = args.box if args.box is not None else True
+
         self.box_radius = (
             args.box_radius
             if args.box_radius
@@ -576,10 +589,11 @@ class SimulationParams(
         self.cluster_representatives_criterion = (
             args.cluster_representatives_criterion
             if args.cluster_representatives_criterion is not None
-            else "interaction_5_percentile"
+            else "interaction_min"
         )
         self.clustering_filtering_threshold = args.clustering_filtering_threshold if args.clustering_filtering_threshold is not None else 0.25
         self.plot_filtering_threshold = args.plot_filtering_threshold if args.plot_filtering_threshold is not None else 0.02
+        self.clustering_coverage = args.clustering_coverage if args.clustering_coverage is not None else 0.75
 
     def constraints_params(self, args):
         """

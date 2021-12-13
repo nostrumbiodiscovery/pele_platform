@@ -213,8 +213,8 @@ class YamlParser(object):
         self.water_constr = data.get(valid_flags["water_constr"], None)
         self.water_trials = data.get(valid_flags["water_trials"], None)
         self.water_radius = data.get(valid_flags["water_radius"], None)
-        self.induced_fit_exhaustive = data.get(
-            valid_flags["induced_fit_exhaustive"], None
+        self.induced_fit_long = data.get(
+            valid_flags["induced_fit_long"], None
         )
         self.induced_fit_fast = data.get(valid_flags["induced_fit_fast"], None)
         self.frag = data.get(valid_flags["frag"], None)
@@ -246,6 +246,7 @@ class YamlParser(object):
         self.anm_relaxation_constr = data.get(
             valid_flags["anm_relaxation_constr"], None
         )
+        self.sidechain_radius = data.get(valid_flags["sidechain_radius"], None)
         self.remove_constraints = data.get(valid_flags["remove_constraints"], None)
         self.pca_traj = data.get(valid_flags["pca_traj"], None)
         self.perturbation = data.get(valid_flags["perturbation"], None)
@@ -392,6 +393,7 @@ class YamlParser(object):
         self.clustering_filtering_threshold = data.get(
             valid_flags["clustering_filtering_threshold"], None
         )
+        self.clustering_coverage = data.get(valid_flags["clustering_coverage"], None)
 
         # peleffy parametrization
         self.charge_parametrization_method = data.get(
