@@ -84,7 +84,7 @@ class WaterIncluder:
         else:
             try:
                 self.water_center = hp.get_coords_from_residue(self.input_pdbs[0], self.water_center)
-                self.water_center = ", ".join(self.water_center)
+                self.water_center = ", ".join(list(self.water_center))
             except:  # TODO: Fix this exception (and this whole part probably, looks nonsense)
                 com_format = ['{:.10f}'.format(coord) for coord in self.water_center]
                 self.water_center = ", ".join(com_format)

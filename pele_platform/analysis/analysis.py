@@ -1,6 +1,8 @@
 """
 This module manages the analysis toolkit of the platform.
 """
+import numpy as np
+import os
 
 __all__ = ["Analysis"]
 
@@ -409,6 +411,14 @@ class Analysis(object):
         coordinates, water_coordinates, dataframe, energetic_threshold = \
             self._filter_coordinates(coordinates, water_coordinates, dataframe,
                                      threshold=self.clustering_filtering_threshold)
+
+        # Save coordinates
+        pathcoordinates = os.path.join(path, "waterscoordinates.txt")
+        
+        print(water_coordinates.shape, water_coordinates)
+        breakpoint()
+        with open(pathcoordinates, 'w+') as f:
+            np.savetxt(f,water_coordinates)
 
         # Cluster coordinates
         print(f"Cluster ligand binding modes")
