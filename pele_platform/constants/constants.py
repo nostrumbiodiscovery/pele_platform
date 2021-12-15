@@ -492,3 +492,17 @@ PELE Platform Plotter {}
 Nostrum Biodiscovery SL
 All rights reserved, 2021.
 """
+
+converter_version_header = """
+PELE Platform Converter {}
+---------------------------
+Nostrum Biodiscovery SL
+All rights reserved, 2021.
+"""
+
+pathway_extractor_version_header = """
+PELE Platform Pathway Extractor {}
+-----------------------------------
+Nostrum Biodiscovery SL
+All rights reserved, 2021.
+"""
