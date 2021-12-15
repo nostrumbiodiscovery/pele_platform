@@ -160,7 +160,7 @@ class ProteinProteinRefinement:
             constants.SCHRODINGER, "utilities", "prepwizard"
         )
         schrodinger_command = (
-            "{} -delwater_hbond_cutoff 5 -nopropka -noprotassign {} {} -NOJOBID"
+            "{} -delwater_hbond_cutoff 5 -nopropka -noprotassign -noepik -noimpref {} {} -NOJOBID"
         )
 
         output_list = []
