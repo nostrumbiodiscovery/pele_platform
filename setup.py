@@ -50,7 +50,7 @@ setup(
         "pytest",
         "cython",
         "numpy",
-        "peleffy==1.3.4",
+        "peleffy==1.4.0",
         "hdbscan==0.8.27",
         "AdaptivePELE==1.7.1",
         "frag_pele==3.1.1",
