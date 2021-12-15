@@ -81,5 +81,6 @@ Arguments
 | ``--dont_verify``           | Yes          | Skip verification.*                                            |
 +-----------------------------+--------------+----------------------------------------------------------------+
 
-\* **Verification** involves checking if the original coordinates match the new ones. If they do, it will delete the original
-trajectory, provided the delete option is enabled. Otherwise, a warning will be raised.
+\* **Verification** involves checking if the original coordinates match the new ones. By default, the verification is
+performed only when the original trajectories are deleted after conversion. If the software was to identify any issues, it
+will not delete the old trajectories and raise a warning instead.
