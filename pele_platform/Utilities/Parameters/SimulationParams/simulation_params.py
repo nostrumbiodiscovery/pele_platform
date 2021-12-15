@@ -312,8 +312,9 @@ class SimulationParams(
         )
         self.usesrun = "true" if args.usesrun else "false"
         mpi_params_name = "srunParameters" if args.usesrun else "mpiParameters"
-        self.mpi_params = (
-            f'"{mpi_params_name}": "{args.mpi_params}",' if args.mpi_params else ""
+        args.pele_mpi_params = args.pele_mpi_params if args.pele_mpi_params else cs.DEFAULT_PELE_MPI_PARAMS
+        self.pele_mpi_params = (
+            f'"{mpi_params_name}": "{args.pele_mpi_params}",' if args.pele_mpi_params else ""
         )
 
     def optative_params(self, args):
@@ -647,9 +648,13 @@ class SimulationParams(
         """
         Sets parameters for singularity containers.
         """
-        args.mpi_params = args.singularity_exec if args.singularity_exec else args.mpi_params
         if args.singularity_exec:
-            args.pele_exec = "Pele_mpi" if not self.frag_pele else args.mpi_params + " Pele_mpi"
+            if args.pele_mpi_params:
+                args.pele_mpi_params = args.pele_mpi_params + ' ' + args.singularity_exec
+            else:
+                args.pele_mpi_params = args.singularity_exec
+
+            args.pele_exec = "Pele_mpi" if not self.frag_pele else args.pele_mpi_params + " Pele_mpi"
 
     def covalent_docking_params(self, args):
         """

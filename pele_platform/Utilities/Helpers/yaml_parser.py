@@ -176,7 +176,7 @@ class YamlParser(object):
         self.skip_prep = self.no_ppp = data.get(valid_flags["skip_prep"], None)
         self.gaps_ter = data.get(valid_flags["gaps_ter"], None)
         self.charge_ter = data.get(valid_flags["charge_ter"], None)
-        self.mpi_params = data.get(valid_flags["mpi_params"], None)
+        self.pele_mpi_params = data.get(valid_flags["pele_mpi_params"], None)
         self.nonstandard = data.get(valid_flags["nonstandard"], None)
         self.prepwizard = data.get(valid_flags["prepwizard"], None)
         self.box_center = data.get(valid_flags["box_center"], None)
