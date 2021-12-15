@@ -3,6 +3,14 @@ Release history
 ===============
 
 
+PELE Platform 1.6.2
+-------------------
+
+- Support for custom MPI parameters.
+- New ``sidechain_radius`` flag to control sidechain prediction region radius.
+- Meaningful names to describe atom_dist metrics.
+- Upgrade peleffy to 1.4.0
+
 PELE Platform 1.6.1
 -------------------
 

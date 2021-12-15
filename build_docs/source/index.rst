@@ -29,6 +29,7 @@ energy surface of biochemical systems.
    input/index.rst
    packages/index.rst
    analysis/index.rst
+   tools/index.rst
    api/index.rst
 
 

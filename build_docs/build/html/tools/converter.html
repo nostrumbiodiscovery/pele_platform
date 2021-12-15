@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PELE Converter &mdash; pele platform 1.6.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="copyright" title="Copyright" href="../copyright.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pele platform
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.6.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation/index.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../changelog/index.html">Release history</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faqs/index.html">Frequently asked questions (FAQs)</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Using the Platform</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../pele/index.html">PELE basis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Platform tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../developers/index.html">Advanced tips and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../environment/index.html">Environment variables</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pele platform</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>PELE Converter</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/tools/converter.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pele-converter">
+<h1>PELE Converter<a class="headerlink" href="#pele-converter" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>Before launching the Converter, ensure you have PELE Platform (version 1.6.2 or higher) installed and activate the Python
+environment you normally use to run it.</p>
+<p>To ensure everything is set up correctly, you can run the following command, which should print all available arguments.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.converter -h</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="launching-the-tool">
+<h2>Launching the tool<a class="headerlink" href="#launching-the-tool" title="Permalink to this headline">¶</a></h2>
+<p>The most basic usage requires only <strong>three mandatory arguments</strong>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the path to the trajectories to convert</p></li>
+<li><p>format of the input files</p></li>
+<li><p>desired output format.</p></li>
+</ul>
+</div></blockquote>
+<p>However, you can influence the default behaviour using the parameters outlined in the <a class="reference external" href="#arguments">arguments section</a>.</p>
+<p><strong>Example 1.</strong> The tool will convert all trajectories in the output folder, generated trajectories in XTC format will be saved in the same folder.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.converter IK1_Pele/output -if pdb -of xtc</span>
+</pre></div>
+</div>
+<p><strong>Example 2.</strong> The outputs will be saved in a custom folder <code class="docutils literal notranslate"><span class="pre">converted_trajectories</span></code>, additionally, the tool will verify the new trajectories and remove the original ones.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pele_platform.converter IK1_Pele/output -if pdb -of xtc --delete --verify --output_path converted_trajectories</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="arguments">
+<h2>Arguments<a class="headerlink" href="#arguments" title="Permalink to this headline">¶</a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 13%" />
+<col style="width: 60%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Parameters</strong></p></td>
+<td><p><strong>Optional</strong></p></td>
+<td><p><strong>Functionality</strong></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">input_path</span></code> (positional)</p></td>
+<td><p>No</p></td>
+<td><p>Path to the directory containing PELE trajectories to convert,</p>
+<p>this can be path the output folder, epoch folder or even</p>
+<p>a specific trajectory file.</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-if</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--input_format</span></code></p>
+</td>
+<td><p>No</p></td>
+<td><p>The original trajectory file format, <code class="docutils literal notranslate"><span class="pre">pdb</span></code> or <code class="docutils literal notranslate"><span class="pre">xtc</span></code>.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-of</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--output_format</span></code></p>
+</td>
+<td><p>No</p></td>
+<td><p>The destination format, <code class="docutils literal notranslate"><span class="pre">pdb</span></code> or <code class="docutils literal notranslate"><span class="pre">xtc</span></code>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-o</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--output_path</span></code></p>
+</td>
+<td><p>Yes</p></td>
+<td><p>Path where converted trajectories will be saved.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-t</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--topology</span></code></p>
+</td>
+<td><p>Yes</p></td>
+<td><p>Path to the topology file in PDB format.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-d</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--delete</span></code></p>
+</td>
+<td><p>Yes</p></td>
+<td><p>Delete the original trajectory after conversion.
+Default: False.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-n</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">--n_processors</span></code></p>
+</td>
+<td><p>Yes</p></td>
+<td><p>Number of processors to use. Default: 1.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--trajectory_name</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Name of PELE’s trajectory files, e.g.</p>
+<p><code class="docutils literal notranslate"><span class="pre">trajectory.pdb</span></code> or <code class="docutils literal notranslate"><span class="pre">trajectory.xtc</span></code>.</p>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--verify</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Double-check the trajectories for consistency</p>
+<p>after conversion.*</p>
+</td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--dont_verify</span></code></p></td>
+<td><p>Yes</p></td>
+<td><p>Skip verification.*</p></td>
+</tr>
+</tbody>
+</table>
+<p>* <strong>Verification</strong> involves checking if the original coordinates match the new ones. By default, the verification is
+performed only when the original trajectories are deleted after conversion. If the software was to identify any issues, it
+will not delete the old trajectories and raise a warning instead.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        
+        &copy; <a href="../copyright.html">Copyright</a> 2021, NBD | Nostrum Biodiscovery
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

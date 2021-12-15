@@ -52,6 +52,8 @@ Advanced parameters of PELE:
 
 - **steric_trials**: Number of steric trials (More in PELE docs). Default=250
 
+- **sidechain_radius**: Residues within specified radius from the ligand will be included in the side chain prediction protocol. Default=6
+
 - **report**: Change the name of the report file. Default: report
 
 - **traj**: Change the name of the trajectory file. Default: trajectory.pdb
@@ -64,6 +66,7 @@ Advanced parameters of PELE:
     anm_modes_change: 3
     sidechain_res: 30
     overlap_factor: 0.60
+    sidechain_radius: 8
     steric_trials: 50
     report: pele_report
     traj: trajectory.xtc

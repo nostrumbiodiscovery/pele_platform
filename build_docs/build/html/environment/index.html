@@ -99,6 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../input/index.html">Input files preparation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../packages/index.html">Simulation packages</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../analysis/index.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tools/index.html">Platform tools</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">API</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Advanced usage</span></p>
@@ -112,6 +113,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#pele-documents">PELE_DOCUMENTS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pele-license">PELE_LICENSE</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#singularity-exec">SINGULARITY_EXEC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pele-mpi-params">PELE_MPI_PARAMS</a></li>
 </ul>
 </li>
 </ul>
@@ -307,6 +309,26 @@
 <li><p>Can be specified by environment variable:</p></li>
 </ol>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SINGULARITY_EXEC</span><span class="o">=</span>/path/to/singularity/container/
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div>
+<div class="section" id="pele-mpi-params">
+<h3>PELE_MPI_PARAMS<a class="headerlink" href="#pele-mpi-params" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>Custom MPI parameters, which can be used whenever additional command line arguments are required (for example when running PELE on AWS).</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Can be specified by input.yaml flag:</p></li>
+</ol>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">pele_mpi_params</span><span class="p">:</span> <span class="s">&quot;--prefix</span><span class="nv"> </span><span class="s">/path/to/openmpi&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Can be specified by environment variable:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">PELE_MPI_PARAMS</span><span class="o">=</span><span class="s2">&quot;--prefix /path/to/openmpi&quot;</span>
 </pre></div>
 </div>
 </div></blockquote>
