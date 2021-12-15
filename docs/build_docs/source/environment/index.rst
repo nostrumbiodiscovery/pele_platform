@@ -113,3 +113,22 @@ SINGULARITY_EXEC
       .. code-block:: bash
 
         export SINGULARITY_EXEC=/path/to/singularity/container/
+
+
+PELE_MPI_PARAMS
++++++++++++++++
+
+    Custom MPI parameters, which can be used whenever additional command line arguments are required (for example when running PELE on AWS).
+
+      1. Can be specified by input.yaml flag:
+
+      .. code-block:: yaml
+
+        pele_mpi_params: "--prefix /path/to/openmpi"
+
+
+      2. Can be specified by environment variable:
+
+      .. code-block:: bash
+
+        export PELE_MPI_PARAMS="--prefix /path/to/openmpi"
