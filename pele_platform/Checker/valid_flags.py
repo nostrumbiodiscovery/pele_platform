@@ -236,7 +236,7 @@ VALID_FLAGS_PLATFORM = {
     "satumut_pdb_dir": "satumut_pdb_dir",
     "plurizymer_single_mutation": "plurizymer_single_mutation",
     "plurizymer_turn": "plurizymer_turn",
-    "plurizymer_atom": "plurizymer_atom"
+    "plurizymer_atom": "plurizymer_atom",
     "clustering_coverage": "clustering_coverage",
     "sidechain_radius": "sidechain_radius",
 }
