@@ -10,7 +10,7 @@ pandas==1.2.3
 pytest
 cython
 numpy
-peleffy==1.4.0
+peleffy==1.4.1
 hdbscan==0.8.27
 AdaptivePELE==1.7.1
 frag_pele==3.1.1
