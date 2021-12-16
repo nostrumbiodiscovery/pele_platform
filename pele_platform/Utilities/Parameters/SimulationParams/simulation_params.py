@@ -656,7 +656,7 @@ class SimulationParams(
         if args.pele_mpi_params is None:
             args.pele_mpi_params = cs.DEFAULT_PELE_MPI_PARAMS
 
-        if args.singularity_exec != "":
+        if args.singularity_exec:
             if args.pele_mpi_params != "":
                 args.pele_mpi_params = args.pele_mpi_params + ' ' + args.singularity_exec
             else:
