@@ -6,6 +6,8 @@ Release history
 PELE Platform 1.6.2
 -------------------
 
+A minor release of the PELE Platform that introduces small improvements and more flexibility to handle different MPI architectures. Find below the full list of modifications:
+
 - Support for custom MPI parameters.
 - New ``sidechain_radius`` flag to control sidechain prediction region radius.
 - Meaningful names to describe atom_dist metrics.
