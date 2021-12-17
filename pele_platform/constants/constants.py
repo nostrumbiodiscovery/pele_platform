@@ -11,6 +11,8 @@ PELE_EXEC = os.environ.get("PELE_EXEC", "")
 PELE_DATA = os.environ.get("PELE_DATA", "")
 PELE_DOCUMENTS = os.environ.get("PELE_DOCUMENTS", "")
 PELE_LICENSE = os.environ.get("PELE_LICENSE", "")
+PELE_MPI_PARAMS = os.environ.get("PELE_MPI_PARAMS", "")
+
 DEFAULT_PELE_EXEC = (
     # Priority for the default pele_exec variable:
     #    1. Environment variable (PELE_EXEC)
@@ -43,6 +45,8 @@ DEFAULT_PELE_LICENSE = (
     if PELE_LICENSE
     else os.path.join(PELE, "licenses")
 )
+
+DEFAULT_PELE_MPI_PARAMS = PELE_MPI_PARAMS if PELE_MPI_PARAMS else ""
 
 # DEFAULTS
 # --------
@@ -97,7 +101,7 @@ UNBINDING = """\n
 DISTANCE_ATOMS = """\n
                      {{
                      "type":"com_distance",
-                     "tag":"distance{metric_name}",
+                     "tag":"{metric_name}",
                      "selection_group_1":{{
                      "{atom1_tag}": {{ "ids":["{atom1}"]}}
                      }},
@@ -489,6 +493,20 @@ All rights reserved, 2021.
 plotter_version_header = """
 PELE Platform Plotter {}
 -------------------------
+Nostrum Biodiscovery SL
+All rights reserved, 2021.
+"""
+
+converter_version_header = """
+PELE Platform Converter {}
+---------------------------
+Nostrum Biodiscovery SL
+All rights reserved, 2021.
+"""
+
+pathway_extractor_version_header = """
+PELE Platform Pathway Extractor {}
+-----------------------------------
 Nostrum Biodiscovery SL
 All rights reserved, 2021.
 """

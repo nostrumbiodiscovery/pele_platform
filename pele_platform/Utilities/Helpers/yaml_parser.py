@@ -176,7 +176,7 @@ class YamlParser(object):
         self.skip_prep = self.no_ppp = data.get(valid_flags["skip_prep"], None)
         self.gaps_ter = data.get(valid_flags["gaps_ter"], None)
         self.charge_ter = data.get(valid_flags["charge_ter"], None)
-        self.mpi_params = data.get(valid_flags["mpi_params"], None)
+        self.pele_mpi_params = data.get(valid_flags["pele_mpi_params"], None)
         self.nonstandard = data.get(valid_flags["nonstandard"], None)
         self.prepwizard = data.get(valid_flags["prepwizard"], None)
         self.box_center = data.get(valid_flags["box_center"], None)
@@ -246,6 +246,7 @@ class YamlParser(object):
         self.anm_relaxation_constr = data.get(
             valid_flags["anm_relaxation_constr"], None
         )
+        self.sidechain_radius = data.get(valid_flags["sidechain_radius"], None)
         self.remove_constraints = data.get(valid_flags["remove_constraints"], None)
         self.pca_traj = data.get(valid_flags["pca_traj"], None)
         self.perturbation = data.get(valid_flags["perturbation"], None)

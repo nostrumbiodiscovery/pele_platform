@@ -13,7 +13,7 @@ VALID_FLAGS_PLATFORM = {
     "forcefield": "forcefield",
     "verbose": "verbose",
     "anm_freq": "anm_freq",
-    "mpi_params": "mpi_params",
+    "pele_mpi_params": "pele_mpi_params",
     "sidechain_freq": "sidechain_freq",
     "min_freq": "min_freq",
     "temperature": "temperature",
@@ -215,4 +215,5 @@ VALID_FLAGS_PLATFORM = {
     "covalent_docking_refinement": "covalent_docking_refinement",
     "perturbation_trials": "perturbation_trials",
     "clustering_coverage": "clustering_coverage",
+    "sidechain_radius": "sidechain_radius",
 }

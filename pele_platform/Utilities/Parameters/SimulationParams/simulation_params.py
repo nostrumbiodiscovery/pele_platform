@@ -253,6 +253,12 @@ class SimulationParams(
             self.binding_energy = ""
             self.sasa = ""
 
+        self.sidechain_radius = (
+            args.sidechain_radius
+            if args.sidechain_radius is not None
+            else self.simulation_params.get("sidechain_radius", 6)
+        )
+
     def main_adaptive_params(self, args):
         self.spawning = (
             args.spawning
@@ -305,10 +311,16 @@ class SimulationParams(
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "PeleTemplates")
         )
         self.usesrun = "true" if args.usesrun else "false"
-        mpi_params_name = "srunParameters" if args.usesrun else "mpiParameters"
-        self.mpi_params = (
-            f'"{mpi_params_name}": "{args.mpi_params}",' if args.mpi_params else ""
-        )
+
+        if args.usesrun:
+            mpi_params_name = "srunParameters"
+        else:
+            mpi_params_name = "mpiParameters"
+
+        if args.pele_mpi_params is not None and args.pele_mpi_params != "":
+            self.pele_mpi_params = f'"{mpi_params_name}": "{args.pele_mpi_params}",'
+        else:
+            self.pele_mpi_params = ""
 
     def optative_params(self, args):
         if args.forcefield is None:
@@ -641,9 +653,16 @@ class SimulationParams(
         """
         Sets parameters for singularity containers.
         """
-        args.mpi_params = args.singularity_exec if args.singularity_exec else args.mpi_params
+        if args.pele_mpi_params is None:
+            args.pele_mpi_params = cs.DEFAULT_PELE_MPI_PARAMS
+
         if args.singularity_exec:
-            args.pele_exec = "Pele_mpi" if not self.frag_pele else args.mpi_params + " Pele_mpi"
+            if args.pele_mpi_params != "":
+                args.pele_mpi_params = args.pele_mpi_params + ' ' + args.singularity_exec
+            else:
+                args.pele_mpi_params = args.singularity_exec
+
+            args.pele_exec = "Pele_mpi" if not self.frag_pele else args.pele_mpi_params + " Pele_mpi"
 
     def covalent_docking_params(self, args):
         """

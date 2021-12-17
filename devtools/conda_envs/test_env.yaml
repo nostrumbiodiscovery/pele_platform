@@ -23,7 +23,7 @@ dependencies:
   - pandas==1.2.3
   - frag_pele==3.1.1
   - pppele==1.0.8
-  - peleffy==1.3.4
+  - peleffy==1.4.1
   - hdbscan==0.8.27
   - mdtraj==1.9.5
   - pyparsing==2.4.7

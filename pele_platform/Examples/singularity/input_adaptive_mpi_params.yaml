@@ -1,0 +1,9 @@
+system: '../pele_platform/Examples/gpcr/complex.pdb'
+chain: 'Z'
+resname: 'LIG'
+seed: 12345
+cpus: 5
+singularity_exec: "/path/to/singularity_container.sif"
+pele_mpi_params: "--prefix custom parameter"
+no_check: true
+debug: true

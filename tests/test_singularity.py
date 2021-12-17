@@ -7,6 +7,7 @@ from pele_platform.Utilities.Parameters.parameters import ParametersBuilder
 from pele_platform.Utilities.Helpers.launcher import Launcher
 import pele_platform.Checker.main as ck
 import pele_platform.Errors.custom_errors as ce
+from pele_platform import main
 
 test_path = os.path.join(cs.DIR, "Examples")
 
@@ -68,7 +69,21 @@ def test_singularity_params(ext_args, check_mpi, expected1, expected2):
     if check_mpi:
         mpi_params_name = "srunParameters" if params.usesrun else "mpiParameters"
         mpi_expected_params = f'"{mpi_params_name}": {expected2}'
-        assert simulation_params.mpi_params == mpi_expected_params
+        assert simulation_params.pele_mpi_params == mpi_expected_params
+
+
+def test_singularity_mpi_params():
+    """
+    Checks if custom pele_mpi_parameters are correctly set when using singularity.
+    """
+    yaml_file = os.path.join(test_path, "singularity/input_adaptive_mpi_params.yaml")
+    job = main.run_platform_from_yaml(yaml_file)
+
+    if job.usesrun == "false":
+        params_name = "mpiParameters"
+    else:
+        params_name = "srunParameters"
+    assert job.pele_mpi_params == f'"{params_name}": "--prefix custom parameter /path/to/singularity_container.sif",'
 
 
 def _read_args(file):

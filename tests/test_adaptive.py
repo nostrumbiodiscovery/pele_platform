@@ -87,6 +87,7 @@ PELE_VALUES = [
     '"numberOfModes": 3',
     '\n\t\t\t"preloadedModesIn" : "modes.nmd",',
     '"relaxationSpringConstant" : 3',
+    '"sideChainPredictionRegionRadius" : 8,',
 ]
 
 PCA_VALUES = [

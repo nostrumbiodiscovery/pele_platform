@@ -71,3 +71,4 @@ anm_num_of_modes: 3
 anm_relaxation_constr: 3
 remove_constraints: false
 no_check: true
+sidechain_radius: 8

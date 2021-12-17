@@ -108,6 +108,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             "MINIMUM_STEPS": env.minimum_steps,
             "CONFORMATION_PERTURBATION": env.conformation_perturbation,
             "OVERLAP_CONFORMATION": env.overlap_factor_conformation,
+            "SIDECHAIN_RADIUS": env.sidechain_radius,
         }
 
         super(SimulationBuilder, self).__init__(self.pele_file, self.pele_keywords)
@@ -142,7 +143,7 @@ class SimulationBuilder(template_builder.TemplateBuilder):
             "PELE_DATA": env.pele_data,
             "PELE_DOCUMENTS": env.pele_documents,
             "CONDITION": env.spawning_condition,
-            "MPI_PARAMS": env.mpi_params,
+            "MPI_PARAMS": env.pele_mpi_params,
             "CLUST_TYPE": env.clust_type,
         }
         super(SimulationBuilder, self).__init__(
