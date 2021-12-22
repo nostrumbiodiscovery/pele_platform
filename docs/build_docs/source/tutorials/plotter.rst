@@ -1,7 +1,9 @@
 .. _PlotterTutorial:
 
-Creating custom plots with PELE Plotter
-=============================================
+PELE Plotter
+=============
+
+In this tutorial, you will learn how to create custom plots with PELE Plotter.
 
 Prerequisites
 --------------
