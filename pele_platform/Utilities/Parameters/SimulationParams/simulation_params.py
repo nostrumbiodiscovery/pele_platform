@@ -357,8 +357,8 @@ class SimulationParams(
         self.test = args.test
         # +1 to avoid being 0
         self.equil_steps = (
-            int(args.eq_steps / self.cpus) + 1
-            if args.eq_steps
+            args.eq_steps
+            if args.eq_steps is not None
             else self.simulation_params.get("equilibration_steps", 1)
         )
         self.equilibration = (

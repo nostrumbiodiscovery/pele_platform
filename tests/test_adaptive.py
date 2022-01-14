@@ -42,7 +42,7 @@ ADAPTIVE_VALUES = [
     '"peleSteps" : 1,',
     '"iterations" : 1,',
     '"runEquilibration" : true,',
-    '"equilibrationLength" : 11,',
+    '"equilibrationLength" : 30,',
     '"seed": 3000',
     '"values" : [1, 2, 3],',
     '"conditions": [0.1, 0.2, 0.3]',
