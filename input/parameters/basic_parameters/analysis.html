@@ -428,20 +428,20 @@ mode is set.</p>
 <p>In this example we set an induced fit docking simulation with 30 computation
 cores. Besides, we disable the analysis package so the simulation will run
 but it will not be analyzed.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Analysis parameters</span>
-<span class="nt">analyse</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="c1"># Analysis parameters</span><span class="w"></span>
+<span class="nt">analyse</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -452,26 +452,26 @@ cores. However, instead of running the whole simulation from scratch, we
 ask the analyze an existing simulation with the <code class="docutils literal notranslate"><span class="pre">only_analysis</span></code> option.
 It is a useful feature when we want to reanalyze a previous simulation
 changing some parameters, like shown below.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Analysis parameters</span>
-<span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="nt">bandwidth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
-<span class="nt">max_top_clusters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
-<span class="nt">top_clusters_criterion</span><span class="p">:</span> <span class="s">&quot;population&quot;</span>
-<span class="nt">cluster_representatives_criterion</span><span class="p">:</span> <span class="s">&quot;interaction_mean&quot;</span>
-<span class="nt">max_top_poses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="nt">min_population</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.005</span>
+<span class="c1"># Analysis parameters</span><span class="w"></span>
+<span class="nt">only_analysis</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
+<span class="nt">bandwidth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span><span class="w"></span>
+<span class="nt">max_top_clusters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span><span class="w"></span>
+<span class="nt">top_clusters_criterion</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;population&quot;</span><span class="w"></span>
+<span class="nt">cluster_representatives_criterion</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;interaction_mean&quot;</span><span class="w"></span>
+<span class="nt">max_top_poses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"></span>
+<span class="nt">min_population</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.005</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -484,28 +484,28 @@ Mean Shift algorithm according to the <code class="docutils literal notranslate"
 right <code class="docutils literal notranslate"><span class="pre">bandwidth</span></code> is selected to include inside top cluster selection, at
 least, the percentage of points that is supplied with
 the <code class="docutils literal notranslate"><span class="pre">clustering_coverage</span></code> parameter.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Analysis parameters</span>
-<span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;LIG_Pele&quot;</span>
-<span class="nt">clustering_coverage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.60</span>
-<span class="nt">bandwidth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
-<span class="nt">max_top_clusters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12</span>
-<span class="nt">top_clusters_criterion</span><span class="p">:</span> <span class="s">&quot;population&quot;</span>
-<span class="nt">cluster_representatives_criterion</span><span class="p">:</span> <span class="s">&quot;interaction_mean&quot;</span>
-<span class="nt">max_top_poses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="nt">min_population</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.005</span>
+<span class="c1"># Analysis parameters</span><span class="w"></span>
+<span class="nt">only_analysis</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
+<span class="nt">working_folder</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;LIG_Pele&quot;</span><span class="w"></span>
+<span class="nt">clustering_coverage</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.60</span><span class="w"></span>
+<span class="nt">bandwidth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span><span class="w"></span>
+<span class="nt">max_top_clusters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12</span><span class="w"></span>
+<span class="nt">top_clusters_criterion</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;population&quot;</span><span class="w"></span>
+<span class="nt">cluster_representatives_criterion</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;interaction_mean&quot;</span><span class="w"></span>
+<span class="nt">max_top_poses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"></span>
+<span class="nt">min_population</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.005</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

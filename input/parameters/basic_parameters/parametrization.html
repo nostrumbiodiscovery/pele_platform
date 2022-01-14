@@ -364,23 +364,23 @@ file as they will not be automatically generated.</p>
 <p>In this example we set an induced fit docking simulation with 30 computation
 cores. We also activate peleffy and use the latest OpenFF force field
 to parametrize non standard residues.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># PELE parameters</span>
-<span class="nt">forcefield</span><span class="p">:</span> <span class="s">&quot;openff-2.0.0&quot;</span>
+<span class="c1"># PELE parameters</span><span class="w"></span>
+<span class="nt">forcefield</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;openff-2.0.0&quot;</span><span class="w"></span>
 
-<span class="c1"># Parametrization parameters</span>
-<span class="nt">use_peleffy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Parametrization parameters</span><span class="w"></span>
+<span class="nt">use_peleffy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -389,23 +389,23 @@ to parametrize non standard residues.</p>
 <p>In this example we set an induced fit docking simulation with 30 computation
 cores. We also activate peleffy and use the OPLS2005 force field
 to parametrize non standard residues.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># PELE parameters</span>
-<span class="nt">forcefield</span><span class="p">:</span> <span class="s">&quot;OPLS2005&quot;</span>
+<span class="c1"># PELE parameters</span><span class="w"></span>
+<span class="nt">forcefield</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;OPLS2005&quot;</span><span class="w"></span>
 
-<span class="c1"># Parametrization parameters</span>
-<span class="nt">use_peleffy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Parametrization parameters</span><span class="w"></span>
+<span class="nt">use_peleffy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -415,23 +415,23 @@ to parametrize non standard residues.</p>
 cores. We are using the default force field, which is OPLS2005. However,
 in this case, we supply custom templates for our ligand. These files can
 be generated externally with peleffy.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Parametrization parameters</span>
-<span class="nt">templates</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/ligz&quot;</span>
-<span class="nt">rotamers</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/LIG.rot.assign&quot;</span>
+<span class="c1"># Parametrization parameters</span><span class="w"></span>
+<span class="nt">templates</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;simulation_files/ligz&quot;</span><span class="w"></span>
+<span class="nt">rotamers</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;simulation_files/LIG.rot.assign&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -442,29 +442,29 @@ cores. We are using the latest OpenFF force field, which works with the OBC
 solvent model. So, in this case, if we supply custom templates for our ligand
 we also need to supply the solvent template. These files can be generated
 externally with peleffy.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># PELE parameters</span>
-<span class="nt">forcefield</span><span class="p">:</span> <span class="s">&quot;openff-2.0.0&quot;</span>
+<span class="c1"># PELE parameters</span><span class="w"></span>
+<span class="nt">forcefield</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;openff-2.0.0&quot;</span><span class="w"></span>
 
-<span class="c1"># Parametrization parameters</span>
-<span class="nt">use_peleffy</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="nt">templates</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/ligz&quot;</span>
-<span class="nt">rotamers</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/LIG.rot.assign&quot;</span>
-<span class="nt">solvent_template</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;simulation_files/ligandParams.txt&quot;</span>
+<span class="c1"># Parametrization parameters</span><span class="w"></span>
+<span class="nt">use_peleffy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
+<span class="nt">templates</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;simulation_files/ligz&quot;</span><span class="w"></span>
+<span class="nt">rotamers</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;simulation_files/LIG.rot.assign&quot;</span><span class="w"></span>
+<span class="nt">solvent_template</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;simulation_files/ligandParams.txt&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

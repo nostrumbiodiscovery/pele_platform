@@ -254,24 +254,24 @@ the latter can be placed anywhere as its position will be automatically randomis
 <li><p><strong>distance</strong>: Distance between two atoms, which can be limited to a user-defined maximum, minimum or both.</p></li>
 <li><p><strong>angle</strong>: Angle between three atoms with a user-defined maximum, minimum or both.</p></li>
 </ul>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span> <span class="c1"># Ligand-protein complex</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span> <span class="c1"># Ligand residue name in system</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&quot;L&quot;</span> <span class="c1"># Ligand chain ID</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;complex.pdb&quot;</span><span class="w"> </span><span class="c1"># Ligand-protein complex</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;LIG&quot;</span><span class="w"> </span><span class="c1"># Ligand residue name in system</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="w"> </span><span class="c1"># Ligand chain ID</span><span class="w"></span>
 
-<span class="nt">interaction_restrictions</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="nt">distance</span><span class="p">:</span>  <span class="c1"># distance between the two atoms will not exceed 3 A</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
-  <span class="nt">atoms</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;A:318:OG1&quot;</span>   <span class="c1"># chain A, residue number 318, atom OG1</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;Z:201:O3&quot;</span>
-<span class="p p-Indicator">-</span> <span class="nt">angle</span><span class="p">:</span>  <span class="c1"># angle between those three atoms will remain between 90 and 160 degrees</span>
-    <span class="nt">min</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">90</span>
-    <span class="nt">max</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">160</span>
-  <span class="nt">atoms</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;A:318:OG1&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;A:318:HG1&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;Z:201:O3&quot;</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+<span class="nt">interaction_restrictions</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">distance</span><span class="p">:</span><span class="w">  </span><span class="c1"># distance between the two atoms will not exceed 3 A</span><span class="w"></span>
+<span class="w">    </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w"></span>
+<span class="w">  </span><span class="nt">atoms</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;A:318:OG1&quot;</span><span class="w">   </span><span class="c1"># chain A, residue number 318, atom OG1</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Z:201:O3&quot;</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">angle</span><span class="p">:</span><span class="w">  </span><span class="c1"># angle between those three atoms will remain between 90 and 160 degrees</span><span class="w"></span>
+<span class="w">    </span><span class="nt">min</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">90</span><span class="w"></span>
+<span class="w">    </span><span class="nt">max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">160</span><span class="w"></span>
+<span class="w">  </span><span class="nt">atoms</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;A:318:OG1&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;A:318:HG1&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Z:201:O3&quot;</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
 </pre></div>
 </div>
 <p>For more optional flags please refer to <a class="reference external" href="../../input/yaml.html">optional flags</a>.</p>

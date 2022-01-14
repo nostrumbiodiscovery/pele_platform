@@ -278,12 +278,12 @@ have unique molecule names.</p>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare input.yaml file:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span>  <span class="c1"># Protein-scaffold complex</span>
-<span class="nt">frag_library</span><span class="p">:</span> <span class="s">&quot;/home/username/aromatic_library&quot;</span>  <span class="c1"># Folder containing fragment files</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>  <span class="c1"># Ligand scaffold residue name</span>
-<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>  <span class="c1"># Ligand scaffold chain ID</span>
-<span class="nt">frag_core_atom</span><span class="p">:</span> <span class="s">&quot;C6-H6&quot;</span>  <span class="c1"># Connection point from which you want to grow the fragments</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;complex.pdb&quot;</span><span class="w">  </span><span class="c1"># Protein-scaffold complex</span><span class="w"></span>
+<span class="nt">frag_library</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/home/username/aromatic_library&quot;</span><span class="w">  </span><span class="c1"># Folder containing fragment files</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;LIG&quot;</span><span class="w">  </span><span class="c1"># Ligand scaffold residue name</span><span class="w"></span>
+<span class="nt">chain_core</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="w">  </span><span class="c1"># Ligand scaffold chain ID</span><span class="w"></span>
+<span class="nt">frag_core_atom</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;C6-H6&quot;</span><span class="w">  </span><span class="c1"># Connection point from which you want to grow the fragments</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">48</span><span class="w"></span>
 </pre></div>
 </div>
 <div class="section" id="optional-parameters">
@@ -334,15 +334,15 @@ proximity to a certain point, for example a side chain atom you would like your 
 </ul>
 </div></blockquote>
 <p>Example:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span>  <span class="c1"># Protein-scaffold complex</span>
-<span class="nt">frag_library</span><span class="p">:</span> <span class="s">&quot;/home/username/aromatic_library&quot;</span>  <span class="c1"># Folder containing fragment files</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span>  <span class="c1"># Ligand scaffold residue name</span>
-<span class="nt">chain_core</span><span class="p">:</span> <span class="s">&quot;L&quot;</span>  <span class="c1"># Ligand scaffold chain ID</span>
-<span class="nt">frag_core_atom</span><span class="p">:</span> <span class="s">&quot;C6-H6&quot;</span>  <span class="c1"># Connection point from which you want to grow the fragments</span>
-<span class="nt">only_analysis</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">analysis_to_point</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">24.835</span><span class="p p-Indicator">,</span>  <span class="nv">73.161</span><span class="p p-Indicator">,</span>  <span class="nv">17.026</span><span class="p p-Indicator">]</span>
-<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;/home/username/LIG_Pele&quot;</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">48</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">frag_core</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;complex.pdb&quot;</span><span class="w">  </span><span class="c1"># Protein-scaffold complex</span><span class="w"></span>
+<span class="nt">frag_library</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/home/username/aromatic_library&quot;</span><span class="w">  </span><span class="c1"># Folder containing fragment files</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;LIG&quot;</span><span class="w">  </span><span class="c1"># Ligand scaffold residue name</span><span class="w"></span>
+<span class="nt">chain_core</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="w">  </span><span class="c1"># Ligand scaffold chain ID</span><span class="w"></span>
+<span class="nt">frag_core_atom</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;C6-H6&quot;</span><span class="w">  </span><span class="c1"># Connection point from which you want to grow the fragments</span><span class="w"></span>
+<span class="nt">only_analysis</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="nt">analysis_to_point</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">24.835</span><span class="p p-Indicator">,</span><span class="w">  </span><span class="nv">73.161</span><span class="p p-Indicator">,</span><span class="w">  </span><span class="nv">17.026</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="nt">working_folder</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;/home/username/LIG_Pele&quot;</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">48</span><span class="w"></span>
 </pre></div>
 </div>
 <p>The script will produce a <code class="docutils literal notranslate"><span class="pre">point_analysis.csv</span></code> file containing a number of columns:</p>

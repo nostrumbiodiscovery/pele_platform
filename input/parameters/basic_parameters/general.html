@@ -375,21 +375,21 @@ already exists, the ultimate <code class="docutils literal notranslate"><span cl
 cores and run it in debug mode.
 Moreover, test and restart modes are disabled. Finally, we also establish a
 specific seed for the pseudo-random numbers generator and a custom working folder.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
-<span class="nt">debug</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
-<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;my_custom_choice&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+<span class="nt">debug</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
+<span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
+<span class="nt">working_folder</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_custom_choice&quot;</span><span class="w"></span>
 
-<span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -399,17 +399,17 @@ specific seed for the pseudo-random numbers generator and a custom working folde
 cores and run it in test mode.
 When using this mode, the number of computation cores that will be used is always
 going to be 5, regardless of the number of cores requested with the <code class="docutils literal notranslate"><span class="pre">cpus</span></code> parameter.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="nt">test</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -420,18 +420,18 @@ Consequently, the Platform expects to find a directory previously created
 with valid input files. To generate them, we need to execute the Platform
 in debug mode, as shown in <a class="reference external" href="#example-1">Example 1</a>. So, in this case
 the working_folder that we set it must already exist.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
-<span class="nt">working_folder</span><span class="p">:</span> <span class="s">&quot;my_custom_choice&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="nt">restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
+<span class="nt">working_folder</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;my_custom_choice&quot;</span><span class="w"></span>
 
-<span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

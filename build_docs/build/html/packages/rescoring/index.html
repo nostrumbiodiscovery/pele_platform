@@ -257,16 +257,16 @@ as filling in missing loops and side chains.</p>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;poses*.pdb&#39;</span> <span class="c1"># Protein-ligand poseS!</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1"># Ligand chain ID</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span> <span class="c1"># Ligand residue name</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="c1"># Distance between two atoms to track the simulation</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1"># First atom (chain ID:residue number:atom name)</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1"># Second atom</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
-<span class="nt">rescoring</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1"># only relaxation part of the algorithm</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;poses*.pdb&#39;</span><span class="w"> </span><span class="c1"># Protein-ligand poseS!</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"> </span><span class="c1"># Ligand chain ID</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;THC&#39;</span><span class="w"> </span><span class="c1"># Ligand residue name</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12345</span><span class="w"></span>
+<span class="c1"># Distance between two atoms to track the simulation</span><span class="w"></span>
+<span class="nt">atom_dist</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;A:2:CA&quot;</span><span class="w"> </span><span class="c1"># First atom (chain ID:residue number:atom name)</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;B:3:CG&quot;</span><span class="w"> </span><span class="c1"># Second atom</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"></span>
+<span class="nt">rescoring</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># only relaxation part of the algorithm</span><span class="w"></span>
 </pre></div>
 </div>
 <p>For more optional flags please refer to <a class="reference external" href="../../input/yaml.html">optional flags</a>.</p>

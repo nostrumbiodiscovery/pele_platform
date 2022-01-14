@@ -348,25 +348,25 @@ cores. Moreover, we add 2 new water molecules inside the water box that we
 define. Specifically, the spherical box we define is centered at (15, -2, 9)
 and has a radius of 8 angstroms. Finally we set a temperature for the
 Metropolis criterion of aquaPELE equal to 7000 Kelvin.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># aquaPELE parameters</span>
-<span class="nt">n_waters</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2</span>
-<span class="nt">box_water</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">15</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">-2</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">9</span>
-<span class="nt">water_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
+<span class="c1"># aquaPELE parameters</span><span class="w"></span>
+<span class="nt">n_waters</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"></span>
+<span class="nt">box_water</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">15</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-2</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">9</span><span class="w"></span>
+<span class="nt">water_radius</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -375,23 +375,23 @@ Metropolis criterion of aquaPELE equal to 7000 Kelvin.</p>
 <p>In this example we set an induced fit docking simulation with 30 computation
 cores. Moreover, we select 3 water molecules from the input structure to
 be perturbed with aquaPELE.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># aquaPELE parameters</span>
-<span class="nt">waters</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;W:1&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;W:3&quot;</span>
-  <span class="p p-Indicator">-</span> <span class="s">&quot;W:10&quot;</span>
+<span class="c1"># aquaPELE parameters</span><span class="w"></span>
+<span class="nt">waters</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;W:1&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;W:3&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;W:10&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

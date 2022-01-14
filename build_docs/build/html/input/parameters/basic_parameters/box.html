@@ -411,24 +411,24 @@ an induced fit docking is to center a spherical box of 6-angstrom radius
 on the center of mass of the ligand. However, we can change its center
 and radius with values of our choice using <code class="docutils literal notranslate"><span class="pre">box_radius</span></code> and <code class="docutils literal notranslate"><span class="pre">box_center</span></code>
 parameters.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Perturbation site parameters</span>
-<span class="nt">box_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
-<span class="nt">box_center</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">21</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">-3</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="c1"># Perturbation site parameters</span><span class="w"></span>
+<span class="nt">box_radius</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
+<span class="nt">box_center</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">21</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-3</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -441,24 +441,24 @@ in case that we are interested in exploring a particular subregion of
 its surface, we can define a custom box that only covers it.
 Then, the Platform will spawn structures inside that box and will
 guarantee that the ligand does not exit it during the simulation.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">site_finder</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">site_finder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Perturbation site parameters</span>
-<span class="nt">box_radius</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>
-<span class="nt">box_center</span><span class="p">:</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">-5</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">22</span>
-  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">47</span>
+<span class="c1"># Perturbation site parameters</span><span class="w"></span>
+<span class="nt">box_radius</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w"></span>
+<span class="nt">box_center</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">-5</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">22</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">47</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -468,21 +468,21 @@ guarantee that the ligand does not exit it during the simulation.</p>
 cores. When using this package, we also need to set initial and final sites
 in order to properly define the starting point and the region to explore
 during the migration of our ligand.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">out_in</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Perturbation site parameters</span>
-<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;A:43:O&quot;</span>
-<span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;A:104:CD&quot;</span>
+<span class="c1"># Perturbation site parameters</span><span class="w"></span>
+<span class="nt">initial_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:43:O&quot;</span><span class="w"></span>
+<span class="nt">final_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:104:CD&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -492,20 +492,20 @@ during the migration of our ligand.</p>
 cores. When using this package, we also need to set initial and final sites
 in order to properly define the starting point and the region to explore
 during the migration of our ligand.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">60</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">60</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">ppi</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">ppi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Perturbation site parameters</span>
-<span class="nt">center_of_interface</span><span class="p">:</span> <span class="s">&quot;A:206:O&quot;</span>
+<span class="c1"># Perturbation site parameters</span><span class="w"></span>
+<span class="nt">center_of_interface</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:206:O&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

@@ -525,22 +525,22 @@ clustering. We slightly reduce the sizes of clusters with the <code class="docut
 parameter (defaults for the induced fit fast package are <code class="docutils literal notranslate"><span class="pre">&quot;[2.0,</span> <span class="pre">5.0,</span> <span class="pre">7.0]&quot;</span></code>).
 We also set <code class="docutils literal notranslate"><span class="pre">cluster_conditions</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, so the Platform will
 run a few pre-equilibration steps to determine the best cluster conditions.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Adaptive parameters</span>
-<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
-<span class="nt">clustering_values</span><span class="p">:</span> <span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span>
-<span class="nt">cluster_conditions</span><span class="p">:</span> <span class="s">&quot;auto&quot;</span>
+<span class="c1"># Adaptive parameters</span><span class="w"></span>
+<span class="nt">iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="nt">clustering_values</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span><span class="w"></span>
+<span class="nt">cluster_conditions</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -555,21 +555,21 @@ our ligand is able to perform more contacts than those seen in common scenarios.
 For example, these conditions might work better in cases where our ligand
 is highly buried in a protein cavity. Default cluster conditions for the
 induced fit package are <code class="docutils literal notranslate"><span class="pre">&quot;[1.0,</span> <span class="pre">0.6]&quot;</span></code>.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Adaptive parameters</span>
-<span class="nt">clustering_values</span><span class="p">:</span> <span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span>
-<span class="nt">cluster_conditions</span><span class="p">:</span> <span class="s">&quot;[1.5,</span><span class="nv"> </span><span class="s">0.8]&quot;</span>
+<span class="c1"># Adaptive parameters</span><span class="w"></span>
+<span class="nt">clustering_values</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span><span class="w"></span>
+<span class="nt">cluster_conditions</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;[1.5,</span><span class="nv"> </span><span class="s">0.8]&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -591,27 +591,27 @@ between the center of mass of the ligand and the chosen final site.
 When setting <code class="docutils literal notranslate"><span class="pre">spawning_condition</span></code> to <code class="docutils literal notranslate"><span class="pre">min</span></code>, we ask Adaptive to apply
 a bit of bias towards those structures that reduce this distance, thereby
 promoting the entrance of the ligand to the cavity we specified.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">out_in</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Region selection</span>
-<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;A:352:CD&quot;</span>
-<span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;A:283:ND2&quot;</span>
+<span class="c1"># Region selection</span><span class="w"></span>
+<span class="nt">initial_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:352:CD&quot;</span><span class="w"></span>
+<span class="nt">final_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:283:ND2&quot;</span><span class="w"></span>
 
-<span class="c1"># Adaptive parameters</span>
-<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span>
-<span class="nt">spawning</span><span class="p">:</span> <span class="s">&quot;epsilon&quot;</span>
-<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.20</span>
-<span class="nt">spawning_condition</span><span class="p">:</span> <span class="s">&quot;min&quot;</span>
+<span class="c1"># Adaptive parameters</span><span class="w"></span>
+<span class="nt">bias_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7</span><span class="w"></span>
+<span class="nt">spawning</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;epsilon&quot;</span><span class="w"></span>
+<span class="nt">epsilon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.20</span><span class="w"></span>
+<span class="nt">spawning_condition</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;min&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
@@ -621,20 +621,20 @@ promoting the entrance of the ligand to the cavity we specified.</p>
 cores. We are disabling Adaptive restart, so in case we apply a restart, the
 simulation will start from scratch, removing any Adaptive iteration that might
 have been completed in a previous run.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
 
-<span class="c1"># General parameters</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">30</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">2021</span>
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2021</span><span class="w"></span>
 
-<span class="c1"># Package selection</span>
-<span class="nt">induced_fit_fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="c1"># Package selection</span><span class="w"></span>
+<span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
-<span class="c1"># Adaptive parameters</span>
-<span class="nt">adaptive_restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="c1"># Adaptive parameters</span><span class="w"></span>
+<span class="nt">adaptive_restart</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

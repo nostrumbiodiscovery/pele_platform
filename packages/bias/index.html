@@ -249,23 +249,23 @@ If the binding site is known, the ligand must be set as close as possible to the
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">#####Normal simulation (any type)########</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span> <span class="c1"># Protein ligand PDB</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1"># Ligand chain name</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;THC&#39;</span> <span class="c1"># Ligand residue name</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="c1"># Distance to track along the simulation</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;A:2:CA&quot;</span> <span class="c1"># First atom (chain ID:residue number:atom name)</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;B:3:CG&quot;</span> <span class="c1"># Second atom</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
-<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1"># Binding simulation</span>
-<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;A:577:N&quot;</span>
-<span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;A:867:CB&quot;</span>
-<span class="c1">###############BIAS PART#######################</span>
-<span class="nt">spawning</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">epsilon</span> <span class="c1"># Apply bias</span>
-<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.25</span> <span class="c1"># Level of bias ranging from 0 to 1</span>
-<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">7</span> <span class="c1"># Column of the report starting by one to bias the results towards. (You may want to first launch a simulation with the default bias_column, then inspect the simulation report. Last, kill that simulation to launch another one with the optimized bias column value)</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1">#####Normal simulation (any type)########</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;docking2grid6n4b_thc.pdb&#39;</span><span class="w"> </span><span class="c1"># Protein ligand PDB</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"> </span><span class="c1"># Ligand chain name</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;THC&#39;</span><span class="w"> </span><span class="c1"># Ligand residue name</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12345</span><span class="w"></span>
+<span class="c1"># Distance to track along the simulation</span><span class="w"></span>
+<span class="nt">atom_dist</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;A:2:CA&quot;</span><span class="w"> </span><span class="c1"># First atom (chain ID:residue number:atom name)</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;B:3:CG&quot;</span><span class="w"> </span><span class="c1"># Second atom</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span><span class="w"></span>
+<span class="nt">out_in</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># Binding simulation</span><span class="w"></span>
+<span class="nt">initial_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:577:N&quot;</span><span class="w"></span>
+<span class="nt">final_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:867:CB&quot;</span><span class="w"></span>
+<span class="c1">###############BIAS PART#######################</span><span class="w"></span>
+<span class="nt">spawning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">epsilon</span><span class="w"> </span><span class="c1"># Apply bias</span><span class="w"></span>
+<span class="nt">epsilon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.25</span><span class="w"> </span><span class="c1"># Level of bias ranging from 0 to 1</span><span class="w"></span>
+<span class="nt">bias_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">7</span><span class="w"> </span><span class="c1"># Column of the report starting by one to bias the results towards. (You may want to first launch a simulation with the default bias_column, then inspect the simulation report. Last, kill that simulation to launch another one with the optimized bias column value)</span><span class="w"></span>
 </pre></div>
 </div>
 <p>For more optional flags please refer to <a class="reference external" href="../../input/yaml.html">optional flags</a>.</p>

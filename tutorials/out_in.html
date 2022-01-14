@@ -271,29 +271,29 @@ that it can be used by PELE (Protein Energy Landscape Exploration).</p>
 <li><p><strong>cluster_conditions</strong> - contact conditions to define the size of Adaptive clusters</p></li>
 </ul>
 </div></blockquote>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General settings</span>
-<span class="nt">system</span><span class="p">:</span> <span class="s">&#39;system.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
-<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">iterations</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">20</span>  <span class="c1"># Applying a biased entrance allows us to reduce the length of the simulation</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># General settings</span><span class="w"></span>
+<span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;system.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Z&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
+<span class="nt">out_in</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12345</span><span class="w"></span>
+<span class="nt">iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20</span><span class="w">  </span><span class="c1"># Applying a biased entrance allows us to reduce the length of the simulation</span><span class="w"></span>
 
-<span class="c1"># Structural specifications</span>
-<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;B:486:O&quot;</span>
-<span class="nt">final_site</span><span class="p">:</span> <span class="s">&quot;B:562:O&quot;</span>  <span class="c1"># Defines the final site near the hinge</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;Z:1:H1&quot;</span>  <span class="c1"># Distance used to lead the entrance of the ligand to the hinge</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;B:562:O&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;Z:1:O1&quot;</span>
-    <span class="p p-Indicator">-</span> <span class="s">&quot;B:564:H&quot;</span>
+<span class="c1"># Structural specifications</span><span class="w"></span>
+<span class="nt">initial_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;B:486:O&quot;</span><span class="w"></span>
+<span class="nt">final_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;B:562:O&quot;</span><span class="w">  </span><span class="c1"># Defines the final site near the hinge</span><span class="w"></span>
+<span class="nt">atom_dist</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Z:1:H1&quot;</span><span class="w">  </span><span class="c1"># Distance used to lead the entrance of the ligand to the hinge</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;B:562:O&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Z:1:O1&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;B:564:H&quot;</span><span class="w"></span>
 
-<span class="c1"># Add bias towards the first distance we defined</span>
-<span class="nt">spawning</span><span class="p">:</span> <span class="s">&quot;epsilon&quot;</span>
-<span class="nt">epsilon</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">0.5</span>
-<span class="nt">bias_column</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">8</span>
-<span class="nt">cluster_conditions</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">0.8</span><span class="p p-Indicator">,</span> <span class="nv">0.5</span><span class="p p-Indicator">,</span> <span class="nv">0.0</span><span class="p p-Indicator">]</span>  <span class="c1"># Apply custom cluster conditions to perform better in an open cavity like this one</span>
+<span class="c1"># Add bias towards the first distance we defined</span><span class="w"></span>
+<span class="nt">spawning</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;epsilon&quot;</span><span class="w"></span>
+<span class="nt">epsilon</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.5</span><span class="w"></span>
+<span class="nt">bias_column</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8</span><span class="w"></span>
+<span class="nt">cluster_conditions</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.8</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.0</span><span class="p p-Indicator">]</span><span class="w">  </span><span class="c1"># Apply custom cluster conditions to perform better in an open cavity like this one</span><span class="w"></span>
 </pre></div>
 </div>
 <p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong>

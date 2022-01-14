@@ -254,14 +254,14 @@ the latter can be placed anywhere as its position will be automatically randomis
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&quot;complex.pdb&quot;</span> <span class="c1"># Ligand-protein complex</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&quot;LIG&quot;</span> <span class="c1"># Ligand residue name in system</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&quot;L&quot;</span> <span class="c1"># Ligand chain ID</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1234</span>
-<span class="nt">gpcr_orth</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1"># Set defaults for GPCR simulation</span>
-<span class="nt">orthosteric_site</span><span class="p">:</span> <span class="s">&quot;A:114:CG&quot;</span> <span class="c1"># Atom in the orthosteric site (chain ID:residue number:atom name)</span>
-<span class="nt">initial_site</span><span class="p">:</span> <span class="s">&quot;A:310:CD&quot;</span> <span class="c1"># Atom in the initial site</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;complex.pdb&quot;</span><span class="w"> </span><span class="c1"># Ligand-protein complex</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;LIG&quot;</span><span class="w"> </span><span class="c1"># Ligand residue name in system</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="w"> </span><span class="c1"># Ligand chain ID</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1234</span><span class="w"></span>
+<span class="nt">gpcr_orth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># Set defaults for GPCR simulation</span><span class="w"></span>
+<span class="nt">orthosteric_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:114:CG&quot;</span><span class="w"> </span><span class="c1"># Atom in the orthosteric site (chain ID:residue number:atom name)</span><span class="w"></span>
+<span class="nt">initial_site</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:310:CD&quot;</span><span class="w"> </span><span class="c1"># Atom in the initial site</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
 </pre></div>
 </div>
 <p>For more optional flags please refer to <a class="reference external" href="../../input/yaml.html">optional flags</a>.</p>

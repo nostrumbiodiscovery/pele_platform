@@ -269,19 +269,19 @@ in your working directory.</p>
 <li><p><strong>cpus</strong> - number of CPUs you want to use for the simulation (we suggest a minimum of 50 for a normal simulation, but you could lower it for training purposes only).</p></li>
 </ul>
 </div></blockquote>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;complex.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span>
-<span class="nt">protein</span><span class="p">:</span> <span class="s">&#39;A&#39;</span>
-<span class="nt">ligand_pdb</span><span class="p">:</span> <span class="s">&quot;ligand.pdb&quot;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
-<span class="nt">center_of_interface</span><span class="p">:</span> <span class="s">&quot;A:106:OH&quot;</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">ppi</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">steps</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">200</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;A:106:OH&quot;</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;Z:1123:C13&quot;</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;complex.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Z&#39;</span><span class="w"></span>
+<span class="nt">protein</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;A&#39;</span><span class="w"></span>
+<span class="nt">ligand_pdb</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;ligand.pdb&quot;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
+<span class="nt">center_of_interface</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;A:106:OH&quot;</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12345</span><span class="w"></span>
+<span class="nt">ppi</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="nt">steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">200</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
+<span class="nt">atom_dist</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;A:106:OH&quot;</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Z:1123:C13&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 <p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong> Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test flag and start a full production run.

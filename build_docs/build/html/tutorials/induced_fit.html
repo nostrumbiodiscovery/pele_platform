@@ -219,16 +219,16 @@ You can download the structure <a class="reference download internal" download="
 <li><p><strong>seed</strong> - random seed to ensure reproducibility.</p></li>
 </ul>
 </div></blockquote>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;docking.pdb&#39;</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;Z&#39;</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span>
-<span class="nt">induced_fit_long</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
-<span class="nt">cpus</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">50</span>
-<span class="nt">atom_dist</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;A:29:N&quot;</span> <span class="c1"># nitrogen of Ser29 in the binding site</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;Z:1:C13&quot;</span>
-<span class="c1">#pele_licenses: /gpfs/projects/bsc72/PELE++/mniv/V1.6.1/license/ #(Example MN4 - Need it if complain about licenses)</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;docking.pdb&#39;</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Z&#39;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"></span>
+<span class="nt">induced_fit_long</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12345</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">50</span><span class="w"></span>
+<span class="nt">atom_dist</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;A:29:N&quot;</span><span class="w"> </span><span class="c1"># nitrogen of Ser29 in the binding site</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;Z:1:C13&quot;</span><span class="w"></span>
+<span class="c1">#pele_licenses: /gpfs/projects/bsc72/PELE++/mniv/V1.6.1/license/ #(Example MN4 - Need it if complain about licenses)</span><span class="w"></span>
 </pre></div>
 </div>
 <p><strong>We strongly recommend running a test first to ensure all your input files are valid.</strong> Simply include <code class="docutils literal notranslate"><span class="pre">test:</span> <span class="pre">true</span></code> in your input.yaml and launch the simulation, it will only use 5 CPUs. If it finishes correctly, you can remove the test flag and start a full production run.

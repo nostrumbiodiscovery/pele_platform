@@ -244,22 +244,22 @@ protein-ligand in the desired initial configuration.</p>
 <div class="section" id="input-preparation">
 <h2>2. Input Preparation<a class="headerlink" href="#input-preparation" title="Permalink to this headline">¶</a></h2>
 <p>Prepare the input file <code class="docutils literal notranslate"><span class="pre">input.yml</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span> <span class="s">&#39;complex.pdb&#39;</span> <span class="c1"># protein-ligand complex</span>
-<span class="nt">chain</span><span class="p">:</span> <span class="s">&#39;L&#39;</span> <span class="c1"># chain name of the ligand</span>
-<span class="nt">resname</span><span class="p">:</span> <span class="s">&#39;LIG&#39;</span> <span class="c1"># residue name of the ligand</span>
-<span class="nt">seed</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">12345</span>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">system</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;complex.pdb&#39;</span><span class="w"> </span><span class="c1"># protein-ligand complex</span><span class="w"></span>
+<span class="nt">chain</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;L&#39;</span><span class="w"> </span><span class="c1"># chain name of the ligand</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;LIG&#39;</span><span class="w"> </span><span class="c1"># residue name of the ligand</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">12345</span><span class="w"></span>
 
-<span class="c1"># Calculate PCA by giving 3 pdb snapshots</span>
-<span class="c1"># defining a motion</span>
-<span class="nt">pca_traj</span><span class="p">:</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;snap1.pdb&quot;</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;snap2.pdb&quot;</span>
-<span class="p p-Indicator">-</span> <span class="s">&quot;snap3.pdb&quot;</span>
-<span class="c1"># Do not constraint structure</span>
-<span class="nt">remove_constraints</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class="c1"># Big sampling of the receptor while making binding</span>
-<span class="nt">spawning</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">independent</span>
-<span class="nt">out_in</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span> <span class="c1">#You can change the method to any other (induced_fit, rescoring...)</span>
+<span class="c1"># Calculate PCA by giving 3 pdb snapshots</span><span class="w"></span>
+<span class="c1"># defining a motion</span><span class="w"></span>
+<span class="nt">pca_traj</span><span class="p">:</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;snap1.pdb&quot;</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;snap2.pdb&quot;</span><span class="w"></span>
+<span class="p p-Indicator">-</span><span class="w"> </span><span class="s">&quot;snap3.pdb&quot;</span><span class="w"></span>
+<span class="c1"># Do not constraint structure</span><span class="w"></span>
+<span class="nt">remove_constraints</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="c1"># Big sampling of the receptor while making binding</span><span class="w"></span>
+<span class="nt">spawning</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">independent</span><span class="w"></span>
+<span class="nt">out_in</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1">#You can change the method to any other (induced_fit, rescoring...)</span><span class="w"></span>
 </pre></div>
 </div>
 <p>For more optional flags please refer to <a class="reference external" href="../../input/yaml.html">optional flags</a>.</p>
