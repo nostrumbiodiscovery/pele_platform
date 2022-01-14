@@ -4,3 +4,6 @@ m2r==0.2.1
 docutils==0.16
 mistune==0.8.4
 sphinxcontrib-serializinghtml==1.1.5
+numpy
+pandas
+mdtraj
