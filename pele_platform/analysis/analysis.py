@@ -301,6 +301,9 @@ class Analysis(object):
         if "Binding Energy" in metrics:
             t_energy = "currentEnergy"
             i_energy = "Binding Energy"
+        elif "BindingEnergy" in metrics:  # Support new PELE beta
+            t_energy = "currentEnergy"
+            i_energy = "BindingEnergy"
         else:
             t_energy = "currentEnergy"
             i_energy = None
