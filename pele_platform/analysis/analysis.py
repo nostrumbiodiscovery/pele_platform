@@ -1219,6 +1219,10 @@ class Analysis(object):
             energy = "Binding Energy"
             plotter.plot_clusters("currentEnergy", energy,
                                   output_folder=path, clusters=clusters)
+        elif "BindingEnergy" in metrics:  # Support new PELE beta
+            energy = "BindingEnergy"
+            plotter.plot_clusters("currentEnergy", energy,
+                                  output_folder=path, clusters=clusters)
         else:
             energy = "currentEnergy"
 
