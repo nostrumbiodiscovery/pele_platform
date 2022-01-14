@@ -188,6 +188,194 @@ initialize the Analysis class with the three mandatory parameters (resname, chai
 you might want to include.</p>
 <div class="section" id="documentation">
 <h3>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pele_platform.analysis.Analysis">
+<em class="property">class </em><code class="sig-prename descclassname">pele_platform.analysis.</code><code class="sig-name descname">Analysis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">simulation_output</span></em>, <em class="sig-param"><span class="n">resname</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chain</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">be_column</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">limit_column</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">traj</span><span class="o">=</span><span class="default_value">'trajectory.pdb'</span></em>, <em class="sig-param"><span class="n">report</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">skip_initial_structures</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">kde</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">kde_structs</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">topology</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cpus</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">water_ids_to_track</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">plot_filtering_threshold</span><span class="o">=</span><span class="default_value">0.02</span></em>, <em class="sig-param"><span class="n">clustering_filtering_threshold</span><span class="o">=</span><span class="default_value">0.25</span></em>, <em class="sig-param"><span class="n">random_seed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">clustering_coverage</span><span class="o">=</span><span class="default_value">0.75</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>General class to manage all analysis operations.</p>
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.from_parameters">
+<em class="property">classmethod </em><code class="sig-name descname">from_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis.from_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>It initializes an Analysis object from a Parameters object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameters</strong> (<em>a Parameters object</em>) – The Parameters object containing the parameters that belong
+to the simulation</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>analysis</strong> – The Analysis object obtained from the parameters that were
+supplied</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>an Analysis object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.generate">
+<code class="sig-name descname">generate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">clustering_type</span><span class="o">=</span><span class="default_value">'meanshift'</span></em>, <em class="sig-param"><span class="n">bandwidth</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">analysis_nclust</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">max_top_clusters</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">top_clusters_criterion</span><span class="o">=</span><span class="default_value">'interaction_25_percentile'</span></em>, <em class="sig-param"><span class="n">min_population</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">max_top_poses</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">representatives_criterion</span><span class="o">=</span><span class="default_value">'interaction_min'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis.generate" title="Permalink to this definition">¶</a></dt>
+<dd><p>It runs the full analysis workflow (plots, top poses and clusters)
+and saves the results in the supplied path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – The path where the analysis results will be saved</p></li>
+<li><p><strong>clustering_type</strong> (<em>str</em>) – The clustering method that will be used to generate the
+clusters. One of [‘gaussianmixture’, ‘meanshift’, ‘hdbscan’].
+Default is ‘meanshift’</p></li>
+<li><p><strong>bandwidth</strong> (<em>float</em>) – Bandwidth for the mean shift and HDBSCAN clustering. Default is
+2.5</p></li>
+<li><p><strong>analysis_nclust</strong> (<em>int</em>) – Number of clusters to create when using the Gaussian mixture
+model. Default is 10</p></li>
+<li><p><strong>max_top_clusters</strong> (<em>int</em>) – Maximum number of clusters to return. Default is 8</p></li>
+<li><p><strong>min_population</strong> (<em>float</em>) – The minimum amount of structures in a cluster, takes a value
+between 0 and 1. Default is 0.01 (i.e. 1%)</p></li>
+<li><p><strong>max_top_poses</strong> (<em>int</em>) – Number of top poses to retrieve. Default = 100.</p></li>
+<li><p><strong>top_clusters_criterion</strong> (<em>str</em>) – Criterion to select top clusters. Default is
+“interaction_25_percentile”. One of [“total_25_percentile”,
+“total_5_percentile”, “total_mean”, “total_min”,
+“interaction_25_percentile”, “interaction_5_percentile”,
+“interaction_mean”, “interaction_min”, “population”]</p></li>
+<li><p><strong>representatives_criterion</strong> (<em>str</em>) – Criterion to select cluster representative structures. Default is
+“interaction_5_percentile”. One of [“total_25_percentile”,
+“total_5_percentile”, “total_mean”, “total_min”,
+“interaction_25_percentile”, “interaction_5_percentile”,
+“interaction_mean”, “interaction_min”]</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.generate_clusters">
+<code class="sig-name descname">generate_clusters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">clustering_type</span></em>, <em class="sig-param"><span class="n">bandwidth</span><span class="o">=</span><span class="default_value">'auto'</span></em>, <em class="sig-param"><span class="n">analysis_nclust</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">max_top_clusters</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">top_clusters_criterion</span><span class="o">=</span><span class="default_value">'interaction_25_percentile'</span></em>, <em class="sig-param"><span class="n">min_population</span><span class="o">=</span><span class="default_value">0.01</span></em>, <em class="sig-param"><span class="n">representatives_criterion</span><span class="o">=</span><span class="default_value">'interaction_min'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis.generate_clusters" title="Permalink to this definition">¶</a></dt>
+<dd><p>It generates the structural clustering of ligand poses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – The path where the clusters will be saved</p></li>
+<li><p><strong>clustering_type</strong> (<em>str</em>) – The clustering method that will be used to generate the
+clusters</p></li>
+<li><p><strong>bandwidth</strong> (<em>Union</em><em>[</em><em>float</em><em>, </em><em>str</em><em>]</em>) – Bandwidth for the mean shift and HDBSCAN clustering. Default is
+2.5</p></li>
+<li><p><strong>analysis_nclust</strong> (<em>int</em>) – Number of clusters to create when using the Gaussian mixture
+model. Default is 10</p></li>
+<li><p><strong>max_top_clusters</strong> (<em>int</em>) – Maximum number of clusters to return. Default is 8</p></li>
+<li><p><strong>top_clusters_criterion</strong> (<em>str</em>) – Criterion to select top clusters. Default is
+“interaction_25_percentile”. One of [“total_25_percentile”,
+“total_5_percentile”, “total_mean”, “total_min”,
+“interaction_25_percentile”, “interaction_5_percentile”,
+“interaction_mean”, “population”]</p></li>
+<li><p><strong>min_population</strong> (<em>float</em>) – The minimum amount of structures in a cluster, takes a value
+between 0 and 1. Default is 0.01 (i.e. 1%)</p></li>
+<li><p><strong>representatives_criterion</strong> (<em>str</em>) – Criterion to select cluster representative structures. Default is
+“interaction_5_percentile”. One of [“total_25_percentile”,
+“total_5_percentile”, “total_mean”, “total_min”,
+“interaction_25_percentile”, “interaction_5_percentile”,
+“interaction_mean”, “interaction_min”]</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.generate_plots">
+<code class="sig-name descname">generate_plots</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis.generate_plots" title="Permalink to this definition">¶</a></dt>
+<dd><p>It generates the plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>str</em>) – The path where the plots will be saved</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.generate_report">
+<code class="sig-name descname">generate_report</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">plots_path</span></em>, <em class="sig-param"><span class="n">poses_path</span></em>, <em class="sig-param"><span class="n">clusters_path</span></em>, <em class="sig-param"><span class="n">best_metrics</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis.generate_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>It generates the final simulation report as a PDF file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>plots_path</strong> (<em>str</em>) – The path where the plots are saved</p></li>
+<li><p><strong>poses_path</strong> (<em>str</em>) – The path where the top poses are saved</p></li>
+<li><p><strong>clusters_path</strong> (<em>str</em>) – The path where the clusters are saved</p></li>
+<li><p><strong>best_metrics</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – The list that contains the metrics belonging to the extracted
+best poses</p></li>
+<li><p><strong>filename</strong> (<em>str</em>) – The filename for the simulation report</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.generate_top_poses">
+<code class="sig-name descname">generate_top_poses</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">n_poses</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis.generate_top_poses" title="Permalink to this definition">¶</a></dt>
+<dd><p>It selects and saves the top poses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – The path where the top poses will be saved</p></li>
+<li><p><strong>n_poses</strong> (<em>int</em>) – The number of top poses to retrieve</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>best_metrics</strong> – The list that contains the metrics belonging to the extracted
+best poses</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.get_dataframe">
+<code class="sig-name descname">get_dataframe</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">threshold</span><span class="o">=</span><span class="default_value">0.02</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis.get_dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>threshold</strong> (<em>float</em>) – The ratio of high-energy entries that will be filtered out.
+Default is None and will be initialized with a threshold of
+0.02</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dataframe</strong> – The dataframe containing the information from PELE reports</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>a pandas.DataFrame object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.parameters">
+<em class="property">property </em><code class="sig-name descname">parameters</code><a class="headerlink" href="#pele_platform.analysis.Analysis.parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>It returns the attributes of this Analysis object as a dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>params</strong> – A dictionary of parameters</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pele_platform.analysis.Analysis.save_params_to_file">
+<code class="sig-name descname">save_params_to_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">generate_params</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pele_platform.analysis.Analysis.save_params_to_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves all parameters used to generated Analysis to a TXT file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>str</em>) – Path to directory where the file should be saved.</p></li>
+<li><p><strong>generate_params</strong> (<em>dict</em>) – Symbol table from generate() method.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
