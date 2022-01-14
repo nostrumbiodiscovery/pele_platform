@@ -3,6 +3,13 @@ Release history
 ===============
 
 
+PELE Platform 1.6.3
+-------------------
+
+- Minor changes to support new beta version of PELE (1.7.2).
+- Fixed bug in equilibration_steps parameter.
+
+
 PELE Platform 1.6.2
 -------------------
 
