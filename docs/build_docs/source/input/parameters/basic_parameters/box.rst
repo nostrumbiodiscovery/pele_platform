@@ -226,10 +226,7 @@ guarantee that the ligand does not exit it during the simulation.
 
     # Perturbation site parameters
     box_radius: 20
-    box_center:
-      - -5
-      - 22
-      - 47
+    box_center: 'A:241:CA'
 
 
 Example 3
