@@ -231,6 +231,7 @@ class FragRunner(object):
             atom_frag,
             mapping,
             correct,
+            fragment_atoms_wo_hydrogen
         ) = hp._build_fragment_from_complex(
             params.core,
             params.residue,
@@ -238,7 +239,7 @@ class FragRunner(object):
             ligand_core,
             result,
             substructure,
-            symmetry,
+            symmetry
         )
 
         # temporary override to fix segmentation faults
@@ -249,11 +250,10 @@ class FragRunner(object):
 
         rp.EmbedMolecule(fragment)
         fragment = hp._retrieve_fragment(
-            fragment, old_atoms, atom_core, hydrogen_core, atom_frag, mapping
+            fragment, old_atoms, atom_core, hydrogen_core, atom_frag, mapping,fragment_atoms_wo_hydrogen
         )
         line = fragment.get_inputfile_line()
         fragment.sanitize_file()
-
         if not correct:
             print("Ligand incorrect")
         return line, fragment
