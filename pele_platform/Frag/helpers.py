@@ -177,11 +177,14 @@ def _build_fragment_from_complex(complex,
     mapping = {new_atom: old_atom for new_atom, old_atom in zip(new_atoms, old_atoms)}
     atom_fragment_mapped = mapping[atom_fragment]
 
+    # Retrieve all atom idxs before adding hydrogen to fragment_atom
+    fragment_atoms_wo_hydrogen = [atom.GetIdx() for atom in fragment.GetAtoms()]
+
     fragment = Chem.AddHs(fragment, False, True)
     correct = _check_fragment(fragment, ligand, mapping, atom_fragment, atom_fragment_mapped, ligand_core)
     Chem.MolToPDBFile(fragment, "int0.pdb")
     assert len(old_atoms) == len(new_atoms)
-    return fragment, old_atoms, hydrogen_core, atom_core, atom_fragment, mapping, correct
+    return fragment, old_atoms, hydrogen_core, atom_core, atom_fragment, mapping, correct, fragment_atoms_wo_hydrogen
 
 
 def random_string(string_length=8):
@@ -194,7 +197,8 @@ def _retrieve_fragment(fragment,
                        atom_core,
                        hydrogen_core,
                        atom_fragment,
-                       mapping):
+                       mapping,
+                       fragment_atoms_wo_hydrogen):
     """
 
     Parameters
@@ -228,7 +232,8 @@ def _retrieve_fragment(fragment,
 
     # Get new added hydrogen
     try:
-        added_hydrogen_idx = [atom.GetIdx() for atom in fragment.GetAtoms() if atom.GetIdx() not in old_atoms][0]
+        # Identify idx from added hydrogen
+        added_hydrogen_idx = [atom.GetIdx() for atom in fragment.GetAtoms() if atom.GetIdx() not in fragment_atoms_wo_hydrogen][0]
         no_hydrogens = False
         # Get fragment atom attached to newly added hydrogen
         atom_fragment_idx = fragment.GetAtomWithIdx(added_hydrogen_idx).GetNeighbors()[0].GetIdx()

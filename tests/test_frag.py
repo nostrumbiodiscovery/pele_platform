@@ -13,6 +13,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 FRAG_ARGS = os.path.join(test_path, "frag/input.yaml")
 FRAG_SIM_ARGS = os.path.join(test_path, "frag/input_sim.yaml")
 FRAG_CORE_ARGS = os.path.join(test_path, "frag/input_core.yaml")
+FRAG_CORE_BOND_ARGS = os.path.join(test_path, "frag/input_core_bond.yaml")
 FLAGS_ARGS = os.path.join(test_path, "frag/input_flags.yaml")
 FRAG_JOINER_ARGS = os.path.join(test_path, "frag/sdf_joiner/*.yml")
 FRAG_SDF_LIBRARIES = os.path.join(test_path, "frag/input_lib_sdf.yaml")
@@ -282,10 +283,33 @@ def test_ligand_clustering(ext_args):
     Parameters
     ----------
     ext_args : str
-        Path to PELE input file,
+        Path to PELE input file.
     """
     job = main.run_platform_from_yaml(ext_args)
     for path in job.working_dir:
         analysis_folder = os.path.join(path, "results")
         if not os.path.isdir(analysis_folder):
             assert False
+
+def test_fragment_linkage(ext_args=FRAG_CORE_BOND_ARGS):
+    """
+    Tests if linkage between core and fragment is correct.
+
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file.
+    """
+    job = main.run_platform_from_yaml(ext_args)
+    input_file_c = open("input.conf",'r')
+    frag_core_atom = job.frag_core_atom
+    fragment_atom = job.fragment_atom
+    for line in input_file_c.readlines():
+        input_frag_core_atom = line.split(' ')[1]
+        input_fragment_atom = line.split(' ')[2]
+        if frag_core_atom:
+            assert frag_core_atom in input_frag_core_atom
+        elif fragment_atom:
+            assert fragment_atom in input_fragment_atom
+
+
