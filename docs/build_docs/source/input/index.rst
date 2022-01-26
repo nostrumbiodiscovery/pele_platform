@@ -9,12 +9,14 @@ PELE Platform essentially needs a minimum of two files in order to run:
     - ``input.yaml``: a yaml file containing a collection of parameters to
       set up the simulation.
 
+.. image:: ../img/platform_flow.png
+  :align: center
+
 Additionally, although the Platform can create them automatically, we might
 want to supply custom templates for our ligand or other non standard residues.
 
     - ``templates``: optionally, we can supply parameter templates or rotamer
       libraries for specific non standard residues.
-
 
 Below we list several instructions to correctly prepare input PDB files for PELE:
 

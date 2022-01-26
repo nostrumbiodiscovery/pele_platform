@@ -73,7 +73,7 @@ Prepare the input file ``input.yml``:
     chain_core: "L" # Ligand scaffold chain ID
     cpus: 48
 
-For more optional flags please refer to `optional flags <../../flags/index.html>`_.
+For more optional flags please refer to `optional flags <../../input/yaml.html>`_.
 
 
 3. Run simulation

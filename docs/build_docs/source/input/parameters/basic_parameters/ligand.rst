@@ -4,7 +4,7 @@ Ligand parameters
 These are parameters that affect to how the ligand is treated during the
 PELE simulation. A ligand is a small molecule that PELE perturbs
 during perturbation stage in the PELE step. Check
-the `PELE algorithm <../../pele/index.rst>`__ to get further information
+the `PELE algorithm <../../../pele/index.html>`__ to get further information
 about it.
 
 List of ligand parameters:
