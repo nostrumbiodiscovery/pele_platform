@@ -13,7 +13,7 @@ List of fragPELE parameters:
     6. `fragment_atom <#fragment-atom>`__
     7. `growing_steps <#growing-steps>`__
     8. `steps_in_gs <#steps-in-gs>`__
-    9. `frag_eq_steps <#frag-eq-steps>`__
+    9. `sampling_steps <#sampling-steps>`__
 
 List of examples:
 
@@ -202,7 +202,7 @@ growing_steps
 
     .. seealso::
       `steps_in_gs <#steps-in-gs>`__,
-      `frag_eq_steps <#frag-eq-steps>`__,
+      `sampling_steps <#sampling-steps>`__,
       `Example 3 <#example-3>`__
 
 
@@ -221,11 +221,11 @@ steps_in_gs
 
     .. seealso::
       `growing_steps <#growing-steps>`__,
-      `frag_eq_steps <#frag-eq-steps>`__,
+      `sampling_steps <#sampling-steps>`__,
       `Example 3 <#example-3>`__
 
 
-frag_eq_steps
+sampling_steps
 +++++++++++++
 
     - Description: Sets the number of PELE steps to perform during the
@@ -338,7 +338,7 @@ defined with the ``frag_ligands`` parameter. Besides, we are
 significantly increasing the length of the alchemical growth because
 we ask for more growing steps (``growing_steps``) and more PELE steps
 per growing step (``steps_in_gs``). On the other hand, we reduce the
-length of the final equilibration (``frag_eq_steps``).
+length of the final equilibration (``sampling_steps``).
 
 ..  code-block:: yaml
 
@@ -355,4 +355,4 @@ length of the final equilibration (``frag_eq_steps``).
     frag_ligands: "fully_grown_ligands.sdf"
     growing_steps: 10
     steps_in_gs: 5
-    frag_eq_steps: 10
+    sampling_steps: 10
