@@ -12,8 +12,8 @@ List of adaptive PELE parameters:
     4. `bias_column <#bias_column>`__
     5. `epsilon <#epsilon>`__
     6. `spawning_condition <#spawning-condition>`__
-    7. `clustering_conditions <#clustering-conditions>`__
-    8. `clustering_values <#clustering-values>`__
+    7. `cluster_conditions <#cluster-conditions>`__
+    8. `cluster_values <#cluster-values>`__
 
 List of examples:
 
@@ -85,7 +85,7 @@ spawning
       `bias_column <#bias_column>`__,
       `epsilon <#bias_column>`__,
       `spawning_condition <#spawning-condition>`__,
-      `clustering_conditions <#clustering-conditions>`__,
+      `cluster_conditions <#cluster-conditions>`__,
       `packages <../packages.html>`__,
       `Example 3 <#example-3>`__
 
@@ -196,7 +196,7 @@ spawning_condition
       `Example 3 <#example-3>`__
 
 
-clustering_conditions
+cluster_conditions
 +++++++++++++++++++++
 
     - Description: Defines the clustering parameters that Adaptive will employ
@@ -205,9 +205,9 @@ clustering_conditions
       has few contacts with the protein and reduce their size when protein-ligand
       contacts increase as we want to capture this region with more detail.
       Thus, it represents an array of contacts from high to low between the
-      ligand and the protein. It is related to ``clustering_values`` and the
-      length of the ``clustering_conditions`` array must be equal to the length of
-      ``clustering_values`` minus one.
+      ligand and the protein. It is related to ``cluster_values`` and the
+      length of the ``cluster_conditions`` array must be equal to the length of
+      ``cluster_values`` minus one.
 
       This parameter can be set to ``auto`` to automatically select the
       right clustering conditions. In this case, the Platform runs a
@@ -231,14 +231,14 @@ clustering_conditions
        for Adaptive.
 
     .. seealso::
-      `clustering_values <#clustering-values>`__,
+      `cluster_values <#cluster-values>`__,
       `packages <pele.html#equilibration>`__,
       `packages <../packages.html>`__,
       `Example 1 <#example-1>`__,
       `Example 2 <#example-2>`__
 
 
-clustering_values
+cluster_values
 +++++++++++++++++
 
     - Description: Defines the clustering parameters that Adaptive will employ
@@ -247,7 +247,7 @@ clustering_values
       has few contacts with the protein and reduce their size when protein-ligand
       contacts increase as we want to capture this region with more detail.
       Thus, it represents the size of each cluster, from low to high, that
-      corresponds with the conditions defined in the ``clustering_conditions``
+      corresponds with the conditions defined in the ``cluster_conditions``
       parameter. Higher clustering values mean larger structural clusters.
 
     - Type: ``List[Float]``
@@ -260,7 +260,7 @@ clustering_values
        settings of any package.
 
     .. seealso::
-      `clustering_conditions <#clustering-conditions>`__,
+      `cluster_conditions <#cluster-conditions>`__,
       `packages <../packages.html>`__
       `Example 1 <#example-1>`__,
       `Example 2 <#example-2>`__
@@ -275,7 +275,7 @@ docking package. Instead of 25 iterations we ask for 10. This will result in an
 even faster simulation at the expense of reducing the exploration.
 
 On the other hand, we are also specifying custom parameters for Adaptive's
-clustering. We slightly reduce the sizes of clusters with the ``clustering_values``
+clustering. We slightly reduce the sizes of clusters with the ``cluster_values``
 parameter (defaults for the induced fit fast package are ``"[2.0, 5.0, 7.0]"``).
 We also set ``cluster_conditions`` to ``"auto"``, so the Platform will
 run a few pre-equilibration steps to determine the best cluster conditions.
@@ -296,7 +296,7 @@ run a few pre-equilibration steps to determine the best cluster conditions.
 
     # Adaptive parameters
     iterations: 10
-    clustering_values: "[2.0, 4.0, 6.0]"
+    cluster_values: "[2.0, 4.0, 6.0]"
     cluster_conditions: "auto"
 
 
@@ -305,7 +305,7 @@ Example 2
 
 In this example we set an induced fit docking simulation with 30 computation
 cores. We specify custom parameters for Adaptive's
-clustering. We slightly reduce the sizes of clusters with the ``clustering_values``
+clustering. We slightly reduce the sizes of clusters with the ``cluster_values``
 parameter (defaults for the induced fit package are ``"[2.0, 5.0, 7.0]"``).
 We also set ``cluster_conditions`` to ``"[1.5, 0.8]"``, assuming that
 our ligand is able to perform more contacts than those seen in common scenarios.
@@ -328,7 +328,7 @@ induced fit package are ``"[1.0, 0.6]"``.
     induced_fit_fast: True
 
     # Adaptive parameters
-    clustering_values: "[2.0, 4.0, 6.0]"
+    cluster_values: "[2.0, 4.0, 6.0]"
     cluster_conditions: "[1.5, 0.8]"
 
 

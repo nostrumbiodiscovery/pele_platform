@@ -217,8 +217,8 @@ how the phase space of the system is explored.</p>
 <li><p><a class="reference external" href="#bias_column">bias_column</a></p></li>
 <li><p><a class="reference external" href="#epsilon">epsilon</a></p></li>
 <li><p><a class="reference external" href="#spawning-condition">spawning_condition</a></p></li>
-<li><p><a class="reference external" href="#clustering-conditions">clustering_conditions</a></p></li>
-<li><p><a class="reference external" href="#clustering-values">clustering_values</a></p></li>
+<li><p><a class="reference external" href="#cluster-conditions">cluster_conditions</a></p></li>
+<li><p><a class="reference external" href="#cluster-values">cluster_values</a></p></li>
 </ol>
 </div></blockquote>
 <p>List of examples:</p>
@@ -305,7 +305,7 @@ settings of any package.</p>
 <p><a class="reference external" href="#bias_column">bias_column</a>,
 <a class="reference external" href="#bias_column">epsilon</a>,
 <a class="reference external" href="#spawning-condition">spawning_condition</a>,
-<a class="reference external" href="#clustering-conditions">clustering_conditions</a>,
+<a class="reference external" href="#cluster-conditions">cluster_conditions</a>,
 <a class="reference external" href="../packages.html">packages</a>,
 <a class="reference external" href="#example-3">Example 3</a></p>
 </div>
@@ -437,8 +437,8 @@ settings of any package.</p>
 </div>
 </div></blockquote>
 </div>
-<div class="section" id="clustering-conditions">
-<h2>clustering_conditions<a class="headerlink" href="#clustering-conditions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cluster-conditions">
+<h2>cluster_conditions<a class="headerlink" href="#cluster-conditions" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul>
 <li><p>Description: Defines the clustering parameters that Adaptive will employ
@@ -447,9 +447,9 @@ ligand. The general strategy is to set up larger clusters when the ligand
 has few contacts with the protein and reduce their size when protein-ligand
 contacts increase as we want to capture this region with more detail.
 Thus, it represents an array of contacts from high to low between the
-ligand and the protein. It is related to <code class="docutils literal notranslate"><span class="pre">clustering_values</span></code> and the
-length of the <code class="docutils literal notranslate"><span class="pre">clustering_conditions</span></code> array must be equal to the length of
-<code class="docutils literal notranslate"><span class="pre">clustering_values</span></code> minus one.</p>
+ligand and the protein. It is related to <code class="docutils literal notranslate"><span class="pre">cluster_values</span></code> and the
+length of the <code class="docutils literal notranslate"><span class="pre">cluster_conditions</span></code> array must be equal to the length of
+<code class="docutils literal notranslate"><span class="pre">cluster_values</span></code> minus one.</p>
 <p>This parameter can be set to <code class="docutils literal notranslate"><span class="pre">auto</span></code> to automatically select the
 right clustering conditions. In this case, the Platform runs a
 preliminary step called pre-equilibration to capture the protein-ligand
@@ -475,7 +475,7 @@ for Adaptive.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="#clustering-values">clustering_values</a>,
+<p><a class="reference external" href="#cluster-values">cluster_values</a>,
 <a class="reference external" href="pele.html#equilibration">packages</a>,
 <a class="reference external" href="../packages.html">packages</a>,
 <a class="reference external" href="#example-1">Example 1</a>,
@@ -483,8 +483,8 @@ for Adaptive.</p>
 </div>
 </div></blockquote>
 </div>
-<div class="section" id="clustering-values">
-<h2>clustering_values<a class="headerlink" href="#clustering-values" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cluster-values">
+<h2>cluster_values<a class="headerlink" href="#cluster-values" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>Description: Defines the clustering parameters that Adaptive will employ
@@ -493,7 +493,7 @@ ligand. The general strategy is to set up larger clusters when the ligand
 has few contacts with the protein and reduce their size when protein-ligand
 contacts increase as we want to capture this region with more detail.
 Thus, it represents the size of each cluster, from low to high, that
-corresponds with the conditions defined in the <code class="docutils literal notranslate"><span class="pre">clustering_conditions</span></code>
+corresponds with the conditions defined in the <code class="docutils literal notranslate"><span class="pre">cluster_conditions</span></code>
 parameter. Higher clustering values mean larger structural clusters.</p></li>
 <li><p>Type: <code class="docutils literal notranslate"><span class="pre">List[Float]</span></code></p></li>
 <li><p>Default: it depends on the package</p></li>
@@ -507,7 +507,7 @@ settings of any package.</p>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference external" href="#clustering-conditions">clustering_conditions</a>,
+<p><a class="reference external" href="#cluster-conditions">cluster_conditions</a>,
 <a class="reference external" href="../packages.html">packages</a>
 <a class="reference external" href="#example-1">Example 1</a>,
 <a class="reference external" href="#example-2">Example 2</a></p>
@@ -521,7 +521,7 @@ cores. We then replace the default number of Adaptive iterations of the induced 
 docking package. Instead of 25 iterations we ask for 10. This will result in an
 even faster simulation at the expense of reducing the exploration.</p>
 <p>On the other hand, we are also specifying custom parameters for Adaptive’s
-clustering. We slightly reduce the sizes of clusters with the <code class="docutils literal notranslate"><span class="pre">clustering_values</span></code>
+clustering. We slightly reduce the sizes of clusters with the <code class="docutils literal notranslate"><span class="pre">cluster_values</span></code>
 parameter (defaults for the induced fit fast package are <code class="docutils literal notranslate"><span class="pre">&quot;[2.0,</span> <span class="pre">5.0,</span> <span class="pre">7.0]&quot;</span></code>).
 We also set <code class="docutils literal notranslate"><span class="pre">cluster_conditions</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;auto&quot;</span></code>, so the Platform will
 run a few pre-equilibration steps to determine the best cluster conditions.</p>
@@ -539,7 +539,7 @@ run a few pre-equilibration steps to determine the best cluster conditions.</p>
 
 <span class="c1"># Adaptive parameters</span><span class="w"></span>
 <span class="nt">iterations</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
-<span class="nt">clustering_values</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span><span class="w"></span>
+<span class="nt">cluster_values</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span><span class="w"></span>
 <span class="nt">cluster_conditions</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;auto&quot;</span><span class="w"></span>
 </pre></div>
 </div>
@@ -548,7 +548,7 @@ run a few pre-equilibration steps to determine the best cluster conditions.</p>
 <h2>Example 2<a class="headerlink" href="#example-2" title="Permalink to this headline">¶</a></h2>
 <p>In this example we set an induced fit docking simulation with 30 computation
 cores. We specify custom parameters for Adaptive’s
-clustering. We slightly reduce the sizes of clusters with the <code class="docutils literal notranslate"><span class="pre">clustering_values</span></code>
+clustering. We slightly reduce the sizes of clusters with the <code class="docutils literal notranslate"><span class="pre">cluster_values</span></code>
 parameter (defaults for the induced fit package are <code class="docutils literal notranslate"><span class="pre">&quot;[2.0,</span> <span class="pre">5.0,</span> <span class="pre">7.0]&quot;</span></code>).
 We also set <code class="docutils literal notranslate"><span class="pre">cluster_conditions</span></code> to <code class="docutils literal notranslate"><span class="pre">&quot;[1.5,</span> <span class="pre">0.8]&quot;</span></code>, assuming that
 our ligand is able to perform more contacts than those seen in common scenarios.
@@ -568,7 +568,7 @@ induced fit package are <code class="docutils literal notranslate"><span class="
 <span class="nt">induced_fit_fast</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
 
 <span class="c1"># Adaptive parameters</span><span class="w"></span>
-<span class="nt">clustering_values</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span><span class="w"></span>
+<span class="nt">cluster_values</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;[2.0,</span><span class="nv"> </span><span class="s">4.0,</span><span class="nv"> </span><span class="s">6.0]&quot;</span><span class="w"></span>
 <span class="nt">cluster_conditions</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;[1.5,</span><span class="nv"> </span><span class="s">0.8]&quot;</span><span class="w"></span>
 </pre></div>
 </div>

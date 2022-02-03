@@ -218,7 +218,7 @@
 <li><p><a class="reference external" href="#fragment-atom">fragment_atom</a></p></li>
 <li><p><a class="reference external" href="#growing-steps">growing_steps</a></p></li>
 <li><p><a class="reference external" href="#steps-in-gs">steps_in_gs</a></p></li>
-<li><p><a class="reference external" href="#sampling-steps">sampling_steps</a></p></li>
+<li><p><a class="reference external" href="#frag-eq-steps">frag_eq_steps</a></p></li>
 </ol>
 </div></blockquote>
 <p>List of examples:</p>
@@ -449,7 +449,7 @@ become more expensive.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="#steps-in-gs">steps_in_gs</a>,
-<a class="reference external" href="#sampling-steps">sampling_steps</a>,
+<a class="reference external" href="#frag-eq-steps">frag_eq_steps</a>,
 <a class="reference external" href="#example-3">Example 3</a></p>
 </div>
 </div></blockquote>
@@ -472,13 +472,13 @@ chains but the simulation will become more expensive.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="#growing-steps">growing_steps</a>,
-<a class="reference external" href="#sampling-steps">sampling_steps</a>,
+<a class="reference external" href="#frag-eq-steps">frag_eq_steps</a>,
 <a class="reference external" href="#example-3">Example 3</a></p>
 </div>
 </div></blockquote>
 </div>
-<div class="section" id="sampling-steps">
-<h2>sampling_steps<a class="headerlink" href="#sampling-steps" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="frag-eq-steps">
+<h2>frag_eq_steps<a class="headerlink" href="#frag-eq-steps" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>Description: Sets the number of PELE steps to perform during the
@@ -584,7 +584,7 @@ defined with the <code class="docutils literal notranslate"><span class="pre">fr
 significantly increasing the length of the alchemical growth because
 we ask for more growing steps (<code class="docutils literal notranslate"><span class="pre">growing_steps</span></code>) and more PELE steps
 per growing step (<code class="docutils literal notranslate"><span class="pre">steps_in_gs</span></code>). On the other hand, we reduce the
-length of the final equilibration (<code class="docutils literal notranslate"><span class="pre">sampling_steps</span></code>).</p>
+length of the final equilibration (<code class="docutils literal notranslate"><span class="pre">frag_eq_steps</span></code>).</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
 <span class="nt">frag_core</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;complex_with_scaffold.pdb&quot;</span><span class="w"></span>
 <span class="nt">chain_core</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="w"></span>
@@ -598,7 +598,7 @@ length of the final equilibration (<code class="docutils literal notranslate"><s
 <span class="nt">frag_ligands</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;fully_grown_ligands.sdf&quot;</span><span class="w"></span>
 <span class="nt">growing_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
 <span class="nt">steps_in_gs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
-<span class="nt">sampling_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+<span class="nt">frag_eq_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
 </pre></div>
 </div>
 </div>
