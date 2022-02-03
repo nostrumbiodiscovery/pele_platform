@@ -103,7 +103,7 @@ equilibration
 
     .. seealso::
       `equilibration_steps <#equilibration-steps>`__,
-      `clustering_conditions <adaptive.html#clustering-conditions>`__,
+      `cluster_conditions <adaptive.html#cluster-conditions>`__,
       `Example 1 <#example-1>`__
 
 
