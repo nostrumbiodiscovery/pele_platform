@@ -321,10 +321,13 @@ def _check_fragment(fragment,
         if lig_chir and frag_chir:
             for lg, fg in zip(lig_chir, frag_chir):
                 # If chirality different or atom number different --> ? as incorrect
-                if lg[1] != fg[1] or mapping[lg[0]] != fg[0]:
-                    if lg[1] != "?" and fg[1] != "?":
-                        correct = False
-                        break
+                if lg[0] in mapping and fg[0] in mapping:
+                    if lg[1] != fg[1] or mapping[lg[0]] != fg[0]:
+                        if lg[1] != "?" and fg[1] != "?":
+                            correct = False
+                            break
+                        else:
+                            correct = True
                     else:
                         correct = True
                 else:
