@@ -326,6 +326,12 @@ class SimulationParams(
                     f'"{mpi_params_name}": "{args.pele_mpi_params}",'
             else:
                 self.pele_mpi_params = ""
+        else:
+            if (args.pele_mpi_params is not None and
+                    args.pele_mpi_params != ""):
+                self.pele_mpi_params = args.pele_mpi_param
+            else:
+                self.pele_mpi_params = ""
 
     def optative_params(self, args):
         if args.forcefield is None:
