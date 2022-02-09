@@ -319,7 +319,7 @@ class SimulationParams(
 
         # Adaptive needs a json-like string for pele_mpi_params
         # Frag needs the direct parameter string for pele_mpi_params
-        if not args.frag_pele:
+        if not self.frag_pele:
             if (args.pele_mpi_params is not None and
                     args.pele_mpi_params != ""):
                 self.pele_mpi_params = \
