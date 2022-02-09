@@ -329,7 +329,7 @@ class SimulationParams(
         else:
             if (args.pele_mpi_params is not None and
                     args.pele_mpi_params != ""):
-                self.pele_mpi_params = args.pele_mpi_param
+                self.pele_mpi_params = args.pele_mpi_params
             else:
                 self.pele_mpi_params = ""
 
