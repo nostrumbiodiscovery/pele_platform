@@ -317,10 +317,15 @@ class SimulationParams(
         else:
             mpi_params_name = "mpiParameters"
 
-        if args.pele_mpi_params is not None and args.pele_mpi_params != "":
-            self.pele_mpi_params = f'"{mpi_params_name}": "{args.pele_mpi_params}",'
-        else:
-            self.pele_mpi_params = ""
+        # Adaptive needs a json-like string for pele_mpi_params
+        # Frag needs the direct parameter string for pele_mpi_params
+        if not args.frag_pele:
+            if (args.pele_mpi_params is not None and
+                    args.pele_mpi_params != ""):
+                self.pele_mpi_params = \
+                    f'"{mpi_params_name}": "{args.pele_mpi_params}",'
+            else:
+                self.pele_mpi_params = ""
 
     def optative_params(self, args):
         if args.forcefield is None:
