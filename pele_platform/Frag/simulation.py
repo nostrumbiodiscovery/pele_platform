@@ -318,9 +318,9 @@ class FragRunner(object):
         params = self.parameters
         params.working_dir = []
         if os.path.isfile(params.core):
-            complex_name = os.path.basename(params.core).split(".pdb")[0]  # And if it is a path, get only the name
+            complex_name = os.path.basename(params.core_process).split(".pdb")[0]  # And if it is a path, get only the name
         else:
-            complex_name = params.core.split(".pdb")[0]
+            complex_name = params.core_process.split(".pdb")[0]
         pdb_basename = complex_name
         current_path = os.path.abspath(".")
         with open(params.input, "r") as input_file:
