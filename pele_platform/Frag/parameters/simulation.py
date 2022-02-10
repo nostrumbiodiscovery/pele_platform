@@ -84,5 +84,9 @@ class FragSimulationParameters(object):
             parameters.usesrun = True
         else:
             parameters.usesrun = False
+            
+        # Add MPI params to pele_exec, if there is any
+        if parameters.pele_mpi_params != "":
+            parameters.pele_exec = parameters.pele_mpi_params + " " + parameters.pele_exec
 
         parameters.spython = cs.SCHRODINGER
