@@ -40,7 +40,7 @@ Platform, please, follow the steps below:
     # Install Python 3.8:
     conda install -c conda-forge python=3.8
 
-    # Install PELE Platform 1.6.2
+    # Install PELE Platform 1.6.3
     conda install -c nostrumbiodiscovery -c conda-forge pele_platform=1.6.3
 
     # Export environment variables
