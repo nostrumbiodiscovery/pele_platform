@@ -231,6 +231,7 @@ class FragRunner(object):
             atom_frag,
             mapping,
             correct,
+            fragment_atoms_wo_hydrogen
         ) = hp._build_fragment_from_complex(
             params.core,
             params.residue,
@@ -238,7 +239,7 @@ class FragRunner(object):
             ligand_core,
             result,
             substructure,
-            symmetry,
+            symmetry
         )
 
         # temporary override to fix segmentation faults
@@ -249,11 +250,10 @@ class FragRunner(object):
 
         rp.EmbedMolecule(fragment)
         fragment = hp._retrieve_fragment(
-            fragment, old_atoms, atom_core, hydrogen_core, atom_frag, mapping
+            fragment, old_atoms, atom_core, hydrogen_core, atom_frag, mapping,fragment_atoms_wo_hydrogen
         )
         line = fragment.get_inputfile_line()
         fragment.sanitize_file()
-
         if not correct:
             print("Ligand incorrect")
         return line, fragment
@@ -318,9 +318,9 @@ class FragRunner(object):
         params = self.parameters
         params.working_dir = []
         if os.path.isfile(params.core):
-            complex_name = os.path.basename(params.core).split(".pdb")[0]  # And if it is a path, get only the name
+            complex_name = os.path.basename(params.core_process).split(".pdb")[0]  # And if it is a path, get only the name
         else:
-            complex_name = params.core.split(".pdb")[0]
+            complex_name = params.core_process.split(".pdb")[0]
         pdb_basename = complex_name
         current_path = os.path.abspath(".")
         with open(params.input, "r") as input_file:

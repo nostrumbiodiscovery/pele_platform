@@ -13,6 +13,7 @@ test_path = os.path.join(cs.DIR, "Examples")
 FRAG_ARGS = os.path.join(test_path, "frag/input.yaml")
 FRAG_SIM_ARGS = os.path.join(test_path, "frag/input_sim.yaml")
 FRAG_CORE_ARGS = os.path.join(test_path, "frag/input_core.yaml")
+FRAG_CORE_BOND_ARGS = os.path.join(test_path, "frag/input_core_bond.yaml")
 FLAGS_ARGS = os.path.join(test_path, "frag/input_flags.yaml")
 FRAG_JOINER_ARGS = os.path.join(test_path, "frag/sdf_joiner/*.yml")
 FRAG_SDF_LIBRARIES = os.path.join(test_path, "frag/input_lib_sdf.yaml")
@@ -45,23 +46,6 @@ SDF_lines = [
 point_analysis_lines = [
     "../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_frag_mol1C3-H2C1-H1,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_frag_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_1.1_BindingEnergy-23.4636.pdb,2.73029273852075,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_frag_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_2.1_BindingEnergy-25.1634.pdb,-25.1634,../pele_platform/Examples/frag/analysis_data/1w7h_preparation_structure_2w_processed_frag_mol1C3-H2C1-H1/top_result/epochsampling_result_trajectory_1.1_BindingEnergy-23.4636.pdb,0.7087330424726306,2.7302927385207525,-23.4636"
 ]
-
-water_lines = [
-     'HETATM 2538  OW  HOH B 162      51.000  92.000  14.000  1.00  0.00           O',
-     'HETATM 2539 1HW  HOH B 162      51.757  92.586  14.000  1.00  0.00           H',
-     'HETATM 2540 2HW  HOH B 162      50.243  92.586  14.000  1.00  0.00           H',
-     'HETATM 2541  OW  HOH B 163      71.000  60.000  20.000  1.00  0.00           O',
-     'HETATM 2542 1HW  HOH B 163      71.757  60.586  20.000  1.00  0.00           H',
-     'HETATM 2543 2HW  HOH B 163      70.243  60.586  20.000  1.00  0.00           H',
-     'HETATM 2544  OW  HOH B 164      81.000  89.000  87.000  1.00  0.00           O',
-     'HETATM 2545 1HW  HOH B 164      81.757  89.586  87.000  1.00  0.00           H',
-     'HETATM 2546 2HW  HOH B 164      80.243  89.586  87.000  1.00  0.00           H',
-     'HETATM 2547  OW  HOH B 165      21.000  91.000  48.000  1.00  0.00           O',
-     'HETATM 2548 1HW  HOH B 165      21.757  91.586  48.000  1.00  0.00           H',
-     'HETATM 2549 2HW  HOH B 165      20.243  91.586  48.000  1.00  0.00           H'
-
-]
-
 
 def test_frag_sim(
     capsys,
@@ -269,7 +253,8 @@ def test_frag_waters(ext_args=FRAG_WATERS):
                 if line[17:21].strip() == "HOH":
                     water_output.append(line.strip())
 
-    assert water_lines == water_output
+    # Assert if the waters are kept in the result PDB (3 waters in this test).
+    assert len(water_output) == 12
 
 @pytest.mark.parametrize(
     ("ext_args"),
@@ -282,10 +267,33 @@ def test_ligand_clustering(ext_args):
     Parameters
     ----------
     ext_args : str
-        Path to PELE input file,
+        Path to PELE input file.
     """
     job = main.run_platform_from_yaml(ext_args)
     for path in job.working_dir:
         analysis_folder = os.path.join(path, "results")
         if not os.path.isdir(analysis_folder):
             assert False
+
+def test_fragment_linkage(ext_args=FRAG_CORE_BOND_ARGS):
+    """
+    Tests if linkage between core and fragment is correct.
+
+    Parameters
+    ----------
+    ext_args : str
+        Path to PELE input file.
+    """
+    job = main.run_platform_from_yaml(ext_args)
+    input_file_c = open("input.conf",'r')
+    frag_core_atom = job.frag_core_atom
+    fragment_atom = job.fragment_atom
+    for line in input_file_c.readlines():
+        input_frag_core_atom = line.split(' ')[1]
+        input_fragment_atom = line.split(' ')[2]
+        if frag_core_atom:
+            assert frag_core_atom in input_frag_core_atom
+        elif fragment_atom:
+            assert fragment_atom in input_fragment_atom
+
+

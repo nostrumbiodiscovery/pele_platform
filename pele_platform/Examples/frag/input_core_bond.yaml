@@ -1,0 +1,7 @@
+frag_core: "../pele_platform/Examples/frag/1w7h_preparation_structure_2w.pdb"
+frag_ligands: "../pele_platform/Examples/frag/ligands.sdf"
+resname: "3IP"
+frag_core_atom: "C3-H2"
+seed: 12345
+test: true
+

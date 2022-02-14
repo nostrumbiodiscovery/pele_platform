@@ -87,8 +87,7 @@ class FragInputFiles(object):
         import shutil
 
         new_file = os.path.join(os.getcwd(), Path(parameters.core_process).stem + "_frag.pdb")
-        shutil.copy(parameters.core, new_file)
-        parameters.core = new_file
+        shutil.copy(parameters.core_process, new_file)
         parameters.core_process = os.path.basename(new_file)
 
     @staticmethod
