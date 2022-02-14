@@ -9,7 +9,7 @@ PELE Platform 1.6.3
 A minor stability release of the PELE Platform that contains several bug fixes for frag PELE and other packages.
 It also introduces compatibility changes to support future PELE versions. Find below the full list of modifications:
 
-- Minor changes to support new beta version of PELE (1.8).
+- Minor changes to support new beta version of PELE (1.7.2).
 - Fixed bug in equilibration_steps parameter.
 - Considering core stereochemistry in frag PELE.
 - PELE MPI parameters are now correctly passed to frag PELE too.
