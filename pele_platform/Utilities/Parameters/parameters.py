@@ -146,6 +146,72 @@ class ParametersBuilder(object):
 
         return self.parameters
 
+    def build_satumut_variables(self, args):
+        """
+        It builds the parameters for satumut, according to the arguments
+        that are supplied, and returns the corresponding Parameters
+        instance.
+
+        Parameters
+        ----------
+        args : a YamlParser object
+            The YamlParser object containing the input parameters chosen
+            by the user
+
+        Returns
+        -------
+        parameters : a Parameters object
+            The Parameters object containing the parameters for PELE
+        """
+
+        # Initialize Parameters object
+        self._parameters = Parameters(args, {"simulation_params": {}},
+                                      initialize_simulation_paths=False)
+        self._initialized = True
+
+        # Keep initial arguments
+        self.parameters.args = args
+
+        # Create logger
+        self.parameters.create_logger(".")
+
+        # Set software
+        self.parameters.software = "satumut"
+        return self.parameters
+
+    def build_plurizymer_variables(self, args):
+        """
+        It builds the parameters for plurizymer, according to the arguments
+        that are supplied, and returns the corresponding Parameters
+        instance.
+
+        Parameters
+        ----------
+        args : a YamlParser object
+            The YamlParser object containing the input parameters chosen
+            by the user
+
+        Returns
+        -------
+        parameters : a Parameters object
+            The Parameters object containing the parameters for PELE
+        """
+
+        # Initialize Parameters object
+        self._parameters = Parameters(args, {"simulation_params": {}},
+                                      initialize_simulation_paths=False)
+        self._initialized = True
+
+        # Keep initial arguments
+        self.parameters.args = args
+
+        # Create logger
+        self.parameters.create_logger(".")
+
+        # Set software
+        self.parameters.software = "pluryzymer"
+        return self.parameters
+
     @property
     def initialized(self):
         """

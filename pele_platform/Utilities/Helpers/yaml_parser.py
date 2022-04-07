@@ -342,11 +342,34 @@ class YamlParser(object):
         # OUTIN
         self.final_site = data.get(valid_flags["final_site"], None)
 
-        # Mutagenesis
+        # Mutagenesis/Plurizymer
         self.saturated_mutagenesis = data.get(
             valid_flags["saturated_mutagenesis"], None
         )
+        self.plurizymer = data.get(valid_flags["plurizymer"], None)
         self.cpus_per_mutation = data.get(valid_flags["cpus_per_mutation"], None)
+
+        self.satumut_positions_mutations = data.get(valid_flags["satumut_positions_mutations"], None)
+        self.satumut_mutation = data.get(valid_flags["satumut_mutation"], None)
+        self.satumut_multiple_mutations = data.get(valid_flags["satumut_multiple_mutations"], None)
+        self.satumut_enantiomer_improve = data.get(valid_flags["satumut_enantiomer_improve"], "R")
+        self.satumut_energy_threshold = data.get(valid_flags["satumut_energy_threshold"], None)
+        self.satumut_dihedrals_analysis = data.get(valid_flags["satumut_dihedrals_analysis"], None)
+        self.satumut_conservative = data.get(valid_flags["satumut_conservative"], None)
+        self.satumut_catalytic_distance = data.get(valid_flags["satumut_catalytic_distance"], 3.5)
+        self.satumut_plots_path = data.get(valid_flags["satumut_plots_path"], None)
+        self.satumut_profile_metric = data.get(valid_flags["satumut_profile_metric"], "Binding Energy")
+        self.satumut_plots_dpi = data.get(valid_flags["satumut_plots_dpi"], 800)
+        self.satumut_fixed_residues = data.get(valid_flags["satumut_fixed_residues"], [])
+        self.satumut_radius_neighbors = data.get(valid_flags["satumut_radius_neighbors"], 5.0)
+        self.satumut_consecutive = data.get(valid_flags["satumut_consecutive"], False)
+        self.satumut_hydrogens = data.get(valid_flags["satumut_hydrogens"], True)
+        self.satumut_pdb_dir = data.get(valid_flags["satumut_pdb_dir"], "pdb_files")
+        self.satumut_wild = data.get(valid_flags["satumut_wild"], None)
+
+        self.plurizymer_single_mutation = data.get(valid_flags["plurizymer_single_mutation"], None)
+        self.plurizymer_turn = data.get(valid_flags["plurizymer_turn"], None)
+        self.plurizymer_atom = data.get(valid_flags["plurizymer_atom"], None)
 
         # Analysis
         self.clustering_method = data.get(valid_flags["clustering_method"], None)

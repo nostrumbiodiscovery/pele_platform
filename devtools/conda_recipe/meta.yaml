@@ -46,6 +46,7 @@ requirements:
     - hdbscan==0.8.27
     - mdtraj==1.9.5
     - seaborn
+    - satumut
     - pyparsing==2.4.7
     - tqdm
 

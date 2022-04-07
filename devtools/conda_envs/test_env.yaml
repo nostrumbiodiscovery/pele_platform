@@ -2,6 +2,7 @@ name: peleplatform_env
 
 channels:
   - nostrumbiodiscovery
+  - eapm
   - conda-forge
 
 dependencies:

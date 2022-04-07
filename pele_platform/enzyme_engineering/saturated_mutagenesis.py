@@ -2,16 +2,22 @@ from copy import deepcopy
 from dataclasses import dataclass, field
 import glob
 from itertools import cycle
-import os
+import os, sys
 import re
 import shutil
 from typing import List
 import warnings
 
 from pele_platform.Utilities.Parameters import parameters
-from pele_platform.Utilities.Helpers import helpers
+from pele_platform.Utilities.Helpers import helpers, yaml_parser
 from pele_platform.Adaptive import simulation
 
+from satumut.pele_files import CreateYamlFiles
+from satumut.simulation import SimulationRunner
+from satumut.mutate_pdb import generate_mutations
+from satumut.analysis import consecutive_analysis
+from satumut.rs_analysis import consecutive_analysis_rs
+from satumut.helper import neighbourresidues, map_atom_string
 
 def set_starting_point(logged_subsets):
     indexes = [int(subset.replace("Subset_", "")) for subset in logged_subsets]
@@ -26,7 +32,7 @@ class SaturatedMutagenesis:
 
     Parameters
     ----------
-    env : pele_env.EnviroBuilder)
+    env : yaml_parser.YamlParser
         Arguments provided by the user in input.yaml.
     already_computed : List[str]
         Initially empty list of already computed systems.
@@ -40,12 +46,19 @@ class SaturatedMutagenesis:
     subset_folder : str
     See Also folder name, default = "Subset_"
     """
-    env: parameters.ParametersBuilder
+    env: yaml_parser.YamlParser
     already_computed: List = field(default_factory=list)
     all_jobs: List = field(default_factory=list)
     original_dir: str = os.path.abspath(os.getcwd())
     start: int = 1
     subset_folder: str = "Subset_"
+
+    def __post_init__(self):
+        """
+            Parse the input parameters
+        """
+        builder = parameters.ParametersBuilder()
+        self.params = builder.build_satumut_variables(self.env)
 
     def run(self):
         """
@@ -60,10 +73,41 @@ class SaturatedMutagenesis:
         self.set_package_params()
         self.check_cpus()
         self.set_working_folder()
-        self.all_mutations = self.retrieve_inputs()
+        self.params.folder = f"{self.working_folder}_mut"
+        simulation_satumut = SimulationRunner(self.params.system, self.params.folder)
+        input_ = simulation_satumut.side_function()
+        # use this object to keep track of the folder where the simulations
+        # will be stored
+        satumut_helper = CreateYamlFiles([], "", "", cpus=self.params.cpus,
+                                         single=self.params.plurizymer_single_mutation,
+                                         turn=self.params.plurizymer_turn)
+        if not self.params.satumut_positions_mutations and self.params.plurizymer_atom:
+            position = neighbourresidues(input_, self.params.plurizymer_atom,
+                                         self.params.satumut_radius_neighbors,
+                                         self.params.satumut_fixed_residues)
+        else:
+            position = self.params.satumut_positions_mutations
+
+        # Generate mutations if there is no restart flag
+        atom_dist = self.env.atom_dist.copy()
+        if not self.params.adaptive_restart:
+            generate_mutations(input_, position, hydrogen=self.params.satumut_hydrogens,
+                               multiple=self.params.satumut_multiple_mutations,
+                               pdb_dir=self.params.satumut_pdb_dir,
+                               consec=self.params.satumut_consecutive,
+                               single=self.params.plurizymer_single_mutation,
+                               turn=self.params.plurizymer_turn,
+                               mut=self.params.satumut_mutation,
+                               conservative=self.params.satumut_conservative,
+                               wild=None)
+        self.all_mutations = [os.path.abspath(x) for x in glob.glob(os.path.join(self.params.satumut_pdb_dir, "*.pdb"))]
+        self.check_metric_distance_atoms(input_)
+
+        self.set_simulation_folder(satumut_helper)
         self.restart_checker()
         self.split_into_subsets()
 
+        # For every subset assign the necessary parameters
         for idx, subset in enumerate(self.mutation_subsets, self.start):
             self.env.input = subset
             self.env.cpus = self.env.cpus_per_mutation * len(subset) + 1
@@ -77,7 +121,32 @@ class SaturatedMutagenesis:
                 self.all_jobs.append(deepcopy(job))
                 self.logger(job)
 
+        with helpers.cd(os.getcwd()):
+            # pele_folders method changes the working folder, so we run it
+            # inside the cd context manager to get back to the cwd
+            dirname, original = simulation_satumut.pele_folders()
+        plot_dir = self.params.satumut_plots_path
+        self.env.atom_dist = atom_dist.copy()
+        if self.params.folder and not plot_dir:
+            plot_dir = os.path.join(self.params.folder, "analysis")
+        consecutive_analysis(dirname, self.env.atom_dist, input_, original, self.params.satumut_plots_dpi,
+                             self.params.max_top_poses, plot_dir,
+                             self.params.cpus, self.params.satumut_catalytic_distance,
+                             self.params.xtc, energy_thres=self.params.satumut_energy_threshold,
+                             profile_with=self.params.satumut_profile_metric)
+
+        if self.params.satumut_dihedrals_analysis:
+            consecutive_analysis_rs(dirname, self.params.satumut_dihedrals_analysis, input_,
+                                    original, self.params.satumut_plots_dpi, self.params.max_top_poses,
+                                    plot_dir, self.params.cpus, self.params.satumut_catalytic_distance,
+                                    self.params.xtc, self.params.satumut_enantiomer_improve,
+                                    energy=self.params.satumut_energy_threshold,
+                                    profile_with=self.params.satumut_profile_metric)
+        os.chdir(self.original_dir)
         return self.all_jobs
+
+    def set_simulation_folder(self, helper):
+        self.working_folder = os.path.abspath(helper._search_round())
 
     def restart_checker(self):
         """
@@ -155,6 +224,7 @@ class SaturatedMutagenesis:
         for folder in abs_new_dirs:
             os.mkdir(folder)
 
+        # Group directory, report and traj, and move report and traj to the correct directory
         for directory, report, traj in zip(
             cycle(abs_new_dirs), sorted_reports, sorted_trajectories
         ):
@@ -236,6 +306,26 @@ class SaturatedMutagenesis:
                 "The number of CPUs per mutation needs to be lower than "
                 + "the total number of CPUs - 1."
             )
+
+    def check_metric_distance_atoms(self, input_pdb):
+        """
+        Checks, if atom distance metrics are defined, that the selected
+        atoms have not changed during the mutation, and if so modify the
+        metrics section so that it correctly reflects the atoms, and change the
+        system pdb to one with the modifications applied
+
+        Parameters
+        ----------
+        input_pdb: str
+            Path to the input pdb
+        """
+        if self.env.atom_dist:
+            mutated = self.all_mutations[0]
+            for i in range(len(self.env.atom_dist)):
+                self.env.atom_dist[i] = map_atom_string(self.env.atom_dist[i], input_pdb, mutated)
+            for mutated_pdb in self.all_mutations:
+                if "original" in mutated_pdb:
+                    self.env.system = mutated_pdb
 
     def set_package_params(self):
         """

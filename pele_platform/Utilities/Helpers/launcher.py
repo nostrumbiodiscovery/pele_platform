@@ -8,6 +8,7 @@ import pele_platform.site_finder.main as al
 import pele_platform.gpcr.main as gpcr
 import pele_platform.out_in.main as outin
 from pele_platform.PPI.main import run_ppi
+from pele_platform.enzyme_engineering.plurizymer import Plurizymer
 from pele_platform.enzyme_engineering.saturated_mutagenesis import SaturatedMutagenesis
 from pele_platform.covalent_docking.main import CovalentDocking
 from pele_platform.constants import constants
@@ -28,6 +29,7 @@ class Launcher:
     saturated_mutagenesis: str = "saturated_mutagenesis"
     interaction_restrictions: str = "interaction_restrictions"
     covalent_docking: str = "covalent_docking"
+    plurizymer: str = "plurizymer"
 
     def launch(self) -> pv.ParametersBuilder:
         # Launch package from input.yaml
@@ -52,6 +54,8 @@ class Launcher:
             job_variables = run_ppi(self._args)
         elif package == self.saturated_mutagenesis:
             job_variables = SaturatedMutagenesis(self._args).run()
+        elif package == self.plurizymer:
+            job_variables = Plurizymer(self._args).run()
         elif package == self.covalent_docking:
             job_variables = CovalentDocking(self._args).run()
         elif package == self.frag:
@@ -73,6 +77,8 @@ class Launcher:
             self._args.package = self.out_in
         elif self._args.saturated_mutagenesis:
             self._args.package = self.saturated_mutagenesis
+        elif self._args.plurizymer:
+            self._args.package = self.plurizymer
         elif self._args.interaction_restrictions:
             self._args.package = self.interaction_restrictions
         elif self._args.covalent_residue:
