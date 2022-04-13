@@ -1,14 +1,14 @@
 {% set data = load_setup_py_data() %}
-# must do conda install -c NostrumBioDiscovery pele_platform 
+# must do conda install -c NostrumBioDiscovery pele_platform
 package:
   name: pele_platform
   version: {{ data.get('version') }}
 
 about:
-  home: https://github.com/nostrumbiodiscovery/pele_platform
+  home: https://github.com/AlbertCS/pele_platform
   license: Apache
   license_file: LICENSE
-  summary: Automatic platform to spawn PELE, AdaptivePELE, MSM_PELE ad frag_PELE jobs
+  summary: Automatic platform to spawn PELE, AdaptivePELE, MSM_PELE, frag_PELE jobs and Satumut/Plurizymer
 
 source:
   path: ../../
@@ -54,4 +54,4 @@ test:
   imports:
     - pele_platform
   command:
-    - python -m pele_platform.main -h 
+    - python -m pele_platform.main -h
