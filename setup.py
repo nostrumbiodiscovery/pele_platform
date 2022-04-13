@@ -57,7 +57,7 @@ setup(
         "PPPele==1.0.8",
         "PlopRotTemp==1.0.1",
         "seaborn",
-        "satumu",
+        "satumut",
         "pyparsing==2.4.7",
         "tqdm",
     ],
