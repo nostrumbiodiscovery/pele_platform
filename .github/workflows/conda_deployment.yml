@@ -29,7 +29,7 @@ jobs:
       # logout to prevent anaconda complaints
       - name: Configurate conda-client from anaconda
         run: |
-          anaconda login --hostname PELEPlatSatu${{ matrix.os }}${{ matrix.python-version }} --username ${{ secrets.ANACONDA_USER }} --password ${{ secrets.ANACONDA_PASSWD }}
+          anaconda login --username ${{ secrets.ANACONDA_USER }} --password ${{ secrets.ANACONDA_PASSWD }}
       - name: Deploy package to conda
         run: conda build -c eapm -c nostrumbiodiscovery -c conda-forge devtools/conda_recipe
       - name: Logout from anaconda
