@@ -153,6 +153,7 @@ class FragRunner(object):
                 params.no_check,
                 params.debug,
                 srun=params.usesrun,
+                external_templates=params.external_template
             )
         except Exception as e:
             print("Skipped - FragPELE will not run.")

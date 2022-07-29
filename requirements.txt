@@ -10,11 +10,11 @@ pandas==1.2.3
 pytest
 cython
 numpy
-peleffy==1.4.1
+peleffy>=1.4.3
 hdbscan==0.8.27
-AdaptivePELE==1.7.1
-frag_pele==3.1.1
-PPPele==1.0.8
+AdaptivePELE>=1.7.1
+frag_pele>=3.1.2
+PPPele>=1.0.9
 PlopRotTemp==1.0.1
 seaborn
 pyparsing==2.4.7
