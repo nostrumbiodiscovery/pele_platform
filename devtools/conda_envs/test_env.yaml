@@ -22,7 +22,7 @@ dependencies:
   - scikit-learn>0.20
   - pandas==1.2.3
   - frag_pele==3.1.3
-  - pppele==1.0.9
+  - pppele==1.0.10
   - peleffy==1.4.3
   - hdbscan==0.8.27
   - mdtraj==1.9.5

@@ -54,7 +54,7 @@ setup(
         "hdbscan==0.8.27",
         "AdaptivePELE>=1.7.1",
         "frag_pele>=3.1.3",
-        "PPPele>=1.0.9",
+        "PPPele>=1.0.10",
         "PlopRotTemp==1.0.1",
         "seaborn",
         "pyparsing==2.4.7",
