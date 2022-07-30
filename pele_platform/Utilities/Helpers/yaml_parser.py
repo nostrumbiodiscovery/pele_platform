@@ -315,6 +315,7 @@ class YamlParser(object):
         self.frag_restart_libraries = data.get(
             valid_flags["frag_restart_libraries"], False
         )
+        self.pele_control_file = data.get(valid_flags["pele_control_file"], None)
 
         # PPI
         self.n_components = data.get(valid_flags["n_components"], None)

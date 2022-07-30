@@ -216,4 +216,5 @@ VALID_FLAGS_PLATFORM = {
     "perturbation_trials": "perturbation_trials",
     "clustering_coverage": "clustering_coverage",
     "sidechain_radius": "sidechain_radius",
+    "pele_control_file": "pele_control_file"
 }
