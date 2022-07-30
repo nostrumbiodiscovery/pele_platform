@@ -153,7 +153,9 @@ class FragRunner(object):
                 params.no_check,
                 params.debug,
                 srun=params.usesrun,
-                external_templates=params.external_template
+                external_templates=params.external_template,
+                growing_protocol="SoftcoreLike",
+                start_growing_from=params.start_frag_from_step
             )
         except Exception as e:
             print("Skipped - FragPELE will not run.")
