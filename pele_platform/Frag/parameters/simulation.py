@@ -62,7 +62,7 @@ class FragSimulationParameters(object):
                                                    "Templates/pele_template.conf")
 
         if args.start_frag_from_step is not None:
-            parameters.start_frag_from_step = 0.3
+            parameters.start_frag_from_step = args.start_frag_from_step
         else:
             parameters.start_frag_from_step = 0.0
 
