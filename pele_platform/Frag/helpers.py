@@ -1,3 +1,4 @@
+import os
 import random
 import string
 import pele_platform.Frag.fragments as fr
@@ -245,8 +246,21 @@ def _retrieve_fragment(fragment,
         print("Final atom fragment", atom_fragment_idx)
 
     # Save fragment
-    string = random_string(8)
-    fragment_filename = fragment.GetProp("_Name").replace(" ", "_") + string + ".pdb"
+    # string = random_string(8)
+    # fragment_filename = fragment.GetProp("_Name").replace(" ", "_") + string + ".pdb"
+    print(os.curdir())
+    fragment_filename = fragment.GetProp("_Name").replace(" ", "_") + ".pdb"
+    while os.path.exists(fragment_filename):
+        fragment_filename = os.path.splitext(fragment_filename)[0]
+        last_field = fragment_filename.split('_')[-1]
+
+        if last_field.isdigit():
+            next_int = int(last_field) + 1
+            fragment_filename = '_'.join(fragment_filename.split('_')[:-1])
+        else:
+            next_int = 1
+
+    fragment_filename = fragment_filename + f"_{next_int}.pdb"
 
     Chem.MolToPDBFile(fragment, fragment_filename)
     fragment = Chem.MolFromPDBFile(fragment_filename, removeHs=False)
