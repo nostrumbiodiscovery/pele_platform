@@ -102,6 +102,11 @@ class FragRunner(object):
         if not params.frag_restart_libraries:
             self._extract_working_directory()
         try:
+            if 'openff' in params.forcefield.lower():
+                frag_ff_name = 'OFF'
+            else:
+                frag_ff_name = 'OPLS2005'
+
             frag.main(
                 params.core_process,
                 params.input,
@@ -153,9 +158,11 @@ class FragRunner(object):
                 params.no_check,
                 params.debug,
                 srun=params.usesrun,
+                force_field=frag_ff_name,
                 external_templates=params.external_template,
                 growing_protocol="SoftcoreLike",
-                start_growing_from=params.start_frag_from_step
+                start_growing_from=params.start_frag_from_step,
+                original_pdb=params.core
             )
         except Exception as e:
             print("Skipped - FragPELE will not run.")
