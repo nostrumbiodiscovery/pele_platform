@@ -3,6 +3,18 @@ Release history
 ===============
 
 
+PELE Platform 1.6.4
+-------------------
+A minor stability release of the PELE Platform that contains several bug fixes for frag PELE and general version updates.
+Find below the full list of modifications:
+
+- Fragments are saved by name without random strings
+- Extra parameters can be passed to frag to have more flexibility when configurint it.
+- fragPELE now supports OpenFF.
+- Solve issues with standard SEP residue.
+- Upgrade versions of fragPELE, peleffy and PPP.
+
+
 PELE Platform 1.6.3
 -------------------
 
