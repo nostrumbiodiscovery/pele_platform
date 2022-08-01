@@ -219,6 +219,7 @@
 <li><p><a class="reference external" href="#growing-steps">growing_steps</a></p></li>
 <li><p><a class="reference external" href="#steps-in-gs">steps_in_gs</a></p></li>
 <li><p><a class="reference external" href="#sampling-steps">sampling_steps</a></p></li>
+<li><p><a class="reference external" href="#pele_control_file">pele_control_file</a></p></li>
 </ol>
 </div></blockquote>
 <p>List of examples:</p>
@@ -228,6 +229,7 @@
 <li><p><a class="reference external" href="#example-2">Example 2</a></p></li>
 <li><p><a class="reference external" href="#example-3">Example 3</a></p></li>
 <li><p><a class="reference external" href="#example-4">Example 4</a></p></li>
+<li><p><a class="reference external" href="#example-5">Example 5</a></p></li>
 </ul>
 </div></blockquote>
 <div class="section" id="frag-core">
@@ -501,6 +503,29 @@ chains but the simulation will become more expensive.</p>
 </div>
 </div></blockquote>
 </div>
+<div class="section" id="pele-control-file">
+<h2>pele_control_file<a class="headerlink" href="#pele-control-file" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>Description: Sets a custom control file template for PELE that
+will replace the predefined template that fragPELE uses.</p></li>
+<li><p>Type: <code class="docutils literal notranslate"><span class="pre">str</span></code></p></li>
+<li><p>Default: <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The template must have certain parameters assigned through
+predetermined flags (marked with the dollar symbol: <code class="docutils literal notranslate"><span class="pre">$</span></code>) so
+fragPELE can change them dynamically.
+Check an example of a template here:
+<a class="reference download internal" download="" href="../../../_downloads/39858f159caad779527dabc53a7b74c8/pele_template.conf"><code class="xref download docutils literal notranslate"><span class="pre">pele_template.conf</span></code></a></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="#example-5">Example 5</a></p>
+</div>
+</div></blockquote>
+</div>
 <div class="section" id="example-1">
 <h2>Example 1<a class="headerlink" href="#example-1" title="Permalink to this headline">¶</a></h2>
 <p>In this example we set up a fragPELE simulation with 30 computation
@@ -599,6 +624,34 @@ length of the final equilibration (<code class="docutils literal notranslate"><s
 <span class="nt">growing_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
 <span class="nt">steps_in_gs</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span><span class="w"></span>
 <span class="nt">sampling_steps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span><span class="w"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-5">
+<h2>Example 5<a class="headerlink" href="#example-5" title="Permalink to this headline">¶</a></h2>
+<p>In this example we set up a fragPELE simulation with 48 computation
+cores. The goal is to take the initial structure supplied with the
+<code class="docutils literal notranslate"><span class="pre">frag_core</span></code> parameter and alchemically convert it to molecules
+defined with the <code class="docutils literal notranslate"><span class="pre">frag_ligands</span></code> parameter. Besides, we ask
+to use peleffy along with the Open Force Field parameters for
+hetero molecules with <code class="docutils literal notranslate"><span class="pre">use_peleffy</span></code> and <code class="docutils literal notranslate"><span class="pre">forcefield</span></code>
+parameters. Finally, we replace fragPELE’s default control file
+template with another template that we sett with
+<code class="docutils literal notranslate"><span class="pre">pele_control_file</span></code>.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Required parameters</span><span class="w"></span>
+<span class="nt">frag_core</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;complex_with_scaffold.pdb&quot;</span><span class="w"></span>
+<span class="nt">chain_core</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;L&quot;</span><span class="w"></span>
+<span class="nt">resname</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;LIG&quot;</span><span class="w"></span>
+
+<span class="c1"># General parameters</span><span class="w"></span>
+<span class="nt">cpus</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">48</span><span class="w"></span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2022</span><span class="w"></span>
+
+<span class="c1"># fragPELE parameters</span><span class="w"></span>
+<span class="nt">frag_ligands</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;fully_grown_ligands.sdf&quot;</span><span class="w"></span>
+<span class="nt">use_peleffy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span><span class="w"></span>
+<span class="nt">forcefield</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;openff-2.0.0&#39;</span><span class="w"></span>
+<span class="nt">pele_control_file</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;pele_template.conf&quot;</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

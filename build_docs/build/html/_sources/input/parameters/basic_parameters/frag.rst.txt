@@ -14,6 +14,7 @@ List of fragPELE parameters:
     7. `growing_steps <#growing-steps>`__
     8. `steps_in_gs <#steps-in-gs>`__
     9. `sampling_steps <#sampling-steps>`__
+    10. `pele_control_file <#pele_control_file>`__
 
 List of examples:
 
@@ -21,6 +22,7 @@ List of examples:
     - `Example 2 <#example-2>`__
     - `Example 3 <#example-3>`__
     - `Example 4 <#example-4>`__
+    - `Example 5 <#example-5>`__
 
 
 frag_core
@@ -226,7 +228,7 @@ steps_in_gs
 
 
 sampling_steps
-+++++++++++++
+++++++++++++++
 
     - Description: Sets the number of PELE steps to perform during the
       final equilibration stage, which happens once the fragment is fully
@@ -243,6 +245,25 @@ sampling_steps
       `growing_steps <#growing-steps>`__,
       `steps_in_gs <#steps-in-gs>`__,
       `Example 3 <#example-3>`__
+
+
+pele_control_file
++++++++++++++++++
+
+    - Description: Sets a custom control file template for PELE that
+      will replace the predefined template that fragPELE uses.
+    - Type: ``str``
+    - Default: ``None``
+
+    .. note::
+       The template must have certain parameters assigned through
+       predetermined flags (marked with the dollar symbol: ``$``) so
+       fragPELE can change them dynamically.
+       Check an example of a template here:
+       :download:`pele_template.conf <../../../../../_static/files/pele_template.conf>`
+
+    .. seealso::
+      `Example 5 <#example-5>`__
 
 
 Example 1
@@ -356,3 +377,34 @@ length of the final equilibration (``sampling_steps``).
     growing_steps: 10
     steps_in_gs: 5
     sampling_steps: 10
+
+
+Example 5
++++++++++
+
+In this example we set up a fragPELE simulation with 48 computation
+cores. The goal is to take the initial structure supplied with the
+``frag_core`` parameter and alchemically convert it to molecules
+defined with the ``frag_ligands`` parameter. Besides, we ask
+to use peleffy along with the Open Force Field parameters for
+hetero molecules with ``use_peleffy`` and ``forcefield``
+parameters. Finally, we replace fragPELE's default control file
+template with another template that we sett with
+``pele_control_file``.
+
+..  code-block:: yaml
+
+    # Required parameters
+    frag_core: "complex_with_scaffold.pdb"
+    chain_core: "L"
+    resname: "LIG"
+
+    # General parameters
+    cpus: 48
+    seed: 2022
+
+    # fragPELE parameters
+    frag_ligands: "fully_grown_ligands.sdf"
+    use_peleffy: True
+    forcefield: 'openff-2.0.0'
+    pele_control_file: "pele_template.conf"
