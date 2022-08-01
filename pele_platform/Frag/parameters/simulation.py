@@ -54,9 +54,17 @@ class FragSimulationParameters(object):
             parameters.frag_eq_steps = \
                 parameters.simulation_params.get("sampling_steps", 20)
 
-        # Set path to control file
-        parameters.control_file = os.path.join(constants.DIR,
-                                               "Templates/pele_template.conf")
+        # Set path to control file template for Frag
+        if args.pele_control_file is not None:
+            parameters.control_file = args.pele_control_file
+        else:
+            parameters.control_file = os.path.join(constants.DIR,
+                                                   "Templates/pele_template.conf")
+
+        if args.start_frag_from_step is not None:
+            parameters.start_frag_from_step = args.start_frag_from_step
+        else:
+            parameters.start_frag_from_step = 0.0
 
         # Set FragPELE protocol
         if args.protocol:

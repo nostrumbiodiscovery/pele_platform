@@ -32,16 +32,16 @@ requirements:
     - cython
     - pandas==1.2.3
     - pytest
-    - adaptive_pele==1.7.1
+    - adaptive_pele>=1.7.1
     - ploprottemp==1.0.1
     - pyyaml
     - pillow
     - fpdf
     - scikit-learn>0.20
     - rdkit
-    - frag_pele==3.1.1
-    - pppele==1.0.8
-    - peleffy==1.4.1
+    - frag_pele>=3.1.4
+    - pppele>=1.0.10
+    - peleffy>=1.4.3
     #- drug_learning not ready yet
     - hdbscan==0.8.27
     - mdtraj==1.9.5
